@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Table(name = "example", uniqueConstraints = {
     @UniqueConstraint(columnNames = "id")
 })
-public class Example implements Serializable {
+public class Example extends Model implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
