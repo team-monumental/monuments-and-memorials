@@ -18,8 +18,5 @@
 *.ipr
 /out/
 
-# Hibernate credentials
-/src/main/resources/hibernate.cfg.xml
-
 # Custom db runner script
 run_db.cmd
