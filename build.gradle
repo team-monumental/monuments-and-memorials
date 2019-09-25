@@ -63,6 +63,6 @@ task appNpmBuild(type: NpmTask) {
 }
 
 task copyWebApp(type: Copy) {
-    from 'src/main/js/build'
+    from 'client/build'
     into 'build/resources/main/static/.'
 }
