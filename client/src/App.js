@@ -1,24 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Header from './components/Header/Header';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/main/js/src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header/>
+      <div className="gmaps">
+        <div className="mapouter">
+          <div className="gmap_canvas">
+            <iframe id="gmap_canvas"
+                    src="https://maps.google.com/maps?q=lincoln%20memorial&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                    frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"></iframe>
+            Google Maps Generator by <a href="https://www.embedgooglemap.net">embedgooglemap.net</a></div>
+        </div>
+      </div>
     </div>
   );
 }

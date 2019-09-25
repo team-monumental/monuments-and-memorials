@@ -1,0 +1,16 @@
+.logo {
+    font-family: 'Raleway', sans-serif;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.logo .M {
+    font-weight: bold;
+    color: #F9364A;
+    font-size: 3em;
+}
+
+.logo .col {
+    align-items: flex-start;
+}
