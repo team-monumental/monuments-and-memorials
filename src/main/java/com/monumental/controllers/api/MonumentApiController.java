@@ -19,13 +19,9 @@ public class MonumentApiController {
 
     @PostMapping("/api/monument")
     @ResponseBody
-    public String createMonument() {
-        Date date = new Date();
-        Monument monument = new Monument("submittedBy", "artist", "title", date, "material", 10.0, -12.0, "city", "state");
-
+    public Monument createMonument(Monument monument) {
         this.monumentService.insert(monument);
-
-        return "Added new monument: " + monument.toString();
+        return monument;
     }
 
     @GetMapping("/api/monument/{id}")
