@@ -1,13 +1,13 @@
 package com.monumental.services;
 
 import com.monumental.models.Model;
-import com.monumental.services.SessionFactoryService;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,34 +20,22 @@ import java.util.List;
 @Service
 public abstract class ModelService<T extends Model> {
 
+    /**
+     * Various hibernate methods require a Class reference to the Model being queried
+     * At some points we also need the name of the table, which is accessible from the Class
+     * This method retrieves the Class at runtime, avoiding type erasure
+     * https://stackoverflow.com/questions/6624113/get-type-name-for-generic-parameter-of-generic-class
+     * @return Class of the Model associated with this ModelService
+     */
+    @SuppressWarnings("unchecked")
+    private Class<T> getModelClass()
+    {
+        return ((Class<T>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0]);
+    }
+
     @Autowired
     SessionFactoryService sessionFactoryService;
-    private Class<T> tClass;
-
-    /**
-     * Set the Class to be used for generic calls to Hibernate later
-     * This function is required before certain session functions can be
-     * called because you cannot extract a generic's type due to type erasure.
-     * This allows for the CRUD functions to be called without having to pass in the class every time
-     *
-     * @param tClass The Class of this Service's data type
-     */
-    public void setClass(Class<T> tClass) {
-        this.tClass = tClass;
-    }
-
-    public String getTClass() {
-        return this.tClass.getName();
-    }
-
-    /**
-     * TODO: Handle this better
-     *
-     * @return true if this class has been told what class its generic is
-     */
-    private boolean noClassSpecified() {
-        return this.tClass == null;
-    }
 
     private List<Integer> doInsert(List<T> records) throws HibernateException {
 
@@ -83,10 +71,10 @@ public abstract class ModelService<T extends Model> {
         try {
             transaction = session.beginTransaction();
             if (ids == null) {
-                records = session.createQuery("FROM " + this.tClass.getName()).list();
+                records = session.createQuery("FROM " + this.getModelClass().getName()).list();
             } else {
                 for (Integer id : ids) {
-                    records.add((T) session.get(this.tClass, id));
+                    records.add((T) session.get(this.getModelClass(), id));
                 }
             }
             transaction.commit();
@@ -132,10 +120,10 @@ public abstract class ModelService<T extends Model> {
         try {
             transaction = session.beginTransaction();
             if (ids == null) {
-                records = session.createCriteria(tClass).list();
+                records = session.createCriteria(this.getModelClass()).list();
             } else {
                 for (Integer id : ids) {
-                    records.add((T) session.get(this.tClass, id));
+                    records.add((T) session.get(this.getModelClass(), id));
                 }
             }
             for (T record : records) {
@@ -153,55 +141,46 @@ public abstract class ModelService<T extends Model> {
     }
 
     public Integer insert(T record) throws HibernateException {
-        if (this.noClassSpecified()) return null;
         ArrayList<T> records = new ArrayList<>();
         records.add(record);
         return this.doInsert(records).get(0);
     }
 
     public List<Integer> insert(List<T> records) throws HibernateException {
-        if (this.noClassSpecified()) return null;
         return this.doInsert(records);
     }
 
     public T get(Integer id) throws HibernateException {
-        if (this.noClassSpecified()) return null;
         ArrayList<Integer> ids = new ArrayList<>();
         ids.add(id);
         return this.doGet(ids).get(0);
     }
 
     public List<T> getAll(List<Integer> ids) throws HibernateException {
-        if (this.noClassSpecified()) return null;
         return this.doGet(ids);
     }
 
     public List<T> getAll() throws HibernateException {
-        if (this.noClassSpecified()) return null;
         return this.doGet(null);
     }
 
     public void update(T record) throws HibernateException {
-        if (this.noClassSpecified()) return;
         ArrayList<T> records = new ArrayList<>();
         records.add(record);
         this.doUpdate(records);
     }
 
     public void update(List<T> records) throws HibernateException {
-        if (this.noClassSpecified()) return;
         this.doUpdate(records);
     }
 
     public void delete(Integer id) throws HibernateException {
-        if (this.noClassSpecified()) return;
         ArrayList<Integer> ids = new ArrayList<>();
         ids.add(id);
         this.doDelete(ids);
     }
 
     public void delete(List<Integer> ids) throws HibernateException {
-        if (this.noClassSpecified()) return;
         this.doDelete(ids);
     }
 }
