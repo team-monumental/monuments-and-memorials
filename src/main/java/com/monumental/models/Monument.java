@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name = "mandm", uniqueConstraints = {
     @UniqueConstraint(columnNames = "id")
 })
-public class MandM extends Model implements Serializable {
+public class Monument extends Model implements Serializable {
 
     @Column(name = "submitted_by")
     private String submittedBy;
@@ -34,11 +34,11 @@ public class MandM extends Model implements Serializable {
     @Column(name = "material")
     private String material;
 
-    @Column(name = "north_coordinates")
-    private double northCoordinates;
+    @Column(name = "lat")
+    private double lat;
 
-    @Column(name = "west_coordinates")
-    private double westCoordinates;
+    @Column(name = "lon")
+    private double lon;
 
     @Column(name = "city")
     private String city;
@@ -46,19 +46,19 @@ public class MandM extends Model implements Serializable {
     @Column(name = "state")
     private String state;
 
-    public MandM() {
+    public Monument() {
 
     }
 
-    public MandM(String submittedBy, String artist, String title, Date date, String material, double northCoordinates,
-                 double westCoordinates, String city, String state) {
+    public Monument(String submittedBy, String artist, String title, Date date, String material, double lat,
+                    double lon, String city, String state) {
         this.submittedBy = submittedBy;
         this.artist = artist;
         this.title = title;
         this.date = date;
         this.material = material;
-        this.northCoordinates = northCoordinates;
-        this.westCoordinates = westCoordinates;
+        this.lat = lat;
+        this.lon = lon;
         this.city = city;
         this.state = state;
     }
@@ -103,24 +103,24 @@ public class MandM extends Model implements Serializable {
         this.material = material;
     }
 
-    public double getNorthCoordinates() {
-        return this.northCoordinates;
+    public double getlat() {
+        return this.lat;
     }
 
-    public void setNorthCoordinates(double northCoordinates) {
-        this.northCoordinates = northCoordinates;
+    public void setlat(double lat) {
+        this.lat = lat;
     }
 
-    public double getWestCoordinates() {
-        return this.westCoordinates;
+    public double getlon() {
+        return this.lon;
     }
 
-    public void setWestCoordinates(double westCoordinates) {
-        this.westCoordinates = westCoordinates;
+    public void setlon(double lon) {
+        this.lon = lon;
     }
 
     public String getCoordinatePointAsString() {
-        return Double.toString(this.northCoordinates) + ", " + Double.toString(this.westCoordinates);
+        return Double.toString(this.lat) + ", " + Double.toString(this.lon);
     }
 
     public String getCity() {

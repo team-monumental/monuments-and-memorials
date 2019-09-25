@@ -1,7 +1,7 @@
 package com.monumental.controllers.api;
 
-import com.monumental.models.MandM;
-import com.monumental.services.MandMService;
+import com.monumental.models.Monument;
+import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +14,13 @@ import java.util.Date;
 public class MandMApiController {
 
     @Autowired
-    private MandMService mandmService;
+    private MonumentService mandmService;
 
     @GetMapping("/api/mandm")
     @ResponseBody
     public String createNewMandM() {
         Date date = new Date();
-        MandM mandm = new MandM("submittedBy", "artist", "title", date, "material", 10.0, -12.0, "city", "state");
+        Monument mandm = new Monument("submittedBy", "artist", "title", date, "material", 10.0, -12.0, "city", "state");
 
         this.mandmService.insert(mandm);
 
@@ -29,7 +29,7 @@ public class MandMApiController {
 
     @GetMapping("/api/mandms/{id}")
     @ResponseBody
-    public MandM getMandM(@PathVariable("id") Integer id) {
+    public Monument getMandM(@PathVariable("id") Integer id) {
         return this.mandmService.get(id);
     }
 }
