@@ -20,7 +20,7 @@ public class SessionFactoryService {
                     .configure();
             Class[] classes = new Class[]{
                     Model.class,
-                    Example.class,
+                    MandM.class
             };
             for (Class c : classes) {
                 conf.addAnnotatedClass(c);
