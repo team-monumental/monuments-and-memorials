@@ -17,5 +17,4 @@ iframe, .mapouter, .gmap_canvas {
 .gmaps {
     display: flex;
     justify-content: center;
-    padding-top: 2rem;
 }
