@@ -13,5 +13,5 @@ public class MonumentService extends ModelService<Monument> {
         this.setClass(Monument.class);
     }
 
-    // Add MandM specific database operations here if needed
+    // Add Monument specific database operations here if needed
 }

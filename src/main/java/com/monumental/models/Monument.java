@@ -5,15 +5,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Model class for a Monument or Memorial
- * Contains all of the state for an M&M as well as Setters and Getters for the state
+ * Model class for both Monuments and Memorials
+ * The name Monument is chosen for simplicity as monuments and memorials have no difference within the system
+ * Contains all of the state for a Monument as well as Setters and Getters for the state
  * TODO: Determine how to store "materials" (right now just a String but the spreadsheet is a bit more complex)
  * TODO: Setup FK relationship to Tags
  * TODO: Setup FK relationship to Images
  */
 
 @Entity
-@Table(name = "mandm", uniqueConstraints = {
+@Table(name = "monument", uniqueConstraints = {
     @UniqueConstraint(columnNames = "id")
 })
 public class Monument extends Model implements Serializable {
