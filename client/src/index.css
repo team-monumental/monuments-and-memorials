@@ -1,0 +1,39 @@
+.col {
+    display: flex;
+    flex-direction: column;
+}
+
+/** Button CSS Reset **/
+button {
+     border: none;
+     margin: 0;
+     padding: 0;
+     width: auto;
+     overflow: visible;
+     background: transparent;
+     color: inherit;
+     font: inherit;
+     line-height: normal;
+     -webkit-font-smoothing: inherit;
+     -moz-osx-font-smoothing: inherit;
+     -webkit-appearance: none;
+ }
+
+button::-moz-focus-inner {
+     border: 0;
+     padding: 0;
+ }
+
+.button, .button-outline {
+    background-color: #F9364A;
+    color: white;
+    border-radius: 14px;
+    border: 3px solid #F9364A;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.button-outline {
+    background-color: transparent;
+    color: #F9364A;
+}

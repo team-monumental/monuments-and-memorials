@@ -1,0 +1,20 @@
+.App {
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+body {
+    margin: 0;
+}
+
+.mapouter{position:relative;text-align:right;}.gmap_canvas {overflow:hidden;background:none!important;}
+
+iframe, .mapouter, .gmap_canvas {
+    width: 80vw;
+    height: 80vh;
+}
+
+.gmaps {
+    display: flex;
+    justify-content: center;
+}
