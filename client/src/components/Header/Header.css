@@ -1,0 +1,21 @@
+.header {
+    font-family: Raleway;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    font-size: 1.15rem;
+}
+
+.header .right > * {
+    margin-right: 2rem;
+}
+
+.header .right > *:last-child {
+    margin-right: 0;
+}
+
+.header .header-link.active {
+    border-bottom: 2px solid #F9364A;
+    margin-bottom: -2px;
+}
