@@ -104,19 +104,19 @@ public class Monument extends Model implements Serializable {
         this.material = material;
     }
 
-    public double getlat() {
+    public double getLat() {
         return this.lat;
     }
 
-    public void setlat(double lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public double getlon() {
+    public double getLon() {
         return this.lon;
     }
 
-    public void setlon(double lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
