@@ -33,22 +33,18 @@ public class MonumentListener implements PreInsertEventListener, PreUpdateEventL
 
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
-        try {
-            if (!(event.getEntity() instanceof Monument)) {
-                return false;
-            }
+        if (!(event.getEntity() instanceof Monument)) {
+            return false;
+        }
 
-            Monument updatedMonument = (Monument) event.getEntity();
-            Monument existingMonument = monumentService.get(updatedMonument.getId());
+        Monument updatedMonument = (Monument) event.getEntity();
+        Monument existingMonument = monumentService.get(updatedMonument.getId());
 
-            // This event apparently gets called on insert sometimes, so this skips if there is no existing record
-            if (existingMonument == null) return false;
+        // This event apparently gets called on insert sometimes, so this skips if there is no existing record
+        if (existingMonument == null) return false;
 
-            if (monumentService.slugChanged(existingMonument, updatedMonument)) {
-                monumentService.generateSlug(updatedMonument);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (monumentService.slugChanged(existingMonument, updatedMonument)) {
+            monumentService.generateSlug(updatedMonument);
         }
 
         return false;
