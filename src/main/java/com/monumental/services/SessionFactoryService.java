@@ -54,5 +54,6 @@ public class SessionFactoryService {
     public void registerListeners() {
         EventListenerRegistry registry = ((SessionFactoryImpl) this.factory).getServiceRegistry().getService(EventListenerRegistry.class);
         registry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(monumentListener);
+        registry.getEventListenerGroup(EventType.PRE_UPDATE).appendListener(monumentListener);
     }
 }

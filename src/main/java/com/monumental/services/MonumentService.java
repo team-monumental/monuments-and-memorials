@@ -91,4 +91,13 @@ public class MonumentService extends ModelService<Monument> {
 
         return records;
     }
+
+    /**
+     * Checks if a Monument's slug has changed
+     */
+    public boolean slugChanged(Monument existing, Monument updated) {
+        return !existing.getTitle().equals(updated.getTitle()) ||
+               !existing.getCity().equals(updated.getCity()) ||
+               !existing.getState().equals(updated.getState());
+    }
 }
