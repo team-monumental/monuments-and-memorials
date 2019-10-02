@@ -22,7 +22,6 @@ public class ReactRedirectFilter implements Filter {
         // Assume that this always indicates a file request, which should proceed as normal
         // In the future we may need to make this more intelligent or narrow
         if (requestURI.contains(".")) {
-            System.out.println(requestURI);
             chain.doFilter(request, response);
             return;
         }
