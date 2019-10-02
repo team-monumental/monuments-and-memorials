@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.models.Model;
 import org.hibernate.HibernateException;
+import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;

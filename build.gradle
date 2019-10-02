@@ -38,6 +38,7 @@ dependencies {
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     implementation('me.alidg:errors-spring-boot-starter:1.2.0')
+    implementation group: 'com.github.slugify', name: 'slugify', version: '2.4'
 }
 
 node {

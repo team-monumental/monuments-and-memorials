@@ -1,9 +1,12 @@
 package com.monumental.services;
 
+import com.monumental.listeners.MonumentListener;
 import com.monumental.models.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
 import org.hibernate.service.ServiceRegistry;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class SessionFactoryService {
 
     private SessionFactory factory;
-    private ServiceRegistry registry;
 
     public SessionFactoryService() {
 
@@ -25,8 +27,10 @@ public class SessionFactoryService {
             for (Class c : classes) {
                 conf.addAnnotatedClass(c);
             }
-            this.registry = new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build();
-            this.factory = conf.buildSessionFactory(this.registry);
+            ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build();
+            this.factory = conf.buildSessionFactory(registry);
+            EventListenerRegistry listenerRegistry = registry.getService(EventListenerRegistry.class);
+            listenerRegistry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(new MonumentListener());
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);

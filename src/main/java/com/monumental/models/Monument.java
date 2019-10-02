@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -18,6 +20,10 @@ import java.util.Date;
     @UniqueConstraint(columnNames = "id")
 })
 public class Monument extends Model implements Serializable {
+
+    @Column(name = "slug", unique = true)
+    @NaturalId
+    private String slug;
 
     @Column(name = "submitted_by")
     private String submittedBy;
@@ -62,6 +68,14 @@ public class Monument extends Model implements Serializable {
         this.lon = lon;
         this.city = city;
         this.state = state;
+    }
+
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getSubmittedBy() {
