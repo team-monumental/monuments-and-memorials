@@ -1,10 +1,17 @@
 package com.monumental.listeners;
 
 import com.monumental.models.Monument;
+import com.monumental.services.MonumentService;
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MonumentListener implements PreInsertEventListener {
+
+    @Autowired
+    MonumentService monumentService;
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
@@ -13,7 +20,7 @@ public class MonumentListener implements PreInsertEventListener {
         }
 
         Monument monument = (Monument) event.getEntity();
-        monument.setSlug("slug");
+        monumentService.generateSlug(monument);
 
         return false;
     }

@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,17 +40,14 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Monument> duplicates;
         try {
-            System.out.println("getting duplicates");
             duplicates = getPossibleSlugDuplicates(monument);
         } catch (HibernateException e) {
             System.err.println("Hibernate Exception occurred while finding duplicate slugs");
             throw e;
         }
 
-        System.out.println("got duplicates");
-
         // Generate the slug from the Monument's title, city, and state
-        List<String> slugParts = Arrays.asList(monument.getTitle(), monument.getCity(), monument.getState());
+        ArrayList<String> slugParts = new ArrayList<>(Arrays.asList(monument.getTitle(), monument.getCity(), monument.getState()));
         // If these fields do not create a unique key, add on an additional identifier to make it unique
         if (duplicates.size() > 0) slugParts.add(String.valueOf(duplicates.size()));
 
@@ -72,13 +70,14 @@ public class MonumentService extends ModelService<Monument> {
 
         try {
             transaction = session.beginTransaction();
-            String queryString = "FROM " + Monument.class.getName() +
+            String queryString = "FROM Monument " +
                     "WHERE title = '" + monument.getTitle() + "' " +
                     "AND city = '" + monument.getCity() + "' " +
                     "AND state = '" + monument.getState() + "'";
             if (monument.getId() != null) {
                 queryString += " AND id != " + monument.getId();
             }
+
             records = session.createQuery(queryString).list();
             transaction.commit();
             session.close();

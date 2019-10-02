@@ -22,7 +22,6 @@ import java.util.Date;
 public class Monument extends Model implements Serializable {
 
     @Column(name = "slug", unique = true)
-    @NaturalId
     private String slug;
 
     @Column(name = "submitted_by")
