@@ -40,7 +40,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     implementation('me.alidg:errors-spring-boot-starter:1.2.0')
     testImplementation('junit:junit:4.12')
-    testImplementation('org.mockito:mockito-core:1.+')
+    testImplementation('org.mockito:mockito-core:2.1.0')
 }
 
 node {
