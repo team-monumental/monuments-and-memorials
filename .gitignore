@@ -23,3 +23,6 @@ run_db.cmd
 
 # Hibernate configuration
 */hibernate.cfg.xml
+
+# Travis
+.travis/id_rsa
