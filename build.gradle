@@ -56,13 +56,15 @@ task appNpmInstall(type: NpmTask) {
     args = ["install"]
 }
 
-task appNpmBuild(type: NpmTask) {
+task appNpmBuild(type: NpmTask, dependsOn: [appNpmInstall]) {
     description = "Builds production version of the webapp"
     workingDir = file("${project.projectDir}/client")
-    args = ["run", "build"]
+    args = ["run-script", "build"]
 }
 
-task copyWebApp(type: Copy) {
+task copyWebApp(type: Copy, dependsOn: [appNpmBuild]) {
     from 'client/build'
-    into 'build/resources/main/static/.'
+    into 'build/resources/main/static/'
 }
+
+processResources.dependsOn 'copyWebApp'

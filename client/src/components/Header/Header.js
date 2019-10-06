@@ -11,10 +11,10 @@ export default class Header extends React.Component {
                     <Logo/>
                 </div>
                 <div className="right">
-                    <a className="header-link">Home</a>
-                    <a className="header-link">About</a>
-                    <a className="header-link">Contribute</a>
-                    <a className="header-link active">Map</a>
+                    <a className="header-link" href="/">Home</a>
+                    <a className="header-link" href="/about">About</a>
+                    <a className="header-link" href="/contribute">Contribute</a>
+                    <a className="header-link active" href="/map">Map</a>
                     <button className="button-outline">Log in</button>
                     <button className="button">Sign up</button>
                 </div>
