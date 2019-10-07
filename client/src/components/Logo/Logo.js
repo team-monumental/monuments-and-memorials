@@ -9,7 +9,7 @@ export default class Logo extends React.Component {
                     M
                 </div>
                 <div className="col">
-                    <span>emorials<span style={{fontSize: '0.8em'}}> &</span></span>
+                    <span>emorials<span style={{fontSize: '0.5em'}}>&nbsp;</span>&</span>
                     <span>onuments</span>
                 </div>
             </div>

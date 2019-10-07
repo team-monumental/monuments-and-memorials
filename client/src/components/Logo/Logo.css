@@ -1,4 +1,4 @@
-.logo {
+.logo, .logo *{
     font-family: 'Raleway', sans-serif;
     display: flex;
     align-items: center;
@@ -6,7 +6,7 @@
 
 .logo .M {
     font-weight: bold;
-    color: #F9364A;
+    color: #AA80FF;
     font-size: 3em;
 }
 
