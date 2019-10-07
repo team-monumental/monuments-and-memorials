@@ -22,7 +22,8 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.monumental'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.12
+targetCompatibility = '10'
+sourceCompatibility = '10'
 
 repositories {
     mavenCentral()
