@@ -1,6 +1,6 @@
 package com.monumental.controllers.api;
 
-import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.services.exceptions.MonumentNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +19,11 @@ public class MonumentController {
     }
 
     @GetMapping("/api/monument/{id}")
-    public Monument getMonument(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public Monument getMonument(@PathVariable("id") Integer id) throws MonumentNotFoundException {
         Monument monument = this.monumentService.get(id);
 
         if (monument == null) {
-            throw new ResourceNotFoundException("No Monument with id: '" + id + "' found");
+            throw new MonumentNotFoundException();
         }
 
         return monument;
