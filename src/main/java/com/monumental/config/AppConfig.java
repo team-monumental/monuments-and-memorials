@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+/**
+ * Class used to configure Beans for the application
+ */
 @Configuration
 public class AppConfig {
 

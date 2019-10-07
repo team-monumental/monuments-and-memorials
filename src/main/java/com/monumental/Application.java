@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 @SpringBootApplication
 public class Application {
 
+    // MessageSource object used for resolving error code messages
     @Autowired
     private MessageSource messageSource;
     
