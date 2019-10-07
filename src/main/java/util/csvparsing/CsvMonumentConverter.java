@@ -21,7 +21,8 @@ public class CsvMonumentConverter {
         Monument result = new Monument();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
-            String value = csvRowArray[columnIndex];
+            // Grab the value at the current column and remove any quotes that may be left
+            String value = csvRowArray[columnIndex].replace("\"", "");
 
             // NOTE: The order of the columns is specific to the initial dataset
             // This may need to change based on the file format we decide to accept
@@ -67,14 +68,14 @@ public class CsvMonumentConverter {
                 case 6: // Material
                     result.setMaterial(value);
                     break;
-                case 9: // Longitude
-                    if (!value.isEmpty()) {
-                        result.setLon(Double.parseDouble(value));
-                    }
-                    break;
-                case 10: // Latitude
+                case 9: // Latitude
                     if (!value.isEmpty()) {
                         result.setLat(Double.parseDouble(value));
+                    }
+                    break;
+                case 10: // Longitude
+                    if (!value.isEmpty()) {
+                        result.setLon(Double.parseDouble(value));
                     }
                     break;
                 case 11: // City
