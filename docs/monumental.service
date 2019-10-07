@@ -1,0 +1,16 @@
+# This is the service that runs the server on the VM. This file is not used anywhere, the real version
+# lives in /etc/systemd/system, this version is only for reference and versioning
+
+[Unit]
+Description=Monuments and Memorials Java/Spring Boot Web Server Service
+
+[Service]
+WorkingDirectory=/home/monumental/monuments-and-memorials
+ExecStart=/home/monumental/monuments-and-memorials/run.sh
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
