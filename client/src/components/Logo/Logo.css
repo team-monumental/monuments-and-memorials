@@ -1,15 +1,6 @@
-.logo, .logo *{
+.logo{
     font-family: 'Raleway', sans-serif;
-    display: flex;
-    align-items: center;
-}
-
-.logo .M {
     font-weight: bold;
     color: #AA80FF;
     font-size: 3em;
-}
-
-.logo .col {
-    align-items: flex-start;
 }
