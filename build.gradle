@@ -22,7 +22,8 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.monumental'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.12
+targetCompatibility = '10'
+sourceCompatibility = '10'
 
 repositories {
     mavenCentral()
@@ -38,6 +39,8 @@ dependencies {
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     implementation('me.alidg:errors-spring-boot-starter:1.2.0')
+    testImplementation('junit:junit:4.12')
+    testImplementation('org.mockito:mockito-core:2.1.0')
 }
 
 node {
