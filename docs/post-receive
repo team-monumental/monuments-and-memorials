@@ -1,0 +1,14 @@
+# This is the git hook that builds and restarts the server service on the VM after a deploy is made.
+# This file is not used anywhere, the real version lives in .git/hooks, this version is only for reference and versioning
+# The usage of sudo in this file relies on the following in /etc/sudoers:
+# $monumental ALL=NOPASSWD: /bin/systemctl start monumental, /bin/systemctl stop monumental
+
+#!/bin/bash
+# This script runs gradle locally after a deploy is made so that the server runs the newest version
+cd ..
+./gradlew build -s
+echo CLEANUP: Running 'git reset --hard' to keep a clean working directory
+git reset --hard
+echo SERVER: Restarting server process...
+sudo systemctl stop monumental
+sudo systemctl start monumental
