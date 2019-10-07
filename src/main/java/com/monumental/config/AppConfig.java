@@ -13,7 +13,7 @@ public class AppConfig {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasenames("messages/monuments");
+        source.setBasenames("messages/resource");
         source.setUseCodeAsDefaultMessage(true);
 
         return source;
