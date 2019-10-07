@@ -25,7 +25,7 @@ export default class Monument extends React.Component {
         return (
             <div>
                 {this.state.monumentProperties.map(prop =>
-                    <div>
+                    <div key={prop.name}>
                         <span style={{fontWeight: 'bold'}}>{prop.name}:&nbsp;</span>
                         <span>{prop.value}</span>
                     </div>
