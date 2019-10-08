@@ -21,8 +21,8 @@ public class CsvMonumentConverter {
         Monument result = new Monument();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
-            // Grab the value at the current column and remove any quotes that may be left
-            String value = csvRowArray[columnIndex].replace("\"", "");
+            // Grab the value at the current column and replace the beginning and ending quotes if applicable
+            String value = removeBeginningAndEndingQuotes(csvRowArray[columnIndex]);
 
             // NOTE: The order of the columns is specific to the initial dataset
             // This may need to change based on the file format we decide to accept
@@ -88,5 +88,20 @@ public class CsvMonumentConverter {
         }
 
         return result;
+    }
+
+    /**
+     * Static method to remove beginning and ending quotes from a specified string
+     * Does nothing if there are not both beginning and ending quotes
+     * @param string - the String to remove the quotes from
+     * @return String - the updated String, with removed quotes if applicable
+     */
+    private static String removeBeginningAndEndingQuotes(String string) {
+        // If the string begins and ends with quotes, remove them
+        if (string.startsWith("\"") && string.endsWith("\"")) {
+            string = string.substring(1, (string.length() - 1));
+        }
+
+        return string;
     }
 }
