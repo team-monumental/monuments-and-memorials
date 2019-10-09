@@ -114,25 +114,6 @@ public class ModelTrigger<T extends Model> implements
     }
 
     /**
-     * Hibernate makes it a little difficult to check what data has been changed in an update vent
-     * This method makes a map of field names and values for the old state of the Model so that
-     * you can check if changes have been made
-     */
-    private Map<String, Object> mapOldState(String[] properties, Object[] oldState) {
-        Map<String, Object> mapped = new HashMap<>();
-        if (properties.length != oldState.length) {
-            System.err.println("Updated entity does not have matching properties and oldState.");
-            return mapped;
-        }
-
-        for (int i = 0; i < properties.length; i++) {
-            mapped.put(properties[i], oldState[i]);
-        }
-
-        return mapped;
-    }
-
-    /**
      * Event listeners fire on all entities, so we must know the class of the Model we're trying
      * to listen to. This method retrieves the Class at runtime, avoiding type erasure.
      * See the same class in ModelService
