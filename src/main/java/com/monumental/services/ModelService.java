@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class handles the generic CRUD of Hibernate entities
@@ -66,16 +64,21 @@ public abstract class ModelService<T extends Model> {
 
         Session session = this.sessionFactoryService.getFactory().openSession();
         Transaction transaction = null;
-        List<T> records = new ArrayList<>();
+        List<T> records;
 
         try {
             transaction = session.beginTransaction();
+            String tableName = this.getModelClass().getName();
             if (ids == null) {
-                records = session.createQuery("FROM " + this.getModelClass().getName()).list();
+                records = session.createQuery("FROM " + tableName).list();
+            } else if (ids.size() == 1) {
+                records = new ArrayList<>();
+                records.add((T) session.get(this.getModelClass(), ids.get(0)));
             } else {
-                for (Integer id : ids) {
-                    records.add((T) session.get(this.getModelClass(), id));
-                }
+                records = session.createQuery(
+                    "FROM " + tableName +
+                    "WHERE id IN (:ids)"
+                ).setParameter("ids", ids).list();
             }
             transaction.commit();
             session.close();
@@ -156,7 +159,7 @@ public abstract class ModelService<T extends Model> {
         return this.doGet(ids).get(0);
     }
 
-    public List<T> getAll(List<Integer> ids) throws HibernateException {
+    public List<T> get(List<Integer> ids) throws HibernateException {
         return this.doGet(ids);
     }
 
