@@ -101,7 +101,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceInsert_Single() {
+    public void testMonumentService_Insert_Single() {
         int result = this.monumentService.insert(this.monument1);
 
         assertEquals(1, result);
@@ -112,7 +112,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceInsert_Multiple() {
+    public void testMonumentService_Insert_Multiple() {
         List<Integer> results = this.monumentService.insert(this.monuments);
 
         assertEquals(3, results.size());
@@ -131,7 +131,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGet_Single() {
+    public void testMonumentService_Get_Single() {
         Monument result = this.monumentService.get(1);
 
         assertEquals(this.monument1.getTitle(), result.getTitle());
@@ -142,7 +142,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGetAll_ListPassed() {
+    public void testMonumentService_GetAll_ListPassed() {
         List<Monument> results = this.monumentService.getAll(this.ids);
 
         assertEquals(3, results.size());
@@ -161,7 +161,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGetAll_NullPassed() {
+    public void testMonumentService_GetAll_NullPassed() {
         List<Monument> results = this.monumentService.getAll();
 
         assertEquals(3, results.size());
