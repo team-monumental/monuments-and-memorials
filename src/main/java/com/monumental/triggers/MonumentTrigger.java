@@ -27,9 +27,9 @@ public class MonumentTrigger extends ModelTrigger<Monument> {
         if (record.getAddress() != null) return;
         // Don't call the API if no change has been made to the coordinates
         if (record.getCoordinatePointAsString().equals(original.getCoordinatePointAsString())) {
-            this.setProperty("address", original.getAddress());
+            record.setAddress(original.getAddress());
             return;
         }
-        this.setProperty("address", googleMapsService.getAddressFromCoordinates(record.getLat(), record.getLon()));
+        record.setAddress(googleMapsService.getAddressFromCoordinates(record.getLat(), record.getLon()));
     }
 }

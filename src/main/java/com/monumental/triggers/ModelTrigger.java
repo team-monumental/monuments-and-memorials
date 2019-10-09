@@ -5,6 +5,7 @@ import org.hibernate.event.spi.*;
 import org.hibernate.persister.entity.EntityPersister;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,9 +21,6 @@ import java.util.Map;
 public class ModelTrigger<T extends Model> implements
         PreInsertEventListener, PostInsertEventListener, PreUpdateEventListener, PostUpdateEventListener,
         PreDeleteEventListener, PostDeleteEventListener {
-
-    private List<String> propertyNames;
-    private List<Object> state;
 
     /** Trigger Methods to be Overridden */
 
@@ -47,6 +45,11 @@ public class ModelTrigger<T extends Model> implements
 
     /** Hibernate Event Listeners */
 
+    /**
+     * This function and the other boolean event listeners return false as returning true
+     * vetoes the operation and prevents the insert.
+     * See https://docs.jboss.org/hibernate/orm/4.1/javadocs/org/hibernate/event/spi/PreInsertEventListener.html
+     */
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
         Object entity = event.getEntity();
@@ -68,12 +71,43 @@ public class ModelTrigger<T extends Model> implements
     public boolean onPreUpdate(PreUpdateEvent event) {
         Object entity = event.getEntity();
         if (entity.getClass().equals(this.getModelClass())) {
+
             T model = (T) event.getEntity();
-            this.state = Arrays.asList(event.getState());
-            this.propertyNames = Arrays.asList(event.getPersister().getEntityMetamodel().getPropertyNames());
-            this.beforeUpdate(model, (T) event.getPersister().getFactory().openSession().get(this.getModelClass(), model.getId()));
-            this.state = null;
-            this.propertyNames = null;
+            T originalModel = (T) event.getPersister().getFactory().openSession().get(this.getModelClass(), model.getId());
+            this.beforeUpdate(model, originalModel);
+
+            /* Due to a bug/limitation of hibernate, the changes to the event entity do not propagate to the database
+             * in PreUpdate events. This code circumvents that by manually updating the event's state array with changed
+             * properties after the trigger method is run, so that they propagate
+             * The propertyNames correspond to the state array by index
+             */
+            List<String> propertyNames = Arrays.asList(event.getPersister().getEntityMetamodel().getPropertyNames());
+            List<Object> state = Arrays.asList(event.getState());
+
+            // This always appears as null in the updated object, no need for us to manually change it, that's handled by hibernate
+            propertyNames.remove("updatedDate");
+
+            Class modelClass = this.getModelClass();
+
+            // Check if each field was changed
+            for (int i = 0; i < propertyNames.size(); i++) {
+                String propertyName = propertyNames.get(i);
+                // Use reflection to call the property's associated public getter
+                // This can and will fail if getters are named abnormally
+                String getter = "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+                try {
+                    Object originalValue = modelClass.getMethod(getter).invoke(originalModel);
+                    Object newValue = modelClass.getMethod(getter).invoke(model);
+                    // Check if the originalRecord passed to the trigger method had any changes made to this field
+                    if ((originalValue == null && newValue != null) ||
+                        (originalValue != null && !originalValue.equals(newValue))) {
+                        state.set(i, newValue);
+                    }
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    System.err.println("Failed to get property reflectively: " + propertyName);
+                    e.printStackTrace();
+                }
+            }
         }
         return false;
     }
@@ -102,15 +136,6 @@ public class ModelTrigger<T extends Model> implements
         if (entity.getClass().equals(this.getModelClass())) {
             this.afterDelete((T) entity);
         }
-    }
-
-    /**
-     * For some stupid reason, changes you make to the event entity in a PreUpdate do not persist
-     * to the database, but changes you make to the event state do, so this is a helper method
-     * for changing that state array during PreUpdate triggers. Not an ideal solution
-     */
-    void setProperty(String name, Object value) {
-        this.state.set(this.propertyNames.indexOf(name), value);
     }
 
     /**
