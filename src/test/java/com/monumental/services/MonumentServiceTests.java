@@ -89,6 +89,7 @@ public class MonumentServiceTests {
         when(this.session.get(Monument.class, 3)).thenReturn(this.monument3);
 
         when(this.session.createQuery("FROM com.monumental.models.Monument")).thenReturn(this.getAllQuery);
+        when(this.session.createQuery("FROM com.monumental.models.Monument WHERE id IN (:ids)")).thenReturn(this.getAllQuery);
 
         // Setup Query mock
         when(this.getAllQuery.list()).thenReturn(this.monuments);
@@ -136,12 +137,12 @@ public class MonumentServiceTests {
     }
 
     /**
-     * Test method for unit testing MonumentService.getAll(List<record>)
+     * Test method for unit testing MonumentService.get(List<record>)
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGetAll_ListPassed() {
-        List<Monument> results = this.monumentService.getAll(this.ids);
+    public void unitTestMonumentServiceGet_ListPassed() {
+        List<Monument> results = this.monumentService.get(this.ids);
 
         assertEquals(3, results.size());
 
@@ -155,11 +156,11 @@ public class MonumentServiceTests {
     }
 
     /**
-     * Test method for unit testing MonumentService.getAll(null)
+     * Test method for unit testing MonumentService.getAll()
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGetAll_NullPassed() {
+    public void unitTestMonumentServiceGetAll() {
         List<Monument> results = this.monumentService.getAll();
 
         assertEquals(3, results.size());
