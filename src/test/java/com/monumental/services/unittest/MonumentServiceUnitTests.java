@@ -1,6 +1,8 @@
-package com.monumental.services;
+package com.monumental.services.unittest;
 
 import com.monumental.models.Monument;
+import com.monumental.services.MonumentService;
+import com.monumental.services.SessionFactoryService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,7 +20,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MonumentServiceTests {
+public class MonumentServiceUnitTests {
 
     @Mock
     private SessionFactory sessionFactory;
