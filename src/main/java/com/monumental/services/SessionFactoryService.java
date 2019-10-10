@@ -1,5 +1,6 @@
 package com.monumental.services;
 
+import com.monumental.models.Model;
 import com.monumental.models.Monument;
 import com.monumental.triggers.MonumentTrigger;
 import org.hibernate.SessionFactory;
@@ -29,7 +30,7 @@ public class SessionFactoryService {
         "monumentTrigger"
     );
     private final List<Class> models = Arrays.asList(
-        Monument.class
+        Model.class, Monument.class
     );
 
     private SessionFactory factory;
