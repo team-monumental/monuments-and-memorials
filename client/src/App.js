@@ -28,7 +28,7 @@ function App() {
                             <h1>Welcome!</h1>
                         </div>
                     </Route>
-                    <Route path="/monuments/:monumentId" component={Monument}/>
+                    <Route path="/monuments/:monumentId/:slug?" component={Monument}/>
                 </div>
             </Router>
         </div>
