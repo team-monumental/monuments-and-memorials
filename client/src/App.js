@@ -19,7 +19,7 @@ function App() {
                                             title="gmaps-iframe"
                                             src="https://maps.google.com/maps?q=lincoln%20memorial&t=&z=13&ie=UTF8&iwloc=&output=embed"
                                             frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"/>
-                                    Google Maps Generator by <a href="https://www.embedgooglemap.net">embedgooglemap.net</a></div>
+                                </div>
                             </div>
                         </div>
                     </Route>
@@ -28,7 +28,7 @@ function App() {
                             <h1>Welcome!</h1>
                         </div>
                     </Route>
-                    <Route path="/monuments/:monumentId" component={Monument}/>
+                    <Route path="/monuments/:monumentId/:slug?" component={Monument}/>
                 </div>
             </Router>
         </div>
