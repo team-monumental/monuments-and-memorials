@@ -20,7 +20,9 @@ public class SessionFactoryService {
                     .configure();
             Class[] classes = new Class[]{
                     Model.class,
-                    Monument.class
+                    Monument.class,
+                    Tag.class,
+                    Image.class
             };
             for (Class c : classes) {
                 conf.addAnnotatedClass(c);

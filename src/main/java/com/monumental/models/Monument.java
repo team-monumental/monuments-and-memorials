@@ -3,13 +3,13 @@ package com.monumental.models;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Model class for both Monuments and Memorials
  * The name Monument is chosen for simplicity as monuments and memorials have no difference within the system
  * Contains all of the state for a Monument as well as Setters and Getters for the state
- * TODO: Determine how to store "materials" (right now just a String but the spreadsheet is a bit more complex)
- * TODO: Setup FK relationship to Tags
+ * Contains a many-to-many relationship with Tag
  * TODO: Setup FK relationship to Images
  */
 
@@ -46,6 +46,17 @@ public class Monument extends Model implements Serializable {
 
     @Column(name = "state")
     private String state;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "monument_tag",
+            joinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }
+    )
+    private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "monument")
+    private Set<Image> images;
 
     public Monument() {
 
@@ -138,6 +149,14 @@ public class Monument extends Model implements Serializable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Set<Tag> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public String toString() {
