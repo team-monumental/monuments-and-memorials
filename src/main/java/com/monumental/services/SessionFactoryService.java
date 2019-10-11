@@ -1,7 +1,9 @@
 package com.monumental.services;
 
+import com.monumental.models.Image;
 import com.monumental.models.Model;
 import com.monumental.models.Monument;
+import com.monumental.models.Tag;
 import com.monumental.triggers.MonumentTrigger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
