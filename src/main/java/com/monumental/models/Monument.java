@@ -198,6 +198,7 @@ public class Monument extends Model implements Serializable {
         this.images = images;
     }
 
+<<<<<<< HEAD
     public List<Contribution> getContributions() {
         return this.contributions;
     }
