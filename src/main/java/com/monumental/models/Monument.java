@@ -161,6 +161,7 @@ public class Monument extends Model implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
 
     public Set<Tag> getTags() {
         return this.tags;
