@@ -33,6 +33,9 @@ public class MonumentServiceTests {
     private Transaction transaction;
 
     @Mock
+    private Query getListQuery;
+
+    @Mock
     private Query getAllQuery;
 
     private Monument monument1;
@@ -85,13 +88,15 @@ public class MonumentServiceTests {
         when(this.session.save(this.monument3)).thenReturn(3);
 
         when(this.session.get(Monument.class, 1)).thenReturn(this.monument1);
-        when(this.session.get(Monument.class, 2)).thenReturn(this.monument2);
-        when(this.session.get(Monument.class, 3)).thenReturn(this.monument3);
 
         when(this.session.createQuery("FROM com.monumental.models.Monument")).thenReturn(this.getAllQuery);
-        when(this.session.createQuery("FROM com.monumental.models.Monument WHERE id IN (:ids)")).thenReturn(this.getAllQuery);
+        when(this.session.createQuery("FROM com.monumental.models.Monument WHERE id IN (:ids)")).thenReturn(this.getListQuery);
 
-        // Setup Query mock
+        // Setup Get List Query mock
+        when(this.getListQuery.setParameter("ids", this.ids)).thenReturn(this.getListQuery);
+        when(this.getListQuery.list()).thenReturn(this.monuments);
+
+        // Setup Get All Query mock
         when(this.getAllQuery.list()).thenReturn(this.monuments);
     }
 
