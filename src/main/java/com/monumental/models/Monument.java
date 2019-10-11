@@ -159,6 +159,14 @@ public class Monument extends Model implements Serializable {
         this.tags = tags;
     }
 
+    public Set<Image> getImages() {
+        return this.images;
+    }
+
+    public void setImages(Set<Image> images) {
+        this.images = images;
+    }
+
     public String toString() {
         return "Submitted by: " + this.submittedBy +  ", Artist: " + this.artist + ", Title: " + this.title + ", Date: "
                 + this.date + ", Material: " + this.material + ", Coordinates: " + this.getCoordinatePointAsString()
