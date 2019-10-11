@@ -1,10 +1,12 @@
-package com.monumental.controllers.api;
+package com.monumental.controllers;
 
 import com.monumental.services.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class MonumentController {
@@ -26,6 +28,17 @@ public class MonumentController {
             throw new ResourceNotFoundException();
         }
 
+        return monument;
+    }
+
+    @GetMapping("/api/monuments")
+    public List<Monument> getAllMonuments() {
+        return this.monumentService.getAll();
+    }
+
+    @PutMapping("/api/monument/{id}")
+    public Monument updateMonument(@PathVariable("id") Integer id, Monument monument) {
+        this.monumentService.update(monument);
         return monument;
     }
 }

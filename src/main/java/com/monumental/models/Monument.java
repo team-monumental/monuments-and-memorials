@@ -36,16 +36,19 @@ public class Monument extends Model implements Serializable {
     private String material;
 
     @Column(name = "lat")
-    private double lat;
+    private Double lat;
 
     @Column(name = "lon")
-    private double lon;
+    private Double lon;
 
     @Column(name = "city")
     private String city;
 
     @Column(name = "state")
     private String state;
+
+    @Column(name = "address")
+    private String address;
 
     public Monument() {
 
@@ -121,6 +124,7 @@ public class Monument extends Model implements Serializable {
     }
 
     public String getCoordinatePointAsString() {
+        if (this.lat == null || this.lon == null ) return null;
         return Double.toString(this.lat) + ", " + Double.toString(this.lon);
     }
 
@@ -140,9 +144,17 @@ public class Monument extends Model implements Serializable {
         this.state = state;
     }
 
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String toString() {
         return "Submitted by: " + this.submittedBy +  ", Artist: " + this.artist + ", Title: " + this.title + ", Date: "
                 + this.date + ", Material: " + this.material + ", Coordinates: " + this.getCoordinatePointAsString()
-                + ", City: " + this.city + ", State: " + this.state;
+                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address;
     }
 }
