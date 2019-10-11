@@ -10,7 +10,6 @@ import java.util.Set;
  * The name Monument is chosen for simplicity as monuments and memorials have no difference within the system
  * Contains all of the state for a Monument as well as Setters and Getters for the state
  * Contains a many-to-many relationship with Tag
- * TODO: Setup FK relationship to Images
  */
 
 @Entity
