@@ -1,0 +1,17 @@
+.page-container {
+    display: flex;
+
+    .fields {
+        flex: 50%;
+        padding-right: 2em;
+    }
+
+    .map {
+        flex: 100%;
+
+        iframe {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}
