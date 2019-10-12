@@ -15,7 +15,7 @@ public class MonumentController {
     private MonumentService monumentService;
 
     @PostMapping("/api/monument")
-    public Monument createMonument(Monument monument) {
+    public Monument createMonument(@RequestBody Monument monument) {
         this.monumentService.insert(monument);
         return monument;
     }
@@ -37,8 +37,14 @@ public class MonumentController {
     }
 
     @PutMapping("/api/monument/{id}")
-    public Monument updateMonument(@PathVariable("id") Integer id, Monument monument) {
-        this.monumentService.update(monument);
+    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody Monument monument) {
+        monument.setId(id);
+        System.out.println("in put " + monument.toString());
+        try {
+            this.monumentService.update(monument);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return monument;
     }
 }
