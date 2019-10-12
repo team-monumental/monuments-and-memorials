@@ -1,6 +1,7 @@
 import React from 'react';
-import './Monument.css';
+import './Monument.scss';
 import { Redirect } from 'react-router-dom';
+import { Card } from 'react-bootstrap';
 import * as slugify from 'slugify';
 
 export default class Monument extends React.Component {
@@ -46,12 +47,16 @@ export default class Monument extends React.Component {
             <div className="page-container">
                 {this.redirectToSlug()}
                 <div className="fields">
-                    {this.state.monumentProperties.map(prop =>
-                        <div key={prop.name}>
-                            <span style={{fontWeight: 'bold'}}>{prop.name}:&nbsp;</span>
-                            <span>{prop.value}</span>
-                        </div>
-                    )}
+                    <Card>
+                        <Card.Body>
+                            {this.state.monumentProperties.map(prop =>
+                                <div key={prop.name}>
+                                    <span style={{fontWeight: 'bold'}}>{prop.name}:&nbsp;</span>
+                                    <span>{prop.value}</span>
+                                </div>
+                            )}
+                        </Card.Body>
+                    </Card>
                 </div>
                 <div className="map">
                     <iframe title="gmaps-iframe"
