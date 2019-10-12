@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
+import './theme.scss';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Header from './components/Header/Header';
@@ -10,7 +11,7 @@ function App() {
         <div className="App">
             <Router>
                 <Header/>
-                <div style={{padding: '0 4rem'}}>
+                <div className="page">
                     <Route path="/map">
                         <div className="gmaps">
                             <div className="mapouter">
