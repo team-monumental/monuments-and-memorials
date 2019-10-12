@@ -9,7 +9,6 @@ import java.util.Set;
  * Model class for both Monuments and Memorials
  * The name Monument is chosen for simplicity as monuments and memorials have no difference within the system
  * Contains all of the state for a Monument as well as Setters and Getters for the state
- * Contains a many-to-many relationship with Tag
  */
 
 @Entity
@@ -17,9 +16,6 @@ import java.util.Set;
     @UniqueConstraint(columnNames = "id")
 })
 public class Monument extends Model implements Serializable {
-
-    @Column(name = "submitted_by")
-    private String submittedBy;
 
     @Column(name = "artist")
     private String artist;
@@ -60,13 +56,18 @@ public class Monument extends Model implements Serializable {
     @OneToMany(mappedBy = "monument")
     private Set<Image> images;
 
+    @OneToMany(mappedBy = "monument")
+    private Set<Contribution> contributions;
+
+    @OneToMany(mappedBy = "monument")
+    private Set<Reference> references;
+
     public Monument() {
 
     }
 
-    public Monument(String submittedBy, String artist, String title, Date date, String material, double lat,
+    public Monument(String artist, String title, Date date, String material, double lat,
                     double lon, String city, String state) {
-        this.submittedBy = submittedBy;
         this.artist = artist;
         this.title = title;
         this.date = date;
@@ -75,14 +76,6 @@ public class Monument extends Model implements Serializable {
         this.lon = lon;
         this.city = city;
         this.state = state;
-    }
-
-    public String getSubmittedBy() {
-        return this.submittedBy;
-    }
-
-    public void setSubmittedBy(String submittedBy) {
-        this.submittedBy = submittedBy;
     }
 
     public String getArtist() {
@@ -178,8 +171,24 @@ public class Monument extends Model implements Serializable {
         this.images = images;
     }
 
+    public Set<Contribution> getContributions() {
+        return this.contributions;
+    }
+
+    public void setContributions(Set<Contribution> contributions) {
+        this.contributions = contributions;
+    }
+
+    public Set<Reference> getReferences() {
+        return this.references;
+    }
+
+    public void setReferences(Set<Reference> references) {
+        this.references = references;
+    }
+
     public String toString() {
-        return "Submitted by: " + this.submittedBy +  ", Artist: " + this.artist + ", Title: " + this.title + ", Date: "
+        return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
                 + this.date + ", Material: " + this.material + ", Coordinates: " + this.getCoordinatePointAsString()
                 + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address;
     }

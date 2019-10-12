@@ -1,9 +1,6 @@
 package com.monumental.services;
 
-import com.monumental.models.Image;
-import com.monumental.models.Model;
-import com.monumental.models.Monument;
-import com.monumental.models.Tag;
+import com.monumental.models.*;
 import com.monumental.triggers.MonumentTrigger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -33,7 +30,7 @@ public class SessionFactoryService {
     );
     private final List<Class> models = Arrays.asList(
         Model.class, Monument.class, Tag.class,
-        Image.class
+        Image.class, Contribution.class, Reference.class
     );
 
     private SessionFactory factory;
