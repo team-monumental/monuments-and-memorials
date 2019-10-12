@@ -45,6 +45,12 @@ public class Monument extends Model implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "inscription")
+    private String inscription;
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "monument_tag",
@@ -155,6 +161,24 @@ public class Monument extends Model implements Serializable {
         this.address = address;
     }
 
+    public String getDescription() {
+        return (this.description == null)
+                ? this.generateDescription()
+                : this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getInscription() {
+        return this.inscription;
+    }
+
+    public void setInscription(String inscription) {
+        this.inscription = inscription;
+    }
+
     public Set<Tag> getTags() {
         return this.tags;
     }
@@ -190,6 +214,36 @@ public class Monument extends Model implements Serializable {
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
                 + this.date + ", Material: " + this.material + ", Coordinates: " + this.getCoordinatePointAsString()
-                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address;
+                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
+                + this.description;
+    }
+
+    /**
+     * Generates a description of this Monument based on some of its state
+     * @return String - the description of this Monument
+     */
+    private String generateDescription() {
+        String description = "";
+
+        if (!this.title.toLowerCase().startsWith("The ")) {
+            description += "The ";
+        }
+
+        description += this.title + " is a " + this.material;
+
+        if (this.title.toLowerCase().contains("monument")) {
+            description += " monument ";
+        }
+        else if (this.title.toLowerCase().contains("memorial")) {
+            description += " memorial ";
+        }
+        else {
+            // Right now just defaulting to monument. Not sure what the correct thing to do is
+            description += " monument ";
+        }
+
+        description += "created on " + this.date + " by " + this.artist + ".";
+
+        return description;
     }
 }
