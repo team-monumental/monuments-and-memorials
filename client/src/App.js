@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
+import './theme.scss';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Header from './components/Header/Header';
@@ -10,7 +11,7 @@ function App() {
         <div className="App">
             <Router>
                 <Header/>
-                <div style={{padding: '0 4rem'}}>
+                <div className="page">
                     <Route path="/map">
                         <div className="gmaps">
                             <div className="mapouter">
@@ -19,7 +20,7 @@ function App() {
                                             title="gmaps-iframe"
                                             src="https://maps.google.com/maps?q=lincoln%20memorial&t=&z=13&ie=UTF8&iwloc=&output=embed"
                                             frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"/>
-                                    Google Maps Generator by <a href="https://www.embedgooglemap.net">embedgooglemap.net</a></div>
+                                </div>
                             </div>
                         </div>
                     </Route>
@@ -28,7 +29,7 @@ function App() {
                             <h1>Welcome!</h1>
                         </div>
                     </Route>
-                    <Route path="/monuments/:monumentId" component={Monument}/>
+                    <Route path="/monuments/:monumentId/:slug?" component={Monument}/>
                 </div>
             </Router>
         </div>

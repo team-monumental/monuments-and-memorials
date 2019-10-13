@@ -35,6 +35,9 @@ public class MonumentServiceUnitTests {
     private Transaction transaction;
 
     @Mock
+    private Query getListQuery;
+
+    @Mock
     private Query getAllQuery;
 
     private Monument monument1;
@@ -87,12 +90,15 @@ public class MonumentServiceUnitTests {
         when(this.session.save(this.monument3)).thenReturn(3);
 
         when(this.session.get(Monument.class, 1)).thenReturn(this.monument1);
-        when(this.session.get(Monument.class, 2)).thenReturn(this.monument2);
-        when(this.session.get(Monument.class, 3)).thenReturn(this.monument3);
 
         when(this.session.createQuery("FROM com.monumental.models.Monument")).thenReturn(this.getAllQuery);
+        when(this.session.createQuery("FROM com.monumental.models.Monument WHERE id IN (:ids)")).thenReturn(this.getListQuery);
 
-        // Setup Query mock
+        // Setup Get List Query mock
+        when(this.getListQuery.setParameter("ids", this.ids)).thenReturn(this.getListQuery);
+        when(this.getListQuery.list()).thenReturn(this.monuments);
+
+        // Setup Get All Query mock
         when(this.getAllQuery.list()).thenReturn(this.monuments);
     }
 
@@ -138,12 +144,12 @@ public class MonumentServiceUnitTests {
     }
 
     /**
-     * Test method for unit testing MonumentService.getAll(List<record>)
+     * Test method for unit testing MonumentService.get(List<record>)
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
     public void testMonumentService_GetAll_ListPassed() {
-        List<Monument> results = this.monumentService.getAll(this.ids);
+        List<Monument> results = this.monumentService.get(this.ids);
 
         assertEquals(3, results.size());
 
@@ -157,11 +163,11 @@ public class MonumentServiceUnitTests {
     }
 
     /**
-     * Test method for unit testing MonumentService.getAll(null)
+     * Test method for unit testing MonumentService.getAll()
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void testMonumentService_GetAll_NullPassed() {
+    public void unitTestMonumentServiceGetAll() {
         List<Monument> results = this.monumentService.getAll();
 
         assertEquals(3, results.size());
