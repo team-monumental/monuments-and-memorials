@@ -74,7 +74,7 @@ public class MonumentServiceIntegrationTests {
 
     /**
      * Test method for integration testing MonumentService.getAll(List<record>)
-     * First inserts 3 records into the database then performs a getAll for only 2 of the records
+     * First inserts 3 records into the database then performs a get for only 2 of the records
      * Checks that only 2 records are returned and that they have the expected attributes
      * Uses an H2 in-memory database as to not ruin the actual database
      */
@@ -88,7 +88,7 @@ public class MonumentServiceIntegrationTests {
         idsToGet.add(1);
         idsToGet.add(3);
 
-        List<Monument> results = this.monumentService.getAll(idsToGet);
+        List<Monument> results = this.monumentService.get(idsToGet);
 
         assertEquals(2, results.size());
 
@@ -116,7 +116,7 @@ public class MonumentServiceIntegrationTests {
 
         this.monumentService.insert(monuments);
 
-        List<Monument> results = this.monumentService.getAll(null);
+        List<Monument> results = this.monumentService.getAll();
 
         assertEquals(3, results.size());
 
@@ -164,9 +164,9 @@ public class MonumentServiceIntegrationTests {
 
     /**
      * Test method for integration testing MonumentService.update(List<record>)
-     * First inserts 3 records into the database then does a getAll to retrieve them
+     * First inserts 3 records into the database then does a get to retrieve them
      * Then, changes some of the attributes on the records before doing an update
-     * Finally, it does another getAll for the records and checks to make sure the changes were persisted
+     * Finally, it does another get for the records and checks to make sure the changes were persisted
      * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
@@ -175,7 +175,7 @@ public class MonumentServiceIntegrationTests {
 
         List<Integer> ids = this.monumentService.insert(monuments);
 
-        List<Monument> storedMonuments = this.monumentService.getAll(ids);
+        List<Monument> storedMonuments = this.monumentService.get(ids);
 
         for (Monument storedMonument : storedMonuments) {
             if (storedMonument.getId() == 1) {
@@ -189,7 +189,7 @@ public class MonumentServiceIntegrationTests {
 
         this.monumentService.update(storedMonuments);
 
-        List<Monument> results = this.monumentService.getAll(ids);
+        List<Monument> results = this.monumentService.get(ids);
 
         for (Monument result : results) {
             if (result.getId() == 1) {
