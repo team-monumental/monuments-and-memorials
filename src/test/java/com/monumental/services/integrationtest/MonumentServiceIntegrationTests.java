@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import static org.junit.Assert.*;
 
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MonumentServiceIntegrationTests {
 
     @Autowired
@@ -27,9 +29,7 @@ public class MonumentServiceIntegrationTests {
      */
     @Test
     public void testMonumentService_Insert_Single() {
-        Monument monument = new Monument();
-        monument.setTitle("Monument 1");
-        monument.setArtist("Artist 1");
+        Monument monument = makeTestMonument();
 
         Integer result = this.monumentService.insert(monument);
 
@@ -38,24 +38,17 @@ public class MonumentServiceIntegrationTests {
 
     /**
      * Test method for integration testing MonumentService.insert(List<record>)
-     * Checks that the returned results from the insert are not null, meaning it was inserted correctly
+     * Checks that the number of returned results is 3 and that each is not null, meaning they were all inserted
+     * correctly
      * Utilizes an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Insert_Multiple() {
-        Monument monument1 = new Monument();
-        monument1.setTitle("Monument 1");
-        monument1.setArtist("Artist 1");
-
-        Monument monument2 = new Monument();
-        monument2.setTitle("Monument 2");
-        monument2.setArtist("Artist 2");
-
-        ArrayList<Monument> monuments = new ArrayList<>();
-        monuments.add(monument1);
-        monuments.add(monument2);
+        List<Monument> monuments = makeTestMonuments();
 
         List<Integer> results = this.monumentService.insert(monuments);
+
+        assertEquals(3, results.size());
 
         for (Integer result : results) {
             assertNotNull(result);
@@ -69,9 +62,7 @@ public class MonumentServiceIntegrationTests {
      */
     @Test
     public void testMonumentService_Get_Single() {
-        Monument monument = new Monument();
-        monument.setTitle("Monument 1");
-        monument.setArtist("Artist 1");
+        Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
 
@@ -89,7 +80,7 @@ public class MonumentServiceIntegrationTests {
      */
     @Test
     public void testMonumentService_GetAll_ListPassed() {
-        ArrayList<Monument> monuments = makeMonuments();
+        ArrayList<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
 
@@ -99,16 +90,16 @@ public class MonumentServiceIntegrationTests {
 
         List<Monument> results = this.monumentService.getAll(idsToGet);
 
-        assertEquals(results.size(), 2);
+        assertEquals(2, results.size());
 
         for (Monument result : results) {
             if (result.getId() == 1) {
-                assertEquals(monuments.get(1).getTitle(), result.getTitle());
-                assertEquals(monuments.get(1).getArtist(), result.getArtist());
+                assertEquals(monuments.get(0).getTitle(), result.getTitle());
+                assertEquals(monuments.get(0).getArtist(), result.getArtist());
             }
             else {
-                assertEquals(monuments.get(3).getTitle(), result.getTitle());
-                assertEquals(monuments.get(3).getArtist(), result.getArtist());
+                assertEquals(monuments.get(2).getTitle(), result.getTitle());
+                assertEquals(monuments.get(2).getArtist(), result.getArtist());
             }
         }
     }
@@ -121,154 +112,170 @@ public class MonumentServiceIntegrationTests {
      */
     @Test
     public void testMonumentService_GetAll_NullPassed() {
-        ArrayList<Monument> monuments = makeMonuments();
+        ArrayList<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
 
         List<Monument> results = this.monumentService.getAll(null);
 
-        assertEquals(results.size(), 3);
+        assertEquals(3, results.size());
 
         for (Monument result : results) {
             if (result.getId() == 1) {
+                assertEquals(monuments.get(0).getTitle(), result.getTitle());
+                assertEquals(monuments.get(0).getArtist(), result.getArtist());
+            }
+            else if (result.getId() == 2) {
                 assertEquals(monuments.get(1).getTitle(), result.getTitle());
                 assertEquals(monuments.get(1).getArtist(), result.getArtist());
             }
-            else if (result.getId() == 2) {
+            else {
                 assertEquals(monuments.get(2).getTitle(), result.getTitle());
                 assertEquals(monuments.get(2).getArtist(), result.getArtist());
-            }
-            else {
-                assertEquals(monuments.get(3).getTitle(), result.getTitle());
-                assertEquals(monuments.get(3).getArtist(), result.getArtist());
             }
         }
     }
 
-    // TODO: clarify what "update" actually does
+    /**
+     * Test method for integration testing MonumentService.update(record)
+     * First inserts a record into the database then does a get to retrieve it
+     * Then, changes some of the attributes on the record before calling update
+     * Finally, it does another get for the record and checks to make sure the changes were persisted
+     * Uses an H2 in-memory database as to not ruin the actual database
+     */
     @Test
-    public void testMonumentService_Update_SingleRecord() {
-        Monument monument = new Monument();
-        monument.setTitle("Monument 1");
-        monument.setArtist("Artist 1");
+    public void testMonumentService_Update_Single() {
+        Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
 
-        Monument monument2 = new Monument();
-        monument.setTitle("Monument 1");
-        monument.setArtist("Artist 2");
+        Monument storedMonument = this.monumentService.get(id);
 
-        this.monumentService.update(monument2);
+        storedMonument.setTitle("Monument 2");
+        storedMonument.setArtist("Artist 2");
 
-        Monument result = this.monumentService.get(id);
-
-        assertEquals(monument2.getTitle(), result.getTitle());
-        assertEquals(monument2.getArtist(), result.getArtist());
-    }
-
-    // TODO: Needs fixing
-    @Test
-    public void testMonumentService_Update_MultipleRecords() {
-        ArrayList<Monument> monuments = makeMonuments();
-        this.monumentService.insert(monuments);
-
-        Monument monument1 = new Monument();
-        monument1.setTitle("Monument 1");
-        monument1.setArtist("Artist 2");
-
-        Monument monument2 = new Monument();
-        monument2.setTitle("Monument 2");
-        monument2.setArtist("Artist 3");
-
-        ArrayList<Integer> monuments_to_update = new ArrayList<Integer>();
-        monuments_to_update.add(1);
-        monuments_to_update.add(2);
-
-        this.monumentService.update(monuments_to_update);
-
-        List<Monument> results = this.monumentService.getAll(null);
+        this.monumentService.update(storedMonument);
 
         Monument result = this.monumentService.get(id);
 
-        assertEquals(monument2.getTitle(), result.getTitle());
-        assertEquals(monument2.getArtist(), result.getArtist());
+        assertEquals(storedMonument.getTitle(), result.getTitle());
+        assertEquals(storedMonument.getArtist(), result.getArtist());
     }
 
     /**
-     * Test method for integration testing MonumentService.delete(Integer)
-     * First inserts 3 records into the database then performs a delete of a single monument ID
-     * After deleting, perform a getAll, check that only 2 records are returned and that they
-     * have the expected attributes
+     * Test method for integration testing MonumentService.update(List<record>)
+     * First inserts 3 records into the database then does a getAll to retrieve them
+     * Then, changes some of the attributes on the records before doing an update
+     * Finally, it does another getAll for the records and checks to make sure the changes were persisted
      * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
-    public void testMonumentService_Delete_SingleID() {
-        ArrayList<Monument> monuments = makeMonuments();
+    public void testMonumentService_Update_Multiple() {
+        ArrayList<Monument> monuments = makeTestMonuments();
 
-        this.monumentService.insert(monuments);
+        List<Integer> ids = this.monumentService.insert(monuments);
 
-        assertEquals(this.monumentService.getAll().size(), 3);
+        List<Monument> storedMonuments = this.monumentService.getAll(ids);
 
-        this.monumentService.delete(1);
-
-        assertEquals(this.monumentService.getAll().size(), 2);
-
-        for (Monument result : this.monumentService.getAll()) {
-            if (result.getId() == 2) {
-                assertEquals(monuments.get(2).getTitle(), result.getTitle());
-                assertEquals(monuments.get(2).getArtist(), result.getArtist());
+        for (Monument storedMonument : storedMonuments) {
+            if (storedMonument.getId() == 1) {
+                storedMonument.setTitle("Stored Monument 1");
+                storedMonument.setArtist("Stored Artist 1");
             }
-            else if (result.getId() == 3) {
-                assertEquals(monuments.get(3).getTitle(), result.getTitle());
-                assertEquals(monuments.get(3).getArtist(), result.getArtist());
+            else if (storedMonument.getId() == 3) {
+                storedMonument.setTitle("Stored Monument 3");
+            }
+        }
+
+        this.monumentService.update(storedMonuments);
+
+        List<Monument> results = this.monumentService.getAll(ids);
+
+        for (Monument result : results) {
+            if (result.getId() == 1) {
+                assertEquals("Stored Monument 1", result.getTitle());
+                assertEquals("Stored Artist 1", result.getArtist());
+            }
+            else if (result.getId() == 2) {
+                assertEquals("Monument 2", result.getTitle());
+                assertEquals("Artist 2", result.getArtist());
             }
             else {
-                fail("There is an unknown monument in the monument database. Monument as followed : " +
-                result.toString());
+                assertEquals("Stored Monument 3", result.getTitle());
+                assertEquals("Artist 3", result.getArtist());
             }
         }
     }
 
     /**
-     * Test method for integration testing MonumentService.delete(List<record>)
-     * First inserts 3 records into the database then performs a delete of an arraylist of IDs
-     * After deleting, perform a getAll, check that only 1 records are returned and that they
-     * have the expected attributes
+     * Test method for integration testing MonumentService.delete(id)
+     * First, does an insert to insert a single record into the database
+     * Then, does a get for that record and checks to make sure it was saved properly
+     * Finally, does a delete and checks that another get returns null
      * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
-    public void testMonumentService_Delete_MultipleIDs() {
-        ArrayList<Monument> monuments = makeMonuments();
+    public void testMonumentService_Delete_Single() {
+        Monument monument = makeTestMonument();
+
+        Integer id = this.monumentService.insert(monument);
+
+        Monument storedMonument = this.monumentService.get(id);
+
+        assertNotNull(storedMonument);
+
+        this.monumentService.delete(id);
+
+        Monument result = this.monumentService.get(id);
+
+        assertNull(result);
+    }
+
+    /**
+     * Test method for integration testing MonumentService.delete(ids)
+     * First, inserts 3 records into the database and does a getAll to check that they were all saved properly
+     * Then, does a delete followed by another getAll to check that the returned results are null or not null as expected
+     * Uses an H2 in-memory database as to not ruin the actual database
+     */
+    @Test
+    public void testMonumentService_Delete_Multiple() {
+        List<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
 
-        assertEquals(this.monumentService.getAll().size(), 3);
-
-        ArrayList<Integer> IDs_to_delete = new ArrayList<Integer>();
-        IDs_to_delete.add(1);
-        IDs_to_delete.add(2);
-
-        this.monumentService.delete(IDs_to_delete);
-
-        assertEquals(this.monumentService.getAll().size(), 1);
-
-        for (Monument result : this.monumentService.getAll()) {
-            if (result.getId() == 3) {
-                assertEquals(monuments.get(3).getTitle(), result.getTitle());
-                assertEquals(monuments.get(3).getArtist(), result.getArtist());
-            }
-            else {
-                fail("There is an unknown monument in the monument database. Monument as followed : " +
-                        result.toString());
-            }
+        for (Monument storedMonument : this.monumentService.getAll()) {
+            assertNotNull(storedMonument);
         }
+
+        ArrayList<Integer> idsToDelete = new ArrayList<>();
+        idsToDelete.add(1);
+        idsToDelete.add(3);
+
+        this.monumentService.delete(idsToDelete);
+
+        assertNull(this.monumentService.get(1));
+        assertNull(this.monumentService.get(3));
+
+        assertNotNull(this.monumentService.get(2));
     }
 
-    //////////////////////////////////////////////////////////
-    //           Private helper functions
-    //////////////////////////////////////////////////////////
+    /**
+     * Helper function to make a test Monument
+     * @return Monument - the test Monument
+     */
+    private Monument makeTestMonument() {
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument.setArtist("Artist");
 
-    private ArrayList<Monument> makeMonuments() {
+        return monument;
+    }
+
+    /**
+     * Helper function to make 3 test Monuments and return them in an ArrayList
+     * @return ArrayList<Monument> - the ArrayList of test Monuments
+     */
+    private ArrayList<Monument> makeTestMonuments() {
         Monument monument1 = new Monument();
         monument1.setTitle("Monument 1");
         monument1.setArtist("Artist 1");
