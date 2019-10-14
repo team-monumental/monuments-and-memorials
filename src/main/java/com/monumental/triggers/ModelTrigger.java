@@ -84,14 +84,13 @@ public class ModelTrigger<T extends Model> implements
             List<String> propertyNames = Arrays.asList(event.getPersister().getEntityMetamodel().getPropertyNames());
             List<Object> state = Arrays.asList(event.getState());
 
-            // This always appears as null in the updated object, no need for us to manually change it, that's handled by hibernate
-            propertyNames.remove("updatedDate");
-
             Class modelClass = this.getModelClass();
 
             // Check if each field was changed
             for (int i = 0; i < propertyNames.size(); i++) {
                 String propertyName = propertyNames.get(i);
+                // This always appears as null in the updated object, no need for us to manually change it, that's handled by hibernate
+                if (propertyName.equals("updatedDate")) continue;
                 // Use reflection to call the property's associated public getter
                 // This can and will fail if getters are named abnormally
                 String getter = "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
