@@ -2,8 +2,9 @@ package com.monumental.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Model class for both Monuments and Memorials
@@ -57,16 +58,16 @@ public class Monument extends Model implements Serializable {
             joinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }
     )
-    private Set<Tag> tags;
+    private List<Tag> tags;
 
     @OneToMany(mappedBy = "monument")
-    private Set<Image> images;
+    private List<Image> images;
 
     @OneToMany(mappedBy = "monument")
-    private Set<Contribution> contributions;
+    private List<Contribution> contributions;
 
     @OneToMany(mappedBy = "monument")
-    private Set<Reference> references;
+    private List<Reference> references;
 
     public Monument() {
 
@@ -179,35 +180,35 @@ public class Monument extends Model implements Serializable {
         this.inscription = inscription;
     }
 
-    public Set<Tag> getTags() {
+    public List<Tag> getTags() {
         return this.tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
-    public Set<Image> getImages() {
+    public List<Image> getImages() {
         return this.images;
     }
 
-    public void setImages(Set<Image> images) {
+    public void setImages(List<Image> images) {
         this.images = images;
     }
 
-    public Set<Contribution> getContributions() {
+    public List<Contribution> getContributions() {
         return this.contributions;
     }
 
-    public void setContributions(Set<Contribution> contributions) {
+    public void setContributions(List<Contribution> contributions) {
         this.contributions = contributions;
     }
 
-    public Set<Reference> getReferences() {
+    public List<Reference> getReferences() {
         return this.references;
     }
 
-    public void setReferences(Set<Reference> references) {
+    public void setReferences(List<Reference> references) {
         this.references = references;
     }
 
@@ -225,24 +226,21 @@ public class Monument extends Model implements Serializable {
     private String generateDescription() {
         String description = "";
 
-        if (!this.title.toLowerCase().startsWith("The ")) {
+        if (!this.title.toLowerCase().startsWith("the ")) {
             description += "The ";
         }
 
-        description += this.title + " is a " + this.material;
+        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist + " in ";
 
-        if (this.title.toLowerCase().contains("monument")) {
-            description += " monument ";
-        }
-        else if (this.title.toLowerCase().contains("memorial")) {
-            description += " memorial ";
-        }
-        else {
-            // Right now just defaulting to monument. Not sure what the correct thing to do is
-            description += " monument ";
-        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
-        description += "created on " + this.date + " by " + this.artist + ".";
+        description += simpleDateFormat.format(this.date) + ".";
+
+        Reference firstReference = this.references.get(0);
+
+        if (firstReference != null) {
+            description += " You may find further information about this monument at: " + firstReference.getUrl();
+        }
 
         return description;
     }
