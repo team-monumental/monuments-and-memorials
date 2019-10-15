@@ -14,6 +14,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test class for integration testing the MonumentService CRUD operations and their connection to the database
+ * The tests in this class utilize an H2 in-memory database as to not ruin the actual database
+ */
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -25,7 +29,6 @@ public class MonumentServiceIntegrationTests {
     /**
      * Test method for integration testing MonumentService.insert(record)
      * Checks that the returned result from the insert is not null, meaning it was inserted correctly
-     * Utilizes an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Insert_Single() {
@@ -40,7 +43,6 @@ public class MonumentServiceIntegrationTests {
      * Test method for integration testing MonumentService.insert(List<record>)
      * Checks that the number of returned results is 3 and that each is not null, meaning they were all inserted
      * correctly
-     * Utilizes an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Insert_Multiple() {
@@ -58,7 +60,6 @@ public class MonumentServiceIntegrationTests {
     /**
      * Test method for integration testing MonumentService.get(record)
      * First inserts a record into the database then performs a get to verify the records are the same
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Get_Single() {
@@ -76,7 +77,6 @@ public class MonumentServiceIntegrationTests {
      * Test method for integration testing MonumentService.getAll(List<record>)
      * First inserts 3 records into the database then performs a get for only 2 of the records
      * Checks that only 2 records are returned and that they have the expected attributes
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_GetAll_ListPassed() {
@@ -108,7 +108,6 @@ public class MonumentServiceIntegrationTests {
      * Test method for integration testing MonumentService.getAll(null)
      * First inserts 3 records into the database then performs a getAll for all 3 records
      * Checks that 3 records are returned and that they have the expected attributes
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_GetAll_NullPassed() {
@@ -141,7 +140,6 @@ public class MonumentServiceIntegrationTests {
      * First inserts a record into the database then does a get to retrieve it
      * Then, changes some of the attributes on the record before calling update
      * Finally, it does another get for the record and checks to make sure the changes were persisted
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Update_Single() {
@@ -167,7 +165,6 @@ public class MonumentServiceIntegrationTests {
      * First inserts 3 records into the database then does a get to retrieve them
      * Then, changes some of the attributes on the records before doing an update
      * Finally, it does another get for the records and checks to make sure the changes were persisted
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Update_Multiple() {
@@ -212,7 +209,6 @@ public class MonumentServiceIntegrationTests {
      * First, does an insert to insert a single record into the database
      * Then, does a get for that record and checks to make sure it was saved properly
      * Finally, does a delete and checks that another get returns null
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Delete_Single() {
@@ -235,7 +231,6 @@ public class MonumentServiceIntegrationTests {
      * Test method for integration testing MonumentService.delete(ids)
      * First, inserts 3 records into the database and does a getAll to check that they were all saved properly
      * Then, does a delete followed by another getAll to check that the returned results are null or not null as expected
-     * Uses an H2 in-memory database as to not ruin the actual database
      */
     @Test
     public void testMonumentService_Delete_Multiple() {
