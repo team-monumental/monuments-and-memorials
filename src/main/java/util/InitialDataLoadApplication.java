@@ -1,29 +1,34 @@
 package util;
 
 import com.monumental.models.Monument;
-import com.monumental.services.MonumentService;
-import com.monumental.services.SessionFactoryService;
+import com.monumental.models.entitymodels.MonumentEntity;
+import com.monumental.services.*;
 import util.csvparsing.CsvFileReader;
 import util.csvparsing.CsvMonumentConverter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class used to load the initial dataset into the database
  * Creates a CsvFileReader class and uses it to iterate all of the rows in the CSV
- * Turns each row into a Monument object, accumulates them and inserts them into the database
+ * Turns each row into a MonumentEntity object and accumulates them
+ * Then does validation on each MonumentEntity object before converting it into a Monument object and inserting it
+ * into the database
  */
 public class InitialDataLoadApplication {
     public static void main(String[] args) {
         String pathToDatasetCsv = "C:\\Users\\nickb\\Documents\\Initial Dataset.csv";
         String csvRow;
         int rowCount = 0;
-        ArrayList<Monument> newMonuments = new ArrayList<>();
+        ArrayList<MonumentEntity> newEntities = new ArrayList<>();
+
         SessionFactoryService sessionFactoryService = new SessionFactoryService();
         MonumentService monumentService = new MonumentService(sessionFactoryService);
+        TagService tagService = new TagService(sessionFactoryService);
+        ContributionService contributionService = new ContributionService(sessionFactoryService);
+        ReferenceService referenceService = new ReferenceService(sessionFactoryService);
 
         try {
             // Create our CsvFileReader, passing it the path to the dataset file
@@ -35,10 +40,10 @@ public class InitialDataLoadApplication {
                 System.out.println("Processing row number: " + rowCount);
 
                 try {
-                    // Convert the row into a Monument objects
-                    Monument newMonument = CsvMonumentConverter.convertCsvRowToMonument(csvRow.strip());
-                    // Add the newMonument to the accumulating list
-                    newMonuments.add(newMonument);
+                    // Convert the row into a MonumentEntity object
+                    MonumentEntity newEntity = CsvMonumentConverter.convertCsvRowToMonumentEntity(csvRow.strip());
+                    // Add the MonumentEntity to the accumulating list
+                    newEntities.add(newEntity);
                 }
                 catch (Exception e) {
                     System.out.println("Failed to process row number: " + rowCount);
@@ -46,12 +51,43 @@ public class InitialDataLoadApplication {
                 }
             }
 
-            System.out.println("Number of new Monuments created: " + newMonuments.size());
+            System.out.println("Number of MonumentEntities created: " + newEntities.size());
 
-            // Insert all accumulated monuments into the database
-            List<Integer> monumentIdsInserted = monumentService.insert(newMonuments);
+            ArrayList<Monument> newMonuments = new ArrayList<>();
 
-            System.out.println("Number of Monuments inserted into the database: " + monumentIdsInserted.size());
+            for (MonumentEntity entity : newEntities) {
+                // Validate each of the new MonumentEntities
+                if (monumentService.isValidMonumentEntity(entity)) {
+                    // Create a new Monument from valid MonumentEntity
+                    Monument newMonument = monumentService.convertMonumentEntityToMonument(entity);
+                    newMonuments.add(newMonument);
+                }
+                else {
+                    System.out.println("Invalid MonumentEntity found: " + entity.toString());
+                }
+            }
+
+            System.out.println("Number of valid MonumentEntities: " + newMonuments.size());
+
+            int monumentInsertedCount = 0;
+
+            for (Monument monument : newMonuments) {
+                // Insert each of the new Monuments into the database
+                monumentService.insert(monument);
+
+                // Insert or update each of the Tags associated with the new Monument into the database
+                tagService.insertOrUpdateTags(monument.getTags(), monument);
+
+                // Insert each Contribution associated with the new Monument into the database
+                contributionService.insert(monument.getContributions());
+
+                // Insert each Reference associated with the new Monument into the database
+                referenceService.insert(monument.getReferences());
+
+                monumentInsertedCount++;
+            }
+
+            System.out.println("Number of Monuments inserted into the database: " + monumentInsertedCount);
         }
         catch (FileNotFoundException e) {
             System.out.println("Unable to read from the specified filepath. File does not exist.");

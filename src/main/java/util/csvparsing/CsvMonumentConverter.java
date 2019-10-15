@@ -1,24 +1,29 @@
 package util.csvparsing;
 
-import com.monumental.models.Monument;
+import com.monumental.models.Contribution;
+import com.monumental.models.Reference;
+import com.monumental.models.Tag;
+import com.monumental.models.entitymodels.MonumentEntity;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Class used to convert a CSV row representing a Monument into a Monument object
+ * Class used to convert a CSV row representing a Monument into a MonumentEntity object
  */
 public class CsvMonumentConverter {
     /**
-     * Static method for converting a CSV row representing a Monument into a Monument object
+     * Static method for converting a CSV row representing a Monument into a MonumentEntity
      * @param csvRow - CSV row representing a Monument, as a String
-     * @return Monument - the Monument object represented by csvRow
+     * @return MonumentEntity - the MonumentEntity that is represented by the CSV row
      */
-    public static Monument convertCsvRowToMonument(String csvRow) {
+    public static MonumentEntity convertCsvRowToMonumentEntity(String csvRow) {
         // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
         // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
         String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-        Monument result = new Monument();
+        GregorianCalendar calendar = new GregorianCalendar();
+
+        MonumentEntity entity = new MonumentEntity();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
@@ -29,13 +34,17 @@ public class CsvMonumentConverter {
             // I also assumed that if any columns were empty, they would be null
             switch (columnIndex) {
                 case 0: // Submitted By
-                    //result.setSubmittedBy(value);
+                    Contribution newContribution = new Contribution();
+                    newContribution.setDate(calendar.getTime());
+                    newContribution.setSubmittedBy(value);
+
+                    entity.addContribution(newContribution);
                     break;
                 case 1: // Artist
-                    result.setArtist(value);
+                    entity.setArtist(value);
                     break;
                 case 2: // Title
-                    result.setTitle(value);
+                    entity.setTitle(value);
                     break;
                 case 3: // Date
                     // I made a couple of assumptions about the format of the dates in the file:
@@ -45,13 +54,12 @@ public class CsvMonumentConverter {
                     // TODO: Agree upon a standard format for dates in CSV file uploads
                     if (!value.isEmpty()) {
                         String[] dateArray = value.split("-");
-                        GregorianCalendar calendar = new GregorianCalendar();
 
                         // Parsing format "yyyy"
                         if (dateArray.length == 1) {
                             int year = Integer.parseInt(dateArray[0]);
                             calendar.set(year, Calendar.JANUARY, 1);
-                            result.setDate(calendar.getTime());
+                            entity.setDate(calendar.getTime());
                         }
                         // Parsing format "dd-mm-yyyy"
                         else if (dateArray.length == 3) {
@@ -60,34 +68,66 @@ public class CsvMonumentConverter {
                             int year = Integer.parseInt(dateArray[2]);
                             // Remember that months are 0-based
                             calendar.set(year, month - 1, day);
-                            result.setDate(calendar.getTime());
+                            entity.setDate(calendar.getTime());
                         }
                     }
 
                     break;
                 case 6: // Material
-                    result.setMaterial(value);
+                    entity.setMaterial(value);
+                    break;
+                case 7: // Inscription
+                    // TODO: Figure out what to do with rows that don't have a proper Inscription
                     break;
                 case 9: // Latitude
                     if (!value.isEmpty()) {
-                        result.setLat(Double.parseDouble(value));
+                        entity.setLat(Double.parseDouble(value));
                     }
                     break;
                 case 10: // Longitude
                     if (!value.isEmpty()) {
-                        result.setLon(Double.parseDouble(value));
+                        entity.setLon(Double.parseDouble(value));
                     }
                     break;
                 case 11: // City
-                    result.setCity(value);
+                    entity.setCity(value);
                     break;
                 case 12: // State
-                    result.setState(value);
+                    entity.setState(value);
                     break;
+                case 13: // Tag columns
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 20:
+                    if (!value.isEmpty()) {
+                        // Split on commas in-case there are more than one Tag in the column
+                        String[] tagArray = value.split(",");
+
+                        for (int tagArrayColumnIndex = 0; tagArrayColumnIndex < tagArray.length; tagArrayColumnIndex++) {
+                            Tag newTag = new Tag();
+
+                            // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
+                            value = value.substring(0, 1).toUpperCase() + value.substring(1);
+                            value = value.strip();
+                            newTag.setName(value);
+
+                            entity.addTag(newTag);
+                        }
+                    }
+
+                    break;
+                case 22: // Reference
+                    Reference newReference = new Reference();
+                    newReference.setUrl(value);
+
+                    entity.addReference(newReference);
             }
         }
 
-        return result;
+        return entity;
     }
 
     /**

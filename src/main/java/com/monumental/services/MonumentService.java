@@ -1,5 +1,6 @@
 package com.monumental.services;
 
+import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -46,7 +47,7 @@ public class MonumentService extends ModelService<Monument> {
             transaction = session.beginTransaction();
             // The "fts" function is defined by the FTSFunction and CustomPostgreSQL9Dialect classes
             Query q = session.createQuery(
-                "select m from Monument m where fts(m.title, :query) = true"
+                    "select m from Monument m where fts(m.title, :query) = true"
             ).setParameter("query", query);
             records = q.list();
             transaction.commit();
