@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -88,19 +89,19 @@ public class MonumentServiceIntegrationTests {
         idsToGet.add(1);
         idsToGet.add(3);
 
+        HashMap<Integer, Monument> monumentsById = new HashMap<>();
+        monumentsById.put(1, monuments.get(0));
+        monumentsById.put(3, monuments.get(2));
+
         List<Monument> results = this.monumentService.get(idsToGet);
 
         assertEquals(2, results.size());
 
         for (Monument result : results) {
-            if (result.getId() == 1) {
-                assertEquals(monuments.get(0).getTitle(), result.getTitle());
-                assertEquals(monuments.get(0).getArtist(), result.getArtist());
-            }
-            else {
-                assertEquals(monuments.get(2).getTitle(), result.getTitle());
-                assertEquals(monuments.get(2).getArtist(), result.getArtist());
-            }
+            Monument monument = monumentsById.get(result.getId());
+
+            assertEquals(monument.getTitle(), result.getTitle());
+            assertEquals(monument.getArtist(), result.getArtist());
         }
     }
 
@@ -115,23 +116,20 @@ public class MonumentServiceIntegrationTests {
 
         this.monumentService.insert(monuments);
 
+        HashMap<Integer, Monument> monumentsById = new HashMap<>();
+        monumentsById.put(1, monuments.get(0));
+        monumentsById.put(2, monuments.get(1));
+        monumentsById.put(3, monuments.get(2));
+
         List<Monument> results = this.monumentService.getAll();
 
         assertEquals(3, results.size());
 
         for (Monument result : results) {
-            if (result.getId() == 1) {
-                assertEquals(monuments.get(0).getTitle(), result.getTitle());
-                assertEquals(monuments.get(0).getArtist(), result.getArtist());
-            }
-            else if (result.getId() == 2) {
-                assertEquals(monuments.get(1).getTitle(), result.getTitle());
-                assertEquals(monuments.get(1).getArtist(), result.getArtist());
-            }
-            else {
-                assertEquals(monuments.get(2).getTitle(), result.getTitle());
-                assertEquals(monuments.get(2).getArtist(), result.getArtist());
-            }
+            Monument monument = monumentsById.get(result.getId());
+
+            assertEquals(monument.getTitle(), result.getTitle());
+            assertEquals(monument.getArtist(), result.getArtist());
         }
     }
 
@@ -174,6 +172,8 @@ public class MonumentServiceIntegrationTests {
 
         List<Monument> storedMonuments = this.monumentService.get(ids);
 
+        HashMap<Integer, Monument> monumentsById = new HashMap<>();
+
         for (Monument storedMonument : storedMonuments) {
             if (storedMonument.getId() == 1) {
                 storedMonument.setTitle("Stored Monument 1");
@@ -182,6 +182,8 @@ public class MonumentServiceIntegrationTests {
             else if (storedMonument.getId() == 3) {
                 storedMonument.setTitle("Stored Monument 3");
             }
+
+            monumentsById.put(storedMonument.getId(), storedMonument);
         }
 
         this.monumentService.update(storedMonuments);
@@ -189,18 +191,10 @@ public class MonumentServiceIntegrationTests {
         List<Monument> results = this.monumentService.get(ids);
 
         for (Monument result : results) {
-            if (result.getId() == 1) {
-                assertEquals("Stored Monument 1", result.getTitle());
-                assertEquals("Stored Artist 1", result.getArtist());
-            }
-            else if (result.getId() == 2) {
-                assertEquals("Monument 2", result.getTitle());
-                assertEquals("Artist 2", result.getArtist());
-            }
-            else {
-                assertEquals("Stored Monument 3", result.getTitle());
-                assertEquals("Artist 3", result.getArtist());
-            }
+            Monument monument = monumentsById.get(result.getId());
+
+            assertEquals(monument.getTitle(), result.getTitle());
+            assertEquals(monument.getArtist(), result.getArtist());
         }
     }
 
