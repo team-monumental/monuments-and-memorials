@@ -134,7 +134,7 @@ public class Monument extends Model implements Serializable {
     }
 
     public String getCoordinatePointAsString() {
-        if (this.lat == null || this.lon == null ) return null;
+        if (this.lat == null || this.lon == null ) return "";
         return Double.toString(this.lat) + ", " + Double.toString(this.lon);
     }
 
