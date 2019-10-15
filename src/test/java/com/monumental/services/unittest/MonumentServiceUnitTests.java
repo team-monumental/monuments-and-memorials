@@ -95,7 +95,7 @@ public class MonumentServiceUnitTests {
         when(this.session.createQuery("FROM com.monumental.models.Monument WHERE id IN (:ids)")).thenReturn(this.getListQuery);
 
         // Setup Get List Query mock
-        when(this.getListQuery.setParameter("ids", this.ids)).thenReturn(this.getListQuery);
+        when(this.getListQuery.setParameterList("ids", this.ids)).thenReturn(this.getListQuery);
         when(this.getListQuery.list()).thenReturn(this.monuments);
 
         // Setup Get All Query mock
