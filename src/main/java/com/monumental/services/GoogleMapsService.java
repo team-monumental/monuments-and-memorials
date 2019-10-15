@@ -13,10 +13,11 @@ import java.io.IOException;
 @Service
 public class GoogleMapsService {
 
-    @Value("${GOOGLE_API_KEY}")
+    @Value("${GOOGLE_API_KEY:default}")
     private String GOOGLE_API_KEY;
 
     public String getAddressFromCoordinates(Double lat, Double lon) {
+        if (GOOGLE_API_KEY.equals("default")) return null;
         try {
             System.out.println("[GOOGLE MAPS SERVICE]: Making reverse geocode request for lat/lon: (" + lat + ", " + lon + ")");
             GeoApiContext context = new GeoApiContext.Builder()

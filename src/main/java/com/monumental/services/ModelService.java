@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.models.Model;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +76,13 @@ public abstract class ModelService<T extends Model> {
                 records = new ArrayList<>();
                 records.add((T) session.get(this.getModelClass(), ids.get(0)));
             } else {
-                records = session.createQuery(
+                Query q = session.createQuery(
                     "FROM " + tableName +
                     " WHERE id IN (:ids)"
-                ).setParameter("ids", ids).list();
+                );
+                q.setParameterList("ids",
+                        ids);
+                records = q.list();
             }
             transaction.commit();
             session.close();

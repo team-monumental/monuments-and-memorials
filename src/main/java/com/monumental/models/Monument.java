@@ -64,8 +64,8 @@ public class Monument extends Model implements Serializable {
 
     }
 
-    public Monument(String submittedBy, String artist, String title, Date date, String material, double lat,
-                    double lon, String city, String state) {
+    public Monument(String submittedBy, String artist, String title, Date date, String material, Double lat,
+                    Double lon, String city, String state) {
         this.submittedBy = submittedBy;
         this.artist = artist;
         this.title = title;
@@ -117,24 +117,24 @@ public class Monument extends Model implements Serializable {
         this.material = material;
     }
 
-    public double getLat() {
+    public Double getLat() {
         return this.lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public Double getLon() {
         return this.lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
     }
 
     public String getCoordinatePointAsString() {
-        if (this.lat == null || this.lon == null ) return null;
+        if (this.lat == null || this.lon == null ) return "";
         return Double.toString(this.lat) + ", " + Double.toString(this.lon);
     }
 
