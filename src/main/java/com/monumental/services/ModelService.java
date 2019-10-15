@@ -78,7 +78,7 @@ public abstract class ModelService<T extends Model> {
                 records = session.createQuery(
                     "FROM " + tableName +
                     " WHERE id IN (:ids)"
-                ).setParameter("ids", ids).list();
+                ).setParameterList("ids", ids).list();
             }
             transaction.commit();
             session.close();
