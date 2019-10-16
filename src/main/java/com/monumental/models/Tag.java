@@ -54,12 +54,17 @@ public class Tag extends Model implements Serializable {
 
     /**
      * Adds a Monument to the List
+     * Will do nothing if the specified Monument is null
      * Will make a new ArrayList if this.monuments is null
      * @param monument - Monument to add to the list
      */
     public void addMonument(Monument monument) {
         if (this.monuments == null) {
             this.monuments = new ArrayList<>();
+        }
+
+        if (monument == null) {
+            return;
         }
 
         this.monuments.add(monument);

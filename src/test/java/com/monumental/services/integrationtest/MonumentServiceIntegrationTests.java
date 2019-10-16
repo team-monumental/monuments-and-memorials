@@ -1,7 +1,9 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
+import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
+import com.monumental.services.TagService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +30,17 @@ public class MonumentServiceIntegrationTests {
     @Autowired
     private MonumentService monumentService;
 
+    @Autowired
+    private TagService tagService;
+
+    /** insert Tests **/
+
     /**
      * Test method for integration testing MonumentService.insert(record)
      * Checks that the returned result from the insert is not null, meaning it was inserted correctly
      */
     @Test
-    public void testMonumentService_Insert_Single() {
+    public void testMonumentService_insert_Single() {
         Monument monument = makeTestMonument();
 
         Integer result = this.monumentService.insert(monument);
@@ -47,7 +54,7 @@ public class MonumentServiceIntegrationTests {
      * correctly
      */
     @Test
-    public void testMonumentService_Insert_Multiple() {
+    public void testMonumentService_insert_Multiple() {
         List<Monument> monuments = makeTestMonuments();
 
         List<Integer> results = this.monumentService.insert(monuments);
@@ -59,12 +66,14 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** get Tests **/
+
     /**
      * Test method for integration testing MonumentService.get(record)
      * First inserts a record into the database then performs a get to verify the records are the same
      */
     @Test
-    public void testMonumentService_Get_Single() {
+    public void testMonumentService_get_Single() {
         Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
@@ -81,7 +90,7 @@ public class MonumentServiceIntegrationTests {
      * Checks that only 2 records are returned and that they have the expected attributes
      */
     @Test
-    public void testMonumentService_GetAll_ListPassed() {
+    public void testMonumentService_getAll_ListPassed() {
         ArrayList<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
@@ -106,13 +115,15 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** getAll Tests **/
+
     /**
      * Test method for integration testing MonumentService.getAll(null)
      * First inserts 3 records into the database then performs a getAll for all 3 records
      * Checks that 3 records are returned and that they have the expected attributes
      */
     @Test
-    public void testMonumentService_GetAll_NullPassed() {
+    public void testMonumentService_getAll_NullPassed() {
         ArrayList<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
@@ -134,6 +145,8 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** update Tests **/
+
     /**
      * Test method for integration testing MonumentService.update(record)
      * First inserts a record into the database then does a get to retrieve it
@@ -141,7 +154,7 @@ public class MonumentServiceIntegrationTests {
      * Finally, it does another get for the record and checks to make sure the changes were persisted
      */
     @Test
-    public void testMonumentService_Update_Single() {
+    public void testMonumentService_update_Single() {
         Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
@@ -166,7 +179,7 @@ public class MonumentServiceIntegrationTests {
      * Finally, it does another get for the records and checks to make sure the changes were persisted
      */
     @Test
-    public void testMonumentService_Update_Multiple() {
+    public void testMonumentService_update_Multiple() {
         ArrayList<Monument> monuments = makeTestMonuments();
 
         List<Integer> ids = this.monumentService.insert(monuments);
@@ -199,6 +212,8 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** delete Tests **/
+
     /**
      * Test method for integration testing MonumentService.delete(id)
      * First, does an insert to insert a single record into the database
@@ -206,7 +221,7 @@ public class MonumentServiceIntegrationTests {
      * Finally, does a delete and checks that another get returns null
      */
     @Test
-    public void testMonumentService_Delete_Single() {
+    public void testMonumentService_delete_Single() {
         Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
@@ -228,7 +243,7 @@ public class MonumentServiceIntegrationTests {
      * Then, does a delete followed by another getAll to check that the returned results are null or not null as expected
      */
     @Test
-    public void testMonumentService_Delete_Multiple() {
+    public void testMonumentService_delete_Multiple() {
         List<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
@@ -247,6 +262,33 @@ public class MonumentServiceIntegrationTests {
         assertNull(this.monumentService.get(3));
 
         assertNotNull(this.monumentService.get(2));
+    }
+
+    /** addTagToMonument Tests **/
+
+    @Test
+    public void test_MonumentService_addTagToMonument_TagDoesNotExist() {
+        Monument monument = new Monument();
+        monument.setTitle("Title 1");
+
+        Integer monumentId = this.monumentService.insert(monument);
+
+        Tag tag = new Tag();
+        tag.setName("Tag 1");
+
+        this.monumentService.addTagToMonument(monument, tag);
+
+        Monument resultMonument = this.monumentService.get(monumentId);
+
+        assertEquals(1, resultMonument.getTags().size());
+
+        Tag resultTag = resultMonument.getTags().get(0);
+
+        assertEquals(tag.getName(), resultTag.getName());
+
+        assertEquals(monument.getTitle(), resultTag.getMonuments().get(0).getTitle());
+
+        assertEquals(1, this.tagService.getAll().size());
     }
 
     /**

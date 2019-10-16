@@ -264,7 +264,7 @@ public class Monument extends Model implements Serializable {
      * Adds a Contribution to the List
      * Will make a new ArrayList if this.contributions is null
      * Checks if a Contribution has already been added to this.contributions with the same date and name
-     * Will do nothing if the specified Contribution has a null date or submittedBy
+     * Will do nothing if the specified Contribution has a null date or null/empty submittedBy
      * and does nothing if so
      * @param contribution - Contribution to add to the List
      */
@@ -273,7 +273,8 @@ public class Monument extends Model implements Serializable {
             this.contributions = new ArrayList<>();
         }
 
-        if (contribution.getDate() == null || contribution.getSubmittedBy() == null) {
+        if (contribution.getDate() == null || contribution.getSubmittedBy() == null ||
+                contribution.getSubmittedBy().isEmpty()) {
             return;
         }
 
@@ -290,6 +291,7 @@ public class Monument extends Model implements Serializable {
     /**
      * Adds a Reference to the List
      * Will make a new ArrayList if this.references is null
+     * Will do nothing if the specified Reference has a null/empty url
      * Checks if a Reference has already been added to this.references with the same url
      * and does nothing if so
      * @param reference - Reference to add to the List
@@ -297,6 +299,10 @@ public class Monument extends Model implements Serializable {
     public void addReference(Reference reference) {
         if (this.references == null) {
             this.references = new ArrayList<>();
+        }
+
+        if (reference.getUrl() == null || reference.getUrl().isEmpty()) {
+            return;
         }
 
         for (Reference r : this.references) {
@@ -311,6 +317,7 @@ public class Monument extends Model implements Serializable {
     /**
      * Adds a Tag to the List
      * Will make a new ArrayList if this.tags is null
+     * Will do nothing if the specified Tag has a null/empty name
      * Checks if a Tag has already been added to this.references with the same name
      * and does nothing if so
      * @param tag - Tag to add to the List
@@ -318,6 +325,10 @@ public class Monument extends Model implements Serializable {
     public void addTag(Tag tag) {
         if (this.tags == null) {
             this.tags = new ArrayList<>();
+        }
+
+        if (tag.getName() == null || tag.getName().isEmpty()) {
+            return;
         }
 
         for (Tag t : this.tags) {
