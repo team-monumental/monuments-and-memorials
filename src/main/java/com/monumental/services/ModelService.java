@@ -190,4 +190,31 @@ public abstract class ModelService<T extends Model> {
     public void delete(List<Integer> ids) throws HibernateException {
         this.doDelete(ids);
     }
+
+    @SuppressWarnings("unchecked")
+    List<T> getByForeignKey(String foreignKeyName, Integer foreignKey) {
+        Session session = this.sessionFactoryService.getFactory().openSession();
+        Transaction transaction = null;
+        List<T> records;
+        String tableName = this.getModelClass().getName();
+
+        try {
+            transaction = session.beginTransaction();
+            records = session.createQuery("FROM " + tableName + " where " + foreignKeyName + " = :foreignKey")
+                    .setParameter("foreignKey", foreignKey)
+                    .list();
+            transaction.commit();
+            session.close();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            session.close();
+            System.err.println("Error attempting to get " + tableName + " by foreign key " + foreignKeyName + ": " + foreignKey);
+            System.err.println(e.getMessage());
+            throw e;
+        }
+
+        return records;
+    }
 }

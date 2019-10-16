@@ -9,17 +9,25 @@ export default class Monument extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {monument: {}, contributions: [], images: [], tags: [], detailsOpen: false};
+        this.state = {
+            monument: {},
+            contributions: [],
+            images: [],
+            tags: [],
+            references: [],
+            detailsOpen: false
+        };
     }
 
     async componentDidMount() {
         const { match: { params: { monumentId, slug } } } = this.props;
 
         let error;
-        const [ monument, contributions, images ] = await Promise.all([
+        const [ monument, contributions, images, references ] = await Promise.all([
             this.callEndpoint(`/api/monument/${monumentId}`),
             this.callEndpoint(`/api/contributions/?monumentId=${monumentId}`),
             this.callEndpoint(`/api/images/?monumentId=${monumentId}`),
+            this.callEndpoint(`/api/references/?monumentId=${monumentId}`)
         ]).catch(err => error = err);
 
         if (error) {
@@ -28,7 +36,7 @@ export default class Monument extends React.Component {
             return;
         }
 
-        this.setState({monument, contributions, images});
+        this.setState({monument, contributions, images, references});
     }
 
     async callEndpoint(endpoint) {
@@ -79,7 +87,7 @@ export default class Monument extends React.Component {
     }
 
     renderMainCard() {
-        const { monument, contributions } = this.state;
+        const { monument, contributions, references, images, tags } = this.state;
 
         const capitalize = (word) => word ? word.charAt(0).toUpperCase() + word.slice(1).trim() : word;
         const parseState = (state) => {
@@ -103,9 +111,21 @@ export default class Monument extends React.Component {
                     <Card.Body>
                         <div className="fields">
                             <div className="field font-italic">{capitalize(monument.city)}, {parseState(monument.state)}</div>
-                            <div className="field">{monument.title} is a {monument.material} monument{monument.date ? ' dedicated on ' + prettyPrintDate(monument.date) : ''}.</div>
+                            <div className="field">{monument.description}</div>
                         </div>
-                        <span className="tag">{monument.material}</span>
+                        <div className="tags">
+                            <span className="tag">{monument.material}</span>
+                            {tags.map(tag => {
+                                return (
+                                    <span className="tag">{tag.name}</span>
+                                )
+                            })}
+                        </div>
+                        {images && images.length > 0 ?
+                            (<div>
+                                <img src={images[0].url}/>
+                            </div>)
+                        : <div/>}
                         <div className="details">
                             <Button variant="link" onClick={() => this.setState({open: !this.state.open})}>
                                 {this.state.open ? 'Hide details' : 'More details'}
@@ -114,11 +134,19 @@ export default class Monument extends React.Component {
                                 <div>
                                     <div>
                                         <span className="detail-label">Contributors:&nbsp;</span>
-                                        {contributions.map(contribution => contribution.submittedBy).join(', ')}
+                                        <ul>
+                                            {contributions.map(contribution => <li>{contribution.submittedBy}</li>)}
+                                        </ul>
                                     </div>
                                     <div>
                                         <span className="detail-label">Last Updated:&nbsp;</span>
                                         {prettyPrintDate(monument.updatedDate)}
+                                    </div>
+                                    <div>
+                                        <span className="detail-label">References:&nbsp;</span>
+                                        <ul>
+                                            {references.map(reference => <li>{reference.url}</li>)}
+                                        </ul>
                                     </div>
                                 </div>
                             </Collapse>

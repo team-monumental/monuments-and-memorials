@@ -1,6 +1,7 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.LazyInitializationException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -47,6 +48,7 @@ public class Monument extends Model implements Serializable {
   
     @Column(name = "address")
     private String address;
+
     @Column(name = "description")
     private String description;
 
@@ -62,16 +64,17 @@ public class Monument extends Model implements Serializable {
     )
     private List<Tag> tags;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "monument")
     private List<Image> images;
 
     @JsonIgnore
     @OneToMany(mappedBy = "monument")
-    private List<Contribution> contributions;
+    private List<Reference> references;
 
     @JsonIgnore
     @OneToMany(mappedBy = "monument")
-    private List<Reference> references;
+    private List<Contribution> contributions;
 
     public Monument() {
 
@@ -240,12 +243,16 @@ public class Monument extends Model implements Serializable {
 
         description += simpleDateFormat.format(this.date) + ".";
 
-        if (this.references != null) {
-            Reference firstReference = this.references.get(0);
+        try {
+            if (this.references != null) {
+                Reference firstReference = this.references.get(0);
 
-            if (firstReference != null && firstReference.getUrl() != null) {
-                description += " You may find further information about this monument at: " + firstReference.getUrl();
+                if (firstReference != null && firstReference.getUrl() != null) {
+                    description += " You may find further information about this monument at: " + firstReference.getUrl();
+                }
             }
+        } catch (LazyInitializationException e) {
+            // TODO: Initialize References before reaching this point
         }
 
         return description;
