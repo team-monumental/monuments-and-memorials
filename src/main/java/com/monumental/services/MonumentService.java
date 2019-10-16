@@ -51,7 +51,6 @@ public class MonumentService extends ModelService<Monument> {
             ).setParameter("query", query);
             records = q.list();
             transaction.commit();
-
             session.close();
         } catch (HibernateException e) {
             if (transaction != null) {

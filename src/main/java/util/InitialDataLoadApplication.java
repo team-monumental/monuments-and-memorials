@@ -56,10 +56,10 @@ public class InitialDataLoadApplication {
             ArrayList<Monument> newMonuments = new ArrayList<>();
 
             for (MonumentEntity entity : newEntities) {
-                // Validate each of the new MonumentEntities
-                if (monumentService.isValidMonumentEntity(entity)) {
-                    // Create a new Monument from valid MonumentEntity
-                    Monument newMonument = monumentService.convertMonumentEntityToMonument(entity);
+                // Convert each MonumentEntity into a Monument
+                Monument newMonument = monumentService.convertMonumentEntityToMonument(entity);
+                // convertMonumentEntityToMonument returns null if the specified MonumentEntity is invalid
+                if (newMonument != null) {
                     newMonuments.add(newMonument);
                 }
                 else {
