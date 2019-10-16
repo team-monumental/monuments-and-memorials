@@ -2,14 +2,14 @@ package com.monumental.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Model class for both Monuments and Memorials
  * The name Monument is chosen for simplicity as monuments and memorials have no difference within the system
  * Contains all of the state for a Monument as well as Setters and Getters for the state
- * Contains a many-to-many relationship with Tag
  */
 
 @Entity
@@ -17,9 +17,6 @@ import java.util.Set;
     @UniqueConstraint(columnNames = "id")
 })
 public class Monument extends Model implements Serializable {
-
-    @Column(name = "submitted_by")
-    private String submittedBy;
 
     @Column(name = "artist")
     private String artist;
@@ -49,24 +46,35 @@ public class Monument extends Model implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "inscription")
+    private String inscription;
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "monument_tag",
             joinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }
     )
-    private Set<Tag> tags;
+    private List<Tag> tags;
 
     @OneToMany(mappedBy = "monument")
-    private Set<Image> images;
+    private List<Image> images;
+
+    @OneToMany(mappedBy = "monument")
+    private List<Contribution> contributions;
+
+    @OneToMany(mappedBy = "monument")
+    private List<Reference> references;
 
     public Monument() {
 
     }
 
-    public Monument(String submittedBy, String artist, String title, Date date, String material, Double lat,
-                    Double lon, String city, String state) {
-        this.submittedBy = submittedBy;
+    public Monument(String artist, String title, Date date, String material, double lat,
+                    double lon, String city, String state) {
         this.artist = artist;
         this.title = title;
         this.date = date;
@@ -75,14 +83,6 @@ public class Monument extends Model implements Serializable {
         this.lon = lon;
         this.city = city;
         this.state = state;
-    }
-
-    public String getSubmittedBy() {
-        return this.submittedBy;
-    }
-
-    public void setSubmittedBy(String submittedBy) {
-        this.submittedBy = submittedBy;
     }
 
     public String getArtist() {
@@ -162,25 +162,88 @@ public class Monument extends Model implements Serializable {
         this.address = address;
     }
 
-    public Set<Tag> getTags() {
+    public String getDescription() {
+        return (this.description == null)
+                ? this.generateDescription()
+                : this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getInscription() {
+        return this.inscription;
+    }
+
+    public void setInscription(String inscription) {
+        this.inscription = inscription;
+    }
+
+    public List<Tag> getTags() {
         return this.tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
-    public Set<Image> getImages() {
+    public List<Image> getImages() {
         return this.images;
     }
 
-    public void setImages(Set<Image> images) {
+    public void setImages(List<Image> images) {
         this.images = images;
     }
 
+    public List<Contribution> getContributions() {
+        return this.contributions;
+    }
+
+    public void setContributions(List<Contribution> contributions) {
+        this.contributions = contributions;
+    }
+
+    public List<Reference> getReferences() {
+        return this.references;
+    }
+
+    public void setReferences(List<Reference> references) {
+        this.references = references;
+    }
+
     public String toString() {
-        return "Submitted by: " + this.submittedBy +  ", Artist: " + this.artist + ", Title: " + this.title + ", Date: "
+        return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
                 + this.date + ", Material: " + this.material + ", Coordinates: " + this.getCoordinatePointAsString()
-                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address;
+                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
+                + this.description;
+    }
+
+    /**
+     * Generates a description of this Monument based on some of its state
+     * @return String - the description of this Monument
+     */
+    private String generateDescription() {
+        String description = "";
+
+        if (!this.title.toLowerCase().startsWith("the ")) {
+            description += "The ";
+        }
+
+        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist + " in ";
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+
+        description += simpleDateFormat.format(this.date) + ".";
+
+        if (this.references != null) {
+            Reference firstReference = this.references.get(0);
+
+            if (firstReference != null && firstReference.getUrl() != null) {
+                description += " You may find further information about this monument at: " + firstReference.getUrl();
+            }
+        }
+
+        return description;
     }
 }
