@@ -69,6 +69,7 @@ public class Monument extends Model implements Serializable {
     @OneToMany(mappedBy = "monument")
     private List<Contribution> contributions;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "monument")
     private List<Reference> references;
 

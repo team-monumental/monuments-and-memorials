@@ -9,20 +9,36 @@ export default class Monument extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {monument: {}, monumentProperties: [], detailsOpen: false};
+        this.state = {monument: {}, contributions: [], images: [], tags: [], detailsOpen: false};
     }
 
     async componentDidMount() {
         const { match: { params: { monumentId, slug } } } = this.props;
-        const response = await fetch(`/api/monument/${monumentId}`);
-        const monument = await response.json();
-        console.log(monument);
-        if (monument.errors) {
-            console.error(monument.errors);
-            this.setState({error: monument.errors[0]});
+
+        let error;
+        const [ monument, contributions, images ] = await Promise.all([
+            this.callEndpoint(`/api/monument/${monumentId}`),
+            this.callEndpoint(`/api/contributions/?monumentId=${monumentId}`),
+            this.callEndpoint(`/api/images/?monumentId=${monumentId}`),
+        ]).catch(err => error = err);
+
+        if (error) {
+            console.error(error);
+            this.setState({error: error});
             return;
         }
-        this.setState({monument, slug});
+
+        this.setState({monument, contributions, images});
+    }
+
+    async callEndpoint(endpoint) {
+        const response = await fetch(endpoint);
+        const parsed = await response.json();
+        console.log(parsed);
+        if (parsed.errors) {
+            throw(parsed.errors[0]);
+        }
+        return parsed;
     }
 
     /**
@@ -47,23 +63,23 @@ export default class Monument extends React.Component {
         if (this.state.error) return this.renderError();
 
         return (
-            <div className="page-container container">
-                <div class="row">
-                    {this.redirectToSlug()}
-                    <div className="col"/>
-                    <div className="col d-flex justify-content-center">
-                        {this.renderMainCard()}
-                    </div>
-                    <div className="col d-flex justify-content-center">
-                        {this.renderVisitCard()}
-                    </div>
+            <div className="page-container">
+                {this.redirectToSlug()}
+                <div className="column related-monuments-column">
+                    {this.renderRelatedMonumentsCard()}
+                </div>
+                <div className="column main-column">
+                    {this.renderMainCard()}
+                </div>
+                <div className="column visit-column">
+                    {this.renderVisitCard()}
                 </div>
             </div>
         )
     }
 
     renderMainCard() {
-        const monument = this.state.monument;
+        const { monument, contributions } = this.state;
 
         const capitalize = (word) => word ? word.charAt(0).toUpperCase() + word.slice(1).trim() : word;
         const parseState = (state) => {
@@ -98,7 +114,7 @@ export default class Monument extends React.Component {
                                 <div>
                                     <div>
                                         <span className="detail-label">Contributors:&nbsp;</span>
-                                        {monument.submittedBy}
+                                        {contributions.map(contribution => contribution.submittedBy).join(', ')}
                                     </div>
                                     <div>
                                         <span className="detail-label">Last Updated:&nbsp;</span>
@@ -144,6 +160,17 @@ export default class Monument extends React.Component {
                 </div>
             )
         } else return (<div/>);
+    }
+
+    renderRelatedMonumentsCard() {
+        return (
+            <Card>
+                <Card.Title>
+                    Related Monuments
+                </Card.Title>
+                <Card.Body/>
+            </Card>
+        )
     }
 
     // TODO: Make this pretty

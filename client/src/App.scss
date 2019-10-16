@@ -1,3 +1,8 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+
 * {
     font-family: Roboto, Arial, sans-serif;
 }
@@ -12,7 +17,11 @@ body {
 }
 
 .page {
-    padding: 0 4rem;
+    padding: 0 1rem;
+
+    @include media-breakpoint-up(lg) {
+        padding: 0 4rem;
+    }
 }
 
 .mapouter {
