@@ -2,6 +2,7 @@ package com.monumental.models.unittest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
+import com.monumental.models.Contribution;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test class for unit testing methods on the Monument class
  */
-
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MonumentUnitTests {
@@ -137,6 +137,54 @@ public class MonumentUnitTests {
         String result = monument.getDescription();
 
         assertEquals("This is a Description", result);
+    }
+
+    @Test
+    public void testMonument_addContribution_NullContributions_NullAttributes() {
+        Monument monument = new Monument();
+
+        Contribution contribution = new Contribution();
+
+        monument.addContribution(contribution);
+
+        assertEquals(0, monument.getContributions().size());
+    }
+
+    @Test
+    public void testMonument_addContribution_NullContributions_NullDate() {
+        Monument monument = new Monument();
+
+        Contribution contribution = new Contribution();
+        contribution.setSubmittedBy("Submitted By");
+
+        monument.addContribution(contribution);
+
+        assertEquals(0, monument.getContributions().size());
+    }
+
+    @Test
+    public void testMonument_addContribution_NullContributions_NullSubmittedBy() {
+        Monument monument = new Monument();
+
+        Contribution contribution = new Contribution();
+        contribution.setDate(new Date());
+
+        monument.addContribution(contribution);
+
+        assertEquals(0, monument.getContributions().size());
+    }
+
+    @Test
+    public void testMonument_addContribution_NullContributions_UniqueContribution() {
+        Monument monument = new Monument();
+
+        Contribution contribution = new Contribution();
+        contribution.setDate(new Date());
+        contribution.setSubmittedBy("Submitted By");
+
+        monument.addContribution(contribution);
+
+        assertEquals(1, monument.getContributions().size());
     }
 
     /**

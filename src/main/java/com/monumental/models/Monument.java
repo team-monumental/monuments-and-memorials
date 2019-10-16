@@ -264,12 +264,17 @@ public class Monument extends Model implements Serializable {
      * Adds a Contribution to the List
      * Will make a new ArrayList if this.contributions is null
      * Checks if a Contribution has already been added to this.contributions with the same date and name
+     * Will do nothing if the specified Contribution has a null date or submittedBy
      * and does nothing if so
      * @param contribution - Contribution to add to the List
      */
     public void addContribution(Contribution contribution) {
         if (this.contributions == null) {
             this.contributions = new ArrayList<>();
+        }
+
+        if (contribution.getDate() == null || contribution.getSubmittedBy() == null) {
+            return;
         }
 
         for (Contribution c : this.contributions) {

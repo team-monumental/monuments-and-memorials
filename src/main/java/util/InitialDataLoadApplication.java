@@ -76,7 +76,7 @@ public class InitialDataLoadApplication {
                 monumentService.insert(monument);
 
                 // Insert or update each of the Tags associated with the new Monument into the database
-                tagService.insertOrUpdateTags(monument.getTags(), monument);
+                //tagService.insertOrUpdateTags(monument.getTags(), monument);
 
                 // Insert each Contribution associated with the new Monument into the database
                 contributionService.insert(monument.getContributions());
