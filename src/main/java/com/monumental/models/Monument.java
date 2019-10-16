@@ -236,10 +236,12 @@ public class Monument extends Model implements Serializable {
 
         description += simpleDateFormat.format(this.date) + ".";
 
-        Reference firstReference = this.references.get(0);
+        if (this.references != null) {
+            Reference firstReference = this.references.get(0);
 
-        if (firstReference != null) {
-            description += " You may find further information about this monument at: " + firstReference.getUrl();
+            if (firstReference != null && firstReference.getUrl() != null) {
+                description += " You may find further information about this monument at: " + firstReference.getUrl();
+            }
         }
 
         return description;
