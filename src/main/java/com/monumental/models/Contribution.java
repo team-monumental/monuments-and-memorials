@@ -1,0 +1,56 @@
+package com.monumental.models;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * Model class for a Contribution
+ * Contains all of the state associated with a Contribution along with Getters and Setters for that state
+ */
+
+@Entity
+@Table(name = "contribution", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
+})
+public class Contribution extends Model implements Serializable {
+
+    @Column(name = "submitted_by")
+    private String submittedBy;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date")
+    private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "monument_id", nullable = false)
+    private Monument monument;
+
+    public Contribution() {
+
+    }
+
+    public String getSubmittedBy() {
+        return this.submittedBy;
+    }
+
+    public void setSubmittedBy(String submittedBy) {
+        this.submittedBy = submittedBy;
+    }
+
+    public Date getDate() {
+        return this.date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Monument getMonument() {
+        return this.monument;
+    }
+
+    public void setMonument(Monument monument) {
+        this.monument = monument;
+    }
+}

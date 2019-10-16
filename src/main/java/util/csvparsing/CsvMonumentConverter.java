@@ -29,7 +29,7 @@ public class CsvMonumentConverter {
             // I also assumed that if any columns were empty, they would be null
             switch (columnIndex) {
                 case 0: // Submitted By
-                    result.setSubmittedBy(value);
+                    //result.setSubmittedBy(value);
                     break;
                 case 1: // Artist
                     result.setArtist(value);

@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
  * Test class for integration testing the MonumentService CRUD operations and their connection to the database
  * The tests in this class utilize an H2 in-memory database as to not ruin the actual database
  */
+
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
