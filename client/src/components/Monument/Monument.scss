@@ -1,17 +1,49 @@
 .page-container {
-    display: flex;
+    min-width: 100%;
+    margin: 0;
+}
 
-    .fields {
-        flex: 50%;
-        padding-right: 2em;
+.main {
+    min-width: 300px;
+
+    .fields .field {
+        margin-bottom: 1rem;
     }
 
-    .map {
-        flex: 100%;
-
-        iframe {
-            width: 100%;
-            max-width: 100%;
+    .details {
+        padding-top: 1rem;
+        .btn-link {
+            margin: 0;
+            padding: 0;
         }
+        .detail-label {
+            font-weight: 500;
+        }
+    }
+
+}
+
+.visit, .main {
+
+    .card-title {
+        margin-bottom: 0;
+        padding-bottom: 0.5rem;
+    }
+
+    .card-body {
+        margin-top: 0;
+        padding-top: 0;
+    }
+}
+
+.visit {
+    .card-title {
+        padding-bottom: 1rem;
+    }
+
+    iframe, .mapouter, .gmap_canvas {
+
+        min-width: 500px;
+        min-height: 300px;
     }
 }

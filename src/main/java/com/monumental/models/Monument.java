@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -49,6 +51,7 @@ public class Monument extends Model implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @JsonIgnore
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "monument_tag",
@@ -57,6 +60,7 @@ public class Monument extends Model implements Serializable {
     )
     private Set<Tag> tags;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "monument")
     private Set<Image> images;
 

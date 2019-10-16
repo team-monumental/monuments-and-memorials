@@ -13,7 +13,7 @@ function App() {
                 <Header/>
                 <div className="page">
                     <Route path="/map">
-                        <div className="gmaps">
+                        <div className="homepage-map gmaps">
                             <div className="mapouter">
                                 <div className="gmap_canvas">
                                     <iframe id="gmap_canvas"
