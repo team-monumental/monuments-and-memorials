@@ -1,6 +1,8 @@
-package com.monumental.services;
+package com.monumental.services.unittest;
 
 import com.monumental.models.Monument;
+import com.monumental.services.MonumentService;
+import com.monumental.services.SessionFactoryService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,7 +20,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MonumentServiceTests {
+public class MonumentServiceUnitTests {
 
     @Mock
     private SessionFactory sessionFactory;
@@ -93,7 +95,7 @@ public class MonumentServiceTests {
         when(this.session.createQuery("FROM com.monumental.models.Monument WHERE id IN (:ids)")).thenReturn(this.getListQuery);
 
         // Setup Get List Query mock
-        when(this.getListQuery.setParameter("ids", this.ids)).thenReturn(this.getListQuery);
+        when(this.getListQuery.setParameterList("ids", this.ids)).thenReturn(this.getListQuery);
         when(this.getListQuery.list()).thenReturn(this.monuments);
 
         // Setup Get All Query mock
@@ -105,7 +107,7 @@ public class MonumentServiceTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceInsert_Single() {
+    public void testMonumentService_Insert_Single() {
         int result = this.monumentService.insert(this.monument1);
 
         assertEquals(1, result);
@@ -116,7 +118,7 @@ public class MonumentServiceTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceInsert_Multiple() {
+    public void testMonumentService_Insert_Multiple() {
         List<Integer> results = this.monumentService.insert(this.monuments);
 
         assertEquals(3, results.size());
@@ -135,7 +137,7 @@ public class MonumentServiceTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGet_Single() {
+    public void testMonumentService_Get_Single() {
         Monument result = this.monumentService.get(1);
 
         assertEquals(this.monument1.getTitle(), result.getTitle());
@@ -146,7 +148,7 @@ public class MonumentServiceTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGet_ListPassed() {
+    public void testMonumentService_GetAll_ListPassed() {
         List<Monument> results = this.monumentService.get(this.ids);
 
         assertEquals(3, results.size());
