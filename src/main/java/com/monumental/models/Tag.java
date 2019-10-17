@@ -22,7 +22,12 @@ public class Tag extends Model implements Serializable {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "monument_tag",
+            joinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") }
+    )
     private Set<Monument> monuments;
 
     public Tag() {

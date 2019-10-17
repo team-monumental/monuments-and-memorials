@@ -1,13 +1,13 @@
 package com.monumental.services;
 
 import com.monumental.models.Model;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
@@ -61,7 +61,7 @@ public abstract class ModelService<T extends Model> {
     }
 
     @SuppressWarnings("unchecked")
-    private List<T> doGet(List<Integer> ids) throws HibernateException {
+    private List<T> doGet(List<Integer> ids, boolean initializeLazyLoadedCollections) throws HibernateException {
 
         Session session = this.sessionFactoryService.getFactory().openSession();
         Transaction transaction = null;
@@ -85,6 +85,11 @@ public abstract class ModelService<T extends Model> {
                 records = q.list();
             }
             transaction.commit();
+
+            if (initializeLazyLoadedCollections) {
+                this.initializeLazyLoadedCollections(records);
+            }
+
             session.close();
         } catch (HibernateException e) {
             if (transaction != null) {
@@ -158,17 +163,29 @@ public abstract class ModelService<T extends Model> {
     }
 
     public T get(Integer id) throws HibernateException {
+        return this.get(id, false);
+    }
+
+    public T get(Integer id, boolean initializeLazyLoadedCollections) throws HibernateException {
         ArrayList<Integer> ids = new ArrayList<>();
         ids.add(id);
-        return this.doGet(ids).get(0);
+        return this.doGet(ids, initializeLazyLoadedCollections).get(0);
     }
 
     public List<T> get(List<Integer> ids) throws HibernateException {
-        return this.doGet(ids);
+        return this.get(ids, false);
+    }
+
+    public List<T> get(List<Integer> ids, boolean initializeLazyLoadedCollections) throws HibernateException {
+        return this.doGet(ids, initializeLazyLoadedCollections);
     }
 
     public List<T> getAll() throws HibernateException {
-        return this.doGet(null);
+        return this.getAll(false);
+    }
+
+    public List<T> getAll(boolean initializeLazyLoadedCollections) throws HibernateException {
+        return this.doGet(null, initializeLazyLoadedCollections);
     }
 
     public void update(T record) throws HibernateException {
@@ -191,8 +208,12 @@ public abstract class ModelService<T extends Model> {
         this.doDelete(ids);
     }
 
-    @SuppressWarnings("unchecked")
     List<T> getByForeignKey(String foreignKeyName, Object foreignKey) {
+        return this.getByForeignKey(foreignKeyName, foreignKey, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    List<T> getByForeignKey(String foreignKeyName, Object foreignKey, boolean initializeLazyLoadedCollections) {
         Session session = this.sessionFactoryService.getFactory().openSession();
         Transaction transaction = null;
         List<T> records;
@@ -204,6 +225,11 @@ public abstract class ModelService<T extends Model> {
                     .setParameter("foreignKey", foreignKey)
                     .list();
             transaction.commit();
+
+            if (initializeLazyLoadedCollections) {
+                initializeLazyLoadedCollections(records);
+            }
+
             session.close();
         } catch (HibernateException e) {
             if (transaction != null) {
@@ -218,8 +244,12 @@ public abstract class ModelService<T extends Model> {
         return records;
     }
 
-    @SuppressWarnings("unchecked")
     List<T> getByJoinTable(String relationshipName, String foreignKeyName, Object foreignKey) {
+        return this.getByJoinTable(relationshipName, foreignKeyName, foreignKey, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    List<T> getByJoinTable(String relationshipName, String foreignKeyName, Object foreignKey, boolean initializeLazyLoadedCollections) {
 
         Session session = this.sessionFactoryService.getFactory().openSession();
         Transaction transaction = null;
@@ -232,6 +262,11 @@ public abstract class ModelService<T extends Model> {
                     .setParameter("foreignKey", foreignKey)
                     .list();
             transaction.commit();
+
+            if (initializeLazyLoadedCollections) {
+                this.initializeLazyLoadedCollections(records);
+            }
+
             session.close();
         } catch (HibernateException e) {
             if (transaction != null) {
@@ -244,5 +279,46 @@ public abstract class ModelService<T extends Model> {
         }
 
         return records;
+    }
+
+    private void initializeLazyLoadedCollections(List<T> records) {
+        for (T record : records) {
+            Method[] methods = record.getClass().getMethods();
+            for (Method method : methods) {
+
+                String methodName = method.getName();
+
+                // check Getters exclusively
+                if (methodName.length() < 3 || !"get" .equals(methodName.substring(0, 3))) {
+                    continue;
+                }
+
+                // Getters without parameters
+                if (method.getParameterTypes().length > 0) {
+                    continue;
+                }
+
+                int modifiers = method.getModifiers();
+
+                // Getters that are public
+                if (!Modifier.isPublic(modifiers))
+                    continue;
+
+                // but not static
+                if (Modifier.isStatic(modifiers))
+                    continue;
+
+                try {
+                    // Check result of the Getter
+                    Object r = method.invoke(record);
+                    if (r != null) {
+                        Hibernate.initialize(r);
+                    }
+                } catch ( InvocationTargetException | IllegalArgumentException | IllegalAccessException e ) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+        }
     }
 }

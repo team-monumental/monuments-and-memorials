@@ -9,6 +9,10 @@ import java.util.List;
 public class ContributionService extends ModelService<Contribution> {
 
     public List<Contribution> getByMonumentId(Integer monumentId) {
-        return this.getByForeignKey("monument_id", monumentId);
+        return this.getByMonumentId(monumentId, false);
+    }
+
+    public List<Contribution> getByMonumentId(Integer monumentId, boolean initializeLazyLoadedCollections) {
+        return this.getByForeignKey("monument_id", monumentId, initializeLazyLoadedCollections);
     }
 }

@@ -9,6 +9,10 @@ import java.util.List;
 public class TagService extends ModelService<Tag> {
 
     public List<Tag> getByMonumentId(Integer monumentId) {
-        return this.getByJoinTable("monuments", "id", monumentId);
+        return this.getByMonumentId(monumentId, false);
+    }
+
+    public List<Tag> getByMonumentId(Integer monumentId, boolean initializeLazyLoadedCollections) {
+        return this.getByJoinTable("monuments", "id", monumentId, initializeLazyLoadedCollections);
     }
 }

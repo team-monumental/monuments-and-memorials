@@ -9,6 +9,10 @@ import java.util.List;
 public class ImageService extends ModelService<Image> {
 
     public List<Image> getByMonumentId(Integer monumentId) {
-        return this.getByForeignKey("monument_id", monumentId);
+        return this.getByMonumentId(monumentId, false);
+    }
+
+    public List<Image> getByMonumentId(Integer monumentId, boolean initializeLazyLoadedCollections) {
+        return this.getByForeignKey("monument_id", monumentId, initializeLazyLoadedCollections);
     }
 }

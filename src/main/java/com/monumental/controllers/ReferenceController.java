@@ -16,7 +16,7 @@ public class ReferenceController {
     ReferenceService referenceService;
 
     @GetMapping("/api/references")
-    public List<Reference> getImages(@RequestParam Integer monumentId) {
+    public List<Reference> getReferences(@RequestParam Integer monumentId) {
         return this.referenceService.getByMonumentId(monumentId);
     }
 }

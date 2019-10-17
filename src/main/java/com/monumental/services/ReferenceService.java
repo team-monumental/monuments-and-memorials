@@ -9,6 +9,10 @@ import java.util.List;
 public class ReferenceService extends ModelService<Reference> {
 
     public List<Reference> getByMonumentId(Integer monumentId) {
-        return this.getByForeignKey("monument_id", monumentId);
+        return this.getByMonumentId(monumentId, false);
+    }
+
+    public List<Reference> getByMonumentId(Integer monumentId, boolean initializeLazyLoadedCollections) {
+        return this.getByForeignKey("monument_id", monumentId, initializeLazyLoadedCollections);
     }
 }

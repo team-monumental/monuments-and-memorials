@@ -16,7 +16,7 @@ public class TagController {
     TagService tagService;
 
     @GetMapping("/api/tags")
-    public List<Tag> getContributions(@RequestParam Integer monumentId) {
+    public List<Tag> getTags(@RequestParam Integer monumentId) {
         return this.tagService.getByMonumentId(monumentId);
     }
 }

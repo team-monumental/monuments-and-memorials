@@ -56,12 +56,7 @@ public class Monument extends Model implements Serializable {
     private String inscription;
 
     @JsonIgnore
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "monument_tag",
-            joinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }
-    )
+    @ManyToMany(mappedBy = "monuments")
     private List<Tag> tags;
 
     @JsonIgnore
@@ -237,14 +232,20 @@ public class Monument extends Model implements Serializable {
             description += "The ";
         }
 
-        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist + " in ";
+        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+        if (this.date != null) {
+            description += " in ";
 
-        description += simpleDateFormat.format(this.date) + ".";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+
+            description += simpleDateFormat.format(this.date);
+        }
+
+        description += ".";
 
         try {
-            if (this.references != null) {
+            if (this.references != null && this.references.size() > 0) {
                 Reference firstReference = this.references.get(0);
 
                 if (firstReference != null && firstReference.getUrl() != null) {
