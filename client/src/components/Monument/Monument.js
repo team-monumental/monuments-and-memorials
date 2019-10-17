@@ -154,19 +154,19 @@ export default class Monument extends React.Component {
                             <Collapse in={this.state.detailsOpen}>
                                 <div>
                                     <div>
+                                        <span className="detail-label">Last Updated:&nbsp;</span>
+                                        {prettyPrintDate(monument.updatedDate)}
+                                    </div>
+                                    <div>
                                         <span className="detail-label">Contributors:&nbsp;</span>
                                         <ul>
                                             {contributions.map(contribution => <li key={contribution.submittedBy}>{contribution.submittedBy}</li>)}
                                         </ul>
                                     </div>
                                     <div>
-                                        <span className="detail-label">Last Updated:&nbsp;</span>
-                                        {prettyPrintDate(monument.updatedDate)}
-                                    </div>
-                                    <div>
                                         <span className="detail-label">References:&nbsp;</span>
                                         <ul>
-                                            {references.map(reference => <li key={reference.url}>{reference.url}</li>)}
+                                            {references.map(reference => <li key={reference.url}><a href={reference.url}>{reference.url}</a></li>)}
                                         </ul>
                                     </div>
                                 </div>
