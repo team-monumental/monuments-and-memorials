@@ -281,6 +281,12 @@ public abstract class ModelService<T extends Model> {
         return records;
     }
 
+    /**
+     * Helper method that attempts to get and initialize all collections on a record before its session is closed
+     * This is helpful when you need to access lazy loaded data, since sessions are always closed in the get methods
+     * before the calling class ever has a chance to initialize lazy collections
+     * Modified from this answer https://stackoverflow.com/a/24870618/10044594
+     */
     private void initializeLazyLoadedCollections(List<T> records) {
         for (T record : records) {
             Method[] methods = record.getClass().getMethods();
