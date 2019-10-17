@@ -112,6 +112,14 @@
         .detail-label {
             font-weight: 500;
         }
+        .detail-list {
+            ul, ol {
+                margin-bottom: 0;
+            }
+        }
+        .detail-list > div {
+            margin-bottom: 0.25rem;
+        }
     }
 }
 

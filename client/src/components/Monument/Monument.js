@@ -152,7 +152,7 @@ export default class Monument extends React.Component {
                                 {this.state.detailsOpen ? 'Hide details' : 'More details'}
                             </Button>
                             <Collapse in={this.state.detailsOpen}>
-                                <div>
+                                <div className="detail-list">
                                     <div>
                                         <span className="detail-label">Last Updated:&nbsp;</span>
                                         {prettyPrintDate(monument.updatedDate)}
