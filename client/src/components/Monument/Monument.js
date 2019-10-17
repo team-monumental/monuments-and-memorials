@@ -132,7 +132,9 @@ export default class Monument extends React.Component {
                                 </div>
                                 <div className="overlay">
                                     <div className="icon-wrapper">
-                                        <i className="far fa-eye"/>
+                                        <i className="material-icons">
+                                            open_in_new
+                                        </i>
                                     </div>
                                 </div>
                                 <div onClick={e => e.stopPropagation()}>
@@ -203,7 +205,7 @@ export default class Monument extends React.Component {
         if (monument.address) {
             return (
                 <div>
-                    <i className="fa fas fa-map-marker-alt text-primary"></i> {monument.address}
+                    <i className="material-icons">room</i> {monument.address}
                 </div>
             )
         } else return (<div/>);
