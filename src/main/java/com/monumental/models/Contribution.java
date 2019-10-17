@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +24,7 @@ public class Contribution extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     private Monument monument;

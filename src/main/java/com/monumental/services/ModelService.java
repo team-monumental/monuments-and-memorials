@@ -192,7 +192,7 @@ public abstract class ModelService<T extends Model> {
     }
 
     @SuppressWarnings("unchecked")
-    List<T> getByForeignKey(String foreignKeyName, Integer foreignKey) {
+    List<T> getByForeignKey(String foreignKeyName, Object foreignKey) {
         Session session = this.sessionFactoryService.getFactory().openSession();
         Transaction transaction = null;
         List<T> records;
@@ -211,6 +211,34 @@ public abstract class ModelService<T extends Model> {
             }
             session.close();
             System.err.println("Error attempting to get " + tableName + " by foreign key " + foreignKeyName + ": " + foreignKey);
+            System.err.println(e.getMessage());
+            throw e;
+        }
+
+        return records;
+    }
+
+    @SuppressWarnings("unchecked")
+    List<T> getByJoinTable(String relationshipName, String foreignKeyName, Object foreignKey) {
+
+        Session session = this.sessionFactoryService.getFactory().openSession();
+        Transaction transaction = null;
+        List<T> records;
+        String tableName = this.getModelClass().getName();
+
+        try {
+            transaction = session.beginTransaction();
+            records = session.createQuery("SELECT t FROM " + tableName + " t JOIN t." + relationshipName + " m WHERE m." + foreignKeyName + " = :foreignKey")
+                    .setParameter("foreignKey", foreignKey)
+                    .list();
+            transaction.commit();
+            session.close();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            session.close();
+            System.err.println("Error attempting to get " + tableName + " by join table relationship " + relationshipName + " and foreign key " + foreignKeyName + ": " + foreignKey);
             System.err.println(e.getMessage());
             throw e;
         }

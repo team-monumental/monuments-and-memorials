@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -19,6 +21,7 @@ public class Tag extends Model implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<Monument> monuments;
 
@@ -34,7 +37,7 @@ public class Tag extends Model implements Serializable {
         this.name = name;
     }
 
-    public Set<Monument> getMonument() {
+    public Set<Monument> getMonuments() {
         return this.monuments;
     }
 

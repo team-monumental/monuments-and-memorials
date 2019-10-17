@@ -1,7 +1,7 @@
 import React from 'react';
 import './Monument.scss';
 import { Redirect } from 'react-router-dom';
-import { Button, Card, Collapse } from 'react-bootstrap';
+import { Button, Card, Collapse, Modal } from 'react-bootstrap';
 import * as slugify from 'slugify';
 import * as moment from 'moment';
 
@@ -15,7 +15,9 @@ export default class Monument extends React.Component {
             images: [],
             tags: [],
             references: [],
-            detailsOpen: false
+            detailsOpen: false,
+            modalOpen: false,
+            modalImage: null
         };
     }
 
@@ -23,11 +25,12 @@ export default class Monument extends React.Component {
         const { match: { params: { monumentId, slug } } } = this.props;
 
         let error;
-        const [ monument, contributions, images, references ] = await Promise.all([
+        const [ monument, contributions, images, references, tags ] = await Promise.all([
             this.callEndpoint(`/api/monument/${monumentId}`),
             this.callEndpoint(`/api/contributions/?monumentId=${monumentId}`),
             this.callEndpoint(`/api/images/?monumentId=${monumentId}`),
-            this.callEndpoint(`/api/references/?monumentId=${monumentId}`)
+            this.callEndpoint(`/api/references/?monumentId=${monumentId}`),
+            this.callEndpoint(`/api/tags/?monumentId=${monumentId}`)
         ]).catch(err => error = err);
 
         if (error) {
@@ -36,13 +39,13 @@ export default class Monument extends React.Component {
             return;
         }
 
-        this.setState({monument, contributions, images, references});
+        this.setState({monument, contributions, images, references, tags});
+        console.log(this.state);
     }
 
     async callEndpoint(endpoint) {
         const response = await fetch(endpoint);
         const parsed = await response.json();
-        console.log(parsed);
         if (parsed.errors) {
             throw(parsed.errors[0]);
         }
@@ -117,25 +120,41 @@ export default class Monument extends React.Component {
                             <span className="tag">{monument.material}</span>
                             {tags.map(tag => {
                                 return (
-                                    <span className="tag">{tag.name}</span>
+                                    <span key={tag.name} className="tag">{tag.name}</span>
                                 )
                             })}
                         </div>
                         {images && images.length > 0 ?
-                            (<div>
-                                <img src={images[0].url}/>
+                            /* TODO: Move this to a separate component */
+                            (<div className="image-container" onClick={() => this.setState({modalOpen: true, modalImage: images[0].url})}>
+                                <div className="image-wrapper">
+                                    <img src={images[0].url}/>
+                                </div>
+                                <div className="overlay">
+                                    <div className="icon-wrapper">
+                                        <i className="far fa-eye"/>
+                                    </div>
+                                </div>
+                                <div onClick={e => e.stopPropagation()}>
+                                    <Modal show={this.state.modalOpen} onHide={() => this.setState({modalOpen: false, modalImage: null})}>
+                                        <Modal.Header closeButton/>
+                                        <Modal.Body>
+                                            <img src={this.state.modalImage}/>
+                                        </Modal.Body>
+                                    </Modal>
+                                </div>
                             </div>)
                         : <div/>}
                         <div className="details">
-                            <Button variant="link" onClick={() => this.setState({open: !this.state.open})}>
-                                {this.state.open ? 'Hide details' : 'More details'}
+                            <Button variant="link" onClick={() => this.setState({detailsOpen: !this.state.detailsOpen})}>
+                                {this.state.detailsOpen ? 'Hide details' : 'More details'}
                             </Button>
-                            <Collapse in={this.state.open}>
+                            <Collapse in={this.state.detailsOpen}>
                                 <div>
                                     <div>
                                         <span className="detail-label">Contributors:&nbsp;</span>
                                         <ul>
-                                            {contributions.map(contribution => <li>{contribution.submittedBy}</li>)}
+                                            {contributions.map(contribution => <li key={contribution.submittedBy}>{contribution.submittedBy}</li>)}
                                         </ul>
                                     </div>
                                     <div>
@@ -145,7 +164,7 @@ export default class Monument extends React.Component {
                                     <div>
                                         <span className="detail-label">References:&nbsp;</span>
                                         <ul>
-                                            {references.map(reference => <li>{reference.url}</li>)}
+                                            {references.map(reference => <li key={reference.url}>{reference.url}</li>)}
                                         </ul>
                                     </div>
                                 </div>
