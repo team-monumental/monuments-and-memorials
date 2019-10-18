@@ -1,10 +1,10 @@
 package com.monumental.services.integrationtest;
 
-import com.monumental.exceptions.*;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +77,38 @@ public class TagServiceIntegrationTests {
 
         assertEquals(1, results.size());
         assertEquals(tag.getName(), results.get(0).getName());
+    }
+
+    /** Tag Unique Constraint Tests **/
+
+    @Test(expected = ConstraintViolationException.class)
+    public void testTagService_ExceptedConstraintViolationException_Name() {
+        Tag tag1 = new Tag();
+        tag1.setName("Tag");
+
+        this.tagService.insert(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag");
+
+        this.tagService.insert(tag2);
+    }
+
+    @Test
+    public void testTagService_CatchConstraintViolationException_Name() {
+        Tag tag1 = new Tag();
+        tag1.setName("Tag");
+
+        this.tagService.insert(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag");
+
+        try {
+            this.tagService.insert(tag2);
+        } catch (ConstraintViolationException e) {
+            assertEquals(1, this.tagService.getAll().size());
+        }
     }
 
     /**
