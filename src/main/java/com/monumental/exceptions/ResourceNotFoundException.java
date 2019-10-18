@@ -1,4 +1,4 @@
-package com.monumental.services.exceptions;
+package com.monumental.exceptions;
 
 import me.alidg.errors.annotation.ExceptionMapping;
 import org.springframework.http.HttpStatus;

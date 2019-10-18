@@ -1,10 +1,10 @@
 package com.monumental.services.integrationtest;
 
+import com.monumental.exceptions.*;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -31,7 +30,7 @@ public class TagServiceIntegrationTests {
 
 
     /**
-     * Tests ImageService's getByMonumentId and the underlying ModelService's getByJoinTable
+     * Tests TagService's getByMonumentId and the underlying ModelService's getByJoinTable
      */
     @Test
     public void testTagService_GetByMonumentId() {
@@ -63,6 +62,53 @@ public class TagServiceIntegrationTests {
             }
         }
         assert(hasMonument);
+    }
+
+    /** getTagsByName Tests **/
+
+    @Test
+    public void testTagService_getTagsByName_SingleRecordReturned() {
+        Tag tag = new Tag();
+        tag.setName("Tag");
+
+        this.tagService.insert(tag);
+
+        List<Tag> results = this.tagService.getTagsByName(tag.getName());
+
+        assertEquals(1, results.size());
+        assertEquals(tag.getName(), results.get(0).getName());
+    }
+
+    /** TagTrigger.beforeInsert Tests **/
+
+    @Test(expected = DuplicateRecordException.class)
+    public void testTagService_ExpectedDuplicateRecordException() {
+        Tag tag1 = new Tag();
+        tag1.setName("Tag");
+
+        this.tagService.insert(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag");
+
+        this.tagService.insert(tag2);
+    }
+
+    @Test
+    public void testTagService_CatchDuplicateRecordException() {
+        Tag tag1 = new Tag();
+        tag1.setName("Tag");
+
+        this.tagService.insert(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag");
+
+        try {
+            this.tagService.insert(tag2);
+        } catch (DuplicateRecordException e) {
+            assertEquals(1, this.tagService.getAll().size());
+        }
     }
 
     /**

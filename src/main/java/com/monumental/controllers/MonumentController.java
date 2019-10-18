@@ -1,6 +1,6 @@
 package com.monumental.controllers;
 
-import com.monumental.services.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.*;
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;

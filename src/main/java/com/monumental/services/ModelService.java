@@ -282,6 +282,39 @@ public abstract class ModelService<T extends Model> {
     }
 
     /**
+     * Generic method to build a "FROM ... WHERE ..." query
+     * Assumes the FROM clause is the name of the T generic class
+     * @param whereParameterName - Name of the column to use in the WHERE clause
+     * @param whereParameter - Used to set the parameter in the WHERE clause
+     * @return List<T> - the List of T returned by the query
+     */
+    @SuppressWarnings("unchecked")
+    public List<T> getFromWhere(String whereParameterName, Object whereParameter) {
+        Session session = this.sessionFactoryService.getFactory().openSession();
+        Transaction transaction = null;
+        List<T> records;
+        String tableName = this.getModelClass().getName();
+
+        try {
+            transaction = session.beginTransaction();
+            records = session.createQuery("FROM " + tableName + " WHERE " + whereParameterName + " = :whereParameter")
+                    .setParameter("whereParameter", whereParameter)
+                    .list();
+            transaction.commit();
+            session.close();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+
+            session.close();
+            throw e;
+        }
+
+        return records;
+    }
+
+    /**
      * Helper method that attempts to get and initialize all collections on a record before its session is closed
      * This is helpful when you need to access lazy loaded data, since sessions are always closed in the get methods
      * before the calling class ever has a chance to initialize lazy collections

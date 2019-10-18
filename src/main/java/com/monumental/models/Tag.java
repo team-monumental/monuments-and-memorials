@@ -30,7 +30,8 @@ public class Tag extends Model implements Serializable {
     @JoinTable(
             name = "monument_tag",
             joinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") }
+            inverseJoinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"tag_id", "monument_id"})}
     )
     private List<Monument> monuments;
 

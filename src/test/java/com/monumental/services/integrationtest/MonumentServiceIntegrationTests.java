@@ -479,6 +479,62 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** getFromWhere Tests **/
+
+    @Test
+    public void test_MonumentService_getFromWhere_SingleRecordReturned() {
+        Monument monument = makeTestMonument();
+
+        this.monumentService.insert(monument);
+
+        List<Monument> results = this.monumentService.getFromWhere("title", monument.getTitle());
+
+        assertEquals(1, results.size());
+        assertEquals(monument.getTitle(), results.get(0).getTitle());
+        assertEquals(monument.getArtist(), results.get(0).getArtist());
+    }
+
+    @Test
+    public void test_MonumentService_getFromWhere_MultipleRecordsReturned() {
+        Monument monument1 = makeTestMonument();
+        monument1.setTitle("Title 1");
+
+        Monument monument2 = makeTestMonument();
+        monument2.setTitle("Title 2");
+
+        ArrayList<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+        monuments.add(monument2);
+
+        this.monumentService.insert(monuments);
+
+        List<Monument> results = this.monumentService.getFromWhere("artist", monument1.getArtist());
+
+        assertEquals(2, results.size());
+
+        ArrayList<String> expectedTitles = new ArrayList<>();
+        expectedTitles.add(monument1.getTitle());
+        expectedTitles.add(monument2.getTitle());
+
+        for (Monument result : results) {
+            assertTrue(expectedTitles.contains(result.getTitle()));
+            assertEquals("Artist", result.getArtist());
+        }
+
+        results = this.monumentService.getFromWhere("artist", monument2.getArtist());
+
+        assertEquals(2, results.size());
+
+        expectedTitles = new ArrayList<>();
+        expectedTitles.add(monument1.getTitle());
+        expectedTitles.add(monument2.getTitle());
+
+        for (Monument result : results) {
+            assertTrue(expectedTitles.contains(result.getTitle()));
+            assertEquals("Artist", result.getArtist());
+        }
+    }
+
     /**
      * Helper function to make a test Monument
      * @return Monument - the test Monument

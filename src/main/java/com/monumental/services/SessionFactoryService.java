@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.models.*;
 import com.monumental.triggers.MonumentTrigger;
+import com.monumental.triggers.TagTrigger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -22,11 +23,14 @@ public class SessionFactoryService {
     @Autowired
     public MonumentTrigger monumentTrigger;
 
+    @Autowired
+    public TagTrigger tagTrigger;
+
     /** IMPORTANT: Update these lists when creating triggers or models
      *  Triggers must be autowired, and the string must match the property's name
      */
     private final List<String> triggers = Arrays.asList(
-        "monumentTrigger"
+        "monumentTrigger", "tagTrigger"
     );
     private final List<Class> models = Arrays.asList(
         Model.class, Monument.class, Tag.class,
