@@ -82,11 +82,11 @@ public class TagServiceIntegrationTests {
         monument2.setId(monumentIds.get(1));
 
         Tag tag1 = new Tag();
-        tag1.setMonuments(new HashSet<>(Arrays.asList(monument1)));
+        tag1.setMonuments(Arrays.asList(monument1));
         tag1.setName("tag1");
 
         Tag tag2 = new Tag();
-        tag2.setMonuments(new HashSet<>(Arrays.asList(monument1, monument2)));
+        tag2.setMonuments(Arrays.asList(monument1, monument2));
         tag2.setName("tag2");
 
         tagService.insert(Arrays.asList(tag1, tag2));
