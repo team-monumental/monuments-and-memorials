@@ -3,7 +3,6 @@ package com.monumental.models.unittest;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Contribution;
-import com.monumental.models.Tag;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +23,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MonumentUnitTests {
 
-    /** addContribution Tests **/
+    /** getDescription Tests **/
+
     @Test
     public void testMonument_getDescription_TitleStartsWithThe_LowerCase() {
         Monument monument = makeTestMonument("the Title", "City", "State", "Artist", new Date(), null);
@@ -100,7 +100,7 @@ public class MonumentUnitTests {
         String result = monument.getDescription();
 
         assertEquals("The Title in City, State was created by Artist in 2019. You may find further information " +
-                "about this monument at: URL", result);
+                "about this monument or memorial at: URL", result);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class MonumentUnitTests {
         String result = monument.getDescription();
 
         assertEquals("The Title in City, State was created by Artist in 2019. You may find further information " +
-                "about this monument at: URL1", result);
+                "about this monument or memorial at: URL1", result);
     }
 
     @Test

@@ -357,24 +357,4 @@ public class MonumentServiceIntegrationTests {
 
         return monuments;
     }
-
-    /**
-     * Helper method to check if the Tag associated with the specified tagId is associated with a Monument that has
-     * the specified title
-     * @param tagId - Integer for tagId associated with the Tag to check
-     * @param title - String for the title of the Monument to check association with
-     * @return boolean - true if the specified Tag is associated with a Monument that has the specified title, false otherwise
-     */
-    private boolean checkTagAssociatedWithMonument(Integer tagId, String title) {
-        boolean foundMonument = false;
-
-        for (Monument monument : this.tagService.get(tagId).getMonuments()) {
-            if (monument.getTitle().equals(title)) {
-                foundMonument = true;
-                break;
-            }
-        }
-
-        return foundMonument;
-    }
 }
