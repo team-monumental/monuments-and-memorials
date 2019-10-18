@@ -1,29 +1,29 @@
 package util.csvparsing;
 
 import com.monumental.models.Contribution;
+import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
-import com.monumental.models.entitymodels.MonumentEntity;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Class used to convert a CSV row representing a Monument into a MonumentEntity object
+ * Class used to convert a CSV row representing a Monument into a Monument object
  */
 public class CsvMonumentConverter {
     /**
-     * Static method for converting a CSV row representing a Monument into a MonumentEntity
+     * Static method for converting a CSV row representing a Monument into a Monument object
      * @param csvRow - CSV row representing a Monument, as a String
-     * @return MonumentEntity - the MonumentEntity that is represented by the CSV row
+     * @return Monument - the Monument that is represented by the CSV row
      */
-    public static MonumentEntity convertCsvRowToMonumentEntity(String csvRow) {
+    public static Monument convertCsvRowToMonument(String csvRow) {
         // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
         // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
         String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
         GregorianCalendar calendar = new GregorianCalendar();
 
-        MonumentEntity entity = new MonumentEntity();
+        Monument monument = new Monument();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
@@ -37,14 +37,15 @@ public class CsvMonumentConverter {
                     Contribution newContribution = new Contribution();
                     newContribution.setDate(calendar.getTime());
                     newContribution.setSubmittedBy(value);
+                    newContribution.setMonument(monument);
 
-                    entity.addContribution(newContribution);
+                    monument.addContribution(newContribution);
                     break;
                 case 1: // Artist
-                    entity.setArtist(value);
+                    monument.setArtist(value);
                     break;
                 case 2: // Title
-                    entity.setTitle(value);
+                    monument.setTitle(value);
                     break;
                 case 3: // Date
                     // I made a couple of assumptions about the format of the dates in the file:
@@ -59,7 +60,7 @@ public class CsvMonumentConverter {
                         if (dateArray.length == 1) {
                             int year = Integer.parseInt(dateArray[0]);
                             calendar.set(year, Calendar.JANUARY, 1);
-                            entity.setDate(calendar.getTime());
+                            monument.setDate(calendar.getTime());
                         }
                         // Parsing format "dd-mm-yyyy"
                         else if (dateArray.length == 3) {
@@ -68,32 +69,32 @@ public class CsvMonumentConverter {
                             int year = Integer.parseInt(dateArray[2]);
                             // Remember that months are 0-based
                             calendar.set(year, month - 1, day);
-                            entity.setDate(calendar.getTime());
+                            monument.setDate(calendar.getTime());
                         }
                     }
 
                     break;
                 case 6: // Material
-                    entity.setMaterial(value);
+                    monument.setMaterial(value);
                     break;
                 case 7: // Inscription
-                    // TODO: Figure out what to do with rows that don't have a proper Inscription
+                    monument.setInscription(value);
                     break;
                 case 9: // Latitude
                     if (!value.isEmpty()) {
-                        entity.setLat(Double.parseDouble(value));
+                        monument.setLat(Double.parseDouble(value));
                     }
                     break;
                 case 10: // Longitude
                     if (!value.isEmpty()) {
-                        entity.setLon(Double.parseDouble(value));
+                        monument.setLon(Double.parseDouble(value));
                     }
                     break;
                 case 11: // City
-                    entity.setCity(value);
+                    monument.setCity(value);
                     break;
                 case 12: // State
-                    entity.setState(value);
+                    monument.setState(value);
                     break;
                 case 13: // Tag columns
                 case 14:
@@ -114,7 +115,7 @@ public class CsvMonumentConverter {
                             value = value.strip();
                             newTag.setName(value);
 
-                            entity.addTag(newTag);
+                            monument.addTag(newTag);
                         }
                     }
 
@@ -122,12 +123,13 @@ public class CsvMonumentConverter {
                 case 22: // Reference
                     Reference newReference = new Reference();
                     newReference.setUrl(value);
+                    newReference.setMonument(monument);
 
-                    entity.addReference(newReference);
+                    monument.addReference(newReference);
             }
         }
 
-        return entity;
+        return monument;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.monumental.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 public class Tag extends Model implements Serializable {
 
     @Column(name = "name")
+    @NotNull(groups = NewOrExisting.class, message = "Name can not be null")
     private String name;
 
     @JsonIgnore

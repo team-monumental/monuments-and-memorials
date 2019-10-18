@@ -1,6 +1,5 @@
 package com.monumental.services;
 
-import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;

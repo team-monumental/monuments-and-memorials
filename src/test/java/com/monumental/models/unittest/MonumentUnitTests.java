@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Test class for unit testing methods on the Monument class
@@ -360,6 +359,52 @@ public class MonumentUnitTests {
         monument.addTag(tag3);
 
         assertEquals(2, monument.getTags().size());
+    }
+
+    /** validate Tests **/
+
+    @Test
+    public void testMonument_validate_NullTitle_NullMaterial() {
+        Monument monument = new Monument();
+
+        List<String> violationMessages = monument.validate();
+
+        assertEquals(2, violationMessages.size());
+        assertTrue(violationMessages.contains("Title can not be null"));
+        assertTrue(violationMessages.contains("Material can not be null"));
+    }
+
+    @Test
+    public void testMonument_validate_NullTitle_NotNullMaterial() {
+        Monument monument = new Monument();
+        monument.setMaterial("Material");
+
+        List<String> violationMessages = monument.validate();
+
+        assertEquals(1, violationMessages.size());
+        assertTrue(violationMessages.contains("Title can not be null"));
+    }
+
+    @Test
+    public void testMonument_validate_NotNullTitle_NullMaterial() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+
+        List<String> violationMessages = monument.validate();
+
+        assertEquals(1, violationMessages.size());
+        assertTrue(violationMessages.contains("Material can not be null"));
+    }
+
+    @Test
+    public void testMonument_validate_NotNullTitle_NotNullMaterial() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setMaterial("Material");
+
+        List<String> violationMessages = monument.validate();
+
+        assertNull(violationMessages);
     }
 
     /**

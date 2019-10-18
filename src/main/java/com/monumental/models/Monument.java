@@ -4,11 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.LazyInitializationException;
 
 import javax.persistence.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Model class for both Monuments and Memorials
@@ -26,6 +31,7 @@ public class Monument extends Model implements Serializable {
     private String artist;
 
     @Column(name = "title")
+    @NotNull(groups = NewOrExisting.class, message = "Title can not be null")
     private String title;
 
     @Temporal(TemporalType.DATE)
@@ -33,6 +39,7 @@ public class Monument extends Model implements Serializable {
     private Date date;
 
     @Column(name = "material")
+    @NotNull(groups = NewOrExisting.class, message = "Material can not be null")
     private String material;
 
     @Column(name = "lat")
@@ -250,7 +257,8 @@ public class Monument extends Model implements Serializable {
                 Reference firstReference = this.references.get(0);
 
                 if (firstReference != null && firstReference.getUrl() != null) {
-                    description += " You may find further information about this monument at: " + firstReference.getUrl();
+                    description += " You may find further information about this monument or memorial at: " +
+                            firstReference.getUrl();
                 }
             }
         } catch (LazyInitializationException e) {
@@ -338,5 +346,29 @@ public class Monument extends Model implements Serializable {
         }
 
         this.tags.add(tag);
+    }
+
+    /**
+     * Encapsulates the logic to validate a Monument object
+     * Use this method to manually run validation in lieu of a @Valid Spring annotation
+     * @return List<String> - List of ConstraintViolation messages, if any
+     * @return null - If there are no ConstraintViolations
+     */
+    public List<String> validate() {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+        Set<ConstraintViolation<Monument>> violations = validator.validate(this, Monument.NewOrExisting.class);
+
+        if (violations.isEmpty()) {
+            return null;
+        }
+        else {
+            ArrayList<String> violationMessages = new ArrayList<>();
+            for (ConstraintViolation<Monument> violation : violations) {
+                violationMessages.add(violation.getMessage());
+            }
+
+            return violationMessages;
+        }
     }
 }

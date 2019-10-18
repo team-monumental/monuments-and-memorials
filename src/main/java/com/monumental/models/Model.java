@@ -4,14 +4,38 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @MappedSuperclass
 public abstract class Model {
 
+    /* Bean Validation Groups */
+
+    // Use this group to signify validation that occurs on record creation
+    public interface New {
+
+    }
+
+    // Use this group to signify validation that occurs after record creation
+    public interface Existing {
+
+    }
+
+    // Use this group to signify validation that occurs on record creation or after record creation
+    public interface NewOrExisting extends New, Existing {
+
+    }
+
+    // Use this group to signify validation of the Id field of the record
+    public interface Identity {
+
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
+    @NotNull(groups = Identity.class, message = "ID can not be null")
     private Integer id;
 
     @Temporal(TemporalType.DATE)

@@ -9,9 +9,6 @@ import java.util.List;
 @Service
 public class TagService extends ModelService<Tag> {
 
-    @Autowired
-    MonumentService monumentService;
-
     /**
      * Public constructor for TagService
      * Use when NOT injecting SessionFactoryService via Spring
