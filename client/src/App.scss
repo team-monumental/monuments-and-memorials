@@ -1,5 +1,10 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+
 * {
-    font-family: "Open Sans", Arial, sans-serif;
+    font-family: Roboto, Arial, sans-serif;
 }
 
 .App {
@@ -12,7 +17,11 @@ body {
 }
 
 .page {
-    padding: 0 4rem;
+    padding: 0 1rem 1rem 1rem;
+
+    @include media-breakpoint-up(lg) {
+        padding: 0 2rem 2rem 2rem;
+    }
 }
 
 .mapouter {
@@ -25,9 +34,11 @@ body {
     background: none !important;
 }
 
-iframe, .mapouter, .gmap_canvas {
-    width: 80vw;
-    height: 80vh;
+homepage-map {
+    iframe, .mapouter, .gmap_canvas {
+        width: 80vw;
+        height: 80vh;
+    }
 }
 
 .gmaps {
@@ -37,4 +48,19 @@ iframe, .mapouter, .gmap_canvas {
 
 .card {
     box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+}
+
+.card {
+    .card-title {
+        padding: 1.25rem;
+        font-weight: 500;
+    }
+}
+
+.tag {
+    background-color: #e8e8e8;
+    color: rgba(0, 0, 0, 0.8);
+    padding: .5em .75em;
+    border-radius: .28571429rem;
+    font-size: 0.8rem;
 }

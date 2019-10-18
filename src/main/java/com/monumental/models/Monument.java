@@ -1,5 +1,8 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.LazyInitializationException;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -52,22 +55,21 @@ public class Monument extends Model implements Serializable {
     @Column(name = "inscription")
     private String inscription;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "monument_tag",
-            joinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") }
-    )
+    @JsonIgnore
+    @ManyToMany(mappedBy = "monuments")
     private List<Tag> tags;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "monument")
     private List<Image> images;
 
-    @OneToMany(mappedBy = "monument")
-    private List<Contribution> contributions;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "monument")
     private List<Reference> references;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "monument")
+    private List<Contribution> contributions;
 
     public Monument() {
 
@@ -230,18 +232,28 @@ public class Monument extends Model implements Serializable {
             description += "The ";
         }
 
-        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist + " in ";
+        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+        if (this.date != null) {
+            description += " in ";
 
-        description += simpleDateFormat.format(this.date) + ".";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
-        if (this.references != null) {
-            Reference firstReference = this.references.get(0);
+            description += simpleDateFormat.format(this.date);
+        }
 
-            if (firstReference != null && firstReference.getUrl() != null) {
-                description += " You may find further information about this monument at: " + firstReference.getUrl();
+        description += ".";
+
+        try {
+            if (this.references != null && this.references.size() > 0) {
+                Reference firstReference = this.references.get(0);
+
+                if (firstReference != null && firstReference.getUrl() != null) {
+                    description += " You may find further information about this monument at: " + firstReference.getUrl();
+                }
             }
+        } catch (LazyInitializationException e) {
+            // TODO: Initialize References before reaching this point
         }
 
         return description;

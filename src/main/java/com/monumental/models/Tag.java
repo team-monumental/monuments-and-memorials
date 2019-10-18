@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -19,7 +21,13 @@ public class Tag extends Model implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "tags")
+    @JsonIgnore
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "monument_tag",
+            joinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") }
+    )
     private Set<Monument> monuments;
 
     public Tag() {
@@ -34,7 +42,7 @@ public class Tag extends Model implements Serializable {
         this.name = name;
     }
 
-    public Set<Monument> getMonument() {
+    public Set<Monument> getMonuments() {
         return this.monuments;
     }
 
