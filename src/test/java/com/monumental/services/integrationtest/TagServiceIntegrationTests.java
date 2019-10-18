@@ -79,38 +79,6 @@ public class TagServiceIntegrationTests {
         assertEquals(tag.getName(), results.get(0).getName());
     }
 
-    /** TagTrigger.beforeInsert Tests **/
-
-    @Test(expected = DuplicateRecordException.class)
-    public void testTagService_ExpectedDuplicateRecordException() {
-        Tag tag1 = new Tag();
-        tag1.setName("Tag");
-
-        this.tagService.insert(tag1);
-
-        Tag tag2 = new Tag();
-        tag2.setName("Tag");
-
-        this.tagService.insert(tag2);
-    }
-
-    @Test
-    public void testTagService_CatchDuplicateRecordException() {
-        Tag tag1 = new Tag();
-        tag1.setName("Tag");
-
-        this.tagService.insert(tag1);
-
-        Tag tag2 = new Tag();
-        tag2.setName("Tag");
-
-        try {
-            this.tagService.insert(tag2);
-        } catch (DuplicateRecordException e) {
-            assertEquals(1, this.tagService.getAll().size());
-        }
-    }
-
     /**
      * Helper that sets up 2 Monuments and 2 Tags, with 1 Tags related to both Monuments
      */

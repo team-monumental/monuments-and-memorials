@@ -323,32 +323,6 @@ public class Monument extends Model implements Serializable {
     }
 
     /**
-     * Adds a Tag to the List
-     * Will make a new ArrayList if this.tags is null
-     * Will do nothing if the specified Tag has a null/empty name
-     * Checks if a Tag has already been added to this.references with the same name
-     * and does nothing if so
-     * @param tag - Tag to add to the List
-     */
-    public void addTag(Tag tag) {
-        if (this.tags == null) {
-            this.tags = new ArrayList<>();
-        }
-
-        if (tag.getName() == null || tag.getName().isEmpty()) {
-            return;
-        }
-
-        for (Tag t : this.tags) {
-            if (t.getName().equalsIgnoreCase(tag.getName())) {
-                return;
-            }
-        }
-
-        this.tags.add(tag);
-    }
-
-    /**
      * Encapsulates the logic to validate a Monument object
      * Use this method to manually run validation in lieu of a @Valid Spring annotation
      * @return List<String> - List of ConstraintViolation messages, if any

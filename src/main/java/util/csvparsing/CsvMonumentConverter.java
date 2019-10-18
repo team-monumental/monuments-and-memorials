@@ -115,7 +115,7 @@ public class CsvMonumentConverter {
                             value = value.strip();
                             newTag.setName(value);
 
-                            monument.addTag(newTag);
+                            //monument.addTag(newTag);
                         }
                     }
 

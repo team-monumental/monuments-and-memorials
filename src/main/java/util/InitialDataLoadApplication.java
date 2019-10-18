@@ -28,8 +28,6 @@ public class InitialDataLoadApplication {
         MonumentService monumentService = new MonumentService(sessionFactoryService);
         TagService tagService = new TagService(sessionFactoryService);
 
-        monumentService.setTagService(tagService);
-
         try {
             // Create our CsvFileReader, passing it the path to the dataset file
             CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetCsv);
@@ -68,7 +66,7 @@ public class InitialDataLoadApplication {
 
             for (Monument m : monuments) {
 
-                monumentService.addTagsToMonument(m, m.getTags());
+                //monumentService.addTagsToMonument(m, m.getTags());
 
                 monumentService.insert(m);
 

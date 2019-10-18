@@ -304,63 +304,6 @@ public class MonumentUnitTests {
         assertEquals(2, monument.getReferences().size());
     }
 
-    /** addTag Tests **/
-    @Test
-    public void testMonument_addTag_NullTags_NullName() {
-        Monument monument = new Monument();
-
-        Tag tag = new Tag();
-
-        monument.addTag(tag);
-
-        assertEquals(0, monument.getTags().size());
-    }
-
-    @Test
-    public void testMonument_addTag_NullTags_EmptyName() {
-        Monument monument = new Monument();
-
-        Tag tag = new Tag();
-        tag.setName("");
-
-        monument.addTag(tag);
-
-        assertEquals(0, monument.getTags().size());
-    }
-
-    @Test
-    public void testMonument_addTag_NullTags_UniqueTag() {
-        Monument monument = new Monument();
-
-        Tag tag = new Tag();
-        tag.setName("Name");
-
-        monument.addTag(tag);
-
-        assertEquals(1, monument.getTags().size());
-    }
-
-    @Test
-    public void testMonument_addTag_NotNullTags_MultipleTagsAdded() {
-        Monument monument = new Monument();
-        monument.setTags(new ArrayList<>());
-
-        Tag tag1 = new Tag();
-        tag1.setName("Name1");
-
-        Tag tag2 = new Tag();
-        tag2.setName("Name1");
-
-        Tag tag3 = new Tag();
-        tag3.setName("Name2");
-
-        monument.addTag(tag1);
-        monument.addTag(tag2);
-        monument.addTag(tag3);
-
-        assertEquals(2, monument.getTags().size());
-    }
-
     /** validate Tests **/
 
     @Test
