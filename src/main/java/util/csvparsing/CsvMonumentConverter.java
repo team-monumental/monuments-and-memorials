@@ -9,21 +9,22 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Class used to convert a CSV row representing a Monument into a Monument object
+ * Class used to convert a CSV row representing a Monument into a CsvMonumentConverterResult object
  */
 public class CsvMonumentConverter {
     /**
-     * Static method for converting a CSV row representing a Monument into a Monument object
+     * Static method for converting a CSV row representing a Monument into a CsvMonumentConverterResult object
      * @param csvRow - CSV row representing a Monument, as a String
-     * @return Monument - the Monument that is represented by the CSV row
+     * @return CsvMonumentConverterResult - the CsvMonumentConverterResult that is represented by the CSV row
      */
-    public static Monument convertCsvRowToMonument(String csvRow) {
+    public static CsvMonumentConverterResult convertCsvRow(String csvRow) {
         // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
         // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
         String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
         GregorianCalendar calendar = new GregorianCalendar();
 
         Monument monument = new Monument();
+        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
@@ -110,12 +111,14 @@ public class CsvMonumentConverter {
                         for (int tagArrayColumnIndex = 0; tagArrayColumnIndex < tagArray.length; tagArrayColumnIndex++) {
                             Tag newTag = new Tag();
 
+                            String tagValue = tagArray[tagArrayColumnIndex];
                             // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
-                            value = value.substring(0, 1).toUpperCase() + value.substring(1);
-                            value = value.strip();
-                            newTag.setName(value);
+                            tagValue = tagValue.strip();
+                            tagValue = tagValue.substring(0, 1).toUpperCase() + tagValue.substring(1);
+                            newTag.setName(tagValue);
+                            newTag.addMonument(monument);
 
-                            //monument.addTag(newTag);
+                            result.addTag(newTag);
                         }
                     }
 
@@ -129,7 +132,9 @@ public class CsvMonumentConverter {
             }
         }
 
-        return monument;
+        result.setMonument(monument);
+
+        return result;
     }
 
     /**

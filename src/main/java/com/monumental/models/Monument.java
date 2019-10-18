@@ -60,7 +60,7 @@ public class Monument extends Model implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "inscription")
+    @Column(name = "inscription", length = 1024)
     private String inscription;
 
     @JsonIgnore
@@ -68,15 +68,15 @@ public class Monument extends Model implements Serializable {
     private List<Tag> tags;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "monument")
+    @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Image> images;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "monument")
+    @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Reference> references;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "monument")
+    @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Contribution> contributions;
 
     public Monument() {

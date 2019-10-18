@@ -15,7 +15,7 @@ import java.io.Serializable;
 })
 public class Reference extends Model implements Serializable {
 
-    @Column(name = "url")
+    @Column(name = "url", length = 500)
     @NotNull(groups = NewOrExisting.class, message = "URL can not be null")
     private String url;
 
