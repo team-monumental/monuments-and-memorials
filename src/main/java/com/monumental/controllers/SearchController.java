@@ -25,11 +25,6 @@ public class SearchController {
      */
     @GetMapping("/api/search")
     public List<Monument> searchMonuments(@RequestParam String q) {
-        try {
-            return this.monumentService.search(q);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+        return this.monumentService.search(q);
     }
 }
