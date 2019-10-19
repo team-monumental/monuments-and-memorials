@@ -5,11 +5,14 @@ import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Class used to convert a CSV row representing a Monument into a CsvMonumentConverterResult object
+ * Class used to:
+ * 1. Convert a CSV row representing a Monument into a CsvMonumentConverterResult object
+ * 2. Convert a Monument into a CSV row
  */
 public class CsvMonumentConverter {
     /**
@@ -135,6 +138,75 @@ public class CsvMonumentConverter {
         result.setMonument(monument);
 
         return result;
+    }
+
+    /**
+     * Static method for converting a specified Monument into a CSV row
+     * @param monument - Monument to convert into a CSV row
+     * @return String - CSV row representing the specified Monument
+     */
+    public static String convertMonument(Monument monument) {
+        String csvRow = "";
+
+        // Column 1: ID
+        if (monument.getId() != null) {
+            csvRow += monument.getId();
+        }
+
+        csvRow += ",";
+
+        // Column 2: Title
+        if (monument.getTitle() != null && !monument.getTitle().isEmpty()) {
+            csvRow += monument.getTitle();
+        }
+
+        csvRow += ",";
+
+        // Column 3: Artist
+        if (monument.getArtist() != null && !monument.getArtist().isEmpty()) {
+            csvRow += monument.getArtist();
+        }
+
+        csvRow += ",";
+
+        // Column 4: Date
+        // Format: "dd-mm-yyyy"
+        if (monument.getDate() != null) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-mm-yyyy");
+            csvRow += simpleDateFormat.format(monument.getDate());
+        }
+
+        csvRow += ",";
+
+        // Column 5: Material
+        if (monument.getMaterial() != null && !monument.getMaterial().isEmpty()) {
+            csvRow += monument.getMaterial();
+        }
+
+        csvRow += ",";
+
+        // Column 6: Latitude
+        if (monument.getLat() != null) {
+            csvRow += monument.getLat();
+        }
+
+        csvRow += ",";
+
+        // Column 7: Longitude
+        if (monument.getLon() != null) {
+            csvRow += monument.getLon();
+        }
+
+        csvRow += ",";
+
+        // Column 8: City
+        if (monument.getCity() != null && !monument.getCity().isEmpty()) {
+            csvRow += monument.getCity();
+        }
+
+        csvRow += ",";
+
+        return csvRow;
     }
 
     /**
