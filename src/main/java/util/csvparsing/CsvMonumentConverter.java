@@ -8,6 +8,7 @@ import com.monumental.models.Tag;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Class used to:
@@ -156,15 +157,29 @@ public class CsvMonumentConverter {
         csvRow += ",";
 
         // Column 2: Title
-        if (monument.getTitle() != null && !monument.getTitle().isEmpty()) {
-            csvRow += monument.getTitle();
+        String title = monument.getTitle();
+        if (title != null && !title.isEmpty()) {
+            title = title.replace("\"", "");
+            if (title.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(title);
+            }
+            else {
+                csvRow += title;
+            }
         }
 
         csvRow += ",";
 
         // Column 3: Artist
-        if (monument.getArtist() != null && !monument.getArtist().isEmpty()) {
-            csvRow += monument.getArtist();
+        String artist = monument.getArtist();
+        if (artist != null && !artist.isEmpty()) {
+            artist = artist.replace("\"", "");
+            if (artist.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(artist);
+            }
+            else {
+                csvRow += artist;
+            }
         }
 
         csvRow += ",";
@@ -179,8 +194,15 @@ public class CsvMonumentConverter {
         csvRow += ",";
 
         // Column 5: Material
-        if (monument.getMaterial() != null && !monument.getMaterial().isEmpty()) {
-            csvRow += monument.getMaterial();
+        String material = monument.getMaterial();
+        if (material != null && !material.isEmpty()) {
+            material = material.replace("\"", "");
+            if (material.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(material);
+            }
+            else {
+                csvRow += material;
+            }
         }
 
         csvRow += ",";
@@ -200,11 +222,127 @@ public class CsvMonumentConverter {
         csvRow += ",";
 
         // Column 8: City
-        if (monument.getCity() != null && !monument.getCity().isEmpty()) {
-            csvRow += monument.getCity();
+        String city = monument.getCity();
+        if (city != null && !city.isEmpty()) {
+            city = city.replace("\"", "");
+            if (city.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(city);
+            }
+            else {
+                csvRow += city;
+            }
         }
 
         csvRow += ",";
+
+        // Column 9: State
+        String state = monument.getState();
+        if (state != null && !state.isEmpty()) {
+            state = state.replace("\"", "");
+            if (state.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(state);
+            }
+            csvRow += state;
+        }
+
+        csvRow += ",";
+
+        // Column 10: Address
+        String address = monument.getAddress();
+        if (address != null && !address.isEmpty()) {
+            address = address.replace("\"", "");
+            if (address.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(address);
+            }
+            else {
+                csvRow += address;
+            }
+        }
+
+        csvRow += ",";
+
+        // Column 11: Inscription
+        String inscription = monument.getInscription();
+        if (inscription != null && !inscription.isEmpty()) {
+            inscription = inscription.replace("\"", "");
+            if (inscription.contains(",")) {
+                csvRow += addBeginningAndEndingQuotes(inscription);
+            }
+            else {
+                csvRow += inscription;
+            }
+        }
+
+        csvRow += ",";
+
+        // Column 12: Description
+        String description = monument.getDescription();
+        if (description.contains(",")) {
+            csvRow += addBeginningAndEndingQuotes(description);
+        }
+        else {
+            csvRow += description;
+        }
+
+        csvRow += ",";
+
+        // Column 13: Tags
+        StringBuilder tagsColumn = new StringBuilder();
+
+        List<Tag> tags = monument.getTags();
+        boolean isLastTag;
+
+        if (tags != null) {
+            for (int i = 0; i < tags.size(); i++) {
+                isLastTag = (i == (tags.size() - 1));
+                tagsColumn.append(tags.get(i).getName());
+                if (!isLastTag) {
+                    tagsColumn.append(",");
+                }
+            }
+        }
+
+        csvRow += addBeginningAndEndingQuotes(tagsColumn.toString());
+
+        csvRow += ",";
+
+        // Column 14: Contributors
+        StringBuilder contributorsColumn = new StringBuilder();
+
+        List<Contribution> contributions = monument.getContributions();
+        boolean isLastContribution;
+
+        if (contributions != null) {
+            for (int i = 0; i < contributions.size(); i++) {
+                isLastContribution = (i == (contributions.size() - 1));
+                contributorsColumn.append(contributions.get(i).getSubmittedBy());
+                if (!isLastContribution) {
+                    contributorsColumn.append(",");
+                }
+            }
+        }
+
+        csvRow += addBeginningAndEndingQuotes(contributorsColumn.toString());
+
+        csvRow += ",";
+
+        // Column 15: References
+        StringBuilder referencesColumn = new StringBuilder();
+
+        List<Reference> references = monument.getReferences();
+        boolean isLastReference;
+
+        if (references != null) {
+            for (int i = 0; i < references.size(); i++) {
+                isLastReference = (i == (references.size() - 1));
+                referencesColumn.append(references.get(i).getUrl());
+                if (!isLastReference) {
+                    referencesColumn.append(",");
+                }
+            }
+        }
+
+        csvRow += addBeginningAndEndingQuotes(referencesColumn.toString());
 
         return csvRow;
     }
@@ -222,5 +360,28 @@ public class CsvMonumentConverter {
         }
 
         return string;
+    }
+
+    /**
+     * Static method to add the beginning and ending quotes to a specified String
+     * Does nothing if there are already beginning and ending quotes
+     * @param string - the String to add the quotes to
+     * @return String - the updated String, with beginning and ending quotes
+     */
+    private static String addBeginningAndEndingQuotes(String string) {
+        if (string.startsWith("\"") && string.endsWith("\"")) {
+            return string;
+        }
+
+        return "\"" + string + "\"";
+    }
+
+    /**
+     * Static method to get the header row for CSV file outputs
+     * @return String - the CSV header row
+     */
+    public static String getHeaderRow() {
+        return "ID,Title,Artist,Date,Material,Latitude,Longitude,City,State,Address,Inscription,Description," +
+                "Tags,Contributors,References";
     }
 }
