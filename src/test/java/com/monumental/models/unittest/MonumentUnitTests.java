@@ -310,8 +310,11 @@ public class MonumentUnitTests {
     public void testMonument_validate_NullTitle_NullMaterial() {
         Monument monument = new Monument();
 
-        List<String> violationMessages = monument.validate();
+        Monument.ValidationResult result = monument.validate();
 
+        assertFalse(result.isValid());
+
+        List<String> violationMessages = result.getViolationMessages();
         assertEquals(2, violationMessages.size());
         assertTrue(violationMessages.contains("Title can not be null"));
         assertTrue(violationMessages.contains("Material can not be null"));
@@ -322,7 +325,11 @@ public class MonumentUnitTests {
         Monument monument = new Monument();
         monument.setMaterial("Material");
 
-        List<String> violationMessages = monument.validate();
+        Monument.ValidationResult result = monument.validate();
+
+        assertFalse(result.isValid());
+
+        List<String> violationMessages = result.getViolationMessages();
 
         assertEquals(1, violationMessages.size());
         assertTrue(violationMessages.contains("Title can not be null"));
@@ -333,7 +340,11 @@ public class MonumentUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> violationMessages = monument.validate();
+        Monument.ValidationResult result = monument.validate();
+
+        assertFalse(result.isValid());
+
+        List<String> violationMessages = result.getViolationMessages();
 
         assertEquals(1, violationMessages.size());
         assertTrue(violationMessages.contains("Material can not be null"));
@@ -345,9 +356,13 @@ public class MonumentUnitTests {
         monument.setTitle("Title");
         monument.setMaterial("Material");
 
-        List<String> violationMessages = monument.validate();
+        Monument.ValidationResult result = monument.validate();
 
-        assertNull(violationMessages);
+        assertTrue(result.isValid());
+
+        List<String> violationMessages = result.getViolationMessages();
+
+        assertTrue(violationMessages.isEmpty());
     }
 
     /**

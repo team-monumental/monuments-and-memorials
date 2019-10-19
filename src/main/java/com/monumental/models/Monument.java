@@ -325,24 +325,50 @@ public class Monument extends Model implements Serializable {
     /**
      * Encapsulates the logic to validate a Monument object
      * Use this method to manually run validation in lieu of a @Valid Spring annotation
-     * @return List<String> - List of ConstraintViolation messages, if any
-     * @return null - If there are no ConstraintViolations
+     * @return ValidationResult - ValidationResult object representing the result of the validation
      */
-    public List<String> validate() {
+    public ValidationResult validate() {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        ValidationResult result = new ValidationResult();
 
-        Set<ConstraintViolation<Monument>> violations = validator.validate(this, Monument.NewOrExisting.class);
+        result.setViolations(validator.validate(this, Monument.NewOrExisting.class));
 
-        if (violations.isEmpty()) {
-            return null;
+        return result;
+    }
+
+    /**
+     * Inner-class to represent the result of a call to Monument.validate()
+     */
+    public static class ValidationResult {
+
+        private Set<ConstraintViolation<Monument>> violations;
+
+        /**
+         * Determines if this ValidationResult is valid
+         * It is valid if there are no ConstraintViolation<Monument> in the Set
+         * @return boolean - true if the ValidationResult is valid, false otherwise
+         */
+        public boolean isValid() {
+            return this.violations.isEmpty();
         }
-        else {
+
+        /**
+         * Returns a List of the violation messages (if there are any) as Strings
+         * If there are no ConstraintViolations, returns an empty List
+         * @return List<String> - List of violation messages as Strings (if there are any)
+         */
+        public List<String> getViolationMessages() {
             ArrayList<String> violationMessages = new ArrayList<>();
-            for (ConstraintViolation<Monument> violation : violations) {
+
+            for (ConstraintViolation<Monument> violation : this.violations) {
                 violationMessages.add(violation.getMessage());
             }
 
             return violationMessages;
+        }
+
+        void setViolations(Set<ConstraintViolation<Monument>> violations) {
+            this.violations = violations;
         }
     }
 }

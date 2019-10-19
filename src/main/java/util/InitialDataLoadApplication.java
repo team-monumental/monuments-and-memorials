@@ -1,18 +1,16 @@
 package util;
 
+import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.services.*;
 import org.hibernate.exception.ConstraintViolationException;
-import org.postgresql.util.PSQLException;
 import util.csvparsing.CsvFileReader;
 import util.csvparsing.CsvMonumentConverter;
 import util.csvparsing.CsvMonumentConverterResult;
 
-import javax.persistence.PersistenceException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class used to load the initial dataset into the database
@@ -44,15 +42,15 @@ public class InitialDataLoadApplication {
                     // Convert the row into a CsvMonumentConverterResult object
                     CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip());
                     // Validate the CsvMonumentConverterResult's Monument
-                    List<String> violationMessages = result.getMonument().validate();
-                    // If there were no violations, add the CsvMonumentConverterResult to the accumulating list
-                    if (violationMessages == null) {
+                    Monument.ValidationResult validationResult = result.getMonument().validate();
+                    // If the Monument is valid, add the CsvMonumentConverterResult to the accumulating list
+                    if (validationResult.isValid()) {
                         results.add(result);
                     }
                     else {
                         System.out.println("Failed to validate Monument: " + result.getMonument().toString());
                         System.out.println("Reasons: ");
-                        for (String violationMessage : violationMessages) {
+                        for (String violationMessage : validationResult.getViolationMessages()) {
                             System.out.println("\t" + violationMessage);
                         }
                     }
