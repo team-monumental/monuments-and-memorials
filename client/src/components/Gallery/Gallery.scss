@@ -1,0 +1,90 @@
+.images {
+    display: flex;
+    justify-content: center;
+}
+
+.image-wrapper {
+    position: relative;
+}
+
+.overlay {
+    background-color: rgb(0,0,0);
+    opacity: 0;
+    transition: opacity 0.05s ease-in;
+    position: absolute;
+    width: 9rem;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 1rem;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+.secondary-images {
+    display: flex;
+    flex-direction: column;
+
+    .image {
+        margin: 0 0 1rem 1rem;
+        height: 9rem;
+        width: 9rem;
+    }
+
+    .image-wrapper {
+        &:first-child {
+            .image, .overlay {
+                border-top-right-radius: 14px;
+            }
+        }
+
+        &:last-child {
+            .image, .overlay {
+                margin-bottom: 0;
+                border-bottom-right-radius: 14px;
+            }
+        }
+    }
+
+    .show-all {
+        position: relative;
+
+        .image, .overlay {
+            border-bottom-right-radius: 14px;
+        }
+
+        .overlay {
+            opacity: 0.5;
+
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+}
+
+.image {
+    background-size: cover;
+    background-position: center;
+
+    &.primary {
+        border-radius: 14px 0 0 14px;
+        height: 29rem;
+        width: 29rem;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: black;
+    }
+}
+
+.primary.image-wrapper.only {
+    .image, .overlay {
+        border-radius: 14px;
+    }
+}
