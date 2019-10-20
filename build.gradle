@@ -72,4 +72,5 @@ task copyWebApp(type: Copy, dependsOn: [appNpmBuild]) {
     into 'build/resources/main/static/'
 }
 
-processResources.dependsOn 'copyWebApp'
+// Enable this to ALWAYS build react when building the Java app
+// processResources.dependsOn 'copyWebApp'
