@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.scss';
 import { NavLink } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Collapse, Button, Form, FormControl, Nav, Navbar, NavItem } from 'react-bootstrap';
 
 export default class Header extends React.Component {
 
@@ -17,12 +17,16 @@ export default class Header extends React.Component {
                 <div className="left">
                     <div className="links">
                         {this.links.map((link, index) =>
-                            <NavLink to={link.route} exact={link.exact} className="header-link" activeClassName="active" key={link.name}>{link.name}</NavLink>
+                            <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
                         )}
                     </div>
                 </div>
                 <div className="center">
-                    Put a search bar here pls
+                    <Form inline>
+                        <FormControl type="text" placeholder="Title" size="sm" className="mr-sm-2" />
+                        <FormControl type="text" placeholder="Location" size="sm" className="mr-sm-2" />
+                        <Button variant="primary btn-sm">Search</Button>
+                    </Form>
                 </div>
                 <div className="right">
                     <Button size="sm" variant="link-secondary">Log in</Button>
