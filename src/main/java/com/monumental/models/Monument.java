@@ -60,7 +60,7 @@ public class Monument extends Model implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "inscription", length = 1024)
+    @Column(name = "inscription", length = 2048)
     private String inscription;
 
     @JsonIgnore

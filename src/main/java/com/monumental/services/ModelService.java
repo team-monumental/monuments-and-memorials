@@ -1,7 +1,10 @@
 package com.monumental.services;
 
 import com.monumental.models.Model;
+import com.monumental.models.Monument;
 import org.hibernate.*;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,25 @@ import java.util.*;
 @Service
 public abstract class ModelService<T extends Model> {
 
+    @Autowired
+    SessionFactoryService sessionFactoryService;
+
+    /**
+     * Public constructor for ModelService
+     * Use when NOT injecting SessionFactoryService via Spring
+     * @param sessionFactoryService - instance of SessionFactoryService to use for initialization
+     */
+    public ModelService(SessionFactoryService sessionFactoryService) {
+        this.sessionFactoryService = sessionFactoryService;
+    }
+
+    /**
+     * Public default constructor for ModelService
+     */
+    public ModelService() {
+
+    }
+
     /**
      * Various hibernate methods require a Class reference to the Model being queried
      * At some points we also need the name of the table, which is accessible from the Class
@@ -32,9 +54,6 @@ public abstract class ModelService<T extends Model> {
         return ((Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0]);
     }
-
-    @Autowired
-    SessionFactoryService sessionFactoryService;
 
     private List<Integer> doInsert(List<T> records) throws HibernateException {
 
@@ -282,33 +301,41 @@ public abstract class ModelService<T extends Model> {
     }
 
     /**
-     * Generic method to build a "FROM ... WHERE ..." query
-     * Assumes the FROM clause is the name of the T generic class
-     * @param whereParameterName - Name of the column to use in the WHERE clause
-     * @param whereParameter - Used to set the parameter in the WHERE clause
-     * @return List<T> - the List of T returned by the query
+     * Perform a get query with the specified criteria
+     * @param criteria - List of Criterion objects to apply to the query
+     * @param initializeLazyLoadedCollections - If true, loads all of the collections associated with T that are
+     *                                        normally lazy loaded
+     * @return List<T> - List of T returned by the query
      */
     @SuppressWarnings("unchecked")
-    public List<T> getFromWhere(String whereParameterName, Object whereParameter) {
+    public List<T> getWithCriteria(List<Criterion> criteria, boolean initializeLazyLoadedCollections) {
         Session session = this.sessionFactoryService.getFactory().openSession();
         Transaction transaction = null;
         List<T> records;
-        String tableName = this.getModelClass().getName();
 
         try {
             transaction = session.beginTransaction();
-            records = session.createQuery("FROM " + tableName + " WHERE " + whereParameterName + " = :whereParameter")
-                    .setParameter("whereParameter", whereParameter)
-                    .list();
+            Criteria c = session.createCriteria(this.getModelClass());
+
+            for (Criterion criterion : criteria) {
+                c.add(criterion);
+            }
+
+            records = c.list();
             transaction.commit();
-            session.close();
+
+            if (initializeLazyLoadedCollections) {
+                this.initializeLazyLoadedCollections(records);
+            }
+
         } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
 
-            session.close();
             throw e;
+        } finally {
+            session.close();
         }
 
         return records;
