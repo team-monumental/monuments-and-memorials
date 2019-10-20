@@ -114,7 +114,7 @@ export default class Monument extends React.Component {
     }
 
     renderMain() {
-        const { monument, images, tags } = this.state;
+        const { monument, tags } = this.state;
 
         return (
             <div className="main">

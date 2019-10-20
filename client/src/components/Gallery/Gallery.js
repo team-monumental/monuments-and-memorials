@@ -2,7 +2,7 @@ import React from 'react';
 import './Gallery.scss';
 import { Modal, Pagination } from 'react-bootstrap';
 
-export default class Monument extends React.Component {
+export default class Gallery extends React.Component {
 
     constructor(props) {
         super(props);
