@@ -2,6 +2,7 @@ import React from 'react';
 import './App.scss';
 import './theme.scss';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import Header from './components/Header/Header';
 import Monument from './components/Monument/Monument';
@@ -9,6 +10,9 @@ import Monument from './components/Monument/Monument';
 function App() {
     return (
         <div className="App">
+            <Helmet>
+                <title>Monuments and Memorials</title>
+            </Helmet>
             <Router>
                 <Header/>
                 <div className="page">
