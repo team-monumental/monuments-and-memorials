@@ -95,7 +95,6 @@ export default class Monument extends React.Component {
         if (this.state.error) return this.renderError();
 
         const title = this.state.monument.title;
-        console.log(title);
 
         return (
             <div className="page-container">

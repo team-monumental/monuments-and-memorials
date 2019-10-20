@@ -10,9 +10,7 @@ import Monument from './components/Monument/Monument';
 function App() {
     return (
         <div className="App">
-            <Helmet>
-                <title>Monuments and Memorials</title>
-            </Helmet>
+            <Helmet title={'Monuments and Memorials'}/>
             <Router>
                 <Header/>
                 <div className="page">
