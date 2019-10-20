@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.scss';
 import { NavLink } from 'react-router-dom';
-import { Collapse, Button, Form, FormControl, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Button, Form, FormControl } from 'react-bootstrap';
 
 export default class Header extends React.Component {
 
