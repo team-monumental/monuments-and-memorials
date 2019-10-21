@@ -22,7 +22,7 @@ import java.util.List;
 public class Tag extends Model implements Serializable {
 
     @Column(name = "name")
-    @NotNull(groups = NewOrExisting.class, message = "Name can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "Name can not be null")
     private String name;
 
     @JsonIgnore

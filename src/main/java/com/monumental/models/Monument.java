@@ -31,7 +31,7 @@ public class Monument extends Model implements Serializable {
     private String artist;
 
     @Column(name = "title")
-    @NotNull(groups = NewOrExisting.class, message = "Title can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "Title can not be null")
     private String title;
 
     @Temporal(TemporalType.DATE)
@@ -39,7 +39,7 @@ public class Monument extends Model implements Serializable {
     private Date date;
 
     @Column(name = "material")
-    @NotNull(groups = NewOrExisting.class, message = "Material can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "Material can not be null")
     private String material;
 
     @Column(name = "lat")

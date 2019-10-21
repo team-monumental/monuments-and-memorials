@@ -17,12 +17,12 @@ import java.io.Serializable;
 public class Image extends Model implements Serializable {
 
     @Column(name = "url")
-    @NotNull(groups = NewOrExisting.class, message = "URL can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "URL can not be null")
     private String url;
 
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
-    @NotNull(groups = NewOrExisting.class, message = "Image must have an associated Monument")
+    @NotNull(groups = {New.class, Existing.class}, message = "Image must have an associated Monument")
     private Monument monument;
 
     public Image() {
