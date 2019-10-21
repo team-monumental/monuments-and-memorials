@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { Button, Card } from 'react-bootstrap';
 import * as slugify from 'slugify';
 import * as moment from 'moment';
+import { Helmet } from 'react-helmet';
 import Gallery from '../Gallery/Gallery';
 
 export default class Monument extends React.Component {
@@ -93,8 +94,11 @@ export default class Monument extends React.Component {
     render() {
         if (this.state.error) return this.renderError();
 
+        const title = this.state.monument.title;
+
         return (
             <div className="page-container">
+                <Helmet title={title + ' | Monuments and Memorials'}/>
                 {this.redirectToSlug()}
                 <div className="column related-monuments-column">
                     {this.renderSuggestChanges()}
