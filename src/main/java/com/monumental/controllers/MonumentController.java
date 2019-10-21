@@ -4,8 +4,10 @@ import com.monumental.exceptions.*;
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,11 @@ public class MonumentController {
     public Monument createMonument(@RequestBody Monument monument) {
         this.monumentService.insert(monument);
         return monument;
+    }
+
+    @PostMapping("/api/monument/testValidation")
+    public String testMonumentValidation(@Validated(Monument.New.class) @RequestBody Monument monument) {
+        return "Validation passed";
     }
 
     @GetMapping("/api/monument/{id}")

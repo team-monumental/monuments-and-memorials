@@ -27,15 +27,10 @@ public abstract class Model {
 
     }
 
-    // Use this group to signify validation of the Id field of the record
-    public interface Identity {
-
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    @NotNull(groups = Identity.class, message = "ID can not be null")
+    @NotNull(groups = Existing.class, message = "ID can not be null")
     private Integer id;
 
     @Temporal(TemporalType.DATE)

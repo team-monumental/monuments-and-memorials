@@ -42,7 +42,7 @@ public class InitialDataLoadApplication {
                     // Convert the row into a CsvMonumentConverterResult object
                     CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip());
                     // Validate the CsvMonumentConverterResult's Monument
-                    Monument.ValidationResult validationResult = result.getMonument().validate();
+                    Monument.ValidationResult validationResult = result.getMonument().validate(Monument.New.class);
                     // If the Monument is valid, add the CsvMonumentConverterResult to the accumulating list
                     if (validationResult.isValid()) {
                         results.add(result);

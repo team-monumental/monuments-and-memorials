@@ -302,6 +302,16 @@ public abstract class ModelService<T extends Model> {
 
     /**
      * Perform a get query with the specified criteria
+     * Calls getWithCriteria(List<Criterion>, boolean), passing in false for the boolean parameter
+     * @param criteria - List of Criterion objects to apply to the query
+     * @return List<T> - List of T returned by the query
+     */
+    public List<T> getWithCriteria(List<Criterion> criteria) {
+        return this.getWithCriteria(criteria, false);
+    }
+
+    /**
+     * Perform a get query with the specified criteria
      * @param criteria - List of Criterion objects to apply to the query
      * @param initializeLazyLoadedCollections - If true, loads all of the collections associated with T that are
      *                                        normally lazy loaded

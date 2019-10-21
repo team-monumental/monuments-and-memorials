@@ -143,189 +143,29 @@ public class MonumentUnitTests {
         assertEquals("This is a Description", result);
     }
 
-    @Test
-    public void testMonument_addContribution_NullContributions_NullAttributes() {
-        Monument monument = new Monument();
-
-        Contribution contribution = new Contribution();
-
-        monument.addContribution(contribution);
-
-        assertEquals(0, monument.getContributions().size());
-    }
-
-    @Test
-    public void testMonument_addContribution_NullContributions_NullDate() {
-        Monument monument = new Monument();
-
-        Contribution contribution = new Contribution();
-        contribution.setSubmittedBy("Submitted By");
-
-        monument.addContribution(contribution);
-
-        assertEquals(0, monument.getContributions().size());
-    }
-
-    @Test
-    public void testMonument_addContribution_NullContributions_NullSubmittedBy() {
-        Monument monument = new Monument();
-
-        Contribution contribution = new Contribution();
-        contribution.setDate(new Date());
-
-        monument.addContribution(contribution);
-
-        assertEquals(0, monument.getContributions().size());
-    }
-
-    @Test
-    public void testMonument_addContribution_NullContributions_EmptySubmittedBy() {
-        Monument monument = new Monument();
-
-        Contribution contribution = new Contribution();
-        contribution.setDate(new Date());
-        contribution.setSubmittedBy("");
-
-        monument.addContribution(contribution);
-
-        assertEquals(0, monument.getContributions().size());
-    }
-
-    @Test
-    public void testMonument_addContribution_NullContributions_UniqueContribution() {
-        Monument monument = new Monument();
-
-        Contribution contribution = new Contribution();
-        contribution.setDate(new Date());
-        contribution.setSubmittedBy("Submitted By");
-
-        monument.addContribution(contribution);
-
-        assertEquals(1, monument.getContributions().size());
-    }
-
-    @Test
-    public void testMonument_addContribution_NotNullContributions_MultipleContributionsAdded() {
-        Monument monument = new Monument();
-        monument.setContributions(new ArrayList<>());
-
-        Date date1 = new Date();
-        Date date2 = new Date();
-
-        try {
-            String dateString1 = "16/10/2019";
-            date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dateString1);
-
-            String dateString2 = "17/10/2019";
-            date2 = new SimpleDateFormat("dd/MM/yyyy").parse(dateString2);
-        }
-        catch (ParseException e) {
-            fail("Could not parse date Strings");
-        }
-
-        Contribution contribution1 = new Contribution();
-        contribution1.setDate(date1);
-        contribution1.setSubmittedBy("Submitted By1");
-
-        Contribution contribution2 = new Contribution();
-        contribution2.setDate(date1);
-        contribution2.setSubmittedBy("Submitted By1");
-
-        Contribution contribution3 = new Contribution();
-        contribution3.setDate(date1);
-        contribution3.setSubmittedBy("Submitted By2");
-
-        Contribution contribution4 = new Contribution();
-        contribution4.setDate(date2);
-        contribution4.setSubmittedBy("Submitted By1");
-
-        monument.addContribution(contribution1);
-        monument.addContribution(contribution2);
-        monument.addContribution(contribution3);
-        monument.addContribution(contribution4);
-
-        assertEquals(3, monument.getContributions().size());
-    }
-
-    /** addReference Tests **/
-    @Test
-    public void testMonument_addReference_NullReferences_NullUrl() {
-        Monument monument = new Monument();
-
-        Reference reference = new Reference();
-
-        monument.addReference(reference);
-
-        assertEquals(0, monument.getReferences().size());
-    }
-
-    @Test
-    public void testMonument_addReference_NullReferences_EmptyUrl() {
-        Monument monument = new Monument();
-
-        Reference reference = new Reference();
-        reference.setUrl("");
-
-        monument.addReference(reference);
-
-        assertEquals(0, monument.getReferences().size());
-    }
-
-    @Test
-    public void testMonument_addReference_NullReferences_UniqueReference() {
-        Monument monument = new Monument();
-
-        Reference reference = new Reference();
-        reference.setUrl("URL");
-
-        monument.addReference(reference);
-
-        assertEquals(1, monument.getReferences().size());
-    }
-
-    @Test
-    public void testMonument_addReference_NotNullReferences_MultipleReferencesAdded() {
-        Monument monument = new Monument();
-        monument.setReferences(new ArrayList<>());
-
-        Reference reference1 = new Reference();
-        reference1.setUrl("URL1");
-
-        Reference reference2 = new Reference();
-        reference2.setUrl("URL1");
-
-        Reference reference3 = new Reference();
-        reference3.setUrl("URL3");
-
-        monument.addReference(reference1);
-        monument.addReference(reference2);
-        monument.addReference(reference3);
-
-        assertEquals(2, monument.getReferences().size());
-    }
-
     /** validate Tests **/
 
     @Test
-    public void testMonument_validate_NullTitle_NullMaterial() {
+    public void testMonument_validate_New_NullTitle_NullMaterial() {
         Monument monument = new Monument();
 
-        Monument.ValidationResult result = monument.validate();
+        Monument.ValidationResult result = monument.validate(Monument.New.class);
 
         assertFalse(result.isValid());
 
         List<String> violationMessages = result.getViolationMessages();
+        System.out.println(violationMessages);
         assertEquals(2, violationMessages.size());
         assertTrue(violationMessages.contains("Title can not be null"));
         assertTrue(violationMessages.contains("Material can not be null"));
     }
 
     @Test
-    public void testMonument_validate_NullTitle_NotNullMaterial() {
+    public void testMonument_validate_New_NullTitle_NotNullMaterial() {
         Monument monument = new Monument();
         monument.setMaterial("Material");
 
-        Monument.ValidationResult result = monument.validate();
+        Monument.ValidationResult result = monument.validate(Monument.New.class);
 
         assertFalse(result.isValid());
 
@@ -336,11 +176,11 @@ public class MonumentUnitTests {
     }
 
     @Test
-    public void testMonument_validate_NotNullTitle_NullMaterial() {
+    public void testMonument_validate_New_NotNullTitle_NullMaterial() {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        Monument.ValidationResult result = monument.validate();
+        Monument.ValidationResult result = monument.validate(Monument.New.class);
 
         assertFalse(result.isValid());
 
@@ -351,12 +191,12 @@ public class MonumentUnitTests {
     }
 
     @Test
-    public void testMonument_validate_NotNullTitle_NotNullMaterial() {
+    public void testMonument_validate_New_NotNullTitle_NotNullMaterial() {
         Monument monument = new Monument();
         monument.setTitle("Title");
         monument.setMaterial("Material");
 
-        Monument.ValidationResult result = monument.validate();
+        Monument.ValidationResult result = monument.validate(Monument.New.class);
 
         assertTrue(result.isValid());
 

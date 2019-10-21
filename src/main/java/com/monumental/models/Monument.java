@@ -80,7 +80,10 @@ public class Monument extends Model implements Serializable {
     private List<Contribution> contributions;
 
     public Monument() {
-
+        this.tags = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.references = new ArrayList<>();
+        this.contributions = new ArrayList<>();
     }
 
     public Monument(String artist, String title, Date date, String material, double lat,
@@ -93,6 +96,11 @@ public class Monument extends Model implements Serializable {
         this.lon = lon;
         this.city = city;
         this.state = state;
+
+        this.tags = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.references = new ArrayList<>();
+        this.contributions = new ArrayList<>();
     }
 
     public String getArtist() {
@@ -269,69 +277,16 @@ public class Monument extends Model implements Serializable {
     }
 
     /**
-     * Adds a Contribution to the List
-     * Will make a new ArrayList if this.contributions is null
-     * Checks if a Contribution has already been added to this.contributions with the same date and name
-     * Will do nothing if the specified Contribution has a null date or null/empty submittedBy
-     * and does nothing if so
-     * @param contribution - Contribution to add to the List
-     */
-    public void addContribution(Contribution contribution) {
-        if (this.contributions == null) {
-            this.contributions = new ArrayList<>();
-        }
-
-        if (contribution.getDate() == null || contribution.getSubmittedBy() == null ||
-                contribution.getSubmittedBy().isEmpty()) {
-            return;
-        }
-
-        for (Contribution c : this.contributions) {
-            if (c.getDate() == contribution.getDate() &&
-                    c.getSubmittedBy().equalsIgnoreCase(contribution.getSubmittedBy())) {
-                return;
-            }
-        }
-
-        this.contributions.add(contribution);
-    }
-
-    /**
-     * Adds a Reference to the List
-     * Will make a new ArrayList if this.references is null
-     * Will do nothing if the specified Reference has a null/empty url
-     * Checks if a Reference has already been added to this.references with the same url
-     * and does nothing if so
-     * @param reference - Reference to add to the List
-     */
-    public void addReference(Reference reference) {
-        if (this.references == null) {
-            this.references = new ArrayList<>();
-        }
-
-        if (reference.getUrl() == null || reference.getUrl().isEmpty()) {
-            return;
-        }
-
-        for (Reference r : this.references) {
-            if (r.getUrl().equalsIgnoreCase(reference.getUrl())) {
-                return;
-            }
-        }
-
-        this.references.add(reference);
-    }
-
-    /**
-     * Encapsulates the logic to validate a Monument object
+     * Encapsulates the logic to validate a new Monument object
      * Use this method to manually run validation in lieu of a @Valid Spring annotation
+     * @param validationClass - The class grouping to validate
      * @return ValidationResult - ValidationResult object representing the result of the validation
      */
-    public ValidationResult validate() {
+    public ValidationResult validate(Class validationClass) {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         ValidationResult result = new ValidationResult();
 
-        result.setViolations(validator.validate(this, Monument.NewOrExisting.class));
+        result.setViolations(validator.validate(this, validationClass));
 
         return result;
     }

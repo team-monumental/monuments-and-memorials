@@ -40,7 +40,7 @@ public class CsvMonumentConverter {
                     newContribution.setSubmittedBy(value);
                     newContribution.setMonument(monument);
 
-                    monument.addContribution(newContribution);
+                    monument.getContributions().add(newContribution);
                     break;
                 case 1: // Artist
                     monument.setArtist(value);
@@ -128,7 +128,7 @@ public class CsvMonumentConverter {
                     newReference.setUrl(value);
                     newReference.setMonument(monument);
 
-                    monument.addReference(newReference);
+                    monument.getReferences().add(newReference);
             }
         }
 
