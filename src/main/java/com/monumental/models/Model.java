@@ -4,7 +4,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.GroupSequence;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
@@ -28,7 +27,7 @@ public abstract class Model {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     @Null(groups = New.class, message = "ID can not be specified on insert")
-    @NotNull(groups = Existing.class, message = "ID can not be null")
+    @NotNull(groups = Existing.class, message = "ID can not be null on update")
     private Integer id;
 
     @Temporal(TemporalType.DATE)

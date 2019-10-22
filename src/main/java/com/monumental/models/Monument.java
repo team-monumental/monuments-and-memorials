@@ -277,7 +277,7 @@ public class Monument extends Model implements Serializable {
     }
 
     /**
-     * Encapsulates the logic to validate a new Monument object
+     * Encapsulates the logic to validate a Monument object
      * Use this method to manually run validation in lieu of a @Valid Spring annotation
      * @param validationClass - The class grouping to validate
      * @return ValidationResult - ValidationResult object representing the result of the validation
