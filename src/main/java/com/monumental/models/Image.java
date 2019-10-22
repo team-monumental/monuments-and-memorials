@@ -1,6 +1,7 @@
 package com.monumental.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -16,6 +17,7 @@ import java.io.Serializable;
 public class Image extends Model implements Serializable {
 
     @Column(name = "url", length = 2048)
+    @NotNull(groups = {New.class, Existing.class}, message = "URL can not be null")
     private String url;
 
     @Column(name = "is_primary")
@@ -23,6 +25,7 @@ public class Image extends Model implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
+    @NotNull(groups = {New.class, Existing.class}, message = "Image must have an associated Monument")
     private Monument monument;
 
     public Image() {

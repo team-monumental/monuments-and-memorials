@@ -1,7 +1,12 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
+import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
+import com.monumental.services.TagService;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,12 +34,17 @@ public class MonumentServiceIntegrationTests {
     @Autowired
     private MonumentService monumentService;
 
+    @Autowired
+    private TagService tagService;
+
+    /** insert Tests **/
+
     /**
      * Test method for integration testing MonumentService.insert(record)
      * Checks that the returned result from the insert is not null, meaning it was inserted correctly
      */
     @Test
-    public void testMonumentService_Insert_Single() {
+    public void testMonumentService_insert_Single() {
         Monument monument = makeTestMonument();
 
         Integer result = this.monumentService.insert(monument);
@@ -47,7 +58,7 @@ public class MonumentServiceIntegrationTests {
      * correctly
      */
     @Test
-    public void testMonumentService_Insert_Multiple() {
+    public void testMonumentService_insert_Multiple() {
         List<Monument> monuments = makeTestMonuments();
 
         List<Integer> results = this.monumentService.insert(monuments);
@@ -59,12 +70,14 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** get Tests **/
+
     /**
      * Test method for integration testing MonumentService.get(record)
      * First inserts a record into the database then performs a get to verify the records are the same
      */
     @Test
-    public void testMonumentService_Get_Single() {
+    public void testMonumentService_get_Single() {
         Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
@@ -81,7 +94,7 @@ public class MonumentServiceIntegrationTests {
      * Checks that only 2 records are returned and that they have the expected attributes
      */
     @Test
-    public void testMonumentService_GetAll_ListPassed() {
+    public void testMonumentService_getAll_ListPassed() {
         ArrayList<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
@@ -106,13 +119,15 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** getAll Tests **/
+
     /**
      * Test method for integration testing MonumentService.getAll(null)
      * First inserts 3 records into the database then performs a getAll for all 3 records
      * Checks that 3 records are returned and that they have the expected attributes
      */
     @Test
-    public void testMonumentService_GetAll_NullPassed() {
+    public void testMonumentService_getAll_NullPassed() {
         ArrayList<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
@@ -134,6 +149,8 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** update Tests **/
+
     /**
      * Test method for integration testing MonumentService.update(record)
      * First inserts a record into the database then does a get to retrieve it
@@ -141,7 +158,7 @@ public class MonumentServiceIntegrationTests {
      * Finally, it does another get for the record and checks to make sure the changes were persisted
      */
     @Test
-    public void testMonumentService_Update_Single() {
+    public void testMonumentService_update_Single() {
         Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
@@ -166,7 +183,7 @@ public class MonumentServiceIntegrationTests {
      * Finally, it does another get for the records and checks to make sure the changes were persisted
      */
     @Test
-    public void testMonumentService_Update_Multiple() {
+    public void testMonumentService_update_Multiple() {
         ArrayList<Monument> monuments = makeTestMonuments();
 
         List<Integer> ids = this.monumentService.insert(monuments);
@@ -199,6 +216,8 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
+    /** delete Tests **/
+
     /**
      * Test method for integration testing MonumentService.delete(id)
      * First, does an insert to insert a single record into the database
@@ -206,7 +225,7 @@ public class MonumentServiceIntegrationTests {
      * Finally, does a delete and checks that another get returns null
      */
     @Test
-    public void testMonumentService_Delete_Single() {
+    public void testMonumentService_delete_Single() {
         Monument monument = makeTestMonument();
 
         Integer id = this.monumentService.insert(monument);
@@ -228,7 +247,7 @@ public class MonumentServiceIntegrationTests {
      * Then, does a delete followed by another getAll to check that the returned results are null or not null as expected
      */
     @Test
-    public void testMonumentService_Delete_Multiple() {
+    public void testMonumentService_delete_Multiple() {
         List<Monument> monuments = makeTestMonuments();
 
         this.monumentService.insert(monuments);
@@ -247,6 +266,125 @@ public class MonumentServiceIntegrationTests {
         assertNull(this.monumentService.get(3));
 
         assertNotNull(this.monumentService.get(2));
+    }
+
+    /** getWithCriteria Tests **/
+
+    @Test
+    public void test_MonumentService_getWithCriteria_SingleRecord_OneCriterion() {
+        Monument monument = makeTestMonument();
+
+        this.monumentService.insert(monument);
+
+        ArrayList<Criterion> criteria = new ArrayList<>();
+        criteria.add(makeEqualRestriction("title", monument.getTitle()));
+
+        List<Monument> results = this.monumentService.getWithCriteria(criteria, false);
+
+        assertEquals(1, results.size());
+        assertEquals(monument.getTitle(), results.get(0).getTitle());
+        assertEquals(monument.getArtist(), results.get(0).getArtist());
+    }
+
+    @Test
+    public void test_MonumentService_getWithCriteria_MultipleRecords_OneCriterion() {
+        Monument monument1 = makeTestMonument();
+        monument1.setTitle("Title 1");
+
+        Monument monument2 = makeTestMonument();
+        monument2.setTitle("Title 2");
+
+        ArrayList<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+        monuments.add(monument2);
+
+        this.monumentService.insert(monuments);
+
+        ArrayList<Criterion> criteria = new ArrayList<>();
+        criteria.add(makeEqualRestriction("artist", monument1.getArtist()));
+
+        List<Monument> results = this.monumentService.getWithCriteria(criteria, false);
+
+        assertEquals(2, results.size());
+
+        ArrayList<String> expectedTitles = new ArrayList<>();
+        expectedTitles.add(monument1.getTitle());
+        expectedTitles.add(monument2.getTitle());
+
+        for (Monument result : results) {
+            assertTrue(expectedTitles.contains(result.getTitle()));
+            assertEquals("Artist", result.getArtist());
+        }
+
+        criteria = new ArrayList<>();
+        criteria.add(makeEqualRestriction("artist", monument2.getArtist()));
+
+        results = this.monumentService.getWithCriteria(criteria, false);
+
+        assertEquals(2, results.size());
+
+        expectedTitles = new ArrayList<>();
+        expectedTitles.add(monument1.getTitle());
+        expectedTitles.add(monument2.getTitle());
+
+        for (Monument result : results) {
+            assertTrue(expectedTitles.contains(result.getTitle()));
+            assertEquals("Artist", result.getArtist());
+        }
+    }
+
+    @Test
+    public void test_MonumentService_getWithCriteria_SingleRecord_MultipleCriterion() {
+        Monument monument = makeTestMonument();
+
+        this.monumentService.insert(monument);
+
+        ArrayList<Criterion> criteria = new ArrayList<>();
+        criteria.add(makeEqualRestriction("title", monument.getTitle()));
+        criteria.add(makeEqualRestriction("artist", monument.getArtist()));
+
+        List<Monument> results = this.monumentService.getWithCriteria(criteria, false);
+
+        assertEquals(1, results.size());
+        assertEquals(monument.getTitle(), results.get(0).getTitle());
+        assertEquals(monument.getArtist(), results.get(0).getArtist());
+    }
+
+    @Test
+    public void test_MonumentService_getWithCriteria_MultipleRecords_MultipleCriterion() {
+        Monument monument1 = makeTestMonument();
+        monument1.setTitle("Title 1");
+
+        Monument monument2 = makeTestMonument();
+        monument2.setTitle("Title 2");
+
+        ArrayList<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+        monuments.add(monument2);
+
+        this.monumentService.insert(monuments);
+
+        ArrayList<Criterion> criteria = new ArrayList<>();
+        criteria.add(makeEqualRestriction("artist", monument1.getArtist()));
+        criteria.add(makeEqualRestriction("title", monument1.getTitle()));
+
+        List<Monument> results = this.monumentService.getWithCriteria(criteria, false);
+
+        assertEquals(1, results.size());
+
+        assertEquals("Title 1", results.get(0).getTitle());
+        assertEquals("Artist", results.get(0).getArtist());
+
+        criteria = new ArrayList<>();
+        criteria.add(makeEqualRestriction("artist", monument2.getArtist()));
+        criteria.add(makeEqualRestriction("title", monument2.getTitle()));
+
+        results = this.monumentService.getWithCriteria(criteria, false);
+
+        assertEquals(1, results.size());
+
+        assertEquals("Title 2", results.get(0).getTitle());
+        assertEquals("Artist", results.get(0).getArtist());
     }
 
     /**
@@ -284,5 +422,15 @@ public class MonumentServiceIntegrationTests {
         monuments.add(monument3);
 
         return monuments;
+    }
+
+    /**
+     * Helper function to make an "equals" restriction with the specified property name and property value
+     * @param propertyName - Name of the property for the equals restriction
+     * @param propertyValue - Value of the property for the equals restriction
+     * @return Criterion - The "equals" restriction represented by the specified property name and value
+     */
+    private Criterion makeEqualRestriction(String propertyName, Object propertyValue) {
+        return Restrictions.eq(propertyName, propertyValue);
     }
 }

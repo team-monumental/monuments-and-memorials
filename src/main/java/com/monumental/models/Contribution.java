@@ -3,6 +3,7 @@ package com.monumental.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ import java.util.Date;
 public class Contribution extends Model implements Serializable {
 
     @Column(name = "submitted_by")
+    @NotNull(groups = {New.class, Existing.class}, message = "Submitted By can not be null")
     private String submittedBy;
 
     @Temporal(TemporalType.DATE)
@@ -27,6 +29,7 @@ public class Contribution extends Model implements Serializable {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
+    @NotNull(groups = {New.class, Existing.class}, message = "Must have an associated Monument")
     private Monument monument;
 
     public Contribution() {

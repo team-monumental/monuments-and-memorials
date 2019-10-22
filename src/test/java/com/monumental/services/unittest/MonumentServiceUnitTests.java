@@ -102,12 +102,14 @@ public class MonumentServiceUnitTests {
         when(this.getAllQuery.list()).thenReturn(this.monuments);
     }
 
+    /** insert Tests **/
+
     /**
      * Test method for unit testing MonumentService.insert(record)
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void testMonumentService_Insert_Single() {
+    public void testMonumentService_insert_Single() {
         int result = this.monumentService.insert(this.monument1);
 
         assertEquals(1, result);
@@ -118,7 +120,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void testMonumentService_Insert_Multiple() {
+    public void testMonumentService_insert_Multiple() {
         List<Integer> results = this.monumentService.insert(this.monuments);
 
         assertEquals(3, results.size());
@@ -132,12 +134,14 @@ public class MonumentServiceUnitTests {
         assertEquals((Integer) 3, result3);
     }
 
+    /** get Tests **/
+
     /**
      * Test method for unit testing MonumentService.get(record)
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void testMonumentService_Get_Single() {
+    public void testMonumentService_get_Single() {
         Monument result = this.monumentService.get(1);
 
         assertEquals(this.monument1.getTitle(), result.getTitle());
@@ -148,7 +152,7 @@ public class MonumentServiceUnitTests {
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void testMonumentService_GetAll_ListPassed() {
+    public void testMonumentService_getAll_ListPassed() {
         List<Monument> results = this.monumentService.get(this.ids);
 
         assertEquals(3, results.size());
@@ -162,12 +166,14 @@ public class MonumentServiceUnitTests {
         assertEquals(this.monument3.getTitle(), result3.getTitle());
     }
 
+    /** getAll Tests **/
+
     /**
      * Test method for unit testing MonumentService.getAll()
      * Mocks the appropriate classes as to not connect to the database
      */
     @Test
-    public void unitTestMonumentServiceGetAll() {
+    public void testMonumentService_getAll() {
         List<Monument> results = this.monumentService.getAll();
 
         assertEquals(3, results.size());
