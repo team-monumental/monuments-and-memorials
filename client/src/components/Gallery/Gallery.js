@@ -26,8 +26,8 @@ export default class Gallery extends React.Component {
     }
 
     render() {
-        let primaryImage = this.props.images.find(e => e.isPrimary === true);
         const images = JSON.parse(JSON.stringify(this.props.images));
+        let primaryImage = images.find(e => e.isPrimary === true);
 
         primaryImage = primaryImage !== undefined ?
             primaryImage :
@@ -118,7 +118,7 @@ export default class Gallery extends React.Component {
     renderModal() {
         const { modalOpen, modalPage } = this.state;
         const images = this.props.images;
-        const selectedImage = this.props.images[modalPage];
+        const selectedImage = images[modalPage];
         let pagination = [];
         let paginationIndices = [];
         images.forEach((image, index) => {
