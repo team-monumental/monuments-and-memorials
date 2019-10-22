@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class InitialDataLoadApplication {
     public static void main(String[] args) {
-        String pathToDatasetCsv = "C:\\Users\\nickb\\Documents\\Initial Dataset.csv";
+        String pathToDatasetCsv = "/Users/benvogler/Downloads/initial.csv";
         String csvRow;
         int rowCount = 0;
         ArrayList<CsvMonumentConverterResult> results = new ArrayList<>();

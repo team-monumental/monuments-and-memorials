@@ -26,7 +26,7 @@ public class MonumentService extends ModelService<Monument> {
      */
     @SuppressWarnings("unchecked")
     public List<Monument> search(String query) {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<Monument> records;
 

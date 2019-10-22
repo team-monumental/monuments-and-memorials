@@ -1,13 +1,16 @@
 package com.monumental.services;
 
 import com.monumental.models.Model;
-import com.monumental.models.Monument;
 import org.hibernate.*;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -21,6 +24,9 @@ import java.util.*;
  */
 @Service
 public abstract class ModelService<T extends Model> {
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
     @Autowired
     SessionFactoryService sessionFactoryService;
@@ -57,7 +63,7 @@ public abstract class ModelService<T extends Model> {
 
     private List<Integer> doInsert(List<T> records) throws HibernateException {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<Integer> ids = new ArrayList<>();
 
@@ -82,7 +88,7 @@ public abstract class ModelService<T extends Model> {
     @SuppressWarnings("unchecked")
     private List<T> doGet(List<Integer> ids, boolean initializeLazyLoadedCollections) throws HibernateException {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
 
@@ -122,7 +128,7 @@ public abstract class ModelService<T extends Model> {
     }
 
     private void doUpdate(List<T> records) throws HibernateException {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
 
         try {
@@ -144,7 +150,7 @@ public abstract class ModelService<T extends Model> {
     @SuppressWarnings("unchecked")
     private void doDelete(List<Integer> ids) throws HibernateException {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records = new ArrayList<>();
 
@@ -233,7 +239,7 @@ public abstract class ModelService<T extends Model> {
 
     @SuppressWarnings("unchecked")
     List<T> getByForeignKey(String foreignKeyName, Object foreignKey, boolean initializeLazyLoadedCollections) {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
         String tableName = this.getModelClass().getName();
@@ -270,7 +276,7 @@ public abstract class ModelService<T extends Model> {
     @SuppressWarnings("unchecked")
     List<T> getByJoinTable(String relationshipName, String foreignKeyName, Object foreignKey, boolean initializeLazyLoadedCollections) {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
         String tableName = this.getModelClass().getName();
@@ -319,7 +325,7 @@ public abstract class ModelService<T extends Model> {
      */
     @SuppressWarnings("unchecked")
     public List<T> getWithCriteria(List<Criterion> criteria, boolean initializeLazyLoadedCollections) {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
 
@@ -349,6 +355,10 @@ public abstract class ModelService<T extends Model> {
         }
 
         return records;
+    }
+
+    public List<T> getWithCriteriaQuery(CriteriaQuery<T> query) {
+        return this.getEntityManager().createQuery(query).getResultList();
     }
 
     /**
@@ -396,5 +406,37 @@ public abstract class ModelService<T extends Model> {
                 }
             }
         }
+    }
+
+    Session openSession() {
+        return this.sessionFactoryService.getFactory().openSession();
+    }
+
+    public EntityManager getEntityManager() {
+        return this.entityManagerFactory.createEntityManager();
+    }
+
+    public CriteriaBuilder getCriteriaBuilder() {
+        return this.getEntityManager().getCriteriaBuilder();
+    }
+
+    public CriteriaQuery<T> createCriteriaQuery() {
+        return this.createCriteriaQuery(this.getCriteriaBuilder());
+    }
+
+    public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder) {
+        return this.createCriteriaQuery(builder, true);
+    }
+
+    public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder, Boolean setRoot) {
+        CriteriaQuery<T> query = builder.createQuery(this.getModelClass());
+        if (setRoot) this.createRoot(query);
+        return query;
+    }
+
+    public Root<T> createRoot(CriteriaQuery<T> query) {
+        Root<T> root = query.from(this.getModelClass());
+        query.select(root);
+        return root;
     }
 }

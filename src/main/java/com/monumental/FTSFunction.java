@@ -23,6 +23,7 @@ public class FTSFunction implements SQLFunction {
 
         String field = (String) args.get(0);
         String value = (String) args.get(1);
+        System.out.println("to_tsvector(" + field + ") @@ " + "plainto_tsquery(" + value + ")");
         return "to_tsvector(" + field + ") @@ " + "plainto_tsquery(" + value + ")";
     }
 
