@@ -14,20 +14,8 @@ import java.util.List;
 @Service
 public class MonumentService extends ModelService<Monument> {
 
-    /**
-     * Public constructor for MonumentService
-     * Use when NOT injecting SessionFactoryService via Spring
-     * @param sessionFactoryService - instance of SessionFactoryService to use for initialization
-     */
     public MonumentService(SessionFactoryService sessionFactoryService) {
-        this.sessionFactoryService = sessionFactoryService;
-    }
-
-    /**
-     * Public default constructor for MonumentService
-     */
-    public MonumentService() {
-
+        super(sessionFactoryService);
     }
 
     /**
@@ -46,11 +34,10 @@ public class MonumentService extends ModelService<Monument> {
             transaction = session.beginTransaction();
             // The "fts" function is defined by the FTSFunction and CustomPostgreSQL9Dialect classes
             Query q = session.createQuery(
-                "select m from Monument m where fts(m.title, :query) = true"
+                    "select m from Monument m where fts(m.title, :query) = true"
             ).setParameter("query", query);
             records = q.list();
             transaction.commit();
-
             session.close();
         } catch (HibernateException e) {
             if (transaction != null) {

@@ -4,7 +4,7 @@ import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import org.hibernate.Hibernate;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -31,7 +30,7 @@ public class TagServiceIntegrationTests {
 
 
     /**
-     * Tests ImageService's getByMonumentId and the underlying ModelService's getByJoinTable
+     * Tests TagService's getByMonumentId and the underlying ModelService's getByJoinTable
      */
     @Test
     public void testTagService_GetByMonumentId() {
@@ -65,6 +64,53 @@ public class TagServiceIntegrationTests {
         assert(hasMonument);
     }
 
+    /** getTagsByName Tests **/
+
+    @Test
+    public void testTagService_getTagsByName_SingleRecordReturned() {
+        Tag tag = new Tag();
+        tag.setName("Tag");
+
+        this.tagService.insert(tag);
+
+        List<Tag> results = this.tagService.getTagsByName(tag.getName(), false);
+
+        assertEquals(1, results.size());
+        assertEquals(tag.getName(), results.get(0).getName());
+    }
+
+    /** Tag Unique Constraint Tests **/
+
+    @Test(expected = ConstraintViolationException.class)
+    public void testTagService_ExceptedConstraintViolationException_Name() {
+        Tag tag1 = new Tag();
+        tag1.setName("Tag");
+
+        this.tagService.insert(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag");
+
+        this.tagService.insert(tag2);
+    }
+
+    @Test
+    public void testTagService_CatchConstraintViolationException_Name() {
+        Tag tag1 = new Tag();
+        tag1.setName("Tag");
+
+        this.tagService.insert(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag");
+
+        try {
+            this.tagService.insert(tag2);
+        } catch (ConstraintViolationException e) {
+            assertEquals(1, this.tagService.getAll().size());
+        }
+    }
+
     /**
      * Helper that sets up 2 Monuments and 2 Tags, with 1 Tags related to both Monuments
      */
@@ -82,11 +128,11 @@ public class TagServiceIntegrationTests {
         monument2.setId(monumentIds.get(1));
 
         Tag tag1 = new Tag();
-        tag1.setMonuments(new HashSet<>(Arrays.asList(monument1)));
+        tag1.setMonuments(Arrays.asList(monument1));
         tag1.setName("tag1");
 
         Tag tag2 = new Tag();
-        tag2.setMonuments(new HashSet<>(Arrays.asList(monument1, monument2)));
+        tag2.setMonuments(Arrays.asList(monument1, monument2));
         tag2.setName("tag2");
 
         tagService.insert(Arrays.asList(tag1, tag2));

@@ -1,24 +1,30 @@
 package util.csvparsing;
 
+import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
+import com.monumental.models.Reference;
+import com.monumental.models.Tag;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Class used to convert a CSV row representing a Monument into a Monument object
+ * Class used to convert a CSV row representing a Monument into a CsvMonumentConverterResult object
  */
 public class CsvMonumentConverter {
     /**
-     * Static method for converting a CSV row representing a Monument into a Monument object
+     * Static method for converting a CSV row representing a Monument into a CsvMonumentConverterResult object
      * @param csvRow - CSV row representing a Monument, as a String
-     * @return Monument - the Monument object represented by csvRow
+     * @return CsvMonumentConverterResult - the CsvMonumentConverterResult that is represented by the CSV row
      */
-    public static Monument convertCsvRowToMonument(String csvRow) {
+    public static CsvMonumentConverterResult convertCsvRow(String csvRow) {
         // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
         // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
         String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-        Monument result = new Monument();
+        GregorianCalendar calendar = new GregorianCalendar();
+
+        Monument monument = new Monument();
+        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
@@ -29,13 +35,18 @@ public class CsvMonumentConverter {
             // I also assumed that if any columns were empty, they would be null
             switch (columnIndex) {
                 case 0: // Submitted By
-                    //result.setSubmittedBy(value);
+                    Contribution newContribution = new Contribution();
+                    newContribution.setDate(calendar.getTime());
+                    newContribution.setSubmittedBy(value);
+                    newContribution.setMonument(monument);
+
+                    monument.getContributions().add(newContribution);
                     break;
                 case 1: // Artist
-                    result.setArtist(value);
+                    monument.setArtist(value);
                     break;
                 case 2: // Title
-                    result.setTitle(value);
+                    monument.setTitle(value);
                     break;
                 case 3: // Date
                     // I made a couple of assumptions about the format of the dates in the file:
@@ -45,13 +56,12 @@ public class CsvMonumentConverter {
                     // TODO: Agree upon a standard format for dates in CSV file uploads
                     if (!value.isEmpty()) {
                         String[] dateArray = value.split("-");
-                        GregorianCalendar calendar = new GregorianCalendar();
 
                         // Parsing format "yyyy"
                         if (dateArray.length == 1) {
                             int year = Integer.parseInt(dateArray[0]);
                             calendar.set(year, Calendar.JANUARY, 1);
-                            result.setDate(calendar.getTime());
+                            monument.setDate(calendar.getTime());
                         }
                         // Parsing format "dd-mm-yyyy"
                         else if (dateArray.length == 3) {
@@ -60,32 +70,69 @@ public class CsvMonumentConverter {
                             int year = Integer.parseInt(dateArray[2]);
                             // Remember that months are 0-based
                             calendar.set(year, month - 1, day);
-                            result.setDate(calendar.getTime());
+                            monument.setDate(calendar.getTime());
                         }
                     }
 
                     break;
                 case 6: // Material
-                    result.setMaterial(value);
+                    monument.setMaterial(value);
+                    break;
+                case 7: // Inscription
+                    monument.setInscription(value);
                     break;
                 case 9: // Latitude
                     if (!value.isEmpty()) {
-                        result.setLat(Double.parseDouble(value));
+                        monument.setLat(Double.parseDouble(value));
                     }
                     break;
                 case 10: // Longitude
                     if (!value.isEmpty()) {
-                        result.setLon(Double.parseDouble(value));
+                        monument.setLon(Double.parseDouble(value));
                     }
                     break;
                 case 11: // City
-                    result.setCity(value);
+                    monument.setCity(value);
                     break;
                 case 12: // State
-                    result.setState(value);
+                    monument.setState(value);
                     break;
+                case 13: // Tag columns
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 20:
+                    if (!value.isEmpty()) {
+                        // Split on commas in-case there are more than one Tag in the column
+                        String[] tagArray = value.split(",");
+
+                        for (int tagArrayColumnIndex = 0; tagArrayColumnIndex < tagArray.length; tagArrayColumnIndex++) {
+                            Tag newTag = new Tag();
+
+                            String tagValue = tagArray[tagArrayColumnIndex];
+                            // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
+                            tagValue = tagValue.strip();
+                            tagValue = tagValue.substring(0, 1).toUpperCase() + tagValue.substring(1);
+                            newTag.setName(tagValue);
+                            newTag.addMonument(monument);
+
+                            result.addTag(newTag);
+                        }
+                    }
+
+                    break;
+                case 22: // Reference
+                    Reference newReference = new Reference();
+                    newReference.setUrl(value);
+                    newReference.setMonument(monument);
+
+                    monument.getReferences().add(newReference);
             }
         }
+
+        result.setMonument(monument);
 
         return result;
     }
