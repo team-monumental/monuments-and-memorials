@@ -31,7 +31,7 @@ public class Monument extends Model implements Serializable {
     private String artist;
 
     @Column(name = "title")
-    @NotNull(groups = NewOrExisting.class, message = "Title can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "Title can not be null")
     private String title;
 
     @Temporal(TemporalType.DATE)
@@ -39,7 +39,7 @@ public class Monument extends Model implements Serializable {
     private Date date;
 
     @Column(name = "material")
-    @NotNull(groups = NewOrExisting.class, message = "Material can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "Material can not be null")
     private String material;
 
     @Column(name = "lat")
@@ -60,7 +60,7 @@ public class Monument extends Model implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "inscription", length = 1024)
+    @Column(name = "inscription", length = 2048)
     private String inscription;
 
     @JsonIgnore
@@ -80,7 +80,10 @@ public class Monument extends Model implements Serializable {
     private List<Contribution> contributions;
 
     public Monument() {
-
+        this.tags = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.references = new ArrayList<>();
+        this.contributions = new ArrayList<>();
     }
 
     public Monument(String artist, String title, Date date, String material, double lat,
@@ -93,6 +96,11 @@ public class Monument extends Model implements Serializable {
         this.lon = lon;
         this.city = city;
         this.state = state;
+
+        this.tags = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.references = new ArrayList<>();
+        this.contributions = new ArrayList<>();
     }
 
     public String getArtist() {
@@ -269,80 +277,53 @@ public class Monument extends Model implements Serializable {
     }
 
     /**
-     * Adds a Contribution to the List
-     * Will make a new ArrayList if this.contributions is null
-     * Checks if a Contribution has already been added to this.contributions with the same date and name
-     * Will do nothing if the specified Contribution has a null date or null/empty submittedBy
-     * and does nothing if so
-     * @param contribution - Contribution to add to the List
-     */
-    public void addContribution(Contribution contribution) {
-        if (this.contributions == null) {
-            this.contributions = new ArrayList<>();
-        }
-
-        if (contribution.getDate() == null || contribution.getSubmittedBy() == null ||
-                contribution.getSubmittedBy().isEmpty()) {
-            return;
-        }
-
-        for (Contribution c : this.contributions) {
-            if (c.getDate() == contribution.getDate() &&
-                    c.getSubmittedBy().equalsIgnoreCase(contribution.getSubmittedBy())) {
-                return;
-            }
-        }
-
-        this.contributions.add(contribution);
-    }
-
-    /**
-     * Adds a Reference to the List
-     * Will make a new ArrayList if this.references is null
-     * Will do nothing if the specified Reference has a null/empty url
-     * Checks if a Reference has already been added to this.references with the same url
-     * and does nothing if so
-     * @param reference - Reference to add to the List
-     */
-    public void addReference(Reference reference) {
-        if (this.references == null) {
-            this.references = new ArrayList<>();
-        }
-
-        if (reference.getUrl() == null || reference.getUrl().isEmpty()) {
-            return;
-        }
-
-        for (Reference r : this.references) {
-            if (r.getUrl().equalsIgnoreCase(reference.getUrl())) {
-                return;
-            }
-        }
-
-        this.references.add(reference);
-    }
-
-    /**
      * Encapsulates the logic to validate a Monument object
      * Use this method to manually run validation in lieu of a @Valid Spring annotation
-     * @return List<String> - List of ConstraintViolation messages, if any
-     * @return null - If there are no ConstraintViolations
+     * @param validationClass - The class grouping to validate
+     * @return ValidationResult - ValidationResult object representing the result of the validation
      */
-    public List<String> validate() {
+    public ValidationResult validate(Class validationClass) {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        ValidationResult result = new ValidationResult();
 
-        Set<ConstraintViolation<Monument>> violations = validator.validate(this, Monument.NewOrExisting.class);
+        result.setViolations(validator.validate(this, validationClass));
 
-        if (violations.isEmpty()) {
-            return null;
+        return result;
+    }
+
+    /**
+     * Inner-class to represent the result of a call to Monument.validate()
+     */
+    public static class ValidationResult {
+
+        private Set<ConstraintViolation<Monument>> violations;
+
+        /**
+         * Determines if this ValidationResult is valid
+         * It is valid if there are no ConstraintViolation<Monument> in the Set
+         * @return boolean - true if the ValidationResult is valid, false otherwise
+         */
+        public boolean isValid() {
+            return this.violations.isEmpty();
         }
-        else {
+
+        /**
+         * Returns a List of the violation messages (if there are any) as Strings
+         * If there are no ConstraintViolations, returns an empty List
+         * @return List<String> - List of violation messages as Strings (if there are any)
+         */
+        public List<String> getViolationMessages() {
             ArrayList<String> violationMessages = new ArrayList<>();
-            for (ConstraintViolation<Monument> violation : violations) {
+
+            for (ConstraintViolation<Monument> violation : this.violations) {
                 violationMessages.add(violation.getMessage());
             }
 
             return violationMessages;
+        }
+
+        void setViolations(Set<ConstraintViolation<Monument>> violations) {
+            this.violations = violations;
         }
     }
 }

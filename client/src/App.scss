@@ -46,15 +46,30 @@ homepage-map {
     justify-content: center;
 }
 
-.card {
-    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+.card.card {
+    background-color: #F6F5FA;
+    border: none;
+    border-radius: 10px;
+
+    .card-title {
+        padding: 1.25rem 1.25rem 0;
+        margin-bottom: 0;
+    }
 }
 
-.card {
-    .card-title {
-        padding: 1.25rem;
-        font-weight: 500;
-    }
+.h5.h5, .h6.h6 {
+    letter-spacing: -0.4px;
+    color: #61616D;
+}
+
+.h5.h5 {
+    font-weight: 500;
+    font-size: 28px;
+}
+
+.h6.h6 {
+    font-weight: bold;
+    font-size: 24px;
 }
 
 .tag {

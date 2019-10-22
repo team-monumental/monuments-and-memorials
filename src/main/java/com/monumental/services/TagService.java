@@ -1,27 +1,18 @@
 package com.monumental.services;
 
 import com.monumental.models.Tag;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TagService extends ModelService<Tag> {
 
-    /**
-     * Public constructor for TagService
-     * Use when NOT injecting SessionFactoryService via Spring
-     * @param sessionFactoryService - instance of SessionFactoryService to use for initialization
-     */
     public TagService(SessionFactoryService sessionFactoryService) {
-        this.sessionFactoryService = sessionFactoryService;
-    }
-
-    /**
-     * Public default constructor for TagService
-     */
-    public TagService() {
-
+        super(sessionFactoryService);
     }
 
     public List<Tag> getByMonumentId(Integer monumentId) {
@@ -35,9 +26,13 @@ public class TagService extends ModelService<Tag> {
     /**
      * Get all of the Tags with the specified name
      * @param name - name of the Tag to get as a String
+     * @param initializeLazyLoadedCollections - If true, initializes all of the Monuments associated with the Tags
      * @return List<Tag> - List of Tags with the specified name
      */
-    public List<Tag> getTagsByName(String name) {
-        return this.getFromWhere("name", name);
+    public List<Tag> getTagsByName(String name, boolean initializeLazyLoadedCollections) {
+        ArrayList<Criterion> criteria = new ArrayList<>();
+        criteria.add(Restrictions.eq("name", name));
+
+        return this.getWithCriteria(criteria, initializeLazyLoadedCollections);
     }
 }

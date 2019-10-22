@@ -16,12 +16,12 @@ import java.io.Serializable;
 public class Reference extends Model implements Serializable {
 
     @Column(name = "url", length = 500)
-    @NotNull(groups = NewOrExisting.class, message = "URL can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "URL can not be null")
     private String url;
 
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
-    @NotNull(groups = NewOrExisting.class, message = "Reference must have an associated Monument")
+    @NotNull(groups = {New.class, Existing.class}, message = "Reference must have an associated Monument")
     private Monument monument;
 
     public Reference() {

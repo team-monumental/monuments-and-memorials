@@ -19,7 +19,7 @@ import java.util.Date;
 public class Contribution extends Model implements Serializable {
 
     @Column(name = "submitted_by")
-    @NotNull(groups = NewOrExisting.class, message = "Submitted By can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "Submitted By can not be null")
     private String submittedBy;
 
     @Temporal(TemporalType.DATE)
@@ -29,7 +29,7 @@ public class Contribution extends Model implements Serializable {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
-    @NotNull(groups = NewOrExisting.class, message = "Must have an associated Monument")
+    @NotNull(groups = {New.class, Existing.class}, message = "Must have an associated Monument")
     private Monument monument;
 
     public Contribution() {

@@ -1,9 +1,11 @@
 import React from 'react';
 import './Monument.scss';
 import { Redirect } from 'react-router-dom';
-import { Button, Card, Collapse, Modal } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import * as slugify from 'slugify';
 import * as moment from 'moment';
+import { Helmet } from 'react-helmet';
+import Gallery from '../Gallery/Gallery';
 
 export default class Monument extends React.Component {
 
@@ -22,7 +24,7 @@ export default class Monument extends React.Component {
     }
 
     async componentDidMount() {
-        const { match: { params: { monumentId, slug } } } = this.props;
+        const { match: { params: { monumentId } } } = this.props;
 
         let error;
         const [ monument, contributions, images, references, tags ] = await Promise.all([
@@ -70,50 +72,63 @@ export default class Monument extends React.Component {
         }
     }
 
+    prettyPrintDate(date) {
+        if (!date) return;
+        date = moment(new Date(date));
+        // Wednesday, October 16th, 2019 format
+        return date.format('dddd, MMMM Do, YYYY');
+    };
+
+
+    capitalize(word) {
+        if (word) return word.charAt(0).toUpperCase() + word.slice(1).trim();
+        else return word;
+    }
+
+    parseState(state) {
+        if (!state) return state;
+        if (state.toLowerCase() === 'dc') state = 'd.c.';
+        return state.toUpperCase().trim();
+    };
+
     render() {
         if (this.state.error) return this.renderError();
 
+        const title = this.state.monument.title;
+
         return (
             <div className="page-container">
+                <Helmet title={title + ' | Monuments and Memorials'}/>
                 {this.redirectToSlug()}
                 <div className="column related-monuments-column">
-                    {this.renderRelatedMonumentsCard()}
+                    {this.renderSuggestChanges()}
+                    {this.renderNearbyMonuments()}
+                    {this.renderRelatedMonuments()}
                 </div>
                 <div className="column main-column">
-                    {this.renderMainCard()}
+                    {this.renderMain()}
+                    <Gallery/>
+                    {this.renderAbout()}
                 </div>
                 <div className="column visit-column">
-                    {this.renderVisitCard()}
+                    {this.renderVisit()}
                 </div>
             </div>
         )
     }
 
-    renderMainCard() {
-        const { monument, contributions, references, images, tags } = this.state;
-
-        const capitalize = (word) => word ? word.charAt(0).toUpperCase() + word.slice(1).trim() : word;
-        const parseState = (state) => {
-            if (!state) return state;
-            if (state.toLowerCase() === 'dc') state = 'd.c.';
-            return state.toUpperCase().trim();
-        };
-        const prettyPrintDate = (date) => {
-            if (!date) return;
-            date = moment(new Date(date));
-            // Wednesday, October 16th, 2019 format
-            return date.format('dddd, MMMM Do, YYYY');
-        };
+    renderMain() {
+        const { monument, tags } = this.state;
 
         return (
             <div className="main">
-                <Card>
-                    <Card.Title>
+                <div>
+                    <div className="h5">
                         {monument.title}
-                    </Card.Title>
-                    <Card.Body>
+                    </div>
+                    <div>
                         <div className="fields">
-                            <div className="field font-italic">{capitalize(monument.city)}, {parseState(monument.state)}</div>
+                            <div className="field font-italic">{this.renderAddress()}</div>
                             <div className="field">{monument.description}</div>
                         </div>
                         <div className="tags">
@@ -124,78 +139,37 @@ export default class Monument extends React.Component {
                                 )
                             })}
                         </div>
-                        {images && images.length > 0 ?
-                            /* TODO: Move this to a separate component */
-                            (<div className="image-container" onClick={() => this.setState({modalOpen: true, modalImage: images[0].url})}>
-                                <div className="image-wrapper">
-                                    <img src={images[0].url}/>
-                                </div>
-                                <div className="overlay">
-                                    <div className="icon-wrapper">
-                                        <i className="material-icons">
-                                            open_in_new
-                                        </i>
-                                    </div>
-                                </div>
-                                <div onClick={e => e.stopPropagation()}>
-                                    <Modal show={this.state.modalOpen} onHide={() => this.setState({modalOpen: false, modalImage: null})}>
-                                        <Modal.Header closeButton/>
-                                        <Modal.Body>
-                                            <img src={this.state.modalImage}/>
-                                        </Modal.Body>
-                                    </Modal>
-                                </div>
-                            </div>)
-                        : <div/>}
-                        <div className="details">
-                            <Button variant="link" onClick={() => this.setState({detailsOpen: !this.state.detailsOpen})}>
-                                {this.state.detailsOpen ? 'Hide details' : 'More details'}
-                            </Button>
-                            <Collapse in={this.state.detailsOpen}>
-                                <div className="detail-list">
-                                    <div>
-                                        <span className="detail-label">Last Updated:&nbsp;</span>
-                                        {prettyPrintDate(monument.updatedDate)}
-                                    </div>
-                                    <div>
-                                        <span className="detail-label">Contributors:&nbsp;</span>
-                                        <ul>
-                                            {contributions.map(contribution => <li key={contribution.submittedBy}>{contribution.submittedBy}</li>)}
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <span className="detail-label">References:&nbsp;</span>
-                                        <ul>
-                                            {references.map(reference => <li key={reference.url}><a className="text-break" href={reference.url}>{reference.url}</a></li>)}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </Collapse>
-                        </div>
-                    </Card.Body>
-                </Card>
+                    </div>
+                </div>
             </div>
         )
     }
 
-    renderVisitCard() {
+    renderSuggestChanges() {
+        return (
+            <Card>
+                <Card.Title>
+                    Suggest a Change
+                </Card.Title>
+                <Card.Body>
+                    <p>We pride ourselves on keeping up to date and accurate information.</p>
+                    <p>If you think something on this page is incorrect or outdated, please suggest a change. If your change is approved we'll send you an email to let you know, and you will be listed as a contributor on this page!</p>
+                    <Button variant="primary">SUGGEST A CHANGE</Button>
+                </Card.Body>
+            </Card>
+        )
+    }
+
+    renderVisit() {
         const monument = this.state.monument;
 
         return (
             <div className="visit">
-                <Card>
-                    <Card.Title>
-                        Visit
-                    </Card.Title>
-                    <Card.Body>
-                        {this.renderAddress()}
-                        <div className="map">
-                            <iframe title="gmaps-iframe"
-                                    src={`https://maps.google.com/maps?q=${monument.address ? monument.address : monument.coordinatePointAsString}&z=16&output=embed`}
-                                    frameBorder="0"/>
-                        </div>
-                    </Card.Body>
-                </Card>
+                <div className="map">
+                    <iframe title="gmaps-iframe"
+                            src={`https://maps.google.com/maps?q=${monument.address ? monument.address : monument.coordinatePointAsString}&z=16&output=embed`}
+                            frameBorder="0"/>
+                </div>
             </div>
         )
     }
@@ -204,21 +178,80 @@ export default class Monument extends React.Component {
         const monument = this.state.monument;
         if (monument.address) {
             return (
-                <div>
+                <div style={{display: 'flex', alignItems: 'center'}}>
                     <i className="material-icons">room</i> {monument.address}
                 </div>
             )
-        } else return (<div/>);
+        } else return (
+            <div>{this.capitalize(monument.city)}, {this.parseState(monument.state)}</div>
+        );
     }
 
-    renderRelatedMonumentsCard() {
+    renderAbout() {
+        const { monument, contributions, references } = this.state;
+
+        let lastUpdated = (
+            <div>
+                <span className="detail-label">Last Updated:&nbsp;</span>
+                {this.prettyPrintDate(monument.updatedDate)}
+            </div>
+        );
+
+        let contributorsList;
+        if (contributions && contributions.length) {
+            contributorsList = (
+                <div>
+                    <span className="detail-label">Contributors:&nbsp;</span>
+                    <ul>
+                        {contributions.map(contribution => <li key={contribution.submittedBy}>{contribution.submittedBy}</li>)}
+                    </ul>
+                </div>
+            )
+        }
+
+        let referencesList;
+        if (references && references.length) {
+            referencesList = (
+                <div>
+                    <span className="detail-label">References:&nbsp;</span>
+                    <ul>
+                        {references.map(reference => <li key={reference.url}><a className="text-break" href={reference.url}>{reference.url}</a></li>)}
+                    </ul>
+                </div>
+            )
+        }
+
         return (
             <Card>
-                <Card.Title>
-                    Related Monuments
-                </Card.Title>
-                <Card.Body/>
+                <Card.Title>About</Card.Title>
+                <Card.Body>
+                    <div className="detail-list">
+                        {lastUpdated}
+                        {contributorsList}
+                        {referencesList}
+                    </div>
+                </Card.Body>
             </Card>
+        )
+    }
+
+    renderNearbyMonuments() {
+        return (
+            <div className="nearby">
+                <div className="h6">
+                    Nearby Monuments or Memorials
+                </div>
+            </div>
+        )
+    }
+
+    renderRelatedMonuments() {
+        return (
+            <div className="related">
+                <div className="h6">
+                    Related Monuments or Memorials
+                </div>
+            </div>
         )
     }
 

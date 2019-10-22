@@ -17,12 +17,15 @@ import java.io.Serializable;
 public class Image extends Model implements Serializable {
 
     @Column(name = "url")
-    @NotNull(groups = NewOrExisting.class, message = "URL can not be null")
+    @NotNull(groups = {New.class, Existing.class}, message = "URL can not be null")
     private String url;
+
+    @Column(name = "is_primary")
+    private boolean isPrimary;
 
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
-    @NotNull(groups = NewOrExisting.class, message = "Image must have an associated Monument")
+    @NotNull(groups = {New.class, Existing.class}, message = "Image must have an associated Monument")
     private Monument monument;
 
     public Image() {
@@ -35,6 +38,14 @@ public class Image extends Model implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean getIsPrimary() {
+        return this.isPrimary;
+    }
+
+    public void setIsPrimary(boolean isPrimary) {
+        this.isPrimary = isPrimary;
     }
 
     public Monument getMonument() {
