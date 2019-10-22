@@ -361,6 +361,14 @@ public abstract class ModelService<T extends Model> {
         return this.getEntityManager().createQuery(query).getResultList();
     }
 
+    public List<T> getWithCriteriaQuery(CriteriaQuery<T> query, Integer limit) {
+        return this.getEntityManager().createQuery(query).setMaxResults(limit).getResultList();
+    }
+
+    public List<T> getWithCriteriaQuery(CriteriaQuery<T> query, Integer limit, Integer page) {
+        return this.getEntityManager().createQuery(query).setMaxResults(limit).setFirstResult(page).getResultList();
+    }
+
     /**
      * Helper method that attempts to get and initialize all collections on a record before its session is closed
      * This is helpful when you need to access lazy loaded data, since sessions are always closed in the get methods

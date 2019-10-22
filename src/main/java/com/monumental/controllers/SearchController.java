@@ -28,32 +28,22 @@ public class SearchController {
      */
     @GetMapping("/api/search")
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
-                                          @RequestParam(required = false, defaultValue = "1", value = "page") String pageString,
-                                          @RequestParam(required = false, defaultValue = "25", value = "limit") String limitString) {
+                                          @RequestParam(required = false, defaultValue = "1") String page,
+                                          @RequestParam(required = false, defaultValue = "25") String limit) {
 
-        Integer page = null;
-        if (pageString != null) page = Integer.parseInt(pageString);
-        Integer limit = null;
-        if (limitString != null) limit = Integer.parseInt(limitString);
+        CriteriaBuilder builder = monumentService.getCriteriaBuilder();
+        CriteriaQuery<Monument> query = monumentService.createCriteriaQuery(builder, false);
+        Root<Monument> root = monumentService.createRoot(query);
 
-        try {
-            CriteriaBuilder builder = monumentService.getCriteriaBuilder();
-            CriteriaQuery<Monument> query = monumentService.createCriteriaQuery(builder, false);
-            Root<Monument> root = monumentService.createRoot(query);
-
-            if (searchQuery != null) {
-                query.where(
-                    builder.or(
-                        builder.equal(builder.function("fts", Boolean.class, root.get("title"), builder.literal(searchQuery)), true),
-                        builder.equal(builder.function("fts", Boolean.class, root.get("artist"), builder.literal(searchQuery)), true)
-                    )
-                );
-            }
-
-            return this.monumentService.getWithCriteriaQuery(query);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (searchQuery != null) {
+            query.where(
+                builder.or(
+                    builder.equal(builder.function("fts", Boolean.class, root.get("title"), builder.literal(searchQuery)), true),
+                    builder.equal(builder.function("fts", Boolean.class, root.get("artist"), builder.literal(searchQuery)), true)
+                )
+            );
         }
-        return null;
+
+        return this.monumentService.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
     }
 }
