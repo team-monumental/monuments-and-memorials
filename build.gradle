@@ -41,7 +41,6 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.11.3.Final'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
     implementation('com.google.maps:google-maps-services:0.10.1')
-    runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('junit:junit:4.12')
     testImplementation('org.mockito:mockito-core:2.1.0')
