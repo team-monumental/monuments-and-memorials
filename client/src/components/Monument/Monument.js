@@ -107,7 +107,7 @@ export default class Monument extends React.Component {
                 </div>
                 <div className="column main-column">
                     {this.renderMain()}
-                    <Gallery/>
+                    <Gallery images={this.state.images}/>
                     {this.renderAbout()}
                 </div>
                 <div className="column visit-column">

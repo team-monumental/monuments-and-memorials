@@ -15,7 +15,7 @@ import java.io.Serializable;
 })
 public class Image extends Model implements Serializable {
 
-    @Column(name = "url")
+    @Column(name = "url", length = 2048)
     private String url;
 
     @Column(name = "is_primary")
