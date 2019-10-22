@@ -12,7 +12,7 @@ import java.util.List;
  * 1. Open/Create a CSV file given an absolute path to the file
  * 2. Write rows to the CSV file one at a time or all at once
  */
-public class CsvFileWriter extends CsvFileInterface {
+public class CsvFileWriter {
 
     private String filePath;
 
@@ -38,7 +38,7 @@ public class CsvFileWriter extends CsvFileInterface {
             return;
         }
 
-        if (isCsvFile(this.filePath)) {
+        if (CsvFileHelper.isCsvFile(this.filePath)) {
             File csvFile = new File(this.filePath);
             // Creates a new file if the file does not exist, otherwise does nothing
             csvFile.createNewFile();

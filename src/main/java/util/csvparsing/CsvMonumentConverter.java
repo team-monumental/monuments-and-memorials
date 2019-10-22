@@ -7,6 +7,7 @@ import com.monumental.models.Tag;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class CsvMonumentConverter {
                     break;
                 case 3: // Date
                     // I made a couple of assumptions about the format of the dates in the file:
-                    // 1. The dates would be in the format dd-mm-yyyy
+                    // 1. The dates would be in the format dd-MM-yyyy
                     // 2. If the day and month were unknown, the cell would just contain yyyy
                     // 3. In the case described in 2, the day and month would be set to 01-01
                     // TODO: Agree upon a standard format for dates in CSV file uploads
@@ -150,199 +151,78 @@ public class CsvMonumentConverter {
         String csvRow = "";
 
         // Column 1: ID
-        if (monument.getId() != null) {
-            csvRow += monument.getId();
-        }
+        csvRow += convertToCsvCell(monument.getId());
 
         csvRow += ",";
 
         // Column 2: Title
-        String title = monument.getTitle();
-        if (title != null && !title.isEmpty()) {
-            title = title.replace("\"", "");
-            if (title.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(title);
-            }
-            else {
-                csvRow += title;
-            }
-        }
+        csvRow += convertToCsvCell(monument.getTitle());
 
         csvRow += ",";
 
         // Column 3: Artist
-        String artist = monument.getArtist();
-        if (artist != null && !artist.isEmpty()) {
-            artist = artist.replace("\"", "");
-            if (artist.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(artist);
-            }
-            else {
-                csvRow += artist;
-            }
-        }
+        csvRow += convertToCsvCell(monument.getArtist());
 
         csvRow += ",";
 
         // Column 4: Date
         // Format: "dd-mm-yyyy"
-        if (monument.getDate() != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-mm-yyyy");
-            csvRow += simpleDateFormat.format(monument.getDate());
-        }
+        csvRow += convertToCsvCell(monument.getDate());
 
         csvRow += ",";
 
         // Column 5: Material
-        String material = monument.getMaterial();
-        if (material != null && !material.isEmpty()) {
-            material = material.replace("\"", "");
-            if (material.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(material);
-            }
-            else {
-                csvRow += material;
-            }
-        }
+        csvRow += convertToCsvCell(monument.getMaterial());
 
         csvRow += ",";
 
         // Column 6: Latitude
-        if (monument.getLat() != null) {
-            csvRow += monument.getLat();
-        }
+        csvRow += convertToCsvCell(monument.getLat());
 
         csvRow += ",";
 
         // Column 7: Longitude
-        if (monument.getLon() != null) {
-            csvRow += monument.getLon();
-        }
+        csvRow += convertToCsvCell(monument.getLon());
 
         csvRow += ",";
 
         // Column 8: City
-        String city = monument.getCity();
-        if (city != null && !city.isEmpty()) {
-            city = city.replace("\"", "");
-            if (city.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(city);
-            }
-            else {
-                csvRow += city;
-            }
-        }
+        csvRow += convertToCsvCell(monument.getCity());
 
         csvRow += ",";
 
         // Column 9: State
-        String state = monument.getState();
-        if (state != null && !state.isEmpty()) {
-            state = state.replace("\"", "");
-            if (state.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(state);
-            }
-            csvRow += state;
-        }
+        csvRow += convertToCsvCell(monument.getState());
 
         csvRow += ",";
 
         // Column 10: Address
-        String address = monument.getAddress();
-        if (address != null && !address.isEmpty()) {
-            address = address.replace("\"", "");
-            if (address.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(address);
-            }
-            else {
-                csvRow += address;
-            }
-        }
+        csvRow += convertToCsvCell(monument.getAddress());
 
         csvRow += ",";
 
         // Column 11: Inscription
-        String inscription = monument.getInscription();
-        if (inscription != null && !inscription.isEmpty()) {
-            inscription = inscription.replace("\"", "");
-            if (inscription.contains(",")) {
-                csvRow += addBeginningAndEndingQuotes(inscription);
-            }
-            else {
-                csvRow += inscription;
-            }
-        }
+        csvRow += convertToCsvCell(monument.getInscription());
 
         csvRow += ",";
 
         // Column 12: Description
-        String description = monument.getDescription();
-        if (description.contains(",")) {
-            csvRow += addBeginningAndEndingQuotes(description);
-        }
-        else {
-            csvRow += description;
-        }
+        csvRow += convertToCsvCell(monument.getDescription());
 
         csvRow += ",";
 
         // Column 13: Tags
-        StringBuilder tagsColumn = new StringBuilder();
-
-        List<Tag> tags = monument.getTags();
-        boolean isLastTag;
-
-        if (tags != null) {
-            for (int i = 0; i < tags.size(); i++) {
-                isLastTag = (i == (tags.size() - 1));
-                tagsColumn.append(tags.get(i).getName());
-                if (!isLastTag) {
-                    tagsColumn.append(",");
-                }
-            }
-        }
-
-        csvRow += addBeginningAndEndingQuotes(tagsColumn.toString());
+        csvRow += convertTagsToCsvCell(monument.getTags());
 
         csvRow += ",";
 
         // Column 14: Contributors
-        StringBuilder contributorsColumn = new StringBuilder();
-
-        List<Contribution> contributions = monument.getContributions();
-        boolean isLastContribution;
-
-        if (contributions != null) {
-            for (int i = 0; i < contributions.size(); i++) {
-                isLastContribution = (i == (contributions.size() - 1));
-                contributorsColumn.append(contributions.get(i).getSubmittedBy());
-                if (!isLastContribution) {
-                    contributorsColumn.append(",");
-                }
-            }
-        }
-
-        csvRow += addBeginningAndEndingQuotes(contributorsColumn.toString());
+        csvRow += convertContributionsToCsvCell(monument.getContributions());
 
         csvRow += ",";
 
         // Column 15: References
-        StringBuilder referencesColumn = new StringBuilder();
-
-        List<Reference> references = monument.getReferences();
-        boolean isLastReference;
-
-        if (references != null) {
-            for (int i = 0; i < references.size(); i++) {
-                isLastReference = (i == (references.size() - 1));
-                referencesColumn.append(references.get(i).getUrl());
-                if (!isLastReference) {
-                    referencesColumn.append(",");
-                }
-            }
-        }
-
-        csvRow += addBeginningAndEndingQuotes(referencesColumn.toString());
+        csvRow += convertReferencesToCsvCell(monument.getReferences());
 
         return csvRow;
     }
@@ -374,6 +254,152 @@ public class CsvMonumentConverter {
         }
 
         return "\"" + string + "\"";
+    }
+
+    /**
+     * Converts a specified Integer value to a CSV formatted cell value
+     * @param value - Integer value to convert
+     * @return String - CSV formatted cell value using the specified Integer
+     */
+    private static String convertToCsvCell(Integer value) {
+        if (value != null) {
+            return Integer.toString(value);
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * Converts a specified String value into a CSV formatted cell value
+     * @param value - String value to convert
+     * @return String - CSV formatted cell value using the specified String
+     */
+    private static String convertToCsvCell(String value) {
+        if (value != null && !value.isEmpty()) {
+            // Remove any double quotes from the value
+            // This is a safeguard to prevent multiple double quotes surrounding outputs
+            value = value.replace("\"", "");
+
+            // Wrap the value in double quotes if it contains a comma
+            if (value.contains(",")) {
+                return addBeginningAndEndingQuotes(value);
+            }
+            else {
+                return value;
+            }
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * Converts a specified Date object into a CSV formatted cell value
+     * Uses "dd-MM-yyyy" format
+     * @param value - Date object to convert
+     * @return String - CSV formatted cell value using the specified Date object
+     */
+    private static String convertToCsvCell(Date value) {
+        if (value != null) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return simpleDateFormat.format(value);
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * Converts a specified Double value into a CSV formatted cell value
+     * @param value - Double to convert
+     * @return String - CSV formatted cell value using the specified Double
+     */
+    private static String convertToCsvCell(Double value) {
+        if (value != null) {
+            return Double.toString(value);
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * Converts the specified List of Tags into a CSV formatted cell value
+     * @param tags - List<Tag> to convert
+     * @return String - CSV formatted cell value using the specified List<Tag>
+     */
+    private static String convertTagsToCsvCell(List<Tag> tags) {
+        StringBuilder tagsCell = new StringBuilder();
+
+        boolean isLastTag;
+
+        if (tags != null) {
+            for (int i = 0; i < tags.size(); i++) {
+                isLastTag = (i == (tags.size() - 1));
+                tagsCell.append(tags.get(i).getName());
+                if (!isLastTag) {
+                    tagsCell.append(",");
+                }
+            }
+
+            return addBeginningAndEndingQuotes(tagsCell.toString());
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * Converts the specified List of Contributions into a CSV formatted cell value
+     * @param contributions - List<Contribution> to convert
+     * @return String - CSV formatted cell value using the specified List<Contribution>
+     */
+    private static String convertContributionsToCsvCell(List<Contribution> contributions) {
+        StringBuilder contributorsCell = new StringBuilder();
+
+        boolean isLastContribution;
+
+        if (contributions != null) {
+            for (int i = 0; i < contributions.size(); i++) {
+                isLastContribution = (i == (contributions.size() - 1));
+                contributorsCell.append(contributions.get(i).getSubmittedBy());
+                if (!isLastContribution) {
+                    contributorsCell.append(",");
+                }
+            }
+
+            return addBeginningAndEndingQuotes(contributorsCell.toString());
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * Converts the specified List of References into a CSV formatted cell value
+     * @param references - List<Reference> to convert
+     * @return String - CSV formatted cell using the specfied List<Reference>
+     */
+    private static String convertReferencesToCsvCell(List<Reference> references) {
+        StringBuilder referencesCell = new StringBuilder();
+
+        boolean isLastReference;
+
+        if (references != null) {
+            for (int i = 0; i < references.size(); i++) {
+                isLastReference = (i == (references.size() - 1));
+                referencesCell.append(references.get(i).getUrl());
+                if (!isLastReference) {
+                    referencesCell.append(",");
+                }
+            }
+
+            return addBeginningAndEndingQuotes(referencesCell.toString());
+        }
+        else {
+            return "";
+        }
     }
 
     /**

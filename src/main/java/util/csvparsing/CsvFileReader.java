@@ -8,7 +8,7 @@ import java.io.*;
  * 1. Open a CSV file given an absolute path to the file
  * 2. Read rows from the CSV file until there are no more rows to read
  */
-public class CsvFileReader extends CsvFileInterface {
+public class CsvFileReader {
 
     private String filePath;
 
@@ -34,7 +34,7 @@ public class CsvFileReader extends CsvFileInterface {
             return;
         }
 
-        if (isCsvFile(this.filePath)) {
+        if (CsvFileHelper.isCsvFile(this.filePath)) {
             File csvFile = new File(this.filePath);
             this.reader = new BufferedReader(new FileReader(csvFile));
         }
