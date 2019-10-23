@@ -16,7 +16,7 @@ import java.io.Serializable;
 })
 public class Image extends Model implements Serializable {
 
-    @Column(name = "url")
+    @Column(name = "url", length = 2048)
     @NotNull(groups = {New.class, Existing.class}, message = "URL can not be null")
     private String url;
 

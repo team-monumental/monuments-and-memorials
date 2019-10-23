@@ -7,7 +7,6 @@ export default class Gallery extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: props.images || [],
             modalOpen: false,
             modalPage: 0
         };
@@ -16,7 +15,7 @@ export default class Gallery extends React.Component {
     openModal(image) {
         this.setState({
             modalOpen: true,
-            modalPage: this.state.images.findIndex(i => {
+            modalPage: this.props.images.findIndex(i => {
                 return i.id === image.id;
             })
         });
@@ -27,13 +26,15 @@ export default class Gallery extends React.Component {
     }
 
     render() {
-        const images = JSON.parse(JSON.stringify(this.state.images));
+        const images = JSON.parse(JSON.stringify(this.props.images));
+        let primaryImage = images.find(e => e.isPrimary);
+
+        primaryImage = primaryImage || images.splice(0, 1)[0];
 
         if (!images || !images.length) {
             return (<div style={{marginBottom: '0'}}/>);
         }
         else {
-            const [ primaryImage ] = images.splice(0, 1);
             return (
                 <div className="images">
                     {this.renderModal()}
@@ -113,7 +114,8 @@ export default class Gallery extends React.Component {
     }
 
     renderModal() {
-        const { modalOpen, modalPage, images } = this.state;
+        const { modalOpen, modalPage } = this.state;
+        const images = this.props.images;
         const selectedImage = images[modalPage];
         let pagination = [];
         let paginationIndices = [];
