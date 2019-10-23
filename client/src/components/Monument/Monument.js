@@ -35,13 +35,22 @@ export default class Monument extends React.Component {
             this.callEndpoint(`/api/tags/?monumentId=${monumentId}`)
         ]).catch(err => error = err);
 
+        images.splice(0);
+
         if (error) {
             console.error(error);
             this.setState({error: error});
             return;
         }
 
-        this.setState({monument, contributions, images, references, tags});
+        this.setState({monument, contributions, images: [
+                {id: 1, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
+                {id: 2, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'},
+                {id: 3, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
+                {id: 4, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'},
+                {id: 5, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
+                {id: 6, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'}
+            ], references, tags});
         console.log(this.state);
     }
 
@@ -270,7 +279,7 @@ export default class Monument extends React.Component {
         if (monument.inscription) {
             inscription = (
                 <div>
-                    <span className="font-weight-bold">Inscription:</span> {this.formatInscription(monument.inscription)}
+                    <span className="detail-label">Inscription:</span> {this.formatInscription(monument.inscription)}
                 </div>
             )
         }
