@@ -3,24 +3,39 @@ package util.csvparsing;
 import java.io.*;
 
 /**
- * Class used to interface with CSV files
+ * Class used to read CSV files
  * This class has 2 responsibilities:
  * 1. Open a CSV file given an absolute path to the file
  * 2. Read rows from the CSV file until there are no more rows to read
  */
 public class CsvFileReader {
+
+    private String filePath;
+
     private BufferedReader reader;
 
     /**
      * Public constructor for CsvFileReader
-     * Creates a BufferedReader object used to read from the specified file
      * @param filePath - path to the CSV file to read from
-     * @throws IllegalArgumentException - If the filePath provided does not point to a CSV file
-     * @throws FileNotFoundException - If the file pointed to by the filePath does not exist
      */
-    public CsvFileReader(String filePath) throws IllegalArgumentException, FileNotFoundException {
-        if (isCsvFile(filePath)) {
-            File csvFile = new File(filePath);
+    public CsvFileReader(String filePath) {
+        this.filePath = filePath;
+    }
+
+    /**
+     * Initializes a CsvFileReader for reading
+     * Creates a new BufferedReader to do the file reading
+     * This method must be called before attempting to read CSV rows
+     * @throws FileNotFoundException - If the File pointed to by the specified filePath does not exist
+     * @throws IllegalArgumentException - If the filePath specified does not point to a CSV file
+     */
+    public void initialize() throws FileNotFoundException, IllegalArgumentException {
+        if (this.filePath == null) {
+            return;
+        }
+
+        if (CsvFileHelper.isCsvFile(this.filePath)) {
+            File csvFile = new File(this.filePath);
             this.reader = new BufferedReader(new FileReader(csvFile));
         }
         else {
@@ -35,18 +50,25 @@ public class CsvFileReader {
      * @throws IOException - if the CsvFileReader is unable to read from the specified file
      */
     public String readNextRow() throws IOException {
+        if (this.reader == null) {
+            return null;
+        }
+
         return this.reader.readLine();
     }
 
     /**
-     * Method to determine if the filePath points to a CSV file
-     * @param filePath - the path to the file to check, as a String
-     * @return boolean - true if the file extension of filePath is ".csv", false otherwise
+     * Closes the BufferedReader and underlying Stream
      */
-    private static boolean isCsvFile(String filePath) {
-        String[] fileExtensionArray = filePath.split("\\.");
-        String fileExtension = fileExtensionArray[fileExtensionArray.length - 1];
+    public void close() {
+        if (this.reader == null) {
+            return;
+        }
 
-        return fileExtension.equals("csv");
+        try {
+            this.reader.close();
+        } catch (IOException e) {
+            System.out.println("Unable to close CsvFileReader");
+        }
     }
 }
