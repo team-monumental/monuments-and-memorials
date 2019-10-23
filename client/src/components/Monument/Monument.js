@@ -77,19 +77,19 @@ export default class Monument extends React.Component {
         date = moment(new Date(date));
         // Wednesday, October 16th, 2019 format
         return date.format('dddd, MMMM Do, YYYY');
-    };
+    }
 
 
     capitalize(word) {
         if (word) return word.charAt(0).toUpperCase() + word.slice(1).trim();
         else return word;
-    };
+    }
 
     parseState(state) {
         if (!state) return state;
         if (state.toLowerCase() === 'dc') state = 'd.c.';
         return state.toUpperCase().trim();
-    };
+    }
 
     formatInscription(inscription) {
         if (!inscription) return inscription;
@@ -270,7 +270,7 @@ export default class Monument extends React.Component {
         if (monument.inscription) {
             inscription = (
                 <div>
-                    <b>Inscription:</b> {this.formatInscription(monument.inscription)}
+                    <span className="font-weight-bold">Inscription:</span> {this.formatInscription(monument.inscription)}
                 </div>
             )
         }
