@@ -13,14 +13,28 @@ export default class Gallery extends React.Component {
         this.state = {
             modalOpen: false,
             modalPage: 0,
-            selectedImageIndex
+            selectedImageIndex,
+            imageTimeout: window.setTimeout(() => this.nextImage(), 5000)
         };
-        window.setInterval(() => {
-            let index = this.state.selectedImageIndex;
-            index++;
-            if (index === this.props.images.length) index = 0;
-            this.setState({selectedImageIndex: index});
-        }, 5000);
+    }
+
+    nextImage() {
+        let index = this.state.selectedImageIndex;
+        index++;
+        if (index === this.props.images.length) index = 0;
+        this.setState({
+            selectedImageIndex: index,
+            imageTimeout: window.setTimeout(() => this.nextImage(), 5000)
+        });
+        console.log(new Date());
+    }
+
+    selectImage(index) {
+        window.clearTimeout(this.state.imageTimeout);
+        this.setState({
+            selectedImageIndex: index,
+            imageTimeout: window.setTimeout(() => this.nextImage(), 5000)
+        });
     }
 
     openModal(image) {
@@ -57,11 +71,9 @@ export default class Gallery extends React.Component {
         const { selectedImageIndex } = this.state;
         const { images } = this.props;
         if (!images || !images.length || images.length <= selectedImageIndex) {
-            console.log('no selected', this.state, this.props);
             return;
         }
         const selectedImage = images[selectedImageIndex];
-        console.log('selected');
         return (
             <div className="primary image-wrapper">
                 <div className="primary image" style={{backgroundImage: `url(${selectedImage.url})`}}/>
@@ -83,7 +95,7 @@ export default class Gallery extends React.Component {
                 {
                     images.map((image, index) => (
                         <span className={`image-option${index === selectedImageIndex ? ' selected' : ''}`}
-                              onClick={() => this.setState({selectedImageIndex: index})}/>
+                              onClick={() => this.selectImage(index)}/>
                     ))
                 }
             </div>

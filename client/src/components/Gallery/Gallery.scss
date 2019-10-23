@@ -1,6 +1,4 @@
-@import "../../../node_modules/bootstrap/scss/functions";
-@import "../../../node_modules/bootstrap/scss/variables";
-@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
 
 .images {
     display: flex;
@@ -38,6 +36,7 @@
     border-radius: 14px;
     height: 29rem;
     width: 29rem;
+    max-width: calc(100vw - 2rem);
     background-size: contain;
     background-repeat: no-repeat;
     background-color: black;
@@ -50,19 +49,24 @@
     padding-top: 1rem;
     .image-option {
         margin-right: 1rem;
-        padding: 0.35rem;
+        min-width: 12px;
+        min-height: 12px;
         background-color: #e8e8e8;
         transition: background-color 0.1s ease-in;
         border-radius: 100%;
         cursor: pointer;
         &.selected {
             background-color: $primary;
-            &:hover {
-                background-color: darken($primary, 20%);
+            @include media-breakpoint-up(lg) {
+                &:hover {
+                    background-color: darken($primary, 20%);
+                }
             }
         }
         &:hover {
-            background-color: darken(#e8e8e8, 20%);
+            @include media-breakpoint-up(lg) {
+                background-color: darken(#e8e8e8, 20%);
+            }
         }
     }
 }
