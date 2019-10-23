@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -25,8 +26,8 @@ import java.util.*;
 @Service
 public abstract class ModelService<T extends Model> {
 
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     SessionFactoryService sessionFactoryService;
@@ -366,7 +367,7 @@ public abstract class ModelService<T extends Model> {
     }
 
     public List<T> getWithCriteriaQuery(CriteriaQuery<T> query, Integer limit, Integer page) {
-        return this.getEntityManager().createQuery(query).setMaxResults(limit).setFirstResult(page).getResultList();
+        return this.getEntityManager().createQuery(query).setMaxResults(limit).setFirstResult(page * limit).getResultList();
     }
 
     /**
@@ -421,7 +422,7 @@ public abstract class ModelService<T extends Model> {
     }
 
     public EntityManager getEntityManager() {
-        return this.entityManagerFactory.createEntityManager();
+        return this.entityManager;
     }
 
     public CriteriaBuilder getCriteriaBuilder() {
@@ -438,13 +439,16 @@ public abstract class ModelService<T extends Model> {
 
     public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder, Boolean setRoot) {
         CriteriaQuery<T> query = builder.createQuery(this.getModelClass());
-        if (setRoot) this.createRoot(query);
+        if (setRoot) {
+            Root<T> root = this.createRoot(query);
+            query.select(root).distinct(true);
+        }
         return query;
     }
 
     public Root<T> createRoot(CriteriaQuery<T> query) {
         Root<T> root = query.from(this.getModelClass());
-        query.select(root);
+//        query.select(root);
         return root;
     }
 }

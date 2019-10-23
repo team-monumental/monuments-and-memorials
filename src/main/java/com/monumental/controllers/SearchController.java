@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -27,23 +24,18 @@ public class SearchController {
      * @return            Matching Monuments based on their title
      */
     @GetMapping("/api/search")
+    @Transactional
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
                                           @RequestParam(required = false, defaultValue = "1") String page,
                                           @RequestParam(required = false, defaultValue = "25") String limit) {
+        return monumentService.search(searchQuery, page, limit);
+    }
 
-        CriteriaBuilder builder = monumentService.getCriteriaBuilder();
-        CriteriaQuery<Monument> query = monumentService.createCriteriaQuery(builder, false);
-        Root<Monument> root = monumentService.createRoot(query);
-
-        if (searchQuery != null) {
-            query.where(
-                builder.or(
-                    builder.equal(builder.function("fts", Boolean.class, root.get("title"), builder.literal(searchQuery)), true),
-                    builder.equal(builder.function("fts", Boolean.class, root.get("artist"), builder.literal(searchQuery)), true)
-                )
-            );
-        }
-
-        return this.monumentService.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
+    /**
+     * @return Total number of results for a monument search
+     */
+    @GetMapping("/api/search/count")
+    public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery) {
+        return monumentService.countSearchResults(searchQuery);
     }
 }
