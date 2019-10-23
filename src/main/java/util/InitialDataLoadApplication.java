@@ -17,6 +17,7 @@ import java.util.ArrayList;
  * Creates a CsvFileReader class and uses it to iterate all of the rows in the CSV
  * Turns each row into a CsvMonumentConverterResult object and accumulates them
  * Then does validation on each CsvMonumentConverterResult's Monument before inserting it into the database
+ * Finally, closes the CsvFileReader
  */
 public class InitialDataLoadApplication {
     public static void main(String[] args) {
@@ -29,9 +30,11 @@ public class InitialDataLoadApplication {
         MonumentService monumentService = new MonumentService(sessionFactoryService);
         TagService tagService = new TagService(sessionFactoryService);
 
+        // Create our CsvFileReader, passing it the path to the dataset file
+        CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetCsv);
+
         try {
-            // Create our CsvFileReader, passing it the path to the dataset file
-            CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetCsv);
+            csvFileReader.initialize();
             // Read the rows in the file until there are no more to read
             while ((csvRow = csvFileReader.readNextRow()) != null) {
                 // Increment the rowCount
@@ -100,6 +103,9 @@ public class InitialDataLoadApplication {
         }
         catch (IOException e) {
             System.out.println("Error occurred while reading from the specified file.");
+        }
+        finally {
+            csvFileReader.close();
         }
     }
 }
