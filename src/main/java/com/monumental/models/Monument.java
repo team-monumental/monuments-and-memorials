@@ -1,6 +1,5 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -67,15 +66,15 @@ public class Monument extends Model implements Serializable {
     @ManyToMany(mappedBy = "monuments")
     private List<Tag> tags;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Image> images;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Reference> references;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Contribution> contributions;
 

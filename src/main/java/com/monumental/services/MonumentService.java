@@ -16,6 +16,13 @@ public class MonumentService extends ModelService<Monument> {
         super(sessionFactoryService);
     }
 
+    /**
+     * Creates a Full Text Search on the Monument's title and artist fields, and adds them to your CriteriaQuery
+     * @param builder       Your CriteriaBuilder
+     * @param query         Your CriteriaQuery
+     * @param root          The root associated with your CriteriaQuery
+     * @param searchQuery   The string to search both fields for
+     */
     private void buildFTSQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery) {
         query.where(
             builder.or(
@@ -26,7 +33,7 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Uses the FTS function to search for matching Monuments
+     * Uses the FTS function as well as any filtering or pagination provided to search for matching Monuments
      */
     @SuppressWarnings("unchecked")
     public List<Monument> search(String searchQuery, String page, String limit) {
@@ -38,6 +45,8 @@ public class MonumentService extends ModelService<Monument> {
         query.select(root).distinct(true);
 
         // TODO: Query for tags
+        // TODO: Query for location
+        // TODO: Filters
 
         if (searchQuery != null) {
             this.buildFTSQuery(builder, query, root, searchQuery);
@@ -50,6 +59,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Count the total number of results for a FTS search
+     * TODO: Be sure to update this whenever the search function changes so that they stay in sync
      */
     public Integer countSearchResults(String searchQuery) {
 
