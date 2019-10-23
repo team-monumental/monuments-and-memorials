@@ -9,7 +9,6 @@ export default class SearchResult extends React.Component {
         const { monument, index } = this.props;
         return (
             <div className="search-result">
-                <div className="icon"/>
                 <Card>
                     <Card.Title>
                         <a href={'/monuments/' + monument.id}>
@@ -18,7 +17,7 @@ export default class SearchResult extends React.Component {
                     </Card.Title>
                     <Card.Body>
                         <div className="font-italic mb-2">
-                            {monument.city}, {monument.state}
+                            {[monument.city, monument.state].filter(str => str.trim()).join(', ')}
                         </div>
                         <Tags tags={monument.tags}/>
                     </Card.Body>
