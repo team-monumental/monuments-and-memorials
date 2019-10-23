@@ -1,0 +1,14 @@
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: -0.5rem;
+    .tag {
+        width: min-content;
+        margin-right: 0.75rem;
+        margin-bottom: 0.5rem;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    font-size: 14px;
+    font-size: 0.875rem;
 
     .right, .left {
         position: absolute;
@@ -50,5 +50,9 @@
 
     .header-link:hover, .header-link.active, .btn-link-secondary:hover {
         color: #42b883;
+    }
+
+    input.form-control {
+        width: 270px;
     }
 }
