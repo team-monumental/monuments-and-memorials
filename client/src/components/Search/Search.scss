@@ -1,0 +1,10 @@
+.search-results {
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5rem;
+    align-items: center;
+
+    .search-result {
+        margin-bottom: 1.5rem;
+    }
+}

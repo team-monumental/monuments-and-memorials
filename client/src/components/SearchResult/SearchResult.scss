@@ -1,0 +1,36 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+.search-result {
+    display: flex;
+    .card {
+        width: 30rem;
+        @include media-breakpoint-up(lg) {
+            max-width: 30rem;
+        }
+        max-width: calc(100vw - 2rem);
+        background-color: white;
+
+        .card-body {
+            padding: 0.25rem 1.25rem 0;
+        }
+
+        .card-title.h5 {
+            font-size: 1.25rem;
+            padding-top: 0;
+            a {
+                color: $secondary;
+            }
+        }
+    }
+    .icon {
+        min-width: 128px;
+        width: 128px;
+        height: 128px;
+        border-radius: 14px;
+        background-image: url("https://timedotcom.files.wordpress.com/2016/02/lincoln-memorial-restoration.jpg?w=800&quality=85");
+        background-position: center;
+        background-size: cover;
+    }
+}
