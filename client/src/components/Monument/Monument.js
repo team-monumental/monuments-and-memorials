@@ -74,18 +74,6 @@ export default class Monument extends React.Component {
         return date.format('dddd, MMMM Do, YYYY');
     };
 
-
-    capitalize(word) {
-        if (word) return word.charAt(0).toUpperCase() + word.slice(1).trim();
-        else return word;
-    }
-
-    parseState(state) {
-        if (!state) return state;
-        if (state.toLowerCase() === 'dc') state = 'd.c.';
-        return state.toUpperCase().trim();
-    };
-
     render() {
         if (this.state.error) return this.renderError();
 
@@ -171,7 +159,7 @@ export default class Monument extends React.Component {
                 </div>
             )
         } else return (
-            <div>{this.capitalize(monument.city)}, {this.parseState(monument.state)}</div>
+            <div>{[monument.city, monument.state].filter(str => str && str.trim()).join(', ')}</div>
         );
     }
 
