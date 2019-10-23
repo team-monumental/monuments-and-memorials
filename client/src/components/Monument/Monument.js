@@ -77,7 +77,7 @@ export default class Monument extends React.Component {
         date = moment(new Date(date));
         // Wednesday, October 16th, 2019 format
         return date.format('dddd, MMMM Do, YYYY');
-    };
+    }
 
 
     capitalize(word) {
@@ -89,7 +89,14 @@ export default class Monument extends React.Component {
         if (!state) return state;
         if (state.toLowerCase() === 'dc') state = 'd.c.';
         return state.toUpperCase().trim();
-    };
+    }
+
+    formatInscription(inscription) {
+        if (!inscription) return inscription;
+        // This nifty little regex removes all of the double quotes in the string
+        inscription = inscription.replace(/["]+/g, '');
+        return '"' + inscription + '"';
+    }
 
     render() {
         if (this.state.error) return this.renderError();
@@ -108,6 +115,7 @@ export default class Monument extends React.Component {
                 <div className="column main-column">
                     {this.renderMain()}
                     <Gallery/>
+                    {this.renderInscription()}
                     {this.renderAbout()}
                 </div>
                 <div className="column visit-column">
@@ -251,6 +259,25 @@ export default class Monument extends React.Component {
                 <div className="h6">
                     Related Monuments or Memorials
                 </div>
+            </div>
+        )
+    }
+
+    renderInscription() {
+        const { monument } = this.state;
+
+        let inscription;
+        if (monument.inscription) {
+            inscription = (
+                <div>
+                    <span className="font-weight-bold">Inscription:</span> {this.formatInscription(monument.inscription)}
+                </div>
+            )
+        }
+
+        return (
+            <div className="inscription">
+                {inscription}
             </div>
         )
     }
