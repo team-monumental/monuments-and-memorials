@@ -3,7 +3,7 @@ package com.monumental.services.unittest;
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import com.monumental.services.SessionFactoryService;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
