@@ -4,10 +4,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 .image-wrapper {
     position: relative;
+    width: min-content;
 }
 
 .overlay {
@@ -34,8 +36,8 @@
 
 .image {
     border-radius: 14px;
-    height: 29rem;
-    width: 29rem;
+    height: 30rem;
+    width: 30rem;
     max-width: calc(100vw - 2rem);
     background-size: contain;
     background-repeat: no-repeat;
@@ -54,18 +56,22 @@
         background-color: #e8e8e8;
         transition: background-color 0.1s ease-in;
         border-radius: 100%;
-        cursor: pointer;
         &.selected {
             background-color: $primary;
-            @include media-breakpoint-up(lg) {
-                &:hover {
-                    background-color: darken($primary, 20%);
+        }
+        &:not(.animating) {
+            cursor: pointer;
+            &:hover {
+                @include media-breakpoint-up(lg) {
+                    background-color: darken(#e8e8e8, 20%);
                 }
             }
-        }
-        &:hover {
-            @include media-breakpoint-up(lg) {
-                background-color: darken(#e8e8e8, 20%);
+            &.selected {
+                @include media-breakpoint-up(lg) {
+                    &:hover {
+                        background-color: darken($primary, 20%);
+                    }
+                }
             }
         }
     }
@@ -90,4 +96,13 @@
 
 .modal {
     background-color: rgba(0,0,0,0.5);
+}
+
+.animation.image {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: opacity 1s ease-in;
+    top: 0;
+    z-index: 1;
 }

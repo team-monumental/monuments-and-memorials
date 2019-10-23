@@ -10,11 +10,16 @@ export default class Gallery extends React.Component {
         if (props.images && props.images.length) {
             selectedImageIndex = props.images.findIndex(image => image.isPrimary) || selectedImageIndex;
         }
+        const imageRotationAnimationLength = props.imageRotationAnimationLength || 1000;
+        const imageRotationInterval = (props.imageRotationInterval || 10000) - imageRotationAnimationLength;
         this.state = {
             modalOpen: false,
             modalPage: 0,
             selectedImageIndex,
-            imageTimeout: window.setTimeout(() => this.nextImage(), 5000)
+            imageRotationInterval,
+            imageRotationAnimationLength,
+            animating: false,
+            imageTimeout: window.setTimeout(() => this.nextImage(), imageRotationInterval)
         };
     }
 
@@ -22,19 +27,31 @@ export default class Gallery extends React.Component {
         let index = this.state.selectedImageIndex;
         index++;
         if (index === this.props.images.length) index = 0;
-        this.setState({
-            selectedImageIndex: index,
-            imageTimeout: window.setTimeout(() => this.nextImage(), 5000)
-        });
-        console.log(new Date());
+        const previousIndex = this.state.selectedImageIndex;
+        this.animate(index, previousIndex);
     }
 
     selectImage(index) {
         window.clearTimeout(this.state.imageTimeout);
+        const previousIndex = this.state.selectedImageIndex;
+        this.animate(index, previousIndex);
+    }
+
+    animate(index, previousIndex) {
         this.setState({
-            selectedImageIndex: index,
-            imageTimeout: window.setTimeout(() => this.nextImage(), 5000)
+            animationIndex: index,
+            animating: true
         });
+        const { imageTimeout, imageRotationAnimationLength } = this.state;
+        window.setTimeout(() => {
+            if (imageTimeout !== this.state.imageTimeout) return;
+            this.setState({
+                animating: false,
+                selectedImageIndex: index,
+                animationIndex: index,
+                imageTimeout: window.setTimeout(() => this.nextImage(), this.state.imageRotationInterval)
+            });
+        }, imageRotationAnimationLength);
     }
 
     openModal(image) {
@@ -75,8 +92,9 @@ export default class Gallery extends React.Component {
         }
         const selectedImage = images[selectedImageIndex];
         return (
-            <div className="primary image-wrapper">
-                <div className="primary image" style={{backgroundImage: `url(${selectedImage.url})`}}/>
+            <div className="image-wrapper">
+                <div className="image" style={{backgroundImage: `url(${selectedImage.url})`}}/>
+                {this.renderAnimation()}
                 <div className="overlay" onClick={() => this.openModal(selectedImage)}>
                     <i className="material-icons">
                         open_in_new
@@ -87,19 +105,42 @@ export default class Gallery extends React.Component {
     }
 
     renderCarousel() {
-        const { selectedImageIndex } = this.state;
+        const { selectedImageIndex, animating, animationIndex } = this.state;
         const { images } = this.props;
         if (!images || !images.length) return;
         return (
             <div className="image-selection">
                 {
-                    images.map((image, index) => (
-                        <span className={`image-option${index === selectedImageIndex ? ' selected' : ''}`}
-                              onClick={() => this.selectImage(index)}/>
-                    ))
+                    images.map((image, index) => {
+                        let className = 'image-option';
+                        if ((animating && index === animationIndex) || (!animating && index === selectedImageIndex)) {
+                            className += ' selected';
+                        }
+                        if (animating) className += ' animating';
+                        return (
+                            <span className={className}
+                                  onClick={() => {
+                                      if (this.state.animating) return;
+                                      this.selectImage(index);
+                                  }}/>
+                        )
+                    })
                 }
             </div>
         );
+    }
+
+    renderAnimation() {
+        const { animating, animationIndex } = this.state;
+        const { images } = this.props;
+        const animationImage = animating ? images[animationIndex] : null;
+        return (
+            <div className="animation image" style={{
+                backgroundImage: animating ? `url(${animationImage.url})` : null,
+                opacity: animating ? 1 : 0,
+                visibility: animating ? 'visible' : 'hidden'
+            }}/>
+        )
     }
 
     renderModal() {
