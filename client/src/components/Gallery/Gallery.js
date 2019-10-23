@@ -27,11 +27,9 @@ export default class Gallery extends React.Component {
 
     render() {
         const images = JSON.parse(JSON.stringify(this.props.images));
-        let primaryImage = images.find(e => e.isPrimary === true);
+        let primaryImage = images.find(e => e.isPrimary);
 
-        primaryImage = primaryImage !== undefined ?
-            primaryImage :
-            images.splice(0, 1);
+        primaryImage = primaryImage || images.splice(0, 1)[0];
 
         if (!images || !images.length) {
             return (<div style={{marginBottom: '0'}}/>);
