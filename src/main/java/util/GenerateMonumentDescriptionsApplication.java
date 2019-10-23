@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Class used to get/generate the descriptions for all of the Monuments currently in the database
+ * NOTE: This can potentially load a lot of data. Be cautious when running this application.
  * First, grabs all of the Monuments currently in the database
  * Then, for each Monument, calls CsvMonumentConverter.convertMonument to get the CSV row representing the Monument
  * and adds them to an accumulating List
@@ -29,7 +30,6 @@ public class GenerateMonumentDescriptionsApplication {
         ArrayList<String> csvRows = new ArrayList<>();
 
         // Passing in true so that the collections are loaded as-well
-        // This can potentially load a lot of data, so be cautious when running this application
         List<Monument> allMonuments = monumentService.getAll(true);
         // Sort the Monuments in ascending order by ID
         allMonuments.sort(Comparator.comparing(Monument::getId));
