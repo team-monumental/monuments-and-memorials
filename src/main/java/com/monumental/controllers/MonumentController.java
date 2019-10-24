@@ -39,11 +39,7 @@ public class MonumentController {
     @PutMapping("/api/monument/{id}")
     public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody Monument monument) {
         monument.setId(id);
-        try {
-            this.monumentService.update(monument);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.monumentService.update(monument);
         return monument;
     }
 }

@@ -1,13 +1,17 @@
 package com.monumental.services;
 
 import com.monumental.models.Model;
-import com.monumental.models.Monument;
 import org.hibernate.*;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -21,6 +25,13 @@ import java.util.*;
  */
 @Service
 public abstract class ModelService<T extends Model> {
+
+    /**
+     * This is the JPA 2 way of interacting with the database and replaces the Hibernate Session API
+     * TODO: Replace ALL Hibernate Session code with EntityManager
+     */
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     SessionFactoryService sessionFactoryService;
@@ -57,7 +68,7 @@ public abstract class ModelService<T extends Model> {
 
     private List<Integer> doInsert(List<T> records) throws HibernateException {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<Integer> ids = new ArrayList<>();
 
@@ -82,7 +93,7 @@ public abstract class ModelService<T extends Model> {
     @SuppressWarnings("unchecked")
     private List<T> doGet(List<Integer> ids, boolean initializeLazyLoadedCollections) throws HibernateException {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
 
@@ -122,7 +133,7 @@ public abstract class ModelService<T extends Model> {
     }
 
     private void doUpdate(List<T> records) throws HibernateException {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
 
         try {
@@ -144,7 +155,7 @@ public abstract class ModelService<T extends Model> {
     @SuppressWarnings("unchecked")
     private void doDelete(List<Integer> ids) throws HibernateException {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records = new ArrayList<>();
 
@@ -233,7 +244,7 @@ public abstract class ModelService<T extends Model> {
 
     @SuppressWarnings("unchecked")
     List<T> getByForeignKey(String foreignKeyName, Object foreignKey, boolean initializeLazyLoadedCollections) {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
         String tableName = this.getModelClass().getName();
@@ -270,7 +281,7 @@ public abstract class ModelService<T extends Model> {
     @SuppressWarnings("unchecked")
     List<T> getByJoinTable(String relationshipName, String foreignKeyName, Object foreignKey, boolean initializeLazyLoadedCollections) {
 
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
         String tableName = this.getModelClass().getName();
@@ -319,7 +330,7 @@ public abstract class ModelService<T extends Model> {
      */
     @SuppressWarnings("unchecked")
     public List<T> getWithCriteria(List<Criterion> criteria, boolean initializeLazyLoadedCollections) {
-        Session session = this.sessionFactoryService.getFactory().openSession();
+        Session session = this.openSession();
         Transaction transaction = null;
         List<T> records;
 
@@ -351,7 +362,20 @@ public abstract class ModelService<T extends Model> {
         return records;
     }
 
+    public List<T> getWithCriteriaQuery(CriteriaQuery<T> query) {
+        return this.getEntityManager().createQuery(query).getResultList();
+    }
+
+    public List<T> getWithCriteriaQuery(CriteriaQuery<T> query, Integer limit) {
+        return this.getEntityManager().createQuery(query).setMaxResults(limit).getResultList();
+    }
+
+    public List<T> getWithCriteriaQuery(CriteriaQuery<T> query, Integer limit, Integer page) {
+        return this.getEntityManager().createQuery(query).setMaxResults(limit).setFirstResult(page * limit).getResultList();
+    }
+
     /**
+     * TODO: Replace this with root.fetch("collectionName", JoinType.LEFT) once all Session code has been replaced with JPA 2 code
      * Helper method that attempts to get and initialize all collections on a record before its session is closed
      * This is helpful when you need to access lazy loaded data, since sessions are always closed in the get methods
      * before the calling class ever has a chance to initialize lazy collections
@@ -396,5 +420,63 @@ public abstract class ModelService<T extends Model> {
                 }
             }
         }
+    }
+
+    /**
+     * TODO: Delete and replace with JPA 2 code
+     */
+    Session openSession() {
+        return this.sessionFactoryService.getFactory().openSession();
+    }
+
+    /**
+     * This is handles your connection to the database and has the CriteriaBuilder reference
+     */
+    public EntityManager getEntityManager() {
+        return this.entityManager;
+    }
+
+    /**
+     * This is used to build CriteriaQueries (duh!)
+     */
+    public CriteriaBuilder getCriteriaBuilder() {
+        return this.getEntityManager().getCriteriaBuilder();
+    }
+
+    public CriteriaQuery<T> createCriteriaQuery() {
+        return this.createCriteriaQuery(this.getCriteriaBuilder());
+    }
+
+    public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder) {
+        return this.createCriteriaQuery(builder, true);
+    }
+
+    /**
+     * Creates a CriteriaQuery and optionally creates its Root for you and sets it to distinct mode (no duplicates)
+     * @param builder   Your CriteriaBuilder, from getCriteriaBuilder()
+     * @param setRoot   If true, a Root will be created for you and set on the CriteriaQuery
+     *                  You may choose to leave this false if you need a reference to the Root in order to do things
+     *                  such as root.fetch("collectionName", FetchType.LEFT) if you want to include a lazy-loaded
+     *                  collection in your query results
+     */
+    public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder, boolean setRoot) {
+        CriteriaQuery<T> query = builder.createQuery(this.getModelClass());
+        if (setRoot) {
+            Root<T> root = this.createRoot(query);
+            query.select(root).distinct(true);
+        }
+        return query;
+    }
+
+    /**
+     * Creates a JPA 2 Root object, which basically tells a CriteriaQuery what object it's querying and can also
+     * be used to .fetch lazily loaded collections
+     * Only call this if you have a need for the reference to the Root, such as for calling .fetch, otherwise
+     * just let createCriteriaQuery create the Root for you with createCriteriaQuery(builder, true)
+     * @param query Your CriteriaQuery from createCriteriaQuery(builder, false)
+     */
+    public Root<T> createRoot(CriteriaQuery<T> query) {
+        Root<T> root = query.from(this.getModelClass());
+        return root;
     }
 }

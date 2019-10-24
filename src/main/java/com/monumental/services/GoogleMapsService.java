@@ -28,8 +28,6 @@ public class GoogleMapsService {
             return results[0].formattedAddress;
         } catch (ApiException | InterruptedException | IOException e) {
             e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
