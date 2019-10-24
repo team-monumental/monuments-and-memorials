@@ -1,6 +1,6 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,7 +26,7 @@ public class Contribution extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     @NotNull(groups = {New.class, Existing.class}, message = "Must have an associated Monument")

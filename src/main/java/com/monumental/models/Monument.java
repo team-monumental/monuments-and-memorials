@@ -1,7 +1,6 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.LazyInitializationException;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import javax.validation.ConstraintViolation;
@@ -63,19 +62,19 @@ public class Monument extends Model implements Serializable {
     @Column(name = "inscription", length = 2048)
     private String inscription;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ManyToMany(mappedBy = "monuments")
     private List<Tag> tags;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Image> images;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Reference> references;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Contribution> contributions;
 
@@ -260,6 +259,8 @@ public class Monument extends Model implements Serializable {
 
         description += ".";
 
+        /*
+        TODO: This is causing some recursive issue where this query is getting spammed until the connection pool hits its limits
         try {
             if (this.references != null && this.references.size() > 0) {
                 Reference firstReference = this.references.get(0);
@@ -272,6 +273,7 @@ public class Monument extends Model implements Serializable {
         } catch (LazyInitializationException e) {
             // TODO: Initialize References before reaching this point
         }
+         */
 
         return description;
     }

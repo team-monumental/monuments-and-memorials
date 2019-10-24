@@ -1,6 +1,6 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,7 +25,7 @@ public class Tag extends Model implements Serializable {
     @NotNull(groups = {New.class, Existing.class}, message = "Name can not be null")
     private String name;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "monument_tag",
