@@ -93,7 +93,7 @@ export default class Search extends React.Component {
                     <div className="search-results">
                         <div className="search-header">
                             <div>
-                                {count} Search Results
+                                Showing {(this.getLimit() * (this.getPage() - 1)) + 1} - {(this.getLimit() * (this.getPage() - 1)) + this.getLimit()} of {count}  results
                             </div>
                             <div>
                                 <span>Show</span>
