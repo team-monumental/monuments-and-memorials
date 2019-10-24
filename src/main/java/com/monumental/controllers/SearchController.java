@@ -18,8 +18,7 @@ public class SearchController {
 
     /**
      * This function lets you search monuments using the q query param
-     * Ex: GET http://localhost:8080/api/search?q=Memorial
-     * TODO: Possibly search related tables such as Tags
+     * Ex: GET http://localhost:8080/api/search?q=Memorial&limit=25&page=1
      * @param searchQuery The search query string
      * @return            Matching Monuments based on their title
      */
