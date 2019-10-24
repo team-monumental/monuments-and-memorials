@@ -14,7 +14,7 @@ export default class Gallery extends React.Component {
         const imageRotationInterval = (props.imageRotationInterval || 10000) - imageRotationAnimationLength;
         this.state = {
             modalOpen: false,
-            modalPage: 0,
+            modalImageIndex: 0,
             selectedImageIndex,
             imageRotationInterval,
             imageRotationAnimationLength,
@@ -27,17 +27,15 @@ export default class Gallery extends React.Component {
         let index = this.state.selectedImageIndex;
         index++;
         if (index === this.props.images.length) index = 0;
-        const previousIndex = this.state.selectedImageIndex;
-        this.animate(index, previousIndex);
+        this.animate(index);
     }
 
     selectImage(index) {
         window.clearTimeout(this.state.imageTimeout);
-        const previousIndex = this.state.selectedImageIndex;
-        this.animate(index, previousIndex);
+        this.animate(index);
     }
 
-    animate(index, previousIndex) {
+    animate(index) {
         this.setState({
             animationIndex: index,
             animating: true
@@ -46,18 +44,24 @@ export default class Gallery extends React.Component {
         window.setTimeout(() => {
             if (imageTimeout !== this.state.imageTimeout) return;
             this.setState({
-                animating: false,
                 selectedImageIndex: index,
-                animationIndex: index,
                 imageTimeout: window.setTimeout(() => this.nextImage(), this.state.imageRotationInterval)
             });
+            // This additional delay is used to fix some choppiness that occurs due to the image loading in right as the
+            // one above it is hidden. This gives the image 100ms to load in, making the transition guaranteed to be smooth
+            window.setTimeout(() => {
+                this.setState({
+                    animating: false,
+                    animationIndex: index
+                })
+            }, 100);
         }, imageRotationAnimationLength);
     }
 
     openModal(image) {
         this.setState({
             modalOpen: true,
-            modalPage: this.props.images.findIndex(i => {
+            modalImageIndex: this.props.images.findIndex(i => {
                 return i.id === image.id;
             })
         });
@@ -144,14 +148,14 @@ export default class Gallery extends React.Component {
     }
 
     renderModal() {
-        const { modalOpen, selectedImageIndex } = this.state;
+        const { modalOpen, modalImageIndex } = this.state;
         const { images } = this.props;
-        const selectedImage = images[selectedImageIndex];
+        const selectedImage = images[modalImageIndex];
         return (
             <div onClick={e => e.stopPropagation()}>
                 <Modal show={modalOpen} onHide={() => this.closeModal()}>
                     <Modal.Header closeButton>
-                        Image {selectedImageIndex + 1} of {images.length}
+                        Image {modalImageIndex + 1} of {images.length}
                     </Modal.Header>
                     <Modal.Body>
                         <div className="d-flex justify-content-center">
