@@ -54,7 +54,6 @@ export default class Monument extends React.Component {
                 {id: 5, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
                 {id: 6, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'}
             ], references, tags});
-        this.setState({monument, contributions, images, references, tags});
         console.log(this.state);
     }
 
