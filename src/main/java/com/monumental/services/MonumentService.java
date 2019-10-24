@@ -66,7 +66,7 @@ public class MonumentService extends ModelService<Monument> {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
-        query.select(builder.countDistinct(root)).distinct(true);
+        query.select(builder.countDistinct(root));
 
         this.buildFTSQuery(builder, query, root, searchQuery);
 
