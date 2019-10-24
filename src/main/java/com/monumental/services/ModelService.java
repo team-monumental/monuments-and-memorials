@@ -459,7 +459,7 @@ public abstract class ModelService<T extends Model> {
      *                  such as root.fetch("collectionName", FetchType.LEFT) if you want to include a lazy-loaded
      *                  collection in your query results
      */
-    public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder, Boolean setRoot) {
+    public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder, boolean setRoot) {
         CriteriaQuery<T> query = builder.createQuery(this.getModelClass());
         if (setRoot) {
             Root<T> root = this.createRoot(query);
