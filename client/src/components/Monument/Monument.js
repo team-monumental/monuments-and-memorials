@@ -35,14 +35,13 @@ export default class Monument extends React.Component {
             this.callEndpoint(`/api/tags/?monumentId=${monumentId}`)
         ]).catch(err => error = err);
 
-        images.splice(0);
-
         if (error) {
             console.error(error);
             this.setState({error: error});
             return;
         }
 
+        // TODO: Replace these images with the images array above
         this.setState({monument, contributions, images: [
                 {id: 1, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
                 {id: 2, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'},
