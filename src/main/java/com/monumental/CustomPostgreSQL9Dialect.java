@@ -9,6 +9,6 @@ import org.hibernate.dialect.PostgreSQL9Dialect;
 public class CustomPostgreSQL9Dialect extends PostgreSQL9Dialect {
 
     public CustomPostgreSQL9Dialect() {
-        registerFunction("fts", new FTSFunction());
+        // TODO: Either use this for location searching or delete it
     }
 }

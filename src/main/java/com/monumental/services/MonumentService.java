@@ -3,10 +3,8 @@ package com.monumental.services;
 import com.monumental.models.Monument;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,8 +24,8 @@ public class MonumentService extends ModelService<Monument> {
     private void buildFTSQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery) {
         query.where(
             builder.or(
-                builder.equal(builder.function("fts", Boolean.class, root.get("title"), builder.literal(searchQuery)), true),
-                builder.equal(builder.function("fts", Boolean.class, root.get("artist"), builder.literal(searchQuery)), true)
+                builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), 0.1),
+                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), 0.1)
             )
         );
     }
@@ -42,7 +40,7 @@ public class MonumentService extends ModelService<Monument> {
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         root.fetch("tags", JoinType.LEFT);
-        query.select(root).distinct(true);
+        query.select(root);
 
         // TODO: Query for tags
         // TODO: Query for location
@@ -50,11 +48,32 @@ public class MonumentService extends ModelService<Monument> {
 
         if (searchQuery != null) {
             this.buildFTSQuery(builder, query, root, searchQuery);
+
+            List<Order> orderList = new ArrayList<>();
+            orderList.add(builder.desc(
+                builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery))
+            ));
+            orderList.add(builder.desc(
+                builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+            ));
+            query.orderBy(orderList);
         }
 
         List<Monument> monuments = this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
 
-        return monuments;
+        List<Integer> ids = new ArrayList<>();
+        List<Monument> uniqueMonuments = new ArrayList<>();
+        for (Monument m : monuments) {
+            System.out.println(m.getId());
+            if (ids.contains(m.getId())) {
+                System.out.println("skipped");
+                continue;
+            }
+            ids.add(m.getId());
+            uniqueMonuments.add(m);
+        }
+
+        return uniqueMonuments;
     }
 
     /**
