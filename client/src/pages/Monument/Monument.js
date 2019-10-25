@@ -5,8 +5,8 @@ import { Button, Card } from 'react-bootstrap';
 import * as slugify from 'slugify';
 import * as moment from 'moment';
 import { Helmet } from 'react-helmet';
-import Gallery from '../Gallery/Gallery';
-import Tags from '../Tags/Tags';
+import Gallery from '../../components/Gallery/Gallery';
+import Tags from '../../components/Tags/Tags';
 import request from '../../utils/request';
 
 export default class Monument extends React.Component {
