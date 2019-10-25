@@ -122,14 +122,7 @@ export default class Monument extends React.Component {
                             <div className="field font-italic">{this.renderAddress()}</div>
                             <div className="field">{monument.description}</div>
                         </div>
-                        <div className="tags">
-                            <span className="tag">{monument.material}</span>
-                            {tags.map(tag => {
-                                return (
-                                    <span key={tag.name} className="tag">{tag.name}</span>
-                                )
-                            })}
-                        </div>
+                        <Tags tags={tags}/>
                     </div>
                 </div>
             </div>
