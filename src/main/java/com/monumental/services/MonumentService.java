@@ -34,14 +34,14 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         if (orderByResults) {
-            List<Order> orderList = new ArrayList<>();
-            orderList.add(builder.desc(
-                    builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery))
-            ));
-            orderList.add(builder.desc(
-                    builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
-            ));
-            query.orderBy(orderList);
+            query.orderBy(
+                builder.desc(
+                    builder.sum(
+                        builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)),
+                        builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+                    )
+                )
+            );
         }
     }
 
