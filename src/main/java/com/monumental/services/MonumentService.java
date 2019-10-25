@@ -15,19 +15,34 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Creates a Full Text Search on the Monument's title and artist fields, and adds them to your CriteriaQuery
-     * @param builder       Your CriteriaBuilder
-     * @param query         Your CriteriaQuery
-     * @param root          The root associated with your CriteriaQuery
-     * @param searchQuery   The string to search both fields for
+     * Builds a similarity query on the Monument's title and artist fields, and adds them to your CriteriaQuery
+     * @param builder           Your CriteriaBuilder
+     * @param query             Your CriteriaQuery
+     * @param root              The root associated with your CriteriaQuery
+     * @param searchQuery       The string to search both fields for
+     * @param threshold         The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
+     * @param orderByResults    If true, your results will be ordered by their similarity to the search query
+     *                              NOTE: If this is true, you cannot set your query to distinct mode as these functions are not included
+     *                              in the distinct select which causes an error. Instead, use the in-memory (this.distinct) method
      */
-    private void buildFTSQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery) {
+    private void buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery, Double threshold, Boolean orderByResults) {
         query.where(
             builder.or(
-                builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), 0.1),
-                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), 0.1)
+                builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
+                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold)
             )
         );
+
+        if (orderByResults) {
+            List<Order> orderList = new ArrayList<>();
+            orderList.add(builder.desc(
+                    builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery))
+            ));
+            orderList.add(builder.desc(
+                    builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+            ));
+            query.orderBy(orderList);
+        }
     }
 
     /**
@@ -47,33 +62,10 @@ public class MonumentService extends ModelService<Monument> {
         // TODO: Filters
 
         if (searchQuery != null) {
-            this.buildFTSQuery(builder, query, root, searchQuery);
-
-            List<Order> orderList = new ArrayList<>();
-            orderList.add(builder.desc(
-                builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery))
-            ));
-            orderList.add(builder.desc(
-                builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
-            ));
-            query.orderBy(orderList);
+            this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, true);
         }
 
-        List<Monument> monuments = this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
-
-        List<Integer> ids = new ArrayList<>();
-        List<Monument> uniqueMonuments = new ArrayList<>();
-        for (Monument m : monuments) {
-            System.out.println(m.getId());
-            if (ids.contains(m.getId())) {
-                System.out.println("skipped");
-                continue;
-            }
-            ids.add(m.getId());
-            uniqueMonuments.add(m);
-        }
-
-        return uniqueMonuments;
+        return this.distinct(this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1));
     }
 
     /**
@@ -87,7 +79,7 @@ public class MonumentService extends ModelService<Monument> {
         Root<Monument> root = query.from(Monument.class);
         query.select(builder.countDistinct(root));
 
-        this.buildFTSQuery(builder, query, root, searchQuery);
+        this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, false);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
