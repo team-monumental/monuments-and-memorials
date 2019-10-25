@@ -142,6 +142,7 @@ export default class Gallery extends React.Component {
             <div className="animation image" style={{
                 backgroundImage: animating ? `url(${animationImage.url})` : null,
                 opacity: animating ? 1 : 0,
+                transitionDuration: animating ? '1s' : '0s',
                 visibility: animating ? 'visible' : 'hidden'
             }}/>
         )
