@@ -22,8 +22,6 @@ public class MonumentService extends ModelService<Monument> {
      * @param searchQuery       The string to search both fields for
      * @param threshold         The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param orderByResults    If true, your results will be ordered by their similarity to the search query
-     *                              NOTE: If this is true, you cannot set your query to distinct mode as these functions are not included
-     *                              in the distinct select which causes an error. Instead, use the in-memory (this.distinct) method
      */
     private void buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery, Double threshold, Boolean orderByResults) {
         query.where(
@@ -65,7 +63,7 @@ public class MonumentService extends ModelService<Monument> {
             this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, true);
         }
 
-        return this.distinct(this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1));
+        return this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
     }
 
     /**

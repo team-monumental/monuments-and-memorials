@@ -479,21 +479,4 @@ public abstract class ModelService<T extends Model> {
         Root<T> root = query.from(this.getModelClass());
         return root;
     }
-
-    /**
-     * In-memory deduplication of records by Id. If the records haven't been inserted, and therefore have no Id,
-     * then this won't work correctly
-     */
-    public List<T> distinct(List<T> records) {
-        List<Integer> ids = new ArrayList<>();
-        List<T> uniqueRecords = new ArrayList<>();
-        for (T record : records) {
-            if (ids.contains(record.getId())) {
-                continue;
-            }
-            ids.add(record.getId());
-            uniqueRecords.add(record);
-        }
-        return uniqueRecords;
-    }
 }
