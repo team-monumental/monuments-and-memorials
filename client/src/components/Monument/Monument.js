@@ -45,15 +45,7 @@ export default class Monument extends React.Component {
         }
 
         const [monument, contributions, images, references, tags] = results;
-        // TODO: Replace these images with the images array above
-        this.setState({monument, contributions, images: [
-                {id: 1, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
-                {id: 2, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'},
-                {id: 3, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
-                {id: 4, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'},
-                {id: 5, url: 'https://lh5.googleusercontent.com/p/AF1QipOvJE2czQBHI9rmkIXNqM8AKA6kZSxV8DpAN1Xr=s1016-k-no'},
-                {id: 6, url: 'https://lh5.googleusercontent.com/p/AF1QipOwnKkvd1BHSv_I8FetfXLT7q01w1n6e3xPmzbn=w203-h270-k-no'}
-            ], references, tags});
+        this.setState({monument, contributions, images, references, tags});
         console.log(this.state);
     }
 
@@ -82,6 +74,13 @@ export default class Monument extends React.Component {
         return date.format('dddd, MMMM Do, YYYY');
     };
 
+    formatInscription(inscription) {
+        if (!inscription) return inscription;
+        // This nifty little regex removes all of the double quotes in the string
+        inscription = inscription.replace(/["]+/g, '');
+        return '"' + inscription + '"';
+    }
+
     render() {
         if (this.state.error) return this.renderError();
 
@@ -99,6 +98,7 @@ export default class Monument extends React.Component {
                 <div className="column main-column">
                     {this.renderMain()}
                     <Gallery images={this.state.images}/>
+                    {this.renderInscription()}
                     {this.renderAbout()}
                 </div>
                 <div className="column visit-column">
@@ -122,7 +122,14 @@ export default class Monument extends React.Component {
                             <div className="field font-italic">{this.renderAddress()}</div>
                             <div className="field">{monument.description}</div>
                         </div>
-                        <Tags tags={tags}/>
+                        <div className="tags">
+                            <span className="tag">{monument.material}</span>
+                            {tags.map(tag => {
+                                return (
+                                    <span key={tag.name} className="tag">{tag.name}</span>
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -235,6 +242,25 @@ export default class Monument extends React.Component {
                 <div className="h6">
                     Related Monuments or Memorials
                 </div>
+            </div>
+        )
+    }
+
+    renderInscription() {
+        const { monument } = this.state;
+
+        let inscription;
+        if (monument.inscription) {
+            inscription = (
+                <div>
+                    <span className="detail-label">Inscription:</span> {this.formatInscription(monument.inscription)}
+                </div>
+            )
+        }
+
+        return (
+            <div className="inscription">
+                {inscription}
             </div>
         )
     }
