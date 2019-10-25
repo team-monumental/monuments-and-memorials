@@ -6,17 +6,12 @@ import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 
 import Header from './components/Header/Header';
-import Monument from './pages/Monument/Monument';
+import MonumentPage from './pages/MonumentPage/MonumentPage';
 import Search from './components/Search/Search';
-import Error from './pages/Error/Error';
 import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
 import Toaster from './containers/Toaster/Toaster';
 
 class App extends React.Component {
-
-    static mapStateToProps(state) {
-        return {};
-    }
 
     render() {
         return (
@@ -44,9 +39,8 @@ class App extends React.Component {
                                     <h1>Welcome!</h1>
                                 </div>
                             </Route>
-                            <Route path="/monuments/:monumentId/:slug?" component={Monument}/>
+                            <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={Search}/>
-                            <Route path="/error" component={Error}/>
                         </ErrorHandler>
                     </div>
                 </Router>
@@ -55,4 +49,4 @@ class App extends React.Component {
     }
 }
 
-export default connect(App.mapStateToProps)(App);
+export default connect()(App);
