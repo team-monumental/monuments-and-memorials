@@ -9,7 +9,7 @@ import SuggestChanges from './SuggestChanges/SuggestChanges';
 export default class Monument extends React.Component {
 
     render() {
-        const { monument, tags, images, contributions, references } = this.props;
+        const { monument } = this.props;
         if (!monument) return (<div/>);
         const title = monument.title;
 
@@ -22,7 +22,7 @@ export default class Monument extends React.Component {
                     {this.renderRelatedMonuments()}
                 </div>
                 <div className="column main-column">
-                    <Details monument={monument} tags={tags} images={images} contributions={contributions} references={references}/>
+                    <Details monument={monument}/>
                 </div>
                 <div className="column visit-column">
                     <Map monument={monument}/>
