@@ -21,8 +21,10 @@ public class MonumentController {
     }
 
     @GetMapping("/api/monument/{id}")
-    public Monument getMonument(@PathVariable("id") Integer id) throws ResourceNotFoundException {
-        Monument monument = this.monumentService.get(id);
+    public Monument getMonument(@PathVariable("id") Integer id,
+                                @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
+            throws ResourceNotFoundException {
+        Monument monument = this.monumentService.get(id, cascade);
 
         if (monument == null) {
             throw new ResourceNotFoundException();

@@ -7,7 +7,7 @@ import Address from './Address/Address';
 export default class Details extends React.Component {
 
     render() {
-        const { monument, tags, images, contributions, references } = this.props;
+        const { monument } = this.props;
 
         let inscription;
         if (monument.inscription) {
@@ -29,14 +29,14 @@ export default class Details extends React.Component {
                             <div className="field font-italic"><Address monument={monument}/></div>
                             <div className="field">{monument.description}</div>
                         </div>
-                        <Tags tags={tags}/>
+                        <Tags tags={monument.tags}/>
                     </div>
                 </div>
-                <Gallery images={images}/>
+                <Gallery images={monument.images}/>
                 <div className="inscription">
                     {inscription}
                 </div>
-                <About monument={monument} contributions={contributions} referneces={references}/>
+                <About monument={monument} contributions={monument.contributions} referneces={monument.references}/>
             </div>
         )
     }
