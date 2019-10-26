@@ -44,7 +44,7 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Creates a PostGIS ST_DWithin query on the Monument's point field and add it to the specified CriteriaQuery
+     * Creates a PostGIS ST_DWithin query on the Monument's point field and adds it to the specified CriteriaQuery
      * @param builder The CriteriaBuilder for the query
      * @param query The CriteriaQuery
      * @param root The Root associated with the CriteriaQuery
@@ -97,6 +97,7 @@ public class MonumentService extends ModelService<Monument> {
         root.fetch("tags", JoinType.LEFT);
         query.select(root);
 
+        // TODO: Query for description
         // TODO: Query for tags
         // TODO: Filters
 
