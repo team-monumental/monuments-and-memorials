@@ -33,6 +33,11 @@ public class SearchController {
      */
     @GetMapping("/api/search/count")
     public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery) {
-        return monumentService.countSearchResults(searchQuery);
+        try {
+            return monumentService.countSearchResults(searchQuery);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

@@ -1,25 +1,26 @@
-import { FETCH_MONUMENT_ERROR, FETCH_MONUMENT_PENDING, FETCH_MONUMENT_SUCCESS } from '../constants';
+import { SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_SUCCESS, SEARCH_MONUMENTS_ERROR } from '../constants';
 
 const initialState = {
     pending: false,
-    monument: {},
+    monuments: [],
+    count: 0,
     error: null
 };
 
-export default function monumentPage(state = initialState, action) {
+export default function searchPage(state = initialState, action) {
     switch (action.type) {
-        case FETCH_MONUMENT_PENDING:
+        case SEARCH_MONUMENTS_PENDING:
             return {
                 ...state,
                 pending: true
             };
-        case FETCH_MONUMENT_SUCCESS:
+        case SEARCH_MONUMENTS_SUCCESS:
             return {
                 ...state,
                 pending: false,
-                monument: action.payload
+                ...action.payload
             };
-        case FETCH_MONUMENT_ERROR:
+        case SEARCH_MONUMENTS_ERROR:
             return {
                 ...state,
                 pending: false,

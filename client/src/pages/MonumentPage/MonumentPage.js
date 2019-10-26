@@ -23,7 +23,7 @@ class MonumentPage extends React.Component {
                 <Spinner show={pending}/>
                 <Monument monument={monument}/>
             </div>
-        )
+        );
     }
 }
 

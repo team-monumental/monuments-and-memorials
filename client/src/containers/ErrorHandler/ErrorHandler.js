@@ -23,7 +23,7 @@ class ErrorHandler extends React.Component {
 
         if (errors.length > 0) {
             return (
-                <div>
+                <div className="errors">
                     {errors.map(error => (
                         <div className="h1 text-center" key={error.id}>{error.message}</div>
                     ))}

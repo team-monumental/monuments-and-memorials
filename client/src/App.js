@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import Header from './components/Header/Header';
 import MonumentPage from './pages/MonumentPage/MonumentPage';
-import Search from './components/Search/Search';
+import SearchPage from './pages/SearchPage/SearchPage';
 import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
 import Toaster from './containers/Toaster/Toaster';
 
@@ -40,7 +40,7 @@ class App extends React.Component {
                                 </div>
                             </Route>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
-                            <Route path="/search" component={Search}/>
+                            <Route path="/search" component={SearchPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

@@ -39,7 +39,7 @@ export default class Pagination extends React.Component {
                     let lastIndex = paginationIndices[paginationIndices.length - 1];
                     if (lastIndex !== index - 1) {
                         pagination.push((
-                            <BootstrapPagination.Ellipsis/>
+                            <BootstrapPagination.Ellipsis key={pagination.length + 1}/>
                         ));
                     }
                 }

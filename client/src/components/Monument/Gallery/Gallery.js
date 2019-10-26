@@ -122,7 +122,7 @@ export default class Gallery extends React.Component {
                         }
                         if (animating) className += ' animating';
                         return (
-                            <span className={className}
+                            <span key={image.id} className={className}
                                   onClick={() => {
                                       if (this.state.animating) return;
                                       this.selectImage(index);

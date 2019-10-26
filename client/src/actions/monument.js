@@ -21,18 +21,14 @@ function fetchMonumentError(error) {
 }
 
 export default function fetchMonument(id) {
-    return dispatch => {
+    return async dispatch => {
         dispatch(fetchMonumentPending());
-        fetch(`/api/monument/${id}?cascade=true`)
+        let error = null;
+        const res = await fetch(`/api/monument/${id}?cascade=true`)
             .then(res => res.json())
-            .then(res => {
-                if (res.error) {
-                    throw res.error;
-                }
-                dispatch(fetchMonumentSuccess(res));
-            })
-            .catch(error => {
-                dispatch(fetchMonumentError(error));
-            });
+            .catch(err => error = err);
+
+        if (error || res.error) dispatch(fetchMonumentError(error || res.error));
+        else dispatch(fetchMonumentSuccess(res));
     }
 }

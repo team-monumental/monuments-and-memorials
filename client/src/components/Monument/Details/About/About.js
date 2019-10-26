@@ -21,7 +21,7 @@ export default class About extends React.Component {
                 <div>
                     <span className="detail-label">Contributors:&nbsp;</span>
                     <ul>
-                        {contributions.map(contribution => <li key={contribution.submittedBy}>{contribution.submittedBy}</li>)}
+                        {contributions.map(contribution => <li key={contribution.id}>{contribution.submittedBy}</li>)}
                     </ul>
                 </div>
             )
@@ -33,7 +33,7 @@ export default class About extends React.Component {
                 <div>
                     <span className="detail-label">References:&nbsp;</span>
                     <ul>
-                        {references.map(reference => <li key={reference.url}><a className="text-break" href={reference.url}>{reference.url}</a></li>)}
+                        {references.map(reference => <li key={reference.id}><a className="text-break" href={reference.url}>{reference.url}</a></li>)}
                     </ul>
                 </div>
             )
