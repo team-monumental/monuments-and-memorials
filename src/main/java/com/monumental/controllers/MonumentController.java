@@ -22,18 +22,13 @@ public class MonumentController {
 
     @GetMapping("/api/monument/{id}")
     public Monument getMonument(@PathVariable("id") Integer id) throws ResourceNotFoundException {
-        try {
-            Monument monument = this.monumentService.get(id);
+        Monument monument = this.monumentService.get(id);
 
-            if (monument == null) {
-                throw new ResourceNotFoundException();
-            }
-
-            return monument;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        if (monument == null) {
+            throw new ResourceNotFoundException();
         }
+
+        return monument;
     }
 
     @GetMapping("/api/monuments")
