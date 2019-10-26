@@ -4,6 +4,9 @@ import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,6 +33,11 @@ public class CsvMonumentConverter {
 
         Monument monument = new Monument();
         CsvMonumentConverterResult result = new CsvMonumentConverterResult();
+
+        Double latitude = 0.0;
+        Double longitude = 0.0;
+
+        GeometryFactory geometryFactory = new GeometryFactory();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
@@ -88,12 +96,12 @@ public class CsvMonumentConverter {
                     break;
                 case 9: // Latitude
                     if (!value.isEmpty()) {
-                        monument.setLat(Double.parseDouble(value));
+                        latitude = Double.parseDouble(value);
                     }
                     break;
                 case 10: // Longitude
                     if (!value.isEmpty()) {
-                        monument.setLon(Double.parseDouble(value));
+                        longitude = Double.parseDouble(value);
                     }
                     break;
                 case 11: // City
@@ -137,6 +145,10 @@ public class CsvMonumentConverter {
             }
         }
 
+        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(4326);
+        monument.setPoint(point);
+
         result.setMonument(monument);
 
         return result;
@@ -177,12 +189,12 @@ public class CsvMonumentConverter {
         csvRow += ",";
 
         // Column 6: Latitude
-        csvRow += convertToCsvCell(monument.getLat());
+        csvRow += convertToCsvCell(monument.getPoint().getY());
 
         csvRow += ",";
 
         // Column 7: Longitude
-        csvRow += convertToCsvCell(monument.getLon());
+        csvRow += convertToCsvCell(monument.getPoint().getX());
 
         csvRow += ",";
 
