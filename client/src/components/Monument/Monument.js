@@ -2,7 +2,6 @@ import React from 'react';
 import './Monument.scss';
 import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
-import request from '../../utils/request';
 import Map from './Map/Map';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';

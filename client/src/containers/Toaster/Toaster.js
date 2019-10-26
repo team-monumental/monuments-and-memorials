@@ -1,7 +1,7 @@
 import React from 'react';
 import './Toaster.scss';
 import { connect } from 'react-redux';
-import { removeToast } from '../../actions';
+import { removeToast } from '../../actions/toasts';
 import Toast from '../../components/Toast/Toast';
 
 class Toaster extends React.Component {

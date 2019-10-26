@@ -1,29 +1,16 @@
 let toastId = 0;
-let defaultToastOptions = {
-    duration: 5000
-};
 export function createToast(options) {
+    options.duration = options.duration || 5000;
     return {
-        ...defaultToastOptions,
         ...options,
         id: toastId++
     }
 }
 
 let errorId = 0;
-let defaultErrorOptions = {
-    severity: 'low',
-    message: 'Something went wrong.'
-};
-export function createError(options) {
-    console.log('created', {
-        ...defaultErrorOptions,
-        ...options,
-        id: errorId + 1
-    });
+export function createError({message = 'Something went wrong.'}) {
     return {
-        ...defaultErrorOptions,
-        ...options,
+        message,
         id: errorId++
     }
 }

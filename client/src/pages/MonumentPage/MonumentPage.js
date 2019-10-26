@@ -2,7 +2,6 @@ import React from 'react';
 import './MonumentPage.scss';
 import request from '../../utils/request';
 import { connect } from 'react-redux';
-import { default as axios } from 'axios';
 
 import Monument from '../../components/Monument/Monument';
 
@@ -23,11 +22,7 @@ class MonumentPage extends React.Component {
     }
 
     async componentDidMount() {
-        console.log(this.props);
         const { match: { params: { monumentId } } } = this.props;
-
-        let res = await axios.get(`/api/monument/${monumentId}`);
-        console.log('res', res);
 
         let error;
         const results = await Promise.all([
