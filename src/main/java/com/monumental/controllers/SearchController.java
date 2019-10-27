@@ -16,23 +16,35 @@ public class SearchController {
     private MonumentService monumentService;
 
     /**
-     * This function lets you search monuments using the q query param
+     * This function lets you search Monuments via a few different request parameters
      * Ex: GET http://localhost:8080/api/search?q=Memorial&limit=25&page=1
-     * @param searchQuery The search query string
-     * @return            Matching Monuments based on their title
+     * Ex: GET http://locahose:8080/api/search?lat=37.383762&lon=-109.072473&distance=20
+     * @param searchQuery - The search query string
+     * @param page - The Monument results page number
+     * @param limit - The maximum number of Monument results
+     * @param latitude - The latitude of the comparison point
+     * @param longitude - The longitude of the comparison point
+     * @param distance - The distance from the comparison point to search in, units of miles
+     * @return            Matching Monuments based on their title, artist or location
      */
     @GetMapping("/api/search")
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
                                           @RequestParam(required = false, defaultValue = "1") String page,
-                                          @RequestParam(required = false, defaultValue = "25") String limit) {
-        return monumentService.search(searchQuery, page, limit);
+                                          @RequestParam(required = false, defaultValue = "25") String limit,
+                                          @RequestParam(required = false, value = "lat") String latitude,
+                                          @RequestParam(required = false, value = "lon") String longitude,
+                                          @RequestParam(required = false, value = "d", defaultValue = "25") String distance) {
+        return monumentService.search(searchQuery, page, limit, latitude, longitude, distance);
     }
 
     /**
-     * @return Total number of results for a monument search
+     * @return Total number of results for a Monument search
      */
     @GetMapping("/api/search/count")
-    public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery) {
-        return monumentService.countSearchResults(searchQuery);
+    public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery,
+                                       @RequestParam(required = false, value = "lat") String latitude,
+                                       @RequestParam(required = false, value = "lon") String longitude,
+                                       @RequestParam(required = false, value = "d", defaultValue = "25") String distance) {
+        return monumentService.countSearchResults(searchQuery, latitude, longitude, distance);
     }
 }

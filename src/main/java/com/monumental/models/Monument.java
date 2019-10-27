@@ -1,6 +1,7 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.vividsolutions.jts.geom.Point;
 
 import javax.persistence.*;
 import javax.validation.ConstraintViolation;
@@ -41,11 +42,8 @@ public class Monument extends Model implements Serializable {
     @NotNull(groups = {New.class, Existing.class}, message = "Material can not be null")
     private String material;
 
-    @Column(name = "lat")
-    private Double lat;
-
-    @Column(name = "lon")
-    private Double lon;
+    @Column(name = "coordinates", columnDefinition = "geometry")
+    private Point coordinates;
 
     @Column(name = "city")
     private String city;
@@ -85,14 +83,11 @@ public class Monument extends Model implements Serializable {
         this.contributions = new ArrayList<>();
     }
 
-    public Monument(String artist, String title, Date date, String material, double lat,
-                    double lon, String city, String state) {
+    public Monument(String artist, String title, Date date, String material, String city, String state) {
         this.artist = artist;
         this.title = title;
         this.date = date;
         this.material = material;
-        this.lat = lat;
-        this.lon = lon;
         this.city = city;
         this.state = state;
 
@@ -134,25 +129,28 @@ public class Monument extends Model implements Serializable {
         this.material = material;
     }
 
-    public Double getLat() {
-        return this.lat;
+    public Point getCoordinates() {
+        return this.coordinates;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setCoordinates(Point coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public Double getLat() {
+        if (this.coordinates == null) {
+            return null;
+        }
+
+        return this.coordinates.getY();
     }
 
     public Double getLon() {
-        return this.lon;
-    }
+        if (this.coordinates == null) {
+            return null;
+        }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
-
-    public String getCoordinatePointAsString() {
-        if (this.lat == null || this.lon == null ) return "";
-        return Double.toString(this.lat) + ", " + Double.toString(this.lon);
+        return this.coordinates.getX();
     }
 
     public String getCity() {
@@ -231,7 +229,7 @@ public class Monument extends Model implements Serializable {
 
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
-                + this.date + ", Material: " + this.material + ", Coordinates: " + this.getCoordinatePointAsString()
+                + this.date + ", Material: " + this.material + ", Point: " + this.coordinates.toString()
                 + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
                 + this.description;
     }

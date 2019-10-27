@@ -1,10 +1,8 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
-import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
@@ -15,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
