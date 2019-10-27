@@ -42,8 +42,8 @@ public class Monument extends Model implements Serializable {
     @NotNull(groups = {New.class, Existing.class}, message = "Material can not be null")
     private String material;
 
-    @Column(name = "point", columnDefinition = "geometry")
-    private Point point;
+    @Column(name = "coordinates", columnDefinition = "geometry")
+    private Point coordinates;
 
     @Column(name = "city")
     private String city;
@@ -129,12 +129,20 @@ public class Monument extends Model implements Serializable {
         this.material = material;
     }
 
-    public Point getPoint() {
-        return this.point;
+    public Point getCoordinates() {
+        return this.coordinates;
     }
 
-    public void setPoint(Point point) {
-        this.point = point;
+    public void setCoordinates(Point coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public double getLat() {
+        return this.coordinates.getY();
+    }
+
+    public double getLon() {
+        return this.coordinates.getX();
     }
 
     public String getCity() {
@@ -213,7 +221,7 @@ public class Monument extends Model implements Serializable {
 
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
-                + this.date + ", Material: " + this.material + ", Point: " + this.point.toString()
+                + this.date + ", Material: " + this.material + ", Point: " + this.coordinates.toString()
                 + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
                 + this.description;
     }

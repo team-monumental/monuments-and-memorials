@@ -18,11 +18,11 @@ public class MonumentTrigger extends ModelTrigger<Monument> {
             return;
         }
 
-        if (record.getPoint() == null) {
+        if (record.getCoordinates() == null) {
             return;
         }
 
-        String address = googleMapsService.getAddressFromCoordinates(record.getPoint().getY(), record.getPoint().getX());
+        String address = googleMapsService.getAddressFromCoordinates(record.getLat(), record.getLon());
         if (address != null) record.setAddress(address);
     }
 
@@ -35,18 +35,18 @@ public class MonumentTrigger extends ModelTrigger<Monument> {
             return;
         }
 
-        if (record.getPoint() == null) {
+        if (record.getCoordinates() == null) {
             return;
         }
 
         // Don't call the API if an address is provided
         if (record.getAddress() != null) return;
         // Don't call the API if no change has been made to the coordinates
-        if (record.getPoint().equals(original.getPoint())) {
+        if (record.getCoordinates().equals(original.getCoordinates())) {
             record.setAddress(original.getAddress());
             return;
         }
-        String address = googleMapsService.getAddressFromCoordinates(record.getPoint().getY(), record.getPoint().getX());
+        String address = googleMapsService.getAddressFromCoordinates(record.getLat(), record.getLon());
         if (address != null) record.setAddress(address);
     }
 }

@@ -10,6 +10,16 @@ import java.util.List;
 @Service
 public class MonumentService extends ModelService<Monument> {
 
+    // SRID for coordinates
+    // Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
+    // And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
+    public static final int coordinateSrid = 4326;
+
+    // SRID for feet
+    // Find more info here: https://epsg.io/2877
+    // And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
+    public static final int feetSrid = 2877;
+
     public MonumentService(SessionFactoryService sessionFactoryService) {
         super(sessionFactoryService);
     }
@@ -60,15 +70,15 @@ public class MonumentService extends ModelService<Monument> {
         query.where(
                 builder.equal(
                         builder.function("ST_DWithin", Boolean.class,
-                                builder.function("ST_Transform", Geometry.class, root.get("point"),
-                                        builder.literal(2877)
+                                builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
+                                        builder.literal(feetSrid)
                                 ),
                                 builder.function("ST_Transform", Geometry.class,
                                         builder.function("ST_GeometryFromText", Geometry.class,
                                                 builder.literal(comparisonPointAsString),
-                                                builder.literal(4326)
+                                                builder.literal(coordinateSrid)
                                         ),
-                                        builder.literal(2877)
+                                        builder.literal(feetSrid)
                                 ),
                                 builder.literal(feet)
                         ),
@@ -84,12 +94,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param limit - The maximum number of Monument results to return
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
-     * @param miles - The number of miles from the comparison point to search in
+     * @param distance - The distance from the comparison point to search in, units of miles
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     @SuppressWarnings("unchecked")
     public List<Monument> search(String searchQuery, String page, String limit, String latitude, String longitude,
-                                 String miles) {
+                                 String distance) {
 
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
@@ -105,8 +115,8 @@ public class MonumentService extends ModelService<Monument> {
             this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, true);
         }
 
-        if (latitude != null && longitude != null && miles != null) {
-            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(miles));
+        if (latitude != null && longitude != null && distance != null) {
+            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
         }
 
         List<Monument> monuments = this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
@@ -118,7 +128,7 @@ public class MonumentService extends ModelService<Monument> {
      * Count the total number of results for a Monument search
      * TODO: Be sure to update this whenever the search function changes so that they stay in sync
      */
-    public Integer countSearchResults(String searchQuery, String latitude, String longitude, String miles) {
+    public Integer countSearchResults(String searchQuery, String latitude, String longitude, String distance) {
 
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -129,8 +139,8 @@ public class MonumentService extends ModelService<Monument> {
             this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, false);
         }
 
-        if (latitude != null && longitude != null && miles != null) {
-            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(miles));
+        if (latitude != null && longitude != null && distance != null) {
+            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
         }
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();

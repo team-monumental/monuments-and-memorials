@@ -146,8 +146,11 @@ public class CsvMonumentConverter {
         }
 
         Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+        // 4326 is the SRID for coordinates
+        // Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
+        // And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
         point.setSRID(4326);
-        monument.setPoint(point);
+        monument.setCoordinates(point);
 
         result.setMonument(monument);
 
@@ -189,12 +192,12 @@ public class CsvMonumentConverter {
         csvRow += ",";
 
         // Column 6: Latitude
-        csvRow += convertToCsvCell(monument.getPoint().getY());
+        csvRow += convertToCsvCell(monument.getLat());
 
         csvRow += ",";
 
         // Column 7: Longitude
-        csvRow += convertToCsvCell(monument.getPoint().getX());
+        csvRow += convertToCsvCell(monument.getLon());
 
         csvRow += ",";
 
