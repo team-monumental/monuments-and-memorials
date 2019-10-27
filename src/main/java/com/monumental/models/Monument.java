@@ -137,11 +137,19 @@ public class Monument extends Model implements Serializable {
         this.coordinates = coordinates;
     }
 
-    public double getLat() {
+    public Double getLat() {
+        if (this.coordinates == null) {
+            return null;
+        }
+
         return this.coordinates.getY();
     }
 
-    public double getLon() {
+    public Double getLon() {
+        if (this.coordinates == null) {
+            return null;
+        }
+
         return this.coordinates.getX();
     }
 
