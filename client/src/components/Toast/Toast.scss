@@ -1,0 +1,12 @@
+@import "../../theme.scss";
+
+.toast.danger {
+    .toast-header {
+        background-color: $danger;
+        color: white;
+        button.close {
+            color: white;
+            opacity: 1;
+        }
+    }
+}

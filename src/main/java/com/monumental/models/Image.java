@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -23,6 +25,7 @@ public class Image extends Model implements Serializable {
     @Column(name = "is_primary")
     private boolean isPrimary;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     @NotNull(groups = {New.class, Existing.class}, message = "Image must have an associated Monument")

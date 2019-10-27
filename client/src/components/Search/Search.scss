@@ -1,0 +1,61 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+.search-results-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-results {
+    width: 40rem;
+    @include media-breakpoint-up(lg) {
+        max-width: 40rem;
+    }
+    max-width: calc(100vw - 2rem);
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5rem;
+    position: relative;
+
+    .search-result {
+        margin-bottom: 1.5rem;
+    }
+}
+
+.search-header {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    & > * {
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+    }
+    select, input {
+        padding: 0.25rem 0.4rem;
+        height: min-content;
+    }
+}
+
+.spinner-container {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0,0,0,0.5);
+    top: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.pagination {
+    .page-link {
+        border: 0 !important;
+    }
+}

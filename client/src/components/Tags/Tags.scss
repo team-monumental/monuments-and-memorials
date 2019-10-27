@@ -1,0 +1,19 @@
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: -0.5rem;
+    .tag {
+        background-color: #e8e8e8;
+        color: rgba(0, 0, 0, 0.8);
+        padding: .5em .75em;
+        border-radius: .28571429rem;
+        font-size: 0.8rem;
+        width: min-content;
+        margin-right: 0.75rem;
+        margin-bottom: 0.5rem;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

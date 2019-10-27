@@ -81,5 +81,10 @@ task copyWebApp(type: Copy, dependsOn: [appNpmBuild]) {
     into 'build/resources/main/static/'
 }
 
+task dataLoad(type: JavaExec) {
+    main = "util.InitialDataLoadApplication"
+    classpath = sourceSets.main.getRuntimeClasspath()
+}
+
 // Enable this to ALWAYS build react when building the Java app
 // processResources.dependsOn 'copyWebApp'
