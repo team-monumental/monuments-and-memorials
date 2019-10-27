@@ -1,6 +1,9 @@
 import { createToast } from '../factories';
 import { ADD_TOAST, REMOVE_TOAST, TOAST_FADE_IN, TOAST_FADE_OUT } from '../constants';
 
+/**
+ * Adds a toast to the queue, to be displayed for a set time
+ */
 export function addToast(options = {}) {
     return (dispatch) => {
         const toast = createToast(options);
@@ -24,6 +27,9 @@ export function addToast(options = {}) {
     };
 }
 
+/**
+ * Removes a toast from the queue
+ */
 export function removeToast(id) {
     return {
         payload: id,

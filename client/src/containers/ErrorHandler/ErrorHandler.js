@@ -2,6 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { removeError } from '../../actions/errors';
 
+/**
+ * Container for errors which renders the page content if there are no errors, otherwise
+ * renders the most recent error on the page (like a 404 page for example)
+ * For more minor errors, you should just log them in the console or dispatch a Toast to let the user know
+ */
 class ErrorHandler extends React.Component {
 
     static mapStateToProps(state) {

@@ -5,6 +5,10 @@ import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument from '../../actions/monument';
 
+/**
+ * Root container component for the monument record page which handles retrieving the monument
+ * and its related records via redux
+ */
 class MonumentPage extends React.Component {
 
     static mapStateToProps(state) {

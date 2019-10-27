@@ -2,6 +2,10 @@ import React from 'react';
 import './Pagination.scss';
 import { Pagination as BootstrapPagination } from 'react-bootstrap';
 
+/**
+ * Builds a pagination for the specified number of pages/current page number,
+ * leaving off extra pages as ellipses so that it doesn't run off the page
+ */
 export default class Pagination extends React.Component {
 
     constructor(props) {

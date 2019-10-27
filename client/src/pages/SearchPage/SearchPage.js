@@ -5,6 +5,12 @@ import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
 
+/**
+ * Root container component for the search page which handles retrieving the search results
+ * and the total count of search results via redux actions. It does this solely by checking the
+ * page's query params when it is rendered, so other pages must redirect to the search page in order
+ * to trigger a search
+ */
 class SearchPage extends React.Component {
 
     constructor(props) {

@@ -4,6 +4,9 @@ import { Button, Form } from 'react-bootstrap';
 import * as QueryString from 'query-string';
 import TextSearch from './TextSearch/TextSearch';
 
+/**
+ * Root presentational component for the search bar, including text and location searching
+ */
 export default class SearchBar extends React.Component {
 
     constructor(props) {

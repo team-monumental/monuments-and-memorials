@@ -1,6 +1,9 @@
 import React from 'react';
 import './Tags.scss';
 
+/**
+ * Renders a list of tags belonging to a Monument
+ */
 export default class Tags extends React.Component {
 
     render() {

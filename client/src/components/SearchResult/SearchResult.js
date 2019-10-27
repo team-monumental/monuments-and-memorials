@@ -3,6 +3,9 @@ import './SearchResult.scss';
 import { Card } from 'react-bootstrap';
 import Tags from '../Tags/Tags';
 
+/**
+ * A condensed Monument info card for use in search results
+ */
 export default class SearchResult extends React.Component {
 
     render() {

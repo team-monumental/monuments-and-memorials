@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { removeToast } from '../../actions/toasts';
 import Toast from '../../components/Toast/Toast';
 
+/**
+ * Container for Toasts, which listens to redux actions adding and removing Toasts
+ */
 class Toaster extends React.Component {
 
     static mapStateToProps(state) {

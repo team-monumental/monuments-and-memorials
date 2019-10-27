@@ -2,6 +2,10 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import * as moment from 'moment';
 
+/**
+ * Renders meta-info about a Monument, such as when it was last updated,
+ * who has contributed to it, and the references used
+ */
 export default class About extends React.Component {
 
     render() {

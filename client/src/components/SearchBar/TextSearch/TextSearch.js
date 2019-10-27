@@ -1,5 +1,9 @@
 import React from 'react';
 
+/**
+ * Used to search text fields such as title, artist, and description
+ * Has a placeholder animation that shows users what kind of things they can search for
+ */
 export default class TextSearch extends React.Component {
 
     constructor(props) {

@@ -1,6 +1,9 @@
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
 
+/**
+ * Prompts users to suggest changes to a Monument on its record page
+ */
 export default class SuggestChanges extends React.Component {
 
     render() {

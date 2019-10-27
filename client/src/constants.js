@@ -1,3 +1,5 @@
+// Constants used for redux action types to prevent typos
+
 export const ADD_TOAST = 'ADD_TOAST';
 export const REMOVE_TOAST = 'REMOVE_TOAST';
 export const TOAST_FADE_IN = 'TOAST_FADE_IN';

@@ -4,6 +4,9 @@ import SearchResult from '../SearchResult/SearchResult';
 import Pagination from '../Pagination/Pagination';
 import { Form } from 'react-bootstrap';
 
+/**
+ * Root presentational component for the search page
+ */
 export default class Search extends React.Component {
 
     limitOptions = [10, 25, 50, 100];

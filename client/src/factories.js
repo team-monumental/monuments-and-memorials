@@ -1,3 +1,5 @@
+// These factories are used to create payloads for the associated redux actions
+
 let toastId = 0;
 export function createToast(options) {
     options.duration = options.duration || 5000;

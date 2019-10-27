@@ -20,6 +20,10 @@ function fetchMonumentError(error) {
     };
 }
 
+/**
+ * Queries for a monument and all related records, to be displayed on the monument view page
+ * This is an async action (redux-thunk)
+ */
 export default function fetchMonument(id) {
     return async dispatch => {
         dispatch(fetchMonumentPending());

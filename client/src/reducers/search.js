@@ -7,6 +7,7 @@ const initialState = {
     error: null
 };
 
+// Tracks the progress of getting search results and total result count on the search page
 export default function searchPage(state = initialState, action) {
     switch (action.type) {
         case SEARCH_MONUMENTS_PENDING:

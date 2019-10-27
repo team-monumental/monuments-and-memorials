@@ -2,6 +2,10 @@ import React from 'react';
 import './Toast.scss';
 import { Toast as BootstrapToast } from 'react-bootstrap';
 
+/**
+ * A notification displayed at the top of the screen
+ * These are created by the Toaster using redux actions
+ */
 export default class Toast extends React.Component {
 
     render() {

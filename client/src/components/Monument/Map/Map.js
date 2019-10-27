@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Displays a Google Maps iframe of a Monument's location
+ */
 export default class Map extends React.Component {
 
     render() {

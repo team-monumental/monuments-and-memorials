@@ -6,6 +6,9 @@ import Map from './Map/Map';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 
+/**
+ * Root presentational component for the Monument record page
+ */
 export default class Monument extends React.Component {
 
     render() {

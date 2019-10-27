@@ -2,6 +2,9 @@ import React from 'react';
 import './Spinner.scss';
 import { Spinner as BootstrapSpinner } from 'react-bootstrap';
 
+/**
+ * Wraps the react-bootstrap Spinner with some extra styling to make it a full-page spinner
+ */
 export default class Spinner extends React.Component {
     render() {
         const { show } = this.props;

@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Renders the Monument's address or city, state if there's no address
+ */
 export default class Address extends React.Component {
 
     render() {

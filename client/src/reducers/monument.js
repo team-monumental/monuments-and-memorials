@@ -6,6 +6,7 @@ const initialState = {
     error: null
 };
 
+// Tracks the progress of getting the monument and related records for the monument record page
 export default function monumentPage(state = initialState, action) {
     switch (action.type) {
         case FETCH_MONUMENT_PENDING:

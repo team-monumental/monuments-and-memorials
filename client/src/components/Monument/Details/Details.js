@@ -4,6 +4,9 @@ import Gallery from '../Gallery/Gallery';
 import About from './About/About';
 import Address from './Address/Address';
 
+/**
+ * Displays all the main info about a Monument, for the Monument's record page
+ */
 export default class Details extends React.Component {
 
     render() {

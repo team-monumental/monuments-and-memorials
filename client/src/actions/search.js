@@ -30,6 +30,9 @@ async function get(url, queryString) {
     else return res;
 }
 
+/**
+ * Searches for monuments and gets the total count of results
+ */
 export default function searchMonuments(options = {}) {
     return async dispatch => {
         const queryString = QueryString.stringify(options);
