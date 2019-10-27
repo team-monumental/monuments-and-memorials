@@ -44,7 +44,7 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Uses the FTS function as well as any filtering or pagination provided to search for matching Monuments
+     * Uses the pg_trgm similarity function as well as any filtering or pagination provided to search for matching Monuments
      */
     @SuppressWarnings("unchecked")
     public List<Monument> search(String searchQuery, String page, String limit) {
