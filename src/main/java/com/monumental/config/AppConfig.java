@@ -1,5 +1,6 @@
 package com.monumental.config;
 
+import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,5 +32,14 @@ public class AppConfig {
     @Bean
     public Module datatypeHibernateModule() {
         return new Hibernate5Module();
+    }
+
+    /**
+     * This Bean is required so that the JSON deserializer knows how to deserialize GeoJson since it does not
+     * know how to by default
+     */
+    @Bean
+    public JtsModule jtsModule() {
+        return new JtsModule();
     }
 }

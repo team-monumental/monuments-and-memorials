@@ -4,7 +4,7 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.dialect">
-            com.monumental.CustomPostgreSQL9Dialect
+            org.hibernate.spatial.dialect.postgis.PostgisDialect
         </property>
 
         <property name="hibernate.connection.driver_class">
@@ -23,7 +23,9 @@
             password
         </property>
 
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">
+            update
+        </property>
 
     </session-factory>
 </hibernate-configuration>
