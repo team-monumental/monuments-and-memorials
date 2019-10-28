@@ -22,6 +22,10 @@ class SearchPage extends React.Component {
     }
 
     static mapStateToProps(state) {
+        if (state.searchPage) {
+            const { monuments, count } = state.searchPage;
+            if (monuments.error || count.error || monuments.errors || count.errors) return {};
+        }
         return state.searchPage;
     }
 
