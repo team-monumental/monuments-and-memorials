@@ -15,13 +15,20 @@ export default class TextSearch extends React.Component {
         this.animateSearchPlaceholder();
     }
 
+    handleChange(event) {
+        const { onSearchChange } = this.props;
+
+        this.setState({searchQuery: event.target.value});
+        onSearchChange(this.state.searchQuery);
+    }
+
     render() {
         const { searchPlaceholder, searchQuery } = this.state;
         const { className, onKeyDown } = this.props;
         return (
             <input type="text"
                    value={searchQuery}
-                   onChange={event => this.setState({searchQuery: event.target.value})}
+                   onChange={(event) => this.handleChange(event)}
                    placeholder={searchPlaceholder}
                    className={className}
                    onKeyDown={onKeyDown}/>
