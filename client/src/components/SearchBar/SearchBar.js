@@ -13,12 +13,17 @@ export default class SearchBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            textSearchQuery: ''
+            textSearchQuery: '',
+            locationSearchQuery: ''
         };
     }
 
     handleTextSearchChange(textSearchQuery) {
         this.setState({textSearchQuery: textSearchQuery});
+    }
+
+    handleLocationSearchChange(locationSearchQuery) {
+        this.setState({locationSearchQuery: locationSearchQuery});
     }
 
     handleKeyDown(event) {
@@ -35,6 +40,7 @@ export default class SearchBar extends React.Component {
         });
         window.location.replace(`/search/?${queryString}`);*/
         console.log(this.state.textSearchQuery);
+        console.log(this.state.locationSearchQuery);
     }
 
     render() {
@@ -47,7 +53,7 @@ export default class SearchBar extends React.Component {
                 <LocationSearch value={QueryString.parse(window.location.search)['d'] || ''}
                                 onKeyDown={event => this.handleKeyDown(event)}
                                 className="form-control form-control-sm mr-sm-2"
-                                onSearch={(searchQuery) => this.handleSearch(searchQuery)}/>
+                                onSearchChange={(searchQuery) => this.handleLocationSearchChange(searchQuery)}/>
                 <Button variant="primary btn-sm" onClick={() => this.search()}>Search</Button>
             </Form>
         )

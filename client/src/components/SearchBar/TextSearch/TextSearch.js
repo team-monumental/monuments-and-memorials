@@ -17,9 +17,10 @@ export default class TextSearch extends React.Component {
 
     handleChange(event) {
         const { onSearchChange } = this.props;
+        const newSearchQuery = event.target.value;
 
-        this.setState({searchQuery: event.target.value});
-        onSearchChange(this.state.searchQuery);
+        this.setState({searchQuery: newSearchQuery});
+        onSearchChange(newSearchQuery);
     }
 
     render() {

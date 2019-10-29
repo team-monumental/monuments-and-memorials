@@ -12,17 +12,24 @@ export default class LocationSearch extends React.Component {
         };
     }
 
+    handleChange(event) {
+        const { onSearchChange } = this.props;
+        const newSearchQuery = event.target.value;
+
+        this.setState({searchQuery: newSearchQuery});
+        onSearchChange(newSearchQuery);
+    }
+
     render() {
         const { searchQuery } = this.state;
-        const { className, onKeyDown, onSearch } = this.props;
+        const { className, onKeyDown } = this.props;
         return (
             <input type="text"
                    value={searchQuery}
-                   onChange={event => this.setState({searchQuery: event.target.value})}
+                   onChange={event => this.handleChange(event)}
                    placeholder="Near..."
                    className={className}
-                   onKeyDown={onKeyDown}
-                   onInput={() => onSearch("Location:" + searchQuery)}/>
+                   onKeyDown={onKeyDown}/>
         )
     }
 }
