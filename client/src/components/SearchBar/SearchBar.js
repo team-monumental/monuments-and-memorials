@@ -15,7 +15,8 @@ export default class SearchBar extends React.Component {
         this.state = {
             textSearchQuery: '',
             locationLat: '',
-            locationLon: ''
+            locationLon: '',
+            locationAddress: ''
         };
     }
 
@@ -23,8 +24,8 @@ export default class SearchBar extends React.Component {
         this.setState({textSearchQuery: textSearchQuery});
     }
 
-    handleLocationSearchSelect(lat, lon) {
-        this.setState({locationLat: lat, locationLon: lon});
+    handleLocationSearchSelect(lat, lon, address) {
+        this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
         this.search();
     }
 
@@ -33,7 +34,7 @@ export default class SearchBar extends React.Component {
     }
 
     search() {
-        let { textSearchQuery, locationLat, locationLon } = this.state;
+        let { textSearchQuery, locationLat, locationLon, locationAddress } = this.state;
         if (!textSearchQuery && (!locationLat || !locationLon)) return;
         textSearchQuery = (textSearchQuery === '') ? null : textSearchQuery;
         const queryString = QueryString.stringify({
@@ -42,7 +43,8 @@ export default class SearchBar extends React.Component {
             limit: 25,
             lat: locationLat,
             lon: locationLon,
-            d: 25
+            d: 25,
+            address: locationAddress
         });
         window.location.replace(`/search/?${queryString}`);
     }
@@ -54,9 +56,9 @@ export default class SearchBar extends React.Component {
                             onKeyDown={event => this.handleKeyDown(event)}
                             className="form-control form-control-sm mr-sm-2 h-100"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}/>
-                <LocationSearch value={QueryString.parse(window.location.search)['d'] || ''}
+                <LocationSearch value={QueryString.parse(window.location.search)['address'] || ''}
                                 className="form-control form-control-sm mr-sm-2"
-                                onSuggestionSelect={(lat, lon) => this.handleLocationSearchSelect(lat, lon)}/>
+                                onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
                 <Button variant="primary btn-sm" onClick={() => this.search()}>Search</Button>
             </Form>
         )

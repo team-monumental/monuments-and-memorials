@@ -41,7 +41,7 @@ export default class LocationSearch extends React.Component {
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
             .then(latLon => {
-                onSuggestionSelect(latLon.lat, latLon.lng);
+                onSuggestionSelect(latLon.lat, latLon.lng, address);
             })
             .catch(error => console.error("Error", error));
     }
