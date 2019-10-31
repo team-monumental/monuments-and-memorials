@@ -3,13 +3,14 @@
 .autocomplete-container {
   display: inline-flex;
   position: relative;
+
   &, input {
     height: 100%;
   }
 }
 
 .autocomplete-dropdown-container {
-  position:absolute;
+  position: absolute;
   top: 30px;
   background-color: #ffffff;
   border: 1px solid rgba(0,0,0,0.2);
@@ -23,12 +24,13 @@
 
 .suggestion-item {
   cursor: pointer;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   display: flex;
   padding: 0.25rem;
+
   &.active {
     cursor: pointer;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     font-weight: bold;
   }
   i {
