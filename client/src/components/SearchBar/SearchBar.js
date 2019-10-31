@@ -49,10 +49,10 @@ export default class SearchBar extends React.Component {
 
     render() {
         return (
-            <Form inline className="d-none d-lg-block">
+            <Form inline className="d-none d-lg-flex">
                 <TextSearch value={QueryString.parse(window.location.search)['q'] || ''}
                             onKeyDown={event => this.handleKeyDown(event)}
-                            className="form-control form-control-sm mr-sm-2"
+                            className="form-control form-control-sm mr-sm-2 h-100"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}/>
                 <LocationSearch value={QueryString.parse(window.location.search)['d'] || ''}
                                 className="form-control form-control-sm mr-sm-2"
