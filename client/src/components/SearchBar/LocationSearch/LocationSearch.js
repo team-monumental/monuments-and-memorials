@@ -86,7 +86,8 @@ export default class LocationSearch extends React.Component {
                 value={searchQuery}
                 onChange={newSearchQuery => this.handleChange(newSearchQuery)}
                 onSelect={address => this.handleSelect(address)}
-                searchOptions={searchOptions}>
+                searchOptions={searchOptions}
+                highlightFirstSuggestion={true}>
                 {renderFunc}
             </PlacesAutocomplete>
         )
