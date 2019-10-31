@@ -1,4 +1,4 @@
-package util.csvparsing;
+package com.monumental.util.csvparsing;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;

@@ -2,14 +2,11 @@ package com.monumental.models.unittest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Contribution;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

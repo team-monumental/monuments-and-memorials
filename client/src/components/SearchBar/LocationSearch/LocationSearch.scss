@@ -1,0 +1,14 @@
+.autocomplete-container {
+  display: inline-flex;
+}
+
+.suggestion-item-active {
+  cursor: pointer;
+  background-color: #FAFAFA;
+  font-weight: bold;
+}
+
+.suggestion-item {
+  cursor: pointer;
+  background-color: #FFFFFF;
+}

@@ -1,10 +1,10 @@
-package util;
+package com.monumental.util.application;
 
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import com.monumental.services.SessionFactoryService;
-import util.csvparsing.CsvFileWriter;
-import util.csvparsing.CsvMonumentConverter;
+import com.monumental.util.csvparsing.CsvFileWriter;
+import com.monumental.util.csvparsing.CsvMonumentConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;

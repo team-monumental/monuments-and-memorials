@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.criteria.*;
 import java.util.List;
 
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
+
 @Service
 public class MonumentService extends ModelService<Monument> {
 

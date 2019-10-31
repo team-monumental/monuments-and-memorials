@@ -14,7 +14,8 @@ export default class SearchBar extends React.Component {
         super(props);
         this.state = {
             textSearchQuery: '',
-            locationSearchQuery: ''
+            locationLat: '',
+            locationLon: ''
         };
     }
 
@@ -22,8 +23,9 @@ export default class SearchBar extends React.Component {
         this.setState({textSearchQuery: textSearchQuery});
     }
 
-    handleLocationSearchChange(locationSearchQuery) {
-        this.setState({locationSearchQuery: locationSearchQuery});
+    handleLocationSearchSelect(lat, lon) {
+        this.setState({locationLat: lat, locationLon: lon});
+        this.search();
     }
 
     handleKeyDown(event) {
@@ -31,16 +33,18 @@ export default class SearchBar extends React.Component {
     }
 
     search() {
-        /*const searchQuery = '';
-        if (!searchQuery) return;
+        let { textSearchQuery, locationLat, locationLon } = this.state;
+        if (!textSearchQuery && (!locationLat || !locationLon)) return;
+        textSearchQuery = (textSearchQuery === '') ? null : textSearchQuery;
         const queryString = QueryString.stringify({
-            q: searchQuery,
+            q: textSearchQuery,
             page: 1,
-            limit: 25
+            limit: 25,
+            lat: locationLat,
+            lon: locationLon,
+            d: 25
         });
-        window.location.replace(`/search/?${queryString}`);*/
-        console.log(this.state.textSearchQuery);
-        console.log(this.state.locationSearchQuery);
+        window.location.replace(`/search/?${queryString}`);
     }
 
     render() {
@@ -51,9 +55,8 @@ export default class SearchBar extends React.Component {
                             className="form-control form-control-sm mr-sm-2"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}/>
                 <LocationSearch value={QueryString.parse(window.location.search)['d'] || ''}
-                                onKeyDown={event => this.handleKeyDown(event)}
                                 className="form-control form-control-sm mr-sm-2"
-                                onSearchChange={(searchQuery) => this.handleLocationSearchChange(searchQuery)}/>
+                                onSuggestionSelect={(lat, lon) => this.handleLocationSearchSelect(lat, lon)}/>
                 <Button variant="primary btn-sm" onClick={() => this.search()}>Search</Button>
             </Form>
         )
