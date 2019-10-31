@@ -36,7 +36,6 @@ export default class SearchBar extends React.Component {
     search() {
         let { textSearchQuery, locationLat, locationLon, locationAddress } = this.state;
         if (!textSearchQuery && (!locationLat || !locationLon)) return;
-        textSearchQuery = (textSearchQuery === '') ? null : textSearchQuery;
         const queryString = QueryString.stringify({
             q: textSearchQuery,
             page: 1,
