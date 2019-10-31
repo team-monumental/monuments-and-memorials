@@ -3,6 +3,7 @@ import './Search.scss';
 import SearchResult from '../SearchResult/SearchResult';
 import Pagination from '../Pagination/Pagination';
 import { Form } from 'react-bootstrap';
+import MapResults from './MapResults/MapResults';
 
 /**
  * Root presentational component for the search page
@@ -20,7 +21,8 @@ export default class Search extends React.Component {
         const pageEnd = Math.min((limit * (page - 1)) + limit, count);
 
         return (
-                <div className="search-results-column">
+                <div className="search-results-page">
+                    <div/>
                     <div className="search-results">
                         <div className="search-header">
                             <div>
@@ -53,6 +55,9 @@ export default class Search extends React.Component {
                                         page={page - 1}
                                         onPage={page => onPageChange(page + 1)}/>
                         </div>
+                    </div>
+                    <div className="map-results">
+                        <MapResults monuments={monuments} zoom={4}/>
                     </div>
                 </div>
         )

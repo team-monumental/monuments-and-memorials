@@ -10,30 +10,28 @@ import MonumentPage from './pages/MonumentPage/MonumentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
 import Toaster from './containers/Toaster/Toaster';
+import MapPage from './pages/MapPage/MapPage';
 
 class App extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            headerHeight: 0
+        };
+    }
+
     render() {
+        const { headerHeight } = this.state;
         return (
             <div className="App">
                 <Helmet title={'Monuments and Memorials'}/>
                 <Toaster/>
                 <Router>
-                    <Header/>
-                    <div className="page">
+                    <Header onRender={headerHeight => this.setState({headerHeight})}/>
+                    <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
-                            <Route path="/map">
-                                <div className="homepage-map gmaps">
-                                    <div className="mapouter">
-                                        <div className="gmap_canvas">
-                                            <iframe id="gmap_canvas"
-                                                    title="gmaps-iframe"
-                                                    src="https://maps.google.com/maps?q=lincoln%20memorial&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                                                    frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Route>
+                            <Route path="/map" component={MapPage}/>
                             <Route exact path="/">
                                 <div style={{display: 'flex', justifyContent: 'center'}}>
                                     <h1>Welcome!</h1>
