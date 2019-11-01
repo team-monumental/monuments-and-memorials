@@ -25,7 +25,7 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Builds a similarity query on the Monument's title and artist fields, and adds them to your CriteriaQuery
+     * Builds a similarity query on the Monument's title, artist and description fields, and adds them to your CriteriaQuery
      * @param builder           Your CriteriaBuilder
      * @param query             Your CriteriaQuery
      * @param root              The root associated with your CriteriaQuery
@@ -33,11 +33,13 @@ public class MonumentService extends ModelService<Monument> {
      * @param threshold         The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param orderByResults    If true, your results will be ordered by their similarity to the search query
      */
-    private void buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery, Double threshold, Boolean orderByResults) {
+    private void buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
+                                      Double threshold, Boolean orderByResults) {
         query.where(
             builder.or(
                 builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
-                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold)
+                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold),
+                builder.gt(builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery)), threshold)
             )
         );
 
@@ -45,8 +47,11 @@ public class MonumentService extends ModelService<Monument> {
             query.orderBy(
                 builder.desc(
                     builder.sum(
-                        builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)),
-                        builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+                        builder.sum(
+                                builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)),
+                                builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+                        ),
+                        builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery))
                     )
                 )
             );
@@ -107,7 +112,6 @@ public class MonumentService extends ModelService<Monument> {
         root.fetch("tags", JoinType.LEFT);
         query.select(root);
 
-        // TODO: Query for description
         // TODO: Query for tags
         // TODO: Filters
 
@@ -129,20 +133,6 @@ public class MonumentService extends ModelService<Monument> {
      * TODO: Be sure to update this whenever the search function changes so that they stay in sync
      */
     public Integer countSearchResults(String searchQuery, String latitude, String longitude, String distance) {
-
-        CriteriaBuilder builder = this.getCriteriaBuilder();
-        CriteriaQuery<Long> query = builder.createQuery(Long.class);
-        Root<Monument> root = query.from(Monument.class);
-        query.select(builder.countDistinct(root));
-
-        if (searchQuery != null) {
-            this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, false);
-        }
-
-        if (latitude != null && longitude != null && distance != null) {
-            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
-        }
-
-        return this.getEntityManager().createQuery(query).getSingleResult().intValue();
+        return this.search(searchQuery, "1", "25", latitude, longitude, distance).size();
     }
 }
