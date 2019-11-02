@@ -75,7 +75,9 @@ export default class Gallery extends React.Component {
         const { images } = this.props;
 
         if (!images || !images.length) {
-            return (<div style={{marginBottom: '0'}}/>);
+            const testUrl = 'https://monument-images.s3.us-east-2.amazonaws.com/Capture.PNG';
+            return <div className="image" style={{backgroundImage: `url(${testUrl})`}}/>
+            //return (<div style={{marginBottom: '0'}}/>);
         }
         else {
             return (
