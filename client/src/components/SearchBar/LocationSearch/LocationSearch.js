@@ -20,16 +20,18 @@ export default class LocationSearch extends React.Component {
     }
 
     handleChange(newSearchQuery) {
-        const { sessionToken } = this.state;
-        if (!sessionToken) {
-            this.setState({sessionToken: new google.maps.places.AutocompleteSessionToken()})
+        const sessionToken = this.state.sessionToken || new google.maps.places.AutocompleteSessionToken();
+        if (this.state.sessionToken !== sessionToken) {
+            this.setState({sessionToken});
         }
 
         // Google Maps API session tokens expire after 3 minutes
-        // If a request is made with an expired session token, Google charges the per-character rate
-        // Manually expire our local session token after 3 minutes so we don't get charged the higher price
+        // If a request is made with an expired session token, Google charges a higher rate
+        // Manually expire our local session token after 3 minutes so we don't get charged the higher rate
         window.setTimeout(() => {
-            this.setState({sessionToken: null});
+            if (sessionToken === this.state.sessionToken) {
+                this.setState({sessionToken: null});
+            }
         }, 180000);
 
         this.setState({searchQuery: newSearchQuery});

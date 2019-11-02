@@ -82,7 +82,7 @@ task copyWebApp(type: Copy, dependsOn: [appNpmBuild]) {
 }
 
 task dataLoad(type: JavaExec) {
-    main = "util.InitialDataLoadApplication"
+    main = "com.monumental.util.InitialDataLoadApplication"
     classpath = sourceSets.main.getRuntimeClasspath()
 }
 
