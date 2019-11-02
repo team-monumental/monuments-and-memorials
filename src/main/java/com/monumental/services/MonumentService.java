@@ -123,7 +123,11 @@ public class MonumentService extends ModelService<Monument> {
             this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
         }
 
-        List<Monument> monuments = this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1);
+        List<Monument> monuments = limit != null
+                                        ? page != null
+                                            ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                                            : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+                                        : this.getWithCriteriaQuery(query);
 
         return monuments;
     }
@@ -133,6 +137,6 @@ public class MonumentService extends ModelService<Monument> {
      * TODO: Be sure to update this whenever the search function changes so that they stay in sync
      */
     public Integer countSearchResults(String searchQuery, String latitude, String longitude, String distance) {
-        return this.search(searchQuery, "1", "25", latitude, longitude, distance).size();
+        return this.search(searchQuery, null, null, latitude, longitude, distance).size();
     }
 }
