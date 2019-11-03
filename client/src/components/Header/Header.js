@@ -12,9 +12,13 @@ export default class Header extends React.Component {
         {name: 'About', route: '/about'}
     ];
 
+    componentDidMount() {
+        this.props.onRender(this.divRef.clientHeight);
+    }
+
     render() {
         return (
-            <div className="header">
+            <div className="header" id="pageHeader" ref={element => this.divRef = element}>
                 <div className="left">
                     <div className="links d-none d-lg-block">
                         {this.links.map(link =>

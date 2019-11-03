@@ -41,7 +41,7 @@ class SearchPage extends React.Component {
         const { page, limit } = this.state;
         const { monuments, count, pending } = this.props;
         return (
-            <div>
+            <div className="page">
                 <Spinner show={pending}/>
                 <Search monuments={monuments} count={count} page={page} limit={limit}
                         onLimitChange={this.onLimitChange.bind(this)} onPageChange={this.onPageChange.bind(this)}/>

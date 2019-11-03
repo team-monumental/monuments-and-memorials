@@ -23,7 +23,7 @@ class MonumentPage extends React.Component {
     render() {
         const { monument, pending } = this.props;
         return (
-            <div>
+            <div className="page">
                 <Spinner show={pending}/>
                 <Monument monument={monument}/>
             </div>
