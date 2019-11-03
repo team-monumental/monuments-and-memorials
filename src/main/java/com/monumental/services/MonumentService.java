@@ -29,7 +29,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param builder           Your CriteriaBuilder
      * @param query             Your CriteriaQuery
      * @param root              The root associated with your CriteriaQuery
-     * @param searchQuery       The string to search both fields for
+     * @param searchQuery       The string to search the fields for
      * @param threshold         The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param orderByResults    If true, your results will be ordered by their similarity to the search query
      */
@@ -92,6 +92,30 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
+     * Creates a search query on various fields of the Monument and adds it to the specified CriteriaQuery
+     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query - The CriteriaQuery to add the searching logic to
+     * @param root - The Root to use with the CriteriaQuery
+     * @param searchQuery - The String search query that will get passed into the pg_tgrm similarity function
+     * @param latitude - The latitude of the comparison point
+     * @param longitude - The longitude of the comparison point
+     * @param distance - The distance from the comparison point to search in, units of miles
+     */
+    @SuppressWarnings("unchecked")
+    private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
+                                           String latitude, String longitude, String distance) {
+        // TODO: Query for tags
+        // TODO: Filters
+        if (searchQuery != null) {
+            this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, true);
+        }
+
+        if (latitude != null && longitude != null && distance != null) {
+            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
+        }
+    }
+
+    /**
      * Generates a search for Monuments based on matching the specified parameters
      * May make use of the pg_trgm similarity or ST_DWithin functions
      * @param searchQuery - The string search query that will get passed into the pg_tgrm similarity function
@@ -105,23 +129,13 @@ public class MonumentService extends ModelService<Monument> {
     @SuppressWarnings("unchecked")
     public List<Monument> search(String searchQuery, String page, String limit, String latitude, String longitude,
                                  String distance) {
-
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         root.fetch("tags", JoinType.LEFT);
         query.select(root);
 
-        // TODO: Query for tags
-        // TODO: Filters
-
-        if (searchQuery != null) {
-            this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, true);
-        }
-
-        if (latitude != null && longitude != null && distance != null) {
-            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
-        }
+        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance);
 
         List<Monument> monuments = limit != null
                                         ? page != null
@@ -134,9 +148,15 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Count the total number of results for a Monument search
-     * TODO: Be sure to update this whenever the search function changes so that they stay in sync
      */
     public Integer countSearchResults(String searchQuery, String latitude, String longitude, String distance) {
-        return this.search(searchQuery, null, null, latitude, longitude, distance).size();
+        CriteriaBuilder builder = this.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<Monument> root = query.from(Monument.class);
+        query.select(builder.countDistinct(root));
+
+        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance);
+
+        return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
 }
