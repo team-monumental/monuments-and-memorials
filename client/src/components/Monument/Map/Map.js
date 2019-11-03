@@ -7,11 +7,15 @@ export default class Map extends React.Component {
 
     render() {
         const monument = this.props.monument;
+
+        let q = monument.address;
+        if (!q && monument.lat && monument.lon) q = [monument.lat, monument.lon].join(',');
+
         return (
             <div className="visit">
                 <div className="map">
                     <iframe title="gmaps-iframe"
-                            src={`https://maps.google.com/maps?q=${monument.address ? monument.address : monument.coordinatePointAsString}&z=16&output=embed`}
+                            src={`https://maps.google.com/maps?q=${q}&z=16&output=embed`}
                             frameBorder="0"/>
                 </div>
             </div>
