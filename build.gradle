@@ -47,7 +47,6 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
     implementation('com.google.maps:google-maps-services:0.10.1')
     implementation('com.bedatadriven:jackson-datatype-jts:2.4')
-    implementation('com.amazonaws:aws-java-sdk-s3:1.11.665')
     // Geodb includes H2 as a dependency, so no need to import it separately
     implementation group: 'org.opengeo', name: 'geodb', version: '0.8'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
