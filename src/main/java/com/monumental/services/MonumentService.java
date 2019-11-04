@@ -141,10 +141,10 @@ public class MonumentService extends ModelService<Monument> {
         this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, true);
 
         List<Monument> monuments = limit != null
-                                    ? page != null
-                                        ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
-                                        : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-                                    : this.getWithCriteriaQuery(query);
+                                        ? page != null
+                                            ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                                            : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+                                        : this.getWithCriteriaQuery(query);
 
         this.getRelatedTags(monuments);
         return monuments;
