@@ -1,7 +1,7 @@
 package com.monumental.util.csvparsing;
 
 import com.monumental.models.*;
-import com.monumental.services.AwsS3Service;
+import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -145,7 +145,7 @@ public class CsvMonumentConverter {
                     value = formatJpgImageFileName(value);
 
                     Image newImage = new Image();
-                    newImage.setUrl(AwsS3Service.getObjectUrl("monument-images", "images/" + value));
+                    newImage.setUrl(StringHelper.buildAwsS3ObjectUrl("monument-images", "images/" + value));
                     newImage.setIsPrimary(true);
                     newImage.setMonument(monument);
 
