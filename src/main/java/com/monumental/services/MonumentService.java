@@ -40,24 +40,24 @@ public class MonumentService extends ModelService<Monument> {
     private void buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                       Double threshold, Boolean orderByResults) {
         query.where(
-                builder.or(
-                        builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
-                        builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold),
-                        builder.gt(builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery)), threshold)
-                )
+            builder.or(
+                builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
+                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold),
+                builder.gt(builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery)), threshold)
+            )
         );
 
         if (orderByResults) {
             query.orderBy(
-                    builder.desc(
-                            builder.sum(
-                                    builder.sum(
-                                            builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)),
-                                            builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
-                                    ),
-                                    builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery))
-                            )
+                builder.desc(
+                    builder.sum(
+                        builder.sum(
+                            builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)),
+                            builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+                        ),
+                        builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery))
                     )
+                )
             );
         }
     }
@@ -77,21 +77,21 @@ public class MonumentService extends ModelService<Monument> {
         Integer feet = miles * 5280;
 
         query.where(
-                builder.equal(
-                        builder.function("ST_DWithin", Boolean.class,
-                                builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
-                                        builder.literal(feetSrid)
-                                ),
-                                builder.function("ST_Transform", Geometry.class,
-                                        builder.function("ST_GeometryFromText", Geometry.class,
-                                                builder.literal(comparisonPointAsString),
-                                                builder.literal(coordinateSrid)
-                                        ),
-                                        builder.literal(feetSrid)
-                                ),
-                                builder.literal(feet)
+            builder.equal(
+                builder.function("ST_DWithin", Boolean.class,
+                    builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
+                        builder.literal(feetSrid)
+                    ),
+                    builder.function("ST_Transform", Geometry.class,
+                        builder.function("ST_GeometryFromText", Geometry.class,
+                            builder.literal(comparisonPointAsString),
+                            builder.literal(coordinateSrid)
                         ),
-                        true)
+                        builder.literal(feetSrid)
+                    ),
+                    builder.literal(feet)
+                ),
+         true)
         );
     }
 
