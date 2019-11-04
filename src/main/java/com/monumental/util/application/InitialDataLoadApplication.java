@@ -1,12 +1,12 @@
-package util;
+package com.monumental.util.application;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.services.*;
 import org.hibernate.exception.ConstraintViolationException;
-import util.csvparsing.CsvFileReader;
-import util.csvparsing.CsvMonumentConverter;
-import util.csvparsing.CsvMonumentConverterResult;
+import com.monumental.util.csvparsing.CsvFileReader;
+import com.monumental.util.csvparsing.CsvMonumentConverter;
+import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

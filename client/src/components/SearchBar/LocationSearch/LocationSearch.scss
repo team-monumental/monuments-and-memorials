@@ -1,0 +1,38 @@
+@import "../../../theme";
+
+.autocomplete-container {
+  display: inline-flex;
+  position: relative;
+
+  &, input {
+    height: 100%;
+  }
+}
+
+.autocomplete-dropdown-container {
+  position: absolute;
+  top: 30px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.2);
+  z-index: 2;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0;
+  width: calc(100% - 0.5rem);
+  left: 0;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.suggestion-item {
+  cursor: pointer;
+  background-color: #ffffff;
+  display: flex;
+  padding: 0.25rem;
+
+  &.active {
+    background-color: #fafafa;
+    font-weight: bold;
+  }
+  i {
+    color: $primary;
+  }
+}
