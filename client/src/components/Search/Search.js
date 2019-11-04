@@ -22,29 +22,39 @@ export default class Search extends React.Component {
 
         return (
                 <div className="search-results-page">
-                    <div/>
                     <div className="search-results">
                         <div className="search-header">
-                            <div>
-                                Showing {pageStart} - {pageEnd} of {count}  results
-                            </div>
-                            <div>
-                                <span>Show</span>
-                                <Form.Control as="select" className="mx-2" defaultValue={limit} onChange={event => onLimitChange(event.target.value)}>
-                                    {
-                                        this.limitOptions.map(opt => (
-                                            <option value={opt} key={opt}>{opt}</option>
-                                        ))
-                                    }
+                            <div className="filters">
+                                <Form.Control as="select" style={{width: 'min-content'}} className="py-1 px-2" defaultValue="25">
+                                    <option value="10">Within 10 miles</option>
+                                    <option value="15">Within 15 miles</option>
+                                    <option value="25">Within 25 miles</option>
+                                    <option value="50">Within 50 miles</option>
+                                    <option value="100">Within 100 miles</option>
                                 </Form.Control>
-                                <span>per page</span>
                             </div>
-                            <div>
-                                <span>Sort by</span>
-                                <Form.Control as="select" className="ml-2">
-                                    <option>Relevance</option>
-                                    <option>Distance</option>
-                                </Form.Control>
+                            <div className="search-info">
+                                <div>
+                                    Showing {pageStart} - {pageEnd} of {count}  results
+                                </div>
+                                <div>
+                                    <span>Show</span>
+                                    <Form.Control as="select" className="mx-2" defaultValue={limit} onChange={event => onLimitChange(event.target.value)}>
+                                        {
+                                            this.limitOptions.map(opt => (
+                                                <option value={opt} key={opt}>{opt}</option>
+                                            ))
+                                        }
+                                    </Form.Control>
+                                    <span>per page</span>
+                                </div>
+                                <div>
+                                    <span>Sort by</span>
+                                    <Form.Control as="select" className="ml-2">
+                                        <option>Relevance</option>
+                                        <option>Distance</option>
+                                    </Form.Control>
+                                </div>
                             </div>
                         </div>
                         {
@@ -52,7 +62,7 @@ export default class Search extends React.Component {
                                 monuments.map((result, index) => result ? (<SearchResult key={result.id} monument={result} index={index + ((page - 1) * limit)}/>) : null)
                                 : <div className="mb-4 mt-3 text-center">No search results were found. Try broadening your search.</div>
                         }
-                        <div className="d-flex justify-content-center">
+                        <div className="pagination-container">
                             <Pagination count={pageCount}
                                         page={page - 1}
                                         onPage={page => onPageChange(page + 1)}/>

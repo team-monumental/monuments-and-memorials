@@ -3,16 +3,18 @@
     padding: 2rem;
     font-size: 0.875rem;
 
-    > div {
-        flex: 33%;
+    .left {
+        flex: 20%;
     }
 
     .center {
+        flex: 60%;
         display: flex;
         justify-content: center;
     }
 
     .right {
+        flex: 20%;
         display: flex;
         justify-content: flex-end;
     }
