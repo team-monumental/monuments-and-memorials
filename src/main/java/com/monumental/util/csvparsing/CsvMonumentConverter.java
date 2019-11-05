@@ -1,9 +1,7 @@
 package com.monumental.util.csvparsing;
 
-import com.monumental.models.Contribution;
-import com.monumental.models.Monument;
-import com.monumental.models.Reference;
-import com.monumental.models.Tag;
+import com.monumental.models.*;
+import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -142,6 +140,17 @@ public class CsvMonumentConverter {
                     newReference.setMonument(monument);
 
                     monument.getReferences().add(newReference);
+                    break;
+                case 25: // Image filename
+                    value = formatJpgImageFileName(value);
+
+                    Image newImage = new Image();
+                    newImage.setUrl(StringHelper.buildAwsS3ObjectUrl("monument-images", "images/" + value));
+                    newImage.setIsPrimary(true);
+                    newImage.setMonument(monument);
+
+                    monument.getImages().add(newImage);
+                    break;
             }
         }
 
@@ -424,5 +433,13 @@ public class CsvMonumentConverter {
     public static String getHeaderRow() {
         return "ID,Title,Artist,Date,Material,Latitude,Longitude,City,State,Address,Inscription,Description," +
                 "Tags,Contributors,References";
+    }
+
+    private static String formatJpgImageFileName(String fileName) {
+        if (!fileName.endsWith(".jpg")) {
+            fileName = fileName + ".jpg";
+        }
+
+        return fileName;
     }
 }

@@ -36,6 +36,12 @@ export default class Gallery extends React.Component {
     }
 
     animate(index) {
+        const { images } = this.props;
+        if (images.length <= 1) {
+            this.setState({animating: false});
+            return;
+        }
+
         this.setState({
             animationIndex: index,
             animating: true
@@ -97,7 +103,7 @@ export default class Gallery extends React.Component {
         const selectedImage = images[selectedImageIndex];
         return (
             <div className="image-wrapper">
-                <div className="image" style={{backgroundImage: `url(${selectedImage.url})`}}/>
+                <div className="image" style={{backgroundSize: `100% 100%`, backgroundImage: `url("${selectedImage.url}")`}}/>
                 {this.renderAnimation()}
                 <div className="overlay" onClick={() => this.openModal(selectedImage)}>
                     <i className="material-icons">
