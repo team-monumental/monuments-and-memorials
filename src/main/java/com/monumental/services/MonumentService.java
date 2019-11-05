@@ -165,7 +165,7 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Gets the related monuments and sets them on the monument objects, using only one extra SQL query
+     * Gets the related tags and sets them on the monument objects, using only one extra SQL query
      * @param monuments Monuments to get tags for - these objects are updated directly using setTags
      *                  but no database update is called
      */
