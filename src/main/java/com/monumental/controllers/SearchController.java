@@ -31,9 +31,9 @@ public class SearchController {
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
                                           @RequestParam(required = false, defaultValue = "1") String page,
                                           @RequestParam(required = false, defaultValue = "25") String limit,
-                                          @RequestParam(required = false, value = "lat") String latitude,
-                                          @RequestParam(required = false, value = "lon") String longitude,
-                                          @RequestParam(required = false, value = "d", defaultValue = "25") String distance) {
+                                          @RequestParam(required = false, value = "lat") Double latitude,
+                                          @RequestParam(required = false, value = "lon") Double longitude,
+                                          @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance) {
         return monumentService.search(searchQuery, page, limit, latitude, longitude, distance);
     }
 
@@ -42,9 +42,9 @@ public class SearchController {
      */
     @GetMapping("/api/search/count")
     public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery,
-                                       @RequestParam(required = false, value = "lat") String latitude,
-                                       @RequestParam(required = false, value = "lon") String longitude,
-                                       @RequestParam(required = false, value = "d", defaultValue = "25") String distance) {
+                                       @RequestParam(required = false, value = "lat") Double latitude,
+                                       @RequestParam(required = false, value = "lon") Double longitude,
+                                       @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance) {
         return monumentService.countSearchResults(searchQuery, latitude, longitude, distance);
     }
 }

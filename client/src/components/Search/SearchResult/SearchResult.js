@@ -10,8 +10,11 @@ export default class SearchResult extends React.Component {
 
     render() {
         const { monument, index } = this.props;
+        const image = monument && monument.images ? monument.images.find(monument => monument.isPrimary) : null;
+        const imageUrl = image ? `url("${image.url}")` : null;
         return (
             <div className="search-result">
+                <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
                 <Card>
                     <Card.Title>
                         <a href={'/monuments/' + monument.id}>

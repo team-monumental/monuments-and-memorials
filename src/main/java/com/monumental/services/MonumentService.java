@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +72,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param longitude The longitude of the point to compare to
      * @param miles - The number of miles from the comparison point to check
      */
-    private void buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String latitude,
-                                   String longitude, Integer miles) {
+    private void buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude,
+                                   Double longitude, Integer miles) {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
         Integer feet = miles * 5280;
 
@@ -107,7 +108,7 @@ public class MonumentService extends ModelService<Monument> {
      */
     @SuppressWarnings("unchecked")
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
-                                  String latitude, String longitude, String distance, Boolean orderByResults) {
+                                  Double latitude, Double longitude, Integer distance, Boolean orderByResults) {
         // TODO: Query for tags
         // TODO: Filters
         if (searchQuery != null) {
@@ -115,7 +116,8 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (latitude != null && longitude != null && distance != null) {
-            this.buildDWithinQuery(builder, query, root, latitude, longitude, Integer.parseInt(distance));
+            System.out.println("using lat lon" + latitude + " " + longitude);
+            this.buildDWithinQuery(builder, query, root, latitude, longitude, distance);
         }
     }
 
@@ -131,8 +133,8 @@ public class MonumentService extends ModelService<Monument> {
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     @SuppressWarnings("unchecked")
-    public List<Monument> search(String searchQuery, String page, String limit, String latitude, String longitude,
-                                 String distance) {
+    public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
+                                 Integer distance) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
@@ -146,14 +148,15 @@ public class MonumentService extends ModelService<Monument> {
                                             : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
                                         : this.getWithCriteriaQuery(query);
 
-        this.getRelatedTags(monuments);
+        this.getRelatedRecords(monuments, "tags");
+        this.getRelatedRecords(monuments, "images");
         return monuments;
     }
 
     /**
      * Count the total number of results for a Monument search
      */
-    public Integer countSearchResults(String searchQuery, String latitude, String longitude, String distance) {
+    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Integer distance) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
@@ -165,16 +168,16 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Gets the related tags and sets them on the monument objects, using only one extra SQL query
-     * @param monuments Monuments to get tags for - these objects are updated directly using setTags
+     * Gets the related records and sets them on the monument objects, using only one extra SQL query
+     * @param monuments Monuments to get related records for - these objects are updated directly using the setter
      *                  but no database update is called
      */
-    public void getRelatedTags(List<Monument> monuments) {
+    private void getRelatedRecords(List<Monument> monuments, String fieldName) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
-        root.fetch("tags", JoinType.LEFT);
+        root.fetch(fieldName, JoinType.LEFT);
 
         List<Integer> ids = new ArrayList<>();
         for (Monument monument : monuments) {
@@ -185,15 +188,29 @@ public class MonumentService extends ModelService<Monument> {
                 root.get("id").in(ids)
         );
 
-        List<Monument> monumentsWithTags = this.getWithCriteriaQuery(query);
+        List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);
 
-        Map<Integer, List<Tag>> tagsMap = new HashMap<>();
-        for (Monument monument : monumentsWithTags) {
-            tagsMap.put(monument.getId(), monument.getTags());
+        String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+
+        Map<Integer, List> map = new HashMap<>();
+        for (Monument monument : monumentsWithRecords) {
+            try {
+                map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                System.err.println("Invalid field name: " + fieldName);
+                System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
+                e.printStackTrace();
+            }
         }
 
         for (Monument monument : monuments) {
-            monument.setTags(tagsMap.get(monument.getId()));
+            try {
+                Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                System.err.println("Invalid field name: " + fieldName);
+                System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
+                e.printStackTrace();
+            }
         }
     }
 }

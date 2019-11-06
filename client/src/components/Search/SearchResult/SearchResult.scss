@@ -20,13 +20,14 @@
             }
         }
     }
-    .icon {
-        min-width: 128px;
-        width: 128px;
-        height: 128px;
+    .monument-thumbnail {
+        $size: 96px;
+        min-width: $size;
+        width: $size;
+        height: $size;
         border-radius: 14px;
-        background-image: url("https://timedotcom.files.wordpress.com/2016/02/lincoln-memorial-restoration.jpg?w=800&quality=85");
         background-position: center;
         background-size: cover;
+        margin-right: 1rem;
     }
 }
