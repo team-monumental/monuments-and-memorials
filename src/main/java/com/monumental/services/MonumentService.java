@@ -38,16 +38,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param threshold         The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param orderByResults    If true, your results will be ordered by their similarity to the search query
      */
-    private void buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
+    private Predicate buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                       Double threshold, Boolean orderByResults) {
-        query.where(
-            builder.or(
-                builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
-                builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold),
-                builder.gt(builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery)), threshold)
-            )
-        );
-
         if (orderByResults) {
             query.orderBy(
                 builder.desc(
@@ -61,6 +53,12 @@ public class MonumentService extends ModelService<Monument> {
                 )
             );
         }
+
+        return builder.or(
+            builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
+            builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold),
+            builder.gt(builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery)), threshold)
+        );
     }
 
     /**
@@ -72,28 +70,26 @@ public class MonumentService extends ModelService<Monument> {
      * @param longitude The longitude of the point to compare to
      * @param miles - The number of miles from the comparison point to check
      */
-    private void buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude,
+    private Predicate buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude,
                                    Double longitude, Integer miles) {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
         Integer feet = miles * 5280;
 
-        query.where(
-            builder.equal(
-                builder.function("ST_DWithin", Boolean.class,
-                    builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
-                        builder.literal(feetSrid)
-                    ),
-                    builder.function("ST_Transform", Geometry.class,
-                        builder.function("ST_GeometryFromText", Geometry.class,
-                            builder.literal(comparisonPointAsString),
-                            builder.literal(coordinateSrid)
-                        ),
-                        builder.literal(feetSrid)
-                    ),
-                    builder.literal(feet)
+        return builder.equal(
+            builder.function("ST_DWithin", Boolean.class,
+                builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
+                    builder.literal(feetSrid)
                 ),
-         true)
-        );
+                builder.function("ST_Transform", Geometry.class,
+                    builder.function("ST_GeometryFromText", Geometry.class,
+                        builder.literal(comparisonPointAsString),
+                        builder.literal(coordinateSrid)
+                    ),
+                    builder.literal(feetSrid)
+                ),
+                builder.literal(feet)
+            ),
+     true);
     }
 
     /**
@@ -111,13 +107,26 @@ public class MonumentService extends ModelService<Monument> {
                                   Double latitude, Double longitude, Integer distance, Boolean orderByResults) {
         // TODO: Query for tags
         // TODO: Filters
+
+        List<Predicate> predicates = new ArrayList<>();
+
         if (searchQuery != null) {
-            this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults);
+            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults));
         }
 
         if (latitude != null && longitude != null && distance != null) {
-            System.out.println("using lat lon" + latitude + " " + longitude);
-            this.buildDWithinQuery(builder, query, root, latitude, longitude, distance);
+            predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance));
+        }
+
+        switch (predicates.size()) {
+            case 0:
+                return;
+            case 1:
+                query.where(predicates.get(0));
+            default:
+                Predicate[] predicatesArray = new Predicate[predicates.size()];
+                predicatesArray = predicates.toArray(predicatesArray);
+                query.where(builder.and(predicatesArray));
         }
     }
 

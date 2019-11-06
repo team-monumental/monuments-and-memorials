@@ -12,11 +12,12 @@ export default class SearchBar extends React.Component {
 
     constructor(props) {
         super(props);
+        const search = QueryString.parse(window.location.search);
         this.state = {
-            textSearchQuery: '',
-            locationLat: '',
-            locationLon: '',
-            locationAddress: ''
+            textSearchQuery: search.q || '',
+            locationLat: search.lat || '',
+            locationLon: search.lon || '',
+            locationAddress: search.address || ''
         };
     }
 
@@ -45,17 +46,18 @@ export default class SearchBar extends React.Component {
             d: 25,
             address: locationAddress
         });
-        window.location.replace(`/search/?${queryString}`);
+        window.location.href = `/search/?${queryString}`;
     }
 
     render() {
+        const { textSearchQuery, locationAddress } = this.state;
         return (
             <Form inline className="d-none d-lg-flex">
-                <TextSearch value={QueryString.parse(window.location.search)['q'] || ''}
+                <TextSearch value={textSearchQuery}
                             onKeyDown={event => this.handleKeyDown(event)}
                             className="form-control form-control-sm mr-sm-2"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}/>
-                <LocationSearch value={QueryString.parse(window.location.search)['address'] || ''}
+                <LocationSearch value={locationAddress}
                                 className="form-control form-control-sm mr-sm-2"
                                 onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
                 <Button variant="primary btn-sm" onClick={() => this.search()}>Search</Button>
