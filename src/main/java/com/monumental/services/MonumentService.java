@@ -110,7 +110,7 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        if (searchQuery != null) {
+        if (searchQuery != null && !searchQuery.trim().equals("")) {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults));
         }
 
@@ -182,6 +182,7 @@ public class MonumentService extends ModelService<Monument> {
      *                  but no database update is called
      */
     private void getRelatedRecords(List<Monument> monuments, String fieldName) {
+        if (monuments.size() == 0) return;
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
