@@ -14,7 +14,8 @@
   top: 30px;
   background-color: #ffffff;
   border: 1px solid rgba(0,0,0,0.2);
-  z-index: 2;
+  // This has to be absurdly large due to the leaflet map's absurdly large z-index
+  z-index: 1000;
   margin-right: 0.5rem;
   padding: 0.25rem 0;
   width: calc(100% - 0.5rem);

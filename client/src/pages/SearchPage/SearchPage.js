@@ -43,11 +43,12 @@ class SearchPage extends React.Component {
 
     render() {
         const { page, limit } = this.state;
-        const { monuments, count, pending } = this.props;
+        const { monuments, count, pending, location: { search } } = this.props;
+        const { lat, lon } = QueryString.parse(search);
         return (
             <div style={{height: '100%'}}>
                 <Spinner show={pending}/>
-                <Search monuments={monuments} count={count} page={page} limit={limit}
+                <Search monuments={monuments} count={count} page={page} limit={limit} lat={lat} lon={lon}
                         onLimitChange={this.onLimitChange.bind(this)} onPageChange={this.onPageChange.bind(this)}/>
             </div>
         );

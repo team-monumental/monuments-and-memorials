@@ -12,7 +12,7 @@ import SearchResults from './SearchResults/SearchResults';
 export default class Search extends React.Component {
 
     render() {
-        const { monuments, onLimitChange, onPageChange } = this.props;
+        const { monuments, onLimitChange, onPageChange, lat, lon } = this.props;
         const [ count, page, limit ] = [
             parseInt(this.props.count) || 0, parseInt(this.props.page) || 0, parseInt(this.props.limit) || 0
         ];
@@ -22,7 +22,7 @@ export default class Search extends React.Component {
         return (
                 <div className="search-results-page">
                     <div className="map-column">
-                        <MapResults monuments={monuments} zoom={4}/>
+                        <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
                     </div>
                     <div className="search-column">
                         <div className="search-header">

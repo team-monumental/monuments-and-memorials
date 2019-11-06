@@ -10,7 +10,7 @@ const US_GEOGRAPHIC_CENTER = [39.8283, -98.5795];
 export default class MapResults extends React.Component {
 
     render() {
-        const { monuments, useCircleMarkers, zoom } = this.props;
+        const { monuments, useCircleMarkers, zoom, center } = this.props;
         const markers = [];
         for (let monument of monuments) {
             const popup = (
@@ -34,7 +34,7 @@ export default class MapResults extends React.Component {
             }
         }
         return (
-            <Map center={US_GEOGRAPHIC_CENTER} zoom={zoom}>
+            <Map center={center || US_GEOGRAPHIC_CENTER} zoom={zoom}>
                 <TileLayer
                     url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> &copy; <ahref=&quot;http://cartodb.com/attributions&quot;>CartoDB</a>"
