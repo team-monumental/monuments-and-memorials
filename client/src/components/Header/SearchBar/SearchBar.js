@@ -25,8 +25,14 @@ export default class SearchBar extends React.Component {
         this.setState({textSearchQuery: textSearchQuery});
     }
 
-    handleLocationSearchSelect(lat, lon, address) {
-        this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
+    async handleTextSearchClear() {
+        await this.setState({textSearchQuery: ''});
+        console.log('clear');
+        this.search();
+    }
+
+    async handleLocationSearchSelect(lat, lon, address) {
+        await this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
         this.search();
     }
 
@@ -36,7 +42,6 @@ export default class SearchBar extends React.Component {
 
     search() {
         let { textSearchQuery, locationLat, locationLon, locationAddress } = this.state;
-        if (!textSearchQuery && (!locationLat || !locationLon)) return;
         const queryString = QueryString.stringify({
             q: textSearchQuery,
             page: 1,
@@ -56,7 +61,8 @@ export default class SearchBar extends React.Component {
                 <TextSearch value={textSearchQuery}
                             onKeyDown={event => this.handleKeyDown(event)}
                             className="form-control form-control-sm mr-sm-2"
-                            onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}/>
+                            onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
+                            onClear={() => this.handleTextSearchClear()}/>
                 <LocationSearch value={locationAddress}
                                 className="form-control form-control-sm mr-sm-2"
                                 onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>

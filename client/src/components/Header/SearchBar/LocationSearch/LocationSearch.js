@@ -48,6 +48,12 @@ export default class LocationSearch extends React.Component {
             .catch(error => console.error("Error", error));
     }
 
+    handleClear() {
+        const { onSuggestionSelect } = this.props;
+        this.setState({searchQuery: ''});
+        onSuggestionSelect('', '', '');
+    }
+
     render() {
         const { searchQuery } = this.state;
         const { className } = this.props;
@@ -84,14 +90,17 @@ export default class LocationSearch extends React.Component {
         };
 
         return (
-            <PlacesAutocomplete
-                value={searchQuery}
-                onChange={newSearchQuery => this.handleChange(newSearchQuery)}
-                onSelect={address => this.handleSelect(address)}
-                searchOptions={searchOptions}
-                highlightFirstSuggestion={true}>
-                {renderFunc}
-            </PlacesAutocomplete>
+            <div className="form-control-sm p-0 position-relative">
+                <PlacesAutocomplete
+                    value={searchQuery}
+                    onChange={newSearchQuery => this.handleChange(newSearchQuery)}
+                    onSelect={address => this.handleSelect(address)}
+                    searchOptions={searchOptions}
+                    highlightFirstSuggestion={true}>
+                    {renderFunc}
+                </PlacesAutocomplete>
+                {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
+            </div>
         )
     }
 }
