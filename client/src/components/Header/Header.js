@@ -2,7 +2,7 @@ import React from 'react';
 import './Header.scss';
 import { NavLink } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import SearchBar from '../SearchBar/SearchBar';
+import SearchBar from './SearchBar/SearchBar';
 
 export default class Header extends React.Component {
 
