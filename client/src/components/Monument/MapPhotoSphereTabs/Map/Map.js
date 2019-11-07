@@ -12,13 +12,9 @@ export default class Map extends React.Component {
         if (!q && monument.lat && monument.lon) q = [monument.lat, monument.lon].join(',');
 
         return (
-            <div className="visit">
-                <div className="map">
-                    <iframe title="gmaps-iframe"
-                            src={`https://maps.google.com/maps?q=${q}&z=16&output=embed`}
-                            frameBorder="0"/>
-                </div>
-            </div>
+            <iframe title="gmaps-iframe"
+                    src={`https://maps.google.com/maps?q=${q}&z=16&output=embed`}
+                    frameBorder="0"/>
         )
     }
 }
