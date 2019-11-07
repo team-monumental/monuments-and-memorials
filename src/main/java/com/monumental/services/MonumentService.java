@@ -1,7 +1,7 @@
 package com.monumental.services;
 
 import com.monumental.models.Monument;
-import com.monumental.models.Tag;
+import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Geometry;
 import org.springframework.stereotype.Service;
 
@@ -110,7 +110,7 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        if (searchQuery != null && !searchQuery.trim().equals("")) {
+        if (!StringHelper.isNullOrEmpty(searchQuery)) {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults));
         }
 
