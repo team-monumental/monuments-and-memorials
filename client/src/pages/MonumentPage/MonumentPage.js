@@ -21,11 +21,11 @@ class MonumentPage extends React.Component {
     }
 
     render() {
-        const { monument, pending } = this.props;
+        const { monument, nearbyMonuments, fetchMonumentPending, fetchNearbyPending } = this.props;
         return (
             <div className="page h-100">
-                <Spinner show={pending}/>
-                <Monument monument={monument}/>
+                <Spinner show={fetchMonumentPending}/>
+                <Monument monument={monument} nearbyMonuments={nearbyMonuments} fetchNearbyPending={fetchNearbyPending}/>
             </div>
         );
     }

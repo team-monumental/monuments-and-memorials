@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
+import NearbyMonuments from "./NearbyMonuments/NearbyMonuments";
 
 /**
  * Root presentational component for the Monument record page
@@ -12,7 +13,7 @@ import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
 export default class Monument extends React.Component {
 
     render() {
-        const { monument } = this.props;
+        const { monument, nearbyMonuments, fetchNearbyPending } = this.props;
         if (!monument) return (<div/>);
         const title = monument.title;
 
@@ -21,7 +22,7 @@ export default class Monument extends React.Component {
                 <Helmet title={title + ' | Monuments and Memorials'}/>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
-                    {this.renderNearbyMonuments()}
+                    <NearbyMonuments monuments={nearbyMonuments} fetchNearbyPending={fetchNearbyPending}/>
                     {this.renderRelatedMonuments()}
                 </div>
                 <div className="column main-column">
@@ -29,27 +30,6 @@ export default class Monument extends React.Component {
                 </div>
                 <div className="column visit-column">
                     <MapPhotoSphereTabs monument={monument}/>
-                </div>
-            </div>
-        )
-    }
-
-    // TODO: Replace these functions with Components when implementing them
-    renderNearbyMonuments() {
-        return (
-            <div className="nearby">
-                <div className="h6">
-                    Nearby Monuments or Memorials
-                </div>
-            </div>
-        )
-    }
-
-    renderRelatedMonuments() {
-        return (
-            <div className="related">
-                <div className="h6">
-                    Related Monuments or Memorials
                 </div>
             </div>
         )

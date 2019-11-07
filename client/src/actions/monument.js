@@ -1,4 +1,8 @@
-import { FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS } from '../constants';
+import { FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, FETCH_NEARBY_MONUMENTS_PENDING,
+    FETCH_NEARBY_MONUMENTS_SUCCESS, FETCH_NEARBY_MONUMENTS_ERROR
+} from '../constants';
+import * as QueryString from 'query-string';
+import { get } from '../util/api-util';
 
 function fetchMonumentPending() {
     return {
@@ -20,8 +24,29 @@ function fetchMonumentError(error) {
     };
 }
 
+function fetchNearbyMonumentsPending() {
+    return {
+        type: FETCH_NEARBY_MONUMENTS_PENDING
+    };
+}
+
+function fetchNearbyMonumentsSuccess(monuments) {
+    return {
+        type: FETCH_NEARBY_MONUMENTS_SUCCESS,
+        payload: monuments
+    };
+}
+
+function fetchNearbyMonumentsError(error) {
+    return {
+        type: FETCH_NEARBY_MONUMENTS_ERROR,
+        error: error
+    };
+}
+
 /**
  * Queries for a monument and all related records, to be displayed on the monument view page
+ * After the Monument is successfully retrieved, queries for the nearby Monuments
  * This is an async action (redux-thunk)
  */
 export default function fetchMonument(id) {
@@ -34,5 +59,20 @@ export default function fetchMonument(id) {
 
         if (error || res.error) dispatch(fetchMonumentError(error || res.error));
         else dispatch(fetchMonumentSuccess(res));
+
+        const queryOptions = {
+            lat: res.lat,
+            lon: res.lon,
+            d: 25,
+            limit: 5
+        };
+        const queryString = QueryString.stringify(queryOptions);
+        dispatch(fetchNearbyMonumentsPending());
+        try {
+            const monuments = await get('/api/search/?', queryString);
+            dispatch(fetchNearbyMonumentsSuccess(monuments));
+        } catch (error) {
+            dispatch(fetchNearbyMonumentsError(error));
+        }
     }
 }
