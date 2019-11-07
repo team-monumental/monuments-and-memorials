@@ -22,6 +22,10 @@ class SearchPage extends React.Component {
     }
 
     static mapStateToProps(state) {
+        if (state.searchPage) {
+            const { monuments, count } = state.searchPage;
+            if (monuments.error || count.error || monuments.errors || count.errors) return {};
+        }
         return state.searchPage;
     }
 
@@ -39,11 +43,12 @@ class SearchPage extends React.Component {
 
     render() {
         const { page, limit } = this.state;
-        const { monuments, count, pending } = this.props;
+        const { monuments, count, pending, location: { search } } = this.props;
+        const { lat, lon } = QueryString.parse(search);
         return (
-            <div className="page">
+            <div style={{height: '100%'}}>
                 <Spinner show={pending}/>
-                <Search monuments={monuments} count={count} page={page} limit={limit}
+                <Search monuments={monuments} count={count} page={page} limit={limit} lat={lat} lon={lon}
                         onLimitChange={this.onLimitChange.bind(this)} onPageChange={this.onPageChange.bind(this)}/>
             </div>
         );

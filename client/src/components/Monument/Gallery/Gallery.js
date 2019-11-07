@@ -117,7 +117,7 @@ export default class Gallery extends React.Component {
     renderCarousel() {
         const { selectedImageIndex, animating, animationIndex } = this.state;
         const { images } = this.props;
-        if (!images || !images.length) return;
+        if (!images || images.length <= 1) return;
         return (
             <div className="image-selection">
                 {

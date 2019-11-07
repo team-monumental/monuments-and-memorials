@@ -3,47 +3,66 @@
 @import "../../../node_modules/bootstrap/scss/mixins";
 
 .search-results-page {
-    padding-top: 1.5rem;
+    height: 100%;
     display: flex;
     > div {
         flex: 33%;
     }
-    .map-results {
+    .map-column {
         display: flex;
         justify-content: flex-end;
-        padding-left: 2em;
+        height: 100%;
+        max-width: 1000px;
+        .leaflet-container {
+            height: 100%;
+        }
     }
 }
 
-.search-results {
+.search-column {
     width: 40rem;
     @include media-breakpoint-up(lg) {
-        max-width: 40rem;
+        max-width: none;
+        width: auto;
     }
     max-width: calc(100vw - 2rem);
+    height: 100%;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     position: relative;
-
+    padding: 0 4rem;
     .search-result {
         margin-bottom: 1.5rem;
     }
 }
 
 .search-header {
-    margin-bottom: 0.5rem;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    & > * {
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    .search-info {
         display: flex;
-        white-space: nowrap;
+        justify-content: space-between;
         align-items: center;
-    }
-    select, input {
-        padding: 0.25rem 0.4rem;
-        height: min-content;
+        flex-wrap: wrap;
+
+        & > * {
+            display: flex;
+            white-space: nowrap;
+            align-items: center;
+        }
+
+        select, input {
+            padding: 0.25rem 0.4rem;
+            height: min-content;
+        }
     }
 }
 
@@ -60,17 +79,16 @@
     color: white;
 }
 
-.pagination {
-    .page-link {
-        border: 0 !important;
-    }
-}
-
-.map-results {
-    .leaflet-container {
-        position: sticky !important;
-        top: 2rem;
-        height: 600px;
-        max-height: calc(100vh - 10rem);
+.pagination-container {
+    position: sticky;
+    bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    z-index: 1;
+    .pagination {
+        background-color: white;
+        .page-link {
+            border: 0 !important;
+        }
     }
 }

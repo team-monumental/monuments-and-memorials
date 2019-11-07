@@ -1,24 +1,22 @@
 .header {
     display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 2rem;
     font-size: 0.875rem;
 
-    .right, .left {
-        position: absolute;
-    }
-
     .left {
-        left: 2rem;
-    }
-
-    .right {
-        right: 2rem;
+        flex: 20%;
     }
 
     .center {
+        flex: 60%;
         display: flex;
+        justify-content: center;
+    }
+
+    .right {
+        flex: 20%;
+        display: flex;
+        justify-content: flex-end;
     }
 
     .right > * {

@@ -9,13 +9,17 @@ import { Toast as BootstrapToast } from 'react-bootstrap';
 export default class Toast extends React.Component {
 
     render() {
-        const { header, body, hide, variant, onDismissClick} = this.props;
+        const { title, message, header, body, hide, variant, onDismissClick} = this.props;
         return (
             <BootstrapToast show={!hide} onClose={onDismissClick} className={variant || ''}>
-                <BootstrapToast.Header>{header}</BootstrapToast.Header>
-                <BootstrapToast.Body>
-                    {body}
-                </BootstrapToast.Body>
+                <BootstrapToast.Header>{
+                    header ? header :
+                        (<div className="mr-auto">{title}</div>)
+                }</BootstrapToast.Header>
+                <BootstrapToast.Body>{
+                    body ? body :
+                        (<div>{message}</div>)
+                }</BootstrapToast.Body>
             </BootstrapToast>
         );
     }

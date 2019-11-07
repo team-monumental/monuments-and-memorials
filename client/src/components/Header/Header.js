@@ -2,7 +2,7 @@ import React from 'react';
 import './Header.scss';
 import { NavLink } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import SearchBar from '../SearchBar/SearchBar';
+import SearchBar from './SearchBar/SearchBar';
 
 export default class Header extends React.Component {
 
@@ -22,7 +22,10 @@ export default class Header extends React.Component {
                 <div className="left">
                     <div className="links d-none d-lg-block">
                         {this.links.map(link =>
-                            <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
+                            <NavLink onClick={e => {
+                                e.preventDefault();
+                                window.location.replace(link.route);
+                            }} to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
                         )}
                     </div>
                 </div>

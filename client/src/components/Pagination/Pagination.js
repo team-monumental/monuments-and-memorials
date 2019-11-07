@@ -21,8 +21,10 @@ export default class Pagination extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { count, page } = this.props;
-        if (count !== prevProps.count) this.setState({count});
-        if (page !== prevProps.page) {
+        if (count !== prevProps.count && !isNaN(count)) {
+            this.setState({count});
+        }
+        if (page !== prevProps.page && !isNaN(page)) {
             this.setState({page});
         }
     }

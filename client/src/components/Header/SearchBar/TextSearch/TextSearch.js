@@ -23,16 +23,25 @@ export default class TextSearch extends React.Component {
         onSearchChange(newSearchQuery);
     }
 
+    handleClear() {
+        const { onClear } = this.props;
+        this.setState({searchQuery: ''});
+        onClear();
+    }
+
     render() {
         const { searchPlaceholder, searchQuery } = this.state;
         const { className, onKeyDown } = this.props;
         return (
-            <input type="text"
-                   value={searchQuery}
-                   onChange={(event) => this.handleChange(event)}
-                   placeholder={searchPlaceholder}
-                   className={className}
-                   onKeyDown={onKeyDown}/>
+            <div className="position-relative">
+                <input type="text"
+                       value={searchQuery}
+                       onChange={(event) => this.handleChange(event)}
+                       placeholder={searchPlaceholder}
+                       className={className}
+                       onKeyDown={onKeyDown}/>
+                {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
+            </div>
         )
     }
 
