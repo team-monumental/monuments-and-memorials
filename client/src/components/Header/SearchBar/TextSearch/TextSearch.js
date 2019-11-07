@@ -1,5 +1,4 @@
 import React from 'react';
-import PlacesAutocomplete from 'react-places-autocomplete';
 
 /**
  * Used to search text fields such as title, artist, and description
