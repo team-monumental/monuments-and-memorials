@@ -21,6 +21,16 @@ export default class Details extends React.Component {
             )
         }
 
+        const images = (monument.images || [])
+            .filter(image => {
+                return !image.isPhotoSphere;
+            }).sort((a, b) => {
+                // Show the primary image first
+                if (a.isPrimary) return -1;
+                // Then order by id, as this is easier than ordering by createdDate within javascript
+                else return a.id - b.id;
+            });
+
         return (
             <div className="main">
                 <div>
@@ -35,7 +45,7 @@ export default class Details extends React.Component {
                         <Tags tags={monument.tags}/>
                     </div>
                 </div>
-                <Gallery images={monument.images}/>
+                <Gallery images={images}/>
                 <div className="inscription">
                     {inscription}
                 </div>

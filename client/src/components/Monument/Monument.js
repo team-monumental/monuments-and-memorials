@@ -2,9 +2,9 @@ import React from 'react';
 import './Monument.scss';
 import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
-import Map from './Map/Map';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
+import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
 
 /**
  * Root presentational component for the Monument record page
@@ -28,7 +28,7 @@ export default class Monument extends React.Component {
                     <Details monument={monument}/>
                 </div>
                 <div className="column visit-column">
-                    <Map monument={monument}/>
+                    <MapPhotoSphereTabs monument={monument}/>
                 </div>
             </div>
         )

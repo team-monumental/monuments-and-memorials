@@ -3,6 +3,7 @@ package com.monumental.services;
 import com.monumental.models.Model;
 import org.hibernate.*;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -122,7 +123,7 @@ public abstract class ModelService<T extends Model> {
 
             session.close();
         } catch (HibernateException e) {
-            if (transaction != null) {
+            if (transaction != null && !transaction.getStatus().equals(TransactionStatus.COMMITTED)) {
                 transaction.rollback();
             }
             session.close();

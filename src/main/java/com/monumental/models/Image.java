@@ -23,7 +23,11 @@ public class Image extends Model implements Serializable {
     private String url;
 
     @Column(name = "is_primary")
-    private boolean isPrimary;
+    private boolean isPrimary = false;
+
+    // This indicates if an image is a Google Photo Sphere, 360 degree image
+    @Column(name = "is_photo_sphere")
+    private boolean isPhotoSphere = false;
 
     @JsonIgnore
     @ManyToOne
@@ -57,5 +61,13 @@ public class Image extends Model implements Serializable {
 
     public void setMonument(Monument monument) {
         this.monument = monument;
+    }
+
+    public boolean getIsPhotoSphere() {
+        return this.isPhotoSphere;
+    }
+
+    public void setIsPhotoSphere(boolean isPhotoSphere) {
+        this.isPhotoSphere = isPhotoSphere;
     }
 }

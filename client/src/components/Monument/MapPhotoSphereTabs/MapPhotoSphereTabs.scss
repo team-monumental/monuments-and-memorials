@@ -1,0 +1,19 @@
+.tab-content {
+    // Account for the height of the tab header
+    height: calc(100% - 37px);
+    .tab-pane {
+        height: 100%;
+        .tab-content-wrapper {
+            padding-top: 0.25rem;
+            height: 100%;
+        }
+        &#map_photo_sphere_tabs-tabpane-images .tab-content-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+iframe {
+    height: 100%;
+}
