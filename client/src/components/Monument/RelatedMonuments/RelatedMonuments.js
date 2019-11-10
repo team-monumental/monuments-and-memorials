@@ -1,4 +1,5 @@
 import React from 'react';
+import "./RelatedMonuments.scss";
 import Spinner from "../../Spinner/Spinner";
 import SearchResult from "../../Search/SearchResult/SearchResult";
 import Collapse from "react-bootstrap/Collapse";

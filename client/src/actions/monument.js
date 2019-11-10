@@ -81,21 +81,36 @@ export default function fetchMonument(id) {
         if (error || res.error) dispatch(fetchMonumentError(error || res.error));
         else dispatch(fetchMonumentSuccess(res));
 
-        const queryOptions = {
+        let queryOptions = {
             lat: res.lat,
             lon: res.lon,
             d: 25,
             limit: 6
         };
-        const queryString = QueryString.stringify(queryOptions);
+        let queryString = QueryString.stringify(queryOptions);
         dispatch(fetchNearbyMonumentsPending());
         try {
-            const monuments = await get('/api/search/?', queryString);
-            dispatch(fetchNearbyMonumentsSuccess(monuments));
+            const nearbyMonuments = await get('/api/search/?', queryString);
+            dispatch(fetchNearbyMonumentsSuccess(nearbyMonuments));
         } catch (error) {
             dispatch(fetchNearbyMonumentsError(error));
         }
 
-        // TODO: Query for Related Monuments
+        const tags = res.tags.map(tag => tag.name);
+        if (tags.length > 0) {
+            queryOptions = {
+                tags: tags,
+                limit: 6
+            };
+            queryString = QueryString.stringify(queryOptions);
+            console.log(queryString);
+            dispatch(fetchRelatedMonumentsPending());
+            try {
+                const relatedMonuments = await get('/api/search?', queryString);
+                dispatch(fetchRelatedMonumentsSuccess(relatedMonuments));
+            } catch (error) {
+                dispatch(fetchRelatedMonumentsError(error));
+            }
+        }
     }
 }
