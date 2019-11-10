@@ -1,23 +1,25 @@
 import React from 'react';
 import './SearchBar.scss';
 import { Button, Form } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from './TextSearch/TextSearch';
 import LocationSearch from './LocationSearch/LocationSearch';
+import search from '../../../utils/search';
 
 /**
  * Root presentational component for the search bar, including text and location searching
  */
-export default class SearchBar extends React.Component {
+class SearchBar extends React.Component {
 
     constructor(props) {
         super(props);
-        const search = QueryString.parse(window.location.search);
+        const params = QueryString.parse(props.history.location.search);
         this.state = {
-            textSearchQuery: search.q || '',
-            locationLat: search.lat || '',
-            locationLon: search.lon || '',
-            locationAddress: search.address || ''
+            textSearchQuery: params.q || '',
+            locationLat: params.lat || '',
+            locationLon: params.lon || '',
+            locationAddress: params.address || ''
         };
     }
 
@@ -27,7 +29,6 @@ export default class SearchBar extends React.Component {
 
     async handleTextSearchClear() {
         await this.setState({textSearchQuery: ''});
-        console.log('clear');
         this.search();
     }
 
@@ -42,16 +43,13 @@ export default class SearchBar extends React.Component {
 
     search() {
         let { textSearchQuery, locationLat, locationLon, locationAddress } = this.state;
-        const queryString = QueryString.stringify({
+        search({
             q: textSearchQuery,
-            page: 1,
-            limit: 25,
             lat: locationLat,
             lon: locationLon,
             d: 25,
             address: locationAddress
-        });
-        window.location.href = `/search/?${queryString}`;
+        }, this.props.history);
     }
 
     render() {
@@ -71,3 +69,5 @@ export default class SearchBar extends React.Component {
         )
     }
 }
+
+export default withRouter(SearchBar);

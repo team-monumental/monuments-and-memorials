@@ -11,8 +11,14 @@ import SearchResults from './SearchResults/SearchResults';
  */
 export default class Search extends React.Component {
 
+    handlePageChange(page) {
+        const { onPageChange } = this.props;
+        onPageChange(page);
+        document.querySelector('.search-column').scrollTo({top: 0});
+    }
+
     render() {
-        const { monuments, onLimitChange, onPageChange, lat, lon } = this.props;
+        const { monuments, onLimitChange, lat, lon } = this.props;
         const [ count, page, limit ] = [
             parseInt(this.props.count) || 0, parseInt(this.props.page) || 0, parseInt(this.props.limit) || 0
         ];
@@ -35,7 +41,7 @@ export default class Search extends React.Component {
                         <div className="pagination-container">
                             <Pagination count={pageCount}
                                         page={page - 1}
-                                        onPage={page => onPageChange(page + 1)}/>
+                                        onPage={page => this.handlePageChange(page + 1)}/>
                         </div>
                     </div>
                 </div>

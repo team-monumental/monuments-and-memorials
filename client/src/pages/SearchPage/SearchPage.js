@@ -4,6 +4,7 @@ import searchMonuments from '../../actions/search';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
+import search from '../../utils/search';
 
 /**
  * Root container component for the search page which handles retrieving the search results
@@ -15,9 +16,13 @@ class SearchPage extends React.Component {
 
     constructor(props) {
         super(props);
+        const params = QueryString.parse(this.props.history.location.search);
         this.state = {
-            page: this.getQueryParam('page') || 1,
-            limit: this.getQueryParam('limit') || 25
+            q: params.q,
+            page: params.page || 1,
+            limit: params.limit || 25,
+            lat: params.lat,
+            lon: params.lon
         }
     }
 
@@ -42,9 +47,8 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { page, limit } = this.state;
-        const { monuments, count, pending, location: { search } } = this.props;
-        const { lat, lon } = QueryString.parse(search);
+        const { page, limit, lat, lon } = this.state;
+        const { monuments, count, pending } = this.props;
         return (
             <div className="h-100">
                 <Spinner show={pending}/>
@@ -52,19 +56,6 @@ class SearchPage extends React.Component {
                         onLimitChange={this.onLimitChange.bind(this)} onPageChange={this.onPageChange.bind(this)}/>
             </div>
         );
-    }
-
-    getQueryParam(param) {
-        let value = this.props.history.location.search.match(new RegExp(`(?<=${param}=)\\d+`));
-        if (value) {
-            try {
-                value = parseInt(value);
-                let state = {};
-                state[param] = value;
-                if (value !== this.state[param]) this.setState(state);
-            } catch (err) {}
-        }
-        return parseInt(value);
     }
 
     async onLimitChange(limit) {
@@ -79,14 +70,8 @@ class SearchPage extends React.Component {
 
 
     search() {
-        const { page, limit } = this.state;
-        const { location: { search }, history } = this.props;
-        const queryString = QueryString.stringify({
-            q: QueryString.parse(search).q,
-            page,
-            limit
-        });
-        history.push(`/search/?${queryString}`);
+        const { q, page, limit } = this.state;
+        search({q, page, limit}, this.props.history);
     }
 }
 
