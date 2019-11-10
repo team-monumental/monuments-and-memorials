@@ -87,11 +87,7 @@ export default class RelatedMonuments extends React.Component {
             );
         }
         return (
-          <div className="related">
-              {header}
-              {spinner}
-              <div>No Related Monuments or Memorials</div>
-          </div>
+          <div/>
         );
     }
 }

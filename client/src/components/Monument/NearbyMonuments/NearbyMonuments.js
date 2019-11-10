@@ -87,11 +87,7 @@ export default class NearbyMonuments extends React.Component {
             );
         }
         return (
-            <div className="nearby">
-                {header}
-                {spinner}
-                <div>No Nearby Monuments or Memorials</div>
-            </div>
+            <div/>
         );
     }
 }
