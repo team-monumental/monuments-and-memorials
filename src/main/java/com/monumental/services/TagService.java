@@ -5,6 +5,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +35,19 @@ public class TagService extends ModelService<Tag> {
         criteria.add(Restrictions.eq("name", name));
 
         return this.getWithCriteria(criteria, initializeLazyLoadedCollections);
+    }
+
+    public List<Tag> search(String searchQuery) {
+        CriteriaBuilder builder = this.getCriteriaBuilder();
+        CriteriaQuery<Tag> query = this.createCriteriaQuery(builder, false);
+        Root<Tag> root = this.createRoot(query);
+        query.select(root);
+
+        Expression<Number> similarity = builder.function("similarity", Number.class, root.get("name"), builder.literal(searchQuery));
+
+        query.where(builder.gt(similarity, 0.1));
+        query.orderBy(builder.desc(similarity));
+
+        return this.getWithCriteriaQuery(query, 10);
     }
 }
