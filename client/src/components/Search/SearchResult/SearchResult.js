@@ -9,21 +9,24 @@ import Tags from '../../Tags/Tags';
 export default class SearchResult extends React.Component {
 
     render() {
-        const { monument, index } = this.props;
+        const { monument, index, includeIndexInTitle } = this.props;
         const image = monument && monument.images ? monument.images.find(monument => monument.isPrimary) : null;
         const imageUrl = image ? `url("${image.url}")` : null;
+        const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
+
         return (
             <div className="search-result">
                 <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
                 <Card>
                     <Card.Title>
                         <a href={'/monuments/' + monument.id}>
-                            {index + 1}. {monument.title}
+                            {title}
                         </a>
                     </Card.Title>
                     <Card.Body>
                         <div className="font-italic mb-2">
-                            {[monument.city, monument.state].filter(str => str.trim()).join(', ')}
+                            <i className="material-icons">room</i>
+                            <span className="location">{[monument.city, monument.state].filter(str => str.trim()).join(', ')}</span>
                         </div>
                         <Tags tags={monument.tags}/>
                     </Card.Body>

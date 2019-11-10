@@ -6,6 +6,7 @@ import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
 import NearbyMonuments from "./NearbyMonuments/NearbyMonuments";
+import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
 
 /**
  * Root presentational component for the Monument record page
@@ -13,7 +14,13 @@ import NearbyMonuments from "./NearbyMonuments/NearbyMonuments";
 export default class Monument extends React.Component {
 
     render() {
-        const { monument, nearbyMonuments, fetchNearbyPending } = this.props;
+        let { monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending } = this.props;
+        if (nearbyMonuments && nearbyMonuments.length) {
+            nearbyMonuments = nearbyMonuments.filter(nearbyMonument => nearbyMonument.id !== monument.id);
+        }
+        if (relatedMonuments && relatedMonuments.length) {
+            relatedMonuments = relatedMonuments.filter(relatedMonument => relatedMonument.id !== monument.id);
+        }
         if (!monument) return (<div/>);
         const title = monument.title;
 
@@ -22,8 +29,8 @@ export default class Monument extends React.Component {
                 <Helmet title={title + ' | Monuments and Memorials'}/>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
-                    <NearbyMonuments monuments={nearbyMonuments} fetchNearbyPending={fetchNearbyPending}/>
-                    {this.renderRelatedMonuments()}
+                    <NearbyMonuments monuments={nearbyMonuments} pending={fetchNearbyPending}/>
+                    <RelatedMonuments monuments={relatedMonuments} pending={fetchRelatedPending}/>
                 </div>
                 <div className="column main-column">
                     <Details monument={monument}/>

@@ -1,13 +1,12 @@
 import React from 'react';
-import "./NearbyMonuments.scss"
 import Spinner from "../../Spinner/Spinner";
 import SearchResult from "../../Search/SearchResult/SearchResult";
 import Collapse from "react-bootstrap/Collapse";
 
 /**
- * Presentational Component for Nearby Monuments
+ * Presentational Component for Related Monuments
  */
-export default class NearbyMonuments extends React.Component {
+export default class RelatedMonuments extends React.Component {
 
     constructor(props) {
         super(props);
@@ -21,7 +20,7 @@ export default class NearbyMonuments extends React.Component {
     }
 
     handleLessClick() {
-        this.setState({showingExtraMonuments: false})
+        this.setState({showingExtraMonuments: false});
     }
 
     render() {
@@ -32,25 +31,25 @@ export default class NearbyMonuments extends React.Component {
         const extraMonuments = (monuments && monuments.length && monuments.length > 2) ? monuments.slice(2) : [];
 
         const header = (
-          <div className="h6">
-              Nearby Monuments or Memorials
-          </div>
+            <div className="h6">
+                Related Monuments or Memorials
+            </div>
         );
 
         const spinner = (
-            <Spinner show={pending}/>
+          <Spinner show={pending}/>
         );
 
         const moreLink = (
-            <div className="nearby-monuments-link" onClick={() => this.handleMoreClick()}>More</div>
+            <div className="related-monuments-link" onClick={() => this.handleMoreClick()}>More</div>
         );
 
         const lessLink = (
-            <div className="nearby-monuments-link" onClick={() => this.handleLessClick()}>Less</div>
+            <div className="related-monuments-link" onClick={() => this.handleLessClick()}>Less</div>
         );
 
         const extraMonumentsDisplay = (
-            <div className="extra-nearby-monuments-container">
+            <div className="extra-related-monuments-container">
                 {!showingExtraMonuments && moreLink}
                 <Collapse in={showingExtraMonuments}>
                     <div>
@@ -69,10 +68,10 @@ export default class NearbyMonuments extends React.Component {
 
         if (monuments && monuments.length) {
             return (
-                <div className="nearby">
+                <div className="related">
                     {header}
                     {spinner}
-                    <div className="nearby-monuments-container">
+                    <div className="related-monuments-container">
                         {
                             monumentsToShow.map(
                                 (monument) => (
@@ -87,11 +86,11 @@ export default class NearbyMonuments extends React.Component {
             );
         }
         return (
-            <div className="nearby">
-                {header}
-                {spinner}
-                <div>No Nearby Monuments or Memorials</div>
-            </div>
+          <div className="related">
+              {header}
+              {spinner}
+              <div>No Related Monuments or Memorials</div>
+          </div>
         );
     }
 }
