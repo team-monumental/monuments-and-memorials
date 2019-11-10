@@ -33,8 +33,9 @@ public class SearchController {
                                           @RequestParam(required = false, defaultValue = "25") String limit,
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
-                                          @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance) {
-        return monumentService.search(searchQuery, page, limit, latitude, longitude, distance);
+                                          @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
+                                          @RequestParam(required = false) List<String> tags) {
+        return monumentService.search(searchQuery, page, limit, latitude, longitude, distance, tags);
     }
 
     /**
@@ -44,7 +45,8 @@ public class SearchController {
     public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery,
                                        @RequestParam(required = false, value = "lat") Double latitude,
                                        @RequestParam(required = false, value = "lon") Double longitude,
-                                       @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance) {
-        return monumentService.countSearchResults(searchQuery, latitude, longitude, distance);
+                                       @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
+                                       @RequestParam(required = false) List<String> tags) {
+        return monumentService.countSearchResults(searchQuery, latitude, longitude, distance, tags);
     }
 }
