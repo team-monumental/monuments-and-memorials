@@ -131,6 +131,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
+     * @param tags - The list of tag names to filter by
      */
     @SuppressWarnings("unchecked")
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
