@@ -87,7 +87,7 @@ public class InitialDataLoadApplication {
                             // to insert
                             // Instead, get the ID of the already existing Tag and update it
                             // Assume there is only 1 Tag with that Name due to the Unique Constraint
-                            Integer tId = tagService.getTagsByName(t.getName(), false).get(0).getId();
+                            Integer tId = tagService.getByName(t.getName(), false).get(0).getId();
                             t.setId(tId);
                             tagService.update(t);
                         }

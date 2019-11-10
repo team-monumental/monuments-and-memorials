@@ -230,7 +230,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         query.where(
-                root.get("id").in(ids)
+            root.get("id").in(ids)
         );
 
         List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);

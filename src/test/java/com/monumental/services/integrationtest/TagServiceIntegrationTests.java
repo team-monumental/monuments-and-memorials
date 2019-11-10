@@ -73,7 +73,7 @@ public class TagServiceIntegrationTests {
 
         this.tagService.insert(tag);
 
-        List<Tag> results = this.tagService.getTagsByName(tag.getName(), false);
+        List<Tag> results = this.tagService.getByName(tag.getName(), false);
 
         assertEquals(1, results.size());
         assertEquals(tag.getName(), results.get(0).getName());
