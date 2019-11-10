@@ -19,7 +19,8 @@ class SearchBar extends React.Component {
             textSearchQuery: params.q || '',
             locationLat: params.lat || '',
             locationLon: params.lon || '',
-            locationAddress: params.address || ''
+            locationAddress: params.address || '',
+            distanceFilter: params.d || 25
         };
     }
 
@@ -42,12 +43,12 @@ class SearchBar extends React.Component {
     }
 
     search() {
-        let { textSearchQuery, locationLat, locationLon, locationAddress } = this.state;
+        let { textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter } = this.state;
         search({
             q: textSearchQuery,
             lat: locationLat,
             lon: locationLon,
-            d: 25,
+            d: distanceFilter,
             address: locationAddress
         }, this.props.history);
     }

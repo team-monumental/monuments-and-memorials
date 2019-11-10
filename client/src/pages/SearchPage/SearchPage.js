@@ -21,9 +21,8 @@ class SearchPage extends React.Component {
             q: params.q,
             page: params.page || 1,
             limit: params.limit || 25,
-            lat: params.lat,
-            lon: params.lon
-        }
+            d: params.d || 25
+        };
     }
 
     static mapStateToProps(state) {
@@ -47,31 +46,42 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { page, limit, lat, lon } = this.state;
+        const { page, limit, lat, lon, d } = this.getQueryParams();
         const { monuments, count, pending } = this.props;
         return (
             <div className="h-100">
                 <Spinner show={pending}/>
-                <Search monuments={monuments} count={count} page={page} limit={limit} lat={lat} lon={lon}
-                        onLimitChange={this.onLimitChange.bind(this)} onPageChange={this.onPageChange.bind(this)}/>
+                <Search monuments={monuments} count={count} page={page} limit={limit} lat={lat} lon={lon} distance={d}
+                        onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}
+                        onFilterChange={this.handleFilterChange.bind(this)}/>
             </div>
         );
     }
 
-    async onLimitChange(limit) {
-        await this.setState({limit, page: 1});
-        this.search();
+    getQueryParams() {
+        return {
+            ...QueryString.parse(this.props.history.location.search),
+            ...this.state
+        };
     }
 
-    async onPageChange(page) {
-        await this.setState({page});
-        this.search();
+    handleLimitChange(limit) {
+        this.search({limit, page: 1});
     }
 
+    handlePageChange(page) {
+        this.search({page});
+    }
 
-    search() {
-        const { q, page, limit } = this.state;
-        search({q, page, limit}, this.props.history);
+    handleFilterChange(filters) {
+        this.search({
+            d: filters.distance
+        });
+    }
+
+    async search(changedState) {
+        await this.setState(changedState);
+        search(this.state, this.props.history);
     }
 }
 

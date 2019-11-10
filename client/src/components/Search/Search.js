@@ -18,10 +18,9 @@ export default class Search extends React.Component {
     }
 
     render() {
-        const { monuments, onLimitChange, lat, lon } = this.props;
-        const [ count, page, limit ] = [
-            parseInt(this.props.count) || 0, parseInt(this.props.page) || 0, parseInt(this.props.limit) || 0
-        ];
+        const { monuments, onLimitChange, lat, lon, distance, onFilterChange } = this.props;
+        const [ count, page, limit ] = [ this.props.count, this.props.page, this.props.limit ]
+            .map(value => parseInt(value) || 0);
 
         const pageCount = Math.ceil(count / limit);
 
@@ -32,7 +31,7 @@ export default class Search extends React.Component {
                     </div>
                     <div className="search-column">
                         <div className="search-header">
-                            <Filters/>
+                            <Filters onChange={filters => onFilterChange(filters)} showDistance={lat && lon} distance={distance}/>
                             <SearchInfo count={count} page={page} limit={limit} onLimitChange={onLimitChange}/>
                         </div>
                         <div className="search-results">
