@@ -14,7 +14,27 @@ export default class Search extends React.Component {
     handlePageChange(page) {
         const { onPageChange } = this.props;
         onPageChange(page);
-        document.querySelector('.search-column').scrollTo({top: 0});
+    }
+
+    /**
+     * Whenever the monuments list changes (in length or at least one id has changed), scroll the search results
+     * up to the top, so that we see the first of the new results instead of wherever we might have been
+     * scrolled to before
+     */
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.monuments && this.props.monuments) {
+            let didChange = false;
+            if (prevProps.monuments.length !== this.props.monuments.length) {
+                didChange = true;
+            } else {
+                prevProps.monuments.forEach((monument, index) => {
+                    if (this.props.monuments[index].id !== monument.id) didChange = true;
+                });
+            }
+            if (didChange) {
+                document.querySelector('.search-column').scrollTo({top: 0});
+            }
+        }
     }
 
     render() {

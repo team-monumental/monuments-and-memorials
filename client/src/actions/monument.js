@@ -3,7 +3,7 @@ import { FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, F
     FETCH_RELATED_MONUMENTS_SUCCESS, FETCH_RELATED_MONUMENTS_ERROR
 } from '../constants';
 import * as QueryString from 'query-string';
-import { get } from '../util/api-util';
+import { get } from '../utils/api-util';
 import { addError } from './errors';
 
 
@@ -101,7 +101,7 @@ export default function fetchMonument(id) {
         let queryString = QueryString.stringify(queryOptions);
         dispatch(fetchNearbyMonumentsPending());
         try {
-            const nearbyMonuments = await get('/api/search/monuments/?', queryString);
+            const nearbyMonuments = await get(`/api/search/monuments/?${queryString}`);
             dispatch(fetchNearbyMonumentsSuccess(nearbyMonuments));
         } catch (error) {
             dispatch(fetchNearbyMonumentsError(error));
@@ -116,7 +116,7 @@ export default function fetchMonument(id) {
             queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
             dispatch(fetchRelatedMonumentsPending());
             try {
-                const relatedMonuments = await get('/api/search/monuments/?', queryString);
+                const relatedMonuments = await get(`/api/search/monuments/?${queryString}`);
                 dispatch(fetchRelatedMonumentsSuccess(relatedMonuments));
             } catch (error) {
                 dispatch(fetchRelatedMonumentsError(error));

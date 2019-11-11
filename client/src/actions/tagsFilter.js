@@ -5,7 +5,7 @@ import {
     FILTER_MATERIALS_LOAD_SUCCESS, FILTER_MATERIALS_LOAD_ERROR, FILTER_MATERIALS_SEARCH_ERROR
 } from '../constants';
 import * as QueryString from 'query-string';
-import get from '../utils/get';
+import { get } from '../utils/api-util';
 import { addError } from './errors';
 
 function searchPending(isMaterial) {
