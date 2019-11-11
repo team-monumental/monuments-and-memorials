@@ -31,7 +31,6 @@ export function searchTags(queryString) {
         dispatch(searchTagsPending());
         try {
             const tags = await get(`/api/search/tags/?q=${queryString}`);
-            console.log('search results', tags);
             dispatch(searchTagsSuccess(tags));
         } catch (error) {
             dispatch(searchTagsError(error));
