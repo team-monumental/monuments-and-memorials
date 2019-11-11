@@ -6,11 +6,13 @@ import com.monumental.services.*;
 import com.monumental.util.csvparsing.CsvFileReader;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.FileNotFoundException;
@@ -25,12 +27,16 @@ import java.util.List;
  * Then does validation on each CsvMonumentConverterResult's Monument before inserting it into the database
  * Finally, closes the CsvFileReader
  */
+@Configuration
 @SpringBootApplication
 @ComponentScan("com.monumental")
 public class InitialDataLoadApplication {
 
     public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(InitialDataLoadApplication.class, args);
+        SpringApplication app = new SpringApplication(InitialDataLoadApplication.class);
+        // Don't start a web server - allows this application to run while the main Application is running
+        app.setWebApplicationType(WebApplicationType.NONE);
+        ConfigurableApplicationContext context = app.run(args);
         String pathToDatasetCsv = "C:\\Users\\Ben\\Downloads\\Initial.csv";
         String csvRow;
         int rowCount = 0;
@@ -77,6 +83,7 @@ public class InitialDataLoadApplication {
 
             int monumentInsertedCount = 0;
             int tagInsertedCount = 0;
+            int materialInsertedCount = 0;
 
             for (CsvMonumentConverterResult r : results) {
 
@@ -97,8 +104,9 @@ public class InitialDataLoadApplication {
                 if (tags.size() > 0) {
                     for (Tag tag : tags) {
                         try {
-                            tagService.createTag(tag.getName(), tag.getMonuments());
-                            tagInsertedCount++;
+                            tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
+                            if (tag.getIsMaterial()) materialInsertedCount++;
+                            else tagInsertedCount++;
                         } catch (DataIntegrityViolationException e) {
                             // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                             // These are disregarded for now - the correct tags are still being created
@@ -109,6 +117,7 @@ public class InitialDataLoadApplication {
 
             System.out.println("Number of Monuments inserted into the database: " + monumentInsertedCount);
             System.out.println("Number of Tags inserted into the database: " + tagInsertedCount);
+            System.out.println("Number of Material tags inserted into the database: " + materialInsertedCount);
         }
         catch (FileNotFoundException e) {
             System.out.println("Unable to read from the specified filepath. File does not exist.");

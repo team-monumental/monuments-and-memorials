@@ -48,7 +48,7 @@ export default class MapPhotoSphereTabs extends React.Component {
                 <Tab eventKey="images" title="360&deg; view">
                     <div className="tab-content-wrapper">
                         {activePhotoSphereImage && (
-                            <iframe src={activePhotoSphereImage.url} frameBorder="0" allowFullScreen/>
+                            <iframe title="Photosphere" src={activePhotoSphereImage.url} frameBorder="0" allowFullScreen/>
                         )}
                         {photoSphereImages.length > 1 && pagination}
                     </div>

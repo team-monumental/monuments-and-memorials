@@ -39,8 +39,9 @@ public class SearchController {
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
                                           @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
-                                          @RequestParam(required = false) List<String> tags) {
-        return this.monumentService.search(searchQuery, page, limit, latitude, longitude, distance, tags);
+                                          @RequestParam(required = false) List<String> tags,
+                                          @RequestParam(required = false) List<String> materials) {
+        return this.monumentService.search(searchQuery, page, limit, latitude, longitude, distance, tags, materials);
     }
 
     /**
@@ -51,12 +52,14 @@ public class SearchController {
                                        @RequestParam(required = false, value = "lat") Double latitude,
                                        @RequestParam(required = false, value = "lon") Double longitude,
                                        @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
-                                       @RequestParam(required = false) List<String> tags) {
-        return this.monumentService.countSearchResults(searchQuery, latitude, longitude, distance, tags);
+                                       @RequestParam(required = false) List<String> tags,
+                                       @RequestParam(required = false) List<String> materials) {
+        return this.monumentService.countSearchResults(searchQuery, latitude, longitude, distance, tags, materials);
     }
 
     @GetMapping("/api/search/tags")
-    public List<Tag> searchTags(@RequestParam(required = false, value = "q") String searchQuery) {
-        return this.tagService.search(searchQuery);
+    public List<Tag> searchTags(@RequestParam(required = false, value = "q") String searchQuery,
+                                @RequestParam(required = false, value = "materials") Boolean isMaterial) {
+        return this.tagService.search(searchQuery, isMaterial);
     }
 }

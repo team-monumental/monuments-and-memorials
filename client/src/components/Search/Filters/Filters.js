@@ -23,7 +23,7 @@ export default class Filters extends React.Component {
 
     render() {
 
-        const { showDistance, tags } = this.props;
+        const { showDistance, tags, materials } = this.props;
 
         const distanceFilter = showDistance ? (
             <Form.Control onChange={event => this.handleFilterChange('distance', event.target.value)} as="select" style={{width: 'min-content'}} className="py-1 px-2" defaultValue="25">
@@ -39,8 +39,8 @@ export default class Filters extends React.Component {
             <div className="filters">
                 {distanceFilter}
                 <div className="tags-container">
-                    <TagsFilter tags={tags}/>
-                    <TagsFilter variant="materials"/>
+                    <TagsFilter variant="tags" tags={tags}/>
+                    <TagsFilter variant="materials" tags={materials}/>
                 </div>
             </div>
         );

@@ -3,7 +3,7 @@ import './TagsFilter.scss';
 import { withRouter } from 'react-router-dom';
 import Tags from '../../../Tags/Tags';
 import search from '../../../../utils/search';
-import { searchTags, loadTags, clearTagSearchResults } from '../../../../actions/tagsFilter';
+import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials } from '../../../../actions/tagsFilter';
 import { connect } from 'react-redux';
 
 class TagsFilter extends React.Component {
@@ -16,11 +16,18 @@ class TagsFilter extends React.Component {
         };
     }
 
-    static mapStateToProps(state) {
-        return {
-            ...state.tagsFilterSearch,
-            ...state.tagsFilterLoad
-        };
+    static mapStateToProps(state, props) {
+        if (props.variant === 'materials') {
+            return {
+                ...state.materialsFilterSearch,
+                ...state.materialsFilterLoad
+            }
+        } else {
+            return {
+                ...state.tagsFilterSearch,
+                ...state.tagsFilterLoad
+            };
+        }
     }
 
     componentDidMount() {
@@ -32,7 +39,7 @@ class TagsFilter extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if ((!prevProps.selectedTags || !prevProps.selectedTags.length) &&
-            this.props.selectedTags && this.props.selectedTags.length && this.props.variant !== 'materials') {
+            this.props.selectedTags && this.props.selectedTags.length) {
                 this.setState({
                     selectedTags: (this.state.selectedTags || []).concat(this.props.selectedTags)
                         .map(tag => {
@@ -47,7 +54,6 @@ class TagsFilter extends React.Component {
         const { searchQuery, selectedTags } = this.state;
         const { searchResults, variant } = this.props;
         const visibleSearchResults = searchResults.filter(result => {
-            if (variant === 'materials') return false;
             return !selectedTags.find(tag => tag.id === result.id);
         });
 
@@ -60,7 +66,7 @@ class TagsFilter extends React.Component {
                     <input type="text"
                            value={searchQuery}
                            onChange={(event) => this.handleSearchChange(event.target.value)}
-                           placeholder={variant === 'materials' ? 'Materials...' : 'Tags...'}
+                           placeholder={variant.charAt(0).toUpperCase() + variant.slice(1) + '...'}
                            className="form-control"
                            onKeyDown={(event) => this.handleKeyDown(event)}/>
                     {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
@@ -110,21 +116,23 @@ class TagsFilter extends React.Component {
     }
 
     searchTags() {
-        const { dispatch } = this.props;
+        const { dispatch, variant } = this.props;
         const { searchQuery } = this.state;
-        dispatch(searchTags(searchQuery));
+        if (variant === 'materials') dispatch(searchMaterials(searchQuery));
+        else dispatch(searchTags(searchQuery));
     }
 
     // Loads specific tags by name, which were already selected at page load but need to have the full record loaded in
     loadTags() {
-        const { dispatch, tags } = this.props;
-        dispatch(loadTags(tags));
+        const { dispatch, tags, variant } = this.props;
+        if (variant === 'materials') dispatch(loadMaterials(tags));
+        else dispatch(loadTags(tags));
     }
 
     searchMonuments() {
-        search({
-            tags: this.state.selectedTags.map(tag => tag.name)
-        }, this.props.history);
+        const params = {};
+        params[this.props.variant] = this.state.selectedTags.map(tag => tag.name);
+        search(params, this.props.history);
     }
 }
 

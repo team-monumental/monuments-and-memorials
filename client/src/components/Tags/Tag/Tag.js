@@ -1,6 +1,5 @@
 import * as React from 'react';
 import './Tag.scss';
-import { Form } from 'react-bootstrap';
 
 export default class Tag extends React.Component {
 

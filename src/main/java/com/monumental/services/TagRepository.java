@@ -12,8 +12,8 @@ import java.util.List;
 public interface TagRepository extends CrudRepository<Tag, Integer> {
 
     /**
-     * This is automatically implemented by JPA - it will get all tags by matching name
+     * This is automatically implemented by JPA - it will get all tags by matching name and isMaterial
      */
     @Transactional
-    public List<Tag> getAllByName(String name);
+    public List<Tag> getAllByNameAndIsMaterial(String name, Boolean isMaterial);
 }

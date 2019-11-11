@@ -20,11 +20,11 @@ public class Image extends Model implements Serializable {
     private String url;
 
     @Column(name = "is_primary")
-    private boolean isPrimary = false;
+    private boolean isPrimary;
 
     // This indicates if an image is a Google Photo Sphere, 360 degree image
     @Column(name = "is_photo_sphere")
-    private boolean isPhotoSphere = false;
+    private boolean isPhotoSphere;
 
     @JsonIgnore
     @ManyToOne

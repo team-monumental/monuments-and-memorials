@@ -1,39 +1,54 @@
-import { FILTER_TAGS_SEARCH_PENDING, FILTER_TAGS_SEARCH_ERROR, FILTER_TAGS_SEARCH_SUCCESS, FILTER_TAGS_LOAD_ERROR, FILTER_TAGS_LOAD_SUCCESS, FILTER_TAGS_LOAD_PENDING } from '../constants';
+import {
+    FILTER_TAGS_SEARCH_PENDING, FILTER_TAGS_SEARCH_ERROR, FILTER_TAGS_SEARCH_SUCCESS,
+    FILTER_TAGS_LOAD_ERROR, FILTER_TAGS_LOAD_SUCCESS, FILTER_TAGS_LOAD_PENDING,
+    FILTER_MATERIALS_SEARCH_PENDING, FILTER_MATERIALS_SEARCH_SUCCESS, FILTER_MATERIALS_LOAD_PENDING,
+    FILTER_MATERIALS_LOAD_SUCCESS, FILTER_MATERIALS_LOAD_ERROR, FILTER_MATERIALS_SEARCH_ERROR
+} from '../constants';
 import * as QueryString from 'query-string';
 import get from '../utils/get';
 import { addError } from './errors';
 
-function searchTagsPending() {
+function searchPending(isMaterial) {
     return {
-        type: FILTER_TAGS_SEARCH_PENDING
+        type: isMaterial ? FILTER_MATERIALS_SEARCH_PENDING : FILTER_TAGS_SEARCH_PENDING
     };
 }
 
-function searchTagsSuccess(searchResults) {
+function searchSuccess(isMaterial, searchResults) {
     return {
-        type: FILTER_TAGS_SEARCH_SUCCESS,
+        type: isMaterial ? FILTER_MATERIALS_SEARCH_SUCCESS : FILTER_TAGS_SEARCH_SUCCESS,
         payload: {searchResults}
     };
 }
 
-function searchTagsError(error) {
+function searchError(isMaterial, error) {
     return {
-        type: FILTER_TAGS_SEARCH_ERROR,
+        type: isMaterial ? FILTER_MATERIALS_SEARCH_ERROR : FILTER_TAGS_SEARCH_ERROR,
         error: error
     };
 }
 
-/**
- * Searches for monuments and gets the total count of results
- */
 export function searchTags(queryString) {
+    return search(false, queryString);
+}
+
+export function searchMaterials(queryString) {
+    return search(true, queryString);
+}
+
+function search(isMaterial, queryString) {
     return async dispatch => {
-        dispatch(searchTagsPending());
+        dispatch(searchPending(isMaterial));
         try {
-            const tags = await get(`/api/search/tags/?q=${queryString}`);
-            dispatch(searchTagsSuccess(tags));
+            const tags = await get(`/api/search/tags/?${
+                QueryString.stringify({
+                    q: queryString,
+                    materials: isMaterial
+                })
+            }`);
+            dispatch(searchSuccess(isMaterial, tags));
         } catch (error) {
-            dispatch(searchTagsError(error));
+            dispatch(searchError(isMaterial, error));
             dispatch(addError({
                 message: error.message
             }));
@@ -42,42 +57,56 @@ export function searchTags(queryString) {
 }
 
 export function clearTagSearchResults() {
-    return searchTagsSuccess([]);
+    return clearSearchResults(false);
 }
 
-function loadTagsPending() {
+export function clearMaterialSearchResults() {
+    return clearSearchResults(true);
+}
+
+function clearSearchResults(isMaterial) {
+    return searchSuccess(isMaterial, []);
+}
+
+function loadPending(isMaterial) {
     return {
-        type: FILTER_TAGS_LOAD_PENDING
+        type: isMaterial ? FILTER_MATERIALS_LOAD_PENDING : FILTER_TAGS_LOAD_PENDING
     };
 }
 
-function loadTagsSuccess(selectedTags) {
+function loadSuccess(isMaterial, selectedTags) {
     return {
-        type: FILTER_TAGS_LOAD_SUCCESS,
+        type: isMaterial ? FILTER_MATERIALS_LOAD_SUCCESS : FILTER_TAGS_LOAD_SUCCESS,
         payload: {selectedTags}
     };
 }
 
-function loadTagsError(error) {
+function loadError(isMaterial, error) {
     return {
-        type: FILTER_TAGS_LOAD_ERROR,
+        type: isMaterial ? FILTER_MATERIALS_LOAD_ERROR : FILTER_TAGS_LOAD_ERROR,
         error: error
     };
 }
 
-/**
- * Searches for monuments and gets the total count of results
- */
 export function loadTags(names) {
+    return load(false, names);
+}
+
+export function loadMaterials(names) {
+    return load(true, names);
+}
+
+function load(isMaterial, names) {
     return async dispatch => {
-        dispatch(loadTagsPending());
+        dispatch(loadPending(isMaterial));
         try {
             const tags = await get(`/api/tags/?${QueryString.stringify({
-                names: names
+                names: names,
+                materials: isMaterial
             })}`, {arrayFormat: 'comma'});
-            dispatch(loadTagsSuccess(tags));
+            dispatch(loadSuccess(isMaterial, tags));
         } catch (error) {
-            dispatch(loadTagsError(error));
+            dispatch(loadError(isMaterial, error));
             dispatch(addError({
                 message: error.message
             }));

@@ -1,4 +1,9 @@
-import { FILTER_TAGS_SEARCH_ERROR, FILTER_TAGS_SEARCH_PENDING, FILTER_TAGS_SEARCH_SUCCESS, FILTER_TAGS_LOAD_PENDING, FILTER_TAGS_LOAD_ERROR, FILTER_TAGS_LOAD_SUCCESS } from '../constants';
+import {
+    FILTER_TAGS_SEARCH_ERROR, FILTER_TAGS_SEARCH_PENDING, FILTER_TAGS_SEARCH_SUCCESS,
+    FILTER_TAGS_LOAD_PENDING, FILTER_TAGS_LOAD_ERROR, FILTER_TAGS_LOAD_SUCCESS,
+    FILTER_MATERIALS_SEARCH_PENDING, FILTER_MATERIALS_SEARCH_SUCCESS, FILTER_MATERIALS_SEARCH_ERROR,
+    FILTER_MATERIALS_LOAD_PENDING, FILTER_MATERIALS_LOAD_ERROR, FILTER_MATERIALS_LOAD_SUCCESS
+} from '../constants';
 import basicReducer from '../utils/basicReducer';
 
 const searchInitialState = {
@@ -16,6 +21,14 @@ export function tagsFilterSearch(state = searchInitialState, action) {
     });
 }
 
+export function materialsFilterSearch(state = searchInitialState, action) {
+    return basicReducer(state, action, {
+        pending: FILTER_MATERIALS_SEARCH_PENDING,
+        success: FILTER_MATERIALS_SEARCH_SUCCESS,
+        error: FILTER_MATERIALS_SEARCH_ERROR
+    });
+}
+
 const filterInitialState = {
     pending: false,
     selectedTags: [],
@@ -28,5 +41,13 @@ export function tagsFilterLoad(state = filterInitialState, action) {
         pending: FILTER_TAGS_LOAD_PENDING,
         success: FILTER_TAGS_LOAD_SUCCESS,
         error: FILTER_TAGS_LOAD_ERROR
+    });
+}
+
+export function materialsFilterLoad(state = filterInitialState, action) {
+    return basicReducer(state, action, {
+        pending: FILTER_MATERIALS_LOAD_PENDING,
+        success: FILTER_MATERIALS_LOAD_SUCCESS,
+        error: FILTER_MATERIALS_LOAD_ERROR
     });
 }

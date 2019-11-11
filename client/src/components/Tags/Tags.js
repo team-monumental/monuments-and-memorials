@@ -12,7 +12,7 @@ export default class Tags extends React.Component {
         if (!tags) return (<div/>);
         return (
             <div className="tags">
-                {tags.sort((a, b) => a.name.length - b.name.length).map(tag => {
+                {tags.map(tag => {
                     return (
                         <Tag key={tag.id} name={tag.name} selectable={selectable} onSelect={value => onSelect(value, tag)} selectedIcon={selectedIcon} selected={tag.selected}/>
                     );

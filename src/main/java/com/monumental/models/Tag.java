@@ -32,7 +32,7 @@ public class Tag extends Model implements Serializable {
     private List<Monument> monuments;
 
     @Column(name = "is_material")
-    private Boolean isMaterial = false;
+    private Boolean isMaterial;
 
     public Tag() {
         this.setMonuments(new ArrayList<>());
