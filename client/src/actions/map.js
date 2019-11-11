@@ -1,4 +1,6 @@
 import { FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS, FETCH_MAP_MONUMENTS_ERROR } from '../constants';
+import get from '../utils/get';
+import { addError } from './errors';
 
 function fetchMonumentsPending() {
     return {
@@ -9,7 +11,7 @@ function fetchMonumentsPending() {
 function fetchMonumentsSuccess(monuments) {
     return {
         type: FETCH_MAP_MONUMENTS_SUCCESS,
-        payload: monuments
+        payload: {monuments}
     };
 }
 
@@ -27,12 +29,14 @@ function fetchMonumentsError(error) {
 export default function fetchMonuments() {
     return async dispatch => {
         dispatch(fetchMonumentsPending());
-        let error = null;
-        const res = await fetch(`/api/monuments`)
-            .then(res => res.json())
-            .catch(err => error = err);
-
-        if (error || res.error) dispatch(fetchMonumentsError(error || res.error));
-        else dispatch(fetchMonumentsSuccess(res));
+        try {
+            const monuments = await get(`/api/monuments`);
+            dispatch(fetchMonumentsSuccess(monuments));
+        } catch (error) {
+            dispatch(fetchMonumentsError(error));
+            dispatch(addError({
+                message: error.message
+            }));
+        }
     }
 }

@@ -1,5 +1,6 @@
 import { SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_ERROR, SEARCH_MONUMENTS_SUCCESS } from '../constants';
 import * as QueryString from 'query-string';
+import get from '../utils/get';
 import { addError } from './errors';
 import { get } from '../util/api-util';
 
@@ -9,10 +10,10 @@ function searchMonumentsPending() {
     };
 }
 
-function searchMonumentsSuccess(monument) {
+function searchMonumentsSuccess(monuments) {
     return {
         type: SEARCH_MONUMENTS_SUCCESS,
-        payload: monument
+        payload: monuments
     };
 }
 
@@ -31,8 +32,9 @@ export default function searchMonuments(options = {}) {
         const queryString = QueryString.stringify(options);
         dispatch(searchMonumentsPending());
         try {
-            const count = await get('/api/search/count/?', queryString);
-            const monuments = await get('/api/search/?', queryString);
+            const count = await get(`/api/search/monuments/count/?${queryString}`);
+            // We can skip the search query if the count has already come back as 0
+            const monuments = count > 0 ? await get(`/api/search/monuments/?${queryString}`) : [];
             dispatch(searchMonumentsSuccess({
                 count, monuments
             }));

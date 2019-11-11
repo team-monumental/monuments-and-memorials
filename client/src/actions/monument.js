@@ -4,6 +4,8 @@ import { FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, F
 } from '../constants';
 import * as QueryString from 'query-string';
 import { get } from '../util/api-util';
+import { addError } from './errors';
+
 
 function fetchMonumentPending() {
     return {
@@ -14,7 +16,7 @@ function fetchMonumentPending() {
 function fetchMonumentSuccess(monument) {
     return {
         type: FETCH_MONUMENT_SUCCESS,
-        payload: monument
+        payload: {monument}
     };
 }
 
@@ -73,6 +75,15 @@ function fetchRelatedMonumentsError(error) {
 export default function fetchMonument(id) {
     return async dispatch => {
         dispatch(fetchMonumentPending());
+        try {
+            const monument = await get(`/api/monument/${id}?cascade=true`);
+            dispatch(fetchMonumentSuccess(monument));
+        } catch (error) {
+            dispatch(fetchMonumentError(error));
+            dispatch(addError({
+                message: error.message
+            }));
+        }
         let error = null;
         const res = await fetch(`/api/monument/${id}?cascade=true`)
             .then(res => res.json())
@@ -90,7 +101,7 @@ export default function fetchMonument(id) {
         let queryString = QueryString.stringify(queryOptions);
         dispatch(fetchNearbyMonumentsPending());
         try {
-            const nearbyMonuments = await get('/api/search/?', queryString);
+            const nearbyMonuments = await get('/api/search/monuments/?', queryString);
             dispatch(fetchNearbyMonumentsSuccess(nearbyMonuments));
         } catch (error) {
             dispatch(fetchNearbyMonumentsError(error));
@@ -103,10 +114,9 @@ export default function fetchMonument(id) {
                 limit: 6
             };
             queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
-            console.log(queryString);
             dispatch(fetchRelatedMonumentsPending());
             try {
-                const relatedMonuments = await get('/api/search?', queryString);
+                const relatedMonuments = await get('/api/search/monuments/?', queryString);
                 dispatch(fetchRelatedMonumentsSuccess(relatedMonuments));
             } catch (error) {
                 dispatch(fetchRelatedMonumentsError(error));
