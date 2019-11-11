@@ -3,7 +3,7 @@ import './TagsFilter.scss';
 import { withRouter } from 'react-router-dom';
 import Tags from '../../../Tags/Tags';
 import search from '../../../../utils/search';
-import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials } from '../../../../actions/tagsFilter';
+import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials, clearMaterialSearchResults } from '../../../../actions/tagsFilter';
 import { connect } from 'react-redux';
 
 class TagsFilter extends React.Component {
@@ -110,8 +110,9 @@ class TagsFilter extends React.Component {
     }
 
     handleClear() {
-        const { dispatch } = this.props;
-        dispatch(clearTagSearchResults());
+        const { dispatch, variant } = this.props;
+        if (variant === 'materials') dispatch(clearMaterialSearchResults());
+        else dispatch(clearTagSearchResults());
         this.setState({searchQuery: ''});
     }
 
