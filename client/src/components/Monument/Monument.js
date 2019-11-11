@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
+import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
 
 /**
  * Root presentational component for the Monument record page
@@ -12,7 +13,13 @@ import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
 export default class Monument extends React.Component {
 
     render() {
-        const { monument } = this.props;
+        let { monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending } = this.props;
+        if (nearbyMonuments && nearbyMonuments.length) {
+            nearbyMonuments = nearbyMonuments.filter(nearbyMonument => nearbyMonument.id !== monument.id);
+        }
+        if (relatedMonuments && relatedMonuments.length) {
+            relatedMonuments = relatedMonuments.filter(relatedMonument => relatedMonument.id !== monument.id);
+        }
         if (!monument) return (<div/>);
         const title = monument.title;
 
@@ -21,35 +28,14 @@ export default class Monument extends React.Component {
                 <Helmet title={title + ' | Monuments and Memorials'}/>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
-                    {this.renderNearbyMonuments()}
-                    {this.renderRelatedMonuments()}
+                    <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>
+                    <RelatedMonuments title="Related Monuments or Memorials" monuments={relatedMonuments} pending={fetchRelatedPending}/>
                 </div>
                 <div className="column main-column">
                     <Details monument={monument}/>
                 </div>
                 <div className="column visit-column">
                     <MapPhotoSphereTabs monument={monument}/>
-                </div>
-            </div>
-        )
-    }
-
-    // TODO: Replace these functions with Components when implementing them
-    renderNearbyMonuments() {
-        return (
-            <div className="nearby">
-                <div className="h6">
-                    Nearby Monuments or Memorials
-                </div>
-            </div>
-        )
-    }
-
-    renderRelatedMonuments() {
-        return (
-            <div className="related">
-                <div className="h6">
-                    Related Monuments or Memorials
                 </div>
             </div>
         )

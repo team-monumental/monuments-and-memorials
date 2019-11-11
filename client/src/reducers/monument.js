@@ -1,29 +1,71 @@
-import { FETCH_MONUMENT_ERROR, FETCH_MONUMENT_PENDING, FETCH_MONUMENT_SUCCESS } from '../constants';
+import { FETCH_MONUMENT_ERROR, FETCH_MONUMENT_PENDING, FETCH_MONUMENT_SUCCESS, FETCH_NEARBY_MONUMENTS_PENDING,
+    FETCH_NEARBY_MONUMENTS_SUCCESS, FETCH_NEARBY_MONUMENTS_ERROR, FETCH_RELATED_MONUMENTS_PENDING,
+    FETCH_RELATED_MONUMENTS_SUCCESS, FETCH_RELATED_MONUMENTS_ERROR
+} from '../constants';
 
 const initialState = {
-    pending: false,
+    fetchMonumentPending: false,
+    fetchNearbyPending: false,
+    fetchRelatedPending: false,
     monument: {},
+    nearbyMonuments: {},
+    relatedMonuments: {},
     error: null
 };
 
 // Tracks the progress of getting the monument and related records for the monument record page
+// As well as fetching the nearby and related Monuments for the Monument
 export default function monumentPage(state = initialState, action) {
     switch (action.type) {
         case FETCH_MONUMENT_PENDING:
             return {
                 ...state,
-                pending: true
+                fetchMonumentPending: true
             };
         case FETCH_MONUMENT_SUCCESS:
             return {
                 ...state,
-                pending: false,
+                fetchMonumentPending: false,
                 monument: action.payload
             };
         case FETCH_MONUMENT_ERROR:
             return {
                 ...state,
-                pending: false,
+                fetchMonumentPending: false,
+                error: action.error
+            };
+        case FETCH_NEARBY_MONUMENTS_PENDING:
+            return {
+                ...state,
+                fetchNearbyPending: true
+            };
+        case FETCH_NEARBY_MONUMENTS_SUCCESS:
+            return {
+                ...state,
+                fetchNearbyPending: false,
+                nearbyMonuments: action.payload
+            };
+        case FETCH_NEARBY_MONUMENTS_ERROR:
+            return {
+                ...state,
+                fetchNearbyPending: false,
+                error: action.error
+            };
+        case FETCH_RELATED_MONUMENTS_PENDING:
+            return {
+                ...state,
+                fetchRelatedPending: true
+            };
+        case FETCH_RELATED_MONUMENTS_SUCCESS:
+            return {
+                ...state,
+                fetchRelatedPending: false,
+                relatedMonuments: action.payload
+            };
+        case FETCH_RELATED_MONUMENTS_ERROR:
+            return {
+                ...state,
+                fetchRelatedPending: false,
                 error: action.error
             };
         default:

@@ -1,6 +1,7 @@
 import { SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_ERROR, SEARCH_MONUMENTS_SUCCESS } from '../constants';
 import * as QueryString from 'query-string';
 import { addError } from './errors';
+import { get } from '../util/api-util';
 
 function searchMonumentsPending() {
     return {
@@ -20,15 +21,6 @@ function searchMonumentsError(error) {
         type: SEARCH_MONUMENTS_ERROR,
         error: error
     };
-}
-
-async function get(url, queryString) {
-    let error = null;
-    let res = await fetch(url + queryString)
-        .then(res => res.json())
-        .catch(err => error = err);
-    if (error || res.error || res.errors) throw(error || res.error || res.errors[0]);
-    else return res;
 }
 
 /**

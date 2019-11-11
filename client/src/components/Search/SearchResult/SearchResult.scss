@@ -1,15 +1,23 @@
 @import "../../../../node_modules/bootstrap/scss/functions";
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/mixins";
+@import "../../../theme";
 
 .search-result {
     display: flex;
+    padding: 0.5rem;
+
     .card {
         width: 100%;
         background-color: white;
 
         .card-body {
             padding: 0.25rem 0 0;
+        }
+
+        .location {
+            position: absolute;
+            padding-top: 0.2rem
         }
 
         .card-title.h5 {
@@ -29,5 +37,9 @@
         background-position: center;
         background-size: cover;
         margin-right: 1rem;
+    }
+
+    i {
+        color: $primary;
     }
 }

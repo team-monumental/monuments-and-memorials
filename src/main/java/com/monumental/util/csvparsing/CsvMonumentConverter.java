@@ -142,14 +142,16 @@ public class CsvMonumentConverter {
                     monument.getReferences().add(newReference);
                     break;
                 case 25: // Image filename
-                    value = formatJpgImageFileName(value);
+                    if (!value.isEmpty()) {
+                        value = formatJpgImageFileName(value);
 
-                    Image newImage = new Image();
-                    newImage.setUrl(StringHelper.buildAwsS3ObjectUrl("monument-images", "images/" + value));
-                    newImage.setIsPrimary(true);
-                    newImage.setMonument(monument);
+                        Image newImage = new Image();
+                        newImage.setUrl(StringHelper.buildAwsS3ObjectUrl("monument-images", "images/" + value));
+                        newImage.setIsPrimary(true);
+                        newImage.setMonument(monument);
 
-                    monument.getImages().add(newImage);
+                        monument.getImages().add(newImage);
+                    }
                     break;
             }
         }
