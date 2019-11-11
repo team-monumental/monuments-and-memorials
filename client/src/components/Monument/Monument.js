@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
-import NearbyMonuments from "./NearbyMonuments/NearbyMonuments";
 import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
 
 /**
@@ -29,8 +28,8 @@ export default class Monument extends React.Component {
                 <Helmet title={title + ' | Monuments and Memorials'}/>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
-                    <NearbyMonuments monuments={nearbyMonuments} pending={fetchNearbyPending}/>
-                    <RelatedMonuments monuments={relatedMonuments} pending={fetchRelatedPending}/>
+                    <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>
+                    <RelatedMonuments title="Related Monuments or Memorials" monuments={relatedMonuments} pending={fetchRelatedPending}/>
                 </div>
                 <div className="column main-column">
                     <Details monument={monument}/>

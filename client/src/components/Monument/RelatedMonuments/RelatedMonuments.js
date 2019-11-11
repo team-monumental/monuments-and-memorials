@@ -5,7 +5,7 @@ import SearchResult from "../../Search/SearchResult/SearchResult";
 import Collapse from "react-bootstrap/Collapse";
 
 /**
- * Presentational Component for Related Monuments
+ * Presentational Component for Related/Nearby Monuments
  */
 export default class RelatedMonuments extends React.Component {
 
@@ -25,7 +25,7 @@ export default class RelatedMonuments extends React.Component {
     }
 
     render() {
-        const { monuments, pending } = this.props;
+        const { title, monuments, pending } = this.props;
         const { showingExtraMonuments } = this.state;
 
         const monumentsToShow = (monuments && monuments.length) ? monuments.slice(0, 2) : [];
@@ -33,7 +33,7 @@ export default class RelatedMonuments extends React.Component {
 
         const header = (
             <div className="h6">
-                Related Monuments or Memorials
+                {title}
             </div>
         );
 
