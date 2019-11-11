@@ -46,12 +46,11 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { page, limit, lat, lon, d } = this.getQueryParams();
         const { monuments, count, pending } = this.props;
         return (
             <div className="h-100">
                 <Spinner show={pending}/>
-                <Search monuments={monuments} count={count} page={page} limit={limit} lat={lat} lon={lon} distance={d}
+                <Search monuments={monuments} {...this.getQueryParams()} count={count}
                         onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}
                         onFilterChange={this.handleFilterChange.bind(this)}/>
             </div>
@@ -59,10 +58,12 @@ class SearchPage extends React.Component {
     }
 
     getQueryParams() {
-        return {
-            ...QueryString.parse(this.props.history.location.search),
+        const params = {
+            ...QueryString.parse(this.props.history.location.search, {arrayFormat: 'comma'}),
             ...this.state
         };
+        if (params.tags && typeof params.tags === 'string') params.tags = [params.tags];
+        return params;
     }
 
     handleLimitChange(limit) {

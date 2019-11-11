@@ -18,7 +18,7 @@ export default class Search extends React.Component {
     }
 
     render() {
-        const { monuments, onLimitChange, lat, lon, distance, onFilterChange } = this.props;
+        const { monuments, onLimitChange, lat, lon, distance, onFilterChange, tags } = this.props;
         const [ count, page, limit ] = [ this.props.count, this.props.page, this.props.limit ]
             .map(value => parseInt(value) || 0);
 
@@ -31,7 +31,9 @@ export default class Search extends React.Component {
                     </div>
                     <div className="search-column">
                         <div className="search-header">
-                            <Filters onChange={filters => onFilterChange(filters)} showDistance={lat && lon} distance={distance}/>
+                            <Filters onChange={filters => onFilterChange(filters)}
+                                     showDistance={lat && lon} distance={distance}
+                                     tags={tags}/>
                             <SearchInfo count={count} page={page} limit={limit} onLimitChange={onLimitChange}/>
                         </div>
                         <div className="search-results">

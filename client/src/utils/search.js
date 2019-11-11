@@ -16,6 +16,10 @@ export default function search(changedParams, history) {
         // Setting null and empty string values to undefined here prevents empty query params like `&q=` showing up
         if (!params[param] && params[param] !== 0) params[param] = undefined;
     }
-    const queryString = QueryString.stringify(params);
+
+    // If we're not explicitly changing the page, then reset the page to 1 so that we don't end up in a bad page state
+    if (!changedParams.hasOwnProperty('page')) params.page = '1';
+
+    const queryString = QueryString.stringify(params, {arrayFormat: 'comma'});
     history.push(`/search/?${queryString}`);
 }

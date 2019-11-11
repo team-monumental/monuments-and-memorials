@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './Filters.scss';
 import { Form } from 'react-bootstrap';
+import TagsFilter from './TagsFilter/TagsFilter';
 
 export default class Filters extends React.Component {
 
@@ -22,7 +23,7 @@ export default class Filters extends React.Component {
 
     render() {
 
-        const { showDistance } = this.props;
+        const { showDistance, tags } = this.props;
 
         const distanceFilter = showDistance ? (
             <Form.Control onChange={event => this.handleFilterChange('distance', event.target.value)} as="select" style={{width: 'min-content'}} className="py-1 px-2" defaultValue="25">
@@ -37,6 +38,10 @@ export default class Filters extends React.Component {
         return (
             <div className="filters">
                 {distanceFilter}
+                <div className="tags-container">
+                    <TagsFilter tags={tags}/>
+                    <TagsFilter variant="materials"/>
+                </div>
             </div>
         );
     }
