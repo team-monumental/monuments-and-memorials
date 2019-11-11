@@ -102,7 +102,7 @@ export default function fetchMonument(id) {
                 tags: tags,
                 limit: 6
             };
-            queryString = QueryString.stringify(queryOptions);
+            queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
             console.log(queryString);
             dispatch(fetchRelatedMonumentsPending());
             try {
