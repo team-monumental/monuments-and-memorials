@@ -30,7 +30,8 @@ public class SessionFactoryService {
     );
     private final List<Class> models = Arrays.asList(
         Model.class, Monument.class, Tag.class,
-        Image.class, Contribution.class, Reference.class
+        Image.class, Contribution.class, Reference.class,
+        User.class
     );
 
     private SessionFactory factory;

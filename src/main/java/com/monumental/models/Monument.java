@@ -22,9 +22,6 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "monument", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "id")
-})
 public class Monument extends Model implements Serializable {
 
     @Column(name = "artist")
@@ -38,10 +35,6 @@ public class Monument extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
-    @Column(name = "material")
-    @NotNull(groups = {New.class, Existing.class}, message = "Material can not be null")
-    private String material;
-
     @Column(name = "coordinates", columnDefinition = "geometry")
     private Point coordinates;
 
@@ -50,7 +43,7 @@ public class Monument extends Model implements Serializable {
 
     @Column(name = "state")
     private String state;
-  
+
     @Column(name = "address")
     private String address;
 
@@ -83,11 +76,10 @@ public class Monument extends Model implements Serializable {
         this.contributions = new ArrayList<>();
     }
 
-    public Monument(String artist, String title, Date date, String material, String city, String state) {
+    public Monument(String artist, String title, Date date, String city, String state) {
         this.artist = artist;
         this.title = title;
         this.date = date;
-        this.material = material;
         this.city = city;
         this.state = state;
 
@@ -119,14 +111,6 @@ public class Monument extends Model implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public String getMaterial() {
-        return this.material;
-    }
-
-    public void setMaterial(String material) {
-        this.material = material;
     }
 
     public Point getCoordinates() {
@@ -196,11 +180,41 @@ public class Monument extends Model implements Serializable {
     }
 
     public List<Tag> getTags() {
-        return this.tags;
+        if (this.tags == null) return null;
+        List<Tag> tags = new ArrayList<>();
+        for (Tag tag : this.tags) {
+            if (!tag.getIsMaterial()) tags.add(tag);
+        }
+        return tags;
     }
 
     public void setTags(List<Tag> tags) {
-        this.tags = tags;
+        List<Tag> materials = this.getMaterials();
+        if (this.tags != null && materials != null && materials.size() > 0) {
+            materials.addAll(tags);
+            this.tags = materials;
+        } else {
+            this.tags = tags;
+        }
+    }
+
+    public List<Tag> getMaterials() {
+        if (this.tags == null) return null;
+        List<Tag> materials = new ArrayList<>();
+        for (Tag tag : this.tags) {
+            if (tag.getIsMaterial()) materials.add(tag);
+        }
+        return materials;
+    }
+
+    public void setMaterials(List<Tag> materials) {
+        List<Tag> tags = this.getTags();
+        if (this.tags != null && tags != null && tags.size() > 0) {
+            tags.addAll(materials);
+            this.tags = tags;
+        } else {
+            this.tags = materials;
+        }
     }
 
     public List<Image> getImages() {
@@ -229,7 +243,7 @@ public class Monument extends Model implements Serializable {
 
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
-                + this.date + ", Material: " + this.material + ", Point: " + this.coordinates.toString()
+                + this.date + ", Point: " + this.coordinates.toString()
                 + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
                 + this.description;
     }

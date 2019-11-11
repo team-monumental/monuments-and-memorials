@@ -3,14 +3,20 @@ package com.monumental.util.application;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.services.*;
-import org.hibernate.exception.ConstraintViolationException;
 import com.monumental.util.csvparsing.CsvFileReader;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class used to load the initial dataset into the database
@@ -19,16 +25,19 @@ import java.util.ArrayList;
  * Then does validation on each CsvMonumentConverterResult's Monument before inserting it into the database
  * Finally, closes the CsvFileReader
  */
+@SpringBootApplication
+@ComponentScan("com.monumental")
 public class InitialDataLoadApplication {
+
     public static void main(String[] args) {
-        String pathToDatasetCsv = "C:\\Users\\nickb\\Documents\\Initial Dataset.csv";
+        ApplicationContext context = SpringApplication.run(InitialDataLoadApplication.class, args);
+        String pathToDatasetCsv = "C:\\Users\\Ben\\Downloads\\Initial.csv";
         String csvRow;
         int rowCount = 0;
         ArrayList<CsvMonumentConverterResult> results = new ArrayList<>();
 
-        SessionFactoryService sessionFactoryService = new SessionFactoryService();
-        MonumentService monumentService = new MonumentService(sessionFactoryService);
-        TagService tagService = new TagService(sessionFactoryService);
+        MonumentService monumentService = context.getBean(MonumentService.class);
+        TagService tagService = context.getBean(TagService.class);
 
         // Create our CsvFileReader, passing it the path to the dataset file
         CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetCsv);
@@ -77,19 +86,22 @@ public class InitialDataLoadApplication {
 
                 // Insert all of the Tags associated with the Monument
                 // This isn't done by the above insert call because the Tag Model "owns" the monument_tag join table
-                if (r.getTags() != null) {
-                    for (Tag t : r.getTags()) {
+                List<Tag> tags = r.getTags();
+                if (tags == null) tags = new ArrayList<>();
+
+                List<Tag> materials = r.getMaterials();
+                if (materials == null) materials = new ArrayList<>();
+
+                tags.addAll(materials);
+
+                if (tags.size() > 0) {
+                    for (Tag tag : tags) {
                         try {
-                            tagService.insert(t);
+                            tagService.createTag(tag.getName(), tag.getMonuments());
                             tagInsertedCount++;
-                        } catch (ConstraintViolationException e) {
-                            // If a ConstraintViolationException is caught, there's a duplicate Tag in the list we are trying
-                            // to insert
-                            // Instead, get the ID of the already existing Tag and update it
-                            // Assume there is only 1 Tag with that Name due to the Unique Constraint
-                            Integer tId = tagService.getByName(t.getName(), false).get(0).getId();
-                            t.setId(tId);
-                            tagService.update(t);
+                        } catch (DataIntegrityViolationException e) {
+                            // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
+                            // These are disregarded for now - the correct tags are still being created
                         }
                     }
                 }
@@ -106,6 +118,7 @@ public class InitialDataLoadApplication {
         }
         finally {
             csvFileReader.close();
+            System.exit(0);
         }
     }
 }

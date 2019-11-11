@@ -1,16 +1,23 @@
 package com.monumental.services;
 
+import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class TagService extends ModelService<Tag> {
+
+    @Autowired
+    TagRepository tagRepository;
 
     public TagService(SessionFactoryService sessionFactoryService) {
         super(sessionFactoryService);
@@ -70,5 +77,25 @@ public class TagService extends ModelService<Tag> {
         query.orderBy(builder.desc(similarity));
 
         return this.getWithCriteriaQuery(query, 10);
+    }
+
+    @Transactional
+    public Tag createTag(String name, List<Monument> monuments) {
+        try {
+            List<Tag> duplicates = this.tagRepository.getAllByName(name);
+            Tag tag;
+            if (duplicates != null && duplicates.size() > 0) {
+                tag = duplicates.get(0);
+            } else {
+                tag = new Tag();
+                tag.setName(name);
+            }
+            tag.getMonuments().addAll(monuments);
+            this.tagRepository.save(tag);
+            return tag;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

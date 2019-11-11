@@ -1,15 +1,11 @@
 package com.monumental.models;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import java.util.Date;
 
 @MappedSuperclass
-public abstract class Model {
+public abstract class Model extends AbstractAuditable<User, Integer> {
 
     /* Bean Validation Groups */
 
@@ -23,36 +19,17 @@ public abstract class Model {
 
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
-    @Null(groups = New.class, message = "ID can not be specified on insert")
-    @NotNull(groups = Existing.class, message = "ID can not be null on update")
+    @AttributeOverride(name = "id", column = @Column(name="id"))
     private Integer id;
 
-    @Temporal(TemporalType.DATE)
-    @CreationTimestamp
-    @Column(name = "created_date")
-    private Date createdDate;
-
-    @Temporal(TemporalType.DATE)
-    @UpdateTimestamp
-    @Column(name = "updated_date")
-    private Date updatedDate;
-
+    @Override
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
+    // This is overridden to be public so that tests can manipulate this
+    @Override
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Date getCreatedDate() {
-        return this.createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return this.updatedDate;
     }
 }

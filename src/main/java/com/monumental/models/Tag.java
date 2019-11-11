@@ -15,10 +15,6 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "tag", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id"),
-        @UniqueConstraint(columnNames = "name")
-})
 public class Tag extends Model implements Serializable {
 
     @Column(name = "name")
@@ -26,7 +22,7 @@ public class Tag extends Model implements Serializable {
     private String name;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.DETACH })
     @JoinTable(
             name = "monument_tag",
             joinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") },
@@ -35,8 +31,11 @@ public class Tag extends Model implements Serializable {
     )
     private List<Monument> monuments;
 
-    public Tag() {
+    @Column(name = "is_material")
+    private Boolean isMaterial = false;
 
+    public Tag() {
+        this.setMonuments(new ArrayList<>());
     }
 
     public String getName() {
@@ -55,6 +54,14 @@ public class Tag extends Model implements Serializable {
         this.monuments = monuments;
     }
 
+    public Boolean getIsMaterial() {
+        return this.isMaterial;
+    }
+
+    public void setIsMaterial(Boolean isMaterial) {
+        this.isMaterial = isMaterial;
+    }
+
     /**
      * Adds a Monument to the List
      * Will do nothing if the specified Monument is null
@@ -71,5 +78,13 @@ public class Tag extends Model implements Serializable {
         }
 
         this.monuments.add(monument);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Tag)) return false;
+        Tag tag = (Tag) obj;
+        return tag.getName().equals(this.getName());
     }
 }
