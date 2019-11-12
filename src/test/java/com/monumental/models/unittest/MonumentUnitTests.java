@@ -2,6 +2,7 @@ package com.monumental.models.unittest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
+import com.monumental.models.Tag;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -151,24 +152,8 @@ public class MonumentUnitTests {
     /** validate Tests **/
 
     @Test
-    public void testMonument_validate_New_NullTitle_NullMaterial() {
+    public void testMonument_validate_New_NullTitle() {
         Monument monument = new Monument();
-
-        Monument.ValidationResult result = monument.validate(Monument.New.class);
-
-        assertFalse(result.isValid());
-
-        List<String> violationMessages = result.getViolationMessages();
-
-        assertEquals(2, violationMessages.size());
-        assertTrue(violationMessages.contains("Title can not be null"));
-        assertTrue(violationMessages.contains("Material can not be null"));
-    }
-
-    @Test
-    public void testMonument_validate_New_NullTitle_NotNullMaterial() {
-        Monument monument = new Monument();
-        monument.setMaterial("Material");
 
         Monument.ValidationResult result = monument.validate(Monument.New.class);
 
@@ -181,22 +166,7 @@ public class MonumentUnitTests {
     }
 
     @Test
-    public void testMonument_validate_New_NotNullTitle_NullMaterial() {
-        Monument monument = new Monument();
-        monument.setTitle("Title");
-
-        Monument.ValidationResult result = monument.validate(Monument.New.class);
-
-        assertFalse(result.isValid());
-
-        List<String> violationMessages = result.getViolationMessages();
-
-        assertEquals(1, violationMessages.size());
-        assertTrue(violationMessages.contains("Material can not be null"));
-    }
-
-    @Test
-    public void testMonument_validate_New_NotNullId_NotNullTitle_NullMaterial() {
+    public void testMonument_validate_New_NotNullId_NotNullTitle() {
         Monument monument = new Monument();
         monument.setId(1);
         monument.setTitle("Title");
@@ -207,16 +177,14 @@ public class MonumentUnitTests {
 
         List<String> violationMessages = result.getViolationMessages();
 
-        assertEquals(2, violationMessages.size());
-        assertTrue(violationMessages.contains("Material can not be null"));
+        assertEquals(1, violationMessages.size());
         assertTrue(violationMessages.contains("ID can not be specified on insert"));
     }
 
     @Test
-    public void testMonument_validate_New_NotNullTitle_NotNullMaterial() {
+    public void testMonument_validate_New_NotNullTitle() {
         Monument monument = new Monument();
         monument.setTitle("Title");
-        monument.setMaterial("Material");
 
         Monument.ValidationResult result = monument.validate(Monument.New.class);
 
@@ -228,10 +196,9 @@ public class MonumentUnitTests {
     }
 
     @Test
-    public void testMonument_validate_Existing_NullId_NotNullTitle_NotNullMaterial() {
+    public void testMonument_validate_Existing_NullId_NotNullTitle() {
         Monument monument = new Monument();
         monument.setTitle("Title");
-        monument.setMaterial("Material");
 
         Monument.ValidationResult result = monument.validate(Monument.Existing.class);
 
@@ -244,10 +211,9 @@ public class MonumentUnitTests {
     }
 
     @Test
-    public void testMonument_validate_Existing_NotNullId_NullTitle_NotNullMaterial() {
+    public void testMonument_validate_Existing_NotNullId_NullTitle() {
         Monument monument = new Monument();
         monument.setId(1);
-        monument.setMaterial("Material");
 
         Monument.ValidationResult result = monument.validate(Monument.Existing.class);
 
@@ -260,28 +226,10 @@ public class MonumentUnitTests {
     }
 
     @Test
-    public void testMonument_validate_Existing_NotNullId_NotNullTitle_NullMaterial() {
+    public void testMonument_validate_Existing_NotNullId_NotNullTitle() {
         Monument monument = new Monument();
         monument.setId(1);
         monument.setTitle("Title");
-
-        Monument.ValidationResult result = monument.validate(Monument.Existing.class);
-
-        assertFalse(result.isValid());
-
-        List<String> violationMessages = result.getViolationMessages();
-
-        assertEquals(1, violationMessages.size());
-        assertTrue(violationMessages.contains("Material can not be null"));
-    }
-
-    @Test
-    public void testMonument_validate_Existing_NotNullId_NotNullTitle_NotNullMaterial() {
-        Monument monument = new Monument();
-        monument.setId(1);
-        monument.setTitle("Title");
-        monument.setMaterial("Material");
-
         Monument.ValidationResult result = monument.validate(Monument.Existing.class);
 
         assertTrue(result.isValid());
