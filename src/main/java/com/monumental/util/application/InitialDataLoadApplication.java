@@ -37,7 +37,7 @@ public class InitialDataLoadApplication {
         // Don't start a web server - allows this application to run while the main Application is running
         app.setWebApplicationType(WebApplicationType.NONE);
         ConfigurableApplicationContext context = app.run(args);
-        String pathToDatasetCsv = "C:\\Users\\Ben\\Downloads\\Initial.csv";
+        String pathToDatasetCsv = "/home/monumental/Initial Dataset.csv";
         String csvRow;
         int rowCount = 0;
         ArrayList<CsvMonumentConverterResult> results = new ArrayList<>();
