@@ -16,7 +16,7 @@ function fetchMonumentPending() {
 function fetchMonumentSuccess(monument) {
     return {
         type: FETCH_MONUMENT_SUCCESS,
-        payload: {monument}
+        payload: monument
     };
 }
 

@@ -14,7 +14,7 @@ export default class Tags extends React.Component {
             <div className="tags">
                 {tags.map(tag => {
                     return (
-                        <Tag key={tag.id} name={tag.name} selectable={selectable} onSelect={value => onSelect(value, tag)} selectedIcon={selectedIcon} selected={tag.selected}/>
+                        <Tag key={tag.id} name={tag.name} isMaterial={tag.isMaterial} selectable={selectable} onSelect={value => onSelect(value, tag)} selectedIcon={selectedIcon} selected={tag.selected}/>
                     );
                 })}
             </div>

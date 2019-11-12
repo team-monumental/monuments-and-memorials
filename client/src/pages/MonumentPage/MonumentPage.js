@@ -12,6 +12,7 @@ import fetchMonument from '../../actions/monument';
 class MonumentPage extends React.Component {
 
     static mapStateToProps(state) {
+        console.log('state', state);
         return state.monumentPage;
     }
 
