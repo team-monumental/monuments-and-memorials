@@ -75,15 +75,6 @@ function fetchRelatedMonumentsError(error) {
 export default function fetchMonument(id) {
     return async dispatch => {
         dispatch(fetchMonumentPending());
-        try {
-            const monument = await get(`/api/monument/${id}?cascade=true`);
-            dispatch(fetchMonumentSuccess(monument));
-        } catch (error) {
-            dispatch(fetchMonumentError(error));
-            dispatch(addError({
-                message: error.message
-            }));
-        }
         let error = null;
         const res = await fetch(`/api/monument/${id}?cascade=true`)
             .then(res => res.json())
