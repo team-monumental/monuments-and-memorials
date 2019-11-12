@@ -51,7 +51,6 @@ export default class RelatedMonuments extends React.Component {
 
         const extraMonumentsDisplay = (
             <div className="extra-related-monuments-container">
-                {!showingExtraMonuments && moreLink}
                 <Collapse in={showingExtraMonuments}>
                     <div>
                         {
@@ -63,6 +62,7 @@ export default class RelatedMonuments extends React.Component {
                         }
                     </div>
                 </Collapse>
+                {!showingExtraMonuments && moreLink}
                 {showingExtraMonuments && lessLink}
             </div>
         );
