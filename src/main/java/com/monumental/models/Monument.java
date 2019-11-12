@@ -2,6 +2,7 @@ package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.LazyInitializationException;
 
 import javax.persistence.*;
 import javax.validation.ConstraintViolation;
@@ -182,9 +183,11 @@ public class Monument extends Model implements Serializable {
     public List<Tag> getTags() {
         if (this.tags == null) return null;
         List<Tag> tags = new ArrayList<>();
-        for (Tag tag : this.tags) {
-            if (!tag.getIsMaterial()) tags.add(tag);
-        }
+        try {
+            for (Tag tag : this.tags) {
+                if (!tag.getIsMaterial()) tags.add(tag);
+            }
+        } catch (LazyInitializationException e) {}
         return tags;
     }
 
@@ -201,9 +204,11 @@ public class Monument extends Model implements Serializable {
     public List<Tag> getMaterials() {
         if (this.tags == null) return null;
         List<Tag> materials = new ArrayList<>();
-        for (Tag tag : this.tags) {
-            if (tag.getIsMaterial()) materials.add(tag);
-        }
+        try {
+            for (Tag tag : this.tags) {
+                if (tag.getIsMaterial()) materials.add(tag);
+            }
+        } catch (LazyInitializationException e) {}
         return materials;
     }
 
