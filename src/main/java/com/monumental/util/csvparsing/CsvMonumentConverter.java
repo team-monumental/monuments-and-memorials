@@ -445,7 +445,6 @@ public class CsvMonumentConverter {
         newTag.setName(tagValue);
         newTag.addMonument(monument);
         newTag.setIsMaterial(isMaterial);
-        System.out.println("Created tag: " + isMaterial + ", " + tagValue);
         return newTag;
     }
 }
