@@ -2,14 +2,11 @@ package com.monumental.services;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,49 +14,7 @@ import java.util.List;
 public class TagService extends ModelService<Tag> {
 
     @Autowired
-    TagRepository tagRepository;
-
-    public TagService(SessionFactoryService sessionFactoryService) {
-        super(sessionFactoryService);
-    }
-
-    public List<Tag> getByMonumentId(Integer monumentId) {
-        return this.getByMonumentId(monumentId, false);
-    }
-
-    public List<Tag> getByMonumentId(Integer monumentId, boolean initializeLazyLoadedCollections) {
-        return this.getByJoinTable("monuments", "id", monumentId, initializeLazyLoadedCollections);
-    }
-
-    /**
-     * Get all of the Tags with the specified name
-     * @param name - name of the Tag to get as a String
-     * @param initializeLazyLoadedCollections - If true, initializes all of the Monuments associated with the Tags
-     * @return List<Tag> - List of Tags with the specified name
-     */
-    public List<Tag> getByName(String name, boolean initializeLazyLoadedCollections) {
-        ArrayList<Criterion> criteria = new ArrayList<>();
-        criteria.add(Restrictions.eq("name", name));
-
-        return this.getWithCriteria(criteria, initializeLazyLoadedCollections);
-    }
-
-    /**
-     * Get all of the Tags matching any of the specified names
-     * @param names List of names to match Tags on
-     */
-    public List<Tag> getByNames(List<String> names) {
-        CriteriaBuilder builder = this.getCriteriaBuilder();
-        CriteriaQuery<Tag> query = this.createCriteriaQuery(builder, false);
-        Root<Tag> root = this.createRoot(query);
-        query.select(root);
-
-        query.where(
-            root.get("name").in(names)
-        );
-
-        return this.getWithCriteriaQuery(query);
-    }
+    private TagRepository tagRepository;
 
     /**
      * Search for tags by name, allowing for some fuzziness and ordering by how closely they match
@@ -86,24 +41,25 @@ public class TagService extends ModelService<Tag> {
         return this.getWithCriteriaQuery(query, 10);
     }
 
+    /**
+     * Safely create a new tag without duplication
+     * @param name          The name of the tag to create
+     * @param monuments     The list of monuments to associate it with
+     * @param isMaterial    Whether or not the tag is a material
+     */
     @Transactional
     public Tag createTag(String name, List<Monument> monuments, Boolean isMaterial) {
-        try {
-            List<Tag> duplicates = this.tagRepository.getAllByNameAndIsMaterial(name, isMaterial);
-            Tag tag;
-            if (duplicates != null && duplicates.size() > 0) {
-                tag = duplicates.get(0);
-            } else {
-                tag = new Tag();
-                tag.setName(name);
-                tag.setIsMaterial(isMaterial);
-            }
-            tag.getMonuments().addAll(monuments);
-            this.tagRepository.save(tag);
-            return tag;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        List<Tag> duplicates = this.tagRepository.getAllByNameAndIsMaterial(name, isMaterial);
+        Tag tag;
+        if (duplicates != null && duplicates.size() > 0) {
+            tag = duplicates.get(0);
+        } else {
+            tag = new Tag();
+            tag.setName(name);
+            tag.setIsMaterial(isMaterial);
         }
+        tag.getMonuments().addAll(monuments);
+        this.tagRepository.save(tag);
+        return tag;
     }
 }

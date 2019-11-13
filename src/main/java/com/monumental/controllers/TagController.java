@@ -1,7 +1,7 @@
 package com.monumental.controllers;
 
 import com.monumental.models.Tag;
-import com.monumental.services.TagService;
+import com.monumental.services.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,18 +14,18 @@ import java.util.List;
 public class TagController {
 
     @Autowired
-    TagService tagService;
+    TagRepository tagRepository;
 
     @GetMapping("/api/tags")
     public List<Tag> getTagsByMonument(@RequestParam(required = false) Integer monumentId,
                                        @RequestParam(required = false) String name,
                                        @RequestParam(required = false) List<String> names) {
         if (monumentId != null) {
-            return this.tagService.getByMonumentId(monumentId);
+            return this.tagRepository.getAllByMonumentId(monumentId);
         } else if (name != null) {
-            return this.tagService.getByName(name, false);
+            return this.tagRepository.getAllByName(name);
         } else if (names != null && names.size() > 0) {
-            return this.tagService.getByNames(names);
+            return this.tagRepository.getAllByNameIn(names);
         } else {
             throw new InvalidParameterException("Please specify a monument id or tag name(s).");
         }
