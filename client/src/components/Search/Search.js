@@ -11,11 +11,36 @@ import SearchResults from './SearchResults/SearchResults';
  */
 export default class Search extends React.Component {
 
+    handlePageChange(page) {
+        const { onPageChange } = this.props;
+        onPageChange(page);
+    }
+
+    /**
+     * Whenever the monuments list changes (in length or at least one id has changed), scroll the search results
+     * up to the top, so that we see the first of the new results instead of wherever we might have been
+     * scrolled to before
+     */
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.monuments && this.props.monuments) {
+            let didChange = false;
+            if (prevProps.monuments.length !== this.props.monuments.length) {
+                didChange = true;
+            } else {
+                prevProps.monuments.forEach((monument, index) => {
+                    if (this.props.monuments[index].id !== monument.id) didChange = true;
+                });
+            }
+            if (didChange) {
+                document.querySelector('.search-column').scrollTo({top: 0});
+            }
+        }
+    }
+
     render() {
-        const { monuments, onLimitChange, onPageChange, lat, lon } = this.props;
-        const [ count, page, limit ] = [
-            parseInt(this.props.count) || 0, parseInt(this.props.page) || 0, parseInt(this.props.limit) || 0
-        ];
+        const { monuments, onLimitChange, lat, lon, distance, onFilterChange, tags, materials } = this.props;
+        const [ count, page, limit ] = [ this.props.count, this.props.page, this.props.limit ]
+            .map(value => parseInt(value) || 0);
 
         const pageCount = Math.ceil(count / limit);
 
@@ -26,7 +51,9 @@ export default class Search extends React.Component {
                     </div>
                     <div className="search-column">
                         <div className="search-header">
-                            <Filters/>
+                            <Filters onChange={filters => onFilterChange(filters)}
+                                     showDistance={lat && lon} distance={distance}
+                                     tags={tags} materials={materials}/>
                             <SearchInfo count={count} page={page} limit={limit} onLimitChange={onLimitChange}/>
                         </div>
                         <div className="search-results">
@@ -35,7 +62,7 @@ export default class Search extends React.Component {
                         <div className="pagination-container">
                             <Pagination count={pageCount}
                                         page={page - 1}
-                                        onPage={page => onPageChange(page + 1)}/>
+                                        onPage={page => this.handlePageChange(page + 1)}/>
                         </div>
                     </div>
                 </div>

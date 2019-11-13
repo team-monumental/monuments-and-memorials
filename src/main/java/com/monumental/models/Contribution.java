@@ -13,9 +13,6 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "contribution", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
-})
 public class Contribution extends Model implements Serializable {
 
     @Column(name = "submitted_by")

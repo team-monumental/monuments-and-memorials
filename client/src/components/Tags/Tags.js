@@ -1,5 +1,6 @@
 import React from 'react';
 import './Tags.scss';
+import Tag from './Tag/Tag';
 
 /**
  * Renders a list of tags belonging to a Monument
@@ -7,13 +8,14 @@ import './Tags.scss';
 export default class Tags extends React.Component {
 
     render() {
-        if (!this.props.tags) return (<div/>);
+        const { tags, selectable, onSelect, selectedIcon } = this.props;
+        if (!tags) return (<div/>);
         return (
             <div className="tags">
-                {this.props.tags.sort((a, b) => a.name.length - b.name.length).map(tag => {
+                {tags.map(tag => {
                     return (
-                        <div key={tag.name} className="tag text-truncate">{tag.name}</div>
-                    )
+                        <Tag key={tag.id} name={tag.name} isMaterial={tag.isMaterial} selectable={selectable} onSelect={value => onSelect(value, tag)} selectedIcon={selectedIcon} selected={tag.selected}/>
+                    );
                 })}
             </div>
         );

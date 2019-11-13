@@ -12,9 +12,6 @@ import java.io.Serializable;
  */
 
 @Entity
-@Table(name = "reference", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
-})
 public class Reference extends Model implements Serializable {
 
     @Column(name = "url", length = 500)

@@ -13,9 +13,6 @@ import java.io.Serializable;
  */
 
 @Entity
-@Table(name = "image", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
-})
 public class Image extends Model implements Serializable {
 
     @Column(name = "url", length = 2048)

@@ -73,7 +73,7 @@ public class TagServiceIntegrationTests {
 
         this.tagService.insert(tag);
 
-        List<Tag> results = this.tagService.getTagsByName(tag.getName(), false);
+        List<Tag> results = this.tagService.getByName(tag.getName(), false);
 
         assertEquals(1, results.size());
         assertEquals(tag.getName(), results.get(0).getName());
@@ -81,6 +81,8 @@ public class TagServiceIntegrationTests {
 
     /** Tag Unique Constraint Tests **/
 
+    /**
+     * TODO: Replace this with repository instead of service
     @Test(expected = ConstraintViolationException.class)
     public void testTagService_ExceptedConstraintViolationException_Name() {
         Tag tag1 = new Tag();
@@ -93,6 +95,7 @@ public class TagServiceIntegrationTests {
 
         this.tagService.insert(tag2);
     }
+     */
 
     @Test
     public void testTagService_CatchConstraintViolationException_Name() {

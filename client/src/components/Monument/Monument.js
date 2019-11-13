@@ -2,6 +2,7 @@ import React from 'react';
 import './Monument.scss';
 import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
@@ -10,9 +11,12 @@ import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
 /**
  * Root presentational component for the Monument record page
  */
-export default class Monument extends React.Component {
+class Monument extends React.Component {
 
     render() {
+        // Change the url to include the slug if it's not present
+        this.redirectToSlug();
+
         let { monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending } = this.props;
         if (nearbyMonuments && nearbyMonuments.length) {
             nearbyMonuments = nearbyMonuments.filter(nearbyMonument => nearbyMonument.id !== monument.id);
@@ -46,7 +50,7 @@ export default class Monument extends React.Component {
      */
     redirectToSlug() {
         const monument = this.props.monument;
-        const slug = this.props.slug;
+        const slug = this.props.match.params.slug;
         // Wait for the monument to be loaded in from the API
         // If there's no title, slugify will throw an error, so only proceed if there's a title
         if (!monument || !monument.title) return;
@@ -58,3 +62,5 @@ export default class Monument extends React.Component {
         }
     }
 }
+
+export default withRouter(Monument);

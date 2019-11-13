@@ -4,6 +4,7 @@ import searchMonuments from '../../actions/search';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
+import search from '../../utils/search';
 
 /**
  * Root container component for the search page which handles retrieving the search results
@@ -15,10 +16,13 @@ class SearchPage extends React.Component {
 
     constructor(props) {
         super(props);
+        const params = QueryString.parse(this.props.history.location.search);
         this.state = {
-            page: this.getQueryParam('page') || 1,
-            limit: this.getQueryParam('limit') || 25
-        }
+            q: params.q,
+            page: params.page || 1,
+            limit: params.limit || 25,
+            d: params.d || 25
+        };
     }
 
     static mapStateToProps(state) {
@@ -42,51 +46,43 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { page, limit } = this.state;
-        const { monuments, count, pending, location: { search } } = this.props;
-        const { lat, lon } = QueryString.parse(search);
+        const { monuments, count, pending } = this.props;
         return (
             <div className="h-100">
                 <Spinner show={pending}/>
-                <Search monuments={monuments} count={count} page={page} limit={limit} lat={lat} lon={lon}
-                        onLimitChange={this.onLimitChange.bind(this)} onPageChange={this.onPageChange.bind(this)}/>
+                <Search monuments={monuments} {...this.getQueryParams()} count={count}
+                        onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}
+                        onFilterChange={this.handleFilterChange.bind(this)}/>
             </div>
         );
     }
 
-    getQueryParam(param) {
-        let value = this.props.history.location.search.match(new RegExp(`(?<=${param}=)\\d+`));
-        if (value) {
-            try {
-                value = parseInt(value);
-                let state = {};
-                state[param] = value;
-                if (value !== this.state[param]) this.setState(state);
-            } catch (err) {}
-        }
-        return parseInt(value);
+    getQueryParams() {
+        const params = {
+            ...QueryString.parse(this.props.history.location.search, {arrayFormat: 'comma'}),
+            ...this.state
+        };
+        if (params.tags && typeof params.tags === 'string') params.tags = [params.tags];
+        return params;
     }
 
-    async onLimitChange(limit) {
-        await this.setState({limit, page: 1});
-        this.search();
+    handleLimitChange(limit) {
+        this.search({limit, page: 1});
     }
 
-    async onPageChange(page) {
-        await this.setState({page});
-        this.search();
+    handlePageChange(page) {
+        this.search({page});
     }
 
-
-    search() {
-        const { page, limit } = this.state;
-        const { location: { search }, history } = this.props;
-        const queryString = QueryString.stringify({
-            q: QueryString.parse(search).q,
-            page,
-            limit
+    handleFilterChange(filters) {
+        this.search({
+            d: filters.distance
         });
-        history.push(`/search/?${queryString}`);
+    }
+
+    async search(changedState) {
+        await this.setState(changedState);
+        search(this.state, this.props.history);
     }
 }
 

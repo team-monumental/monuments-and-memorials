@@ -65,14 +65,12 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Creates a PostGIS ST_DWithin query on the Monument's point field and adds it to the specified CriteriaQuery
      * @param builder The CriteriaBuilder for the query
-     * @param query The CriteriaQuery
      * @param root The Root associated with the CriteriaQuery
      * @param latitude The latitude of the point to compare to
      * @param longitude The longitude of the point to compare to
      * @param miles - The number of miles from the comparison point to check
      */
-    private Predicate buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude,
-                                   Double longitude, Integer miles) {
+    private Predicate buildDWithinQuery(CriteriaBuilder builder, Root root, Double latitude, Double longitude, Integer miles) {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
         Integer feet = miles * 5280;
 
@@ -100,9 +98,10 @@ public class MonumentService extends ModelService<Monument> {
      * @param query - The CriteriaQuery to add the searching logic to
      * @param root - The Root to use with the CriteriaQuery
      * @param tags - The list of tag names to filter by
+     * @param isMaterial - If true, only materials will be returned. If false, NO materials will be returned
      */
     @SuppressWarnings("unchecked")
-    private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags) {
+    private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags, Boolean isMaterial) {
         // Create a sub-query on the tags table
         Subquery tagQuery = query.subquery(Long.class);
         Root tagRoot = tagQuery.from(Tag.class);
@@ -112,14 +111,26 @@ public class MonumentService extends ModelService<Monument> {
         tagQuery.select(builder.count(tagRoot.get("id")));
         // Where they are related to the monuments
         // and their name is one of the filtered names
-        tagQuery.where(builder.and(
+        tagQuery.where(
+            builder.and(
                 builder.equal(root.get("id"), join.get("id")),
-                tagRoot.get("name").in(tags))
+                builder.and(
+                    tagRoot.get("name").in(tags),
+                    builder.equal(tagRoot.get("isMaterial"), isMaterial)
+                )
+            )
         );
-        // Return the monuments who have at least the correct number of matching tags
-        // If there are duplicate tags in the database then this logic is flawed, but the Tag model should already be
-        // preventing those duplicates
-        return builder.greaterThanOrEqualTo(tagQuery, tags.size());
+        if (isMaterial) {
+            // For materials, return monuments with at least one matching material, since most monuments
+            // will only have one material it wouldn't really be useful to require that they match all the
+            // material search terms
+            return builder.greaterThan(tagQuery, 0);
+        } else {
+            // Return the monuments who have at least the correct number of matching tags
+            // If there are duplicate tags in the database then this logic is flawed, but the Tag model should already be
+            // preventing those duplicates
+            return builder.greaterThanOrEqualTo(tagQuery, tags.size());
+        }
     }
 
     /**
@@ -131,12 +142,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
-     * @param tags - The list of tag names to filter by
+     * @param tags - List of tag names to search by
+     * @param materials - List of material tag names to search by
      */
-    @SuppressWarnings("unchecked")
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double latitude, Double longitude, Integer distance, List<String> tags,
-                                  Boolean orderByResults) {
+                                  List<String> materials, Boolean orderByResults) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -145,11 +156,15 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (latitude != null && longitude != null && distance != null) {
-            predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance));
+            predicates.add(this.buildDWithinQuery(builder, root, latitude, longitude, distance));
         }
 
         if (tags != null && tags.size() > 0) {
-            predicates.add(this.buildTagsQuery(builder, query, root, tags));
+            predicates.add(this.buildTagsQuery(builder, query, root, tags, false));
+        }
+
+        if (materials != null && materials.size() > 0) {
+            predicates.add(this.buildTagsQuery(builder, query, root, materials, true));
         }
 
         switch (predicates.size()) {
@@ -174,17 +189,17 @@ public class MonumentService extends ModelService<Monument> {
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
      * @param tags - List of tag names to search by
+     * @param materials - List of material tag names to search by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
-    @SuppressWarnings("unchecked")
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
-                                 Integer distance, List<String> tags) {
+                                 Integer distance, List<String> tags, List<String> materials) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
 
-        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, true);
+        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, true);
 
         List<Monument> monuments = limit != null
                                         ? page != null
@@ -200,13 +215,14 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Count the total number of results for a Monument search
      */
-    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Integer distance, List<String> tags) {
+    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Integer distance,
+                                      List<String> tags, List<String> materials) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
         query.select(builder.countDistinct(root));
 
-        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, false);
+        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, false);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
@@ -230,7 +246,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         query.where(
-                root.get("id").in(ids)
+            root.get("id").in(ids)
         );
 
         List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);

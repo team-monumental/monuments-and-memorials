@@ -87,7 +87,7 @@ public class CsvMonumentConverter {
 
                     break;
                 case 6: // Material
-                    monument.setMaterial(value);
+                    result.addTag(createTag(value, monument, true));
                     break;
                 case 7: // Inscription
                     monument.setInscription(value);
@@ -119,17 +119,8 @@ public class CsvMonumentConverter {
                         // Split on commas in-case there are more than one Tag in the column
                         String[] tagArray = value.split(",");
 
-                        for (int tagArrayColumnIndex = 0; tagArrayColumnIndex < tagArray.length; tagArrayColumnIndex++) {
-                            Tag newTag = new Tag();
-
-                            String tagValue = tagArray[tagArrayColumnIndex];
-                            // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
-                            tagValue = tagValue.strip();
-                            tagValue = tagValue.substring(0, 1).toUpperCase() + tagValue.substring(1);
-                            newTag.setName(tagValue);
-                            newTag.addMonument(monument);
-
-                            result.addTag(newTag);
+                        for (String tagValue : tagArray) {
+                            result.addTag(createTag(tagValue, monument, false));
                         }
                     }
 
@@ -198,7 +189,7 @@ public class CsvMonumentConverter {
         csvRow += ",";
 
         // Column 5: Material
-        csvRow += convertToCsvCell(monument.getMaterial());
+        csvRow += convertTagsToCsvCell(monument.getMaterials());
 
         csvRow += ",";
 
@@ -351,7 +342,7 @@ public class CsvMonumentConverter {
     }
 
     /**
-     * Converts the specified List of Tags into a CSV formatted cell value
+     * Converts the specified List of Tags (or Materials) into a CSV formatted cell value
      * @param tags - List<Tag> to convert
      * @return String - CSV formatted cell value using the specified List<Tag>
      */
@@ -443,5 +434,17 @@ public class CsvMonumentConverter {
         }
 
         return fileName;
+    }
+
+    private static Tag createTag(String tagValue, Monument monument, boolean isMaterial) {
+        Tag newTag = new Tag();
+
+        // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
+        tagValue = tagValue.strip();
+        tagValue = tagValue.substring(0, 1).toUpperCase() + tagValue.substring(1);
+        newTag.setName(tagValue);
+        newTag.addMonument(monument);
+        newTag.setIsMaterial(isMaterial);
+        return newTag;
     }
 }

@@ -28,7 +28,7 @@ export default class SearchResult extends React.Component {
                             <i className="material-icons">room</i>
                             <span className="location">{[monument.city, monument.state].filter(str => str.trim()).join(', ')}</span>
                         </div>
-                        <Tags tags={monument.tags}/>
+                        <Tags tags={(monument.materials || []).concat(monument.tags || [])}/>
                     </Card.Body>
                 </Card>
             </div>

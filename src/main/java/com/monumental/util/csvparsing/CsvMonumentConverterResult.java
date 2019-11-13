@@ -28,11 +28,41 @@ public class CsvMonumentConverterResult {
     }
 
     public List<Tag> getTags() {
-        return this.tags;
+        if (this.tags == null) return null;
+        List<Tag> tags = new ArrayList<>();
+        for (Tag tag : this.tags) {
+            if (!tag.getIsMaterial()) tags.add(tag);
+        }
+        return tags;
     }
 
     public void setTags(List<Tag> tags) {
-        this.tags = tags;
+        List<Tag> materials = this.getMaterials();
+        if (this.tags != null && materials != null && materials.size() > 0) {
+            materials.addAll(tags);
+            this.tags = materials;
+        } else {
+            this.tags = tags;
+        }
+    }
+
+    public List<Tag> getMaterials() {
+        if (this.tags == null) return null;
+        List<Tag> materials = new ArrayList<>();
+        for (Tag tag : this.tags) {
+            if (tag.getIsMaterial()) materials.add(tag);
+        }
+        return materials;
+    }
+
+    public void setMaterials(List<Tag> materials) {
+        List<Tag> tags = this.getTags();
+        if (this.tags != null && tags != null && tags.size() > 0) {
+            tags.addAll(materials);
+            this.tags = tags;
+        } else {
+            this.tags = materials;
+        }
     }
 
     /**
