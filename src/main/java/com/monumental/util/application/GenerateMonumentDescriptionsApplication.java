@@ -1,10 +1,15 @@
 package com.monumental.util.application;
 
 import com.monumental.models.Monument;
-import com.monumental.services.MonumentService;
-import com.monumental.services.SessionFactoryService;
+import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.csvparsing.CsvFileWriter;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,17 +25,24 @@ import java.util.List;
  * Passes all of the CSV rows to the CsvFileWriter to append to the CSV file
  * Finally, closes the CsvFileWriter
  */
+@Configuration
+@SpringBootApplication
+@ComponentScan("com.monumental")
 public class GenerateMonumentDescriptionsApplication {
     public static void main(String[] args) {
+
+        SpringApplication app = new SpringApplication(GenerateMonumentDescriptionsApplication.class);
+        // Don't start a web server - allows this application to run while the main Application is running
+        app.setWebApplicationType(WebApplicationType.NONE);
+        ConfigurableApplicationContext context = app.run(args);
+
         String pathToCsvFileOutput = "C:\\Users\\nickb\\Documents\\Initial Dataset Descriptions.csv";
 
-        SessionFactoryService sessionFactoryService = new SessionFactoryService();
-        MonumentService monumentService = new MonumentService(sessionFactoryService);
+        MonumentRepository monumentRepository = context.getBean(MonumentRepository.class);
 
         ArrayList<String> csvRows = new ArrayList<>();
 
-        // Passing in true so that the collections are loaded as-well
-        List<Monument> allMonuments = monumentService.getAll(true);
+        List<Monument> allMonuments = monumentRepository.findAll();
         // Sort the Monuments in ascending order by ID
         allMonuments.sort(Comparator.comparing(Monument::getId));
 

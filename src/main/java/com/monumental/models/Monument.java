@@ -11,10 +11,7 @@ import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Model class for both Monuments and Memorials
@@ -78,16 +75,12 @@ public class Monument extends Model implements Serializable {
     }
 
     public Monument(String artist, String title, Date date, String city, String state) {
+        this();
         this.artist = artist;
         this.title = title;
         this.date = date;
         this.city = city;
         this.state = state;
-
-        this.tags = new ArrayList<>();
-        this.images = new ArrayList<>();
-        this.references = new ArrayList<>();
-        this.contributions = new ArrayList<>();
     }
 
     public String getArtist() {
@@ -180,6 +173,7 @@ public class Monument extends Model implements Serializable {
         this.inscription = inscription;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getTags() {
         if (this.tags == null) return null;
         List<Tag> tags = new ArrayList<>();
@@ -187,7 +181,7 @@ public class Monument extends Model implements Serializable {
             for (Tag tag : this.tags) {
                 if (!tag.getIsMaterial()) tags.add(tag);
             }
-        } catch (LazyInitializationException e) {}
+        } catch (LazyInitializationException | NullPointerException e) {}
         return tags;
     }
 
@@ -201,6 +195,7 @@ public class Monument extends Model implements Serializable {
         }
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getMaterials() {
         if (this.tags == null) return null;
         List<Tag> materials = new ArrayList<>();
@@ -208,7 +203,7 @@ public class Monument extends Model implements Serializable {
             for (Tag tag : this.tags) {
                 if (tag.getIsMaterial()) materials.add(tag);
             }
-        } catch (LazyInitializationException e) {}
+        } catch (LazyInitializationException | NullPointerException e) {}
         return materials;
     }
 
@@ -248,7 +243,7 @@ public class Monument extends Model implements Serializable {
 
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
-                + this.date + ", Point: " + this.coordinates.toString()
+                + this.date + ", Point: " + (this.coordinates != null ? this.coordinates.toString() : null)
                 + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
                 + this.description;
     }

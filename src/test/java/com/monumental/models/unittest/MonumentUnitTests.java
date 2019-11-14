@@ -2,7 +2,6 @@ package com.monumental.models.unittest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

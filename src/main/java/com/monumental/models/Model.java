@@ -2,7 +2,9 @@ package com.monumental.models;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class Model extends AbstractAuditable<User, Integer> {
