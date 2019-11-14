@@ -11,10 +11,7 @@ import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Model class for both Monuments and Memorials
@@ -176,6 +173,7 @@ public class Monument extends Model implements Serializable {
         this.inscription = inscription;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getTags() {
         if (this.tags == null) return null;
         List<Tag> tags = new ArrayList<>();
@@ -183,7 +181,7 @@ public class Monument extends Model implements Serializable {
             for (Tag tag : this.tags) {
                 if (!tag.getIsMaterial()) tags.add(tag);
             }
-        } catch (LazyInitializationException e) {}
+        } catch (LazyInitializationException | NullPointerException e) {}
         return tags;
     }
 
@@ -197,6 +195,7 @@ public class Monument extends Model implements Serializable {
         }
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getMaterials() {
         if (this.tags == null) return null;
         List<Tag> materials = new ArrayList<>();
@@ -204,7 +203,7 @@ public class Monument extends Model implements Serializable {
             for (Tag tag : this.tags) {
                 if (tag.getIsMaterial()) materials.add(tag);
             }
-        } catch (LazyInitializationException e) {}
+        } catch (LazyInitializationException | NullPointerException e) {}
         return materials;
     }
 

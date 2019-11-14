@@ -2,33 +2,35 @@ package com.monumental.services;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
+import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Geometry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MonumentService extends ModelService<Monument> {
 
-    // SRID for coordinates
-    // Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
-    // And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
+    @Autowired
+    MonumentRepository monumentRepository;
+
+    /**
+     * SRID for coordinates
+     * Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
+     * And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
+     */
     public static final int coordinateSrid = 4326;
 
-    // SRID for feet
-    // Find more info here: https://epsg.io/2877
-    // And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
+    /**
+     * SRID for feet
+     * Find more info here: https://epsg.io/2877
+     * And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
+     */
     public static final int feetSrid = 2877;
-
-    public MonumentService(SessionFactoryService sessionFactoryService) {
-        super(sessionFactoryService);
-    }
 
     /**
      * Builds a similarity query on the Monument's title, artist and description fields, and adds them to your CriteriaQuery
@@ -233,6 +235,7 @@ public class MonumentService extends ModelService<Monument> {
      *                  but no database update is called
      */
     private void getRelatedRecords(List<Monument> monuments, String fieldName) {
+        System.out.println("getting " + fieldName + " for " + monuments);
         if (monuments.size() == 0) return;
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
@@ -250,6 +253,7 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);
+        System.out.println("results " + monumentsWithRecords);
 
         String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 
@@ -257,6 +261,7 @@ public class MonumentService extends ModelService<Monument> {
         for (Monument monument : monumentsWithRecords) {
             try {
                 map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
+                System.out.println("put " + monument.getId() + " " + map.get(monument.getId()));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 System.err.println("Invalid field name: " + fieldName);
                 System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);

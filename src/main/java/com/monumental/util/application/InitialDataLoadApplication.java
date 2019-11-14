@@ -2,14 +2,14 @@ package com.monumental.util.application;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
-import com.monumental.services.*;
+import com.monumental.repositories.MonumentRepository;
+import com.monumental.services.TagService;
 import com.monumental.util.csvparsing.CsvFileReader;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -33,16 +33,18 @@ import java.util.List;
 public class InitialDataLoadApplication {
 
     public static void main(String[] args) {
+
         SpringApplication app = new SpringApplication(InitialDataLoadApplication.class);
         // Don't start a web server - allows this application to run while the main Application is running
         app.setWebApplicationType(WebApplicationType.NONE);
         ConfigurableApplicationContext context = app.run(args);
-        String pathToDatasetCsv = "/home/monumental/Initial Dataset.csv";
+
+        String pathToDatasetCsv = "/Users/benvogler/Downloads/Initial Dataset.csv";
         String csvRow;
         int rowCount = 0;
         ArrayList<CsvMonumentConverterResult> results = new ArrayList<>();
 
-        MonumentService monumentService = context.getBean(MonumentService.class);
+        MonumentRepository monumentRepository = context.getBean(MonumentRepository.class);
         TagService tagService = context.getBean(TagService.class);
 
         // Create our CsvFileReader, passing it the path to the dataset file
@@ -88,7 +90,7 @@ public class InitialDataLoadApplication {
             for (CsvMonumentConverterResult r : results) {
 
                 // Insert the Monument
-                monumentService.insert(r.getMonument());
+                monumentRepository.save(r.getMonument());
                 monumentInsertedCount++;
 
                 // Insert all of the Tags associated with the Monument

@@ -3,9 +3,7 @@ package com.monumental.services.integrationtest;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.services.MonumentService;
 import com.monumental.repositories.TagRepository;
-import com.monumental.services.TagService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,25 +13,19 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class TagServiceIntegrationTests {
-
-    @Autowired
-    private TagService tagService;
+@Transactional
+public class TagRepositoryIntegrationTests {
 
     @Autowired
     private TagRepository tagRepository;
-
-    @Autowired
-    private MonumentService monumentService;
 
     @Autowired
     private MonumentRepository monumentRepository;
@@ -43,7 +35,6 @@ public class TagServiceIntegrationTests {
      * Tests TagService's getByMonumentId and the underlying ModelService's getByJoinTable
      */
     @Test
-    @Transactional
     public void testTagService_GetByMonumentId() {
         List<Monument> monuments = setupMonumentsAndTags();
         assertEquals(2, monuments.size());
@@ -90,7 +81,7 @@ public class TagServiceIntegrationTests {
         assertEquals(tag.getName(), results.get(0).getName());
     }
 
-    /** Tag Unique Constraint Tests **/
+    /* Tag Unique Constraint Tests **/
 
     /**
      * TODO: Replace this with repository instead of service
@@ -121,7 +112,7 @@ public class TagServiceIntegrationTests {
         try {
             this.tagRepository.save(tag2);
         } catch (ConstraintViolationException e) {
-            assertEquals(1, this.tagService.getAll().size());
+            assertEquals(1, this.tagRepository.findAll().size());
         }
     }
 
@@ -137,9 +128,7 @@ public class TagServiceIntegrationTests {
         monument2.setTitle("Monument 2");
         monument2.setArtist("Artist 2");
 
-        List<Monument> monuments = new ArrayList<>();
-        monumentRepository.saveAll(Arrays.asList(monument1, monument2))
-            .forEach(monuments::add);
+        List<Monument> monuments = monumentRepository.saveAll(Arrays.asList(monument1, monument2));
         monument1 = monuments.get(0);
         monument2 = monuments.get(1);
 
