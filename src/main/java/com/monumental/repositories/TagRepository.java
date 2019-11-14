@@ -1,4 +1,4 @@
-package com.monumental.services;
+package com.monumental.repositories;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;

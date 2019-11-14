@@ -1,7 +1,7 @@
 package com.monumental.controllers;
 
 import com.monumental.models.Tag;
-import com.monumental.services.TagRepository;
+import com.monumental.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

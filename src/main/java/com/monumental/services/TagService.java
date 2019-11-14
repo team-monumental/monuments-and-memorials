@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
+import com.monumental.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

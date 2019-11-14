@@ -2,9 +2,9 @@ package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
-import com.monumental.services.MonumentRepository;
+import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
-import com.monumental.services.TagRepository;
+import com.monumental.repositories.TagRepository;
 import com.monumental.services.TagService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
