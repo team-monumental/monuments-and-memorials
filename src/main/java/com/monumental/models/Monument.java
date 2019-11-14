@@ -243,7 +243,7 @@ public class Monument extends Model implements Serializable {
 
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
-                + this.date + ", Point: " + this.coordinates.toString()
+                + this.date + ", Point: " + (this.coordinates != null ? this.coordinates.toString() : null)
                 + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
                 + this.description;
     }

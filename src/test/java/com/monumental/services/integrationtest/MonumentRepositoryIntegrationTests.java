@@ -228,7 +228,7 @@ public class MonumentRepositoryIntegrationTests {
 
         this.monumentRepository.delete(monument);
 
-        assert(this.monumentRepository.findById(monument.getId()).isPresent());
+        assert(this.monumentRepository.findById(monument.getId()).isEmpty());
     }
 
     /**
@@ -253,7 +253,11 @@ public class MonumentRepositoryIntegrationTests {
         this.monumentRepository.deleteAll(monumentsToDelete);
 
         for (int i = 0; i < 3; i++) {
-            assert (this.monumentRepository.findById(monuments.get(i).getId()).isPresent());
+            // Check that 0 and 2 are deleted, but 1 is not
+            assertEquals(
+                this.monumentRepository.findById(monuments.get(i).getId()).isEmpty(),
+                i != 1
+            );
         }
     }
 
