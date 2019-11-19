@@ -18,7 +18,8 @@ export default class CreateForm extends React.Component {
         this.state = {
             showingAdvancedInformation: false,
             dateSelectValue: 'year',
-            datePickerCurrentDate: new Date()
+            datePickerCurrentDate: new Date(),
+            numberOfReferences: 1
         };
 
         //this.materialsSearch = React.createRef();
@@ -156,7 +157,7 @@ export default class CreateForm extends React.Component {
                           errors,
                           resetForm
                     }) => {
-                        const { dateSelectValue, datePickerCurrentDate } = this.state;
+                        const { dateSelectValue, datePickerCurrentDate, references } = this.state;
                         let dateInput;
 
                         const dateYearInput = (
@@ -384,19 +385,25 @@ export default class CreateForm extends React.Component {
                                         </Form.Group>
 
                                         {/* References */}
-                                        <Form.Group controlId='create-form-references'>
-                                            <Form.Label>References:</Form.Label>
-                                            <Form.Control
-                                                type='url'
-                                                name='references'
-                                                value={values.references}
-                                                placeholder='Reference URL'
-                                                className='text-control'
-                                                isInvalid={touched.references && errors.references}
-                                                onChange={handleChange}
-                                            />
-                                            <Form.Control.Feedback type='invalid'>{errors.references}</Form.Control.Feedback>
-                                        </Form.Group>
+                                        {
+                                            references.map((value, index) => {
+                                                return (
+                                                    <Form.Group controlId={'create-form-references-' + index}>
+                                                        <Form.Label>Reference:</Form.Label>
+                                                        <Form.Control
+                                                            type='url'
+                                                            name='references'
+                                                            value={values.references}
+                                                            placeholder='Reference URL'
+                                                            className='text-control'
+                                                            isInvalid={touched.references && errors.references}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <Form.Control.Feedback type='invalid'>{errors.references}</Form.Control.Feedback>
+                                                    </Form.Group>
+                                                );
+                                            })
+                                        }
                                     </div>
                                 </Collapse>
 
