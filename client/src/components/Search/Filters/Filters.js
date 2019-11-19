@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './Filters.scss';
 import { Form } from 'react-bootstrap';
-import TagsFilter from './TagsFilter/TagsFilter';
+import TagsSearch from '../TagsSearch/TagsSearch';
 
 export default class Filters extends React.Component {
 
@@ -39,8 +39,8 @@ export default class Filters extends React.Component {
             <div className="filters">
                 {distanceFilter}
                 <div className="tags-container">
-                    <TagsFilter variant="tags" tags={tags}/>
-                    <TagsFilter variant="materials" tags={materials}/>
+                    <TagsSearch variant="tags" tags={tags} searchAfterTagSelect={true}/>
+                    <TagsSearch variant="materials" tags={materials} searchAfterTagSelect={true}/>
                 </div>
             </div>
         );
