@@ -96,16 +96,19 @@ export default function fetchMonument(id) {
             dispatch(fetchNearbyMonumentsError(error));
         }
 
-        const tags = res.tags.map(tag => tag.name);
+        const tags = (res.tags || [])
+                    .concat(res.materials || [])
+                    .map(tag => tag.name);
         if (tags.length > 0) {
             queryOptions = {
                 tags: tags,
-                limit: 6
+                limit: 6,
+                monumentId: id
             };
             queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
             dispatch(fetchRelatedMonumentsPending());
             try {
-                const relatedMonuments = await get(`/api/search/monuments/?${queryString}`);
+                const relatedMonuments = await get(`/api/monuments/related/?${queryString}`);
                 dispatch(fetchRelatedMonumentsSuccess(relatedMonuments));
             } catch (error) {
                 dispatch(fetchRelatedMonumentsError(error));
