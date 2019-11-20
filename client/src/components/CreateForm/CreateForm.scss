@@ -135,4 +135,21 @@
       margin-right: 0;
     }
   }
+
+  .references-container {
+    div {
+      padding-bottom: 1rem;
+    }
+
+    .reference-container:last-child {
+      padding-bottom: 0;
+    }
+
+    .add-reference-link {
+      cursor: pointer;
+      color: $primary;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
 }
