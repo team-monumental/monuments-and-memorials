@@ -52,4 +52,10 @@ public class MonumentController {
         this.monumentRepository.save(monument);
         return monument;
     }
-}
+
+    @GetMapping("/api/monuments/related")
+    public List<Monument> getRelatedMonumentsByTags(@RequestParam List<String> tags,
+                                                    @RequestParam Integer monumentId,
+                                                    @RequestParam(required = false, defaultValue = "10") Integer limit) {
+        return this.monumentService.getRelatedMonumentsByTags(tags, monumentId, limit);
+    }}

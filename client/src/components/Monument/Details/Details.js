@@ -42,7 +42,7 @@ export default class Details extends React.Component {
                             <div className="field font-italic"><Address monument={monument}/></div>
                             <div className="field">{monument.description}</div>
                         </div>
-                        <Tags tags={monument.tags}/>
+                        <Tags tags={(monument.materials || []).concat(monument.tags || [])}/>
                     </div>
                 </div>
                 <Gallery images={images}/>

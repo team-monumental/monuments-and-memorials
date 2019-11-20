@@ -6,8 +6,10 @@ import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -235,7 +237,6 @@ public class MonumentService extends ModelService<Monument> {
      *                  but no database update is called
      */
     private void getRelatedRecords(List<Monument> monuments, String fieldName) {
-        System.out.println("getting " + fieldName + " for " + monuments);
         if (monuments.size() == 0) return;
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
@@ -253,7 +254,6 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);
-        System.out.println("results " + monumentsWithRecords);
 
         String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 
@@ -261,7 +261,6 @@ public class MonumentService extends ModelService<Monument> {
         for (Monument monument : monumentsWithRecords) {
             try {
                 map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                System.out.println("put " + monument.getId() + " " + map.get(monument.getId()));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 System.err.println("Invalid field name: " + fieldName);
                 System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
@@ -278,5 +277,21 @@ public class MonumentService extends ModelService<Monument> {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Get up to 10 monuments with the most matching tags/materials
+     * @param tags - The list of tag names to match by
+     * @param monumentId - The id of the monument that is being searched for related monuments of. It will be excluded
+     *                     from results.
+     * @param limit - The number of results to return
+     */
+    public List<Monument> getRelatedMonumentsByTags(List<String> tags, Integer monumentId, Integer limit) {
+        List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit));
+        List<Monument> monuments = new ArrayList<>();
+        for (Tuple result : results) {
+            monuments.add((Monument) result.get(0));
+        }
+        return monuments;
     }
 }
