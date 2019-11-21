@@ -76,18 +76,33 @@ export default class CreateForm extends React.Component {
         this.setState({datePickerCurrentDate: date});
     }
 
-    /*handleAddAnotherReferenceLinkClick() {
-        const currentNumberOfReferences = this.state.numberOfReferences;
-        this.setState({
-            numberOfReferences: (currentNumberOfReferences + 1)
-        });
-    }*/
+    handleAddAnotherReferenceLinkClick() {
+        const newReference = {
+            value: '',
+            isValid: true,
+            message: ''
+        };
+        const {references} = this.state;
+
+        references.push(newReference);
+
+        this.setState({references});
+    }
 
     handleInputChange(event) {
         const currentState = this.state[event.target.name];
         currentState.value = event.target.value;
 
         this.setState({ [event.target.name]: currentState});
+    }
+
+    handleReferenceChange(event) {
+        const currentReferences = this.state.references;
+        const index = parseInt(event.target.name.split('-')[1]);
+
+        currentReferences[index].value = event.target.value;
+
+        this.setState({references: currentReferences});
     }
 
     handleSubmit(event) {
@@ -234,8 +249,8 @@ export default class CreateForm extends React.Component {
     }
 
     render() {
-        const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, numberOfReferences,
-            title, address, latitude, longitude, year, month } = this.state;
+        const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
+            longitude, year, month, references } = this.state;
 
         const advancedInformationLink = (
             <div className='advanced-information-link' onClick={() => this.handleShowAdvancedInformationClick()}>Show Advanced Information</div>
@@ -324,19 +339,23 @@ export default class CreateForm extends React.Component {
 
         const referenceInputs = [];
 
-        for (let i = 0; i < numberOfReferences; i++) {
+        references.forEach((reference, index) => {
             referenceInputs.push(
-                <div className='reference-container'>
+                <div className='reference-container' key={index}>
                     <Form.Label>Reference:</Form.Label>
                     <Form.Control
-                        type='url'
+                        type='text'
+                        name={'reference-' + index}
                         placeholder='Reference URL'
+                        value={reference.value}
+                        onChange={(event) => this.handleReferenceChange(event)}
+                        isInvalid={!reference.isValid}
                         className='text-control'
                     />
-                    <Form.Control.Feedback type='invalid'>Test</Form.Control.Feedback>
+                    <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
                 </div>
             );
-        }
+        });
 
         return (
             <div className='create-form-container'>
