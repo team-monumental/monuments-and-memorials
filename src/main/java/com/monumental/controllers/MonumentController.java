@@ -4,6 +4,7 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,5 +58,9 @@ public class MonumentController {
     public List<Monument> getRelatedMonumentsByTags(@RequestParam List<String> tags,
                                                     @RequestParam Integer monumentId,
                                                     @RequestParam(required = false, defaultValue = "10") Integer limit) {
-        return this.monumentService.getRelatedMonumentsByTags(tags, monumentId, limit);
+        List<Monument> monuments = this.monumentService.getRelatedMonumentsByTags(tags, monumentId, limit);
+        for (Monument monument : monuments) {
+            Hibernate.initialize(monument.getImages());
+        }
+        return monuments;
     }}

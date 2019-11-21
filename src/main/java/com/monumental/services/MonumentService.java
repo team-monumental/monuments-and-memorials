@@ -285,6 +285,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param monumentId - The id of the monument that is being searched for related monuments of. It will be excluded
      *                     from results.
      * @param limit - The number of results to return
+     * @return List<Monument> - The List of Monuments with matching Tags/Materials, ordered by number matching Tags/Materials
      */
     public List<Monument> getRelatedMonumentsByTags(List<String> tags, Integer monumentId, Integer limit) {
         List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit));

@@ -102,7 +102,7 @@ export default function fetchMonument(id) {
         if (tags.length > 0) {
             queryOptions = {
                 tags: tags,
-                limit: 6,
+                limit: 5,
                 monumentId: id
             };
             queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
