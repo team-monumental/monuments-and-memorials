@@ -56,16 +56,15 @@ export default class CreateForm extends React.Component {
                 isValid: true,
                 message: ''
             },
-            references: [reference]
+            references: [reference],
+            images: []
         };
     }
 
-    handleShowAdvancedInformationClick() {
-        this.setState({showingAdvancedInformation: true});
-    }
+    handleAdvancedInformationClick() {
+        const {showingAdvancedInformation} = this.state;
 
-    handleHideAdvancedInformationClick() {
-        this.setState({showingAdvancedInformation: false});
+        this.setState({showingAdvancedInformation: !showingAdvancedInformation});
     }
 
     handleDateSelectChange(event) {
@@ -93,7 +92,7 @@ export default class CreateForm extends React.Component {
         const currentState = this.state[event.target.name];
         currentState.value = event.target.value;
 
-        this.setState({ [event.target.name]: currentState});
+        this.setState({[event.target.name]: currentState});
     }
 
     handleReferenceChange(event) {
@@ -103,6 +102,15 @@ export default class CreateForm extends React.Component {
         currentReferences[index].value = event.target.value;
 
         this.setState({references: currentReferences});
+    }
+
+    handleImageUploaderChange(event, image) {
+        console.log(event);
+        console.log(image);
+        /*const currentImages = this.state.images;
+
+        currentImages.push(image);
+        this.setState({images: currentImages});*/
     }
 
     handleSubmit(event) {
@@ -253,11 +261,11 @@ export default class CreateForm extends React.Component {
             longitude, year, month, references } = this.state;
 
         const advancedInformationLink = (
-            <div className='advanced-information-link' onClick={() => this.handleShowAdvancedInformationClick()}>Show Advanced Information</div>
+            <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Show Advanced Information</div>
         );
 
         const hideAdvancedInformationLink = (
-            <div className='advanced-information-link' onClick={() => this.handleHideAdvancedInformationClick()}>Hide Advanced Information</div>
+            <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Hide Advanced Information</div>
         );
 
         let dateInput;
@@ -445,6 +453,7 @@ export default class CreateForm extends React.Component {
                             fileSizeError='File size is too large'
                             fileTypeError='File type is not supported'
                             withPreview={true}
+                            onChange={(event, image) => this.handleImageUploaderChange(event, image)}
                         />
                     </Form.Group>
 
