@@ -7,6 +7,7 @@ import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
+import NoImageModal from './NoImageModal/NoImageModal';
 
 /**
  * Presentational component for the Form for creating a new Monument
@@ -57,7 +58,9 @@ export default class CreateForm extends React.Component {
                 message: ''
             },
             references: [reference],
-            images: []
+            images: [],
+            imageUploaderKey: 0,
+            showingNoImageModal: false
         };
     }
 
@@ -104,13 +107,8 @@ export default class CreateForm extends React.Component {
         this.setState({references: currentReferences});
     }
 
-    handleImageUploaderChange(event, image) {
-        console.log(event);
-        console.log(image);
-        /*const currentImages = this.state.images;
-
-        currentImages.push(image);
-        this.setState({images: currentImages});*/
+    handleImageUploaderChange(files) {
+        this.setState({images: files});
     }
 
     handleSubmit(event) {
@@ -123,9 +121,15 @@ export default class CreateForm extends React.Component {
         }
     }
 
+    handleCancelButtonClick() {
+        const {onCancelButtonClick} = this.props;
+
+        onCancelButtonClick();
+    }
+
     resetForm(resetValue) {
         const { title, address, latitude, longitude, year, month, references } = this.state;
-        let { datePickerCurrentDate } = this.state;
+        let { datePickerCurrentDate, images, imageUploaderKey } = this.state;
 
         title.isValid = true;
         title.message = '';
@@ -162,13 +166,15 @@ export default class CreateForm extends React.Component {
             year.value = '';
             month.value = '1';
             datePickerCurrentDate = new Date();
+            images = [];
+            imageUploaderKey++;
         }
 
-        this.setState({title, address, latitude, longitude, year, month, datePickerCurrentDate, references});
+        this.setState({title, address, latitude, longitude, year, month, datePickerCurrentDate, references, images, imageUploaderKey});
     }
 
     validateForm() {
-        const { title, address, latitude, longitude, year, month, references } = this.state;
+        const { title, address, latitude, longitude, year, month, references, images } = this.state;
         const currentDate = new Date();
         let formIsValid = true;
 
@@ -249,6 +255,11 @@ export default class CreateForm extends React.Component {
             }
         });
 
+        /* Images Validation */
+        if (!images || !images.size) {
+            console.log('No images feller');
+        }
+
         if (!formIsValid) {
             this.setState({title, address, latitude, longitude, year, month, references});
         }
@@ -258,7 +269,7 @@ export default class CreateForm extends React.Component {
 
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
-            longitude, year, month, references } = this.state;
+            longitude, year, month, references, imageUploaderKey, showingNoImageModal } = this.state;
 
         const advancedInformationLink = (
             <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Show Advanced Information</div>
@@ -453,7 +464,9 @@ export default class CreateForm extends React.Component {
                             fileSizeError='File size is too large'
                             fileTypeError='File type is not supported'
                             withPreview={true}
-                            onChange={(event, image) => this.handleImageUploaderChange(event, image)}
+                            onChange={(files) => this.handleImageUploaderChange(files)}
+                            key={imageUploaderKey}
+                            errorClass='invalid-feedback'
                         />
                     </Form.Group>
 
@@ -556,11 +569,17 @@ export default class CreateForm extends React.Component {
                         <Button
                             variant='danger'
                             type='button'
-                            className='mt-1'>
+                            onClick={() => this.handleCancelButtonClick()}
+                            className='mt-1'
+                        >
                             Cancel
                         </Button>
                     </ButtonToolbar>
                 </Form>
+
+                <div className='no-image-modal-container'>
+                    <NoImageModal showing={showingNoImageModal}/>
+                </div>
             </div>
         );
     }

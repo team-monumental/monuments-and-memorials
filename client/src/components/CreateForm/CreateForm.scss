@@ -116,6 +116,10 @@
         background: $danger;
       }
     }
+
+    .errorMessage {
+      display: block;
+    }
   }
 
   .invalid-feedback {

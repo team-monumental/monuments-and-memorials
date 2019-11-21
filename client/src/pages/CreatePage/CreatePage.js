@@ -12,6 +12,10 @@ class CreatePage extends React.Component {
 
     static mapStateToProps(state) {}
 
+    handleCreateFormCancelButtonClick() {
+        this.props.history.goBack();
+    }
+
     render() {
         return (
             <div className="create-page-container">
@@ -19,7 +23,9 @@ class CreatePage extends React.Component {
                     <ContributionAppreciation/>
                 </div>
                 <div className="column form-column">
-                    <CreateForm/>
+                    <CreateForm
+                        onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
+                    />
                 </div>
             </div>
         );
