@@ -315,7 +315,8 @@ public class MonumentService extends ModelService<Monument> {
         return point;
     }
 
-    public Date createMonumentDate(String year, String month, String exactDate) {
+    public Date createMonumentDate(String year, String month, String day, String exactDate,
+                                   boolean monthAlreadyZeroBased) {
         Date date = null;
 
         if (!isNullOrEmpty(exactDate)) {
@@ -333,8 +334,21 @@ public class MonumentService extends ModelService<Monument> {
 
             if (!isNullOrEmpty(month)) {
                 int monthInt = Integer.parseInt(month);
-                calender.set(yearInt, monthInt, 1);
-                date = calender.getTime();
+
+                if (!monthAlreadyZeroBased) {
+                    monthInt--;
+                }
+
+                if (!isNullOrEmpty(day)) {
+                    int dayInt = Integer.parseInt(day);
+
+                    calender.set(yearInt, monthInt, dayInt);
+                    date = calender.getTime();
+                }
+                else {
+                    calender.set(yearInt, monthInt, 1);
+                    date = calender.getTime();
+                }
             }
             else {
                 calender.set(yearInt, Calendar.JANUARY, 1);

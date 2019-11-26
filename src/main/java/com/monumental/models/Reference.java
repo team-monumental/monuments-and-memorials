@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
+
 /**
  * Model class for a Reference
  * Contains all of the state associated with a Reference along with Getters and Setters for that state
@@ -32,6 +34,10 @@ public class Reference extends Model implements Serializable {
     }
 
     public Reference(String url) {
+        if (isNullOrEmpty(url)) {
+            throw new IllegalArgumentException("URL must not be null or empty");
+        }
+
         this.url = url;
     }
 

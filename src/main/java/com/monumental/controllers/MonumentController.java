@@ -41,11 +41,11 @@ public class MonumentController {
                 monumentRequest.getLongitude());
 
         Date date = this.monumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth(),
-                monumentRequest.getDate());
+                null, monumentRequest.getDate(), true);
 
         // Create a new Monument based on the request values
-        Monument createdMonument = new Monument(monumentRequest.getTitle(), monumentRequest.getAddress(), point, date,
-                monumentRequest.getArtist());
+        Monument createdMonument = new Monument(monumentRequest.getArtist(), monumentRequest.getTitle(), date, null,
+                null, monumentRequest.getAddress(), point);
         List<Monument> createdMonumentList = new ArrayList<>();
         createdMonumentList.add(createdMonument);
 
@@ -68,8 +68,9 @@ public class MonumentController {
 
         if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
             for (String materialName : monumentRequest.getMaterials()) {
-                if (!isNullOrEmpty(materialName)) {
-                    Tag material = this.tagService.createTag(materialName, createdMonumentList, true);
+                Tag material = this.tagService.createTag(materialName, createdMonumentList, true);
+
+                if (material != null) {
                     materials.add(material);
                 }
             }
@@ -80,8 +81,9 @@ public class MonumentController {
 
         if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
             for (String newMaterialName : monumentRequest.getNewMaterials()) {
-                if (!isNullOrEmpty(newMaterialName)) {
-                    Tag newMaterial = this.tagService.createTag(newMaterialName, createdMonumentList, true);
+                Tag newMaterial = this.tagService.createTag(newMaterialName, createdMonumentList, true);
+
+                if (newMaterial != null) {
                     newMaterials.add(newMaterial);
                 }
             }
@@ -92,8 +94,9 @@ public class MonumentController {
 
         if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
             for (String tagName : monumentRequest.getTags()) {
-                if (!isNullOrEmpty(tagName)) {
-                    Tag tag = this.tagService.createTag(tagName, createdMonumentList, false);
+                Tag tag = this.tagService.createTag(tagName, createdMonumentList, false);
+
+                if (tag != null) {
                     tags.add(tag);
                 }
             }
@@ -104,8 +107,9 @@ public class MonumentController {
 
         if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
             for (String newTagName : monumentRequest.getNewTags()) {
-                if (!isNullOrEmpty(newTagName)) {
-                    Tag newTag = this.tagService.createTag(newTagName, createdMonumentList, false);
+                Tag newTag = this.tagService.createTag(newTagName, createdMonumentList, false);
+
+                if (newTag != null) {
                     newTags.add(newTag);
                 }
             }
