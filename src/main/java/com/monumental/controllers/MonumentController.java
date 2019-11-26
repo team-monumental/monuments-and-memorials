@@ -6,6 +6,7 @@ import com.monumental.models.Reference;
 import com.monumental.models.Tag;
 import com.monumental.models.api.CreateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.ReferenceRepository;
 import com.monumental.services.MonumentService;
 import org.hibernate.Hibernate;
 import com.monumental.services.TagService;
@@ -31,37 +32,11 @@ public class MonumentController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private ReferenceRepository referenceRepository;
+
     @PostMapping("/api/monument")
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
-        System.out.println("Title: " + monumentRequest.getTitle());
-        System.out.println("Address: " + monumentRequest.getAddress());
-        System.out.println("Latitude: " + monumentRequest.getLatitude());
-        System.out.println("Longitude: " + monumentRequest.getLongitude());
-        System.out.println("Year: " + monumentRequest.getYear());
-        System.out.println("Month: " + monumentRequest.getMonth());
-        System.out.println("Date: " + monumentRequest.getDate());
-        System.out.println("Artist: " + monumentRequest.getArtist());
-        System.out.println("References:");
-        for (String reference : monumentRequest.getReferences()) {
-            System.out.println("\t" + reference);
-        }
-        System.out.println("Materials:");
-        for (String material : monumentRequest.getMaterials()) {
-            System.out.println("\t" + material);
-        }
-        System.out.println("New Materials:");
-        for (String newMaterial : monumentRequest.getNewMaterials()) {
-            System.out.println("\t" + newMaterial);
-        }
-        System.out.println("Tags:");
-        for (String tag : monumentRequest.getTags()) {
-            System.out.println("\t" + tag);
-        }
-        System.out.println("New Tags:");
-        for (String newTag: monumentRequest.getNewTags()) {
-            System.out.println("\t" + newTag);
-        }
-
         Point point = this.monumentService.createMonumentPoint(monumentRequest.getLongitude(),
                 monumentRequest.getLongitude());
 
@@ -82,6 +57,7 @@ public class MonumentController {
                     Reference reference = new Reference(referenceUrl);
                     references.add(reference);
                     reference.setMonument(createdMonument);
+                    this.referenceRepository.save(reference);
                 }
             }
 
@@ -114,10 +90,31 @@ public class MonumentController {
 
         List<Tag> tags = new ArrayList<>();
 
-        if (monumentRequest.getTags)
+        if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
+            for (String tagName : monumentRequest.getTags()) {
+                if (!isNullOrEmpty(tagName)) {
+                    Tag tag = this.tagService.createTag(tagName, createdMonumentList, false);
+                    tags.add(tag);
+                }
+            }
+        }
+        createdMonument.setTags(tags);
 
-        //this.monumentRepository.save(monument);
-        return null;
+        List<Tag> newTags = new ArrayList<>();
+
+        if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
+            for (String newTagName : monumentRequest.getNewTags()) {
+                if (!isNullOrEmpty(newTagName)) {
+                    Tag newTag = this.tagService.createTag(newTagName, createdMonumentList, false);
+                    newTags.add(newTag);
+                }
+            }
+        }
+        createdMonument.getTags().addAll(newTags);
+
+        this.monumentRepository.save(createdMonument);
+
+        return createdMonument;
     }
 
     @GetMapping("/api/monument/{id}")
