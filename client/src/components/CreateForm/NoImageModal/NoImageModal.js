@@ -1,4 +1,5 @@
 import React from 'react';
+import './NoImageModal.scss';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
@@ -18,6 +19,7 @@ export default class NoImageModal extends React.Component {
                 <Modal.Header closeButton>
                     <Modal.Title>No Images Uploaded</Modal.Title>
                 </Modal.Header>
+                <hr/>
                 <Modal.Body>
                     <p>At Monuments and Memorials, we're trying our best to provide the most informative data on all of our records.</p>
                     <p>As part of this effort, we would really appreciate if you could upload an image of the record you're creating!</p>

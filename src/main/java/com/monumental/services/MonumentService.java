@@ -3,8 +3,10 @@ package com.monumental.services;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.util.string.StringHelper;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,11 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 @Service
 public class MonumentService extends ModelService<Monument> {
@@ -155,7 +161,7 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        if (!StringHelper.isNullOrEmpty(searchQuery)) {
+        if (!isNullOrEmpty(searchQuery)) {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults));
         }
 
@@ -294,5 +300,48 @@ public class MonumentService extends ModelService<Monument> {
             monuments.add((Monument) result.get(0));
         }
         return monuments;
+    }
+
+    public Point createMonumentPoint(Double longitude, Double latitude) {
+        if (longitude == null || latitude == null) {
+            return null;
+        }
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(coordinateSrid);
+
+        return point;
+    }
+
+    public Date createMonumentDate(String year, String month, String exactDate) {
+        Date date = null;
+
+        if (!isNullOrEmpty(exactDate)) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+            try {
+                date = simpleDateFormat.parse(exactDate);
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+        else if (!isNullOrEmpty(year)) {
+            GregorianCalendar calender = new GregorianCalendar();
+            int yearInt = Integer.parseInt(year);
+
+            if (!isNullOrEmpty(month)) {
+                int monthInt = Integer.parseInt(month);
+                calender.set(yearInt, monthInt, 1);
+                date = calender.getTime();
+            }
+            else {
+                calender.set(yearInt, Calendar.JANUARY, 1);
+                date = calender.getTime();
+            }
+        }
+
+        return date;
     }
 }

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import './TagsSearch.scss';
-import { withRouter } from 'react-router-dom';
 import Tags from '../../Tags/Tags';
-import search from '../../../utils/search';
 import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials, clearMaterialSearchResults } from '../../../actions/tagsSearch';
 import { connect } from 'react-redux';
 
@@ -12,7 +10,9 @@ class TagsSearch extends React.Component {
         super(props);
         this.state = {
             searchQuery: '',
-            selectedTags: []
+            selectedTags: [],
+            createdTags: [],
+            createdTagsKey: -1
         };
     }
 
@@ -51,16 +51,44 @@ class TagsSearch extends React.Component {
     }
 
     render() {
-        const { searchQuery, selectedTags } = this.state;
-        const { searchResults, variant } = this.props;
+        const { searchQuery, selectedTags, createdTags, createdTagsKey } = this.state;
+        const { searchResults, variant, className, allowTagCreation } = this.props;
         const visibleSearchResults = searchResults.filter(result => {
             return !selectedTags.find(tag => tag.id === result.id);
         });
 
+        let createNewTagDisplay = (
+          <div/>
+        );
+
+        if (allowTagCreation && searchQuery !== '' && !selectedTags.find(tag => tag.name === searchQuery)
+            && !createdTags.find(tag => tag.name === searchQuery))
+        {
+            const tag = {
+                id: createdTagsKey,
+                name: searchQuery,
+                isMaterial: variant === 'materials',
+                selected: false
+            };
+
+            createNewTagDisplay = (
+                <div className='new-tag-container'>
+                    <p>Create New:</p>
+                    <Tags
+                        selectable
+                        onSelect={(value, tag) => this.handleNewTagSelect(value, tag)}
+                        tags={[tag]}
+                        selectedIcon='clear'
+                    />
+                </div>
+            );
+        }
+
         return (
-            <div className="tags-search">
+            <div className={className !== undefined ? "tags-search " + className : "tags-search"}>
                 <div className="selected-tags">
                     <Tags selectable onSelect={this.handleSelectTag.bind(this)} tags={selectedTags} selectedIcon="clear"/>
+                    <Tags selectable onSelect={this.handleNewTagSelect.bind(this)} tags={createdTags} selectedIcon='clear'/>
                 </div>
                 <div className="search">
                     <input type="text"
@@ -74,6 +102,7 @@ class TagsSearch extends React.Component {
                 </div>
                 <div className="search-results">
                     <Tags selectable onSelect={this.handleSelectTag.bind(this)} tags={visibleSearchResults}/>
+                    {createNewTagDisplay}
                 </div>
             </div>
         );
@@ -81,7 +110,8 @@ class TagsSearch extends React.Component {
 
     async handleSelectTag(value, tag) {
         let { selectedTags } = this.state;
-        const { searchAfterTagSelect } = this.props;
+        const { createdTags } = this.state;
+        const { variant, onChange } = this.props;
         // If the tag is being selected, add it to the selected tags and sort them alphabetically
         if (value) {
             tag.selected = true;
@@ -98,10 +128,31 @@ class TagsSearch extends React.Component {
 
         await this.setState({selectedTags});
 
-        // After the selectedTags is updated, update the search results for monuments on the page
-        if (searchAfterTagSelect) {
-            this.searchMonuments();
+        onChange(variant, selectedTags, createdTags);
+    }
+
+    async handleNewTagSelect(value, tag) {
+        let { createdTags, createdTagsKey } = this.state;
+        const { selectedTags } = this.state;
+        const { variant, onChange } = this.props;
+
+        if (value) {
+            tag.selected = true;
+            createdTags.push(tag);
+            createdTags = createdTags.sort();
+            createdTagsKey--;
         }
+        else {
+            const index = createdTags.findIndex(t => t.name === tag.name);
+            if (index >= 0) {
+                [ tag ] = createdTags.splice(index, 1);
+                tag.selected = false;
+            }
+        }
+
+        await this.setState({createdTags, createdTagsKey});
+
+        onChange(variant, selectedTags, createdTags);
     }
 
     async handleSearchChange(value) {
@@ -120,6 +171,10 @@ class TagsSearch extends React.Component {
         this.setState({searchQuery: ''});
     }
 
+    handleSelectedTagsClear() {
+        this.setState({selectedTags: []});
+    }
+
     searchTags() {
         const { dispatch, variant } = this.props;
         const { searchQuery } = this.state;
@@ -133,12 +188,6 @@ class TagsSearch extends React.Component {
         if (variant === 'materials') dispatch(loadMaterials(tags));
         else dispatch(loadTags(tags));
     }
-
-    searchMonuments() {
-        const params = {};
-        params[this.props.variant] = this.state.selectedTags.map(tag => tag.name);
-        search(params, this.props.history);
-    }
 }
 
-export default connect(TagsSearch.mapStateToProps)(withRouter(TagsSearch));
+export default connect(TagsSearch.mapStateToProps, null, null, {forwardRef: true})(TagsSearch);

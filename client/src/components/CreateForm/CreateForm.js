@@ -57,15 +57,31 @@ export default class CreateForm extends React.Component {
                 isValid: true,
                 message: ''
             },
+            artist: {
+                value: '',
+                isValid: true,
+                message: ''
+            },
             references: [reference],
             images: [],
             imageUploaderKey: 0,
-            showingNoImageModal: false
+            showingNoImageModal: false,
+            materials: {
+                materialObjects: [],
+                isValid: true,
+                message: ''
+            },
+            newMaterials: [],
+            tags: [],
+            newTags: []
         };
+
+        this.materialsSelectRef = React.createRef();
+        this.tagsSelectRef = React.createRef();
     }
 
     handleAdvancedInformationClick() {
-        const {showingAdvancedInformation} = this.state;
+        const { showingAdvancedInformation } = this.state;
 
         this.setState({showingAdvancedInformation: !showingAdvancedInformation});
     }
@@ -84,7 +100,7 @@ export default class CreateForm extends React.Component {
             isValid: true,
             message: ''
         };
-        const {references} = this.state;
+        const { references } = this.state;
 
         references.push(newReference);
 
@@ -111,25 +127,52 @@ export default class CreateForm extends React.Component {
         this.setState({images: files});
     }
 
+    handleCancelButtonClick() {
+        const { onCancelButtonClick } = this.props;
+
+        onCancelButtonClick();
+    }
+
+    handleNoImageModalClose() {
+        this.setState({showingNoImageModal: false});
+    }
+
+    handleNoImageModalContinue() {
+        this.setState({showingNoImageModal: false});
+        this.submitForm();
+    }
+
+    handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
+        const { materials } = this.state;
+        let { newMaterials } = this.state;
+
+        materials.materialObjects = selectedMaterials;
+        newMaterials = createdMaterials;
+        this.setState({materials, newMaterials});
+    }
+
+    handleTagSelect(variant, selectedTags, createdTags) {
+        this.setState({tags: selectedTags, newTags: createdTags});
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
         this.resetForm(false);
 
         if (this.validateForm()) {
-            console.log('Valid form!');
+            if (!this.validateImages()) {
+                this.setState({showingNoImageModal: true});
+            }
+            else {
+                this.submitForm();
+            }
         }
     }
 
-    handleCancelButtonClick() {
-        const {onCancelButtonClick} = this.props;
-
-        onCancelButtonClick();
-    }
-
     resetForm(resetValue) {
-        const { title, address, latitude, longitude, year, month, references } = this.state;
-        let { datePickerCurrentDate, images, imageUploaderKey } = this.state;
+        const { title, address, latitude, longitude, year, month, artist, references } = this.state;
+        let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
 
         title.isValid = true;
         title.message = '';
@@ -149,6 +192,9 @@ export default class CreateForm extends React.Component {
         month.isValid = true;
         month.message = '';
 
+        artist.isValid = true;
+        artist.message = '';
+
         references.forEach(reference => {
             reference.isValid = true;
             reference.message = '';
@@ -158,6 +204,9 @@ export default class CreateForm extends React.Component {
             }
         });
 
+        materials.isValid = true;
+        materials.message = '';
+
         if (resetValue) {
             title.value = '';
             address.value = '';
@@ -165,16 +214,26 @@ export default class CreateForm extends React.Component {
             longitude.value = '';
             year.value = '';
             month.value = '1';
+            artist.value = '';
             datePickerCurrentDate = new Date();
             images = [];
             imageUploaderKey++;
+            materials.materialObjects = [];
+            newMaterials = [];
+            this.materialsSelectRef.current.handleClear();
+            this.materialsSelectRef.current.handleSelectedTagsClear();
+            tags = [];
+            newTags = [];
+            this.tagsSelectRef.current.handleClear();
+            this.tagsSelectRef.current.handleSelectedTagsClear();
         }
 
-        this.setState({title, address, latitude, longitude, year, month, datePickerCurrentDate, references, images, imageUploaderKey});
+        this.setState({title, address, latitude, longitude, year, month, artist, datePickerCurrentDate, references,
+            images, imageUploaderKey, materials, newMaterials, tags, newTags});
     }
 
     validateForm() {
-        const { title, address, latitude, longitude, year, month, references, images } = this.state;
+        const { title, address, latitude, longitude, year, month, references, materials, newMaterials } = this.state;
         const currentDate = new Date();
         let formIsValid = true;
 
@@ -182,6 +241,15 @@ export default class CreateForm extends React.Component {
         if (validator.isEmpty(title.value)) {
             title.isValid = false;
             title.message = 'Title is required';
+            formIsValid = false;
+        }
+
+        /* Materials Validation */
+        if ((!materials.materialObjects || !materials.materialObjects.length)
+            && (!newMaterials || !newMaterials.length))
+        {
+            materials.isValid = false;
+            materials.message = 'At least one Material is required';
             formIsValid = false;
         }
 
@@ -255,11 +323,6 @@ export default class CreateForm extends React.Component {
             }
         });
 
-        /* Images Validation */
-        if (!images || !images.size) {
-            console.log('No images feller');
-        }
-
         if (!formIsValid) {
             this.setState({title, address, latitude, longitude, year, month, references});
         }
@@ -267,9 +330,54 @@ export default class CreateForm extends React.Component {
         return formIsValid;
     }
 
+    validateImages() {
+        const { images } = this.state;
+
+        if (!images || !images.length) {
+            return false;
+        }
+    }
+
+    submitForm() {
+        const { title, address, latitude, longitude, dateSelectValue, year, month, artist,
+            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
+        const { onSubmit } = this.props;
+
+        let form = {
+            title: title.value,
+            address: address.value === '' ? null : address.value,
+            latitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
+            longitude: (latitude.value === '' && longitude.value === '') ? null : longitude.value,
+            artist: artist.value === '' ? null : artist.value,
+            references: references.map(reference => reference.value),
+            images: images,
+            materials: materials.materialObjects.map(material => material.name),
+            newMaterials: newMaterials,
+            tags: tags,
+            newTags: newTags
+        };
+
+        switch (dateSelectValue) {
+            case 'year':
+                form.year = year.value === '' ? null : year.value;
+                break;
+            case 'month-year':
+                form.year = year.value === '' ? null : year.value;
+                form.month = month.value;
+                break;
+            case 'exact-date':
+                form.date = datePickerCurrentDate;
+                break;
+            default:
+                break;
+        }
+
+        onSubmit(form);
+    }
+
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
-            longitude, year, month, references, imageUploaderKey, showingNoImageModal } = this.state;
+            longitude, year, month, artist, references, imageUploaderKey, showingNoImageModal, materials } = this.state;
 
         const advancedInformationLink = (
             <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Show Advanced Information</div>
@@ -376,6 +484,10 @@ export default class CreateForm extends React.Component {
             );
         });
 
+        const invalidMaterials = (
+            <div className='invalid-feedback materials'>{materials.message}</div>
+        );
+
         return (
             <div className='create-form-container'>
                 <div className='h5'>
@@ -403,9 +515,13 @@ export default class CreateForm extends React.Component {
                         <Form.Label>Materials:</Form.Label>
                         <TagsSearch
                             variant='materials'
-                            searchAfterTagSelect={false}
+                            onChange={(variant, selectedMaterials, createdMaterials) =>
+                                this.handleMaterialSelect(variant, selectedMaterials, createdMaterials)}
+                            allowTagCreation={true}
+                            className={materials.isValid ? undefined : 'is-invalid'}
+                            ref={this.materialsSelectRef}
                         />
-                        <Form.Control.Feedback type='invalid'>Test</Form.Control.Feedback>
+                        {!materials.isValid && invalidMaterials}
                     </Form.Group>
 
                     <div className='address-coordinates-container'>
@@ -477,10 +593,14 @@ export default class CreateForm extends React.Component {
                                 <Form.Label>Artist:</Form.Label>
                                 <Form.Control
                                     type='text'
+                                    name='artist'
                                     placeholder='Artist'
+                                    value={artist.value}
+                                    onChange={(event) => this.handleInputChange(event)}
+                                    isInvalid={!artist.isValid}
                                     className='text-control'
                                 />
-                                <Form.Control.Feedback type='invalid'>Test</Form.Control.Feedback>
+                                <Form.Control.Feedback type='invalid'>{artist.message}</Form.Control.Feedback>
                             </Form.Group>
 
                             <div className='date-container'>
@@ -531,7 +651,10 @@ export default class CreateForm extends React.Component {
                                 <Form.Label>Tags:</Form.Label>
                                 <TagsSearch
                                     variant='tags'
-                                    searchAfterTagSelect={false}
+                                    onChange={(variant, selectedTags, createdTags) =>
+                                        this.handleTagSelect(variant, selectedTags, createdTags)}
+                                    allowTagCreation={true}
+                                    ref={this.tagsSelectRef}
                                 />
                             </Form.Group>
 
@@ -578,7 +701,12 @@ export default class CreateForm extends React.Component {
                 </Form>
 
                 <div className='no-image-modal-container'>
-                    <NoImageModal showing={showingNoImageModal}/>
+                    <NoImageModal
+                        showing={showingNoImageModal}
+                        onClose={() => this.handleNoImageModalClose()}
+                        onCancel={() => this.handleNoImageModalClose()}
+                        onContinue={() => this.handleNoImageModalContinue()}
+                    />
                 </div>
             </div>
         );

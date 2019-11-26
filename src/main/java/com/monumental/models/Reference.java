@@ -31,6 +31,10 @@ public class Reference extends Model implements Serializable {
 
     }
 
+    public Reference(String url) {
+        this.url = url;
+    }
+
     public String getUrl() {
         return this.url;
     }

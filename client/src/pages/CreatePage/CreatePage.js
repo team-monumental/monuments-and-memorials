@@ -4,16 +4,24 @@ import { connect } from 'react-redux';
 
 import CreateForm from '../../components/CreateForm/CreateForm';
 import ContributionAppreciation from "../../components/CreateForm/ContributionAppreciation/ContributionAppreciation";
+import createMonument from "../../actions/create";
 
 /**
  * Root container for the create a new Monument page
  */
 class CreatePage extends React.Component {
 
-    static mapStateToProps(state) {}
+    static mapStateToProps(state) {
+        return state.createPage;
+    }
 
     handleCreateFormCancelButtonClick() {
         this.props.history.goBack();
+    }
+
+    handleCreateFormSubmit(form) {
+        const { dispatch } = this.props;
+        dispatch(createMonument(form));
     }
 
     render() {
@@ -25,6 +33,7 @@ class CreatePage extends React.Component {
                 <div className="column form-column">
                     <CreateForm
                         onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
+                        onSubmit={(form) => this.handleCreateFormSubmit(form)}
                     />
                 </div>
             </div>
