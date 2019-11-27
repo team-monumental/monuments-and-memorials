@@ -30,12 +30,10 @@ public class TagRepositoryIntegrationTests {
     @Autowired
     private MonumentRepository monumentRepository;
 
+    /* getAllByMonumentId Tests */
 
-    /**
-     * Tests TagService's getByMonumentId and the underlying ModelService's getByJoinTable
-     */
     @Test
-    public void testTagService_GetByMonumentId() {
+    public void testTagRepository_getAllByMonumentId() {
         List<Monument> monuments = setupMonumentsAndTags();
         assertEquals(2, monuments.size());
 
@@ -66,10 +64,10 @@ public class TagRepositoryIntegrationTests {
         assert(hasMonument);
     }
 
-    /** getTagsByName Tests **/
+    /** getAllByName Tests **/
 
     @Test
-    public void testTagService_getTagsByName_SingleRecordReturned() {
+    public void testTagRepository_getAllByName_SingleRecordReturned() {
         Tag tag = new Tag();
         tag.setName("Tag");
 
@@ -97,7 +95,7 @@ public class TagRepositoryIntegrationTests {
 
         this.tagService.insert(tag2);
     }
-     */
+
 
     @Test
     public void testTagService_CatchConstraintViolationException_Name() {
@@ -114,7 +112,7 @@ public class TagRepositoryIntegrationTests {
         } catch (ConstraintViolationException e) {
             assertEquals(1, this.tagRepository.findAll().size());
         }
-    }
+    } */
 
     /**
      * Helper that sets up 2 Monuments and 2 Tags, with 1 Tags related to both Monuments

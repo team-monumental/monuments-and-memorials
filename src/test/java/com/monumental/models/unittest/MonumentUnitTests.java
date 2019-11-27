@@ -164,8 +164,6 @@ public class MonumentUnitTests {
         assertTrue(violationMessages.contains("Title can not be null"));
     }
 
-    /**
-     * TODO: This no longer works due to switching Model to use AbstractAuditable
     @Test
     public void testMonument_validate_New_NotNullId_NotNullTitle() {
         Monument monument = new Monument();
@@ -196,10 +194,7 @@ public class MonumentUnitTests {
      assertEquals(1, violationMessages.size());
      assertTrue(violationMessages.contains("ID can not be null on update"));
      }
-     */
 
-    /**
-     * TODO: Replace this with repositories instead of services
     @Test
     public void testMonument_validate_New_NotNullTitle() {
         Monument monument = new Monument();
@@ -213,7 +208,6 @@ public class MonumentUnitTests {
 
         assertTrue(violationMessages.isEmpty());
     }
-     */
 
     @Test
     public void testMonument_validate_Existing_NotNullId_NullTitle() {

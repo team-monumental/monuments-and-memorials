@@ -1,7 +1,9 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
+import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.TagRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -31,270 +31,258 @@ public class MonumentRepositoryIntegrationTests {
     @Autowired
     private MonumentRepository monumentRepository;
 
-    /* save Tests **/
+    @Autowired
+    private TagRepository tagRepository;
 
-    /**
-     * Test method for integration testing MonumentRepository.save(record)
-     * Checks that the returned result from the save is not null, meaning it was saved correctly
-     */
+    /* getAllByTagId Tests */
+
     @Test
-    public void testMonumentRepository_save() {
-        Monument monument = makeTestMonument();
+    public void testMonumentRepository_getAllByTagId_OneMonument_OneTag() {
+        Monument monument = this.makeTestMonument("Monument 1");
+        Tag tag = this.makeTestTag("Tag 1");
 
-        monument = this.monumentRepository.save(monument);
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
 
-        assertNotNull(monument.getId());
-    }
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
 
-    /**
-     * Test method for integration testing MonumentRepository.saveAll(List<record>)
-     * Checks that the number of returned results is 3 and that each is not null, meaning they were all saved
-     * correctly
-     */
-    @Test
-    public void testMonumentRepository_saveAll() {
-        List<Monument> monuments = makeTestMonuments();
-
-        List<Monument> results = this.monumentRepository.saveAll(monuments);
-
-        assertEquals(3, results.size());
-
-        for (Monument result : results) {
-            assertNotNull(result.getId());
-        }
-    }
-
-    /* get Tests **/
-
-    /**
-     * Test method for integration testing MonumentRepository.get(record)
-     * First saves a record into the database then performs a get to verify the records are the same
-     */
-    @Test
-    public void testMonumentRepository_get_Single() {
-        Monument monument = makeTestMonument();
+        monument.setTags(tags);
+        tag.setMonuments(monuments);
 
         this.monumentRepository.save(monument);
-        Optional<Monument> updatedMonument = this.monumentRepository.findById(monument.getId());
+        Integer tagId = this.tagRepository.save(tag).getId();
 
-        assert(updatedMonument.isPresent());
-        assertEquals(updatedMonument.get().getTitle(), updatedMonument.get().getTitle());
-        assertEquals(updatedMonument.get().getArtist(), updatedMonument.get().getArtist());
+        List<Monument> results = this.monumentRepository.getAllByTagId(tagId);
+
+        assertEquals(1, results.size());
+
+        Monument result = results.get(0);
+
+        assertEquals(monument.getTitle(), result.getTitle());
     }
 
-    /**
-     * Test method for integration testing MonumentRepository.getAll(List<record>)
-     * First saves 3 records into the database then performs a get for only 2 of the records
-     * Checks that only 2 records are returned and that they have the expected attributes
-     */
     @Test
-    public void testMonumentRepository_getAll_ListPassed() {
-        ArrayList<Monument> monuments = makeTestMonuments();
+    public void testMonumentRepository_getAllByTagId_OneMonument_NoTags() {
+        Monument monument = this.makeTestMonument("Monument 1");
 
-        this.monumentRepository.saveAll(monuments);
+        this.monumentRepository.save(monument);
 
-        ArrayList<Integer> idsToGet = new ArrayList<>();
-        idsToGet.add(1);
-        idsToGet.add(3);
+        List<Monument> results = this.monumentRepository.getAllByTagId(1);
 
-        HashMap<Integer, Monument> monumentsById = new HashMap<>();
-        monumentsById.put(1, monuments.get(0));
-        monumentsById.put(3, monuments.get(2));
+        assertEquals(0, results.size());
+    }
 
-        List<Monument> results = this.monumentRepository.findAllById(idsToGet);
+    @Test
+    public void testMonumentRepository_getAllByTagId_NoMonument_OneTag() {
+        Tag tag = this.makeTestTag("Tag 1");
 
-        assertEquals(2, results.size());
+        Integer tagId = this.tagRepository.save(tag).getId();
 
-        for (Monument result : results) {
-            Monument monument = monumentsById.get(result.getId());
+        List<Monument> results = this.monumentRepository.getAllByTagId(tagId);
+
+        assertEquals(0, results.size());
+    }
+
+    @Test
+    public void testMonumentRepository_getAllByTagId_OneMonument_ThreeTags() {
+        Monument monument = this.makeTestMonument("Monument 1");
+        List<Tag> tags = this.makeTestTags();
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        monument.setTags(tags);
+
+        for (Tag tag : tags) {
+            tag.setMonuments(monuments);
+        }
+
+        this.monumentRepository.save(monument);
+        List<Tag> savedTags = this.tagRepository.saveAll(tags);
+
+        List<Integer> savedTagIds = new ArrayList<>();
+        for (Tag tag : savedTags) {
+            savedTagIds.add(tag.getId());
+        }
+
+        for (Integer savedTagId : savedTagIds) {
+            List<Monument> results = this.monumentRepository.getAllByTagId(savedTagId);
+
+            assertEquals(1, results.size());
+
+            Monument result = results.get(0);
 
             assertEquals(monument.getTitle(), result.getTitle());
-            assertEquals(monument.getArtist(), result.getArtist());
         }
     }
 
-    /* getAll Tests **/
-
-    /**
-     * Test method for integration testing MonumentRepository.getAll(null)
-     * First saves 3 records into the database then performs a getAll for all 3 records
-     * Checks that 3 records are returned and that they have the expected attributes
-     */
     @Test
-    public void testMonumentRepository_getAll_NullPassed() {
-        ArrayList<Monument> monuments = makeTestMonuments();
+    public void testMonumentRepository_getAllByTagId_ThreeMonuments_OneTag() {
+        List<Monument> monuments = this.makeTestMonuments();
+        Tag tag = this.makeTestTag("Tag 1");
+
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+
+        for (Monument monument : monuments) {
+            monument.setTags(tags);
+        }
+
+        tag.setMonuments(monuments);
 
         this.monumentRepository.saveAll(monuments);
+        Integer tagId = this.tagRepository.save(tag).getId();
 
-        HashMap<Integer, Monument> monumentsById = new HashMap<>();
-        monumentsById.put(1, monuments.get(0));
-        monumentsById.put(2, monuments.get(1));
-        monumentsById.put(3, monuments.get(2));
-
-        List<Monument> results = this.monumentRepository.findAll();
+        List<Monument> results = this.monumentRepository.getAllByTagId(tagId);
 
         assertEquals(3, results.size());
 
-        for (Monument result : results) {
-            Monument monument = monumentsById.get(result.getId());
-
-            assertEquals(monument.getTitle(), result.getTitle());
-            assertEquals(monument.getArtist(), result.getArtist());
-        }
-    }
-
-    /* update Tests **/
-
-    /**
-     * Test method for integration testing MonumentRepository.update(record)
-     * First saves a record into the database then does a get to retrieve it
-     * Then, changes some of the attributes on the record before calling update
-     * Finally, it does another get for the record and checks to make sure the changes were persisted
-     */
-    @Test
-    public void testMonumentRepository_update_Single() {
-        Monument monument = makeTestMonument();
-
-        Monument result = this.monumentRepository.save(monument);
-
-        Optional<Monument> optional = this.monumentRepository.findById(result.getId());
-        assert(optional.isPresent());
-        Monument storedMonument = optional.get();
-
-        storedMonument.setTitle("Monument 2");
-        storedMonument.setArtist("Artist 2");
-
-        this.monumentRepository.save(storedMonument);
-
-        optional = this.monumentRepository.findById(result.getId());
-        assert(optional.isPresent());
-        result = optional.get();
-
-        assertEquals(storedMonument.getTitle(), result.getTitle());
-        assertEquals(storedMonument.getArtist(), result.getArtist());
-    }
-
-    /**
-     * Test method for integration testing MonumentRepository.update(List<record>)
-     * First saves 3 records into the database then does a get to retrieve them
-     * Then, changes some of the attributes on the records before doing an update
-     * Finally, it does another get for the records and checks to make sure the changes were persisted
-     */
-    @Test
-    public void testMonumentRepository_update_Multiple() {
-        List<Monument> monuments = makeTestMonuments();
-
-        List<Monument> storedMonuments = this.monumentRepository.saveAll(monuments);
-
-        HashMap<Integer, Monument> monumentsById = new HashMap<>();
-
-        for (Monument storedMonument : storedMonuments) {
-            if (storedMonument.getId() == 1) {
-                storedMonument.setTitle("Stored Monument 1");
-                storedMonument.setArtist("Stored Artist 1");
-            }
-            else if (storedMonument.getId() == 3) {
-                storedMonument.setTitle("Stored Monument 3");
-            }
-
-            monumentsById.put(storedMonument.getId(), storedMonument);
-        }
-
-        List<Monument> results = this.monumentRepository.saveAll(storedMonuments);
+        List<String> monumentTitles = new ArrayList<>();
+        monumentTitles.add("Monument 1");
+        monumentTitles.add("Monument 2");
+        monumentTitles.add("Monument 3");
 
         for (Monument result : results) {
-            Monument monument = monumentsById.get(result.getId());
-
-            assertEquals(monument.getTitle(), result.getTitle());
-            assertEquals(monument.getArtist(), result.getArtist());
+            assertTrue(monumentTitles.contains(result.getTitle()));
         }
     }
 
-    /* delete Tests **/
-
-    /**
-     * Test method for integration testing MonumentRepository.delete(id)
-     * First, does an insert to insert a single record into the database
-     * Then, does a get for that record and checks to make sure it was saved properly
-     * Finally, does a delete and checks that another get returns null
-     */
     @Test
-    public void testMonumentRepository_delete_Single() {
-        Monument monument = makeTestMonument();
+    public void testMonumentRepository_getAllByTagId_VariousMonuments_VariousTags() {
+        List<Monument> monuments = this.makeTestMonuments();
+        Monument monument1 = monuments.get(0);
+        Monument monument2 = monuments.get(1);
+        Monument monument3 = monuments.get(2);
 
-        monument = this.monumentRepository.save(monument);
+        List<Tag> tags = this.makeTestTags();
+        Tag tag1 = tags.get(0);
+        Tag tag2 = tags.get(1);
+        Tag tag3 = tags.get(2);
 
-        assert(this.monumentRepository.findById(monument.getId()).isPresent());
+        // Monument 1 gets all of the Tags
+        monument1.setTags(tags);
 
-        this.monumentRepository.delete(monument);
+        // Monument 2 gets none of the Tags
 
-        assert(this.monumentRepository.findById(monument.getId()).isEmpty());
+        // Monument 3 gets Tag 2
+        List<Tag> monument3Tags = new ArrayList<>();
+        monument3Tags.add(tag2);
+
+        monument3.setTags(monument3Tags);
+
+        // Tag 1 gets Monument 1
+        List<Monument> tag1Monuments = new ArrayList<>();
+        tag1Monuments.add(monument1);
+
+        tag1.setMonuments(tag1Monuments);
+
+        // Tag 2 gets Monument 1 and Monument 3
+        List<Monument> tag2Monuments = new ArrayList<>();
+        tag2Monuments.add(monument1);
+        tag2Monuments.add(monument3);
+
+        tag2.setMonuments(tag2Monuments);
+
+        // Tag 3 gets Monument 1
+        tag3.setMonuments(tag1Monuments);
+
+        this.monumentRepository.saveAll(monuments);
+        List<Tag> savedTags = this.tagRepository.saveAll(tags);
+
+        List<Integer> savedTagIds = new ArrayList<>();
+
+        for (Tag savedTag : savedTags) {
+            savedTagIds.add(savedTag.getId());
+        }
+
+        for (Integer savedTagId : savedTagIds) {
+            // If Tag is ID 4, should return Monument 1
+            if (savedTagId == 4) {
+                List<Monument> results = this.monumentRepository.getAllByTagId(savedTagId);
+
+                assertEquals(1, results.size());
+
+                Monument result = results.get(0);
+
+                assertEquals(monument1.getTitle(), result.getTitle());
+            }
+            // If Tag is ID 5, should return Monument 1 and Monument 3
+            else if (savedTagId == 5) {
+                List<Monument> results = this.monumentRepository.getAllByTagId(savedTagId);
+
+                assertEquals(2, results.size());
+
+                List<String> resultTitles = new ArrayList<>();
+
+                for (Monument result : results) {
+                    resultTitles.add(result.getTitle());
+                }
+
+                assertTrue(resultTitles.contains(monument1.getTitle()));
+                assertTrue(resultTitles.contains(monument3.getTitle()));
+            }
+            // If Tag is ID 6, should only return Monument 1
+            else {
+                List<Monument> results = this.monumentRepository.getAllByTagId(savedTagId);
+
+                assertEquals(1, results.size());
+
+                Monument result = results.get(0);
+
+                assertEquals(monument1.getTitle(), result.getTitle());
+            }
+        }
     }
 
     /**
-     * Test method for integration testing MonumentRepository.delete(ids)
-     * First, saves 3 records into the database and does a getAll to check that they were all saved properly
-     * Then, does a delete followed by another getAll to check that the returned results are null or not null as expected
+     * Helper function to create a test Monument object
+     * @return Monument - Test Monument object
      */
-    @Test
-    public void testMonumentRepository_delete_Multiple() {
-        List<Monument> monuments = makeTestMonuments();
-
-        monuments = this.monumentRepository.saveAll(monuments);
-
-        for (Monument storedMonument : this.monumentRepository.findAll()) {
-            assertNotNull(storedMonument);
-        }
-
-        List<Monument> monumentsToDelete = new ArrayList<>();
-        monumentsToDelete.add(monuments.get(0));
-        monumentsToDelete.add(monuments.get(2));
-
-        this.monumentRepository.deleteAll(monumentsToDelete);
-
-        for (int i = 0; i < 3; i++) {
-            // Check that 0 and 2 are deleted, but 1 is not
-            assertEquals(
-                this.monumentRepository.findById(monuments.get(i).getId()).isEmpty(),
-                i != 1
-            );
-        }
-    }
-
-    /**
-     * Helper function to make a test Monument
-     * @return Monument - the test Monument
-     */
-    private Monument makeTestMonument() {
+    private Monument makeTestMonument(String name) {
         Monument monument = new Monument();
-        monument.setTitle("Monument");
-        monument.setArtist("Artist");
+        monument.setTitle(name);
 
         return monument;
     }
 
     /**
-     * Helper function to make 3 test Monuments and return them in an ArrayList
-     * @return ArrayList<Monument> - the ArrayList of test Monuments
+     * Helper function to create a test Tag object with the specified name
+     * @param name - String for the name of the Tag
+     * @return Tag - Test Tag object with the specified name
      */
-    private ArrayList<Monument> makeTestMonuments() {
-        Monument monument1 = new Monument();
-        monument1.setTitle("Monument 1");
-        monument1.setArtist("Artist 1");
+    private Tag makeTestTag(String name) {
+        Tag tag = new Tag();
+        tag.setName(name);
 
-        Monument monument2 = new Monument();
-        monument2.setTitle("Monument 2");
-        monument2.setArtist("Artist 2");
+        return tag;
+    }
 
-        Monument monument3 = new Monument();
-        monument3.setTitle("Monument 3");
-        monument3.setArtist("Artist 3");
+    /**
+     * Helper function to create a List of Monument objects
+     * @return List<Monument> - List of test Monument objects
+     */
+    private List<Monument> makeTestMonuments() {
+        List<Monument> monuments = new ArrayList<>();
 
-        ArrayList<Monument> monuments = new ArrayList<>();
-        monuments.add(monument1);
-        monuments.add(monument2);
-        monuments.add(monument3);
+        monuments.add(this.makeTestMonument("Monument 1"));
+        monuments.add(this.makeTestMonument("Monument 2"));
+        monuments.add(this.makeTestMonument("Monument 3"));
 
         return monuments;
+    }
+
+    /**
+     * Helper function to create a List of Tag objects
+     * @return List<Tag> - List of test Tag objects
+     */
+    private List<Tag> makeTestTags() {
+        List<Tag> tags = new ArrayList<>();
+
+        tags.add(this.makeTestTag("Tag 1"));
+        tags.add(this.makeTestTag("Tag 2"));
+        tags.add(this.makeTestTag("Tag 3"));
+
+        return tags;
     }
 }
