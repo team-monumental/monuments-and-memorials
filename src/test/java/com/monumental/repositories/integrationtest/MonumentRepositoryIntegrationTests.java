@@ -1,4 +1,4 @@
-package com.monumental.services.integrationtest;
+package com.monumental.repositories.integrationtest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;

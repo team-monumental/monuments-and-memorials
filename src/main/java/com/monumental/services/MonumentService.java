@@ -350,6 +350,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param year - String for the year to use to create the Date
      *             Must be in "yyyy" format
      * @param month - String for the month to use to create the Date
+     *              Assumed to be zero-based
      *              Must be in "M" format
      * @param day - String for the day to use to create the Date
      *            Must be in "d" format

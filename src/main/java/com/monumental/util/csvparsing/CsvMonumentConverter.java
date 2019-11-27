@@ -72,7 +72,11 @@ public class CsvMonumentConverter {
                         }
                         // Parsing format "dd-mm-yyyy"
                         else if (dateArray.length == 3) {
-                            monument.setDate(monumentService.createMonumentDate(dateArray[2], dateArray[1],
+                            int monthInt = Integer.parseInt(dateArray[1]);
+                            monthInt--;
+                            String zeroBasedMonth = Integer.toString(monthInt);
+
+                            monument.setDate(monumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
                                     dateArray[0]));
                         }
                     }

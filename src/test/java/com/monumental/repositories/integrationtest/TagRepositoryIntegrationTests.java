@@ -1,4 +1,4 @@
-package com.monumental.services.integrationtest;
+package com.monumental.repositories.integrationtest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
@@ -18,6 +18,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Test class for integration testing the TagRepository class and its connection with the database
+ * These tests utilize an H2 in-memory database as to no ruin the real one
+ */
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
