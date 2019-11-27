@@ -7,7 +7,7 @@ import ContributionAppreciation from "../../components/CreateForm/ContributionAp
 import createMonument from "../../actions/create";
 
 /**
- * Root container for the create a new Monument page
+ * Root container for the page to create a new Monument
  */
 class CreatePage extends React.Component {
 

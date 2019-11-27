@@ -35,6 +35,11 @@ public class MonumentController {
     @Autowired
     private ReferenceRepository referenceRepository;
 
+    /**
+     * Create a new Monument based on the specified CreateMonumentRequest
+     * @param monumentRequest - CreateMonumentRequest containing the attributes to use to create the Monument
+     * @return Monument - The created Monument
+     */
     @PostMapping("/api/monument")
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
         Point point = this.monumentService.createMonumentPoint(monumentRequest.getLongitude(),
@@ -49,7 +54,6 @@ public class MonumentController {
             date = this.monumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
         }
 
-        // Create a new Monument based on the request values
         Monument createdMonument = new Monument(monumentRequest.getArtist(), monumentRequest.getTitle(), date, null,
                 null, monumentRequest.getAddress(), point);
         List<Monument> createdMonumentList = new ArrayList<>();
@@ -127,6 +131,13 @@ public class MonumentController {
         return createdMonument;
     }
 
+    /**
+     * Get a Monument with the specified ID, if it exists
+     * @param id - ID of the Monument to get
+     * @param cascade - If true, loads all of the lazy-loaded collections associated with the Monument
+     * @return Monument - The Monument with the specified ID, if it exists
+     * @throws ResourceNotFoundException - If a Monument with the specified ID does not exist
+     */
     @GetMapping("/api/monument/{id}")
     public Monument getMonument(@PathVariable("id") Integer id,
                                 @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
@@ -141,11 +152,21 @@ public class MonumentController {
         return monument;
     }
 
+    /**
+     * Get all of the Monuments
+     * @return List<Monument> - List of all of the Monuments
+     */
     @GetMapping("/api/monuments")
     public List<Monument> getAllMonuments() {
         return this.monumentRepository.findAll();
     }
 
+    /**
+     * Update an existing Monument with the specified ID to have the specified attributes
+     * @param id - ID of the Monument to update
+     * @param monument - Monument containing the new attributes for the specified ID
+     * @return Monument - The updated Monument
+     */
     @PutMapping("/api/monument/{id}")
     public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody Monument monument) {
         monument.setId(id);

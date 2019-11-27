@@ -27,7 +27,6 @@ class Filters extends React.Component {
         const params = {};
 
         params[variant] = selectedTags.map(tag => tag.name);
-        console.log(params);
         search(params, this.props.history);
     }
 

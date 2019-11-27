@@ -170,6 +170,11 @@ export default class CreateForm extends React.Component {
         }
     }
 
+    /**
+     * Resets the state of the Form
+     * This means resetting the validation state for all inputs to true and clearing all error messages
+     * @param resetValue - If true, also resets the values inside the inputs
+     */
     resetForm(resetValue) {
         const { title, address, latitude, longitude, year, month, artist, references } = this.state;
         let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
@@ -232,12 +237,18 @@ export default class CreateForm extends React.Component {
             images, imageUploaderKey, materials, newMaterials, tags, newTags});
     }
 
+    /**
+     * Validates the Form
+     * If any of the inputs are invalid, the entire Form is considered invalid
+     * @returns {boolean} - True if the Form is valid, False otherwise
+     */
     validateForm() {
         const { title, address, latitude, longitude, year, month, references, materials, newMaterials } = this.state;
         const currentDate = new Date();
         let formIsValid = true;
 
         /* Title Validation */
+        /* Title is a required Form field */
         if (validator.isEmpty(title.value)) {
             title.isValid = false;
             title.message = 'Title is required';
@@ -245,6 +256,7 @@ export default class CreateForm extends React.Component {
         }
 
         /* Materials Validation */
+        /* Materials is a required Form field */
         if ((!materials.materialObjects || !materials.materialObjects.length)
             && (!newMaterials || !newMaterials.length))
         {
@@ -254,6 +266,7 @@ export default class CreateForm extends React.Component {
         }
 
         /* Address or Coordinates Validation */
+        /* An Address OR Coordinates must be specified */
         if (validator.isEmpty(address.value) &&
             (validator.isEmpty(latitude.value) || validator.isEmpty(longitude.value))) {
             address.isValid = false;
@@ -269,6 +282,7 @@ export default class CreateForm extends React.Component {
         }
 
         /* Latitude Validation */
+        /* Check that the Latitude is within a valid range and formatted correctly */
         if (validator.isEmpty(address.value) && !validator.isEmpty(latitude.value)) {
             if (!validator.matches(latitude.value, latitudeRegex)) {
                 latitude.isValid = false;
@@ -278,6 +292,7 @@ export default class CreateForm extends React.Component {
         }
 
         /* Longitude Validation */
+        /* Check that the Longitude is within a valid range and formatted correctly */
         if (validator.isEmpty(address.value) && !validator.isEmpty(longitude.value)) {
             if (!validator.matches(longitude.value, longitudeRegex)) {
                 longitude.isValid = false;
@@ -287,6 +302,7 @@ export default class CreateForm extends React.Component {
         }
 
         /* Date Validation */
+        /* Check that the Year and Month specified are not in the future */
         if (!validator.isEmpty(year.value)) {
             const yearInt = parseInt(year.value);
             const monthInt = parseInt(month.value);
@@ -313,6 +329,7 @@ export default class CreateForm extends React.Component {
         }
 
         /* References Validation */
+        /* Check that the References are valid URLs */
         references.forEach(reference => {
             if (!validator.isEmpty(reference.value)) {
                 if (!validator.isURL(reference.value)) {
@@ -338,6 +355,9 @@ export default class CreateForm extends React.Component {
         }
     }
 
+    /**
+     * Build the form object to send to the onSubmit handler
+     */
     submitForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist,
             datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;

@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 /**
- * Presentational component for the Modal when no Images are uploaded
+ * Presentational component for the Modal shown when no Images are uploaded
  */
 export default class NoImageModal extends React.Component {
 

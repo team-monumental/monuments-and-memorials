@@ -302,6 +302,12 @@ public class MonumentService extends ModelService<Monument> {
         return monuments;
     }
 
+    /**
+     * Create a Point object for a Monument from the specified longitude and latitude
+     * @param longitude - Double for the longitude of the Point
+     * @param latitude - Double for the latitude of the Point
+     * @return Point - The Point object created using the specified longitude and latitude
+     */
     public Point createMonumentPoint(Double longitude, Double latitude) {
         if (longitude == null || latitude == null) {
             return null;
@@ -315,14 +321,40 @@ public class MonumentService extends ModelService<Monument> {
         return point;
     }
 
+    /**
+     * Create a Date object for a Monument using the specified year
+     * Sets the month to January and the day to the 1st
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @return Date - Date object created using the specified year
+     */
     public Date createMonumentDate(String year) {
         return this.createMonumentDate(year, "0", "1");
     }
 
+    /**
+     * Create a Date object for a Monument using the specified year and month
+     * Sets the day to the 1st
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @param month - String for the month to use to create the Date
+     *              Must be in "MM" format
+     * @return Date - Date object created using the specified year and month
+     */
     public Date createMonumentDate(String year, String month) {
         return this.createMonumentDate(year, month, "1");
     }
 
+    /**
+     * Create a Date object for a Monument using the specified year, month and day
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @param month - String for the month to use to create the Date
+     *              Must be in "M" format
+     * @param day - String for the day to use to create the Date
+     *            Must be in "d" format
+     * @return Date - Date object created using the specified year, month and day
+     */
     public Date createMonumentDate(String year, String month, String day) {
         if (isNullOrEmpty(year)) {
             return null;
@@ -346,6 +378,11 @@ public class MonumentService extends ModelService<Monument> {
         return calendar.getTime();
     }
 
+    /**
+     * Create a Date object for a Monument using a JSON date-string
+     * @param jsonDate - String for the JSON date to use to create the Date
+     * @return Date - Date object created using the specified JSON date-string
+     */
     public Date createMonumentDateFromJsonDate(String jsonDate) {
         if (isNullOrEmpty(jsonDate)) {
             return null;

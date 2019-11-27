@@ -68,12 +68,12 @@ public class CsvMonumentConverter {
 
                         // Parsing format "yyyy"
                         if (dateArray.length == 1) {
-                            monument.setDate(monumentService.createMonumentDate(dateArray[0], null, null, null, true));
+                            monument.setDate(monumentService.createMonumentDate(dateArray[0]));
                         }
                         // Parsing format "dd-mm-yyyy"
                         else if (dateArray.length == 3) {
                             monument.setDate(monumentService.createMonumentDate(dateArray[2], dateArray[1],
-                                    dateArray[0], null, false));
+                                    dateArray[0]));
                         }
                     }
 

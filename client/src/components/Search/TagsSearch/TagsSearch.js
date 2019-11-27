@@ -136,12 +136,14 @@ class TagsSearch extends React.Component {
         const { selectedTags } = this.state;
         const { variant, onChange } = this.props;
 
+        // If the Tag is being selected, add it to the created Tags and sort them alphabetically
         if (value) {
             tag.selected = true;
             createdTags.push(tag);
             createdTags = createdTags.sort();
             createdTagsKey--;
         }
+        // Otherwise, the Tag is being deselected, remove it from the created Tags
         else {
             const index = createdTags.findIndex(t => t.name === tag.name);
             if (index >= 0) {
