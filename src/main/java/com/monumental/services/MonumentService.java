@@ -315,47 +315,48 @@ public class MonumentService extends ModelService<Monument> {
         return point;
     }
 
-    public Date createMonumentDate(String year, String month, String day, String exactDate,
-                                   boolean monthAlreadyZeroBased) {
-        Date date = null;
+    public Date createMonumentDate(String year) {
+        return this.createMonumentDate(year, "0", "1");
+    }
 
-        if (!isNullOrEmpty(exactDate)) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    public Date createMonumentDate(String year, String month) {
+        return this.createMonumentDate(year, month, "1");
+    }
 
-            try {
-                date = simpleDateFormat.parse(exactDate);
-            } catch (ParseException e) {
-                return null;
-            }
-        }
-        else if (!isNullOrEmpty(year)) {
-            GregorianCalendar calender = new GregorianCalendar();
-            int yearInt = Integer.parseInt(year);
-
-            if (!isNullOrEmpty(month)) {
-                int monthInt = Integer.parseInt(month);
-
-                if (!monthAlreadyZeroBased) {
-                    monthInt--;
-                }
-
-                if (!isNullOrEmpty(day)) {
-                    int dayInt = Integer.parseInt(day);
-
-                    calender.set(yearInt, monthInt, dayInt);
-                    date = calender.getTime();
-                }
-                else {
-                    calender.set(yearInt, monthInt, 1);
-                    date = calender.getTime();
-                }
-            }
-            else {
-                calender.set(yearInt, Calendar.JANUARY, 1);
-                date = calender.getTime();
-            }
+    public Date createMonumentDate(String year, String month, String day) {
+        if (isNullOrEmpty(year)) {
+            return null;
         }
 
-        return date;
+        GregorianCalendar calendar = new GregorianCalendar();
+        int yearInt = Integer.parseInt(year);
+
+        int monthInt = 0;
+        if (!isNullOrEmpty(month)) {
+            monthInt = Integer.parseInt(month);
+        }
+
+        int dayInt = 1;
+        if (!isNullOrEmpty(day)) {
+            dayInt = Integer.parseInt(day);
+        }
+
+        calendar.set(yearInt, monthInt, dayInt);
+
+        return calendar.getTime();
+    }
+
+    public Date createMonumentDateFromJsonDate(String jsonDate) {
+        if (isNullOrEmpty(jsonDate)) {
+            return null;
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+            return simpleDateFormat.parse(jsonDate);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

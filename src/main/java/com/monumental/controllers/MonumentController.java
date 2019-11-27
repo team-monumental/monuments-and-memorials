@@ -40,8 +40,14 @@ public class MonumentController {
         Point point = this.monumentService.createMonumentPoint(monumentRequest.getLongitude(),
                 monumentRequest.getLongitude());
 
-        Date date = this.monumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth(),
-                null, monumentRequest.getDate(), true);
+        Date date;
+
+        if (!isNullOrEmpty(monumentRequest.getDate())) {
+            date = this.monumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
+        }
+        else {
+            date = this.monumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
+        }
 
         // Create a new Monument based on the request values
         Monument createdMonument = new Monument(monumentRequest.getArtist(), monumentRequest.getTitle(), date, null,
