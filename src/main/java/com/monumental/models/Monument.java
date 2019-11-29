@@ -75,7 +75,7 @@ public class Monument extends Model implements Serializable {
     }
 
     public Monument(String artist, String title, Date date, String city, String state, String address,
-                    Point coordinates) {
+                    Point coordinates, String description, String inscription) {
         this();
         this.artist = artist;
         this.title = title;
@@ -84,6 +84,8 @@ public class Monument extends Model implements Serializable {
         this.state = state;
         this.address = address;
         this.coordinates = coordinates;
+        this.description = description;
+        this.inscription = inscription;
     }
 
     public String getArtist() {

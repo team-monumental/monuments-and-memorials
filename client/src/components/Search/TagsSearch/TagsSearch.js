@@ -174,7 +174,7 @@ class TagsSearch extends React.Component {
     }
 
     handleSelectedTagsClear() {
-        this.setState({selectedTags: []});
+        this.setState({selectedTags: [], createdTags: []});
     }
 
     searchTags() {

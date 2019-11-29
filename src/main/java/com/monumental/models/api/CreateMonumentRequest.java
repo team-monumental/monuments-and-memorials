@@ -24,6 +24,10 @@ public class CreateMonumentRequest {
 
     private String artist;
 
+    private String description;
+
+    private String inscription;
+
     private List<String> references;
 
     private List<String> materials;
@@ -96,6 +100,22 @@ public class CreateMonumentRequest {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getInscription() {
+        return this.inscription;
+    }
+
+    public void setInscription(String inscription) {
+        this.inscription = inscription;
     }
 
     public List<String> getReferences() {

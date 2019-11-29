@@ -62,6 +62,16 @@ export default class CreateForm extends React.Component {
                 isValid: true,
                 message: ''
             },
+            description: {
+                value: '',
+                isValid: true,
+                message: ''
+            },
+            inscription: {
+                value: '',
+                isValid: true,
+                message: ''
+            },
             references: [reference],
             images: [],
             imageUploaderKey: 0,
@@ -176,7 +186,8 @@ export default class CreateForm extends React.Component {
      * @param resetValue - If true, also resets the values inside the inputs
      */
     resetForm(resetValue) {
-        const { title, address, latitude, longitude, year, month, artist, references } = this.state;
+        const { title, address, latitude, longitude, year, month, artist, description, inscription,
+            references } = this.state;
         let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
 
         title.isValid = true;
@@ -200,6 +211,12 @@ export default class CreateForm extends React.Component {
         artist.isValid = true;
         artist.message = '';
 
+        description.isValid = true;
+        description.message = '';
+
+        inscription.isValid = true;
+        inscription.message = '';
+
         references.forEach(reference => {
             reference.isValid = true;
             reference.message = '';
@@ -220,6 +237,8 @@ export default class CreateForm extends React.Component {
             year.value = '';
             month.value = '1';
             artist.value = '';
+            description.value = '';
+            inscription.value = '';
             datePickerCurrentDate = new Date();
             images = [];
             imageUploaderKey++;
@@ -233,8 +252,8 @@ export default class CreateForm extends React.Component {
             this.tagsSelectRef.current.handleSelectedTagsClear();
         }
 
-        this.setState({title, address, latitude, longitude, year, month, artist, datePickerCurrentDate, references,
-            images, imageUploaderKey, materials, newMaterials, tags, newTags});
+        this.setState({title, address, latitude, longitude, year, month, artist, description, inscription,
+            datePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags, newTags});
     }
 
     /**
@@ -359,7 +378,7 @@ export default class CreateForm extends React.Component {
      * Build the form object to send to the onSubmit handler
      */
     submitForm() {
-        const { title, address, latitude, longitude, dateSelectValue, year, month, artist,
+        const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
             datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
         const { onSubmit } = this.props;
 
@@ -369,12 +388,14 @@ export default class CreateForm extends React.Component {
             latitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
             longitude: (latitude.value === '' && longitude.value === '') ? null : longitude.value,
             artist: artist.value === '' ? null : artist.value,
+            description: description.value === '' ? null : description.value,
+            inscription: inscription.value === '' ? null : inscription.value,
             references: references.map(reference => reference.value),
             images: images,
             materials: materials.materialObjects.map(material => material.name),
-            newMaterials: newMaterials,
-            tags: tags,
-            newTags: newTags
+            newMaterials: newMaterials.map(newMaterial => newMaterial.name),
+            tags: tags.map(tag => tag.name),
+            newTags: newTags.map(newTag => newTag.name)
         };
 
         switch (dateSelectValue) {
@@ -397,7 +418,8 @@ export default class CreateForm extends React.Component {
 
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
-            longitude, year, month, artist, references, imageUploaderKey, showingNoImageModal, materials } = this.state;
+            longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
+            materials } = this.state;
 
         const advancedInformationLink = (
             <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Show Advanced Information</div>
@@ -648,10 +670,14 @@ export default class CreateForm extends React.Component {
                                 <Form.Control
                                     as='textarea'
                                     rows='3'
+                                    name='description'
                                     placeholder='Description'
+                                    value={description.value}
+                                    onChange={(event) => this.handleInputChange(event)}
+                                    isInvalid={!description.isValid}
                                     className='multi-line-text-control'
                                 />
-                                <Form.Control.Feedback type='invalid'>Test</Form.Control.Feedback>
+                                <Form.Control.Feedback type='invalid'>{description.message}</Form.Control.Feedback>
                             </Form.Group>
 
                             {/* Inscription */}
@@ -660,10 +686,14 @@ export default class CreateForm extends React.Component {
                                 <Form.Control
                                     as='textarea'
                                     rows='3'
+                                    name='inscription'
                                     placeholder='Inscription'
+                                    value={inscription.value}
+                                    onChange={(event) => this.handleInputChange(event)}
+                                    isInvalid={!inscription.isValid}
                                     className='multi-line-text-control'
                                 />
-                                <Form.Control.Feedback type='invalid'>Test</Form.Control.Feedback>
+                                <Form.Control.Feedback type='invalid'>{inscription.message}</Form.Control.Feedback>
                             </Form.Group>
 
                             {/* Tags */}

@@ -3,7 +3,6 @@ package com.monumental.controllers;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
 import com.monumental.models.api.CreateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.ReferenceRepository;
@@ -43,7 +42,7 @@ public class MonumentController {
     @PostMapping("/api/monument")
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
         Point point = this.monumentService.createMonumentPoint(monumentRequest.getLongitude(),
-                monumentRequest.getLongitude());
+                monumentRequest.getLatitude());
 
         Date date;
 
@@ -55,78 +54,58 @@ public class MonumentController {
         }
 
         Monument createdMonument = new Monument(monumentRequest.getArtist(), monumentRequest.getTitle(), date, null,
-                null, monumentRequest.getAddress(), point);
-        List<Monument> createdMonumentList = new ArrayList<>();
-        createdMonumentList.add(createdMonument);
+                null, monumentRequest.getAddress(), point, monumentRequest.getDescription(),
+                monumentRequest.getInscription());
 
+        // Save the initial Monument
+        createdMonument = this.monumentRepository.save(createdMonument);
+
+        /* References Section */
         List<Reference> references = new ArrayList<>();
-
         if (monumentRequest.getReferences() != null && monumentRequest.getReferences().size() > 0) {
             for (String referenceUrl : monumentRequest.getReferences()) {
                 if (!isNullOrEmpty(referenceUrl)) {
                     Reference reference = new Reference(referenceUrl);
-                    references.add(reference);
                     reference.setMonument(createdMonument);
-                    this.referenceRepository.save(reference);
+                    references.add(reference);
                 }
             }
-
-            createdMonument.setReferences(references);
         }
+        createdMonument.setReferences(references);
 
-        List<Tag> materials = new ArrayList<>();
+        List<Monument> createdMonumentList = new ArrayList<>();
+        createdMonumentList.add(createdMonument);
 
+        /* Materials Section */
         if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
             for (String materialName : monumentRequest.getMaterials()) {
-                Tag material = this.tagService.createTag(materialName, createdMonumentList, true);
-
-                if (material != null) {
-                    materials.add(material);
-                }
+                this.tagService.createTag(materialName, createdMonumentList, true);
             }
         }
-        createdMonument.setMaterials(materials);
 
-        List<Tag> newMaterials = new ArrayList<>();
-
+        /* New Materials Section */
         if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
             for (String newMaterialName : monumentRequest.getNewMaterials()) {
-                Tag newMaterial = this.tagService.createTag(newMaterialName, createdMonumentList, true);
-
-                if (newMaterial != null) {
-                    newMaterials.add(newMaterial);
-                }
+                this.tagService.createTag(newMaterialName, createdMonumentList, true);
             }
         }
-        createdMonument.getMaterials().addAll(newMaterials);
 
-        List<Tag> tags = new ArrayList<>();
-
+        /* Tags Section */
         if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
             for (String tagName : monumentRequest.getTags()) {
-                Tag tag = this.tagService.createTag(tagName, createdMonumentList, false);
-
-                if (tag != null) {
-                    tags.add(tag);
-                }
+                this.tagService.createTag(tagName, createdMonumentList, false);
             }
         }
-        createdMonument.setTags(tags);
 
-        List<Tag> newTags = new ArrayList<>();
-
+        /* New Tags Section */
         if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
             for (String newTagName : monumentRequest.getNewTags()) {
-                Tag newTag = this.tagService.createTag(newTagName, createdMonumentList, false);
-
-                if (newTag != null) {
-                    newTags.add(newTag);
-                }
+                this.tagService.createTag(newTagName, createdMonumentList, false);
             }
         }
-        createdMonument.getTags().addAll(newTags);
 
-        this.monumentRepository.save(createdMonument);
+        // Save the Monument with the associated References, Materials and Tags
+        createdMonument = this.monumentRepository.save(createdMonument);
 
         return createdMonument;
     }
