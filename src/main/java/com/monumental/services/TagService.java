@@ -54,7 +54,7 @@ public class TagService extends ModelService<Tag> {
      * @param isMaterial    Whether or not the tag is a material
      */
     public Tag createTag(String name, List<Monument> monuments, Boolean isMaterial) {
-        if (isNullOrEmpty(name)) {
+        if (isNullOrEmpty(name) || monuments == null) {
             return null;
         }
 

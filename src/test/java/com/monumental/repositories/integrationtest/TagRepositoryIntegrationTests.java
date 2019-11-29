@@ -83,41 +83,6 @@ public class TagRepositoryIntegrationTests {
         assertEquals(tag.getName(), results.get(0).getName());
     }
 
-    /* Tag Unique Constraint Tests **/
-
-    /**
-     * TODO: Replace this with repository instead of service
-    @Test(expected = ConstraintViolationException.class)
-    public void testTagService_ExceptedConstraintViolationException_Name() {
-        Tag tag1 = new Tag();
-        tag1.setName("Tag");
-
-        this.tagService.insert(tag1);
-
-        Tag tag2 = new Tag();
-        tag2.setName("Tag");
-
-        this.tagService.insert(tag2);
-    }
-
-
-    @Test
-    public void testTagService_CatchConstraintViolationException_Name() {
-        Tag tag1 = new Tag();
-        tag1.setName("Tag");
-
-        this.tagRepository.save(tag1);
-
-        Tag tag2 = new Tag();
-        tag2.setName("Tag");
-
-        try {
-            this.tagRepository.save(tag2);
-        } catch (ConstraintViolationException e) {
-            assertEquals(1, this.tagRepository.findAll().size());
-        }
-    } */
-
     /**
      * Helper that sets up 2 Monuments and 2 Tags, with 1 Tags related to both Monuments
      */

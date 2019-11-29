@@ -112,4 +112,28 @@ public class MonumentServiceUnitTests {
         assertEquals(5, calendar.get(Calendar.MONTH));
         assertEquals(22, calendar.get(Calendar.DAY_OF_MONTH));
     }
+
+    /* createMonumentDateFromJsonDate Tests */
+
+    @Test
+    public void testMonumentService_createMonumentDateFromJsonDate_NullJsonDate() {
+        assertNull(this.monumentService.createMonumentDateFromJsonDate(null));
+    }
+
+    @Test
+    public void testMonumentService_createMonumentDateFromJson_InvalidJsonDate() {
+        assertNull(this.monumentService.createMonumentDateFromJsonDate("Blah"));
+    }
+
+    @Test
+    public void testMonumentService_createMonumentDateFromJsonDate_ValidJsonDate() {
+        Date result = this.monumentService.createMonumentDateFromJsonDate("2012-04-23T18:25:43.511Z");
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result);
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(23, calendar.get(Calendar.DAY_OF_MONTH));
+    }
 }
