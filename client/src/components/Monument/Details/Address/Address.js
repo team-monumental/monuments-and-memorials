@@ -14,7 +14,7 @@ export default class Address extends React.Component {
 
         if (monument.address) {
             return (
-                <div style={{display: 'flex', alignItems: 'center'}} className=' address-container font-italic'>
+                <div style={{display: 'flex', alignItems: 'center'}} className='address-container font-italic'>
                     {locationIcon} {monument.address}
                 </div>
             )
