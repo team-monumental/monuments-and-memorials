@@ -47,8 +47,8 @@ export default async function uploadImagesToS3(images) {
     // Setup the global AWS config
     AWS.config.update({
         region: 'us-east-2',
-        accessKeyId: '',
-        secretAccessKey: ''
+        accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+        secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
     });
 
     let imageUrls = [];
