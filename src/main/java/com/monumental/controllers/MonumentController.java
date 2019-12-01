@@ -54,9 +54,14 @@ public class MonumentController {
             date = this.monumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
         }
 
-        Monument createdMonument = new Monument(monumentRequest.getArtist(), monumentRequest.getTitle(), date, null,
-                null, monumentRequest.getAddress(), point, monumentRequest.getDescription(),
-                monumentRequest.getInscription());
+        Monument createdMonument = new Monument();
+        createdMonument.setArtist(monumentRequest.getArtist());
+        createdMonument.setTitle(monumentRequest.getTitle());
+        createdMonument.setDate(date);
+        createdMonument.setAddress(monumentRequest.getAddress());
+        createdMonument.setCoordinates(point);
+        createdMonument.setDescription(monumentRequest.getDescription());
+        createdMonument.setInscription(monumentRequest.getInscription());
 
         // Save the initial Monument
         createdMonument = this.monumentRepository.save(createdMonument);

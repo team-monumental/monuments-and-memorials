@@ -11,7 +11,7 @@ import SearchPage from './pages/SearchPage/SearchPage';
 import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
 import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
-import CreatePage from "./pages/CreatePage/CreatePage";
+import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 
 class App extends React.Component {
 
@@ -40,7 +40,7 @@ class App extends React.Component {
                             </Route>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
-                            <Route path="/create" component={CreatePage}/>
+                            <Route path="/create" component={CreateMonumentPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

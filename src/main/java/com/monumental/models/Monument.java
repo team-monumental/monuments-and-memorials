@@ -74,20 +74,6 @@ public class Monument extends Model implements Serializable {
         this.contributions = new ArrayList<>();
     }
 
-    public Monument(String artist, String title, Date date, String city, String state, String address,
-                    Point coordinates, String description, String inscription) {
-        this();
-        this.artist = artist;
-        this.title = title;
-        this.date = date;
-        this.city = city;
-        this.state = state;
-        this.address = address;
-        this.coordinates = coordinates;
-        this.description = description;
-        this.inscription = inscription;
-    }
-
     public String getArtist() {
         return this.artist;
     }

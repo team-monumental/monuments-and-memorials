@@ -1,5 +1,5 @@
 import React from 'react';
-import './CreatePage.scss'
+import './CreateMonumentPage.scss'
 import { connect } from 'react-redux';
 
 import CreateForm from '../../components/CreateForm/CreateForm';
@@ -12,7 +12,7 @@ import { withRouter } from "react-router-dom";
 /**
  * Root container for the page to create a new Monument
  */
-class CreatePage extends React.Component {
+class CreateMonumentPage extends React.Component {
 
     static mapStateToProps(state) {
         return state.createPage;
@@ -57,4 +57,4 @@ class CreatePage extends React.Component {
 
 }
 
-export default withRouter(connect(CreatePage.mapStateToProps)(CreatePage));
+export default withRouter(connect(CreateMonumentPage.mapStateToProps)(CreateMonumentPage));
