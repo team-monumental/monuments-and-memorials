@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
+
 /**
  * Model class for an Image
  * Contains all of the state related to an Image and Getters and Setters for that state
@@ -39,6 +41,10 @@ public class Image extends Model implements Serializable {
     }
 
     public Image(String url, boolean isPrimary) {
+        if (isNullOrEmpty(url)) {
+            throw new IllegalArgumentException("URL must not be null or empty");
+        }
+
         this.url = url;
         this.isPrimary = isPrimary;
     }

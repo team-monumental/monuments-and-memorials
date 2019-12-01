@@ -496,7 +496,6 @@ export default class CreateForm extends React.Component {
                             minDate={minimumDate}
                             maxDate={currentDate}
                         />
-                        <Form.Control.Feedback type='invalid'>Test</Form.Control.Feedback>
                     </Form.Group>
                 );
                 break;
@@ -724,7 +723,8 @@ export default class CreateForm extends React.Component {
                         <Button
                             variant='primary'
                             type='submit'
-                            className='mr-4 mt-1'>
+                            className='mr-4 mt-1'
+                        >
                             Submit
                         </Button>
 
