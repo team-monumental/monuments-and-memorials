@@ -38,6 +38,11 @@ export async function post(url, data) {
     else return res;
 }
 
+/**
+ * Uploads the specified images to the monument-images S3 bucket, inside the images/ folder
+ * @param images - List of images to upload to S3
+ * @returns {Promise<[]>} - Promise that when awaited, returns a List of S3 Object keys for the uploaded images
+ */
 export default async function uploadImagesToS3(images) {
     // Setup the global AWS config
     AWS.config.update({
