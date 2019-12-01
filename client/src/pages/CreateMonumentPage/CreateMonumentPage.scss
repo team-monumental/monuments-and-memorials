@@ -1,0 +1,33 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+.create-page-container {
+  min-width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .column {
+    flex: 1 1 100%;
+    padding: 1rem 0;
+  }
+
+  @include media-breakpoint-up(lg) {
+    flex-direction: row;
+
+    .column {
+      flex-basis: 35%;
+      padding: 0 1rem;
+
+      &.thank-you-column {
+        flex-basis: 20%;
+      }
+
+      &.form-column {
+        flex-basis: 80%;
+      }
+    }
+  }
+}

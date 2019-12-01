@@ -5,6 +5,8 @@ import org.springframework.data.jpa.domain.AbstractAuditable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 @MappedSuperclass
 public abstract class Model extends AbstractAuditable<User, Integer> {
@@ -22,6 +24,8 @@ public abstract class Model extends AbstractAuditable<User, Integer> {
     }
 
     @AttributeOverride(name = "id", column = @Column(name="id"))
+    @Null(groups = New.class, message = "ID can not be specified on insert")
+    @NotNull(groups = Existing.class, message = "ID can not be null on update")
     private Integer id;
 
     @Override

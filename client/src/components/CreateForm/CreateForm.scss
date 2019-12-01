@@ -1,0 +1,175 @@
+@import "../../theme";
+
+.create-form-container {
+  padding-left: 22rem;
+
+  .h5 {
+    padding-bottom: 1rem;
+  }
+
+  .form-label {
+    font-weight: bold;
+  }
+
+  .text-control {
+    width: 25rem;
+  }
+
+  .text-control-small {
+    width: 10rem;
+  }
+
+  .select-control {
+    width: 10rem;
+  }
+
+  .multi-line-text-control {
+    width: 25rem;
+  }
+
+  .btn-toolbar {
+    padding-left: 5rem;
+    padding-bottom: 4rem;
+
+    .btn {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-family: "Open Sans", sans-serif;
+    }
+  }
+
+  .advanced-information-link {
+    cursor: pointer;
+    color: $primary;
+    padding-top: 1.5rem;
+    padding-left: 8.5rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  .address-coordinates-container {
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+    width: 30rem;
+    margin-bottom: 1rem;
+
+    span {
+      padding-bottom: 0.5rem;
+      display: flex;
+    }
+
+    .form-group {
+      padding-left: 1rem;
+    }
+  }
+
+  .date-container {
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+    width: 30rem;
+    margin-bottom: 1rem;
+
+    .form-row {
+      padding-left: 0.5rem;
+    }
+
+    .form-label {
+      display: flex;
+    }
+
+    .react-datepicker__input-container input {
+      color: #495057;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      height: calc(1.5em + 0.75rem + 2px);
+      padding: 0.375rem 0.75rem;
+    }
+
+    .react-datepicker__day--selected {
+      background-color: $primary;
+    }
+  }
+
+  .fileUploader {
+    width: 25rem;
+
+    .fileContainer {
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
+
+      .chooseFileButton {
+        background: $primary;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Open Sans", sans-serif;
+        margin: 0 0 10px 50px;
+      }
+
+      .deleteImage {
+        background: $danger;
+      }
+    }
+
+    .errorMessage {
+      display: block;
+    }
+  }
+
+  .invalid-feedback {
+    font-size: medium;
+
+    &.materials {
+      display: block;
+    }
+  }
+
+  .tags-search {
+    width: 30rem;
+    min-height: 7rem;
+
+    &:focus-within {
+      border-color: #9ddcc0;
+      box-shadow: 0 0 0 0.2rem rgba(66, 184, 131, 0.25);
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.is-invalid {
+      border-color: #da6060;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23da6060' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23da6060' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center right calc(0.375em + 0.1875rem);
+      background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+
+      &:focus-within {
+        box-shadow: 0 0 0 0.2rem rgba(218, 96, 96, 0.25);
+      }
+    }
+  }
+
+  .references-container {
+    div {
+      padding-bottom: 1rem;
+    }
+
+    .reference-container:last-child {
+      padding-bottom: 0;
+    }
+
+    .add-reference-link {
+      cursor: pointer;
+      color: $primary;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+}

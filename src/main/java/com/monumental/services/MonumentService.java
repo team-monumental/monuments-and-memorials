@@ -3,8 +3,10 @@ package com.monumental.services;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.util.string.StringHelper;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,11 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 @Service
 public class MonumentService extends ModelService<Monument> {
@@ -155,7 +161,7 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        if (!StringHelper.isNullOrEmpty(searchQuery)) {
+        if (!isNullOrEmpty(searchQuery)) {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults));
         }
 
@@ -294,5 +300,101 @@ public class MonumentService extends ModelService<Monument> {
             monuments.add((Monument) result.get(0));
         }
         return monuments;
+    }
+
+    /**
+     * Create a Point object for a Monument from the specified longitude and latitude
+     * @param longitude - Double for the longitude of the Point
+     * @param latitude - Double for the latitude of the Point
+     * @return Point - The Point object created using the specified longitude and latitude
+     */
+    public Point createMonumentPoint(Double longitude, Double latitude) {
+        if (longitude == null || latitude == null) {
+            return null;
+        }
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(coordinateSrid);
+
+        return point;
+    }
+
+    /**
+     * Create a Date object for a Monument using the specified year
+     * Sets the month to January and the day to the 1st
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @return Date - Date object created using the specified year
+     */
+    public Date createMonumentDate(String year) {
+        return this.createMonumentDate(year, "0", "1");
+    }
+
+    /**
+     * Create a Date object for a Monument using the specified year and month
+     * Sets the day to the 1st
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @param month - String for the month to use to create the Date
+     *              Must be in "MM" format
+     * @return Date - Date object created using the specified year and month
+     */
+    public Date createMonumentDate(String year, String month) {
+        return this.createMonumentDate(year, month, "1");
+    }
+
+    /**
+     * Create a Date object for a Monument using the specified year, month and day
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @param month - String for the month to use to create the Date
+     *              Assumed to be zero-based
+     *              Must be in "M" format
+     * @param day - String for the day to use to create the Date
+     *            Must be in "d" format
+     * @return Date - Date object created using the specified year, month and day
+     */
+    public Date createMonumentDate(String year, String month, String day) {
+        if (isNullOrEmpty(year)) {
+            return null;
+        }
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        int yearInt = Integer.parseInt(year);
+
+        int monthInt = 0;
+        if (!isNullOrEmpty(month)) {
+            monthInt = Integer.parseInt(month);
+        }
+
+        int dayInt = 1;
+        if (!isNullOrEmpty(day)) {
+            dayInt = Integer.parseInt(day);
+        }
+
+        calendar.set(yearInt, monthInt, dayInt);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * Create a Date object for a Monument using a JSON date-string
+     * @param jsonDate - String for the JSON date to use to create the Date
+     * @return Date - Date object created using the specified JSON date-string
+     */
+    public Date createMonumentDateFromJsonDate(String jsonDate) {
+        if (isNullOrEmpty(jsonDate)) {
+            return null;
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+            return simpleDateFormat.parse(jsonDate);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

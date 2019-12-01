@@ -13,6 +13,8 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
+
 @Service
 @Transactional
 public class TagService extends ModelService<Tag> {
@@ -52,6 +54,10 @@ public class TagService extends ModelService<Tag> {
      * @param isMaterial    Whether or not the tag is a material
      */
     public Tag createTag(String name, List<Monument> monuments, Boolean isMaterial) {
+        if (isNullOrEmpty(name) || monuments == null) {
+            return null;
+        }
+
         List<Tag> duplicates = this.tagRepository.getAllByNameAndIsMaterial(name, isMaterial);
         Tag tag;
         if (duplicates != null && duplicates.size() > 0) {

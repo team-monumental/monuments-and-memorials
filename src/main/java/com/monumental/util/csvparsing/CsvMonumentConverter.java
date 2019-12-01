@@ -1,13 +1,11 @@
 package com.monumental.util.csvparsing;
 
 import com.monumental.models.*;
+import com.monumental.services.MonumentService;
 import com.monumental.util.string.StringHelper;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -27,6 +25,9 @@ public class CsvMonumentConverter {
         // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
         // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
         String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+        MonumentService monumentService = new MonumentService();
+
         GregorianCalendar calendar = new GregorianCalendar();
 
         Monument monument = new Monument();
@@ -34,8 +35,6 @@ public class CsvMonumentConverter {
 
         Double latitude = 0.0;
         Double longitude = 0.0;
-
-        GeometryFactory geometryFactory = new GeometryFactory();
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
@@ -64,24 +63,21 @@ public class CsvMonumentConverter {
                     // 1. The dates would be in the format dd-MM-yyyy
                     // 2. If the day and month were unknown, the cell would just contain yyyy
                     // 3. In the case described in 2, the day and month would be set to 01-01
-                    // TODO: Agree upon a standard format for dates in CSV file uploads
                     if (!value.isEmpty()) {
                         String[] dateArray = value.split("-");
 
                         // Parsing format "yyyy"
                         if (dateArray.length == 1) {
-                            int year = Integer.parseInt(dateArray[0]);
-                            calendar.set(year, Calendar.JANUARY, 1);
-                            monument.setDate(calendar.getTime());
+                            monument.setDate(monumentService.createMonumentDate(dateArray[0]));
                         }
                         // Parsing format "dd-mm-yyyy"
                         else if (dateArray.length == 3) {
-                            int day = Integer.parseInt(dateArray[0]);
-                            int month = Integer.parseInt(dateArray[1]);
-                            int year = Integer.parseInt(dateArray[2]);
-                            // Remember that months are 0-based
-                            calendar.set(year, month - 1, day);
-                            monument.setDate(calendar.getTime());
+                            int monthInt = Integer.parseInt(dateArray[1]);
+                            monthInt--;
+                            String zeroBasedMonth = Integer.toString(monthInt);
+
+                            monument.setDate(monumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
+                                    dateArray[0]));
                         }
                     }
 
@@ -147,11 +143,7 @@ public class CsvMonumentConverter {
             }
         }
 
-        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-        // 4326 is the SRID for coordinates
-        // Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
-        // And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
-        point.setSRID(4326);
+        Point point = monumentService.createMonumentPoint(longitude, latitude);
         monument.setCoordinates(point);
 
         result.setMonument(monument);

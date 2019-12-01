@@ -1,9 +1,11 @@
 import * as React from 'react';
 import './Filters.scss';
+import { withRouter } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
-import TagsFilter from './TagsFilter/TagsFilter';
+import TagsSearch from '../TagsSearch/TagsSearch';
+import search from "../../../utils/search";
 
-export default class Filters extends React.Component {
+class Filters extends React.Component {
 
     constructor(props) {
         super(props);
@@ -19,6 +21,13 @@ export default class Filters extends React.Component {
         await this.setState(updatedState);
 
         onChange(this.state);
+    }
+
+    handleTagsSearchTagSelect(variant, selectedTags) {
+        const params = {};
+
+        params[variant] = selectedTags.map(tag => tag.name);
+        search(params, this.props.history);
     }
 
     render() {
@@ -39,10 +48,22 @@ export default class Filters extends React.Component {
             <div className="filters">
                 {distanceFilter}
                 <div className="tags-container">
-                    <TagsFilter variant="tags" tags={tags}/>
-                    <TagsFilter variant="materials" tags={materials}/>
+                    <TagsSearch
+                        variant="tags"
+                        tags={tags}
+                        onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags)}
+                        allowTagCreation={false}
+                    />
+                    <TagsSearch
+                        variant="materials"
+                        tags={materials}
+                        onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags)}
+                        allowTagCreation={false}
+                    />
                 </div>
             </div>
         );
     }
 }
+
+export default withRouter(Filters);
