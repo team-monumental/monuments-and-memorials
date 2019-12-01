@@ -2,6 +2,7 @@ import React from 'react';
 import './SearchResult.scss';
 import { Card } from 'react-bootstrap';
 import Tags from '../../Tags/Tags';
+import Address from "../../Monument/Details/Address/Address";
 
 /**
  * A condensed Monument info card for use in search results
@@ -24,10 +25,7 @@ export default class SearchResult extends React.Component {
                         </a>
                     </Card.Title>
                     <Card.Body>
-                        <div className="font-italic mb-2">
-                            <i className="material-icons">room</i>
-                            <span className="location">{[monument.city, monument.state].filter(str => str.trim()).join(', ')}</span>
-                        </div>
+                        <Address monument={monument}/>
                         <Tags tags={(monument.materials || []).concat(monument.tags || [])}/>
                     </Card.Body>
                 </Card>
