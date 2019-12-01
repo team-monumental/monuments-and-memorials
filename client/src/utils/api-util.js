@@ -1,3 +1,10 @@
+import * as AWS from "aws-sdk";
+
+// Constant for the S3 Bucket name where the Monument images are stored
+const s3ImageBucketName = 'monument-images';
+// Constant for the S3 folder name where the Monument images are stored
+const s3ImageBucketFolderName = 'images/';
+
 /**
  * Send a GET request to the specified url
  * @param url - URL to send the GET to
@@ -29,4 +36,38 @@ export async function post(url, data) {
         .catch(err => error = err);
     if (error || res.error) throw(error || res.error);
     else return res;
+}
+
+export default async function uploadImagesToS3(images) {
+    // Setup the global AWS config
+    AWS.config.update({
+        region: 'us-east-2',
+        accessKeyId: '',
+        secretAccessKey: ''
+    });
+
+    let imageUrls = [];
+
+    for (const image of images) {
+        // Create an S3 upload
+        let s3Upload = new AWS.S3.ManagedUpload({
+            params: {
+                Bucket: s3ImageBucketName,
+                Key: s3ImageBucketFolderName + image.name,
+                Body: image,
+                ACL: 'public-read'
+            }
+        });
+
+        try {
+            // Execute the upload
+            let data = await s3Upload.promise();
+            imageUrls.push(data.Location);
+        } catch (err) {
+            console.log("ERROR UPLOADING IMAGE TO S3: " + image.name);
+            console.log("ERROR: " + err.message);
+        }
+    }
+
+    return imageUrls;
 }

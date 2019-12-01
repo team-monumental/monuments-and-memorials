@@ -1,6 +1,7 @@
 package com.monumental.controllers;
 
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.api.CreateMonumentRequest;
@@ -73,6 +74,23 @@ public class MonumentController {
         }
         createdMonument.setReferences(references);
 
+        /* Images Section */
+        List<Image> images = new ArrayList<>();
+        int imagesCount = 0;
+        if (monumentRequest.getImages() != null && monumentRequest.getImages().size() > 0) {
+            for (String imageUrl : monumentRequest.getImages()) {
+                if (!isNullOrEmpty(imageUrl)) {
+                    imagesCount++;
+                    boolean isPrimary = imagesCount == 1;
+
+                    Image image = new Image(imageUrl, isPrimary);
+                    image.setMonument(createdMonument);
+                    images.add(image);
+                }
+            }
+        }
+        createdMonument.setImages(images);
+
         List<Monument> createdMonumentList = new ArrayList<>();
         createdMonumentList.add(createdMonument);
 
@@ -104,7 +122,7 @@ public class MonumentController {
             }
         }
 
-        // Save the Monument with the associated References, Materials and Tags
+        // Save the Monument with the associated References, Images, Materials and Tags
         createdMonument = this.monumentRepository.save(createdMonument);
 
         return createdMonument;

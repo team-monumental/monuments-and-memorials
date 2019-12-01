@@ -38,6 +38,8 @@ public class CreateMonumentRequest {
 
     private List<String> newTags;
 
+    private List<String> images;
+
     public String getTitle() {
         return this.title;
     }
@@ -156,5 +158,13 @@ public class CreateMonumentRequest {
 
     public void setNewTags(List<String> newTags) {
         this.newTags = newTags;
+    }
+
+    public List<String> getImages() {
+        return this.images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }

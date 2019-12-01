@@ -133,8 +133,8 @@ export default class CreateForm extends React.Component {
         this.setState({references: currentReferences});
     }
 
-    handleImageUploaderChange(files) {
-        this.setState({images: files});
+    async handleImageUploaderChange(files) {
+        await this.setState({images: files});
     }
 
     handleCancelButtonClick() {
@@ -369,9 +369,7 @@ export default class CreateForm extends React.Component {
     validateImages() {
         const { images } = this.state;
 
-        if (!images || !images.length) {
-            return false;
-        }
+        return !(!images || !images.length);
     }
 
     /**

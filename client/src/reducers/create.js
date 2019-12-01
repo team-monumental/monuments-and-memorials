@@ -1,5 +1,4 @@
 import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
-import basicReducer from "../utils/basicReducer";
 
 const initialState = {
     createMonumentPending : false,
@@ -9,9 +8,25 @@ const initialState = {
 
 // Tracks the progress for creating a new Monument for the CreatePage
 export default function createPage(state = initialState, action) {
-    return basicReducer(state, action, {
-        pending: CREATE_MONUMENT_PENDING,
-        success: CREATE_MONUMENT_SUCCESS,
-        error: CREATE_MONUMENT_ERROR
-    });
+    switch (action.type) {
+        case CREATE_MONUMENT_PENDING:
+            return {
+                ...state,
+                createMonumentPending: true
+            };
+        case CREATE_MONUMENT_SUCCESS:
+            return {
+                ...state,
+                createMonumentPending: false,
+                monument: action.payload
+            };
+        case CREATE_MONUMENT_ERROR:
+            return {
+                ...state,
+                createMonumentPending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
 }

@@ -36,7 +36,11 @@ public class Image extends Model implements Serializable {
     private Monument monument;
 
     public Image() {
+    }
 
+    public Image(String url, boolean isPrimary) {
+        this.url = url;
+        this.isPrimary = isPrimary;
     }
 
     public String getUrl() {
