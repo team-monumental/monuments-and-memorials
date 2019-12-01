@@ -235,7 +235,7 @@ export default class CreateForm extends React.Component {
             latitude.value = '';
             longitude.value = '';
             year.value = '';
-            month.value = '1';
+            month.value = '0';
             artist.value = '';
             description.value = '';
             inscription.value = '';
