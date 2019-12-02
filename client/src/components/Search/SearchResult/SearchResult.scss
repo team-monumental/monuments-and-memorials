@@ -13,11 +13,10 @@
 
         .card-body {
             padding: 0.25rem 0 0;
-        }
 
-        .location {
-            position: absolute;
-            padding-top: 0.2rem
+            .address-container {
+                margin-bottom: 0.5rem;
+            }
         }
 
         .card-title.h5 {
@@ -37,9 +36,5 @@
         background-position: center;
         background-size: cover;
         margin-right: 1rem;
-    }
-
-    i {
-        color: $primary;
     }
 }
