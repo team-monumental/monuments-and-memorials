@@ -12,6 +12,7 @@ import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
 import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
+import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
 
 class App extends React.Component {
 
@@ -41,6 +42,7 @@ class App extends React.Component {
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <Route path="/create" component={CreateMonumentPage}/>
+                            <Route path='/bulk-create' component={MonumentBulkCreatePage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

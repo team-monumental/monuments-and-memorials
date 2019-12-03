@@ -40,9 +40,6 @@ public class CsvMonumentConverter {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
             String value = removeBeginningAndEndingQuotes(csvRowArray[columnIndex]);
 
-            // NOTE: The order of the columns is specific to the initial dataset
-            // This may need to change based on the file format we decide to accept
-            // I also assumed that if any columns were empty, they would be null
             switch (columnIndex) {
                 case 0: // Submitted By
                     Contribution newContribution = new Contribution();
