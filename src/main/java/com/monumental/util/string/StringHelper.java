@@ -1,5 +1,9 @@
 package com.monumental.util.string;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Class that provides helper methods for String processing
  */
@@ -42,5 +46,19 @@ public class StringHelper {
         }
 
         return string;
+    }
+
+    /**
+     * Parse a String into a Date object or null
+     */
+    public static Date parseNullableDate(String value) {
+        if (isNullOrEmpty(value)) return null;
+        else {
+            try {
+                return new SimpleDateFormat("YYYY-MM-DD").parse(value);
+            } catch (ParseException e) {
+                return null;
+            }
+        }
     }
 }

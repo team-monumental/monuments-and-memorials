@@ -53,7 +53,7 @@ class Filters extends React.Component {
     async handleDateFilter(type, value) {
         switch (type) {
             case 'decade':
-                if (value === 'null') return;
+                if (value === 'null') value = null;
                 this.handleFilterChange('decade', value);
                 break;
             case 'range':
@@ -130,7 +130,7 @@ class Filters extends React.Component {
                 <div className="pt-3 d-flex align-items-center">
                     <span className="mr-2">Monuments or memorials created in the</span>
                     <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter('decade', event.target.value)} value={decade}>
-                        <option value="null">-----</option>
+                        <option value="null">None</option>
                         {decades.map(decade => (
                             <option value={decade} key={decade}>{decade}s</option>
                         ))}

@@ -1,29 +1,22 @@
 package com.monumental.services;
 
-import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.util.csvparsing.*;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -195,7 +188,7 @@ public class MonumentService extends ModelService<Monument> {
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double latitude, Double longitude, Integer distance, List<String> tags,
-                                  List<String> materials, SortType sortType) {
+                                  List<String> materials, SortType sortType, Date start, Date end, Integer decade) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -233,6 +226,12 @@ public class MonumentService extends ModelService<Monument> {
             predicates.add(this.buildTagsQuery(builder, query, root, materials, true));
         }
 
+        if (start != null && end != null) {
+            predicates.add(this.buildDateRangeQuery(builder, query, root, start, end));
+        } else if (decade != null) {
+            predicates.add(this.buildDecadeQuery(builder, query, root, decade));
+        }
+
         switch (predicates.size()) {
             case 0:
                 return;
@@ -260,13 +259,17 @@ public class MonumentService extends ModelService<Monument> {
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
-                                 Integer distance, List<String> tags, List<String> materials, SortType sortType) {
+                                 Integer distance, List<String> tags, List<String> materials, SortType sortType,
+                                 Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
 
-        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, sortType);
+        this.buildSearchQuery(
+            builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, sortType,
+            start, end, decade
+        );
 
         List<Monument> monuments = limit != null
                                         ? page != null
@@ -283,13 +286,16 @@ public class MonumentService extends ModelService<Monument> {
      * Count the total number of results for a Monument search
      */
     public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Integer distance,
-                                      List<String> tags, List<String> materials) {
+                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
         query.select(builder.countDistinct(root));
 
-        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, SortType.NONE);
+        this.buildSearchQuery(
+            builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, SortType.NONE,
+            start, end, decade
+        );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
@@ -646,5 +652,17 @@ public class MonumentService extends ModelService<Monument> {
         else {
             return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Predicate buildDateRangeQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Date start, Date end) {
+        return builder.between(root.get("date"), start, end);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Predicate buildDecadeQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Integer decade) {
+        Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
+        Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
+        return builder.between(root.get("date"), start, end);
     }
 }
