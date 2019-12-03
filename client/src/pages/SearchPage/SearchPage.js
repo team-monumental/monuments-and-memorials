@@ -52,7 +52,7 @@ class SearchPage extends React.Component {
                 <Spinner show={pending}/>
                 <Search monuments={monuments} {...this.getQueryParams()} count={count}
                         onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}
-                        onFilterChange={this.handleFilterChange.bind(this)}/>
+                        onFilterChange={this.handleFilterChange.bind(this)} onSortChange={this.handleSortChange.bind(this)}/>
             </div>
         );
     }
@@ -77,6 +77,12 @@ class SearchPage extends React.Component {
     handleFilterChange(filters) {
         this.search({
             d: filters.distance
+        });
+    }
+
+    handleSortChange(sort) {
+        this.search({
+            sort
         });
     }
 

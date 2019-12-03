@@ -30,6 +30,7 @@ public class SearchController {
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
+     * @param sortType - The way in which to sort the results by
      * @return            Matching Monuments based on their title, artist or location
      */
     @GetMapping("/api/search/monuments")
@@ -40,8 +41,12 @@ public class SearchController {
                                           @RequestParam(required = false, value = "lon") Double longitude,
                                           @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
                                           @RequestParam(required = false) List<String> tags,
-                                          @RequestParam(required = false) List<String> materials) {
-        return this.monumentService.search(searchQuery, page, limit, latitude, longitude, distance, tags, materials);
+                                          @RequestParam(required = false) List<String> materials,
+                                          @RequestParam(required = false, value = "sort", defaultValue = "relevance") String sortType) {
+        return this.monumentService.search(
+                searchQuery, page, limit, latitude, longitude, distance, tags, materials,
+                MonumentService.SortType.valueOf(sortType.toUpperCase())
+        );
     }
 
     /**

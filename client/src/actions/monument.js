@@ -85,7 +85,8 @@ export default function fetchMonument(id) {
             lat: res.lat,
             lon: res.lon,
             d: 25,
-            limit: 5
+            limit: 5,
+            sort: 'distance'
         };
         let queryString = QueryString.stringify(queryOptions);
         dispatch(fetchNearbyMonumentsPending());
