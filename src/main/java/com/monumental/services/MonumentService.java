@@ -198,9 +198,9 @@ public class MonumentService extends ModelService<Monument> {
                 break;
             case DISTANCE:
                 sortByDistance = true;
+                break;
             case RELEVANCE:
                 sortByRelevance = true;
-            default:
                 break;
         }
 
