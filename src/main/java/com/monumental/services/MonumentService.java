@@ -94,25 +94,25 @@ public class MonumentService extends ModelService<Monument> {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
         Integer feet = miles * 5280;
 
-        Expression[] expressions = new Expression[]{
-            builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
-                builder.literal(feetSrid)
+        Expression monumentCoordinates = builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
+            builder.literal(feetSrid)
+        );
+
+        Expression comparisonCoordinates = builder.function("ST_Transform", Geometry.class,
+            builder.function("ST_GeometryFromText", Geometry.class,
+                builder.literal(comparisonPointAsString),
+                builder.literal(coordinateSrid)
             ),
-            builder.function("ST_Transform", Geometry.class,
-                builder.function("ST_GeometryFromText", Geometry.class,
-                    builder.literal(comparisonPointAsString),
-                    builder.literal(coordinateSrid)
-                ),
-                builder.literal(feetSrid)
-            ),
-            builder.literal(feet)
-        };
+            builder.literal(feetSrid)
+        );
+
+        Expression radius = builder.literal(feet);
 
         if (orderByDistance) {
             query.orderBy(
                 builder.asc(
                     builder.function("ST_Distance", Long.class,
-                        expressions[0], expressions[1]
+                        monumentCoordinates, comparisonCoordinates
                     )
                 )
             );
@@ -120,7 +120,7 @@ public class MonumentService extends ModelService<Monument> {
 
         return builder.equal(
             builder.function("ST_DWithin", Boolean.class,
-                expressions[0], expressions[1], expressions[2]
+                monumentCoordinates, comparisonCoordinates, radius
             ),
      true);
     }
