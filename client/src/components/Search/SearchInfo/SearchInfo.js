@@ -6,7 +6,7 @@ export default class SearchInfo extends React.Component {
     limitOptions = [10, 25, 50, 100];
 
     render() {
-        const { onLimitChange, limit, page, count } = this.props;
+        const { onLimitChange, onSortChange, limit, page, count, sort, showDistanceSort } = this.props;
 
         const pageEnd = Math.min((limit * (page - 1)) + limit, count);
         const pageStart = Math.min((limit * (page - 1)) + 1, pageEnd);
@@ -28,9 +28,13 @@ export default class SearchInfo extends React.Component {
                 </div>
                 <div>
                     <span>Sort by</span>
-                    <Form.Control as="select" className="ml-2">
-                        <option>Relevance</option>
-                        <option>Distance</option>
+                    <Form.Control as="select" className="ml-2" defaultValue={sort} onChange={event => onSortChange(event.target.value)} >
+                        <option value="relevance">Relevance</option>
+                        {
+                            showDistanceSort ? <option value="distance">Distance</option> : null
+                        }
+                        <option value="newest">Date Created (Newest First)</option>
+                        <option value="oldest">Date Created (Oldest First)</option>
                     </Form.Control>
                 </div>
             </div>

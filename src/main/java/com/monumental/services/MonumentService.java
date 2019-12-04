@@ -41,6 +41,13 @@ public class MonumentService extends ModelService<Monument> {
     public static final int feetSrid = 2877;
 
     /**
+     * This enum is used when choosing how to sort search results
+     */
+    public enum SortType {
+        RELEVANCE, DISTANCE, NEWEST, OLDEST, NONE;
+    }
+
+    /**
      * Builds a similarity query on the Monument's title, artist and description fields, and adds them to your CriteriaQuery
      * @param builder           Your CriteriaBuilder
      * @param query             Your CriteriaQuery
@@ -75,28 +82,45 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Creates a PostGIS ST_DWithin query on the Monument's point field and adds it to the specified CriteriaQuery
      * @param builder The CriteriaBuilder for the query
+     * @param query The CriteriaQuery being created
      * @param root The Root associated with the CriteriaQuery
      * @param latitude The latitude of the point to compare to
      * @param longitude The longitude of the point to compare to
-     * @param miles - The number of miles from the comparison point to check
+     * @param miles The number of miles from the comparison point to check
+     * @param orderByDistance If true, results will be ordered by distance ascending
      */
-    private Predicate buildDWithinQuery(CriteriaBuilder builder, Root root, Double latitude, Double longitude, Integer miles) {
+    private Predicate buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude, Double longitude,
+                                        Integer miles, Boolean orderByDistance) {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
         Integer feet = miles * 5280;
 
+        Expression monumentCoordinates = builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
+            builder.literal(feetSrid)
+        );
+
+        Expression comparisonCoordinates = builder.function("ST_Transform", Geometry.class,
+            builder.function("ST_GeometryFromText", Geometry.class,
+                builder.literal(comparisonPointAsString),
+                builder.literal(coordinateSrid)
+            ),
+            builder.literal(feetSrid)
+        );
+
+        Expression radius = builder.literal(feet);
+
+        if (orderByDistance) {
+            query.orderBy(
+                builder.asc(
+                    builder.function("ST_Distance", Long.class,
+                        monumentCoordinates, comparisonCoordinates
+                    )
+                )
+            );
+        }
+
         return builder.equal(
             builder.function("ST_DWithin", Boolean.class,
-                builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
-                    builder.literal(feetSrid)
-                ),
-                builder.function("ST_Transform", Geometry.class,
-                    builder.function("ST_GeometryFromText", Geometry.class,
-                        builder.literal(comparisonPointAsString),
-                        builder.literal(coordinateSrid)
-                    ),
-                    builder.literal(feetSrid)
-                ),
-                builder.literal(feet)
+                monumentCoordinates, comparisonCoordinates, radius
             ),
      true);
     }
@@ -154,19 +178,38 @@ public class MonumentService extends ModelService<Monument> {
      * @param distance - The distance from the comparison point to search in, units of miles
      * @param tags - List of tag names to search by
      * @param materials - List of material tag names to search by
+     * @param sortType - The way in which to sort the results by
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double latitude, Double longitude, Integer distance, List<String> tags,
-                                  List<String> materials, Boolean orderByResults) {
+                                  List<String> materials, SortType sortType) {
 
         List<Predicate> predicates = new ArrayList<>();
 
+        boolean sortByRelevance = false;
+        boolean sortByDistance = false;
+
+        switch (sortType) {
+            case NEWEST:
+                this.sortByDate(builder, query, root, true);
+                break;
+            case OLDEST:
+                this.sortByDate(builder, query, root, false);
+                break;
+            case DISTANCE:
+                sortByDistance = true;
+                break;
+            case RELEVANCE:
+                sortByRelevance = true;
+                break;
+        }
+
         if (!isNullOrEmpty(searchQuery)) {
-            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, orderByResults));
+            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, sortByRelevance));
         }
 
         if (latitude != null && longitude != null && distance != null) {
-            predicates.add(this.buildDWithinQuery(builder, root, latitude, longitude, distance));
+            predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance, sortByDistance));
         }
 
         if (tags != null && tags.size() > 0) {
@@ -200,16 +243,17 @@ public class MonumentService extends ModelService<Monument> {
      * @param distance - The distance from the comparison point to search in, units of miles
      * @param tags - List of tag names to search by
      * @param materials - List of material tag names to search by
+     * @param sortType - The way in which to sort the results by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
-                                 Integer distance, List<String> tags, List<String> materials) {
+                                 Integer distance, List<String> tags, List<String> materials, SortType sortType) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
 
-        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, true);
+        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, sortType);
 
         List<Monument> monuments = limit != null
                                         ? page != null
@@ -232,7 +276,7 @@ public class MonumentService extends ModelService<Monument> {
         Root<Monument> root = query.from(Monument.class);
         query.select(builder.countDistinct(root));
 
-        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, false);
+        this.buildSearchQuery(builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, SortType.NONE);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
@@ -396,5 +440,20 @@ public class MonumentService extends ModelService<Monument> {
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    /**
+     * Sort the query by the monuments' date field
+     * @param builder The CriteriaBuilder for the query
+     * @param query The CriteriaQuery being created
+     * @param root The Root associated with the CriteriaQuery
+     * @param newestFirst If true, the results will be sorted in descending order
+     */
+    private void sortByDate(CriteriaBuilder builder, CriteriaQuery query, Root root, Boolean newestFirst) {
+        query.orderBy(
+            newestFirst ?
+                builder.desc(root.get("date")) :
+                builder.asc(root.get("date"))
+        );
     }
 }
