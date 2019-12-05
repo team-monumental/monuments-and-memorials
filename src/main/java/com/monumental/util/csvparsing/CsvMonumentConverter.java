@@ -56,10 +56,9 @@ public class CsvMonumentConverter {
                     monument.setTitle(value);
                     break;
                 case 3: // Date
-                    // I made a couple of assumptions about the format of the dates in the file:
-                    // 1. The dates would be in the format dd-MM-yyyy
-                    // 2. If the day and month were unknown, the cell would just contain yyyy
-                    // 3. In the case described in 2, the day and month would be set to 01-01
+                    // 1. Dates must be in the following format: dd-MM-yyyy
+                    // 2. If the day and month are unknown, the cell must contain: yyyy
+                    // 3. In the case described in 2, the day and month are set to 01-01
                     if (!value.isEmpty()) {
                         String[] dateArray = value.split("-");
 

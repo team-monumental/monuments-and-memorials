@@ -17,18 +17,28 @@ export default class BulkCreateForm extends React.Component {
             fileUpload: {
                 file: {},
                 isValid: true,
-                message: ''
+                message: 'No file chosen',
+                errorMessage: ''
             },
-            showingMoreInformation: false
+            showingMoreInformation: false,
+            fileUploadInputKey: 0
         };
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        console.log('Form submitted');
+        this.resetForm(false);
+
+        if (this.validateForm()) {
+            console.log('Valid form!')
+        }
     }
 
+    /**
+     * Handles when a file is uploaded to the file upload input
+     * @param event - The upload event fired by the input
+     */
     handleFileUploadChange(event) {
         const { fileUpload } = this.state;
 
@@ -38,10 +48,9 @@ export default class BulkCreateForm extends React.Component {
         }
         else {
             fileUpload.file = event.target.files[0];
+            fileUpload.message = event.target.files[0].name;
             this.setState({fileUpload});
         }
-
-        console.log(fileUpload);
     }
 
     handleMoreInformationClick() {
@@ -50,8 +59,59 @@ export default class BulkCreateForm extends React.Component {
         this.setState({showingMoreInformation: !showingMoreInformation});
     }
 
+    /**
+     * Resets the state of the Form
+     * This means resetting the validation state for all inputs to true and clearing all error messages
+     * @param resetValue - If true, also resets the values of the inputs
+     */
+    resetForm(resetValue) {
+        const { fileUpload } = this.state;
+        let { fileUploadInputKey } = this.state;
+
+        fileUpload.isValid = true;
+        fileUpload.message = 'No file chosen';
+        fileUpload.errorMessage = '';
+
+        if (resetValue) {
+            fileUpload.file = {};
+            fileUploadInputKey++;
+        }
+
+        this.setState({fileUpload, fileUploadInputKey});
+    }
+
+    handleCancelButtonClick() {
+        const { onCancelButtonClick } = this.props;
+
+        onCancelButtonClick();
+    }
+
+    /**
+     * Validates the Form
+     * If any of the inputs are invalid, the entire Form is considered invalid
+     * @returns {boolean} - True if the Form is valid, False otherwise
+     */
+    validateForm() {
+        const { fileUpload } = this.state;
+        let formIsValid = true;
+
+        /* File Upload Validation */
+        /* A File upload is required */
+        if (fileUpload.file.size === undefined) {
+            fileUpload.isValid = false;
+            fileUpload.errorMessage = 'A file is required';
+            formIsValid = false;
+        }
+
+        if (!formIsValid) {
+            this.setState({fileUpload});
+        }
+
+        return formIsValid;
+    }
+
     render() {
-        const { fileUpload, showingMoreInformation } = this.state;
+        const { fileUpload, showingMoreInformation, fileUploadInputKey } = this.state;
 
         const moreInformationLink = (
             <div className='more-information-link'
@@ -61,7 +121,7 @@ export default class BulkCreateForm extends React.Component {
         );
 
         const hideMoreInformationLink = (
-            <div className='more-information-link'
+            <div className='more-information-link hide-link'
                  onClick={() => this.handleMoreInformationClick()}>
                 Hide More Information
             </div>
@@ -74,10 +134,10 @@ export default class BulkCreateForm extends React.Component {
                 </div>
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
-                    <Form.Group controlId='bulk-create-form-file-upload'>
+                    <Form.Group className='file-upload-form-group'>
                         <Form.Label>Upload a CSV File:</Form.Label>
-                        <label for='file-upload-input' className='file-upload-input-label'>
-                            <text>CHOOSE A FILE</text>
+                        <label htmlFor='file-upload-input' className='file-upload-input-label'>
+                            <span>CHOOSE A FILE</span>
                         </label>
                         <Form.Control
                             type='file'
@@ -86,18 +146,50 @@ export default class BulkCreateForm extends React.Component {
                             isInvalid={!fileUpload.isValid}
                             accept='.csv'
                             className='file-upload-input'
+                            key={fileUploadInputKey}
                         />
-                        <Form.Control.Feedback type='invalid'>{fileUpload.message}</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{fileUpload.errorMessage}</Form.Control.Feedback>
+                        <div className={fileUpload.isValid ? 'file-upload-input-file-name' : 'd-none'}>
+                            {fileUpload.message}
+                        </div>
                     </Form.Group>
 
                     <Collapse in={showingMoreInformation}>
-                        <div>
+                        <div className='more-information-container'>
                             <MoreInformation/>
                         </div>
                     </Collapse>
 
                     {!showingMoreInformation && moreInformationLink}
                     {showingMoreInformation && hideMoreInformationLink}
+
+                    <ButtonToolbar className={showingMoreInformation ? 'button-toolbar-extra-padding' : null}>
+                        <Button
+                            variant='primary'
+                            type='submit'
+                            className='mr-4 mt-1'
+                        >
+                            Submit
+                        </Button>
+
+                        <Button
+                            variant='secondary'
+                            type='button'
+                            onClick={() => this.resetForm(true)}
+                            className='mr-4 mt-1'
+                        >
+                            Clear
+                        </Button>
+
+                        <Button
+                            variant='danger'
+                            type='button'
+                            onClick={() => this.handleCancelButtonClick()}
+                            className='mt-1'
+                        >
+                            Cancel
+                        </Button>
+                    </ButtonToolbar>
                 </Form>
             </div>
         );

@@ -14,6 +14,10 @@ class MonumentBulkCreatePage extends React.Component {
 
     }
 
+    handleBulkCreateFormCancelButtonClick() {
+        this.props.history.goBack();
+    }
+
     render() {
         return (
             <div className='bulk-create-page-container'>
@@ -21,7 +25,9 @@ class MonumentBulkCreatePage extends React.Component {
                     <ContributionAppreciation/>
                 </div>
                 <div className='column form-column'>
-                    <BulkCreateForm/>
+                    <BulkCreateForm
+                        onCancelButtonClick={() => this.handleBulkCreateFormCancelButtonClick()}
+                    />
                 </div>
             </div>
         );
