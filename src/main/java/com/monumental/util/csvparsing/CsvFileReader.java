@@ -1,6 +1,8 @@
 package com.monumental.util.csvparsing;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class used to read CSV files
@@ -55,6 +57,26 @@ public class CsvFileReader {
         }
 
         return this.reader.readLine();
+    }
+
+    /**
+     * Method to read the entire contents from the CSV file into a List of Strings split on newline characters
+     * @return List<String> - Entire contents from the CSV file, split on newlines
+     * @throws IOException - If the CsvFileReader is unable to read from the specified file
+     */
+    public List<String> readEntireFile() throws IOException {
+        if (this.reader == null) {
+            return null;
+        }
+
+        List<String> csvContents = new ArrayList<>();
+        String csvRow;
+
+        while ((csvRow = this.readNextRow()) != null) {
+            csvContents.add(csvRow);
+        }
+
+        return csvContents;
     }
 
     /**

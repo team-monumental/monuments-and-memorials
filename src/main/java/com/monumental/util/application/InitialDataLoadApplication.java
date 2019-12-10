@@ -1,11 +1,8 @@
 package com.monumental.util.application;
 
-import com.monumental.models.Monument;
-import com.monumental.models.Tag;
-import com.monumental.repositories.MonumentRepository;
-import com.monumental.services.TagService;
+import com.monumental.services.MonumentService;
+import com.monumental.util.csvparsing.BulkCreateResult;
 import com.monumental.util.csvparsing.CsvFileReader;
-import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -13,11 +10,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,87 +36,45 @@ public class InitialDataLoadApplication {
         app.setWebApplicationType(WebApplicationType.NONE);
         ConfigurableApplicationContext context = app.run(args);
 
-        String pathToDatasetCsv = "/Users/benvogler/Downloads/Initial Dataset.csv";
-        String csvRow;
-        int rowCount = 0;
-        ArrayList<CsvMonumentConverterResult> results = new ArrayList<>();
+        String pathToDatasetCsv = "C:\\Users\\nickb\\Documents\\Initial Dataset.csv";
 
-        MonumentRepository monumentRepository = context.getBean(MonumentRepository.class);
-        TagService tagService = context.getBean(TagService.class);
+        MonumentService monumentService = context.getBean(MonumentService.class);
 
         // Create our CsvFileReader, passing it the path to the dataset file
         CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetCsv);
 
         try {
             csvFileReader.initialize();
-            // Read the rows in the file until there are no more to read
-            while ((csvRow = csvFileReader.readNextRow()) != null) {
-                // Increment the rowCount
-                rowCount++;
-                System.out.println("Processing row number: " + rowCount);
 
-                try {
-                    // Convert the row into a CsvMonumentConverterResult object
-                    CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip());
-                    // Validate the CsvMonumentConverterResult's Monument
-                    Monument.ValidationResult validationResult = result.getMonument().validate(Monument.New.class);
-                    // If the Monument is valid, add the CsvMonumentConverterResult to the accumulating list
-                    if (validationResult.isValid()) {
-                        results.add(result);
-                    }
-                    else {
-                        System.out.println("Failed to validate Monument: " + result.getMonument().toString());
-                        System.out.println("Reasons: ");
-                        for (String violationMessage : validationResult.getViolationMessages()) {
-                            System.out.println("\t" + violationMessage);
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    System.out.println("Failed to process row number: " + rowCount);
-                    System.out.println("Exception: " + e.toString());
-                }
-            }
+            // Read the entire CSV file contents
+            List<String> csvContents = csvFileReader.readEntireFile();
 
-            System.out.println("Number of Monuments created: " + results.size());
+            // Convert the contents of the CSV file into Monument objects and insert them into the database
+            BulkCreateResult bulkCreateResult = monumentService.bulkCreateMonumentsFromCsv(csvContents);
 
-            int monumentInsertedCount = 0;
-            int tagInsertedCount = 0;
-            int materialInsertedCount = 0;
+            System.out.println("\nNumber of Monuments inserted into the database: " + bulkCreateResult.getMonumentsInsertedCount());
 
-            for (CsvMonumentConverterResult r : results) {
+            System.out.println("Total Number of Invalid Monuments: " + bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().size());
 
-                // Insert the Monument
-                monumentRepository.save(r.getMonument());
-                monumentInsertedCount++;
+            List<Integer> invalidCsvMonumentRecordsByRowNumber = new ArrayList<>(bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().keySet());
+            Collections.sort(invalidCsvMonumentRecordsByRowNumber);
 
-                // Insert all of the Tags associated with the Monument
-                // This isn't done by the above insert call because the Tag Model "owns" the monument_tag join table
-                List<Tag> tags = r.getTags();
-                if (tags == null) tags = new ArrayList<>();
+            for (Integer csvRowNumber : invalidCsvMonumentRecordsByRowNumber) {
+                CsvMonumentConverterResult invalidCsvRecord = bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber()
+                        .get(csvRowNumber);
+                List<String> validationErrors = bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().
+                        get(csvRowNumber);
 
-                List<Tag> materials = r.getMaterials();
-                if (materials == null) materials = new ArrayList<>();
+                System.out.println("\n----- INVALID CSV RECORD ------");
+                System.out.println("Invalid Row Number: " + csvRowNumber);
+                System.out.println(invalidCsvRecord.toString());
+                System.out.println("Validation Errors:");
 
-                tags.addAll(materials);
-
-                if (tags.size() > 0) {
-                    for (Tag tag : tags) {
-                        try {
-                            tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
-                            if (tag.getIsMaterial()) materialInsertedCount++;
-                            else tagInsertedCount++;
-                        } catch (DataIntegrityViolationException e) {
-                            // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                            // These are disregarded for now - the correct tags are still being created
-                        }
-                    }
+                for (String validationError : validationErrors) {
+                    System.out.println(validationError);
                 }
             }
 
-            System.out.println("Number of Monuments inserted into the database: " + monumentInsertedCount);
-            System.out.println("Number of Tags inserted into the database: " + tagInsertedCount);
-            System.out.println("Number of Material tags inserted into the database: " + materialInsertedCount);
         }
         catch (FileNotFoundException e) {
             System.out.println("Unable to read from the specified filepath. File does not exist.");

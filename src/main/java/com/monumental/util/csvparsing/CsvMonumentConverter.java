@@ -16,29 +16,47 @@ import java.util.List;
  * 2. Convert a Monument into a CSV row
  */
 public class CsvMonumentConverter {
+
+    /**
+     * Constant for the number of CSV columns currently supported in Bulk Monument Creation
+     */
+    public static final int numberOfCsvColumns = 14;
+
     /**
      * Static method for converting a CSV row representing a Monument into a CsvMonumentConverterResult object
      * @param csvRow - CSV row representing a Monument, as a String
      * @return CsvMonumentConverterResult - the CsvMonumentConverterResult that is represented by the CSV row
      */
     public static CsvMonumentConverterResult convertCsvRow(String csvRow) {
+        if (csvRow == null) {
+            return null;
+        }
+
         // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
         // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
         String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
-        MonumentService monumentService = new MonumentService();
+        // If the length of the CSV row is not the expected length, throw an exception
+        if (csvRowArray.length != numberOfCsvColumns) {
+            throw new IllegalArgumentException("Invalid number of CSV columns");
+        }
 
         GregorianCalendar calendar = new GregorianCalendar();
 
         Monument monument = new Monument();
         CsvMonumentConverterResult result = new CsvMonumentConverterResult();
 
-        Double latitude = 0.0;
-        Double longitude = 0.0;
+        Double latitude = null;
+        Double longitude = null;
 
         for (int columnIndex = 0; columnIndex < csvRowArray.length; columnIndex++) {
             // Grab the value at the current column and replace the beginning and ending quotes if applicable
-            String value = removeBeginningAndEndingQuotes(csvRowArray[columnIndex]);
+            String value = StringHelper.removeBeginningAndEndingQuotes(csvRowArray[columnIndex]);
+
+            // Skip empty columns
+            if (value.isEmpty()) {
+                continue;
+            }
 
             switch (columnIndex) {
                 case 0: // Submitted By
@@ -59,72 +77,68 @@ public class CsvMonumentConverter {
                     // 1. Dates must be in the following format: dd-MM-yyyy
                     // 2. If the day and month are unknown, the cell must contain: yyyy
                     // 3. In the case described in 2, the day and month are set to 01-01
-                    if (!value.isEmpty()) {
-                        String[] dateArray = value.split("-");
+                    String[] dateArray = value.split("-");
 
-                        // Parsing format "yyyy"
-                        if (dateArray.length == 1) {
-                            monument.setDate(monumentService.createMonumentDate(dateArray[0]));
-                        }
-                        // Parsing format "dd-mm-yyyy"
-                        else if (dateArray.length == 3) {
-                            int monthInt = Integer.parseInt(dateArray[1]);
-                            monthInt--;
-                            String zeroBasedMonth = Integer.toString(monthInt);
+                    // Parsing format "yyyy"
+                    if (dateArray.length == 1) {
+                        monument.setDate(MonumentService.createMonumentDate(dateArray[0]));
+                    }
+                    // Parsing format "dd-mm-yyyy"
+                    else if (dateArray.length == 3) {
+                        int monthInt = Integer.parseInt(dateArray[1]);
+                        monthInt--;
+                        String zeroBasedMonth = Integer.toString(monthInt);
 
-                            monument.setDate(monumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
-                                    dateArray[0]));
-                        }
+                        monument.setDate(MonumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
+                                dateArray[0]));
                     }
 
                     break;
-                case 6: // Material
-                    result.addTag(createTag(value, monument, true));
+                case 4: // Materials
+                    // Split on commas in-case there are more than one Material in the column
+                    String[] materialArray = value.split(",");
+
+                    for (String materialValue : materialArray) {
+                        result.addTag(createTag(materialValue, monument, true));
+                    }
+
                     break;
-                case 7: // Inscription
+                case 5: // Inscription
                     monument.setInscription(value);
                     break;
-                case 9: // Latitude
-                    if (!value.isEmpty()) {
-                        latitude = Double.parseDouble(value);
-                    }
+                case 6: // Latitude
+                    latitude = Double.parseDouble(value);
                     break;
-                case 10: // Longitude
-                    if (!value.isEmpty()) {
-                        longitude = Double.parseDouble(value);
-                    }
+                case 7: // Longitude
+                    longitude = Double.parseDouble(value);
                     break;
-                case 11: // City
+                case 8: // City
                     monument.setCity(value);
                     break;
-                case 12: // State
+                case 9: // State
                     monument.setState(value);
                     break;
-                case 13: // Tag columns
-                case 14:
-                case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 20:
-                    if (!value.isEmpty()) {
-                        // Split on commas in-case there are more than one Tag in the column
-                        String[] tagArray = value.split(",");
+                case 10: // Address
+                    monument.setAddress(value);
+                    break;
+                case 11: // Tags
+                    // Split on commas in-case there are more than one Tag in the column
+                    String[] tagArray = value.split(",");
 
-                        for (String tagValue : tagArray) {
-                            result.addTag(createTag(tagValue, monument, false));
-                        }
+                    for (String tagValue : tagArray) {
+                        result.addTag(createTag(tagValue, monument, false));
                     }
 
                     break;
-                case 22: // Reference
+                case 12: // Reference
                     Reference newReference = new Reference();
                     newReference.setUrl(value);
                     newReference.setMonument(monument);
 
                     monument.getReferences().add(newReference);
                     break;
-                case 25: // Image filename
+                    // TODO: Support images in Bulk Monument Creation
+                /*case 25: // Image filename
                     if (!value.isEmpty()) {
                         value = formatJpgImageFileName(value);
 
@@ -135,11 +149,11 @@ public class CsvMonumentConverter {
 
                         monument.getImages().add(newImage);
                     }
-                    break;
+                    break;*/
             }
         }
 
-        Point point = monumentService.createMonumentPoint(longitude, latitude);
+        Point point = MonumentService.createMonumentPoint(longitude, latitude);
         monument.setCoordinates(point);
 
         result.setMonument(monument);
@@ -230,21 +244,6 @@ public class CsvMonumentConverter {
         csvRow += convertReferencesToCsvCell(monument.getReferences());
 
         return csvRow;
-    }
-
-    /**
-     * Static method to remove beginning and ending quotes from a specified string
-     * Does nothing if there are not both beginning and ending quotes
-     * @param string - the String to remove the quotes from
-     * @return String - the updated String, with removed quotes if applicable
-     */
-    private static String removeBeginningAndEndingQuotes(String string) {
-        // If the string begins and ends with quotes, remove them
-        if (string.startsWith("\"") && string.endsWith("\"")) {
-            string = string.substring(1, (string.length() - 1));
-        }
-
-        return string;
     }
 
     /**

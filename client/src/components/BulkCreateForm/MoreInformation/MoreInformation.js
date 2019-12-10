@@ -89,10 +89,11 @@ export default class MoreInformation extends React.Component {
                             </li>
                             <li>
                                 <div className='column-name'>
-                                    Material:
+                                    Materials:
                                 </div>
                                 <div className='column-explanation'>
-                                    The material that the Monument or Memorial is made out of.
+                                    The material that the Monument or Memorial is made out of. To include more than one
+                                    Material, simply separate them with a comma.
                                 </div>
                                 <div className='column-explanation-notice'>
                                     THIS IS A REQUIRED FIELD.
@@ -184,8 +185,8 @@ export default class MoreInformation extends React.Component {
                     </p>
                     <ol>
                         <li>
-                            The headers of the CSV file are out of order OR a column is missing. In this situation,
-                            the CSV file will be rejected and no new Monuments/Memorials will be created.
+                            A column is missing from the CSV file. In this situation, the CSV file will be rejected and
+                            no new Monuments/Memorials will be created.
                         </li>
                         <li>
                             Some of the rows of the CSV file have data in the wrong columns. In this situation,

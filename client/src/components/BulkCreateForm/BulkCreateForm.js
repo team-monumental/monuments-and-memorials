@@ -31,7 +31,7 @@ export default class BulkCreateForm extends React.Component {
         this.resetForm(false);
 
         if (this.validateForm()) {
-            console.log('Valid form!')
+            this.submitForm();
         }
     }
 
@@ -108,6 +108,20 @@ export default class BulkCreateForm extends React.Component {
         }
 
         return formIsValid;
+    }
+
+    /**
+     * Build the form object to send to the onSubmit handler
+     */
+    submitForm() {
+        const { fileUpload } = this.state;
+        const { onSubmit } = this.props;
+
+        let form = {
+            file: fileUpload.file
+        };
+
+        onSubmit(form);
     }
 
     render() {
