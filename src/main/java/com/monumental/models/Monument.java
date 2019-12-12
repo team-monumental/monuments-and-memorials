@@ -271,15 +271,15 @@ public class Monument extends Model implements Serializable {
         }
 
         if (this.date != null) {
+            if (StringHelper.isNullOrEmpty(this.artist)) {
+                description += " was created";
+            }
+
             description += " in ";
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
             description += simpleDateFormat.format(this.date);
-        }
-
-        if (StringHelper.isNullOrEmpty(description)) {
-            return "";
         }
 
         description += ".";

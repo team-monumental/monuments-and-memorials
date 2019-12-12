@@ -155,6 +155,42 @@ public class MonumentUnitTests {
         assertEquals("This is a Description", result);
     }
 
+    @Test
+    public void testMonument_getDescription_NotNullCityNullState() {
+        Monument monument = makeTestMonument("Title", "City", null, "Artist", new Date(), null);
+
+        String result = monument.getDescription();
+
+        assertEquals("The Title in City was created by Artist in 2019.", result);
+    }
+
+    @Test
+    public void testMonument_getDescription_NullCityNotNullState() {
+        Monument monument = makeTestMonument("Title", null, "State", "Artist", new Date(), null);
+
+        String result = monument.getDescription();
+
+        assertEquals("The Title in State was created by Artist in 2019.", result);
+    }
+
+    @Test
+    public void testMonument_getDescription_NullArtistNotNullDate() {
+        Monument monument = makeTestMonument("Title", "City", "State", null, new Date(), null);
+
+        String result = monument.getDescription();
+
+        assertEquals("The Title in City, State was created in 2019.", result);
+    }
+
+    @Test
+    public void testMonument_getDescription_NotNullArtistNullDate() {
+        Monument monument = makeTestMonument("Title", "City", "State", "Artist", null, null);
+
+        String result = monument.getDescription();
+
+        assertEquals("The Title in City, State was created by Artist.", result);
+    }
+
     /**
      * Helper function to make a test Monument based on the specified parameters
      * @param title - String to set the Monument's title to
