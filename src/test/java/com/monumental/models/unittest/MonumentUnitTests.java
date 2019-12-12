@@ -23,6 +23,13 @@ public class MonumentUnitTests {
     /** getDescription Tests **/
 
     @Test
+    public void testMonument_getDescription_NullTitle() {
+        Monument monument = makeTestMonument(null, "City", "State", "Artist", new Date(), null);
+
+        assertNull(monument.getDescription());
+    }
+
+    @Test
     public void testMonument_getDescription_TitleStartsWithThe_LowerCase() {
         Monument monument = makeTestMonument("the Title", "City", "State", "Artist", new Date(), null);
 

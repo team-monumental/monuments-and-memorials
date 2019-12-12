@@ -1,6 +1,7 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Point;
 import org.hibernate.LazyInitializationException;
 
@@ -238,17 +239,35 @@ public class Monument extends Model implements Serializable {
 
     /**
      * Generates a description of this Monument based on some of its state
+     * If the Monument does not have a title, no description is generated
+     * since Monuments should never have no title
      * @return String - the description of this Monument
      */
     private String generateDescription() {
+        if (this.title == null) {
+            return null;
+        }
+
         String description = "";
 
-        if (this.title != null) {
-            if (!this.title.toLowerCase().startsWith("the ")) {
-                description += "The ";
-            }
+        if (!this.title.toLowerCase().startsWith("the ")) {
+            description += "The ";
+        }
 
-            description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
+        description += this.title;
+
+        if (!StringHelper.isNullOrEmpty(this.city) && !StringHelper.isNullOrEmpty(this.state)) {
+            description += " in " + this.city + ", " + this.state;
+        }
+        else if (!StringHelper.isNullOrEmpty(this.city) && StringHelper.isNullOrEmpty(this.state)) {
+            description += " in " + this.city;
+        }
+        else if (StringHelper.isNullOrEmpty(this.city) && !StringHelper.isNullOrEmpty(this.state)) {
+            description += " in " + this.state;
+        }
+
+        if (!StringHelper.isNullOrEmpty(this.artist)) {
+            description += " was created by " + this.artist;
         }
 
         if (this.date != null) {
@@ -257,6 +276,10 @@ public class Monument extends Model implements Serializable {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
             description += simpleDateFormat.format(this.date);
+        }
+
+        if (StringHelper.isNullOrEmpty(description)) {
+            return "";
         }
 
         description += ".";
