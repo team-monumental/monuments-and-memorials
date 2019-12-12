@@ -1,12 +1,12 @@
 import React from 'react';
 import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
-import ContributionAppreciation from "../../components/ContributionAppreciation/ContributionAppreciation";
-import BulkCreateForm from "../../components/BulkCreateForm/BulkCreateForm";
-import {readCsvFileContents} from "../../utils/file-util";
-import bulkCreateMonuments from "../../actions/bulk-create";
-import Spinner from "../../components/Spinner/Spinner";
+import { withRouter } from 'react-router-dom';
+import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
+import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
+import { readCsvFileContents } from '../../utils/file-util';
+import bulkCreateMonuments from '../../actions/bulk-create';
+import Spinner from '../../components/Spinner/Spinner';
 
 /**
  * Root container for the page to bulk create Monuments

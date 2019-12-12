@@ -2,7 +2,7 @@ import React from 'react';
 import './FeedbackModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import {isEmptyObject} from "../../../utils/object-util";
+import { isEmptyObject } from '../../../utils/object-util';
 
 /**
  * Presentational component for the Model shown when a Bulk Monument Create operation completes

@@ -1,4 +1,4 @@
-import { BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR } from "../constants";
+import { BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR } from '../constants';
 
 const initialState = {
     bulkCreateMonumentsPending: false,

@@ -2,9 +2,9 @@ import React from 'react';
 import './BulkCreateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
 import validator from 'validator';
-import { csvFileRegex } from "../../utils/regex-util";
-import MoreInformation from "./MoreInformation/MoreInformation";
-import FeedbackModal from "./FeedbackModal/FeedbackModal";
+import { csvFileRegex } from '../../utils/regex-util';
+import MoreInformation from './MoreInformation/MoreInformation';
+import FeedbackModal from './FeedbackModal/FeedbackModal';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments

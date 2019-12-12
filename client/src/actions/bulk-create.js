@@ -1,5 +1,5 @@
-import { BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR } from "../constants";
-import { post } from "../utils/api-util";
+import { BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR } from '../constants';
+import { post } from '../utils/api-util';
 
 function bulkCreateMonumentsPending() {
     return {

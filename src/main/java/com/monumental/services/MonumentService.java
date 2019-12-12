@@ -511,13 +511,11 @@ public class MonumentService extends ModelService<Monument> {
         for (CsvMonumentConverterResult validResult : validResults) {
             // Insert the Monument
             try {
-                System.out.println("Trying to insert Monument");
                 Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
                 bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
-            } catch (Exception e) {
+            } catch (DataIntegrityViolationException e) {
                 // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                 // These are disregarded for now - the correct tags are still being created
-                e.printStackTrace();
             }
             monumentsInsertedCount++;
 
@@ -538,10 +536,9 @@ public class MonumentService extends ModelService<Monument> {
                 for (Tag tag : tags) {
                     try {
                         tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
-                    } catch (Exception e) {
+                    } catch (DataIntegrityViolationException e) {
                         // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                         // These are disregarded for now - the correct tags are still being created
-                        e.printStackTrace();
                     }
                 }
             }
