@@ -14,7 +14,7 @@ import Spinner from "../../components/Spinner/Spinner";
 class MonumentBulkCreatePage extends React.Component {
 
     static mapStateToProps(state) {
-
+        return state.bulkCreatePage;
     }
 
     handleBulkCreateFormCancelButtonClick() {
@@ -32,9 +32,7 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        const { bulkCreateMonumentsPending, result, error } = this.props;
-
-        console.log(result);
+        const { bulkCreateMonumentsPending, result } = this.props;
 
         return (
             <div className='bulk-create-page-container'>
@@ -46,6 +44,7 @@ class MonumentBulkCreatePage extends React.Component {
                     <BulkCreateForm
                         onCancelButtonClick={() => this.handleBulkCreateFormCancelButtonClick()}
                         onSubmit={(form) => this.handleBulkCreateFormSubmit(form)}
+                        bulkCreateResult={result}
                     />
                 </div>
             </div>

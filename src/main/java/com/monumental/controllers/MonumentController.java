@@ -190,7 +190,7 @@ public class MonumentController {
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
     @PostMapping("/api/monument/bulk-create")
-    public BulkCreateResult bulkCreateMonuments(@RequestParam List<String> csvContents) {
+    public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
         return this.monumentService.bulkCreateMonumentsFromCsv(csvContents);
     }
 }

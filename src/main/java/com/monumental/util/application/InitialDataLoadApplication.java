@@ -3,7 +3,6 @@ package com.monumental.util.application;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.BulkCreateResult;
 import com.monumental.util.csvparsing.CsvFileReader;
-import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -60,14 +59,14 @@ public class InitialDataLoadApplication {
             Collections.sort(invalidCsvMonumentRecordsByRowNumber);
 
             for (Integer csvRowNumber : invalidCsvMonumentRecordsByRowNumber) {
-                CsvMonumentConverterResult invalidCsvRecord = bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber()
+                String invalidCsvRecordString = bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber()
                         .get(csvRowNumber);
                 List<String> validationErrors = bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().
                         get(csvRowNumber);
 
                 System.out.println("\n----- INVALID CSV RECORD ------");
                 System.out.println("Invalid Row Number: " + csvRowNumber);
-                System.out.println(invalidCsvRecord.toString());
+                System.out.println(invalidCsvRecordString);
                 System.out.println("Validation Errors:");
 
                 for (String validationError : validationErrors) {

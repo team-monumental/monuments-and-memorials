@@ -4,6 +4,7 @@ import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
 import validator from 'validator';
 import { csvFileRegex } from "../../utils/regex-util";
 import MoreInformation from "./MoreInformation/MoreInformation";
+import FeedbackModal from "./FeedbackModal/FeedbackModal";
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -42,6 +43,8 @@ export default class BulkCreateForm extends React.Component {
     handleFileUploadChange(event) {
         const { fileUpload } = this.state;
 
+        this.resetForm(false);
+
         if (!validator.matches(event.target.value, csvFileRegex)) {
             event.target.value = '';
             alert('Invalid file type submitted');
@@ -69,11 +72,11 @@ export default class BulkCreateForm extends React.Component {
         let { fileUploadInputKey } = this.state;
 
         fileUpload.isValid = true;
-        fileUpload.message = 'No file chosen';
         fileUpload.errorMessage = '';
 
         if (resetValue) {
             fileUpload.file = {};
+            fileUpload.message = 'No file chosen';
             fileUploadInputKey++;
         }
 
@@ -124,7 +127,12 @@ export default class BulkCreateForm extends React.Component {
         onSubmit(form);
     }
 
+    handleFeedbackModalClose() {
+        this.resetForm(true);
+    }
+
     render() {
+        const { bulkCreateResult } = this.props;
         const { fileUpload, showingMoreInformation, fileUploadInputKey } = this.state;
 
         const moreInformationLink = (
@@ -205,6 +213,13 @@ export default class BulkCreateForm extends React.Component {
                         </Button>
                     </ButtonToolbar>
                 </Form>
+
+                <div className='feedback-modal-container'>
+                    <FeedbackModal
+                        bulkCreateResult={bulkCreateResult}
+                        onClose={() => this.handleFeedbackModalClose()}
+                    />
+                </div>
             </div>
         );
     }

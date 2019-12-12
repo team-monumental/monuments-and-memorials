@@ -5,9 +5,6 @@ import com.vividsolutions.jts.geom.Point;
 import org.hibernate.LazyInitializationException;
 
 import javax.persistence.*;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -246,11 +243,13 @@ public class Monument extends Model implements Serializable {
     private String generateDescription() {
         String description = "";
 
-        if (!this.title.toLowerCase().startsWith("the ")) {
-            description += "The ";
-        }
+        if (this.title != null) {
+            if (!this.title.toLowerCase().startsWith("the ")) {
+                description += "The ";
+            }
 
-        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
+            description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
+        }
 
         if (this.date != null) {
             description += " in ";

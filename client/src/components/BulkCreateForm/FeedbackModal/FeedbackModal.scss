@@ -1,0 +1,61 @@
+.modal-content {
+  .modal-header {
+    padding-bottom: 0;
+
+    button {
+      color: black;
+      padding-top: 1.25rem;
+    }
+
+    .modal-title {
+      color: #61616D;
+    }
+  }
+
+  hr {
+    width: 100%;
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .modal-body {
+    padding: 0.25rem 1rem 0.25rem 1rem;
+
+    .invalid-csv-rows-container {
+      .invalid-csv-rows-detail-container {
+        background-color: lightgray;
+        border: thin solid;
+        max-height: 470px;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        .invalid-csv-row-detail-container {
+          padding-top: 0.5rem;
+          padding-left: 0.25rem;
+
+          .csv-row {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+
+            .csv-row-details {
+              padding-left: 0.75rem;
+            }
+          }
+        }
+
+        .invalid-csv-row-detail-container:first-child {
+          padding-top: 0;
+        }
+      }
+    }
+  }
+
+  .modal-footer {
+    border-top: 2px solid #dee2e6;
+  }
+
+  .btn {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: "Open Sans", sans-serif;
+  }
+}

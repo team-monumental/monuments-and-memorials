@@ -10,9 +10,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.exception.ConstraintViolationException;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
@@ -493,12 +496,13 @@ public class MonumentService extends ModelService<Monument> {
                     validResults.add(result);
                 }
                 else {
-                    bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().put(rowNumber, result);
+                    bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().put(rowNumber, result.toString());
                     bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().put(rowNumber,
                             validationResult.getValidationErrors());
                 }
             } catch (Exception e) {
-                System.out.println("ERROR: " + e.toString());
+                System.out.println("ERROR processing row number: " + rowNumber);
+                System.out.println(e.toString());
             }
         }
 
@@ -506,8 +510,15 @@ public class MonumentService extends ModelService<Monument> {
 
         for (CsvMonumentConverterResult validResult : validResults) {
             // Insert the Monument
-            Monument insertedMonument = monumentRepository.save(validResult.getMonument());
-            bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
+            try {
+                System.out.println("Trying to insert Monument");
+                Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
+                bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
+            } catch (Exception e) {
+                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
+                // These are disregarded for now - the correct tags are still being created
+                e.printStackTrace();
+            }
             monumentsInsertedCount++;
 
             // Insert all of the Tags associated with the Monument
@@ -527,9 +538,10 @@ public class MonumentService extends ModelService<Monument> {
                 for (Tag tag : tags) {
                     try {
                         tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
-                    } catch (DataIntegrityViolationException e) {
+                    } catch (Exception e) {
                         // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                         // These are disregarded for now - the correct tags are still being created
+                        e.printStackTrace();
                     }
                 }
             }

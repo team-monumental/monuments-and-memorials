@@ -16,7 +16,7 @@ public class BulkCreateResult {
 
     private List<Monument> validMonumentRecords;
 
-    private Map<Integer, CsvMonumentConverterResult> invalidCsvMonumentRecordsByRowNumber;
+    private Map<Integer, String> invalidCsvMonumentRecordsByRowNumber;
 
     private Map<Integer, List<String>> invalidCsvMonumentRecordErrorsByRowNumber;
 
@@ -42,11 +42,11 @@ public class BulkCreateResult {
         this.validMonumentRecords = validMonumentRecords;
     }
 
-    public Map<Integer, CsvMonumentConverterResult> getInvalidCsvMonumentRecordsByRowNumber() {
+    public Map<Integer, String> getInvalidCsvMonumentRecordsByRowNumber() {
         return this.invalidCsvMonumentRecordsByRowNumber;
     }
 
-    public void setInvalidCsvMonumentRecordsByRowNumber(Map<Integer, CsvMonumentConverterResult> invalidCsvMonumentRecordsByRowNumber) {
+    public void setInvalidCsvMonumentRecordsByRowNumber(Map<Integer, String> invalidCsvMonumentRecordsByRowNumber) {
         this.invalidCsvMonumentRecordsByRowNumber = invalidCsvMonumentRecordsByRowNumber;
     }
 
