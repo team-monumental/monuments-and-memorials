@@ -12,10 +12,18 @@ import org.hibernate.Hibernate;
 import com.monumental.services.TagService;
 import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -192,5 +200,15 @@ public class MonumentController {
     @PostMapping("/api/monument/bulk-create")
     public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
         return this.monumentService.bulkCreateMonumentsFromCsv(csvContents);
+    }
+
+    /**
+     * Create many Monuments based on the specified .zip file
+     * @param file - MultipartFile representation of the .zip file
+     * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
+     */
+    @PostMapping(value = "/api/monument/bulk-create/zip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) {
+        return this.monumentService.bulkCreateMonumentsFromZip(file);
     }
 }

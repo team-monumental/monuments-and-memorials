@@ -4,6 +4,7 @@ import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.csvparsing.BulkCreateResult;
+import com.monumental.util.csvparsing.CsvFileHelper;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -17,13 +18,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -547,5 +553,37 @@ public class MonumentService extends ModelService<Monument> {
         bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
 
         return bulkCreateResult;
+    }
+
+    /**
+     * Create Monument records from a specified .zip file containing a CSV file and images
+     * @param zipFile - MultipartFile representation of the .zip file
+     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
+     * @throws IllegalArgumentException - If there is not exactly 1 CSV file in the .zip file
+     */
+    public BulkCreateResult bulkCreateMonumentsFromZip(MultipartFile zipFile) {
+        BulkCreateResult result = new BulkCreateResult();
+
+        try {
+            InputStream inputStream = zipFile.getInputStream();
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+
+            int csvFileCount = 0;
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (CsvFileHelper.isCsvFile(zipEntry.getName())) {
+                    csvFileCount++;
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+
+            if (csvFileCount != 1) {
+                throw new IllegalArgumentException("Invalid number of CSV files found in .zip: " + csvFileCount);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

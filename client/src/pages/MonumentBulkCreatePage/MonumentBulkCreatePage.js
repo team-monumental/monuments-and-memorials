@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
 import { readCsvFileContents } from '../../utils/file-util';
-import bulkCreateMonuments from '../../actions/bulk-create';
+import bulkCreateMonuments, { bulkCreateMonumentsZip } from '../../actions/bulk-create';
 import Spinner from '../../components/Spinner/Spinner';
 
 /**
@@ -21,7 +21,7 @@ class MonumentBulkCreatePage extends React.Component {
         this.props.history.goBack();
     }
 
-    async handleBulkCreateFormSubmit(form) {
+    async handleBulkCreateCsvFormSubmit(form) {
         const { dispatch } = this.props;
 
         // First, read all of the lines of the CSV file into an array
@@ -31,19 +31,27 @@ class MonumentBulkCreatePage extends React.Component {
         dispatch(bulkCreateMonuments(csvContents));
     }
 
+    handleBulkCreateZipFormSubmit(form) {
+        const { dispatch } = this.props;
+
+        // Send the .zip file to the server to be processed
+        dispatch(bulkCreateMonumentsZip(form.file));
+    }
+
     render() {
-        const { bulkCreateMonumentsPending, result } = this.props;
+        const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result } = this.props;
 
         return (
             <div className='bulk-create-page-container'>
-                <Spinner show={bulkCreateMonumentsPending}/>
+                <Spinner show={bulkCreateMonumentsPending || bulkCreateMonumentsZipPending}/>
                 <div className='column thank-you-column'>
                     <ContributionAppreciation/>
                 </div>
                 <div className='column form-column'>
                     <BulkCreateForm
                         onCancelButtonClick={() => this.handleBulkCreateFormCancelButtonClick()}
-                        onSubmit={(form) => this.handleBulkCreateFormSubmit(form)}
+                        onCsvSubmit={(form) => this.handleBulkCreateCsvFormSubmit(form)}
+                        onZipSubmit={(form) => this.handleBulkCreateZipFormSubmit(form)}
                         bulkCreateResult={result}
                     />
                 </div>

@@ -39,6 +39,33 @@ export async function post(url, data) {
 }
 
 /**
+ * Send a POST request to the specified url with the specified file
+ * @param url - URL to send the POST to
+ * @param file - File data to send to the specified URL
+ */
+export async function postFile(url, file) {
+    let error = null;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let res = await fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+        .then((res) => {
+            if (!res.ok) {
+                throw Error(res.statusText);
+            }
+        })
+        .then(res => res.json())
+        .catch(err => error = err);
+    console.log(error);
+    if (error || res.error) throw(error || res.error);
+    else return res;
+}
+
+/**
  * Uploads the specified images to the monument-images S3 bucket, inside the images/ folder
  * @param images - List of images to upload to S3
  * @returns {Promise<[]>} - Promise that when awaited, returns a List of S3 Object keys for the uploaded images
