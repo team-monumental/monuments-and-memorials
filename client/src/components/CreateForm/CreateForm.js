@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import NoImageModal from './NoImageModal/NoImageModal';
+import ReviewModal from './ReviewModal/ReviewModal';
 
 /**
  * Presentational component for the Form for creating a new Monument
@@ -83,7 +84,8 @@ export default class CreateForm extends React.Component {
             },
             newMaterials: [],
             tags: [],
-            newTags: []
+            newTags: [],
+            showingReviewModal: false
         };
 
         this.materialsSelectRef = React.createRef();
@@ -147,9 +149,9 @@ export default class CreateForm extends React.Component {
         this.setState({showingNoImageModal: false});
     }
 
-    handleNoImageModalContinue() {
-        this.setState({showingNoImageModal: false});
-        this.submitForm();
+    async handleNoImageModalContinue() {
+        await this.setState({showingNoImageModal: false});
+        this.setState({showingReviewModal: true});
     }
 
     handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
@@ -175,7 +177,7 @@ export default class CreateForm extends React.Component {
                 this.setState({showingNoImageModal: true});
             }
             else {
-                this.submitForm();
+                this.setState({showingReviewModal: true});
             }
         }
     }
@@ -373,12 +375,11 @@ export default class CreateForm extends React.Component {
     }
 
     /**
-     * Build the form object to send to the onSubmit handler
+     * Build the form object based on the current values of the inputs
      */
-    submitForm() {
+    buildForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
-            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
-        const { onSubmit } = this.props;
+        datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
 
         let form = {
             title: title.value,
@@ -411,20 +412,35 @@ export default class CreateForm extends React.Component {
                 break;
         }
 
+        return form;
+    }
+
+    /**
+     * Build a form object and send it to the onSubmit handler
+     */
+    submitForm() {
+        const { onSubmit } = this.props;
+
+        let form = this.buildForm();
+
         onSubmit(form);
+    }
+
+    handleReviewModalCancel() {
+        this.setState({showingReviewModal: false});
     }
 
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
-            materials } = this.state;
+            materials, showingReviewModal } = this.state;
 
         const advancedInformationLink = (
-            <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Show Advanced Information</div>
+            <div className='advanced-information-link more-link' onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
         );
 
         const hideAdvancedInformationLink = (
-            <div className='advanced-information-link' onClick={() => this.handleAdvancedInformationClick()}>Hide Advanced Information</div>
+            <div className='advanced-information-link hide-link' onClick={() => this.handleAdvancedInformationClick()}>Hide More Information</div>
         );
 
         let dateInput;
@@ -754,6 +770,16 @@ export default class CreateForm extends React.Component {
                         onClose={() => this.handleNoImageModalClose()}
                         onCancel={() => this.handleNoImageModalClose()}
                         onContinue={() => this.handleNoImageModalContinue()}
+                    />
+                </div>
+
+                <div className='review-modal-container'>
+                    <ReviewModal
+                        showing={showingReviewModal}
+                        onCancel={() => this.handleReviewModalCancel()}
+                        onConfirm={() => this.submitForm()}
+                        form={this.buildForm()}
+                        dateSelectValue={dateSelectValue}
                     />
                 </div>
             </div>

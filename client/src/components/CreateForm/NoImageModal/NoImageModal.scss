@@ -1,33 +1,35 @@
 .modal-content {
-  .modal-header {
-    padding-bottom: 0;
+  .no-image-modal {
+    &.modal-header {
+      padding-bottom: 0;
 
-    button {
-      color: black;
-      padding-top: 1.25rem;
+      button {
+        color: black;
+        padding-top: 1.25rem;
+      }
+
+      .modal-title {
+        color: #61616D;
+      }
     }
 
-    .modal-title {
-      color: #61616D;
+    &.modal-footer {
+      border-top: 2px solid #dee2e6;
+
+      .btn {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Open Sans", sans-serif;
+      }
+    }
+
+    &.modal-body {
+      padding: 0.25rem 1rem 0.25rem 1rem;
     }
   }
 
-  hr {
+  hr.no-image-modal {
     width: 100%;
     border-top: 2px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .modal-footer {
-    border-top: 2px solid #dee2e6;
-  }
-
-  .btn {
-    font-weight: bold;
-    text-transform: uppercase;
-    font-family: "Open Sans", sans-serif;
-  }
-
-  .modal-body {
-    padding: 0.25rem 1rem 0.25rem 1rem;
   }
 }

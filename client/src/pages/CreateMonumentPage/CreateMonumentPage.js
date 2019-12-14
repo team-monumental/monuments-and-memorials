@@ -1,5 +1,5 @@
 import React from 'react';
-import './CreateMonumentPage.scss'
+import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 
 import CreateForm from '../../components/CreateForm/CreateForm';
