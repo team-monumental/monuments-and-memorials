@@ -40,14 +40,14 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_bulkCreateMonumentsFromCsv_NullCsvList() {
-        assertNull(this.monumentService.bulkCreateMonumentsFromCsv(null));
+        assertNull(this.monumentService.bulkCreateMonumentsFromCsv(null, false, null, null));
     }
 
     @Test
     public void testMonumentService_bulkCreateMonumentsFromCsv_EmptyCsvList() {
         List<String> csvList = new ArrayList<>();
 
-        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList);
+        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList, false, null, null);
 
         assertEquals(0, result.getValidMonumentRecords().size());
         assertEquals(0, result.getInvalidCsvMonumentRecordsByRowNumber().size());
@@ -62,7 +62,7 @@ public class MonumentServiceIntegrationTests {
         String csvRow = "Test Submitted By,Test Artist,,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
         csvList.add(csvRow);
 
-        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList);
+        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList, false, null, null);
 
         assertEquals(0, result.getValidMonumentRecords().size());
 
@@ -84,7 +84,7 @@ public class MonumentServiceIntegrationTests {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
         csvList.add(csvRow);
 
-        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList);
+        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList, false, null, null);
 
         assertEquals(1, result.getValidMonumentRecords().size());
         assertEquals(0, result.getInvalidCsvMonumentRecordsByRowNumber().size());
@@ -108,7 +108,7 @@ public class MonumentServiceIntegrationTests {
         csvList.add(csvRow1);
         csvList.add(csvRow2);
 
-        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList);
+        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList, false, null, null);
 
         assertEquals(0, result.getValidMonumentRecords().size());
 
@@ -137,7 +137,7 @@ public class MonumentServiceIntegrationTests {
         csvList.add(csvRow1);
         csvList.add(csvRow2);
 
-        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList);
+        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList, false, null, null);
 
         assertEquals(2, result.getValidMonumentRecords().size());
         assertEquals(0, result.getInvalidCsvMonumentRecordsByRowNumber().size());
@@ -165,7 +165,7 @@ public class MonumentServiceIntegrationTests {
         csvList.add(csvRow3);
         csvList.add(csvRow4);
 
-        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList);
+        BulkCreateResult result = this.monumentService.bulkCreateMonumentsFromCsv(csvList, false, null, null);
 
         assertEquals(2, result.getValidMonumentRecords().size());
 

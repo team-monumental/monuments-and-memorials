@@ -7,11 +7,26 @@ import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
 import { readCsvFileContents } from '../../utils/file-util';
 import bulkCreateMonuments, { bulkCreateMonumentsZip } from '../../actions/bulk-create';
 import Spinner from '../../components/Spinner/Spinner';
+import ErrorModal from "../../components/ErrorModal/ErrorModal";
 
 /**
  * Root container for the page to bulk create Monuments
  */
 class MonumentBulkCreatePage extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showingErrorModal: false
+        };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.error && !prevState.showingErrorModal) {
+            this.setState({showingErrorModal: true});
+        }
+    }
 
     static mapStateToProps(state) {
         return state.bulkCreatePage;
@@ -38,8 +53,13 @@ class MonumentBulkCreatePage extends React.Component {
         dispatch(bulkCreateMonumentsZip(form.file));
     }
 
+    handleErrorModalClose() {
+        this.setState({showingErrorModal: false});
+    }
+
     render() {
-        const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result } = this.props;
+        const { showingErrorModal } = this.state;
+        const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result, error } = this.props;
 
         return (
             <div className='bulk-create-page-container'>
@@ -55,6 +75,11 @@ class MonumentBulkCreatePage extends React.Component {
                         bulkCreateResult={result}
                     />
                 </div>
+                <ErrorModal
+                    showing={showingErrorModal}
+                    errorMessage={error ? error.message : ''}
+                    onClose={() => this.handleErrorModalClose()}
+                />
             </div>
         );
     }

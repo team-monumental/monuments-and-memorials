@@ -53,14 +53,15 @@ export async function postFile(url, file) {
         method: 'POST',
         body: formData
     })
-        .then((res) => {
+        .then(async (res) => {
             if (!res.ok) {
-                throw Error(res.statusText);
+                const resText = await res.text();
+                const resJson = JSON.parse(resText);
+                throw Error(resJson.message);
             }
         })
         .then(res => res.json())
         .catch(err => error = err);
-    console.log(error);
     if (error || res.error) throw(error || res.error);
     else return res;
 }

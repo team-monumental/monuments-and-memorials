@@ -1,35 +1,29 @@
 package com.monumental.services;
 
+import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.util.csvparsing.BulkCreateResult;
-import com.monumental.util.csvparsing.CsvFileHelper;
-import com.monumental.util.csvparsing.CsvMonumentConverter;
-import com.monumental.util.csvparsing.CsvMonumentConverterResult;
+import com.monumental.util.csvparsing.*;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.exception.ConstraintViolationException;
-import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -41,6 +35,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     TagService tagService;
+
+    @Autowired
+    AwsS3Service s3Service;
 
     /**
      * SRID for coordinates
@@ -476,9 +473,14 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Create Monument records from the specified List of CSV Strings
      * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
+     * @param preprocessImages - If True, indicates that image pre-processing needs to be done on the CSV row because
+     *                         it originated from a .zip file
+     * @param imageFileNames - List of Strings containing the image filenames to use for image pre-processing
+     * @param zipFile - ZipFile containing the image files to use for image pre-processing
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
-    public BulkCreateResult bulkCreateMonumentsFromCsv(List<String> csvList) {
+    public BulkCreateResult bulkCreateMonumentsFromCsv(List<String> csvList, boolean preprocessImages,
+                                                       List<String> imageFileNames, ZipFile zipFile) {
         if (csvList == null) {
             return null;
         }
@@ -491,9 +493,18 @@ public class MonumentService extends ModelService<Monument> {
             // Increment the rowNumber counter
             rowNumber++;
 
+            // Do row pre-processing if necessary
+            if (preprocessImages) {
+                if (imageFileNames == null || zipFile == null) {
+                    return null;
+                }
+
+                csvRow = this.preProcessImageForCsvRow(csvRow, imageFileNames, zipFile);
+            }
+
             try {
                 // Convert the row into a CsvMonumentConverterResult object
-                CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip());
+                CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip(), preprocessImages);
 
                 // Validate the result
                 CsvMonumentConverterResult.ValidationResult validationResult = result.validate();
@@ -556,34 +567,81 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Create Monument records from a specified .zip file containing a CSV file and images
-     * @param zipFile - MultipartFile representation of the .zip file
+     * Create Monument records from a specified ZipFile containing a CSV file and images
+     * @param zipFile - ZipFile representation of the .zip file
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
-     * @throws IllegalArgumentException - If there is not exactly 1 CSV file in the .zip file
+     * @throws InvalidZipException - If there is not exactly 1 CSV file in the .zip file
+     * @throws IOException - If there are any I/O errors while processing the ZipFile
      */
-    public BulkCreateResult bulkCreateMonumentsFromZip(MultipartFile zipFile) {
-        BulkCreateResult result = new BulkCreateResult();
+    public BulkCreateResult bulkCreateMonumentsFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
+        // Search for CSV files in the .zip file
+        // If the number of CSV files found is not exactly 1, error
+        // Also collect of the image filenames in the ZipFile
+        int csvFileCount = 0;
+        ZipEntry csvEntry = null;
+        List<String> imageFileNames = new ArrayList<>();
+        Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+        while(zipEntries.hasMoreElements()) {
+            ZipEntry zipEntry = zipEntries.nextElement();
 
-        try {
-            InputStream inputStream = zipFile.getInputStream();
-            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-
-            int csvFileCount = 0;
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (CsvFileHelper.isCsvFile(zipEntry.getName())) {
-                    csvFileCount++;
-                }
-                zipEntry = zipInputStream.getNextEntry();
+            if (CsvFileHelper.isCsvFile(zipEntry.getName())) {
+                csvEntry = zipEntry;
+                csvFileCount++;
             }
-
-            if (csvFileCount != 1) {
-                throw new IllegalArgumentException("Invalid number of CSV files found in .zip: " + csvFileCount);
+            else if (ImageFileHelper.isSupportedImageFile(zipEntry.getName())) {
+                imageFileNames.add(zipEntry.getName());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
+        if (csvFileCount != 1) {
+            throw new InvalidZipException("Invalid number of CSV files found in .zip: " + csvFileCount);
+        }
+
+        // Get the contents as CSV rows from the CSV file
+        List<String> csvContents = ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
+
+        // Pre-process and process the CSV contents and images
+        BulkCreateResult result = this.bulkCreateMonumentsFromCsv(csvContents, true, imageFileNames, zipFile);
+
+        // Close the ZipFile
+        zipFile.close();
+
         return result;
+    }
+
+    /**
+     * Perform image pre-processing for the specified csvRow String
+     * If any I/OExceptions occur when trying to read from the ZipFile, the image file path is set to blank
+     * @param csvRow - String representation of the CSV row to pre-process
+     * @param imageFileNames - List of Strings containing the filenames of the images
+     * @param zipFile - ZipFile containing all of the image files
+     * @return String - The modified CSV row with the appropriate image file path
+     */
+    private String preProcessImageForCsvRow(String csvRow, List<String> imageFileNames, ZipFile zipFile) {
+        String imageFileName = CsvMonumentConverter.getImageFileNameFromCsvRow(csvRow);
+
+        // If the uploaded .zip file contains the CSV row's image filename, upload the image to S3 and
+        // set the CSV row's image filename column to the S3 Object URL
+        if (imageFileNames.contains(imageFileName)) {
+            // Get the ZipEntry for the Image
+            ZipEntry imageZipEntry = zipFile.getEntry(imageFileName);
+            try {
+                // Convert the ZipEntry into a File object
+                File fileToUpload = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
+                // Upload the File to S3
+                String objectUrl = this.s3Service.storeObject(AwsS3Service.imageBucketName, AwsS3Service.imageFolderName + imageFileName, fileToUpload);
+                // Delete the temp File created
+                fileToUpload.delete();
+                // Set the CSV Row's image filename column to the Object URL
+                return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, objectUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
+            }
+        }
+        // Otherwise, set the CSV row's image filename column to blank
+        else {
+            return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
+        }
     }
 }

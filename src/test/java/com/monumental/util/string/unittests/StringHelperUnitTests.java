@@ -37,28 +37,6 @@ public class StringHelperUnitTests {
         assertFalse(StringHelper.isNullOrEmpty(string));
     }
 
-    /** buildAwsS3ObjectUrl Tests **/
-
-    @Test
-    public void testStringHelper_buildAwsS3ObjectUrl_NoFolderInObjectKey() {
-        String bucketName = "bucket";
-        String objectKey = "object";
-
-        String result = StringHelper.buildAwsS3ObjectUrl(bucketName, objectKey);
-
-        assertEquals("https://bucket.s3.us-east-2.amazonaws.com/object", result);
-    }
-
-    @Test
-    public void testStringHelper_buildAwsS3ObjectUrl_FolderInObjectKey() {
-        String bucketName = "bucket";
-        String objectKey = "folder/object";
-
-        String result = StringHelper.buildAwsS3ObjectUrl(bucketName, objectKey);
-
-        assertEquals("https://bucket.s3.us-east-2.amazonaws.com/folder/object", result);
-    }
-
     /** removeBeginningAndEndingQuotes Tests **/
 
     @Test

@@ -8,6 +8,7 @@ import com.monumental.models.api.CreateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.BulkCreateResult;
+import com.monumental.util.csvparsing.ZipFileHelper;
 import org.hibernate.Hibernate;
 import com.monumental.services.TagService;
 import com.vividsolutions.jts.geom.Point;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
+import java.util.zip.ZipFile;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -193,16 +196,18 @@ public class MonumentController {
      */
     @PostMapping("/api/monument/bulk-create")
     public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
-        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents);
+        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents, false, null, null);
     }
 
     /**
      * Create many Monuments based on the specified .zip file
      * @param file - MultipartFile representation of the .zip file
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
+     * @throws IOException - If any I/O errors occur while processing the .zip file
      */
     @PostMapping(value = "/api/monument/bulk-create/zip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) {
-        return this.monumentService.bulkCreateMonumentsFromZip(file);
+    public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) throws IOException {
+        ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(file);
+        return this.monumentService.bulkCreateMonumentsFromZip(zipFile);
     }
 }
