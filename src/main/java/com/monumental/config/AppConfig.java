@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  * Class used to configure Beans for the application
@@ -41,5 +43,16 @@ public class AppConfig {
     @Bean
     public JtsModule jtsModule() {
         return new JtsModule();
+    }
+
+    /**
+     * Bean for handling Multipart File uploads
+     */
+    @Bean
+    public MultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        // Set the max file upload size to 300MB
+        multipartResolver.setMaxUploadSize(300000000);
+        return multipartResolver;
     }
 }
