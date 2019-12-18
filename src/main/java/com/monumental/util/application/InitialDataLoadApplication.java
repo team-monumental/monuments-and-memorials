@@ -66,6 +66,9 @@ public class InitialDataLoadApplication {
                 // Convert the ZipFile into Monument objects and insert them into the database
                 bulkCreateResult = monumentService.bulkCreateMonumentsFromZip(zipFile);
             }
+            else {
+                throw new IllegalArgumentException("Invalid dataset file type specified. File path: " + pathToDatasetFile);
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Unable to read from the specified filepath. File does not exist.");
             e.printStackTrace();

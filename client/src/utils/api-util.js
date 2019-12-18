@@ -59,6 +59,7 @@ export async function postFile(url, file) {
                 const resJson = JSON.parse(resText);
                 throw Error(resJson.message);
             }
+            return res;
         })
         .then(res => res.json())
         .catch(err => error = err);

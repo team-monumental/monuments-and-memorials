@@ -278,7 +278,6 @@ public class CsvMonumentConverterResult {
         // Images
         if (this.monument.getImages().size() > 0) {
             stringBuilder.append("Number of Images: ").append(this.monument.getImages().size()).append("\n");
-            stringBuilder.append("\t").append(this.monument.getImages().size());
         }
 
         return stringBuilder.toString();

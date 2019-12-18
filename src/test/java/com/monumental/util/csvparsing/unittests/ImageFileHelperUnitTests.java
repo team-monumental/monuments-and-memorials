@@ -18,13 +18,23 @@ public class ImageFileHelperUnitTests {
     /** isSupportedImageFile Tests **/
 
     @Test
-    public void testImageFileHelper_isSupportedImageFile_JPGFilePassed() {
+    public void testImageFileHelper_isSupportedImageFile_JPGFilePassed_Lowercase() {
         assertTrue(isSupportedImageFile("test.jpg"));
     }
 
     @Test
-    public void testImageFileHelper_isSupportedImageFile_PNGFilePassed() {
+    public void testImageFileHelper_isSupportedImageFile_JPGFilePassed_Uppercase() {
+        assertTrue(isSupportedImageFile("test.JPG"));
+    }
+
+    @Test
+    public void testImageFileHelper_isSupportedImageFile_PNGFilePassed_Lowercase() {
         assertTrue(isSupportedImageFile("test.png"));
+    }
+
+    @Test
+    public void testImageFileHelper_isSupportedImageFile_PNGFilePassed_Uppercase() {
+        assertTrue(isSupportedImageFile("test.PNG"));
     }
 
     @Test
@@ -33,13 +43,23 @@ public class ImageFileHelperUnitTests {
     }
 
     @Test
-    public void testImageFileHelper_isSupportedImageFile_JPGFilePathPassed() {
+    public void testImageFileHelper_isSupportedImageFile_JPGFilePathPassed_Lowercase() {
         assertTrue(isSupportedImageFile("test/test/test.jpg"));
     }
 
     @Test
-    public void testImageFileHelper_isSupportedImageFile_PNGFilePathPassed() {
+    public void testImageFileHelper_isSupportedImageFile_JPGFilePathPassed_Uppercase() {
+        assertTrue(isSupportedImageFile("test/test/test.JPG"));
+    }
+
+    @Test
+    public void testImageFileHelper_isSupportedImageFile_PNGFilePathPassed_Lowercase() {
         assertTrue(isSupportedImageFile("test/test/test/test.png"));
+    }
+
+    @Test
+    public void testImageFileHelper_isSupportedImageFile_PNGFilePathPassed_Uppercase() {
+        assertTrue(isSupportedImageFile("test/test/test/test.PNG"));
     }
 
     @Test

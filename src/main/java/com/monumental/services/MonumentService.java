@@ -593,6 +593,8 @@ public class MonumentService extends ModelService<Monument> {
             }
         }
 
+        System.out.println(imageFileNames);
+
         if (csvFileCount != 1) {
             throw new InvalidZipException("Invalid number of CSV files found in .zip: " + csvFileCount);
         }
@@ -619,6 +621,7 @@ public class MonumentService extends ModelService<Monument> {
      */
     private String preProcessImageForCsvRow(String csvRow, List<String> imageFileNames, ZipFile zipFile) {
         String imageFileName = CsvMonumentConverter.getImageFileNameFromCsvRow(csvRow);
+        System.out.println("IMAGE FILE NAME: " + imageFileName);
 
         // If the uploaded .zip file contains the CSV row's image filename, upload the image to S3 and
         // set the CSV row's image filename column to the S3 Object URL

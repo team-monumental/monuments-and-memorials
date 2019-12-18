@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.IOException;
 
@@ -37,6 +38,13 @@ public class ApiExceptionHandler {
     @ExceptionHandler({ IOException.class })
     public ResponseEntity<Object> handleIOException(IOException exception) {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process file");
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    // Handler for MaxUploadSizeExceededExceptions
+    @ExceptionHandler({ MaxUploadSizeExceededException.class })
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "The uploaded file is too large. The largest file upload size supported is 300MB");
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

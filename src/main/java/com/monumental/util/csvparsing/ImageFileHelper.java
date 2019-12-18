@@ -15,6 +15,6 @@ public class ImageFileHelper {
         String[] fileExtensionArray = filePath.split("\\.");
         String fileExtension = fileExtensionArray[fileExtensionArray.length - 1];
 
-        return fileExtension.equals("jpg") || fileExtension.equals("png");
+        return fileExtension.toLowerCase().equals("jpg") || fileExtension.toLowerCase().equals("png");
     }
 }

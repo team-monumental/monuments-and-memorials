@@ -245,6 +245,11 @@ export default class MoreInformation extends React.Component {
                             There are other files within the .zip file besides a CSV file and image files. In this
                             situation, these other files will be ignored.
                         </li>
+                        <li>
+                            The .zip file is too large. The largest .zip file upload size we support is 300MB. If your
+                            file is larger than this, please split it up into multiple .zip files and perform multiple
+                            Bulk Create operations.
+                        </li>
                     </ol>
                 </Card.Body>
             </Card>
