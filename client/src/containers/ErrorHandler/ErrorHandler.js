@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { removeError } from '../../actions/errors';
+import ErrorScreen from "../../components/Error/ErrorScreen/ErrorScreen";
 
 /**
  * Container for errors which renders the page content if there are no errors, otherwise
@@ -28,11 +29,7 @@ class ErrorHandler extends React.Component {
 
         if (errors.length > 0) {
             return (
-                <div className="errors">
-                    {errors.map(error => (
-                        <div className="h1 text-center" key={error.id}>{error.message}</div>
-                    ))}
-                </div>
+                <ErrorScreen errors={errors}/>
             );
         }
 

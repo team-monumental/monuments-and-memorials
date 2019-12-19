@@ -12,6 +12,18 @@ const s3ImageBucketFolderName = 'images/';
 export async function get(url) {
     let error = null;
     let res = await fetch(url)
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
+            }
+            return res;
+        })
         .then(res => res.json())
         .catch(err => error = err);
     if (error || res.error) throw(error || res.error);
@@ -32,6 +44,18 @@ export async function post(url, data) {
             'Content-Type': 'application/json'
         }
     })
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
+            }
+            return res;
+        })
         .then(res => res.json())
         .catch(err => error = err);
     if (error || res.error) throw(error || res.error);
@@ -55,9 +79,13 @@ export async function postFile(url, file) {
     })
         .then(async (res) => {
             if (!res.ok) {
-                const resText = await res.text();
-                const resJson = JSON.parse(resText);
-                throw Error(resJson.message);
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
             }
             return res;
         })

@@ -3,6 +3,7 @@ import {
     BULK_CREATE_MONUMENTS_ZIP_PENDING, BULK_CREATE_MONUMENTS_ZIP_SUCCESS, BULK_CREATE_MONUMENTS_ZIP_ERROR
 } from '../constants';
 import { post, postFile } from '../utils/api-util';
+import {addError} from "./errors";
 
 function bulkCreateMonumentsPending() {
     return {
@@ -33,6 +34,9 @@ export default function bulkCreateMonuments(csvContents) {
             dispatch(bulkCreateMonumentsSuccess(result));
         } catch (error) {
             dispatch(bulkCreateMonumentsError(error));
+            dispatch(addError({
+                message: error.message
+            }));
         }
     };
 }
@@ -66,6 +70,9 @@ export function bulkCreateMonumentsZip(zipFile) {
             dispatch(bulkCreateMonumentsZipSuccess(result));
         } catch (error) {
             dispatch(bulkCreateMonumentsZipError(error));
+            dispatch(addError({
+                message: error.message
+            }));
         }
     };
 }

@@ -3,6 +3,7 @@ package com.monumental;
 import com.monumental.exceptions.ApiError;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.util.string.StringHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,11 @@ public class ApiExceptionHandler {
     // Handler for ResourceNotFoundExceptions
     @ExceptionHandler({ ResourceNotFoundException.class })
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException exception) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, "Requested resource not found");
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
+                StringHelper.isNullOrEmpty(exception.getMessage()) ?
+                        "Requested resource not found" :
+                        exception.getMessage()
+        );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
