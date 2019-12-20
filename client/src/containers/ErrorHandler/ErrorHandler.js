@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { removeError } from '../../actions/errors';
-import ErrorScreen from "../../components/Error/ErrorScreen/ErrorScreen";
+import ErrorScreen from '../../components/Error/ErrorScreen/ErrorScreen';
 
 /**
  * Container for errors which renders the page content if there are no errors, otherwise

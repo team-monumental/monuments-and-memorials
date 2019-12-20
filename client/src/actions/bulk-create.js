@@ -70,9 +70,6 @@ export function bulkCreateMonumentsZip(zipFile) {
             dispatch(bulkCreateMonumentsZipSuccess(result));
         } catch (error) {
             dispatch(bulkCreateMonumentsZipError(error));
-            dispatch(addError({
-                message: error.message
-            }));
         }
     };
 }
