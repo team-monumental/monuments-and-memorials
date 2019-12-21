@@ -4,6 +4,7 @@ import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
+import com.monumental.models.api.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.csvparsing.*;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -705,5 +706,23 @@ public class MonumentService extends ModelService<Monument> {
         Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
         Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
         return builder.between(root.get("date"), start, end);
+    }
+
+    /**
+     * Gathers the various statistics related to Monuments for the About Page
+     * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
+     *                                       About Page
+     */
+    public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
+        MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
+
+        statistics.setTotalNumberOfMonuments(this.countSearchResults(null, null, null, null, null, null, null, null,
+                null));
+        statistics.setOldestMonument(this.search(null, null, null, null, null, null, null, null, SortType.OLDEST, null,
+                null, null).get(0));
+        statistics.setNewestMonument(this.search(null, null, null, null, null, null, null, null, SortType.NEWEST, null,
+                null, null).get(0));
+
+        return statistics;
     }
 }

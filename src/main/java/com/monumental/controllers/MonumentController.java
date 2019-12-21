@@ -5,6 +5,7 @@ import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.api.CreateMonumentRequest;
+import com.monumental.models.api.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.BulkCreateResult;
@@ -210,5 +211,15 @@ public class MonumentController {
     public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) throws IOException {
         ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(file);
         return this.monumentService.bulkCreateMonumentsFromZip(zipFile);
+    }
+
+    /**
+     * Get the statistics related to Monuments for the About Page
+     * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
+     *                                       About Page
+     */
+    @GetMapping("/api/monument/statistics")
+    public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
+        return this.monumentService.getMonumentAboutPageStatistics();
     }
 }
