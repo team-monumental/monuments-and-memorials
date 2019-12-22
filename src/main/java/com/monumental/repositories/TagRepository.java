@@ -18,6 +18,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      */
     List<Tag> getAllByNameAndIsMaterial(String name, Boolean isMaterial);
 
+    List<Tag> getAllByIsMaterial(Boolean isMaterial);
+
     /**
      * Get all tags for the specified monument
      * @param id Id of the monument to get the tags for

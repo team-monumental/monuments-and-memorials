@@ -1,0 +1,91 @@
+@import "../../theme";
+
+.bulk-create-form-container {
+  padding-left: 22rem;
+
+  .h5 {
+    padding-bottom: 1rem;
+  }
+
+  .form-label {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  input[type='file'] {
+    display: none;
+  }
+
+  .file-upload-input-label {
+    cursor: pointer;
+    display: flex;
+    background-color: $primary;
+    border-color: $primary;
+    border-radius: 30px;
+    padding: 6px 23px;
+    width: max-content;
+    margin: 10px 0 10px 118px;
+
+    span {
+      font-weight: bold;
+      font-family: "Open Sans", sans-serif;
+      transition: color 0.1s ease;
+      line-height: 21px;
+      color: white;
+      font-size: 14px;
+    }
+
+    &:hover {
+      background-color: #389c6f;
+      border-color: #359268;
+    }
+  }
+
+  .more-information-link {
+    cursor: pointer;
+    color: $primary;
+    padding-top: 1.5rem;
+    padding-left: 8.5rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  .hide-link {
+    padding-left: 11.5rem;
+  }
+
+  .btn-toolbar {
+    padding-left: 4.25rem;
+    padding-bottom: 4rem;
+
+    .btn {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-family: "Open Sans", sans-serif;
+    }
+  }
+
+  .button-toolbar-extra-padding {
+    padding-left: 7.25rem;
+  }
+
+  .file-upload-input-file-name {
+    display: flex;
+    color: gray;
+    font-weight: bold;
+    font-size: 14px;
+    padding-top: 0.25rem;
+    white-space: normal;
+    justify-content: center;
+  }
+
+  .invalid-feedback {
+    font-size: medium;
+    padding-left: 9.5rem;
+  }
+
+  .file-upload-form-group {
+    width: 385px;
+  }
+}

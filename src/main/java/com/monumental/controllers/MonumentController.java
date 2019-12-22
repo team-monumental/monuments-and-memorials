@@ -6,8 +6,8 @@ import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.api.CreateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.ReferenceRepository;
 import com.monumental.services.MonumentService;
+import com.monumental.util.csvparsing.BulkCreateResult;
 import org.hibernate.Hibernate;
 import com.monumental.services.TagService;
 import com.vividsolutions.jts.geom.Point;
@@ -32,9 +32,6 @@ public class MonumentController {
     @Autowired
     private TagService tagService;
 
-    @Autowired
-    private ReferenceRepository referenceRepository;
-
     /**
      * Create a new Monument based on the specified CreateMonumentRequest
      * @param monumentRequest - CreateMonumentRequest containing the attributes to use to create the Monument
@@ -42,16 +39,16 @@ public class MonumentController {
      */
     @PostMapping("/api/monument")
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
-        Point point = this.monumentService.createMonumentPoint(monumentRequest.getLongitude(),
+        Point point = MonumentService.createMonumentPoint(monumentRequest.getLongitude(),
                 monumentRequest.getLatitude());
 
         Date date;
 
         if (!isNullOrEmpty(monumentRequest.getDate())) {
-            date = this.monumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
+            date = MonumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
         }
         else {
-            date = this.monumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
+            date = MonumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
         }
 
         Monument createdMonument = new Monument();
@@ -185,4 +182,15 @@ public class MonumentController {
             Hibernate.initialize(monument.getImages());
         }
         return monuments;
-    }}
+    }
+
+    /**
+     * Create many Monuments based on the specified CSV file contents
+     * @param csvContents - List of Strings, where each String is a CSV row
+     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
+     */
+    @PostMapping("/api/monument/bulk-create")
+    public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
+        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents);
+    }
+}

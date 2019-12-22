@@ -68,7 +68,7 @@ public class TagService extends ModelService<Tag> {
             tag.setIsMaterial(isMaterial);
         }
         tag.getMonuments().addAll(monuments);
-        this.tagRepository.save(tag);
+        this.tagRepository.saveAndFlush(tag);
         return tag;
     }
 }

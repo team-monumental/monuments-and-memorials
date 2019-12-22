@@ -3,7 +3,7 @@ import './CreateMonumentPage.scss'
 import { connect } from 'react-redux';
 
 import CreateForm from '../../components/CreateForm/CreateForm';
-import ContributionAppreciation from "../../components/CreateForm/ContributionAppreciation/ContributionAppreciation";
+import ContributionAppreciation from "../../components/ContributionAppreciation/ContributionAppreciation";
 import createMonument from "../../actions/create";
 import uploadImagesToS3 from "../../utils/api-util";
 import Spinner from "../../components/Spinner/Spinner";

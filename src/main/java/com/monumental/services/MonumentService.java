@@ -3,12 +3,19 @@ package com.monumental.services;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.util.csvparsing.BulkCreateResult;
+import com.monumental.util.csvparsing.CsvMonumentConverter;
+import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.exception.ConstraintViolationException;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
@@ -25,6 +32,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     MonumentRepository monumentRepository;
+
+    @Autowired
+    TagService tagService;
 
     /**
      * SRID for coordinates
@@ -352,7 +362,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param latitude - Double for the latitude of the Point
      * @return Point - The Point object created using the specified longitude and latitude
      */
-    public Point createMonumentPoint(Double longitude, Double latitude) {
+    public static Point createMonumentPoint(Double longitude, Double latitude) {
         if (longitude == null || latitude == null) {
             return null;
         }
@@ -372,8 +382,8 @@ public class MonumentService extends ModelService<Monument> {
      *             Must be in "yyyy" format
      * @return Date - Date object created using the specified year
      */
-    public Date createMonumentDate(String year) {
-        return this.createMonumentDate(year, "0", "1");
+    public static Date createMonumentDate(String year) {
+        return MonumentService.createMonumentDate(year, "0", "1");
     }
 
     /**
@@ -385,8 +395,8 @@ public class MonumentService extends ModelService<Monument> {
      *              Must be in "MM" format
      * @return Date - Date object created using the specified year and month
      */
-    public Date createMonumentDate(String year, String month) {
-        return this.createMonumentDate(year, month, "1");
+    public static Date createMonumentDate(String year, String month) {
+        return MonumentService.createMonumentDate(year, month, "1");
     }
 
     /**
@@ -400,7 +410,7 @@ public class MonumentService extends ModelService<Monument> {
      *            Must be in "d" format
      * @return Date - Date object created using the specified year, month and day
      */
-    public Date createMonumentDate(String year, String month, String day) {
+    public static Date createMonumentDate(String year, String month, String day) {
         if (isNullOrEmpty(year)) {
             return null;
         }
@@ -428,7 +438,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param jsonDate - String for the JSON date to use to create the Date
      * @return Date - Date object created using the specified JSON date-string
      */
-    public Date createMonumentDateFromJsonDate(String jsonDate) {
+    public static Date createMonumentDateFromJsonDate(String jsonDate) {
         if (isNullOrEmpty(jsonDate)) {
             return null;
         }
@@ -455,5 +465,87 @@ public class MonumentService extends ModelService<Monument> {
                 builder.desc(root.get("date")) :
                 builder.asc(root.get("date"))
         );
+    }
+
+    /**
+     * Create Monument records from the specified List of CSV Strings
+     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
+     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
+     */
+    public BulkCreateResult bulkCreateMonumentsFromCsv(List<String> csvList) {
+        if (csvList == null) {
+            return null;
+        }
+
+        BulkCreateResult bulkCreateResult = new BulkCreateResult();
+        ArrayList<CsvMonumentConverterResult> validResults = new ArrayList<>();
+        Integer rowNumber = 0;
+
+        for (String csvRow : csvList) {
+            // Increment the rowNumber counter
+            rowNumber++;
+
+            try {
+                // Convert the row into a CsvMonumentConverterResult object
+                CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip());
+
+                // Validate the result
+                CsvMonumentConverterResult.ValidationResult validationResult = result.validate();
+
+                if (validationResult.isValid()) {
+                    validResults.add(result);
+                }
+                else {
+                    bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().put(rowNumber, result.toString());
+                    bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().put(rowNumber,
+                            validationResult.getValidationErrors());
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR processing row number: " + rowNumber);
+                System.out.println(e.toString());
+            }
+        }
+
+        int monumentsInsertedCount = 0;
+
+        for (CsvMonumentConverterResult validResult : validResults) {
+            // Insert the Monument
+            try {
+                Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
+                bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
+            } catch (DataIntegrityViolationException e) {
+                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
+                // These are disregarded for now - the correct tags are still being created
+            }
+            monumentsInsertedCount++;
+
+            // Insert all of the Tags associated with the Monument
+            List<Tag> tags = validResult.getTags();
+            if (tags == null) {
+                tags = new ArrayList<>();
+            }
+
+            List<Tag> materials = validResult.getMaterials();
+            if (materials == null) {
+                materials = new ArrayList<>();
+            }
+
+            tags.addAll(materials);
+
+            if (tags.size() > 0) {
+                for (Tag tag : tags) {
+                    try {
+                        tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
+                    } catch (DataIntegrityViolationException e) {
+                        // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
+                        // These are disregarded for now - the correct tags are still being created
+                    }
+                }
+            }
+        }
+
+        bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
+
+        return bulkCreateResult;
     }
 }

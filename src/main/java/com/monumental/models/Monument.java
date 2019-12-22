@@ -5,9 +5,6 @@ import com.vividsolutions.jts.geom.Point;
 import org.hibernate.LazyInitializationException;
 
 import javax.persistence.*;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -246,11 +243,13 @@ public class Monument extends Model implements Serializable {
     private String generateDescription() {
         String description = "";
 
-        if (!this.title.toLowerCase().startsWith("the ")) {
-            description += "The ";
-        }
+        if (this.title != null) {
+            if (!this.title.toLowerCase().startsWith("the ")) {
+                description += "The ";
+            }
 
-        description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
+            description += this.title + " in " + this.city + ", " + this.state + " was created by " + this.artist;
+        }
 
         if (this.date != null) {
             description += " in ";
@@ -279,56 +278,5 @@ public class Monument extends Model implements Serializable {
          */
 
         return description;
-    }
-
-    /**
-     * Encapsulates the logic to validate a Monument object
-     * Use this method to manually run validation in lieu of a @Valid Spring annotation
-     * @param validationClass - The class grouping to validate
-     * @return ValidationResult - ValidationResult object representing the result of the validation
-     */
-    public ValidationResult validate(Class validationClass) {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        ValidationResult result = new ValidationResult();
-
-        result.setViolations(validator.validate(this, validationClass));
-
-        return result;
-    }
-
-    /**
-     * Inner-class to represent the result of a call to Monument.validate()
-     */
-    public static class ValidationResult {
-
-        private Set<ConstraintViolation<Monument>> violations;
-
-        /**
-         * Determines if this ValidationResult is valid
-         * It is valid if there are no ConstraintViolation<Monument> in the Set
-         * @return boolean - true if the ValidationResult is valid, false otherwise
-         */
-        public boolean isValid() {
-            return this.violations.isEmpty();
-        }
-
-        /**
-         * Returns a List of the violation messages (if there are any) as Strings
-         * If there are no ConstraintViolations, returns an empty List
-         * @return List<String> - List of violation messages as Strings (if there are any)
-         */
-        public List<String> getViolationMessages() {
-            ArrayList<String> violationMessages = new ArrayList<>();
-
-            for (ConstraintViolation<Monument> violation : this.violations) {
-                violationMessages.add(violation.getMessage());
-            }
-
-            return violationMessages;
-        }
-
-        void setViolations(Set<ConstraintViolation<Monument>> violations) {
-            this.violations = violations;
-        }
     }
 }

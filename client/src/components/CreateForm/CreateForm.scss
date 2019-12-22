@@ -110,6 +110,15 @@
         text-transform: uppercase;
         font-family: "Open Sans", sans-serif;
         margin: 0 0 10px 50px;
+
+        &:hover {
+          background-color: #389c6f;
+          border-color: #359268;
+        }
+
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba(94, 195, 150, 0.5);
+        }
       }
 
       .deleteImage {

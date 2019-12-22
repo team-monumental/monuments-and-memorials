@@ -1,0 +1,45 @@
+.more-information-container {
+  margin-left: -8rem;
+  padding-top: 1rem;
+
+  .card {
+    max-width: 700px;
+
+    .card-title {
+      padding-bottom: 2rem;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .card-subtitle {
+      padding-left: 1rem;
+    }
+
+    .card-body {
+      padding: 0.5rem 1.25rem 0.75rem 2.25rem;
+
+      .h7 {
+        font-weight: bold;
+        font-size: 20px;
+        color: #61616D;
+      }
+
+      .subsection-information {
+        padding-left: 2.25rem;
+
+        .column-name {
+          font-weight: bold;
+        }
+
+        .column-explanation {
+          font-style: italic;
+        }
+
+        .column-explanation-notice {
+          font-weight: bold;
+          color: red;
+        }
+      }
+    }
+  }
+}
