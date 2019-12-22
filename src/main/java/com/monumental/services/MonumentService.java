@@ -711,7 +711,7 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Gathers the various statistics related to Monuments for the About Page
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
-     *                                       About Page
+     * About Page
      */
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();

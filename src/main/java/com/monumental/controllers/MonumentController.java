@@ -216,7 +216,7 @@ public class MonumentController {
     /**
      * Get the statistics related to Monuments for the About Page
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
-     *                                       About Page
+     * About Page
      */
     @GetMapping("/api/monument/statistics")
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
