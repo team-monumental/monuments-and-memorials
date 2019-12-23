@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import * as moment from 'moment';
+import { prettyPrintDate } from '../../../../utils/string-util';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
@@ -162,11 +162,4 @@ export default class About extends React.Component {
             </Card>
         )
     }
-
-    prettyPrintDate(date) {
-        if (!date) return;
-        date = moment(new Date(date));
-        // Wednesday, October 16th, 2019 format
-        return date.format('dddd, MMMM Do, YYYY');
-    };
 }

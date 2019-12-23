@@ -42,10 +42,17 @@
     cursor: pointer;
     color: $primary;
     padding-top: 1.5rem;
-    padding-left: 8.5rem;
     padding-bottom: 1rem;
     font-weight: bold;
     text-decoration: underline;
+
+    &.more-link {
+      padding-left: 9.75rem;
+    }
+
+    &.hide-link {
+      padding-left: 9rem;
+    }
   }
 
   .address-coordinates-container {
