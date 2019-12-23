@@ -20,7 +20,7 @@ public class TagController {
      * Endpoint for getting Tags in the database
      * If a monumentId is specified, gets all of the Tags associated with that Monument
      * If a name is specified, gets all of the Tags with that name
-     * If names is specified, gets all of the Tags with any of those names
+     * If names are specified, gets all of the Tags with any of those names
      * If none of the request parameters are specified, gets all of the Tags
      * @param monumentId - Integer ID of the Monument to get all the Tags for
      * @param name - String for the name of the Tag to get
