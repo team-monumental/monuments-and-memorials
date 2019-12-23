@@ -1,18 +1,49 @@
 import React from 'react';
 import './AboutInformation.scss';
 import {NavLink} from "react-router-dom";
+import ContributorsList from "./ContributorsList/ContributorsList";
 
 /**
  * Presentational component for the plain-text information displayed on the About Page
  */
 export default class AboutInformation extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showingAllContributors: false
+        };
+    }
+
+    handleMoreContributorsClick() {
+        const { showingAllContributors } = this.state;
+        this.setState({showingAllContributors: !showingAllContributors});
+    }
+
     render() {
+        const { contributors } = this.props;
+        const { showingAllContributors } = this.state;
+
         let mapNavLink = (
             <NavLink onClick={e => {
                 e.preventDefault();
                 window.location.replace('/map');
             }} to='/map' key='map'>click here</NavLink>
+        );
+
+        const readMoreContributorsLink = (
+            <div className='more-contributors-link'
+                 onClick={() => this.handleMoreContributorsClick()}>
+                Read More
+            </div>
+        );
+
+        const hideMoreContributorsLink = (
+            <div className='more-contributors-link hide-link'
+                 onClick={() => this.handleMoreContributorsClick()}>
+                Hide
+            </div>
         );
 
         return (
@@ -56,6 +87,17 @@ export default class AboutInformation extends React.Component {
                     We invite contributions from anyone. If you are interested in contributing, please click here. Your
                     submissions will be recognized in our list of contributors:
                 </p>
+
+                <div className='contributors-list-container'>
+                    <ContributorsList
+                        contributors={contributors}
+                        showingAllContributors={showingAllContributors}
+                    />
+
+                    {!showingAllContributors && readMoreContributorsLink}
+                    {showingAllContributors && hideMoreContributorsLink}
+                </div>
+
                 <h3 className='font-italic'>
                     Acknowledgements:
                 </h3>

@@ -20,14 +20,19 @@ class AboutPage extends React.Component {
     }
 
     render() {
-        const { fetchContributorsPending, contributors, contributorsError } = this.props;
+        const {
+            fetchContributorsPending, fetchMonumentStatisticsPending, contributors, monumentStatistics,
+            contributorsError, monumentStatisticsError
+        } = this.props;
 
-        console.log(contributors);
+        console.log(monumentStatistics);
 
         return (
             <div className='about-page-container'>
-                <Spinner show={fetchContributorsPending}/>
-                <AboutInformation/>
+                <Spinner show={fetchContributorsPending || fetchMonumentStatisticsPending}/>
+                <AboutInformation
+                    contributors={contributorsError ? null : contributors}
+                />
             </div>
         );
     }

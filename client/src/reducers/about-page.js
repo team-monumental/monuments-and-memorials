@@ -1,12 +1,16 @@
 import {
     ABOUT_PAGE_FETCH_CONTRIBUTORS_PENDING, ABOUT_PAGE_FETCH_CONTRIBUTORS_SUCCESS,
-    ABOUT_PAGE_FETCH_CONTRIBUTORS_ERROR
+    ABOUT_PAGE_FETCH_CONTRIBUTORS_ERROR, ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_PENDING,
+    ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_SUCCESS, ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_ERROR
 } from '../constants';
 
 const initialState = {
     fetchContributorsPending: false,
+    fetchMonumentStatisticsPending: false,
     contributors: [],
-    contributorsError: null
+    monumentStatistics: {},
+    contributorsError: null,
+    monumentStatisticsError: null
 };
 
 /**
@@ -29,6 +33,23 @@ export default function aboutPage(state = initialState, action) {
             return {
                 ...state,
                 fetchContributorsPending: false,
+                error: action.error
+            };
+        case ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_PENDING:
+            return {
+                ...state,
+                fetchMonumentStatisticsPending: true
+            };
+        case ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_SUCCESS:
+            return {
+                ...state,
+                fetchMonumentStatisticsPending: false,
+                monumentStatistics: action.payload
+            };
+        case ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_ERROR:
+            return {
+                ...state,
+                fetchMonumentStatisticsPending: false,
                 error: action.error
             };
         default:
