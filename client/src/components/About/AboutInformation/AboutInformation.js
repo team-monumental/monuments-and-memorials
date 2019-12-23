@@ -2,6 +2,7 @@ import React from 'react';
 import './AboutInformation.scss';
 import {NavLink} from "react-router-dom";
 import ContributorsList from "./ContributorsList/ContributorsList";
+import StatisticCard from "./StatisticCard/StatisticCard";
 
 /**
  * Presentational component for the plain-text information displayed on the About Page
@@ -22,7 +23,7 @@ export default class AboutInformation extends React.Component {
     }
 
     render() {
-        const { contributors } = this.props;
+        const { contributors, monumentStatistics } = this.props;
         const { showingAllContributors } = this.state;
 
         let mapNavLink = (
@@ -109,6 +110,17 @@ export default class AboutInformation extends React.Component {
                     Students in HIS 322 course, <span className='font-italic'>Monuments & Memory</span>, spring 2019 and
                     spring 2020
                 </p>
+                <h3 className='font-italic'>
+                    Statistics:
+                </h3>
+                <StatisticCard
+                    statistic={monumentStatistics.totalNumberOfMonuments}
+                    description="Total number of Monuments and Memorials"
+                />
+                <StatisticCard
+                    statistic={monumentStatistics.oldestMonument ? monumentStatistics.oldestMonument.title : null}
+                    description="Oldest Monument or Memorial on record"
+                />
             </div>
         );
     }
