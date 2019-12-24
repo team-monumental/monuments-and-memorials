@@ -3,7 +3,7 @@ import './TagDirectoryPage.scss';
 import fetchTags from '../../actions/tagDirectory';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
-import TagColumn from '../../components/TagColumn/TagColumn';
+import Tags from "../../components/Tags/Tags";
 
 /**
  * Root container component for the Tag Directory Page
@@ -25,17 +25,8 @@ class TagDirectoryPage extends React.Component {
     render() {
         const { tags, fetchTagsPending } = this.props;
 
-        const allTags = [];
-        const allMaterials = [];
-
-        tags.forEach((tag) => {
-            if (tag.isMaterial) {
-                allMaterials.push(tag);
-            }
-            else {
-                allTags.push(tag);
-            }
-        });
+        const allTags = tags.filter(tag => !tag.isMaterial);
+        const allMaterials = tags.filter(tag => tag.isMaterial);
 
         return (
             <div className='tag-directory-page-container'>
@@ -47,16 +38,16 @@ class TagDirectoryPage extends React.Component {
                 </div>
                 <div className='columns-container'>
                     <div className='tags-column column'>
-                        <TagColumn
-                            variant='tags'
-                            tags={allTags}
-                        />
+                        <h2 className='font-weight-bold'>
+                            Tags
+                        </h2>
+                        <Tags tags={allTags} selectable={false}/>
                     </div>
                     <div className='materials-column column'>
-                        <TagColumn
-                            variant='materials'
-                            tags={allMaterials}
-                        />
+                        <h2 className='font-weight-bold'>
+                            Materials
+                        </h2>
+                        <Tags tags={allMaterials} selectable={false}/>
                     </div>
                 </div>
             </div>
