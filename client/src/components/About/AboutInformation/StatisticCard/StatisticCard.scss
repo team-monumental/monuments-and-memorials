@@ -1,24 +1,28 @@
 @import "../../../../theme";
 
-.card {
-  background-color: #DBD8E6 !important;
-  width: 300px;
-  height: 300px;
-  max-height: fit-content;
-  overflow-wrap: break-word;
+.statistic-card-container {
+  .card {
+    background-color: #DBD8E6 !important;
+    width: 300px;
 
-  .card-title {
-    color: $primary;
-    font-size: 75px;
-    text-align: center;
-    margin-top: 5rem;
-  }
+    .card-title {
+      color: $primary;
+      font-size: 75px;
+      text-align: center;
+      margin-top: 5rem;
 
-  .card-footer {
-    border: none;
-    font-size: medium;
-    margin-top: 5.5rem;
-    font-weight: bold;
-    text-align: center;
+      &.small {
+        font-size: 35px;
+        margin-top: 5.45rem;
+      }
+    }
+
+    .card-footer {
+      border: none;
+      font-size: medium;
+      margin-top: 5.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
   }
 }

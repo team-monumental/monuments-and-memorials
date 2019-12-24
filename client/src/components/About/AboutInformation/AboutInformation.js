@@ -1,8 +1,8 @@
 import React from 'react';
 import './AboutInformation.scss';
-import {NavLink} from "react-router-dom";
-import ContributorsList from "./ContributorsList/ContributorsList";
-import StatisticCard from "./StatisticCard/StatisticCard";
+import { NavLink } from 'react-router-dom';
+import ContributorsList from './ContributorsList/ContributorsList';
+import StatisticCard from './StatisticCard/StatisticCard';
 
 /**
  * Presentational component for the plain-text information displayed on the About Page
@@ -113,14 +113,24 @@ export default class AboutInformation extends React.Component {
                 <h3 className='font-italic'>
                     Statistics:
                 </h3>
-                <StatisticCard
-                    statistic={monumentStatistics.totalNumberOfMonuments}
-                    description="Total number of Monuments and Memorials"
-                />
-                <StatisticCard
-                    statistic={monumentStatistics.oldestMonument ? monumentStatistics.oldestMonument.title : null}
-                    description="Oldest Monument or Memorial on record"
-                />
+                <div className='statistics-container'>
+                    <StatisticCard
+                        statistic={monumentStatistics.totalNumberOfMonuments}
+                        description="Total number of Monuments and Memorials"
+                    />
+                    <StatisticCard
+                        statistic={monumentStatistics.oldestMonument ? monumentStatistics.oldestMonument.title : null}
+                        description="Oldest Monument or Memorial on record"
+                        statisticFontSize='small'
+                        link={monumentStatistics.oldestMonument ? '/monuments/' + monumentStatistics.oldestMonument.id : null}
+                    />
+                    <StatisticCard
+                        statistic={monumentStatistics.newestMonument ? monumentStatistics.newestMonument.title : null}
+                        description="Newest Monument or Memorial on record"
+                        statisticFontSize='small'
+                        link={monumentStatistics.newestMonument ? '/monuments/' + monumentStatistics.newestMonument.id : null}
+                    />
+                </div>
             </div>
         );
     }
