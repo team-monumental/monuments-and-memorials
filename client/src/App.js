@@ -13,6 +13,7 @@ import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
+import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
 
 class App extends React.Component {
 
@@ -43,6 +44,7 @@ class App extends React.Component {
                             <Route path="/search" component={SearchPage}/>
                             <Route path="/create" component={CreateMonumentPage}/>
                             <Route path='/bulk-create' component={MonumentBulkCreatePage}/>
+                            <Route path='/tag-directory' component={TagDirectoryPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>
