@@ -1,22 +1,24 @@
-import { FETCH_TAGS_PENDING, FETCH_TAGS_SUCCESS, FETCH_TAGS_ERROR } from '../constants';
+import {
+    TAG_DIRECTORY_FETCH_TAGS_PENDING, TAG_DIRECTORY_FETCH_TAGS_SUCCESS, TAG_DIRECTORY_FETCH_TAGS_ERROR
+} from '../constants';
 import { get } from '../utils/api-util';
 
 function fetchTagsPending() {
     return {
-        type: FETCH_TAGS_PENDING
+        type: TAG_DIRECTORY_FETCH_TAGS_PENDING
     };
 }
 
 function fetchTagsSuccess(tags) {
     return {
-        type: FETCH_TAGS_SUCCESS,
+        type: TAG_DIRECTORY_FETCH_TAGS_SUCCESS,
         payload: tags
     };
 }
 
 function fetchTagsError(error) {
     return {
-        type: FETCH_TAGS_ERROR,
+        type: TAG_DIRECTORY_FETCH_TAGS_ERROR,
         error: error
     };
 }
