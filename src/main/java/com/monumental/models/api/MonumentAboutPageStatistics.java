@@ -2,6 +2,8 @@ package com.monumental.models.api;
 
 import com.monumental.models.Monument;
 
+import java.util.HashMap;
+
 /**
  * Model class that holds statistics about the Monuments in the system for the About Page
  */
@@ -21,8 +23,10 @@ public class MonumentAboutPageStatistics {
 
     private Monument newestMonument;
 
+    private HashMap<String, Integer> numberOfMonumentsByState;
+
     public int getTotalNumberOfMonuments() {
-        return totalNumberOfMonuments;
+        return this.totalNumberOfMonuments;
     }
 
     public void setTotalNumberOfMonuments(int totalNumberOfMonuments) {
@@ -30,7 +34,7 @@ public class MonumentAboutPageStatistics {
     }
 
     public String getRandomState() {
-        return randomState;
+        return this.randomState;
     }
 
     public void setRandomState(String randomState) {
@@ -38,7 +42,7 @@ public class MonumentAboutPageStatistics {
     }
 
     public int getNumberOfMonumentsInRandomState() {
-        return numberOfMonumentsInRandomState;
+        return this.numberOfMonumentsInRandomState;
     }
 
     public void setNumberOfMonumentsInRandomState(int numberOfMonumentsInRandomState) {
@@ -46,7 +50,7 @@ public class MonumentAboutPageStatistics {
     }
 
     public String getRandomTagName() {
-        return randomTagName;
+        return this.randomTagName;
     }
 
     public void setRandomTagName(String randomTagName) {
@@ -54,7 +58,7 @@ public class MonumentAboutPageStatistics {
     }
 
     public int getNumberOfMonumentsWithRandomTag() {
-        return numberOfMonumentsWithRandomTag;
+        return this.numberOfMonumentsWithRandomTag;
     }
 
     public void setNumberOfMonumentsWithRandomTag(int numberOfMonumentsWithRandomTag) {
@@ -62,7 +66,7 @@ public class MonumentAboutPageStatistics {
     }
 
     public Monument getOldestMonument() {
-        return oldestMonument;
+        return this.oldestMonument;
     }
 
     public void setOldestMonument(Monument oldestMonument) {
@@ -70,10 +74,18 @@ public class MonumentAboutPageStatistics {
     }
 
     public Monument getNewestMonument() {
-        return newestMonument;
+        return this.newestMonument;
     }
 
     public void setNewestMonument(Monument newestMonument) {
         this.newestMonument = newestMonument;
+    }
+
+    public HashMap<String, Integer> getNumberOfMonumentsByState() {
+        return this.numberOfMonumentsByState;
+    }
+
+    public void setNumberOfMonumentsByState(HashMap<String, Integer> numberOfMonumentsByState) {
+        this.numberOfMonumentsByState = numberOfMonumentsByState;
     }
 }

@@ -6,7 +6,9 @@ import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
 import com.monumental.models.api.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.TagRepository;
 import com.monumental.util.csvparsing.*;
+import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -40,6 +42,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     AwsS3Service s3Service;
+
+    @Autowired
+    TagRepository tagRepository;
 
     /**
      * SRID for coordinates
@@ -716,12 +721,67 @@ public class MonumentService extends ModelService<Monument> {
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
-        statistics.setTotalNumberOfMonuments(this.countSearchResults(null, null, null, null, null, null, null, null,
-                null));
-        statistics.setOldestMonument(this.search(null, null, null, null, null, null, null, null, SortType.OLDEST, null,
-                null, null).get(0));
-        statistics.setNewestMonument(this.search(null, null, null, null, null, null, null, null, SortType.NEWEST, null,
-                null, null).get(0));
+        List<Monument> allMonumentOldestFirst = this.search(null,null, null, null, null, null, null, null,
+                SortType.OLDEST, null, null, null);
+
+        // Total number of Monuments
+        statistics.setTotalNumberOfMonuments(allMonumentOldestFirst.size());
+
+        // Oldest Monument
+        statistics.setOldestMonument(allMonumentOldestFirst.get(0));
+
+        // Newest Monument and Number of Monuments by state
+        // Done in the same loop for efficiency
+        boolean newestMonumentFound = false;
+        HashMap<String, Integer> numberOfMonumentsByState = new HashMap<>();
+
+        for (int i = (allMonumentOldestFirst.size() - 1); i > -1; i--) {
+            Monument currentMonument = allMonumentOldestFirst.get(i);
+
+            // Newest Monument
+            // Ignore Monuments with null Dates
+            if (!newestMonumentFound && currentMonument.getDate() != null) {
+                statistics.setNewestMonument(currentMonument);
+                newestMonumentFound = true;
+            }
+
+            // Number of Monuments by state
+            String parsedState = StringHelper.parseState(currentMonument.getState());
+
+            if (parsedState != null) {
+                if (!numberOfMonumentsByState.containsKey(parsedState)) {
+                    numberOfMonumentsByState.put(parsedState, 1);
+                }
+                else {
+                    Integer currentValue = numberOfMonumentsByState.get(parsedState);
+                    numberOfMonumentsByState.replace(parsedState, (currentValue + 1));
+                }
+            }
+        }
+
+        statistics.setNumberOfMonumentsByState(numberOfMonumentsByState);
+
+        // Number of Monuments in random state
+        Random random = new Random();
+
+        ArrayList<String> statesList = new ArrayList<>(numberOfMonumentsByState.keySet());
+
+        int randomStateIndex = random.nextInt(statesList.size());
+
+        String randomState = statesList.get(randomStateIndex);
+
+        statistics.setRandomState(randomState);
+        statistics.setNumberOfMonumentsInRandomState(numberOfMonumentsByState.get(randomState));
+
+        // Number of Monuments with random Tag
+        List<Tag> allTags = this.tagRepository.findAll();
+
+        int randomTagIndex = random.nextInt(allTags.size());
+
+        Tag randomTag = allTags.get(randomTagIndex);
+
+        statistics.setRandomTagName(randomTag.getName());
+        statistics.setNumberOfMonumentsWithRandomTag(this.monumentRepository.getAllByTagId(randomTag.getId()).size());
 
         return statistics;
     }
