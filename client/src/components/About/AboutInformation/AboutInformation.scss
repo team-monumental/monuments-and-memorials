@@ -37,13 +37,25 @@
   }
 
   .statistics-container {
-    width: 100%;
     margin-left: 30rem;
 
-    .card {
-      margin-bottom: 2rem;
-      margin-left: 2rem;
-      float: left;
+    .statistics-row {
+      width: 100%;
+      display: inline-block;
+
+      &.last {
+        margin-left: 11.5rem;
+      }
+
+      .card {
+        margin-bottom: 2rem;
+        margin-left: 2rem;
+        float: left;
+      }
     }
+  }
+
+  .charts-container {
+    padding-top: 2rem;
   }
 }

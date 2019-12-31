@@ -3,6 +3,7 @@ import './AboutInformation.scss';
 import { NavLink } from 'react-router-dom';
 import ContributorsList from './ContributorsList/ContributorsList';
 import StatisticCard from './StatisticCard/StatisticCard';
+import NumberOfMonumentsByStateBarChart from './NumberOfMonumentsByStateBarChart/NumberOfMonumentsByStateBarChart';
 
 /**
  * Presentational component for the plain-text information displayed on the About Page
@@ -114,21 +115,42 @@ export default class AboutInformation extends React.Component {
                     Statistics:
                 </h3>
                 <div className='statistics-container'>
-                    <StatisticCard
-                        statistic={monumentStatistics.totalNumberOfMonuments}
-                        description="Total number of Monuments and Memorials"
-                    />
-                    <StatisticCard
-                        statistic={monumentStatistics.oldestMonument ? monumentStatistics.oldestMonument.title : null}
-                        description="Oldest Monument or Memorial on record"
-                        statisticFontSize='small'
-                        link={monumentStatistics.oldestMonument ? '/monuments/' + monumentStatistics.oldestMonument.id : null}
-                    />
-                    <StatisticCard
-                        statistic={monumentStatistics.newestMonument ? monumentStatistics.newestMonument.title : null}
-                        description="Newest Monument or Memorial on record"
-                        statisticFontSize='small'
-                        link={monumentStatistics.newestMonument ? '/monuments/' + monumentStatistics.newestMonument.id : null}
+                    <div className='statistics-row'>
+                        <StatisticCard
+                            statistic={monumentStatistics.totalNumberOfMonuments}
+                            description='Total number of Monuments and Memorials'
+                        />
+                        <StatisticCard
+                            statistic={monumentStatistics.oldestMonument ? monumentStatistics.oldestMonument.title : null}
+                            description={monumentStatistics.oldestMonument
+                                ? 'Oldest Monument or Memorial on record (Date: ' + monumentStatistics.oldestMonument.date + ')'
+                                : null}
+                            statisticFontSize='small'
+                            link={monumentStatistics.oldestMonument ? '/monuments/' + monumentStatistics.oldestMonument.id : null}
+                        />
+                        <StatisticCard
+                            statistic={monumentStatistics.newestMonument ? monumentStatistics.newestMonument.title : null}
+                            description={monumentStatistics.newestMonument
+                                ? 'Newest Monument or Memorial on record (Date: ' + monumentStatistics.newestMonument.date + ')'
+                                : null}
+                            statisticFontSize='small'
+                            link={monumentStatistics.newestMonument ? '/monuments/' + monumentStatistics.newestMonument.id : null}
+                        />
+                    </div>
+                    <div className='statistics-row last'>
+                        <StatisticCard
+                            statistic={monumentStatistics.numberOfMonumentsInRandomState}
+                            description={'Number of Monuments in ' + monumentStatistics.randomState}
+                        />
+                        <StatisticCard
+                            statistic={monumentStatistics.numberOfMonumentsWithRandomTag}
+                            description={'Number of Monuments tagged with: ' + monumentStatistics.randomTagName}
+                        />
+                    </div>
+                </div>
+                <div className='charts-container'>
+                    <NumberOfMonumentsByStateBarChart
+                        numberOfMonumentsByState={monumentStatistics.numberOfMonumentsByState}
                     />
                 </div>
             </div>
