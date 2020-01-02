@@ -1,5 +1,5 @@
 import React from 'react';
-import './CreateForm.scss';
+import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
 import {latitudeRegex, longitudeRegex} from "../../utils/regex-util";
 import ImageUploader from 'react-images-upload';
@@ -11,12 +11,16 @@ import NoImageModal from './NoImageModal/NoImageModal';
 import ReviewModal from './ReviewModal/ReviewModal';
 
 /**
- * Presentational component for the Form for creating a new Monument
+ * Presentational component for the Form for creating a new Monument or updating an existing Monument
  */
-export default class CreateForm extends React.Component {
+export default class CreateOrUpdateForm extends React.Component {
 
     constructor(props) {
         super(props);
+
+        const { monument } = this.props;
+
+        console.log(monument);
 
         const reference = {
             value: '',
