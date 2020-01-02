@@ -2,6 +2,7 @@ package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
+import com.monumental.models.api.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.services.MonumentService;
@@ -15,7 +16,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -522,5 +525,174 @@ public class MonumentServiceIntegrationTests {
 
         Monument monument1SecondRelatedMonument = monument1RelatedMonuments.get(1);
         assertEquals(monument4.getTitle(), monument1SecondRelatedMonument.getTitle());
+    }
+
+    /** getMonumentAboutPageStatistics Tests **/
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_NoMonuments() {
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(0, result.getTotalNumberOfMonuments());
+        assertNull(result.getOldestMonument());
+        assertNull(result.getNewestMonument());
+        assertNull(result.getNumberOfMonumentsByState());
+        assertNull(result.getRandomState());
+        assertEquals(0, result.getNumberOfMonumentsInRandomState());
+        assertNull(result.getRandomTagName());
+        assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_OneMonument_NullDate_NullState() {
+        Monument monument = new Monument();
+        this.monumentRepository.save(monument);
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(1, result.getTotalNumberOfMonuments());
+        assertNull(result.getOldestMonument());
+        assertNull(result.getNewestMonument());
+        assertNull(result.getNumberOfMonumentsByState());
+        assertNull(result.getRandomState());
+        assertEquals(0, result.getNumberOfMonumentsInRandomState());
+        assertNull(result.getRandomTagName());
+        assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_OneMonument_NotNullDate_NullState() {
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument.setDate(new Date());
+        this.monumentRepository.save(monument);
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(1, result.getTotalNumberOfMonuments());
+        assertEquals("Monument", result.getOldestMonument().getTitle());
+        assertEquals("Monument", result.getNewestMonument().getTitle());
+        assertNull(result.getNumberOfMonumentsByState());
+        assertNull(result.getRandomState());
+        assertEquals(0, result.getNumberOfMonumentsInRandomState());
+        assertNull(result.getRandomTagName());
+        assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_OneMonument_NullDate_NotNullState() {
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument.setState("New York");
+        this.monumentRepository.save(monument);
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(1, result.getTotalNumberOfMonuments());
+        assertNull(result.getOldestMonument());
+        assertNull(result.getNewestMonument());
+        assertEquals(1, result.getNumberOfMonumentsByState().size());
+        assertEquals(Integer.valueOf(1), result.getNumberOfMonumentsByState().get("New York"));
+        assertEquals("New York", result.getRandomState());
+        assertEquals(1, result.getNumberOfMonumentsInRandomState());
+        assertNull(result.getRandomTagName());
+        assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_OneMonument_NotNullDate_NotNullState() {
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument.setDate(new Date());
+        monument.setState("New York");
+        this.monumentRepository.save(monument);
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(1, result.getTotalNumberOfMonuments());
+        assertEquals("Monument", result.getOldestMonument().getTitle());
+        assertEquals("Monument", result.getNewestMonument().getTitle());
+        assertEquals(1, result.getNumberOfMonumentsByState().size());
+        assertEquals(Integer.valueOf(1), result.getNumberOfMonumentsByState().get("New York"));
+        assertEquals("New York", result.getRandomState());
+        assertEquals(1, result.getNumberOfMonumentsInRandomState());
+        assertNull(result.getRandomTagName());
+        assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_OneMonument_Tags() {
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument.setDate(new Date());
+        monument.setState("New York");
+        this.monumentRepository.save(monument);
+
+        Tag tag = new Tag();
+        tag.setName("Tag");
+        tag.addMonument(monument);
+        this.tagRepository.save(tag);
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(1, result.getTotalNumberOfMonuments());
+        assertEquals("Monument", result.getOldestMonument().getTitle());
+        assertEquals("Monument", result.getNewestMonument().getTitle());
+        assertEquals(1, result.getNumberOfMonumentsByState().size());
+        assertEquals(Integer.valueOf(1), result.getNumberOfMonumentsByState().get("New York"));
+        assertEquals("New York", result.getRandomState());
+        assertEquals(1, result.getNumberOfMonumentsInRandomState());
+        assertEquals("Tag", result.getRandomTagName());
+        assertEquals(1, result.getNumberOfMonumentsWithRandomTag());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_ThreeMonuments() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1.setDate(new Date());
+        monument1.setState("New York");
+        this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2.setDate(Date.from(ZonedDateTime.now().minusMonths(1).toInstant()));
+        monument2.setState("Rhode Island");
+        this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3.setTitle("Monument 3");
+        monument3.setDate(Date.from(ZonedDateTime.now().minusMonths(3).toInstant()));
+        monument3.setState("Rhode Island");
+        this.monumentRepository.save(monument3);
+
+        Tag tag1 = new Tag();
+        tag1.setName("Tag 1");
+        tag1.addMonument(monument1);
+        this.tagRepository.save(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag 2");
+        tag2.addMonument(monument2);
+        this.tagRepository.save(tag2);
+
+        List<String> usedStates = new ArrayList<>();
+        usedStates.add("New York");
+        usedStates.add("Rhode Island");
+
+        List<String> usedTagNames = new ArrayList<>();
+        usedTagNames.add("Tag 1");
+        usedTagNames.add("Tag 2");
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+
+        assertEquals(3, result.getTotalNumberOfMonuments());
+        assertEquals("Monument 3", result.getOldestMonument().getTitle());
+        assertEquals("Monument 1", result.getNewestMonument().getTitle());
+        assertEquals(2, result.getNumberOfMonumentsByState().size());
+        assertEquals(Integer.valueOf(1), result.getNumberOfMonumentsByState().get("New York"));
+        assertEquals(Integer.valueOf(2), result.getNumberOfMonumentsByState().get("Rhode Island"));
+        assertTrue(usedStates.contains(result.getRandomState()));
+        assertTrue(usedTagNames.contains(result.getRandomTagName()));
     }
 }
