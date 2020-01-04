@@ -2,6 +2,7 @@
     display: flex;
     padding: 2rem;
     font-size: 0.875rem;
+    position: relative;
 
     .left {
         flex: 20%;
@@ -17,6 +18,27 @@
         flex: 20%;
         display: flex;
         justify-content: flex-end;
+    }
+
+    .tabletLeft {
+        flex: 10%;
+    }
+
+    .tabletCenter {
+        flex: 80%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .tabletRight{
+        flex: 10%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .header-icon {
+        width: 35px;
+        height: 35px;
     }
 
     .right > * {
@@ -51,6 +73,6 @@
     }
 
     input.form-control {
-        width: 270px;
+        width: 60%;
     }
 }

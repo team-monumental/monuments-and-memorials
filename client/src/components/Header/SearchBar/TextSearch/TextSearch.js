@@ -31,15 +31,16 @@ export default class TextSearch extends React.Component {
 
     render() {
         const { searchPlaceholder, searchQuery } = this.state;
-        const { className, onKeyDown } = this.props;
+        const { className, onKeyDown, width, barBottomSpacing } = this.props;
         return (
-            <div className="position-relative">
+            <div className="position-relative" style={{width: width, marginBottom: barBottomSpacing}}>
                 <input type="text"
                        value={searchQuery}
                        onChange={(event) => this.handleChange(event)}
                        placeholder={searchPlaceholder}
                        className={className}
-                       onKeyDown={onKeyDown}/>
+                       onKeyDown={onKeyDown}
+                       style={{width: '100%'}}/>
                 {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
             </div>
         )

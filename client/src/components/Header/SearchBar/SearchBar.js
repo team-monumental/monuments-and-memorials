@@ -20,7 +20,11 @@ class SearchBar extends React.Component {
             locationLat: params.lat || '',
             locationLon: params.lon || '',
             locationAddress: params.address || '',
-            distanceFilter: params.d || 25
+            distanceFilter: params.d || 25,
+            barWidth: props.barWidth,
+            locationSearchMargin: props.locationSearchMargin,
+            buttonWidth: props.buttonWidth,
+            barBottomSpacing: props.barBottomSpacing
         };
     }
 
@@ -56,16 +60,23 @@ class SearchBar extends React.Component {
     render() {
         const { textSearchQuery, locationAddress } = this.state;
         return (
-            <Form inline className="d-none d-lg-flex">
-                <TextSearch value={textSearchQuery}
-                            onKeyDown={event => this.handleKeyDown(event)}
-                            className="form-control form-control-sm mr-sm-2"
-                            onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
-                            onClear={() => this.handleTextSearchClear()}/>
-                <LocationSearch value={locationAddress}
-                                className="form-control form-control-sm mr-sm-2"
-                                onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
-                <Button variant="primary btn-sm" onClick={() => this.search()}>Search</Button>
+            <Form inline className="d-lg-flex" style={{width: '100%'}}>
+                <div className="form-group" style={{width: '100%'}}>
+                    <TextSearch value={textSearchQuery}
+                                onKeyDown={event => this.handleKeyDown(event)}
+                                className="form-control form-control-sm"
+                                onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
+                                onClear={() => this.handleTextSearchClear()}
+                                width={this.state.barWidth}
+                                barBottomSpacing={this.state.barBottomSpacing}/>
+                    <LocationSearch value={locationAddress}
+                                    className="form-control form-control-sm"
+                                    onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}
+                                    width={this.state.barWidth}
+                                    margin={this.state.locationSearchMargin}
+                                    barBottomSpacing={this.state.barBottomSpacing}/>
+                    <Button variant="primary btn-sm" style={{width: this.state.buttonWidth}} onClick={() => this.search()}>Search</Button>
+                </div>
             </Form>
         )
     }
