@@ -1,0 +1,35 @@
+.modal-content {
+  .error-modal {
+    &.modal-header {
+      padding-bottom: 0;
+
+      button {
+        color: black;
+        padding-top: 1.25rem;
+      }
+
+      .modal-title {
+        color: red;
+      }
+    }
+
+    & hr {
+      width: 100%;
+      border-top: 2px solid rgba(0, 0, 0, 0.1);
+    }
+
+    &.modal-body {
+      padding: 0.25rem 1rem 0.25rem 1rem;
+    }
+
+    &.modal-footer {
+      border-top: 2px solid #dee2e6;
+
+      .btn {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Open Sans", sans-serif;
+      }
+    }
+  }
+}
