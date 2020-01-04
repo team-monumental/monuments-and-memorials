@@ -1,6 +1,6 @@
 import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
 import { post } from "../utils/api-util";
-import {addError} from "./errors";
+import { addError } from './errors';
 
 function createMonumentPending() {
     return {

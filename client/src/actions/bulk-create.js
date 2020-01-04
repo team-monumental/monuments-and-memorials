@@ -3,7 +3,7 @@ import {
     BULK_CREATE_MONUMENTS_ZIP_PENDING, BULK_CREATE_MONUMENTS_ZIP_SUCCESS, BULK_CREATE_MONUMENTS_ZIP_ERROR
 } from '../constants';
 import { post, postFile } from '../utils/api-util';
-import {addError} from "./errors";
+import { addError } from './errors';
 
 function bulkCreateMonumentsPending() {
     return {
