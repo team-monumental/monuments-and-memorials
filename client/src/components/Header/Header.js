@@ -49,7 +49,7 @@ export default class Header extends React.Component {
                             </div>
                         </div>
                         <div className="center">
-                            <SearchBar barWidth="41%" locationSearchMargin='0%' buttonWidth='16%' barBottomSpacing='1%'/>
+                            <SearchBar barWidth="41%" locationSearchMargin='0%' buttonWidth='16%' barBottomSpacing='1%' closeModal={false}/>
                         </div>
                         <div className="right">
                             <Button size="sm" variant="link-secondary">Log in</Button>
@@ -63,7 +63,7 @@ export default class Header extends React.Component {
                             <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="my image" style={{objectFit: 'cover'}}/>
                         </div>
                         <div className="tabletCenter">
-                            <SearchBar barWidth="41%" locationSearchMargin='0%' buttonWidth='16%' barBottomSpacing='0%'/>
+                            <SearchBar barWidth="41%" locationSearchMargin='0%' buttonWidth='16%' barBottomSpacing='0%' closeModal={false}/>
                         </div>
                         <div className="tabletRight">
                             <Button variant="link-secondary" style={{padding: 0}}><img className='header-icon' src={process.env.PUBLIC_URL + '/menu-alt-512.png'} alt="my image" onClick={() => {this.setState({isMenuOpen: true})}} /></Button>
@@ -98,7 +98,7 @@ export default class Header extends React.Component {
                                 <Modal.Header closeButton>
                                     <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="my image" width='35px' height='35px' style={{marginBottom: '1%'}}/>
                                 </Modal.Header>
-                                <SearchBar barWidth="100%" locationSearchMargin='0%' buttonWidth='100%' barBottomSpacing='1%'/>
+                                <SearchBar barWidth="100%" locationSearchMargin='0%' buttonWidth='100%' barBottomSpacing='1%' closeModal={() => {this.setState({isSearchModalOpen: false})}}/>
                             </Modal>
                         </div>
                         <div className="tabletRight">

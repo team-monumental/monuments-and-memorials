@@ -55,6 +55,9 @@ class SearchBar extends React.Component {
             d: distanceFilter,
             address: locationAddress
         }, this.props.history);
+        if(typeof this.props.closeModal == 'function') {
+            this.props.closeModal();
+        }
     }
 
     render() {
