@@ -18,11 +18,11 @@ class CreateMonumentPage extends React.Component {
         return state.createPage;
     }
 
-    handleCreateFormCancelButtonClick() {
+    handleCreateOrUpdateFormCancelButtonClick() {
         this.props.history.goBack();
     }
 
-    async handleCreateFormSubmit(form) {
+    async handleCreateOrUpdateFormSubmit(form) {
         const { dispatch } = this.props;
 
         // First, upload the images to S3 and save the URLs in the form
@@ -47,8 +47,8 @@ class CreateMonumentPage extends React.Component {
                 </div>
                 <div className="column form-column">
                     <CreateOrUpdateForm
-                        onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
-                        onSubmit={(form) => this.handleCreateFormSubmit(form)}
+                        onCancelButtonClick={() => this.handleCreateOrUpdateFormCancelButtonClick()}
+                        onSubmit={(form) => this.handleCreateOrUpdateFormSubmit(form)}
                     />
                 </div>
             </div>

@@ -9,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import NoImageModal from './NoImageModal/NoImageModal';
 import ReviewModal from './ReviewModal/ReviewModal';
+import { isEmptyObject } from '../../utils/object-util';
 
 /**
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
@@ -17,10 +18,6 @@ export default class CreateOrUpdateForm extends React.Component {
 
     constructor(props) {
         super(props);
-
-        const { monument } = this.props;
-
-        console.log(monument);
 
         const reference = {
             value: '',
@@ -434,10 +431,94 @@ export default class CreateOrUpdateForm extends React.Component {
         this.setState({showingReviewModal: false});
     }
 
+    /**
+     * Sets the values of Form fields to be the values of the Monument that is being updated
+     */
+    setFormFieldsForUpdate() {
+        const { monument } = this.props;
+        const { title, address, latitude, longitude, year, month, artist, description, inscription,
+            materials } = this.state;
+        let { datePickerCurrentDate, references, tags, images } = this.state;
+
+        let monumentYear, monumentMonth, monumentExactDate;
+
+        if (monument.date) {
+            const monumentDateArray = monument.date.split('-');
+
+            monumentYear = monumentDateArray[0];
+
+            let monumentMonthInt = parseInt(monumentDateArray[1]) - 1;
+            monumentMonth = (monumentMonthInt).toString();
+
+            monumentExactDate = new Date(parseInt(monumentYear), monumentMonthInt, monumentDateArray[2]);
+        }
+
+        title.value = monument.title ? monument.title : '';
+        address.value = monument.address ? monument.address : '';
+        latitude.value = monument.latitude ? monument.latitude : '';
+        longitude.value = monument.longitude ? monument.longitude : '';
+        artist.value = monument.artist ? monument.artist : '';
+        description.value = monument.description ? monument.description : '';
+        inscription.value = monument.inscription ? monument.inscription : '';
+        year.value = monumentYear ? monumentYear : '';
+        month.value = monumentMonth ? monumentMonth : '';
+        datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+
+        if (monument.references && monument.references.length) {
+            let monumentReferences = [];
+            monument.references.forEach(reference => {
+                let monumentReference = {
+                    id: reference.id,
+                    value: reference.url,
+                    isValid: true,
+                    message: ''
+                };
+
+                monumentReferences.push(monumentReference);
+            });
+
+            references = monumentReferences.length ? monumentReferences : references;
+        }
+
+        if (monument.materials && monument.materials.length) {
+            let monumentMaterials = [];
+            monument.materials.forEach(material => {
+                monumentMaterials.push(material);
+            });
+
+            materials.materialObjects = monumentMaterials;
+            this.materialsSelectRef.current.state.selectedTags = monumentMaterials;
+        }
+
+        if (monument.tags && monument.tags.length) {
+            let monumentTags = [];
+            monument.tags.forEach(tag => {
+                monumentTags.push(tag);
+            });
+
+            tags = monumentTags;
+            this.tagsSelectRef.current.state.selectedTags = monumentTags;
+        }
+
+        if (monument.images && monument.images.length) {
+
+        }
+
+        this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
+            datePickerCurrentDate, references, materials, tags});
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+            this.setFormFieldsForUpdate();
+        }
+    }
+
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
             materials, showingReviewModal } = this.state;
+        const { monument } = this.props;
 
         const advancedInformationLink = (
             <div className="advanced-information-link more-link" onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
@@ -544,10 +625,10 @@ export default class CreateOrUpdateForm extends React.Component {
         );
 
         return (
-            <div className="create-form-container">
-                <div className="h5">
-                    Create a new Monument or Memorial
-                </div>
+            <div className='create-form-container'>
+                {monument
+                    ? <div className='h5 update'>Update an existing Monument or Memorial</div>
+                    : <div className='h5 create'>Create a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
