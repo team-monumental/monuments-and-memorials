@@ -11,9 +11,49 @@ import SearchResults from './SearchResults/SearchResults';
  */
 export default class Search extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            screenWidth: 0,
+            orientation: 'none',
+            device: 'notMobile'
+        };
+        this.resize = this.resize.bind(this);
+        this.orientation = this.orientation.bind(this);
+    }
+
     handlePageChange(page) {
         const { onPageChange } = this.props;
         onPageChange(page);
+    }
+
+    resize() {
+        this.setState({screenWidth: window.innerWidth});
+    }
+
+    orientation() {
+        // if( window.innerWidth < window.innerHeight )
+        // {
+        //     this.setState({ orientation: 'portrait' });
+        // }
+        // else
+        // {
+        //     this.setState({ orientation: 'landscape' });
+        // }
+        console.log('orientation change');
+        console.log(window.screen.orientation);
+   }
+
+    componentDidMount() {
+        window.addEventListener("resize", this.resize);
+        this.resize();
+        window.addEventListener("orientationchange", this.orientation);
+        if( (typeof window.matchMedia("(orientation: portrait)") !== "undefined") ||
+            (typeof window.matchMedia("(orientation: landscape)") !== "undefined") ||
+            (navigator.userAgent.indexOf('IEMobile') !== -1) ){
+            this.setState({device: 'mobile'});
+            console.log(this.state.device);
+        }
     }
 
     /**
@@ -46,28 +86,81 @@ export default class Search extends React.Component {
 
         return (
                 <div className="search-results-page">
-                    <div className="map-column">
-                        <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
-                    </div>
-                    <div className="search-column">
-                        <div className="search-header">
-                            <Filters onChange={filters => onFilterChange(filters)}
-                                     showDistance={lat && lon} distance={distance}
-                                     tags={tags} materials={materials}/>
-                            <SearchInfo count={count} page={page} limit={limit} sort={sort}
-                                        onLimitChange={onLimitChange}
-                                        onSortChange={onSortChange}
-                                        showDistanceSort={lat && lon}/>
-                        </div>
-                        <div className="search-results">
-                            <SearchResults monuments={monuments} limit={limit} page={page}/>
-                        </div>
-                        <div className="pagination-container">
-                            <Pagination count={pageCount}
-                                        page={page - 1}
-                                        onPage={page => this.handlePageChange(page + 1)}/>
-                        </div>
-                    </div>
+                    {
+                        this.state.screenWidth > 1024 && <>
+                            <div className="map-column">
+                                <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
+                            </div>
+                            <div className="search-column">
+                                <div className="search-header">
+                                    <Filters onChange={filters => onFilterChange(filters)}
+                                             showDistance={lat && lon} distance={distance}
+                                             tags={tags} materials={materials}/>
+                                    <SearchInfo count={count} page={page} limit={limit} sort={sort}
+                                                onLimitChange={onLimitChange}
+                                                onSortChange={onSortChange}
+                                                showDistanceSort={lat && lon}/>
+                                </div>
+                                <div className="search-results">
+                                    <SearchResults monuments={monuments} limit={limit} page={page}/>
+                                </div>
+                                <div className="pagination-container">
+                                    <Pagination count={pageCount}
+                                                page={page - 1}
+                                                onPage={page => this.handlePageChange(page + 1)}/>
+                                </div>
+                            </div>
+                        </>
+                    }
+                    {
+                       this.state.screenWidth <= 1024 && this.state.screenWidth > 823 && <>
+                            <div className="search-row">
+                                <div className="search-header">
+                                    <Filters onChange={filters => onFilterChange(filters)}
+                                             showDistance={lat && lon} distance={distance}
+                                             tags={tags} materials={materials}/>
+                                    <SearchInfo count={count} page={page} limit={limit} sort={sort}
+                                                onLimitChange={onLimitChange}
+                                                onSortChange={onSortChange}
+                                                showDistanceSort={lat && lon}/>
+                                </div>
+                                <div className="search-results">
+                                    <SearchResults monuments={monuments} limit={limit} page={page}/>
+                                </div>
+                                <div className="pagination-container">
+                                    <Pagination count={pageCount}
+                                                page={page - 1}
+                                                onPage={page => this.handlePageChange(page + 1)}/>
+                                </div>
+                            </div>
+                            <div className="map-row">
+                                <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
+                            </div>
+                        </>
+                    }
+                    {
+                        this.state.screenWidth <= 823 && <>
+                            <div className="search-row">
+                                <div className="search-header">
+                                    <Filters onChange={filters => onFilterChange(filters)}
+                                             showDistance={lat && lon} distance={distance}
+                                             tags={tags} materials={materials}/>
+                                    <SearchInfo count={count} page={page} limit={limit} sort={sort}
+                                                onLimitChange={onLimitChange}
+                                                onSortChange={onSortChange}
+                                                showDistanceSort={lat && lon}/>
+                                </div>
+                                <div className="search-results">
+                                    <SearchResults monuments={monuments} limit={limit} page={page}/>
+                                </div>
+                                <div className="pagination-container">
+                                    <Pagination count={pageCount}
+                                                page={page - 1}
+                                                onPage={page => this.handlePageChange(page + 1)}/>
+                                </div>
+                            </div>
+                        </>
+                    }
                 </div>
         )
     }

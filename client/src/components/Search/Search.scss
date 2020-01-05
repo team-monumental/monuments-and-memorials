@@ -5,6 +5,7 @@
 .search-results-page {
     height: 100%;
     display: flex;
+    flex-wrap: wrap;
     > div {
         flex: 33%;
     }
@@ -13,6 +14,18 @@
         justify-content: flex-end;
         height: 100%;
         max-width: 1000px;
+        .leaflet-container {
+            height: 100%;
+        }
+    }
+    .map-row {
+        display: flex;
+        flex: 0 0 100%;
+        justify-content: flex-end;
+        height: 40%;
+        width: 100%;
+        flex-wrap: wrap;
+        align-self: flex-end;
         .leaflet-container {
             height: 100%;
         }
@@ -30,6 +43,26 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    position: relative;
+    padding: 0 4rem;
+    .search-result {
+        margin-bottom: 1.5rem;
+    }
+}
+
+.search-row {
+    width: 100%;
+    flex: 0 0 100%;
+    @include media-breakpoint-up(lg) {
+        max-width: none;
+        width: 100%;
+    }
+    max-width: calc(100vw - 2rem);
+    height: 60%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
     position: relative;
     padding: 0 4rem;
     .search-result {
