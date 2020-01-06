@@ -57,15 +57,36 @@
         max-width: none;
         width: 100%;
     }
-    max-width: calc(100vw - 2rem);
+    //max-width: calc(100vw - 2rem);
     height: 60%;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
     position: relative;
     padding: 0 4rem;
     .search-result {
+        margin-bottom: 1.5rem;
+    }
+}
+
+.search-full-page {
+    flex: 0 0 100%;
+    @include media-breakpoint-up(lg) {
+        max-width: none;
+        width: 100%;
+    }
+    //max-width: calc(100vw - 2rem);
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    //flex-wrap: wrap;
+    position: relative;
+    padding: 0 4rem;
+    .search-result {
+        flex-direction: column;
+        flex-wrap: wrap;
         margin-bottom: 1.5rem;
     }
 }

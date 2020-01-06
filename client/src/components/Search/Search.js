@@ -16,7 +16,7 @@ export default class Search extends React.Component {
         this.state = {
             screenWidth: 0,
             orientation: 'none',
-            device: 'notMobile'
+            device: 'computer'
         };
         this.resize = this.resize.bind(this);
         this.orientation = this.orientation.bind(this);
@@ -32,28 +32,14 @@ export default class Search extends React.Component {
     }
 
     orientation() {
-        // if( window.innerWidth < window.innerHeight )
-        // {
-        //     this.setState({ orientation: 'portrait' });
-        // }
-        // else
-        // {
-        //     this.setState({ orientation: 'landscape' });
-        // }
-        console.log('orientation change');
-        console.log(window.screen.orientation);
-   }
+        this.setState({orientation: window.screen.orientation.type.split("-")[0]});
+    }
 
     componentDidMount() {
         window.addEventListener("resize", this.resize);
         this.resize();
         window.addEventListener("orientationchange", this.orientation);
-        if( (typeof window.matchMedia("(orientation: portrait)") !== "undefined") ||
-            (typeof window.matchMedia("(orientation: landscape)") !== "undefined") ||
-            (navigator.userAgent.indexOf('IEMobile') !== -1) ){
-            this.setState({device: 'mobile'});
-            console.log(this.state.device);
-        }
+        this.orientation();
     }
 
     /**
@@ -72,7 +58,13 @@ export default class Search extends React.Component {
                 });
             }
             if (didChange) {
-                document.querySelector('.search-column').scrollTo({top: 0});
+                if(document.getElementById('search-column')) {
+                    document.querySelector('search-column').scrollTo({top: 0});
+                }else if(document.getElementById('search-row')) {
+                    document.querySelector('search-row').scrollTo({top: 0});
+                } else if(document.getElementById('search-full-page')) {
+                    document.querySelector('search-full-page').scrollTo({top: 0});
+                }
             }
         }
     }
@@ -87,7 +79,7 @@ export default class Search extends React.Component {
         return (
                 <div className="search-results-page">
                     {
-                        this.state.screenWidth > 1024 && <>
+                        this.state.orientation === 'landscape' && this.state.screenWidth > 823 && <>
                             <div className="map-column">
                                 <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
                             </div>
@@ -113,8 +105,8 @@ export default class Search extends React.Component {
                         </>
                     }
                     {
-                       this.state.screenWidth <= 1024 && this.state.screenWidth > 823 && <>
-                            <div className="search-row">
+                       this.state.orientation === 'portrait' && this.state.screenWidth > 414 && <>
+                            <div className="search-row" id={this.state.orientation}>
                                 <div className="search-header">
                                     <Filters onChange={filters => onFilterChange(filters)}
                                              showDistance={lat && lon} distance={distance}
@@ -139,8 +131,9 @@ export default class Search extends React.Component {
                         </>
                     }
                     {
-                        this.state.screenWidth <= 823 && <>
-                            <div className="search-row">
+                        ((this.state.orientation === 'portrait' && this.state.screenWidth <= 414) ||
+                        (this.state.orientation === 'landscape' && this.state.screenWidth <= 823)) && <>
+                            <div className="search-full-page">
                                 <div className="search-header">
                                     <Filters onChange={filters => onFilterChange(filters)}
                                              showDistance={lat && lon} distance={distance}
