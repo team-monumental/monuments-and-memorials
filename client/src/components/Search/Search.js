@@ -14,11 +14,8 @@ export default class Search extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            screenWidth: 0,
-            orientation: 'none',
-            device: 'computer'
+            orientation: '',
         };
-        this.resize = this.resize.bind(this);
         this.orientation = this.orientation.bind(this);
     }
 
@@ -27,18 +24,24 @@ export default class Search extends React.Component {
         onPageChange(page);
     }
 
-    resize() {
-        this.setState({screenWidth: window.innerWidth});
-    }
-
     orientation() {
-        this.setState({orientation: window.screen.orientation.type.split("-")[0]});
+        let orientation = '';
+        if(JSON.stringify(window.screen.orientation) === '{}') {
+            if(window.innerWidth > window.innerHeight) {
+                orientation = 'landscape';
+            } else {
+                orientation = 'portrait';
+            }
+        } else {
+            orientation =  window.screen.orientation.type.split("-")[0];
+        }
+        this.setState({orientation: orientation});
+
     }
 
     componentDidMount() {
-        window.addEventListener("resize", this.resize);
-        this.resize();
         window.addEventListener("orientationchange", this.orientation);
+        window.addEventListener("resize", this.orientation);
         this.orientation();
     }
 
@@ -79,7 +82,7 @@ export default class Search extends React.Component {
         return (
                 <div className="search-results-page">
                     {
-                        this.state.orientation === 'landscape' && this.state.screenWidth > 823 && <>
+                        this.state.orientation === 'landscape' && (window.innerWidth > 823 || window.innerHeight > 414) && <>
                             <div className="map-column">
                                 <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
                             </div>
@@ -105,7 +108,7 @@ export default class Search extends React.Component {
                         </>
                     }
                     {
-                       this.state.orientation === 'portrait' && this.state.screenWidth > 414 && <>
+                       this.state.orientation === 'portrait' && window.innerWidth > 414 && <>
                             <div className="search-row" id={this.state.orientation}>
                                 <div className="search-header">
                                     <Filters onChange={filters => onFilterChange(filters)}
@@ -131,8 +134,8 @@ export default class Search extends React.Component {
                         </>
                     }
                     {
-                        ((this.state.orientation === 'portrait' && this.state.screenWidth <= 414) ||
-                        (this.state.orientation === 'landscape' && this.state.screenWidth <= 823)) && <>
+                        ((this.state.orientation === 'portrait' && window.innerWidth <= 414) ||
+                        (this.state.orientation === 'landscape' && window.innerWidth <= 823 && window.innerHeight <= 414)) && <>
                             <div className="search-full-page">
                                 <div className="search-header">
                                     <Filters onChange={filters => onFilterChange(filters)}
