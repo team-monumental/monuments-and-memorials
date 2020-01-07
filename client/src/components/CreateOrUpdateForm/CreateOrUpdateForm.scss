@@ -177,6 +177,10 @@
       padding-bottom: 1rem;
     }
 
+    .reference-container {
+      position: relative;
+    }
+
     .reference-container:last-child {
       padding-bottom: 0;
     }
@@ -214,21 +218,30 @@
       background-repeat: no-repeat;
       background-position: center;
     }
+  }
 
-    .image-for-update-delete-button {
-      position: absolute;
-      top: -9px;
-      right: -9px;
-      color: #FFF;
-      background: #DA6060;
-      border-radius: 50%;
-      text-align: center;
-      cursor: pointer;
-      font-size: 26px;
-      font-weight: bold;
-      line-height: 30px;
-      width: 30px;
-      height: 30px;
+  .delete-button {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    color: #FFF;
+    background: #DA6060;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 30px;
+    width: 30px;
+    height: 30px;
+
+    &.reference {
+      top: 35px;
+      right: 135px;
+      width: 20px;
+      height: 20px;
+      font-size: 16px;
+      line-height: 20px;
     }
   }
 }

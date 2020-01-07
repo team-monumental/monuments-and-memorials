@@ -696,22 +696,32 @@ export default class CreateOrUpdateForm extends React.Component {
                 dateInput = <div/>;
         }
 
-        const referenceInputs = references.map((reference, index) => (
-            <div className="reference-container" key={index}>
-                <Form.Label>Reference:</Form.Label>
-                <Form.Control
-                    type="text"
-                    name={'reference-' + index}
-                    placeholder="Reference URL"
-                    value={reference.value}
-                    onChange={(event) => this.handleReferenceChange(event)}
-                    isInvalid={!reference.isValid}
-                    className="text-control"
-                />
-                <Form.Control.Feedback type="invalid">{reference.message}</Form.Control.Feedback>
-            </div>
-        ));
+        const referenceInputs = [];
 
+        references.forEach((reference, index) => {
+            referenceInputs.push(
+                <div className='reference-container' key={index}>
+                    <Form.Label>Reference:</Form.Label>
+                    <Form.Control
+                        type='text'
+                        name={'reference-' + index}
+                        placeholder='Reference URL'
+                        value={reference.value}
+                        onChange={(event) => this.handleReferenceChange(event)}
+                        isInvalid={!reference.isValid}
+                        className='text-control'
+                    />
+                    <div
+                        className='delete-button reference'
+                        onClick={(reference) => this.handleReferenceDeleteButtonClick(reference)}
+                    >
+                        X
+                    </div>
+                    <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
+                </div>
+            );
+        });
+        
         const invalidMaterials = (
             <div className="invalid-feedback materials">{materials.message}</div>
         );
@@ -725,7 +735,7 @@ export default class CreateOrUpdateForm extends React.Component {
                         className='image-for-update-container'
                         key={image.id}
                     >
-                        <div className='image-for-update-delete-button'>X</div>
+                        <div className='delete-button'>X</div>
                         <div className='image-for-update' style={{backgroundImage: `url("${image.url}")`}}/>
                     </div>
                 );
