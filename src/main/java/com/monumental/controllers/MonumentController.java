@@ -8,6 +8,7 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
+import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
@@ -80,13 +81,7 @@ public class MonumentController {
         /* References Section */
         List<Reference> references = new ArrayList<>();
         if (monumentRequest.getReferences() != null && monumentRequest.getReferences().size() > 0) {
-            for (String referenceUrl : monumentRequest.getReferences()) {
-                if (!isNullOrEmpty(referenceUrl)) {
-                    Reference reference = new Reference(referenceUrl);
-                    reference.setMonument(createdMonument);
-                    references.add(reference);
-                }
-            }
+            references = this.monumentService.createMonumentReferences(monumentRequest.getReferences(), createdMonument);
         }
         createdMonument.setReferences(references);
 
@@ -177,14 +172,12 @@ public class MonumentController {
     /**
      * Update an existing Monument with the specified ID to have the specified attributes
      * @param id - ID of the Monument to update
-     * @param monument - Monument containing the new attributes for the specified ID
+     * @param newMonument - UpdateMonumentRequest containing the new attributes for the Monument
      * @return Monument - The updated Monument
      */
     @PutMapping("/api/monument/{id}")
-    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody Monument monument) {
-        monument.setId(id);
-        this.monumentRepository.save(monument);
-        return monument;
+    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody UpdateMonumentRequest newMonument) {
+        return this.monumentService.updateMonument(id, newMonument);
     }
 
     @GetMapping("/api/monuments/related")

@@ -86,7 +86,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newMaterials: [],
             tags: [],
             newTags: [],
-            showingReviewModal: false
+            showingReviewModal: false,
+            imagesForUpdate:[]
         };
 
         this.materialsSelectRef = React.createRef();
@@ -150,9 +151,17 @@ export default class CreateOrUpdateForm extends React.Component {
         this.setState({showingNoImageModal: false});
     }
 
-    async handleNoImageModalContinue() {
-        await this.setState({showingNoImageModal: false});
-        this.setState({showingReviewModal: true});
+    handleNoImageModalContinue() {
+        const { monument } = this.props;
+
+        this.setState({showingNoImageModal: false});
+
+        if (!monument) {
+            this.submitCreateForm();
+        }
+        else {
+            this.submitUpdateForm(monument.id);
+        }
     }
 
     handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
@@ -169,6 +178,8 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     handleSubmit(event) {
+        const { monument } = this.props;
+
         event.preventDefault();
 
         this.resetForm(false);
@@ -178,7 +189,12 @@ export default class CreateOrUpdateForm extends React.Component {
                 this.setState({showingNoImageModal: true});
             }
             else {
-                this.setState({showingReviewModal: true});
+                if (!monument) {
+                    this.submitCreateForm();
+                }
+                else {
+                    this.submitUpdateForm(monument.id);
+                }
             }
         }
     }
@@ -370,19 +386,26 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     validateImages() {
-        const { images } = this.state;
+        const { images, imagesForUpdate } = this.state;
+        const { monument } = this.props;
 
-        return !(!images || !images.length);
+        if (!monument) {
+            return !(!images || !images.length);
+        }
+        else {
+            return !(!imagesForUpdate || !imagesForUpdate.length);
+        }
     }
 
     /**
-     * Build the form object based on the current values of the inputs
+     * Build the form object to send to the onSubmit handler when creating a new Monument
      */
-    buildForm() {
+    submitCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
-        datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
+            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
+        const { onSubmit } = this.props;
 
-        let form = {
+        let createForm = {
             title: title.value,
             address: address.value === '' ? null : address.value,
             latitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
@@ -400,31 +423,92 @@ export default class CreateOrUpdateForm extends React.Component {
 
         switch (dateSelectValue) {
             case 'year':
-                form.year = year.value === '' ? null : year.value;
+                createForm.year = year.value === '' ? null : year.value;
                 break;
             case 'month-year':
-                form.year = year.value === '' ? null : year.value;
-                form.month = month.value;
+                createForm.year = year.value === '' ? null : year.value;
+                createForm.month = month.value;
                 break;
             case 'exact-date':
-                form.date = datePickerCurrentDate;
+                createForm.date = datePickerCurrentDate;
                 break;
             default:
                 break;
         }
 
-        return form;
+        onSubmit(createForm);
     }
 
     /**
-     * Build a form object and send it to the onSubmit handler
+     * Build the form object to send to the onSubmit handler when updating a Monument
      */
-    submitForm() {
+    submitUpdateForm(id) {
+        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
+            datePickerCurrentDate, references, images, imagesForUpdate, materials, newMaterials, tags,
+            newTags } = this.state;
         const { onSubmit } = this.props;
 
-        let form = this.buildForm();
+        let updateForm = {
+            newTitle: title.value,
+            newAddress: address.value === '' ? null : address.value,
+            newArtist: artist.value === '' ? null : artist.value,
+            newDescription: description.value === '' ? null : description.value,
+            newInscription: inscription.value === '' ? null : inscription.value,
+            newLatitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
+            newLongitude: (latitude.value === '' && longitude.value === '') ? null : longitude.value,
+            images: images,
+            newMaterials: materials.materialObjects.map(material => material.name),
+            createdMaterials: newMaterials.map(newMaterial => newMaterial.name),
+            newTags: tags.map(tag => tag.name),
+            createdTags: newTags.map(newTag => newTag.name)
+        };
 
-        onSubmit(form);
+        switch (dateSelectValue) {
+            case 'year':
+                updateForm.newYear = year.value === '' ? null : year.value;
+                break;
+            case 'month-year':
+                updateForm.newYear = year.value === '' ? null : year.value;
+                updateForm.newMonth = month.value;
+                break;
+            case 'exact-date':
+                updateForm.newDate = datePickerCurrentDate;
+                break;
+            default:
+                break;
+        }
+
+        updateForm.updatedReferencesUrlsById = {};
+        updateForm.newReferenceUrls = [];
+        updateForm.deletedReferenceIds = [];
+        references.forEach(reference => {
+            if (reference.id) {
+                if (reference.deleted === true) {
+                    updateForm.deletedReferenceIds.push(reference.id);
+                }
+                else {
+                    updateForm.updatedReferencesUrlsById[reference.id] = reference.value;
+                }
+            }
+            else {
+                updateForm.newReferenceUrls.push(reference.value);
+            }
+        });
+
+        updateForm.deletedImageUrls = [];
+        updateForm.deletedImageIds = [];
+        imagesForUpdate.forEach(imageForUpdate => {
+            if (imageForUpdate.isPrimary) {
+                updateForm.newPrimaryImageId = imageForUpdate.id;
+            }
+
+            if (imageForUpdate.hasBeenDeleted) {
+                updateForm.deletedImageUrls.push(imageForUpdate.url);
+                updateForm.deletedImageIds.push(imageForUpdate.id);
+            }
+        });
+
+        onSubmit(id, updateForm);
     }
 
     handleReviewModalCancel() {
@@ -434,11 +518,11 @@ export default class CreateOrUpdateForm extends React.Component {
     /**
      * Sets the values of Form fields to be the values of the Monument that is being updated
      */
-    setFormFieldsForUpdate() {
+    setFormFieldValuesForUpdate() {
         const { monument } = this.props;
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            materials } = this.state;
-        let { datePickerCurrentDate, references, tags, images } = this.state;
+            materials, imagesForUpdate } = this.state;
+        let { datePickerCurrentDate, references, tags } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -455,8 +539,8 @@ export default class CreateOrUpdateForm extends React.Component {
 
         title.value = monument.title ? monument.title : '';
         address.value = monument.address ? monument.address : '';
-        latitude.value = monument.latitude ? monument.latitude : '';
-        longitude.value = monument.longitude ? monument.longitude : '';
+        latitude.value = monument.lat ? monument.lat.toString() : '';
+        longitude.value = monument.lon ? monument.lon.toString() : '';
         artist.value = monument.artist ? monument.artist : '';
         description.value = monument.description ? monument.description : '';
         inscription.value = monument.inscription ? monument.inscription : '';
@@ -501,23 +585,31 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         if (monument.images && monument.images.length) {
-
+            monument.images.forEach(image => {
+                imagesForUpdate.push(
+                    {
+                        id: image.id,
+                        url: image.url,
+                        hasBeenDeleted: false
+                    }
+                );
+            });
         }
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, references, materials, tags});
+            datePickerCurrentDate, references, materials, tags, imagesForUpdate});
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
-            this.setFormFieldsForUpdate();
+            this.setFormFieldValuesForUpdate();
         }
     }
 
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
-            materials, showingReviewModal } = this.state;
+            materials, showingReviewModal, imagesForUpdate } = this.state;
         const { monument } = this.props;
 
         const advancedInformationLink = (
@@ -624,6 +716,31 @@ export default class CreateOrUpdateForm extends React.Component {
             <div className="invalid-feedback materials">{materials.message}</div>
         );
 
+        let imagesForUpdateDisplay;
+        if (imagesForUpdate.length) {
+            let imageDisplays = [];
+            imagesForUpdate.forEach(image => {
+                imageDisplays.push(
+                    <div
+                        className='image-for-update-container'
+                        key={image.id}
+                    >
+                        <div className='image-for-update-delete-button'>X</div>
+                        <div className='image-for-update' style={{backgroundImage: `url("${image.url}")`}}/>
+                    </div>
+                );
+            });
+
+            imagesForUpdateDisplay = (
+                <div>
+                    <Form.Label>Current Images:</Form.Label>
+                    <div className='images-for-update-container'>
+                        {imageDisplays}
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className='create-form-container'>
                 {monument
@@ -707,8 +824,8 @@ export default class CreateOrUpdateForm extends React.Component {
                     </div>
 
                     {/* Images */}
-                    <Form.Group controlId="create-form-image">
-                        <Form.Label>Images:</Form.Label>
+                    <Form.Group controlId='create-form-image'>
+                        <Form.Label>{monument ? 'Add More Images:' : 'Images:'}</Form.Label>
                         <ImageUploader
                             withIcon={false}
                             imgExtension={['.jpg', '.png']}
@@ -720,6 +837,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             key={imageUploaderKey}
                             errorClass="invalid-feedback"
                         />
+                        {imagesForUpdateDisplay}
                     </Form.Group>
 
                     <Collapse in={showingAdvancedInformation}>

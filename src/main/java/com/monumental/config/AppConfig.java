@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * Class used to configure Beans for the application
  */
 @Configuration
 @EnableAsync
+@EnableJpaAuditing
 public class AppConfig {
 
     @Bean

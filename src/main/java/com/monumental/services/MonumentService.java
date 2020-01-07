@@ -7,7 +7,11 @@ import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
+import com.monumental.controllers.helpers.UpdateMonumentRequest;
+import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.models.Reference;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
@@ -49,6 +53,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    ReferenceRepository referenceRepository;
 
     /**
      * SRID for coordinates
@@ -715,5 +722,107 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         return statistics;
+    }
+
+    /**
+     * Update the Monument with the specified ID to have the specified attributes
+     * @param id - Integer ID of the Monument to update
+     * @param newMonument - UpdateMonumentRequest object containing the new attributes for the Monument
+     * @return Monument - The Monument with the updated attributes
+     */
+    public Monument updateMonument(Integer id, UpdateMonumentRequest newMonument) {
+        Optional<Monument> optional = this.monumentRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+
+        Monument currentMonument = optional.get();
+        this.initializeAllLazyLoadedCollections(currentMonument);
+
+        /* String fields */
+        currentMonument.setTitle(newMonument.getNewTitle());
+        currentMonument.setAddress(newMonument.getNewAddress());
+        currentMonument.setArtist(newMonument.getNewArtist());
+        currentMonument.setDescription(newMonument.getNewDescription());
+        currentMonument.setInscription(newMonument.getNewInscription());
+
+        /* Coordinates */
+        Point point = MonumentService.createMonumentPoint(newMonument.getNewLongitude(),
+                newMonument.getNewLatitude());
+        currentMonument.setCoordinates(point);
+
+        /* Date */
+        Date date;
+
+        if (!isNullOrEmpty(newMonument.getNewDate())) {
+            date = MonumentService.createMonumentDateFromJsonDate(newMonument.getNewDate());
+        }
+        else {
+            date = MonumentService.createMonumentDate(newMonument.getNewYear(), newMonument.getNewMonth());
+        }
+
+        currentMonument.setDate(date);
+
+        /* References */
+        List<Reference> currentReferences = currentMonument.getReferences();
+
+        // Update References
+        if (currentReferences != null && newMonument.getUpdatedReferencesUrlsById() != null &&
+                currentReferences.size() > 0 && newMonument.getUpdatedReferencesUrlsById().size() > 0) {
+            for (Reference currentReference : currentReferences) {
+                if (newMonument.getUpdatedReferencesUrlsById().containsKey(currentReference.getId())) {
+                    currentReference.setUrl(newMonument.getUpdatedReferencesUrlsById().get(currentReference.getId()));
+                    this.referenceRepository.save(currentReference);
+                }
+            }
+        }
+
+        // Add References
+        if (newMonument.getNewReferenceUrls() != null && newMonument.getNewReferenceUrls().size() > 0) {
+            List<Reference> newReferences = this.createMonumentReferences(newMonument.getNewReferenceUrls(), currentMonument);
+
+            if (currentReferences == null || currentReferences.size() == 0) {
+                currentMonument.setReferences(newReferences);
+            }
+            else {
+                currentMonument.getReferences().addAll(newReferences);
+            }
+        }
+
+        // Delete References
+        if (newMonument.getDeletedReferenceIds() != null && newMonument.getDeletedReferenceIds().size() > 0) {
+            for (Integer referenceId : newMonument.getDeletedReferenceIds()) {
+                this.referenceRepository.deleteById(referenceId);
+            }
+        }
+
+        // This will save the Monument with all of its associated records
+        return this.monumentRepository.save(currentMonument);
+    }
+
+    /**
+     * Create References using the specified referenceUrls and associate them with the specified Monument
+     * @param referenceUrls - List of Strings for the URLs to use for the References
+     * @param monument - Monument to associate the new References with
+     * @return List<Reference> - List of new References with the specified referenceUrls and associated with the
+     * specified Monument
+     */
+    public List<Reference> createMonumentReferences(List<String> referenceUrls, Monument monument) {
+        if (referenceUrls == null || monument == null) {
+            return null;
+        }
+
+        List<Reference> references = new ArrayList<>();
+
+        for (String referenceUrl : referenceUrls) {
+            if (!isNullOrEmpty(referenceUrl)) {
+                Reference reference = new Reference(referenceUrl);
+                reference.setMonument(monument);
+                references.add(reference);
+            }
+        }
+
+        return references;
     }
 }

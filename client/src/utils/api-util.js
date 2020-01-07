@@ -97,6 +97,38 @@ export async function postFile(url, file) {
 }
 
 /**
+ * Send a PUT request to the specified url with the specified data
+ * @param url - URL to send the PUT to
+ * @param data - JSON data to send to the specified URL
+ */
+export async function put(url, data) {
+    let error = null;
+    let res = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
+            }
+            return res;
+        })
+        .then(res => res.json())
+        .catch(err => error = err);
+    if (error || res.error) throw(error || res.error);
+    else return res;
+}
+
+/**
  * Uploads the specified images to the monument-images S3 bucket, inside the images/ folder
  * @param images - List of images to upload to S3
  * @returns {Promise<[]>} - Promise that when awaited, returns a List of S3 Object keys for the uploaded images
