@@ -3,13 +3,29 @@ import './MapPage.scss';
 import MapResults from '../../components/Search/MapResults/MapResults';
 import { connect } from 'react-redux';
 import fetchMonuments from '../../actions/map';
+import {zoom} from "leaflet/src/control/Control.Zoom";
 
 class MapPage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            zoomSize: '5'
+        }
         const { dispatch } = props;
         dispatch(fetchMonuments());
+    }
+
+    componentWillMount() {
+        let zoomSize;
+        if(window.innerWidth < 800) {
+            zoomSize = '3';
+        } else if(window.innerWidth < 1600) {
+            zoomSize = '4';
+        } else {
+            zoomSize = '5';
+        }
+        this.setState({zoomSize: zoomSize});
     }
 
     static mapStateToProps(state) {
@@ -24,7 +40,7 @@ class MapPage extends React.Component {
         const { monuments } = this.props;
         return (
             <div className="map-page">
-                <MapResults monuments={monuments} useCircleMarkers zoom="5"/>
+                <MapResults monuments={monuments} useCircleMarkers zoom={this.state.zoomSize}/>
             </div>
         );
     }
