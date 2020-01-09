@@ -166,3 +166,41 @@ export default async function uploadImagesToS3(images) {
 
     return imageUrls;
 }
+
+export async function deleteImagesFromS3(imageUrls) {
+    // Setup the global AWS config
+    AWS.config.update({
+        region: 'us-east-2',
+        accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+        secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
+    });
+
+    // Create a new AWS S3 Client
+    const s3Client = new AWS.S3();
+
+    // Setup parameters
+    const params = {
+        Bucket: s3ImageBucketName
+    };
+
+    for (const imageUrl of imageUrls) {
+        params['Key'] = getS3ImageObjectKeyFromObjectUrl(imageUrl);
+
+        try {
+            // Execute the delete operation
+            await s3Client.deleteObject(params).promise();
+        } catch (err) {
+            console.log("ERROR DELETING IMAGE FROM S3: " + imageUrl);
+            console.log("ERROR: " + err.message);
+        }
+    }
+}
+
+/**
+ * Helper function to get the S3 Object Key for an Image using the specified Object URL
+ * @param objectUrl - The Object URL to use to parse the Image Object Key
+ */
+function getS3ImageObjectKeyFromObjectUrl(objectUrl) {
+    const objectUrlArray = objectUrl.split('/');
+    return s3ImageBucketFolderName + objectUrlArray[objectUrlArray.length - 1];
+}

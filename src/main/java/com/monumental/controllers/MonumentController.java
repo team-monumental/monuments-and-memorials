@@ -87,18 +87,8 @@ public class MonumentController {
 
         /* Images Section */
         List<Image> images = new ArrayList<>();
-        int imagesCount = 0;
         if (monumentRequest.getImages() != null && monumentRequest.getImages().size() > 0) {
-            for (String imageUrl : monumentRequest.getImages()) {
-                if (!isNullOrEmpty(imageUrl)) {
-                    imagesCount++;
-                    boolean isPrimary = imagesCount == 1;
-
-                    Image image = new Image(imageUrl, isPrimary);
-                    image.setMonument(createdMonument);
-                    images.add(image);
-                }
-            }
+            images = this.monumentService.createMonumentImages(monumentRequest.getImages(), createdMonument);
         }
         createdMonument.setImages(images);
 

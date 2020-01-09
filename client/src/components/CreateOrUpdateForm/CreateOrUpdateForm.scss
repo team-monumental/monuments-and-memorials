@@ -179,6 +179,11 @@
 
     .reference-container {
       position: relative;
+
+      .deleted-reference {
+        background-color: lightgray;
+        text-decoration: line-through;
+      }
     }
 
     .reference-container:last-child {
@@ -195,12 +200,12 @@
 
   .images-for-update-container {
     margin-top: -3rem;
-    margin-bottom: -3rem;
+    display: flex;
 
     .image-for-update-container {
       height: 130px;
       width: 120px;
-      margin: 5%;
+      margin: 5% 2.5%;
       padding: 10px;
       background: #EDF2F6;
       display: flex;
@@ -209,6 +214,25 @@
       box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
       border: 1px solid #D0DBE4;
       position: relative;
+
+      .is-primary-container {
+        position: absolute;
+        top: 10rem;
+        display: flex;
+
+        .image-is-primary-message {
+          font-weight: bold;
+        }
+
+        .image-is-primary-checkbox {
+          padding-top: 0.5rem;
+          cursor: pointer;
+        }
+      }
+
+      &.deleted {
+        background: gray;
+      }
     }
 
     .image-for-update {
@@ -217,6 +241,10 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+
+      &.deleted {
+        filter: brightness(50%);
+      }
     }
   }
 
@@ -236,8 +264,34 @@
     height: 30px;
 
     &.reference {
-      top: 35px;
-      right: 135px;
+      top: 2.5rem;
+      right: 57.5rem;
+      width: 20px;
+      height: 20px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+
+  .undo-delete-button {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    color: #FFF;
+    background: $secondary;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 30px;
+    width: 30px;
+    height: 30px;
+    z-index: 2;
+
+    &.reference {
+      top: 2.5rem;
+      right: 57.5rem;
       width: 20px;
       height: 20px;
       font-size: 16px;

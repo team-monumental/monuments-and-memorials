@@ -36,6 +36,12 @@ public class UpdateMonumentRequest {
 
     private List<Integer> deletedReferenceIds;
 
+    private List<String> newImageUrls;
+
+    private Integer newPrimaryImageId;
+
+    private List<Integer> deletedImageIds;
+
     public String getNewTitle() {
         return this.newTitle;
     }
@@ -138,5 +144,29 @@ public class UpdateMonumentRequest {
 
     public void setDeletedReferenceIds(List<Integer> deletedReferenceIds) {
         this.deletedReferenceIds = deletedReferenceIds;
+    }
+
+    public List<String> getNewImageUrls() {
+        return this.newImageUrls;
+    }
+
+    public void setNewImageUrls(List<String> newImageUrls) {
+        this.newImageUrls = newImageUrls;
+    }
+
+    public Integer getNewPrimaryImageId() {
+        return this.newPrimaryImageId;
+    }
+
+    public void setNewPrimaryImageId(Integer newPrimaryImageId) {
+        this.newPrimaryImageId = newPrimaryImageId;
+    }
+
+    public List<Integer> getDeletedImageIds() {
+        return this.deletedImageIds;
+    }
+
+    public void setDeletedImageIds(List<Integer> deletedImageIds) {
+        this.deletedImageIds = deletedImageIds;
     }
 }

@@ -590,6 +590,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     {
                         id: image.id,
                         url: image.url,
+                        isPrimary: image.isPrimary,
                         hasBeenDeleted: false
                     }
                 );
@@ -603,6 +604,178 @@ export default class CreateOrUpdateForm extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
             this.setFormFieldValuesForUpdate();
+        }
+    }
+
+    handleReferenceDeleteButtonClick(event, reference, index) {
+        const { references } = this.state;
+
+        if (reference.id) {
+            const referenceFromState = references.filter(r => r.id === reference.id)[0];
+            referenceFromState['deleted'] = true;
+        }
+        else {
+            references.splice(index, 1);
+        }
+
+        this.setState({references});
+    }
+
+    handleReferenceUndoDeleteButtonClick(event, reference) {
+        const { references } = this.state;
+
+        const referenceFromState = references.filter(r => r.id === reference.id)[0];
+        referenceFromState['deleted'] = false;
+
+        this.setState({references});
+    }
+
+    handleImageIsPrimaryCheckboxClick(event, image) {
+        const { images, imagesForUpdate } = this.state;
+
+        if (image.isPrimary) {
+            image.isPrimary = false;
+        }
+        else {
+            image.isPrimary = true;
+
+            images.forEach(i => {
+                if (i.url !== image.url) {
+                    i.isPrimary = false;
+                }
+            });
+
+            imagesForUpdate.forEach(i => {
+                if (i.url !== image.url) {
+                    i.isPrimary = false;
+                }
+            });
+        }
+
+        this.setState({images, imagesForUpdate});
+    }
+
+    handleImageForUpdateDeleteButtonClick(event, image) {
+        const { imagesForUpdate } = this.state;
+
+        let imageForUpdateFromState;
+        imagesForUpdate.forEach(imageForUpdate => {
+            if (imageForUpdate.id === image.id) {
+                imageForUpdateFromState = imageForUpdate;
+            }
+        });
+
+        if (imageForUpdateFromState) {
+            imageForUpdateFromState.hasBeenDeleted = true;
+        }
+
+        this.setState({imagesForUpdate});
+    }
+
+    handleImageForUpdateUndoDeleteButtonClick(event, image) {
+        const { imagesForUpdate } = this.state;
+
+        let imageForUpdateFromState;
+        imagesForUpdate.forEach(imageForUpdate => {
+            if (imageForUpdate.id === image.id) {
+                imageForUpdateFromState = imageForUpdate;
+            }
+        });
+
+        if (imageForUpdateFromState) {
+            imageForUpdateFromState.hasBeenDeleted = false;
+        }
+
+        this.setState({imagesForUpdate});
+    }
+
+    renderReferenceDeleteButton(reference, index) {
+        if (!reference.deleted) {
+            return (
+                <div
+                    className='delete-button reference'
+                    onClick={e => this.handleReferenceDeleteButtonClick(e, reference, index)}
+                >
+                    X
+                </div>
+            );
+        }
+        else {
+            return (
+                <i
+                    className='material-icons undo-delete-button reference'
+                    onClick={e => this.handleReferenceUndoDeleteButtonClick(e, reference)}
+                >
+                    undo
+                </i>
+            );
+        }
+    }
+
+    renderImageIsPrimaryCheckbox(image) {
+        const { monument } = this.props;
+
+        if (monument) {
+            const isPrimaryMessage = (
+                <div className='image-is-primary-message'>
+                    Is Primary Image:
+                </div>
+            );
+
+            if (image.isPrimary) {
+                return (
+                    <div className='is-primary-container'>
+                        {isPrimaryMessage}
+                        <i
+                            className='material-icons image-is-primary-checkbox'
+                            onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
+                        >
+                            check_box
+                        </i>
+                    </div>
+                );
+            }
+            else {
+                return (
+                    <div className='is-primary-container'>
+                        {isPrimaryMessage}
+                        <i
+                            className='material-icons image-is-primary-checkbox'
+                            onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
+                        >
+                            check_box_outline_blank
+                        </i>
+                    </div>
+                );
+            }
+        }
+        else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderImageDeleteButton(image) {
+        if (image.hasBeenDeleted) {
+            return (
+                <i
+                    className='material-icons undo-delete-button image'
+                    onClick={e => this.handleImageForUpdateUndoDeleteButtonClick(e, image)}
+                >
+                    undo
+                </i>
+            );
+        }
+        else {
+            return (
+                <div
+                    className='delete-button'
+                    onClick={e => this.handleImageForUpdateDeleteButtonClick(e, image)}
+                >
+                    X
+                </div>
+            );
         }
     }
 
@@ -709,14 +882,9 @@ export default class CreateOrUpdateForm extends React.Component {
                         value={reference.value}
                         onChange={(event) => this.handleReferenceChange(event)}
                         isInvalid={!reference.isValid}
-                        className='text-control'
+                        className={reference.deleted ? 'text-control deleted-reference' : 'text-control'}
                     />
-                    <div
-                        className='delete-button reference'
-                        onClick={(reference) => this.handleReferenceDeleteButtonClick(reference)}
-                    >
-                        X
-                    </div>
+                    {monument ? this.renderReferenceDeleteButton(reference, index) : <div/>}
                     <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
                 </div>
             );
@@ -732,11 +900,15 @@ export default class CreateOrUpdateForm extends React.Component {
             imagesForUpdate.forEach(image => {
                 imageDisplays.push(
                     <div
-                        className='image-for-update-container'
+                        className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
                         key={image.id}
                     >
-                        <div className='delete-button'>X</div>
-                        <div className='image-for-update' style={{backgroundImage: `url("${image.url}")`}}/>
+                        {this.renderImageDeleteButton(image)}
+                        <div
+                            className={image.hasBeenDeleted ? 'image-for-update deleted' : 'image-for-update'}
+                            style={{backgroundImage: `url("${image.url}")`}}
+                        />
+                        {this.renderImageIsPrimaryCheckbox(image)}
                     </div>
                 );
             });
