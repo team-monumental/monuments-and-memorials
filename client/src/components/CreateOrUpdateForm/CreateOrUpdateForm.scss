@@ -31,10 +31,18 @@
     padding-left: 5rem;
     padding-bottom: 4rem;
 
+    &.update {
+      padding-left: 2.5rem;
+    }
+
     .btn {
       font-weight: bold;
       text-transform: uppercase;
       font-family: "Open Sans", sans-serif;
+    }
+
+    .reset-button {
+      background-color: white;
     }
   }
 

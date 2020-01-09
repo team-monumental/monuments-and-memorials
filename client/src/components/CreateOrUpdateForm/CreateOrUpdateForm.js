@@ -521,8 +521,8 @@ export default class CreateOrUpdateForm extends React.Component {
     setFormFieldValuesForUpdate() {
         const { monument } = this.props;
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            materials, imagesForUpdate } = this.state;
-        let { datePickerCurrentDate, references, tags } = this.state;
+            materials } = this.state;
+        let { datePickerCurrentDate, references, tags, imagesForUpdate, images, imageUploaderKey } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -585,6 +585,7 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         if (monument.images && monument.images.length) {
+            imagesForUpdate = [];
             monument.images.forEach(image => {
                 imagesForUpdate.push(
                     {
@@ -597,8 +598,11 @@ export default class CreateOrUpdateForm extends React.Component {
             });
         }
 
+        images = [];
+        imageUploaderKey++;
+
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, references, materials, tags, imagesForUpdate});
+            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey});
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -1137,7 +1141,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     {!showingAdvancedInformation && advancedInformationLink}
                     {showingAdvancedInformation && hideAdvancedInformationLink}
 
-                    <ButtonToolbar>
+                    <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
                         <Button
                             variant="primary"
                             type="submit"
