@@ -44,15 +44,4 @@ public class AppConfig {
     public JtsModule jtsModule() {
         return new JtsModule();
     }
-
-    /**
-     * Bean for handling Multipart File uploads
-     */
-    @Bean
-    public MultipartResolver multipartResolver() {
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        // Set the max file upload size to 300MB
-        multipartResolver.setMaxUploadSize(300000000);
-        return multipartResolver;
-    }
 }
