@@ -182,7 +182,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         event.preventDefault();
 
-        this.resetForm(false);
+        this.clearForm(false);
 
         if (this.validateForm()) {
             if (!this.validateImages()) {
@@ -200,11 +200,11 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     /**
-     * Resets the state of the Form
+     * Clear the state of the Form
      * This means resetting the validation state for all inputs to true and clearing all error messages
-     * @param resetValue - If true, also resets the values inside the inputs
+     * @param clearValues - If true, also clears the values inside the inputs
      */
-    resetForm(resetValue) {
+    clearForm(clearValues) {
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
             references } = this.state;
         let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
@@ -240,7 +240,7 @@ export default class CreateOrUpdateForm extends React.Component {
             reference.isValid = true;
             reference.message = '';
 
-            if (resetValue) {
+            if (clearValues) {
                 reference.value = '';
             }
         }
@@ -248,7 +248,7 @@ export default class CreateOrUpdateForm extends React.Component {
         materials.isValid = true;
         materials.message = '';
 
-        if (resetValue) {
+        if (clearValues) {
             title.value = '';
             address.value = '';
             latitude.value = '';
@@ -779,6 +779,27 @@ export default class CreateOrUpdateForm extends React.Component {
         }
     }
 
+    renderResetButton() {
+        const { monument } = this.props;
+
+        if (monument) {
+            return (
+                <Button
+                    type='button'
+                    onClick={() => this.setFormFieldValuesForUpdate()}
+                    className='reset-button mr-4 mt-1'
+                >
+                    Reset
+                </Button>
+            );
+        }
+        else {
+            return (
+                <div/>
+            );
+        }
+    }
+
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
@@ -1126,13 +1147,15 @@ export default class CreateOrUpdateForm extends React.Component {
                         </Button>
 
                         <Button
-                            variant="secondary"
-                            type="button"
-                            onClick={() => this.resetForm(true)}
-                            className="mr-4 mt-1"
+                            variant='secondary'
+                            type='button'
+                            onClick={() => this.clearForm(true)}
+                            className='mr-4 mt-1'
                         >
                             Clear
                         </Button>
+
+                        {this.renderResetButton()}
 
                         <Button
                             variant="danger"
