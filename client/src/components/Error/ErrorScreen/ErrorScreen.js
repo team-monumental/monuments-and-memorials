@@ -17,9 +17,6 @@ export default class ErrorScreen extends React.Component {
                 <p>
                     An error occurred while processing your request.
                 </p>
-                <p>
-                    Any additional information we have will be displayed below:
-                </p>
                 {errors.map((error) => (
                     <p
                         className='font-weight-bold'
