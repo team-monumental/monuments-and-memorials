@@ -147,7 +147,7 @@ public class MonumentController {
                                 @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws ResourceNotFoundException {
         Optional<Monument> optional = this.monumentRepository.findById(id);
-        if (optional.isEmpty()) throw new ResourceNotFoundException();
+        if (optional.isEmpty()) throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         Monument monument = optional.get();
 
         if (cascade) {

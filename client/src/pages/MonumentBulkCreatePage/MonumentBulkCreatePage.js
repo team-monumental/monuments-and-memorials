@@ -7,7 +7,7 @@ import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
 import { readCsvFileContents } from '../../utils/file-util';
 import bulkCreateMonuments, { bulkCreateMonumentsZip } from '../../actions/bulk-create';
 import Spinner from '../../components/Spinner/Spinner';
-import ErrorModal from "../../components/ErrorModal/ErrorModal";
+import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
 
 /**
  * Root container for the page to bulk create Monuments
