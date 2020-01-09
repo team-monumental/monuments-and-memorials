@@ -67,7 +67,7 @@ export default class AboutInformation extends React.Component {
                 </h3>
                 <p>
                     Monuments and memorials offer insight into a community's values. They offer tribute to a person,
-                    idea, or event and/or honor and individual or group who have passed away or have been, in the case
+                    idea, or event and/or honor an individual or group who have passed away or have been, in the case
                     of veterans, killed in action. Across the United States, thousands of such work exists; this vast
                     collection of publicly-accessible art, however, is largely uncatalogued and thus remains
                     undocumented for the public. While some familiar outdoor memorials include the Vietnam Veterans

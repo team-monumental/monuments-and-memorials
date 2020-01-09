@@ -6,7 +6,7 @@ Chart.defaults.global.defaultFontColor = 'black';
 Chart.defaults.global.defaultFontStyle = 'bold';
 
 /**
- * Reusable component that wraps around Chart.js Bar charts
+ * Reusable presentational component that wraps around Chart.js Bar charts
  */
 export default class BarChart extends React.Component {
     chartRef = React.createRef();
