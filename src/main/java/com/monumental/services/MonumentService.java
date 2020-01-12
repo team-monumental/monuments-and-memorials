@@ -2,13 +2,14 @@ package com.monumental.services;
 
 import com.amazonaws.SdkClientException;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.controllers.helpers.CreateMonumentRequest;
+import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
-import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.models.Reference;
 import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
@@ -729,6 +730,90 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
+     * Create a new Monument based on the attributes in the specified CreateMonumentRequest object
+     * @param monumentRequest - The CreateMonumentRequest object to use to create the new Monument
+     * @return Monument - The newly created Monument based on the specified CreateMonumentRequest
+     */
+    public Monument createMonument(CreateMonumentRequest monumentRequest) {
+        Monument createdMonument = new Monument();
+
+        // Set basic String fields
+        this.setBasicFieldsOnMonument(createdMonument, monumentRequest.getTitle(), monumentRequest.getAddress(),
+                monumentRequest.getArtist(), monumentRequest.getDescription(), monumentRequest.getInscription());
+
+        // Set the Coordinates
+        Point point = MonumentService.createMonumentPoint(monumentRequest.getLongitude(),
+                monumentRequest.getLatitude());
+
+        createdMonument.setCoordinates(point);
+
+        // Set the Date
+        Date date;
+
+        if (!isNullOrEmpty(monumentRequest.getDate())) {
+            date = MonumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
+        }
+        else {
+            date = MonumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
+        }
+
+        createdMonument.setDate(date);
+
+        // Save the initial Monument
+        createdMonument = this.monumentRepository.save(createdMonument);
+
+        /* References Section */
+        List<Reference> references = new ArrayList<>();
+        if (monumentRequest.getReferences() != null && monumentRequest.getReferences().size() > 0) {
+            references = this.createMonumentReferences(monumentRequest.getReferences(), createdMonument);
+        }
+        createdMonument.setReferences(references);
+
+        /* Images Section */
+        List<Image> images = new ArrayList<>();
+        if (monumentRequest.getImages() != null && monumentRequest.getImages().size() > 0) {
+            images = this.createMonumentImages(monumentRequest.getImages(), createdMonument);
+        }
+        createdMonument.setImages(images);
+
+        List<Monument> createdMonumentList = new ArrayList<>();
+        createdMonumentList.add(createdMonument);
+
+        /* Materials Section */
+        if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
+            for (String materialName : monumentRequest.getMaterials()) {
+                this.tagService.createTag(materialName, createdMonumentList, true);
+            }
+        }
+
+        /* New Materials Section */
+        if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
+            for (String newMaterialName : monumentRequest.getNewMaterials()) {
+                this.tagService.createTag(newMaterialName, createdMonumentList, true);
+            }
+        }
+
+        /* Tags Section */
+        if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
+            for (String tagName : monumentRequest.getTags()) {
+                this.tagService.createTag(tagName, createdMonumentList, false);
+            }
+        }
+
+        /* New Tags Section */
+        if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
+            for (String newTagName : monumentRequest.getNewTags()) {
+                this.tagService.createTag(newTagName, createdMonumentList, false);
+            }
+        }
+
+        // Save the Monument with the associated References, Images, Materials and Tags
+        createdMonument = this.monumentRepository.save(createdMonument);
+
+        return createdMonument;
+    }
+
+    /**
      * Update the Monument with the specified ID to have the specified attributes
      * @param id - Integer ID of the Monument to update
      * @param newMonument - UpdateMonumentRequest object containing the new attributes for the Monument
@@ -744,12 +829,9 @@ public class MonumentService extends ModelService<Monument> {
         Monument currentMonument = optionalMonument.get();
         this.initializeAllLazyLoadedCollections(currentMonument);
 
-        // Update String fields
-        currentMonument.setTitle(newMonument.getNewTitle());
-        currentMonument.setAddress(newMonument.getNewAddress());
-        currentMonument.setArtist(newMonument.getNewArtist());
-        currentMonument.setDescription(newMonument.getNewDescription());
-        currentMonument.setInscription(newMonument.getNewInscription());
+        // Update basic String fields
+        this.setBasicFieldsOnMonument(currentMonument, newMonument.getNewTitle(), newMonument.getNewAddress(),
+                newMonument.getNewArtist(), newMonument.getNewDescription(), newMonument.getNewInscription());
 
         // Update the Coordinates
         Point point = MonumentService.createMonumentPoint(newMonument.getNewLongitude(),
@@ -768,18 +850,13 @@ public class MonumentService extends ModelService<Monument> {
 
         currentMonument.setDate(date);
 
+        // Save the current updates
+        currentMonument = this.monumentRepository.save(currentMonument);
+
         /* References section */
 
         // Update any current Reference URLs
-        if (currentMonument.getReferences() != null && newMonument.getUpdatedReferencesUrlsById() != null &&
-                currentMonument.getReferences().size() > 0 && newMonument.getUpdatedReferencesUrlsById().size() > 0) {
-            for (Reference currentReference : currentMonument.getReferences()) {
-                if (newMonument.getUpdatedReferencesUrlsById().containsKey(currentReference.getId())) {
-                    currentReference.setUrl(newMonument.getUpdatedReferencesUrlsById().get(currentReference.getId()));
-                    this.referenceRepository.save(currentReference);
-                }
-            }
-        }
+        this.updateMonumentReferences(currentMonument, newMonument.getUpdatedReferencesUrlsById());
 
         // Add any newly created References
         if (newMonument.getNewReferenceUrls() != null && newMonument.getNewReferenceUrls().size() > 0) {
@@ -796,20 +873,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Delete any References
-        if (newMonument.getDeletedReferenceIds() != null && newMonument.getDeletedReferenceIds().size() > 0) {
-            for (Integer referenceId : newMonument.getDeletedReferenceIds()) {
-                this.referenceRepository.deleteById(referenceId);
-            }
-
-            // Since the References loaded on the Monument, we need to remove them before we save the Monument
-            List<Reference> newReferences = new ArrayList<>();
-            for (Reference currentReference : currentMonument.getReferences()) {
-                if (currentReference.getId() != null && !newMonument.getDeletedReferenceIds().contains(currentReference.getId())) {
-                    newReferences.add(currentReference);
-                }
-            }
-            currentMonument.setReferences(newReferences);
-        }
+        this.deleteMonumentReferences(currentMonument, newMonument.getDeletedReferenceIds());
 
         /* Images section */
 
@@ -828,55 +892,13 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Update the primary Image
-        if (newMonument.getNewPrimaryImageId() != null) {
-            Optional<Image> optionalImage = this.imageRepository.findById(newMonument.getNewPrimaryImageId());
-
-            if (optionalImage.isPresent()) {
-                Image image = optionalImage.get();
-                image.setIsPrimary(true);
-                this.imageRepository.save(image);
-
-                // Set all of the other Images to not be the primary
-                if (currentMonument.getImages() != null && currentMonument.getImages().size() > 0) {
-                    for (Image currentImage : currentMonument.getImages()) {
-                        if (currentImage.getId() != null && !currentImage.getId().equals(newMonument.getNewPrimaryImageId())) {
-                            currentImage.setIsPrimary(false);
-                            this.imageRepository.save(currentImage);
-                        }
-                    }
-                }
-            }
-        }
+        this.updateMonumentPrimaryImage(currentMonument, newMonument.getNewPrimaryImageId());
 
         // Delete any Images
-        if (newMonument.getDeletedImageIds() != null && newMonument.getDeletedImageIds().size() > 0) {
-            for (Integer imageId : newMonument.getDeletedImageIds()) {
-                this.imageRepository.deleteById(imageId);
-            }
-
-            // Since the Images are loaded onto the Monument, we need to remove them before we save
-            List<Image> newImages = new ArrayList<>();
-            for (Image currentImage : currentMonument.getImages()) {
-                if (currentImage.getId() != null && !newMonument.getDeletedImageIds().contains(currentImage.getId())) {
-                    newImages.add(currentImage);
-                }
-            }
-            currentMonument.setImages(newImages);
-        }
+        this.deleteMonumentImages(currentMonument, newMonument.getDeletedImageIds());
 
         // If for some reason the primary Image is deleted, default to the first Image
-        boolean primaryImageFound = false;
-        for (Image currentImage : currentMonument.getImages()) {
-            if (currentImage.getIsPrimary()) {
-                primaryImageFound = true;
-                break;
-            }
-        }
-
-        if (!primaryImageFound && currentMonument.getImages().size() > 0) {
-            currentMonument.getImages().get(0).setIsPrimary(true);
-            this.imageRepository.save(currentMonument.getImages().get(0));
-        }
+        this.resetMonumentPrimaryImage(currentMonument);
 
         /* Materials section */
 
@@ -970,5 +992,143 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         return images;
+    }
+
+    /**
+     * Sets the basic String fields on a specified Monument to the specified values
+     * @param monument - The Monument object to set the fields on
+     * @param title - String for the title of the Monument. Cannot be null or empty
+     * @param address - String for the address of the Monument
+     * @param artist - String for the artist of the Monument
+     * @param description - String for the description of the Monument
+     * @param inscription - String for the inscription of the Monument
+     * @throws IllegalArgumentException - If the specified title is null or empty
+     */
+    public void setBasicFieldsOnMonument(Monument monument, String title, String address, String artist,
+                                         String description, String inscription) {
+        if (monument != null) {
+            if (isNullOrEmpty(title)) {
+                throw new IllegalArgumentException("Monument can not have a null or empty title");
+            }
+
+            monument.setTitle(title);
+            monument.setAddress(address);
+            monument.setArtist(artist);
+            monument.setDescription(description);
+            monument.setInscription(inscription);
+        }
+    }
+
+    /**
+     * Update the specified Monument's References to have the new Reference URLs specified
+     * @param monument - Monument to update the associated References on
+     * @param newReferenceUrlsById - Map of Reference ID to new Reference URL to use for updating
+     */
+    public void updateMonumentReferences(Monument monument, Map<Integer, String> newReferenceUrlsById) {
+        if (monument != null && monument.getReferences() != null && newReferenceUrlsById != null &&
+                monument.getReferences().size() > 0 && newReferenceUrlsById.size() > 0) {
+            for (Reference currentReference : monument.getReferences()) {
+                if (newReferenceUrlsById.containsKey(currentReference.getId())) {
+                    currentReference.setUrl(newReferenceUrlsById.get(currentReference.getId()));
+                    this.referenceRepository.save(currentReference);
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete the specified Monument's References based on the specified IDs
+     * @param monument - Monument whose associated References to delete
+     * @param deletedReferenceIds - List of Reference IDs to delete and remove from the Monument
+     */
+    public void deleteMonumentReferences(Monument monument, List<Integer> deletedReferenceIds) {
+        if (monument != null && deletedReferenceIds != null && deletedReferenceIds.size() > 0) {
+            for (Integer referenceId : deletedReferenceIds) {
+                this.referenceRepository.deleteById(referenceId);
+            }
+
+            if (monument.getReferences() != null) {
+                // Since the References may be loaded on the Monument, we need to remove them
+                List<Reference> newReferences = new ArrayList<>();
+                for (Reference currentReference : monument.getReferences()) {
+                    if (currentReference.getId() != null && !deletedReferenceIds.contains(currentReference.getId())) {
+                        newReferences.add(currentReference);
+                    }
+                }
+                monument.setReferences(newReferences);
+            }
+        }
+    }
+
+    /**
+     * Updates the specified Monument's primary Image to be the Image with the specified ID
+     * @param monument - Monument whose primary Image to update
+     * @param newPrimaryImageId - ID of the Image to make the primary Image
+     */
+    public void updateMonumentPrimaryImage(Monument monument, Integer newPrimaryImageId) {
+        if (monument != null && newPrimaryImageId != null) {
+            Optional<Image> optionalImage = this.imageRepository.findById(newPrimaryImageId);
+
+            if (optionalImage.isPresent()) {
+                Image image = optionalImage.get();
+                image.setIsPrimary(true);
+                this.imageRepository.save(image);
+
+                // Set all of the other Images to not be the primary
+                if (monument.getImages() != null && monument.getImages().size() > 0) {
+                    for (Image currentImage : monument.getImages()) {
+                        if (currentImage.getId() != null && !currentImage.getId().equals(newPrimaryImageId)) {
+                            currentImage.setIsPrimary(false);
+                            this.imageRepository.save(currentImage);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete the specified Monument's Images based on the specified Image IDs
+     * @param monument - Monument whose Images are to be deleted
+     * @param deletedImageIds - List of IDs of the Images to delete
+     */
+    public void deleteMonumentImages(Monument monument, List<Integer> deletedImageIds) {
+        if (monument != null && deletedImageIds != null && deletedImageIds.size() > 0) {
+            for (Integer imageId : deletedImageIds) {
+                this.imageRepository.deleteById(imageId);
+            }
+
+            if (monument.getImages() != null) {
+                // Since the Images may be loaded onto the Monument, we need to remove them before we save
+                List<Image> newImages = new ArrayList<>();
+                for (Image currentImage : monument.getImages()) {
+                    if (currentImage.getId() != null && !deletedImageIds.contains(currentImage.getId())) {
+                        newImages.add(currentImage);
+                    }
+                }
+                monument.setImages(newImages);
+            }
+        }
+    }
+
+    /**
+     * Sets the primary Image for the Monument to the first Image if it doesn't have a primary Image
+     * @param monument - Monument to reset the primary Image for
+     */
+    public void resetMonumentPrimaryImage(Monument monument) {
+        if (monument != null && monument.getImages() != null && monument.getImages().size() > 0) {
+            boolean primaryImageFound = false;
+            for (Image currentImage : monument.getImages()) {
+                if (currentImage.getIsPrimary()) {
+                    primaryImageFound = true;
+                    break;
+                }
+            }
+
+            if (!primaryImageFound) {
+                monument.getImages().get(0).setIsPrimary(true);
+                this.imageRepository.save(monument.getImages().get(0));
+            }
+        }
     }
 }

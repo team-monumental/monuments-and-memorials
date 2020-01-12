@@ -567,6 +567,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (monument.materials && monument.materials.length) {
             let monumentMaterials = [];
             monument.materials.forEach(material => {
+                material.selected = true;
                 monumentMaterials.push(material);
             });
 
@@ -577,6 +578,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (monument.tags && monument.tags.length) {
             let monumentTags = [];
             monument.tags.forEach(tag => {
+                tag.selected = true;
                 monumentTags.push(tag);
             });
 

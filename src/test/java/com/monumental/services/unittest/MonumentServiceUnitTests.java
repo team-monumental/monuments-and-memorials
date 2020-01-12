@@ -485,4 +485,69 @@ public class MonumentServiceUnitTests {
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
     }
+
+    /* setBasicFieldsOnMonument Tests */
+
+    @Test
+    public void testMonumentService_setBasicFieldsOnMonument_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "");
+
+        assertNull(monument);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMonumentService_setBasicFieldsOnMonument_NullTitle() {
+        Monument monument = new Monument();
+
+        this.monumentService.setBasicFieldsOnMonument(monument, null, "", "", "", "");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMonumentService_setBasicFieldsOnMonument_EmptyTitle() {
+        Monument monument = new Monument();
+
+        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "");
+    }
+
+    @Test
+    public void testMonumentService_setBasicFieldsOnMonument_ValidTitle_NullOtherFields() {
+        Monument monument = new Monument();
+
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", null, null, null, null);
+
+        assertEquals("Title", monument.getTitle());
+        assertNull(monument.getAddress());
+        assertNull(monument.getArtist());
+        assertEquals("The Title in null, null was created by null.", monument.getDescription());
+        assertNull(monument.getInscription());
+    }
+
+    @Test
+    public void testMonumentService_setBasicFieldsOnMonument_ValidTitle_EmptyOtherFields() {
+        Monument monument = new Monument();
+
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", "", "", "", "");
+
+        assertEquals("Title", monument.getTitle());
+        assertEquals("", monument.getAddress());
+        assertEquals("", monument.getArtist());
+        assertEquals("", monument.getDescription());
+        assertEquals("", monument.getInscription());
+    }
+
+    @Test
+    public void testMonumentService_setBasicFieldsOnMonument_VariousFields() {
+        Monument monument = new Monument();
+
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", "Address", "Artist", "Description",
+                "Inscription");
+
+        assertEquals("Title", monument.getTitle());
+        assertEquals("Address", monument.getAddress());
+        assertEquals("Artist", monument.getArtist());
+        assertEquals("Description", monument.getDescription());
+        assertEquals("Inscription", monument.getInscription());
+    }
 }

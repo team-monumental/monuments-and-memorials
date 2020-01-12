@@ -53,6 +53,13 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    // Handler for IllegalArgumentExceptions
+    @ExceptionHandler({ IllegalArgumentException.class })
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     // Handler for all other Exceptions
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handle(Exception ex) {

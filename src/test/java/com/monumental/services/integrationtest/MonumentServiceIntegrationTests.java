@@ -1,9 +1,13 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.models.Image;
 import com.monumental.models.Monument;
+import com.monumental.models.Reference;
 import com.monumental.models.Tag;
+import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -49,6 +54,12 @@ public class MonumentServiceIntegrationTests {
 
     @Autowired
     TagService tagService;
+
+    @Autowired
+    ReferenceRepository referenceRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     public static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
 
@@ -79,6 +90,8 @@ public class MonumentServiceIntegrationTests {
             return new ArrayList<>();
         }
     }
+
+    /** bulkCreateMonumentsFromCsv Tests **/
 
     private MonumentBulkValidationResult validateCSV(String csvRows) {
         try {
@@ -718,5 +731,738 @@ public class MonumentServiceIntegrationTests {
         assertEquals(Integer.valueOf(2), result.getNumberOfMonumentsByState().get("Rhode Island"));
         assertTrue(usedStates.contains(result.getRandomState()));
         assertTrue(usedTagNames.contains(result.getRandomTagName()));
+    }
+
+    /* updateMonumentReferences Tests **/
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.updateMonumentReferences(monument, new HashMap<>());
+
+        assertNull(monument);
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_NullMonumentReferences() {
+        Monument monument = new Monument();
+        monument.setReferences(null);
+
+        this.monumentService.updateMonumentReferences(monument, new HashMap<>());
+
+        assertNull(monument.getReferences());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_NullNewReferenceUrlsById() {
+        Monument monument = new Monument();
+
+        this.monumentService.updateMonumentReferences(monument, null);
+
+        assertEquals(0, monument.getReferences().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_NoReferences() {
+        Monument monument = new Monument();
+
+        Map<Integer, String> newReferenceUrlsById = new HashMap<>();
+        newReferenceUrlsById.put(1, "test");
+
+        this.monumentService.updateMonumentReferences(monument, newReferenceUrlsById);
+
+        assertEquals(0, monument.getReferences().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_EmptyNewReferenceUrlsById() {
+        Monument monument = new Monument();
+
+        Reference reference = new Reference();
+        reference.setUrl("URL");
+
+        monument.getReferences().add(reference);
+
+        this.monumentService.updateMonumentReferences(monument, new HashMap<>());
+
+        assertEquals(1, monument.getReferences().size());
+        assertEquals("URL", monument.getReferences().get(0).getUrl());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_UpdateOneReference() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference = new Reference();
+        reference.setUrl("URL");
+        reference.setMonument(monument);
+        reference = this.referenceRepository.save(reference);
+
+        monument.getReferences().add(reference);
+
+        Map<Integer, String> newReferenceUrlsById = new HashMap<>();
+        newReferenceUrlsById.put(reference.getId(), "Test");
+
+        this.monumentService.updateMonumentReferences(monument, newReferenceUrlsById);
+
+        assertEquals(1, monument.getReferences().size());
+        assertEquals("Test", monument.getReferences().get(0).getUrl());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Test").size());
+        assertEquals(0, this.referenceRepository.getAllByUrl("URL").size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_UpdateTwoReferencesOutOfThree() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        monument.getReferences().add(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        monument.getReferences().add(reference2);
+
+        Reference reference3 = new Reference();
+        reference3.setUrl("Reference 3");
+        reference3.setMonument(monument);
+        reference3 = this.referenceRepository.save(reference3);
+
+        monument.getReferences().add(reference3);
+
+        Map<Integer, String> newReferenceUrlsById = new HashMap<>();
+        newReferenceUrlsById.put(reference1.getId(), "Test");
+        newReferenceUrlsById.put(reference3.getId(), "Test 2");
+
+        this.monumentService.updateMonumentReferences(monument, newReferenceUrlsById);
+
+        assertEquals(3, monument.getReferences().size());
+        assertEquals("Test", monument.getReferences().get(0).getUrl());
+        assertEquals("Test 2", monument.getReferences().get(2).getUrl());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Test").size());
+        assertEquals(0, this.referenceRepository.getAllByUrl("Reference 1").size());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Reference 2").size());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Test 2").size());
+        assertEquals(0, this.referenceRepository.getAllByUrl("Reference 3").size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentReferences_UpdateAllThreeReferences() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        monument.getReferences().add(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        monument.getReferences().add(reference2);
+
+        Reference reference3 = new Reference();
+        reference3.setUrl("Reference 3");
+        reference3.setMonument(monument);
+        reference3 = this.referenceRepository.save(reference3);
+
+        monument.getReferences().add(reference3);
+
+        Map<Integer, String> newReferenceUrlsById = new HashMap<>();
+        newReferenceUrlsById.put(reference1.getId(), "Test");
+        newReferenceUrlsById.put(reference2.getId(), "Test 2");
+        newReferenceUrlsById.put(reference3.getId(), "Test 3");
+
+        this.monumentService.updateMonumentReferences(monument, newReferenceUrlsById);
+
+        assertEquals(3, monument.getReferences().size());
+        assertEquals("Test", monument.getReferences().get(0).getUrl());
+        assertEquals("Test 2", monument.getReferences().get(1).getUrl());
+        assertEquals("Test 3", monument.getReferences().get(2).getUrl());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Test").size());
+        assertEquals(0, this.referenceRepository.getAllByUrl("Reference 1").size());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Test 2").size());
+        assertEquals(0, this.referenceRepository.getAllByUrl("Reference 2").size());
+        assertEquals(1, this.referenceRepository.getAllByUrl("Test 3").size());
+        assertEquals(0, this.referenceRepository.getAllByUrl("Reference 3").size());
+    }
+
+    /* deleteMonumentReferences Tests */
+
+    @Test
+    public void testMonumentService_deleteMonumentReferences_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.deleteMonumentReferences(monument, new ArrayList<>());
+
+        assertNull(monument);
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentReferences_NullDeletedReferenceIds() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference = new Reference();
+        reference.setUrl("URL");
+        reference.setMonument(monument);
+        reference = this.referenceRepository.save(reference);
+
+        monument.getReferences().add(reference);
+
+        this.monumentService.deleteMonumentReferences(monument, null);
+
+        assertEquals(1, monument.getReferences().size());
+        assertEquals(1, this.monumentRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentReferences_EmptyDeletedReferenceIds() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference = new Reference();
+        reference.setUrl("URL");
+        reference.setMonument(monument);
+        reference = this.referenceRepository.save(reference);
+
+        monument.getReferences().add(reference);
+
+        this.monumentService.deleteMonumentReferences(monument, new ArrayList<>());
+
+        assertEquals(1, monument.getReferences().size());
+        assertEquals(1, this.monumentRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentReferences_DeleteOneReference() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference = new Reference();
+        reference.setUrl("URL");
+        reference.setMonument(monument);
+        reference = this.referenceRepository.save(reference);
+
+        monument.getReferences().add(reference);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference.getId());
+
+        this.monumentService.deleteMonumentReferences(monument, deletedReferenceIds);
+
+        assertEquals(0, monument.getReferences().size());
+
+        Optional<Reference> referenceOptional = this.referenceRepository.findById(reference.getId());
+        assertTrue(referenceOptional.isEmpty());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentReferences_DeleteTwoOfThreeReferences() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("URL");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        monument.getReferences().add(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("URL");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        monument.getReferences().add(reference2);
+
+        Reference reference3 = new Reference();
+        reference3.setUrl("URL");
+        reference3.setMonument(monument);
+        reference3 = this.referenceRepository.save(reference3);
+
+        monument.getReferences().add(reference3);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        deletedReferenceIds.add(reference3.getId());
+
+        this.monumentService.deleteMonumentReferences(monument, deletedReferenceIds);
+
+        assertEquals(1, monument.getReferences().size());
+        assertEquals(reference2.getId(), monument.getReferences().get(0).getId());
+
+        assertEquals(1, this.referenceRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentReferences_DeleteAllThreeReferences() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("URL");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        monument.getReferences().add(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("URL");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        monument.getReferences().add(reference2);
+
+        Reference reference3 = new Reference();
+        reference3.setUrl("URL");
+        reference3.setMonument(monument);
+        reference3 = this.referenceRepository.save(reference3);
+
+        monument.getReferences().add(reference3);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        deletedReferenceIds.add(reference2.getId());
+        deletedReferenceIds.add(reference3.getId());
+
+        this.monumentService.deleteMonumentReferences(monument, deletedReferenceIds);
+
+        assertEquals(0, monument.getReferences().size());
+        assertEquals(0, this.referenceRepository.findAll().size());
+    }
+
+    /* updateMonumentPrimaryImage Tests */
+
+    @Test
+    public void testMonumentService_updateMonumentPrimaryImage_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.updateMonumentPrimaryImage(monument, 1);
+
+        assertNull(monument);
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentPrimaryImage_NullNewPrimaryImageId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image 1");
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.updateMonumentPrimaryImage(monument, null);
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals("Image 1", monument.getImages().get(0).getUrl());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentPrimaryImage_NoImageWithNewPrimaryImageId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image 1");
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.updateMonumentPrimaryImage(monument, 30);
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals("Image 1", monument.getImages().get(0).getUrl());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentPrimaryImage_ImageWithNewPrimaryImageIdIsAlreadyPrimaryImage() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image 1");
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.updateMonumentPrimaryImage(monument, image.getId());
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals("Image 1", monument.getImages().get(0).getUrl());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentPrimaryImage_NewPrimaryImage() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image 1");
+        image.setIsPrimary(false);
+        image.setMonument(monument);
+        this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.updateMonumentPrimaryImage(monument, image.getId());
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals("Image 1", monument.getImages().get(0).getUrl());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentPrimaryImage_NewPrimaryImageOutOfThreeImages() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image1 = new Image();
+        image1.setUrl("Image 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        this.imageRepository.save(image1);
+
+        monument.getImages().add(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        this.imageRepository.save(image2);
+
+        monument.getImages().add(image2);
+
+        Image image3 = new Image();
+        image3.setUrl("Image 3");
+        image3.setIsPrimary(false);
+        image3.setMonument(monument);
+        this.imageRepository.save(image3);
+
+        monument.getImages().add(image3);
+
+        this.monumentService.updateMonumentPrimaryImage(monument, image3.getId());
+
+        assertEquals(3, monument.getImages().size());
+        assertFalse(monument.getImages().get(0).getIsPrimary());
+        assertFalse(monument.getImages().get(1).getIsPrimary());
+        assertTrue(monument.getImages().get(2).getIsPrimary());
+    }
+
+    /* deleteMonumentImages Tests */
+
+    @Test
+    public void testMonumentService_deleteMonumentImages_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.deleteMonumentImages(monument, new ArrayList<>());
+
+        assertNull(monument);
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentImages_NullDeletedImageIds() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image");
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        image = this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.deleteMonumentImages(monument, null);
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals(1, this.imageRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentImages_EmptyDeletedImageIds() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image");
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        image = this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.deleteMonumentImages(monument, new ArrayList<>());
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals(1, this.imageRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentImages_OneImageDeleted() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setUrl("Image");
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        image = this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image.getId());
+
+        this.monumentService.deleteMonumentImages(monument, deletedImageIds);
+
+        assertEquals(0, monument.getImages().size());
+        assertEquals(0, this.imageRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentImages_TwoOfThreeImagesDeleted() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image1 = new Image();
+        image1.setUrl("Image 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        monument.getImages().add(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        monument.getImages().add(image2);
+
+        Image image3 = new Image();
+        image3.setUrl("Image 3");
+        image3.setIsPrimary(false);
+        image3.setMonument(monument);
+        image3 = this.imageRepository.save(image3);
+
+        monument.getImages().add(image3);
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image1.getId());
+        deletedImageIds.add(image3.getId());
+
+        this.monumentService.deleteMonumentImages(monument, deletedImageIds);
+
+        assertEquals(1, monument.getImages().size());
+        assertEquals(image2.getId(), monument.getImages().get(0).getId());
+        assertEquals(1, this.imageRepository.findAll().size());
+    }
+
+    @Test
+    public void testMonumentService_deleteMonumentImages_AllThreeImagesDeleted() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image1 = new Image();
+        image1.setUrl("Image 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        monument.getImages().add(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        monument.getImages().add(image2);
+
+        Image image3 = new Image();
+        image3.setUrl("Image 3");
+        image3.setIsPrimary(false);
+        image3.setMonument(monument);
+        image3 = this.imageRepository.save(image3);
+
+        monument.getImages().add(image3);
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image1.getId());
+        deletedImageIds.add(image2.getId());
+        deletedImageIds.add(image3.getId());
+
+        this.monumentService.deleteMonumentImages(monument, deletedImageIds);
+
+        assertEquals(0, monument.getImages().size());
+        assertEquals(0, this.imageRepository.findAll().size());
+    }
+
+    /* resetMonumentPrimaryImage Tests */
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertNull(monument);
+    }
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_NullMonumentImages() {
+        Monument monument = new Monument();
+        monument.setImages(null);
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertNull(monument.getImages());
+    }
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_EmptyMonumentImages() {
+        Monument monument = new Monument();
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertEquals(0, monument.getImages().size());
+    }
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_MonumentHasPrimaryImage() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image = new Image();
+        image.setIsPrimary(true);
+        image.setMonument(monument);
+        image = this.imageRepository.save(image);
+
+        monument.getImages().add(image);
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertEquals(1, monument.getImages().size());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+        assertTrue(this.imageRepository.getOne(image.getId()).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_MonumentHasPrimaryImage_MultipleImages() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image1 = new Image();
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        monument.getImages().add(image1);
+
+        Image image2 = new Image();
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        monument.getImages().add(image2);
+
+        Image image3 = new Image();
+        image3.setIsPrimary(false);
+        image3.setMonument(monument);
+        image3 = this.imageRepository.save(image3);
+
+        monument.getImages().add(image3);
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertEquals(3, monument.getImages().size());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+        assertFalse(monument.getImages().get(1).getIsPrimary());
+        assertFalse(monument.getImages().get(2).getIsPrimary());
+        assertTrue(this.imageRepository.getOne(image1.getId()).getIsPrimary());
+        assertFalse(this.imageRepository.getOne(image2.getId()).getIsPrimary());
+        assertFalse(this.imageRepository.getOne(image3.getId()).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_MonumentHasNoPrimaryImage() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image1 = new Image();
+        image1.setIsPrimary(false);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        monument.getImages().add(image1);
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertEquals(1, monument.getImages().size());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+        assertTrue(this.imageRepository.getOne(image1.getId()).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_resetMonumentPrimaryImage_MonumentHasNoPrimaryImage_MultipleImages() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        Image image1 = new Image();
+        image1.setIsPrimary(false);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        monument.getImages().add(image1);
+
+        Image image2 = new Image();
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        monument.getImages().add(image2);
+
+        Image image3 = new Image();
+        image3.setIsPrimary(false);
+        image3.setMonument(monument);
+        image3 = this.imageRepository.save(image3);
+
+        monument.getImages().add(image3);
+
+        this.monumentService.resetMonumentPrimaryImage(monument);
+
+        assertEquals(3, monument.getImages().size());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+        assertFalse(monument.getImages().get(1).getIsPrimary());
+        assertFalse(monument.getImages().get(2).getIsPrimary());
+        assertTrue(this.imageRepository.getOne(image1.getId()).getIsPrimary());
+        assertFalse(this.imageRepository.getOne(image2.getId()).getIsPrimary());
+        assertFalse(this.imageRepository.getOne(image3.getId()).getIsPrimary());
     }
 }
