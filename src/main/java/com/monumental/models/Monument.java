@@ -50,8 +50,8 @@ public class Monument extends Model implements Serializable {
     private String inscription;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ManyToMany(mappedBy = "monuments")
-    private List<Tag> tags;
+    @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
+    private Set<MonumentTag> monumentTags;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
@@ -66,7 +66,7 @@ public class Monument extends Model implements Serializable {
     private List<Contribution> contributions;
 
     public Monument() {
-        this.tags = new ArrayList<>();
+        this.monumentTags = new HashSet<>();
         this.images = new ArrayList<>();
         this.references = new ArrayList<>();
         this.contributions = new ArrayList<>();
@@ -164,11 +164,12 @@ public class Monument extends Model implements Serializable {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getTags() {
-        if (this.tags == null) return null;
+        if (this.monumentTags == null) return null;
+
         List<Tag> tags = new ArrayList<>();
         try {
-            for (Tag tag : this.tags) {
-                if (!tag.getIsMaterial()) tags.add(tag);
+            for (MonumentTag monumentTag : this.monumentTags) {
+                if (!monumentTag.getTag().getIsMaterial()) tags.add(monumentTag.getTag());
             }
         } catch (LazyInitializationException | NullPointerException e) {}
         return tags;
@@ -176,21 +177,31 @@ public class Monument extends Model implements Serializable {
 
     public void setTags(List<Tag> tags) {
         List<Tag> materials = this.getMaterials();
-        if (this.tags != null && materials != null && materials.size() > 0) {
+        List<MonumentTag> monumentTags = new ArrayList<>();
+
+        if (this.monumentTags != null && materials != null && materials.size() > 0) {
             materials.addAll(tags);
-            this.tags = materials;
+
+            for (Tag tag : materials) {
+                monumentTags.add(new MonumentTag(this, tag));
+            }
         } else {
-            this.tags = tags;
+            for (Tag tag : tags) {
+                monumentTags.add(new MonumentTag(this, tag));
+            }
         }
+
+        this.monumentTags = new HashSet<>(monumentTags);
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getMaterials() {
-        if (this.tags == null) return null;
+        if (this.monumentTags == null) return null;
+
         List<Tag> materials = new ArrayList<>();
         try {
-            for (Tag tag : this.tags) {
-                if (tag.getIsMaterial()) materials.add(tag);
+            for (MonumentTag monumentTag : this.monumentTags) {
+                if (monumentTag.getTag().getIsMaterial()) materials.add(monumentTag.getTag());
             }
         } catch (LazyInitializationException | NullPointerException e) {}
         return materials;
@@ -198,12 +209,21 @@ public class Monument extends Model implements Serializable {
 
     public void setMaterials(List<Tag> materials) {
         List<Tag> tags = this.getTags();
-        if (this.tags != null && tags != null && tags.size() > 0) {
+        List<MonumentTag> monumentTags = new ArrayList<>();
+
+        if (this.monumentTags != null && tags != null && tags.size() > 0) {
             tags.addAll(materials);
-            this.tags = tags;
+
+            for (Tag tag : tags) {
+                monumentTags.add(new MonumentTag(this, tag));
+            }
         } else {
-            this.tags = materials;
+            for (Tag tag : materials) {
+                monumentTags.add(new MonumentTag(this, tag));
+            }
         }
+
+        this.monumentTags = new HashSet<>(monumentTags);
     }
 
     public List<Image> getImages() {
