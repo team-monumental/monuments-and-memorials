@@ -1,6 +1,7 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
@@ -1464,5 +1465,644 @@ public class MonumentServiceIntegrationTests {
         assertTrue(this.imageRepository.getOne(image1.getId()).getIsPrimary());
         assertFalse(this.imageRepository.getOne(image2.getId()).getIsPrimary());
         assertFalse(this.imageRepository.getOne(image3.getId()).getIsPrimary());
+    }
+
+    /* createMonument Tests */
+
+    @Test
+    public void testMonumentService_createMonument_NullCreateMonumentRequest() {
+        assertNull(this.monumentService.createMonument(null));
+    }
+
+    @Test
+    public void testMonumentService_createMonument_BasicFieldsSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+
+        assertNull(result.getCoordinates());
+        assertNull(result.getDate());
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_BasicFieldsSet_SomeNullSomeEmpty() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress(null);
+        monumentRequest.setArtist("");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("");
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertNull(result.getAddress());
+        assertEquals("", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("", result.getInscription());
+
+        assertNull(result.getCoordinates());
+        assertNull(result.getDate());
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_CoordinatesSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        assertNull(result.getDate());
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_DateSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setDate("2012-04-23T18:25:43.511Z");
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(23, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_YearSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setYear("2012");
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(0, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_YearAndMonthSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_ReferencesSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getReferences().size());
+
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_ImagesSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        monumentRequest.setImages(imageUrls);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getReferences().size());
+        assertEquals(3, result.getImages().size());
+
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_MaterialsSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        monumentRequest.setImages(imageUrls);
+
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material 1");
+        materialNames.add("Material 2");
+        materialNames.add("Material 3");
+
+        monumentRequest.setMaterials(materialNames);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getReferences().size());
+        assertEquals(3, result.getImages().size());
+        assertEquals(3, result.getMaterials().size());
+
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_NewMaterialsSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        monumentRequest.setImages(imageUrls);
+
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material 1");
+        materialNames.add("Material 2");
+        materialNames.add("Material 3");
+
+        monumentRequest.setMaterials(materialNames);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+
+        monumentRequest.setNewMaterials(newMaterialNames);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getReferences().size());
+        assertEquals(3, result.getImages().size());
+        assertEquals(6, result.getMaterials().size());
+
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_TagsSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        monumentRequest.setImages(imageUrls);
+
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material 1");
+        materialNames.add("Material 2");
+        materialNames.add("Material 3");
+
+        monumentRequest.setMaterials(materialNames);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+
+        monumentRequest.setNewMaterials(newMaterialNames);
+
+        List<String> tagNames = new ArrayList<>();
+        tagNames.add("Tag 1");
+        tagNames.add("Tag 2");
+        tagNames.add("Tag 3");
+
+        monumentRequest.setTags(tagNames);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getReferences().size());
+        assertEquals(3, result.getImages().size());
+        assertEquals(6, result.getMaterials().size());
+        assertEquals(3, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_NewTagsSet() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        monumentRequest.setImages(imageUrls);
+
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material 1");
+        materialNames.add("Material 2");
+        materialNames.add("Material 3");
+
+        monumentRequest.setMaterials(materialNames);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+
+        monumentRequest.setNewMaterials(newMaterialNames);
+
+        List<String> tagNames = new ArrayList<>();
+        tagNames.add("Tag 1");
+        tagNames.add("Tag 2");
+        tagNames.add("Tag 3");
+
+        monumentRequest.setTags(tagNames);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("New Tag 1");
+        newTagNames.add("New Tag 2");
+        newTagNames.add("New Tag 3");
+
+        monumentRequest.setNewTags(newTagNames);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getReferences().size());
+        assertEquals(3, result.getImages().size());
+        assertEquals(6, result.getMaterials().size());
+        assertEquals(6, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_DatabaseValuesCorrect() {
+        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
+        monumentRequest.setTitle("Title");
+        monumentRequest.setAddress("Address");
+        monumentRequest.setArtist("Artist");
+        monumentRequest.setDescription("Description");
+        monumentRequest.setInscription("Inscription");
+        monumentRequest.setLatitude(90.0);
+        monumentRequest.setLongitude(180.0);
+        monumentRequest.setMonth("03");
+        monumentRequest.setYear("2019");
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        monumentRequest.setReferences(referenceUrls);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        monumentRequest.setImages(imageUrls);
+
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material 1");
+        materialNames.add("Material 2");
+        materialNames.add("Material 3");
+
+        monumentRequest.setMaterials(materialNames);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+
+        monumentRequest.setNewMaterials(newMaterialNames);
+
+        List<String> tagNames = new ArrayList<>();
+        tagNames.add("Tag 1");
+        tagNames.add("Tag 2");
+        tagNames.add("Tag 3");
+
+        monumentRequest.setTags(tagNames);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("New Tag 1");
+        newTagNames.add("New Tag 2");
+        newTagNames.add("New Tag 3");
+
+        monumentRequest.setNewTags(newTagNames);
+
+        Monument result = this.monumentService.createMonument(monumentRequest);
+
+        result = this.monumentRepository.getOne(result.getId());
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, this.referenceRepository.getAllByMonumentId(result.getId()).size());
+        assertEquals(3, this.imageRepository.getAllByMonumentId(result.getId()).size());
+        assertEquals(6, this.tagRepository.getAllByIsMaterial(true).size());
+        assertEquals(6, this.tagRepository.getAllByIsMaterial(false).size());
+        assertEquals(12, this.tagRepository.getAllByMonumentId(result.getId()).size());
     }
 }

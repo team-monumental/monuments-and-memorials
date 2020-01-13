@@ -735,6 +735,10 @@ public class MonumentService extends ModelService<Monument> {
      * @return Monument - The newly created Monument based on the specified CreateMonumentRequest
      */
     public Monument createMonument(CreateMonumentRequest monumentRequest) {
+        if (monumentRequest == null) {
+            return null;
+        }
+
         Monument createdMonument = new Monument();
 
         // Set basic String fields
@@ -780,32 +784,38 @@ public class MonumentService extends ModelService<Monument> {
         createdMonumentList.add(createdMonument);
 
         /* Materials Section */
+        List<Tag> materials = new ArrayList<>();
         if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
             for (String materialName : monumentRequest.getMaterials()) {
-                this.tagService.createTag(materialName, createdMonumentList, true);
+                materials.add(this.tagService.createTag(materialName, createdMonumentList, true));
             }
         }
 
         /* New Materials Section */
         if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
             for (String newMaterialName : monumentRequest.getNewMaterials()) {
-                this.tagService.createTag(newMaterialName, createdMonumentList, true);
+                materials.add(this.tagService.createTag(newMaterialName, createdMonumentList, true));
             }
         }
 
+        createdMonument.setMaterials(materials);
+
         /* Tags Section */
+        List<Tag> tags = new ArrayList<>();
         if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
             for (String tagName : monumentRequest.getTags()) {
-                this.tagService.createTag(tagName, createdMonumentList, false);
+                tags.add(this.tagService.createTag(tagName, createdMonumentList, false));
             }
         }
 
         /* New Tags Section */
         if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
             for (String newTagName : monumentRequest.getNewTags()) {
-                this.tagService.createTag(newTagName, createdMonumentList, false);
+                tags.add(this.tagService.createTag(newTagName, createdMonumentList, false));
             }
         }
+
+        createdMonument.setTags(tags);
 
         // Save the Monument with the associated References, Images, Materials and Tags
         createdMonument = this.monumentRepository.save(createdMonument);
