@@ -162,6 +162,14 @@ public class Monument extends Model implements Serializable {
         this.inscription = inscription;
     }
 
+    public Set<MonumentTag> getMonumentTags() {
+        return this.monumentTags;
+    }
+
+    public void setMonumentTags(Set<MonumentTag> monumentTags) {
+        this.monumentTags = monumentTags;
+    }
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Tag> getTags() {
         if (this.monumentTags == null) return null;

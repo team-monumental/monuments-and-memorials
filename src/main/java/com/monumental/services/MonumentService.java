@@ -147,6 +147,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param tags - The list of tag names to filter by
      * @param isMaterial - If true, only materials will be returned. If false, NO materials will be returned
      */
+
+    // TODO: Refactor based on MonumentTag
     @SuppressWarnings("unchecked")
     private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags, Boolean isMaterial) {
         // Create a sub-query on the tags table
@@ -299,6 +301,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param monuments Monuments to get related records for - these objects are updated directly using the setter
      *                  but no database update is called
      */
+
+    // TODO: Maybe refactor based on MonumentTag
     private void getRelatedRecords(List<Monument> monuments, String fieldName) {
         if (monuments.size() == 0) return;
         CriteriaBuilder builder = this.getCriteriaBuilder();
@@ -593,8 +597,6 @@ public class MonumentService extends ModelService<Monument> {
             }
         }
 
-        System.out.println(imageFileNames);
-
         if (csvFileCount != 1) {
             throw new InvalidZipException("Invalid number of CSV files found in .zip: " + csvFileCount);
         }
@@ -621,7 +623,6 @@ public class MonumentService extends ModelService<Monument> {
      */
     private String preProcessImageForCsvRow(String csvRow, List<String> imageFileNames, ZipFile zipFile) {
         String imageFileName = CsvMonumentConverter.getImageFileNameFromCsvRow(csvRow);
-        System.out.println("IMAGE FILE NAME: " + imageFileName);
 
         // If the uploaded .zip file contains the CSV row's image filename, upload the image to S3 and
         // set the CSV row's image filename column to the S3 Object URL

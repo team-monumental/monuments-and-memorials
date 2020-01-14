@@ -1,8 +1,6 @@
 package com.monumental.models;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -10,6 +8,7 @@ import java.io.Serializable;
  * Done in an explicit Entity because it allows for more control over queries, insertions, updates and deletions
  */
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "monument_id", "tag_id" })})
 public class MonumentTag extends Model implements Serializable {
 
     @ManyToOne
@@ -19,6 +18,10 @@ public class MonumentTag extends Model implements Serializable {
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    public MonumentTag() {
+
+    }
 
     public MonumentTag(Monument monument, Tag tag) {
         this.monument = monument;

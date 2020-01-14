@@ -19,7 +19,7 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
      * Get all monuments with the specified tag
      * @param id Id of the tag to get the monuments for
      */
-    @Query("select m from Monument m join m.tags tag where tag.id = :id")
+    @Query("select m from Monument m join m.monumentTags monumentTag where monumentTag.tag.id = :id")
     List<Monument> getAllByTagId(@Param("id") Integer id);
 
     /**
@@ -29,7 +29,7 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
      * @param pageable - Used to give the search a limit
      * @return Tuples of monuments with their count of matching tags
      */
-    @Query("select m, count(t.id) as c from Monument m join m.tags t where t.name in :names and m.id <> :id group by m.id order by c desc")
+    @Query("select m, count(t.id) as c from Monument m join m.monumentTags monumentTag join monumentTag.tag t where t.name in :names and m.id <> :id group by m.id order by c desc")
     List<Tuple> getRelatedMonuments(@Param("names") List<String> names, @Param("id") Integer monumentId, Pageable pageable);
 
 }

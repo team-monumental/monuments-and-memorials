@@ -1,6 +1,7 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,14 @@ public class Tag extends Model implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<MonumentTag> getMonumentTags() {
+        return this.monumentTags;
+    }
+
+    public void setMonumentTags(Set<MonumentTag> monumentTags) {
+        this.monumentTags = monumentTags;
     }
 
     public List<Monument> getMonuments() {

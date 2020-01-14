@@ -4,8 +4,10 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
+import com.monumental.models.Tag;
 import com.monumental.models.api.CreateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.TagRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.BulkCreateResult;
 import com.monumental.util.csvparsing.ZipFileHelper;
@@ -36,6 +38,9 @@ public class MonumentController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     /**
      * Create a new Monument based on the specified CreateMonumentRequest
@@ -209,5 +214,42 @@ public class MonumentController {
     public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) throws IOException {
         ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(file);
         return this.monumentService.bulkCreateMonumentsFromZip(zipFile);
+    }
+
+    @GetMapping("/api/test-monument-tag")
+    public void testMonumentTagEntityImplementation() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1 = this.monumentRepository.saveAndFlush(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2 = this.monumentRepository.saveAndFlush(monument2);
+
+        Monument monument3 = new Monument();
+        monument3.setTitle("Monument 3");
+        monument3 = this.monumentRepository.saveAndFlush(monument3);
+
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+        monuments.add(monument2);
+        monuments.add(monument3);
+
+        System.out.println("Monument 1's ID: " + monument1.getId());
+        System.out.println("Monument 2's ID: " + monument2.getId());
+        System.out.println("Monument 3's ID: " + monument3.getId());
+
+       Tag tag1 = this.tagService.createTag("Tag 1", monuments, false);
+       Tag tag2 = this.tagService.createTag("Tag 2", monuments, false);
+       Tag tag3 = this.tagService.createTag("Tag 3", monuments, false);
+
+        System.out.println("Number of Monuments associated with Tag 2: " + this.monumentRepository.getAllByTagId(tag2.getId()).size());
+        System.out.println("Number of Tags associated with Monument 1: " + this.tagRepository.getAllByMonumentId(monument1.getId()).size());
+
+        tag2 = this.tagService.removeTagFromMonument(tag2, monument1);
+
+        System.out.println("Number of Monuments associated with Tag 2: " + this.monumentRepository.getAllByTagId(tag2.getId()).size());
+        System.out.println("Number of Tags associated with Monument 1: " + this.tagRepository.getAllByMonumentId(monument1.getId()).size());
     }
 }
