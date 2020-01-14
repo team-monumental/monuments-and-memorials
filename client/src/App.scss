@@ -73,3 +73,13 @@ homepage-map {
     font-weight: bold;
     font-size: 24px;
 }
+
+.homePageImage {
+    object-fit: fill;
+    width: 100%;
+    height: auto;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    //background-size: cover;
+}

@@ -14,6 +14,8 @@ import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
+import SuggestChanges from './components/Monument/SuggestChanges/SuggestChanges';
+import SearchBar from './components/Header/SearchBar/SearchBar';
 
 class App extends React.Component {
 
@@ -36,8 +38,17 @@ class App extends React.Component {
                         <ErrorHandler>
                             <Route path="/map" component={MapPage}/>
                             <Route exact path="/">
-                                <div style={{display: 'flex', justifyContent: 'center'}}>
-                                    <h1>Welcome!</h1>
+                                <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
+                                    <div>
+                                        <div style={{position: 'absolute', zIndex: 2, }}>
+                                            Number of monuments: 700
+                                        </div>
+                                        <img className='homePageImage' src={process.env.PUBLIC_URL + '/home_page_image.jpg'}/>
+                                    </div>
+                                    <div style={{flexBasis: '100%', height: 0}}/>
+                                    <div>
+                                        <SuggestChanges/>
+                                    </div>
                                 </div>
                             </Route>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
