@@ -49,7 +49,7 @@ export default class Header extends React.Component {
                             </div>
                         </div>
                         <div className="center">
-                            <SearchBar barWidth="41%" locationSearchMargin='0%' buttonWidth='16%' barBottomSpacing='1%' closeModal={false}/>
+                            <SearchBar barWidth="41%" locationSearchMargin='0%' buttonWidth='16%' barBottomSpacing='0%' closeModal={false}/>
                         </div>
                         <div className="right">
                             <Button size="sm" variant="link-secondary">Log in</Button>
