@@ -556,7 +556,7 @@ public class MonumentService extends ModelService<Monument> {
             if (tags.size() > 0) {
                 for (Tag tag : tags) {
                     try {
-                        tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
+                        this.tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
                     } catch (DataIntegrityViolationException e) {
                         // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                         // These are disregarded for now - the correct tags are still being created

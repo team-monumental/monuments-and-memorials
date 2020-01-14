@@ -3,7 +3,6 @@ package com.monumental.repositories.integrationtest;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.TagRepository;
 import com.monumental.services.TagService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
