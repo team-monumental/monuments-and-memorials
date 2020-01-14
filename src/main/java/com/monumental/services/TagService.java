@@ -56,6 +56,7 @@ public class TagService extends ModelService<Tag> {
 
     /**
      * Safely create a new tag without duplication
+     * This method should be used ANYTIME you wish to associated a Tag with a Monument
      * @param name          The name of the tag to create
      * @param monuments     The list of monuments to associate it with
      * @param isMaterial    Whether or not the tag is a material
@@ -87,6 +88,7 @@ public class TagService extends ModelService<Tag> {
 
     /**
      * Remove the specified Tag from the specified Monument
+     * This method should be used ANYTIME you want to remove an association between a Monument and a Tag
      * @param tag - Tag to remove from the specified Monument
      * @param monument - Monument to remove the specified Tag from
      * @return Tag - The updated Tag with the specified Monument removed

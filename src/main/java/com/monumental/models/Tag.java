@@ -31,6 +31,10 @@ public class Tag extends Model implements Serializable {
     @Column(name = "is_material")
     private Boolean isMaterial;
 
+    /**
+     * IMPORTANT NOTE: In order to avoid duplicate Tags and create a correct Monument-to-Tag relationship,
+     * use TagService.createTag() instead of using this constructor
+     */
     public Tag() {
         this.setMonuments(new ArrayList<>());
     }
