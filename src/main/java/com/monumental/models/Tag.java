@@ -1,7 +1,6 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -89,6 +88,8 @@ public class Tag extends Model implements Serializable {
     /**
      * Associates a specified Monument with this Tag
      * Will do nothing if the specified Monument is null
+     * Note that this only creates an association in-memory
+     * The association still needs to be persisted to the database
      * @param monument - Monument to associate with this Tag
      */
     public void addMonument(Monument monument) {
@@ -102,12 +103,4 @@ public class Tag extends Model implements Serializable {
 
         this.monumentTags.add(new MonumentTag(monument, this));
     }
-
-    /*@Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Tag)) return false;
-        Tag tag = (Tag) obj;
-        return tag.getName().equals(this.getName());
-    }*/
 }
