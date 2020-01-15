@@ -4,6 +4,7 @@ import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.services.TagService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -33,38 +34,47 @@ public class TagRepositoryIntegrationTests {
     @Autowired
     private MonumentRepository monumentRepository;
 
+    @Autowired
+    private TagService tagService;
+
     /* getAllByMonumentId Tests */
 
     @Test
-    public void testTagRepository_getAllByMonumentId() {
-        List<Monument> monuments = setupMonumentsAndTags();
-        assertEquals(2, monuments.size());
+    public void testTagRepository_getAllByMonumentId_NoTagsWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
 
-        List<Tag> firstTags = tagRepository.getAllByMonumentId(monuments.get(0).getId());
-        assertEquals(2, firstTags.size());
-        for (Tag tag : firstTags) {
-            assert(Arrays.asList("tag1", "tag2").contains(tag.getName()));
-            boolean hasMonument = false;
-            for (Monument monument : tag.getMonuments()) {
-                if (monument.getId().equals(monuments.get(0).getId())) {
-                    hasMonument = true;
-                    break;
-                }
-            }
-            assert(hasMonument);
-        }
+        this.tagService.createTag("Tag", new ArrayList<>(), false);
 
-        List<Tag> secondTags = tagRepository.getAllByMonumentId(monuments.get(1).getId());
-        assertEquals(1, secondTags.size());
-        assertEquals("tag2", secondTags.get(0).getName());
-        boolean hasMonument = false;
-        for (Monument monument : secondTags.get(0).getMonuments()) {
-            if (monument.getId().equals(monuments.get(1).getId())) {
-                hasMonument = true;
-                break;
-            }
-        }
-        assert(hasMonument);
+        assertEquals(0, this.tagRepository.getAllByMonumentId(monument.getId()).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentId_OneTagWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag", monuments, false);
+
+        assertEquals(1, this.tagRepository.getAllByMonumentId(monument.getId()).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentId_ThreeTagsWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+        this.tagService.createTag("Tag 3", monuments, false);
+
+        assertEquals(3, this.tagRepository.getAllByMonumentId(monument.getId()).size());
     }
 
     /** getAllByName Tests **/
@@ -80,34 +90,5 @@ public class TagRepositoryIntegrationTests {
 
         assertEquals(1, results.size());
         assertEquals(tag.getName(), results.get(0).getName());
-    }
-
-    /**
-     * Helper that sets up 2 Monuments and 2 Tags, with 1 Tags related to both Monuments
-     */
-    private List<Monument> setupMonumentsAndTags() {
-        Monument monument1 = new Monument();
-        monument1.setTitle("Monument 1");
-        monument1.setArtist("Artist 1");
-
-        Monument monument2 = new Monument();
-        monument2.setTitle("Monument 2");
-        monument2.setArtist("Artist 2");
-
-        List<Monument> monuments = monumentRepository.saveAll(Arrays.asList(monument1, monument2));
-        monument1 = monuments.get(0);
-        monument2 = monuments.get(1);
-
-        Tag tag1 = new Tag();
-        tag1.setMonuments(Arrays.asList(monument1));
-        tag1.setName("tag1");
-
-        Tag tag2 = new Tag();
-        tag2.setMonuments(Arrays.asList(monument1, monument2));
-        tag2.setName("tag2");
-
-        tagRepository.saveAll(Arrays.asList(tag1, tag2));
-
-        return monuments;
     }
 }

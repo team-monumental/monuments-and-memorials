@@ -147,8 +147,6 @@ public class MonumentService extends ModelService<Monument> {
      * @param tags - The list of tag names to filter by
      * @param isMaterial - If true, only materials will be returned. If false, NO materials will be returned
      */
-
-    // TODO: Refactor based on MonumentTag
     @SuppressWarnings("unchecked")
     private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags, Boolean isMaterial) {
         // Create a sub-query on the tags table
