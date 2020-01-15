@@ -29,9 +29,6 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
      * @param pageable - Used to give the search a limit
      * @return Tuples of monuments with their count of matching tags
      */
-    @Query("select m, count(t.id) as c from Monument m join m.monumentTags monumentTag join monumentTag.tag t where t.name in :names and m.id <> :id and monumentTag.monument.id = m.id group by m.id order by c desc")
+    @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id <> :id group by m.id order by c desc")
     List<Tuple> getRelatedMonuments(@Param("names") List<String> names, @Param("id") Integer monumentId, Pageable pageable);
-
-    @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id = :id group by m.id order by c desc")
-    List<Tuple> testQuery(@Param("names") List<String> names, @Param("id") Integer monumentId);
 }

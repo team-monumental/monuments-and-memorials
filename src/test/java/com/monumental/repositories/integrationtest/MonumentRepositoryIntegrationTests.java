@@ -212,56 +212,206 @@ public class MonumentRepositoryIntegrationTests {
     }
 
     @Test
-    public void testMonumentRepository_getRelatedMonuments_NoMatchingTagNames() {
-        Monument monument = new Monument();
-        monument.setTitle("Monument");
-        monument = this.monumentRepository.save(monument);
+    public void testMonumentRepository_getRelatedMonuments_NoRelatedMonuments() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1 = this.monumentRepository.save(monument1);
 
-        List<Monument> monuments = new ArrayList<>();
-        monuments.add(monument);
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2 = this.monumentRepository.save(monument2);
 
-        this.tagService.createTag("Tag", monuments, false);
+        List<Monument> monument1List = new ArrayList<>();
+        monument1List.add(monument1);
 
-        List<String> tagNames = new ArrayList<>();
-        tagNames.add("Test");
+        List<Monument> monument2List = new ArrayList<>();
+        monument2List.add(monument2);
 
-        List<Tuple> results = this.monumentRepository.getRelatedMonuments(tagNames, monument.getId(), PageRequest.of(0, 1000));
+        Tag tag1 = this.tagService.createTag("Tag 1", monument1List, false);
 
-        assertEquals(0, results.size());
+        List<String> tag1NameList = new ArrayList<>();
+        tag1NameList.add(tag1.getName());
+
+        Tag tag2 = this.tagService.createTag("Tag 2", monument2List, false);
+
+        List<String> tag2NameList = new ArrayList<>();
+        tag2NameList.add(tag2.getName());
+
+        List<Tuple> monument1Results = this.monumentRepository.getRelatedMonuments(tag1NameList, monument1.getId(), PageRequest.of(0, 1000));
+
+        assertEquals(0, monument1Results.size());
+
+        List<Tuple> monument2Results = this.monumentRepository.getRelatedMonuments(tag2NameList, monument2.getId(), PageRequest.of(0, 1000));
+
+        assertEquals(0, monument2Results.size());
     }
 
     @Test
-    public void testMonumentRepository_getRelatedMonuments_OneMatchingTagName() {
-        Monument monument = new Monument();
-        monument.setTitle("Monument");
-        monument = this.monumentRepository.save(monument);
+    public void testMonumentRepository_getRelatedMonuments_TwoMonumentsRelated() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1 = this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2 = this.monumentRepository.save(monument2);
 
         List<Monument> monuments = new ArrayList<>();
-        monuments.add(monument);
+        monuments.add(monument1);
+        monuments.add(monument2);
 
         Tag tag = this.tagService.createTag("Tag", monuments, false);
 
         List<String> tagNames = new ArrayList<>();
-        tagNames.add("Test");
+        tagNames.add(tag.getName());
 
-        List<Tuple> results = this.monumentRepository.testQuery(tagNames, monument.getId());
+        List<Tuple> monument1Results = this.monumentRepository.getRelatedMonuments(tagNames, monument1.getId(), PageRequest.of(0, 1000));
 
-        System.out.println("Results size: " + results.size());
-        for (Tuple result : results) {
-            Monument resultMonument = (Monument) result.get(0);
-            System.out.println("Monument ID: " + resultMonument.getId());
-            System.out.println("Number of Tags: " + (long) result.get(1));
-        }
+        assertEquals(1, monument1Results.size());
 
-        /*List<Tuple> results = this.monumentRepository.getRelatedMonuments(tagNames, monument.getId(), PageRequest.of(0, 1000));
+        Tuple monument1Result = monument1Results.get(0);
+        Monument monument1ResultMonument = (Monument) monument1Result.get(0);
+        long monument1ResultMatchingTagCount = (long) monument1Result.get(1);
 
-        assertEquals(1, results.size());
+        assertEquals(monument2.getTitle(), monument1ResultMonument.getTitle());
+        assertEquals(1, monument1ResultMatchingTagCount);
 
-        Tuple result = results.get(0);
-        Monument resultMonument = (Monument) result.get(0);
-        int resultMatchingTagCount = (int) result.get(1);
+        List<Tuple> monument2Results = this.monumentRepository.getRelatedMonuments(tagNames, monument2.getId(), PageRequest.of(0, 1000));
 
-        assertEquals(monument.getTitle(), resultMonument.getTitle());
-        assertEquals(1, resultMatchingTagCount);*/
+        assertEquals(1, monument2Results.size());
+
+        Tuple monument2Result = monument2Results.get(0);
+        Monument monument2ResultMonument = (Monument) monument2Result.get(0);
+        long monument2ResultMatchingTagCount = (long) monument2Result.get(1);
+
+        assertEquals(monument1.getTitle(), monument2ResultMonument.getTitle());
+        assertEquals(1, monument2ResultMatchingTagCount);
+    }
+
+    @Test
+    public void testMonumentRepository_getRelatedMonuments_ThreeMonuments_TwoRelated() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1 = this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2 = this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3.setTitle("Monument 3");
+        monument3 = this.monumentRepository.save(monument3);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+        monuments.add(monument3);
+
+        List<Monument> monument2List = new ArrayList<>();
+        monument2List.add(monument2);
+
+        Tag tag1 = this.tagService.createTag("Tag 1", monuments, false);
+
+        Tag tag2 = this.tagService.createTag("Tag 2", monument2List, false);
+
+        List<String> tag1NameList = new ArrayList<>();
+        tag1NameList.add(tag1.getName());
+
+        List<String> tag2NameList = new ArrayList<>();
+        tag2NameList.add(tag2.getName());
+
+        List<Tuple> monument1Results = this.monumentRepository.getRelatedMonuments(tag1NameList, monument1.getId(), PageRequest.of(0, 1000));
+
+        assertEquals(1, monument1Results.size());
+
+        Tuple monument1Result = monument1Results.get(0);
+        Monument monument1ResultMonument = (Monument) monument1Result.get(0);
+        long monument1ResultMatchingTagCount = (long) monument1Result.get(1);
+
+        assertEquals(monument3.getTitle(), monument1ResultMonument.getTitle());
+        assertEquals(1, monument1ResultMatchingTagCount);
+
+        List<Tuple> monument2Results = this.monumentRepository.getRelatedMonuments(tag2NameList, monument2.getId(), PageRequest.of(0, 1000));
+
+        assertEquals(0, monument2Results.size());
+
+        List<Tuple> monument3Results = this.monumentRepository.getRelatedMonuments(tag1NameList, monument3.getId(), PageRequest.of(0, 1000));
+
+        assertEquals(1, monument3Results.size());
+
+        Tuple monument3Result = monument3Results.get(0);
+        Monument monument3ResultMonument = (Monument) monument3Result.get(0);
+        long monument3ResultMatchingTagCount = (long) monument3Result.get(1);
+
+        assertEquals(monument1.getTitle(), monument3ResultMonument.getTitle());
+        assertEquals(1, monument3ResultMatchingTagCount);
+    }
+
+    @Test
+    public void testMonumentRepository_getRelatedMonuments_FiveMonuments_VariousRelations_CorrectMatchingTagCountOrdering() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1 = this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2 = this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3.setTitle("Monument 3");
+        monument3 = this.monumentRepository.save(monument3);
+
+        Monument monument4 = new Monument();
+        monument4.setTitle("Monument 4");
+        monument4 = this.monumentRepository.save(monument4);
+
+        Monument monument5 = new Monument();
+        monument5.setTitle("Monument 5");
+        monument5 = this.monumentRepository.save(monument5);
+
+        List<Monument> monumentsForTag1 = new ArrayList<>();
+        monumentsForTag1.add(monument1);
+        monumentsForTag1.add(monument2);
+        monumentsForTag1.add(monument3);
+        monumentsForTag1.add(monument4);
+        monumentsForTag1.add(monument5);
+
+        List<Monument> monumentsForTag2 = new ArrayList<>();
+        monumentsForTag2.add(monument1);
+        monumentsForTag2.add(monument3);
+        monumentsForTag2.add(monument4);
+        monumentsForTag2.add(monument5);
+
+        List<Monument> monumentsForTag3 = new ArrayList<>();
+        monumentsForTag3.add(monument1);
+        monumentsForTag3.add(monument4);
+        monumentsForTag3.add(monument5);
+
+        List<Monument> monumentsForTag4 = new ArrayList<>();
+        monumentsForTag4.add(monument1);
+        monumentsForTag4.add(monument5);
+
+        Tag tag1 = this.tagService.createTag("Tag 1", monumentsForTag1, false);
+        Tag tag2 = this.tagService.createTag("Tag 2", monumentsForTag2, false);
+        Tag tag3 = this.tagService.createTag("Tag 3", monumentsForTag3, false);
+        Tag tag4 = this.tagService.createTag("Tag 4", monumentsForTag4, false);
+
+        List<String> tagNames = new ArrayList<>();
+        tagNames.add(tag1.getName());
+        tagNames.add(tag2.getName());
+        tagNames.add(tag3.getName());
+        tagNames.add(tag4.getName());
+
+        List<Tuple> monument1RelatedMonuments = this.monumentRepository.getRelatedMonuments(tagNames, monument1.getId(), PageRequest.of(0, 1000));
+
+        assertEquals(4, monument1RelatedMonuments.size());
+
+        Tuple monument1FirstRelatedMonument = monument1RelatedMonuments.get(0);
+
+        /*Tuple monument1Result = monument1Results.get(0);
+        Monument monument1ResultMonument = (Monument) monument1Result.get(0);
+        long monument1ResultMatchingTagCount = (long) monument1Result.get(1);
+
+        assertEquals(monument3.getTitle(), monument1ResultMonument.getTitle());
+        assertEquals(1, monument1ResultMatchingTagCount);*/
     }
 }
