@@ -405,13 +405,32 @@ public class MonumentRepositoryIntegrationTests {
 
         assertEquals(4, monument1RelatedMonuments.size());
 
-        Tuple monument1FirstRelatedMonument = monument1RelatedMonuments.get(0);
+        Tuple monument1FirstRelatedMonumentTuple = monument1RelatedMonuments.get(0);
+        Monument monument1FirstRelatedMonument = (Monument) monument1FirstRelatedMonumentTuple.get(0);
+        long monument1FirstRelatedMonumentMatchingTagCount = (long) monument1FirstRelatedMonumentTuple.get(1);
 
-        /*Tuple monument1Result = monument1Results.get(0);
-        Monument monument1ResultMonument = (Monument) monument1Result.get(0);
-        long monument1ResultMatchingTagCount = (long) monument1Result.get(1);
+        assertEquals(monument5.getTitle(), monument1FirstRelatedMonument.getTitle());
+        assertEquals(4, monument1FirstRelatedMonumentMatchingTagCount);
 
-        assertEquals(monument3.getTitle(), monument1ResultMonument.getTitle());
-        assertEquals(1, monument1ResultMatchingTagCount);*/
+        Tuple monument1SecondRelatedMonumentTuple = monument1RelatedMonuments.get(1);
+        Monument monument1SecondRelatedMonument = (Monument) monument1SecondRelatedMonumentTuple.get(0);
+        long monument1SecondRelatedMonumentMatchingTagCount = (long) monument1SecondRelatedMonumentTuple.get(1);
+
+        assertEquals(monument4.getTitle(), monument1SecondRelatedMonument.getTitle());
+        assertEquals(3, monument1SecondRelatedMonumentMatchingTagCount);
+
+        Tuple monument1ThirdRelatedMonumentTuple = monument1RelatedMonuments.get(2);
+        Monument monument1ThirdRelatedMonument = (Monument) monument1ThirdRelatedMonumentTuple.get(0);
+        long monument1ThirdRelatedMonumentMatchingTagCount = (long) monument1ThirdRelatedMonumentTuple.get(1);
+
+        assertEquals(monument3.getTitle(), monument1ThirdRelatedMonument.getTitle());
+        assertEquals(2, monument1ThirdRelatedMonumentMatchingTagCount);
+
+        Tuple monument1FourthRelatedMonumentTuple = monument1RelatedMonuments.get(3);
+        Monument monument1FourthRelatedMonument = (Monument) monument1FourthRelatedMonumentTuple.get(0);
+        long monument1FourthRelatedMonumentMatchingTagCount = (long) monument1FourthRelatedMonumentTuple.get(1);
+
+        assertEquals(monument2.getTitle(), monument1FourthRelatedMonument.getTitle());
+        assertEquals(1, monument1FourthRelatedMonumentMatchingTagCount);
     }
 }
