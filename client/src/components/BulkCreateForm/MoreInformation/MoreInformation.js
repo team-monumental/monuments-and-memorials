@@ -18,8 +18,8 @@ export default class MoreInformation extends React.Component {
                 </Card.Subtitle>
                 <Card.Body>
                     <p>
-                        The Bulk Creation feature allows you to upload a Comma-Separated Values (CSV) file to create
-                        many new Monument and Memorial records quickly.
+                        The Bulk Creation feature allows you to upload a Comma-Separated Values (CSV) file or a .zip file
+                        to create many new Monument and Memorial records quickly.
                     </p>
                 </Card.Body>
                 <Card.Subtitle>
@@ -27,7 +27,8 @@ export default class MoreInformation extends React.Component {
                 </Card.Subtitle>
                 <Card.Body>
                     <p>
-                        To use the Bulk Creation feature, simply upload a valid CSV file and we'll handle the rest!
+                        To use the Bulk Creation feature, simply upload a valid CSV file or .zip file and we'll
+                        handle the rest!
                     </p>
                 </Card.Body>
                 <Card.Subtitle>
@@ -173,6 +174,17 @@ export default class MoreInformation extends React.Component {
                                     Any URL or link where more information can be found about the Monument or Memorial.
                                 </div>
                             </li>
+                            <li>
+                                <div className='column-name'>
+                                    Image Filename:
+                                </div>
+                                <div className='column-explanation'>
+                                    The name of the image file that is associated with the Monument or Memorial.
+                                </div>
+                                <div className='column-explanation-notice'>
+                                    This column will only be used when a .zip file is uploaded!
+                                </div>
+                            </li>
                         </ol>
                     </div>
                 </Card.Body>
@@ -192,6 +204,51 @@ export default class MoreInformation extends React.Component {
                             Some of the rows of the CSV file have data in the wrong columns. In this situation,
                             the CSV file will NOT be rejected and the new Monuments/Memorials WILL be created.
                             Due to this, it is important that you are sure the CSV file you are providing is correct!
+                        </li>
+                    </ol>
+                </Card.Body>
+                <Card.Subtitle>
+                    How do I format my .zip file?
+                </Card.Subtitle>
+                <Card.Body>
+                    <p>
+                        When a .zip file is uploaded, we expect a single CSV file to be present inside the .zip file. If
+                        there is not exactly one CSV file, an error will occur.
+                    </p>
+                    <p>
+                        The rest of the contents of the .zip file should be image files in .jpg or .png format. Any other
+                        file formats will be ignored.
+                    </p>
+                </Card.Body>
+                <Card.Subtitle>
+                    What happens if my .zip file is not in the correct format?
+                </Card.Subtitle>
+                <Card.Body>
+                    <p>
+                        There are a few ways that an uploaded .zip file can be incorrect:
+                    </p>
+                    <ol>
+                        <li>
+                            As mentioned before, if there is not exactly one CSV file within the .zip file, an error
+                            will occur.
+                        </li>
+                        <li>
+                            Some of the rows of the CSV file have image filenames that do not correspond to any of the
+                            image files in the .zip file. In this situation, the Monument or Memorial record will still
+                            be created, but will not be associated with an image.
+                        </li>
+                        <li>
+                            Some of the image files in the .zip file are not in the correct format. In this situation,
+                            these image files will be ignored.
+                        </li>
+                        <li>
+                            There are other files within the .zip file besides a CSV file and image files. In this
+                            situation, these other files will be ignored.
+                        </li>
+                        <li>
+                            The .zip file is too large. The largest .zip file upload size we support is 300MB. If your
+                            file is larger than this, please split it up into multiple .zip files and perform multiple
+                            Bulk Create operations.
                         </li>
                     </ol>
                 </Card.Body>

@@ -1,5 +1,6 @@
 import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
 import { post } from "../utils/api-util";
+import { addError } from './errors';
 
 function createMonumentPending() {
     return {
@@ -30,6 +31,9 @@ export default function createMonument(monument) {
             dispatch(createMonumentSuccess(createdMonument));
         } catch (error) {
             dispatch(createMonumentError(error));
+            dispatch(addError({
+                message: error.message
+            }));
         }
     };
 }
