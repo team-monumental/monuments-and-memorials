@@ -3,9 +3,11 @@
 .autocomplete-container {
     display: inline-flex;
     position: relative;
+    width: 100%;
 
     &, input {
         height: 100%;
+        width: 100%;
     }
 }
 

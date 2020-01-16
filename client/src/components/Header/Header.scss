@@ -4,41 +4,46 @@
     font-size: 0.875rem;
     position: relative;
 
-    .left {
-        flex: 20%;
+    @media only screen and (min-width: 831px) {
+        .left {
+            flex: 20%;
+        }
+
+        .center {
+            flex: 60%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .right {
+            flex: 20%;
+            display: flex;
+            justify-content: flex-end;
+        }
     }
 
-    .center {
-        flex: 60%;
-        display: flex;
-        justify-content: center;
-    }
+    @media only screen and (max-width: 831px) {
+        .left {
+            flex: 10%;
+        }
 
-    .right {
-        flex: 20%;
-        display: flex;
-        justify-content: flex-end;
-    }
+        .center {
+            flex: 80%;
+            display: flex;
+            justify-content: center;
+        }
 
-    .tabletLeft {
-        flex: 10%;
-    }
-
-    .tabletCenter {
-        flex: 80%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .tabletRight{
-        flex: 10%;
-        display: flex;
-        justify-content: flex-end;
+        .right {
+            flex: 10%;
+            display: flex;
+            justify-content: flex-end;
+        }
     }
 
     .header-icon {
         width: 35px;
         height: 35px;
+        object-fit: cover;
     }
 
     .right > * {

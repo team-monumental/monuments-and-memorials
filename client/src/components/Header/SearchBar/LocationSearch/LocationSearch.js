@@ -59,12 +59,11 @@ export default class LocationSearch extends React.Component {
         const { className, width, margin, barBottomSpacing } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-            <div className="autocomplete-container" style={{width: '100%'}}>
+            <div className="autocomplete-container">
                 <input
                     {...getInputProps({
                         placeholder: "Near...",
-                        className: className,
-                        style: {width: '100%'}
+                        className: className
                     })}
                 />
                 <div className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>
