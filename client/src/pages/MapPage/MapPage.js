@@ -3,7 +3,6 @@ import './MapPage.scss';
 import MapResults from '../../components/Search/MapResults/MapResults';
 import { connect } from 'react-redux';
 import fetchMonuments from '../../actions/map';
-import {zoom} from "leaflet/src/control/Control.Zoom";
 
 class MapPage extends React.Component {
 
@@ -17,15 +16,12 @@ class MapPage extends React.Component {
     }
 
     componentWillMount() {
-        let zoomSize;
-        if(window.innerWidth < 800) {
-            zoomSize = '3';
-        } else if(window.innerWidth < 1600) {
-            zoomSize = '4';
-        } else {
-            zoomSize = '5';
+        if (window.innerWidth < 800) {
+            this.setState({zoomSize: 3});
         }
-        this.setState({zoomSize: zoomSize});
+        else if (window.innerWidth >= 800 && window.innerWidth < 1600) {
+            this.setState({zoomSize: 4});
+        }
     }
 
     static mapStateToProps(state) {
