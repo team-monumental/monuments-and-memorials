@@ -2,7 +2,7 @@ import React from 'react';
 import './BulkCreateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
 import validator from 'validator';
-import { csvFileRegex } from '../../utils/regex-util';
+import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
 import MoreInformation from './MoreInformation/MoreInformation';
 import FeedbackModal from './FeedbackModal/FeedbackModal';
 
@@ -17,6 +17,7 @@ export default class BulkCreateForm extends React.Component {
         this.state = {
             fileUpload: {
                 file: {},
+                fileType: '',
                 isValid: true,
                 message: 'No file chosen',
                 errorMessage: ''
@@ -45,14 +46,21 @@ export default class BulkCreateForm extends React.Component {
 
         this.resetForm(false);
 
-        if (!validator.matches(event.target.value, csvFileRegex)) {
-            event.target.value = '';
-            alert('Invalid file type submitted');
-        }
-        else {
+        if (validator.matches(event.target.value, csvFileRegex)) {
             fileUpload.file = event.target.files[0];
             fileUpload.message = event.target.files[0].name;
+            fileUpload.fileType = '.csv';
             this.setState({fileUpload});
+        }
+        else if (validator.matches(event.target.value, zipFileRegex)) {
+            fileUpload.file = event.target.files[0];
+            fileUpload.message = event.target.files[0].name;
+            fileUpload.fileType = '.zip';
+            this.setState({fileUpload});
+        }
+        else {
+            event.target.value = '';
+            alert('Invalid file type submitted');
         }
     }
 
@@ -118,13 +126,18 @@ export default class BulkCreateForm extends React.Component {
      */
     submitForm() {
         const { fileUpload } = this.state;
-        const { onSubmit } = this.props;
+        const { onCsvSubmit, onZipSubmit } = this.props;
 
         let form = {
             file: fileUpload.file
         };
 
-        onSubmit(form);
+        if (fileUpload.fileType === '.zip') {
+            onZipSubmit(form);
+        }
+        else {
+            onCsvSubmit(form);
+        }
     }
 
     handleFeedbackModalClose() {
@@ -157,7 +170,7 @@ export default class BulkCreateForm extends React.Component {
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     <Form.Group className='file-upload-form-group'>
-                        <Form.Label>Upload a CSV File:</Form.Label>
+                        <Form.Label>Upload a CSV or Zip File:</Form.Label>
                         <label htmlFor='file-upload-input' className='file-upload-input-label'>
                             <span>CHOOSE A FILE</span>
                         </label>
@@ -166,7 +179,7 @@ export default class BulkCreateForm extends React.Component {
                             id='file-upload-input'
                             onChange={(event) => this.handleFileUploadChange(event)}
                             isInvalid={!fileUpload.isValid}
-                            accept='.csv'
+                            accept='.csv,.zip'
                             className='file-upload-input'
                             key={fileUploadInputKey}
                         />

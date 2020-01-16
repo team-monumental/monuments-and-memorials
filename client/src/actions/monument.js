@@ -4,6 +4,7 @@ import { FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, F
 } from '../constants';
 import * as QueryString from 'query-string';
 import { get } from '../utils/api-util';
+import { addError } from './errors';
 
 function fetchMonumentPending() {
     return {
@@ -73,47 +74,55 @@ function fetchRelatedMonumentsError(error) {
 export default function fetchMonument(id) {
     return async dispatch => {
         dispatch(fetchMonumentPending());
-        let error = null;
-        const res = await fetch(`/api/monument/${id}?cascade=true`)
-            .then(res => res.json())
-            .catch(err => error = err);
 
-        if (error || res.error) dispatch(fetchMonumentError(error || res.error));
-        else dispatch(fetchMonumentSuccess(res));
-
-        let queryOptions = {
-            lat: res.lat,
-            lon: res.lon,
-            d: 25,
-            limit: 5,
-            sort: 'distance'
-        };
-        let queryString = QueryString.stringify(queryOptions);
-        dispatch(fetchNearbyMonumentsPending());
         try {
-            const nearbyMonuments = await get(`/api/search/monuments/?${queryString}`);
-            dispatch(fetchNearbyMonumentsSuccess(nearbyMonuments));
-        } catch (error) {
-            dispatch(fetchNearbyMonumentsError(error));
-        }
+            const monument = await get(`/api/monument/${id}?cascade=true`);
+            dispatch(fetchMonumentSuccess(monument));
 
-        const tags = (res.tags || [])
-                    .concat(res.materials || [])
-                    .map(tag => tag.name);
-        if (tags.length > 0) {
-            queryOptions = {
-                tags: tags,
+            let queryOptions = {
+                lat: monument.lat,
+                lon: monument.lon,
+                d: 25,
                 limit: 5,
-                monumentId: id
+                sort: 'distance'
             };
-            queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
-            dispatch(fetchRelatedMonumentsPending());
+
+            let queryString = QueryString.stringify(queryOptions);
+
+            dispatch(fetchNearbyMonumentsPending());
             try {
-                const relatedMonuments = await get(`/api/monuments/related/?${queryString}`);
-                dispatch(fetchRelatedMonumentsSuccess(relatedMonuments));
+                const nearbyMonuments = await get(`/api/search/monuments/?${queryString}`);
+                dispatch(fetchNearbyMonumentsSuccess(nearbyMonuments));
             } catch (error) {
-                dispatch(fetchRelatedMonumentsError(error));
+                dispatch(fetchNearbyMonumentsError(error));
             }
+
+            const tags = (monument.tags || [])
+                .concat(monument.materials || [])
+                .map(tag => tag.name);
+
+            if (tags.length > 0) {
+                queryOptions = {
+                    tags: tags,
+                    limit: 5,
+                    monumentId: id
+                };
+
+                queryString = QueryString.stringify(queryOptions, {arrayFormat: 'comma'});
+
+                dispatch(fetchRelatedMonumentsPending());
+                try {
+                    const relatedMonuments = await get(`/api/monuments/related/?${queryString}`);
+                    dispatch(fetchRelatedMonumentsSuccess(relatedMonuments));
+                } catch (error) {
+                    dispatch(fetchRelatedMonumentsError(error));
+                }
+            }
+        } catch (error) {
+            dispatch(fetchMonumentError(error));
+            dispatch(addError({
+                message: error.message
+            }));
         }
     }
 }
