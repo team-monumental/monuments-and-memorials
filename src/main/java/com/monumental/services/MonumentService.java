@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.Monument;
+import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.csvparsing.*;
@@ -149,11 +150,18 @@ public class MonumentService extends ModelService<Monument> {
      */
     @SuppressWarnings("unchecked")
     private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags, Boolean isMaterial) {
-        // Create a sub-query on the tags table
+        // Create a Sub-query on the monument_tag table
+        Subquery monumentTagQuery = query.subquery(Long.class);
+        Root monumentTagRoot = monumentTagQuery.from(MonumentTag.class);
+        // Join on the "monument" Many-to-One relationship of MonumentTags
+        Join<MonumentTag, Monument> monumentTagToMonumentJoin = monumentTagRoot.join("monument");
+
+        // Create a Sub-query on the tag table
         Subquery tagQuery = query.subquery(Long.class);
         Root tagRoot = tagQuery.from(Tag.class);
-        // Join on the "monuments" ManyToMany relationship of Tags
-        Join<Tag, Monument> join = tagRoot.join("monuments");
+        // Join on the "monumentTags" One-to-Many relationship of Tags
+        Join<Tag, MonumentTag> tagToMonumentTagJoin = tagRoot.join("monumentTags");
+
         // Count the number of matching tags
         tagQuery.select(builder.count(tagRoot.get("id")));
         // Where they are related to the monuments
