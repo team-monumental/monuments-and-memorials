@@ -353,6 +353,10 @@ public class MonumentService extends ModelService<Monument> {
      * @return List<Monument> - The List of Monuments with matching Tags/Materials, ordered by number matching Tags/Materials
      */
     public List<Monument> getRelatedMonumentsByTags(List<String> tags, Integer monumentId, Integer limit) {
+        if (tags == null || monumentId == null || limit == null) {
+            return null;
+        }
+
         List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit));
         List<Monument> monuments = new ArrayList<>();
         for (Tuple result : results) {
