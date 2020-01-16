@@ -10,16 +10,16 @@ class MapPage extends React.Component {
         super(props);
         this.state = {
             zoomSize: '5'
-        }
+        };
         const { dispatch } = props;
         dispatch(fetchMonuments());
     }
 
     componentWillMount() {
-        if (window.innerWidth < 800) {
+        if (window.innerWidth < 700) {
             this.setState({zoomSize: 3});
         }
-        else if (window.innerWidth >= 800 && window.innerWidth < 1600) {
+        else if (window.innerWidth >= 700 && window.innerWidth < 1600) {
             this.setState({zoomSize: 4});
         }
     }
