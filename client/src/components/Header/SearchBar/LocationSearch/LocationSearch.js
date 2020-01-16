@@ -56,15 +56,14 @@ export default class LocationSearch extends React.Component {
 
     render() {
         const { searchQuery } = this.state;
-        const { className, width, margin, barBottomSpacing } = this.props;
+        const { className } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-            <div className="autocomplete-container" style={{width: '100%'}}>
+            <div className="autocomplete-container">
                 <input
                     {...getInputProps({
                         placeholder: "Near...",
-                        className: className,
-                        style: {width: '100%'}
+                        className: className
                     })}
                 />
                 <div className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>
@@ -91,7 +90,7 @@ export default class LocationSearch extends React.Component {
         };
 
         return (
-            <div className="form-control-sm p-0 position-relative" style={{width: width, marginRight: margin, marginLeft: margin, marginBottom: barBottomSpacing}}>
+            <div className="location-search position-relative">
                 <PlacesAutocomplete
                     value={searchQuery}
                     onChange={newSearchQuery => this.handleChange(newSearchQuery)}
