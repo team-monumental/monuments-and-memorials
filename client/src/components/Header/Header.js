@@ -96,7 +96,7 @@ export default class Header extends React.Component {
                         <div className="center">
                             <Modal show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
                                 <Modal.Header closeButton>
-                                    <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="my image" style={{marginBottom: '1%'}}/>
+                                    <img src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="my image" width='35px' height='35px'/>
                                 </Modal.Header>
                                 <SearchBar barWidth="100%" locationSearchMargin='0%' buttonWidth='100%' barBottomSpacing='1%' closeModal={() => {this.setState({isSearchModalOpen: false})}}/>
                             </Modal>
