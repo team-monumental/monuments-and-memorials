@@ -2,7 +2,6 @@ package com.monumental.util.csvparsing.unittests;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.vividsolutions.jts.geom.Point;
@@ -71,14 +70,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         result.setMonument(monument);
 
@@ -96,14 +90,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -122,14 +111,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         Point coordinates = MonumentService.createMonumentPoint(180.000, 90.000);
         monument.setCoordinates(coordinates);
@@ -149,14 +133,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         Point coordinates = MonumentService.createMonumentPoint(180.000, 91.000);
         monument.setCoordinates(coordinates);
@@ -177,14 +156,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         Point coordinates = MonumentService.createMonumentPoint(181.000, 90.000);
         monument.setCoordinates(coordinates);
@@ -205,14 +179,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         Point coordinates = MonumentService.createMonumentPoint(181.000, 91.000);
         monument.setCoordinates(coordinates);
@@ -234,14 +203,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -269,14 +233,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -304,14 +263,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -339,14 +293,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -373,14 +322,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -413,14 +357,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 
@@ -461,14 +400,9 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<Tag> materials = new ArrayList<>();
-
-        Tag material = new Tag();
-        material.setName("Material");
-        material.setIsMaterial(true);
-
-        materials.add(material);
-        result.setMaterials(materials);
+        List<String> materialNames = new ArrayList<>();
+        materialNames.add("Material");
+        result.setMaterialNames(materialNames);
 
         monument.setAddress("Address");
 

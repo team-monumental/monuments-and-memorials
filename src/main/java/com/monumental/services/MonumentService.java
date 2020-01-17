@@ -301,8 +301,6 @@ public class MonumentService extends ModelService<Monument> {
      * @param monuments Monuments to get related records for - these objects are updated directly using the setter
      *                  but no database update is called
      */
-
-    // TODO: Maybe refactor based on MonumentTag
     private void getRelatedRecords(List<Monument> monuments, String fieldName) {
         if (monuments.size() == 0) return;
         CriteriaBuilder builder = this.getCriteriaBuilder();
@@ -534,39 +532,36 @@ public class MonumentService extends ModelService<Monument> {
         int monumentsInsertedCount = 0;
 
         for (CsvMonumentConverterResult validResult : validResults) {
-            // Insert the Monument
             try {
+                // Insert the Monument
                 Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
                 bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
+
+                List<Monument> monuments = new ArrayList<>();
+                monuments.add(insertedMonument);
+
+                // Insert all of the Tags associated with the Monument
+                List<String> tagNames = validResult.getTagNames();
+                if (tagNames != null && tagNames.size() > 0) {
+                    for (String tagName : tagNames) {
+                        this.tagService.createTag(tagName, monuments, false);
+                    }
+                }
+
+                // Insert all of the Materials associated with the Monument
+                List<String> materialNames = validResult.getMaterialNames();
+                if (materialNames != null && materialNames.size() > 0) {
+                    for (String materialName : materialNames) {
+                        this.tagService.createTag(materialName, monuments, true);
+                    }
+                }
+
             } catch (DataIntegrityViolationException e) {
                 // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                 // These are disregarded for now - the correct tags are still being created
             }
+
             monumentsInsertedCount++;
-
-            // Insert all of the Tags associated with the Monument
-            List<Tag> tags = validResult.getTags();
-            if (tags == null) {
-                tags = new ArrayList<>();
-            }
-
-            List<Tag> materials = validResult.getMaterials();
-            if (materials == null) {
-                materials = new ArrayList<>();
-            }
-
-            tags.addAll(materials);
-
-            if (tags.size() > 0) {
-                for (Tag tag : tags) {
-                    try {
-                        this.tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
-                    } catch (DataIntegrityViolationException e) {
-                        // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                        // These are disregarded for now - the correct tags are still being created
-                    }
-                }
-            }
         }
 
         bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
