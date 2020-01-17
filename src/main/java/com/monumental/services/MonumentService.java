@@ -40,6 +40,9 @@ public class MonumentService extends ModelService<Monument> {
     @Autowired
     AwsS3Service s3Service;
 
+    @Autowired
+    MonumentTagService monumentTagService;
+
     /**
      * SRID for coordinates
      * Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
@@ -276,7 +279,10 @@ public class MonumentService extends ModelService<Monument> {
                                             : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
                                         : this.getWithCriteriaQuery(query);
 
-        this.getRelatedRecords(monuments, "tags");
+        this.getRelatedRecords(monuments, "monumentTags");
+        for (Monument monument : monuments) {
+            this.monumentTagService.getRelatedTags(new ArrayList<>(monument.getMonumentTags()));
+        }
         this.getRelatedRecords(monuments, "images");
         return monuments;
     }
@@ -322,24 +328,49 @@ public class MonumentService extends ModelService<Monument> {
 
         String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 
-        Map<Integer, List> map = new HashMap<>();
-        for (Monument monument : monumentsWithRecords) {
-            try {
-                map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                System.err.println("Invalid field name: " + fieldName);
-                System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                e.printStackTrace();
+        // "monumentTags" is a special case because it's a Set, not a List
+        if (fieldName.equals("monumentTags")) {
+            Map<Integer, Set> map = new HashMap<>();
+            for (Monument monument : monumentsWithRecords) {
+                try {
+                    map.put(monument.getId(), (Set) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
+            }
+
+            for (Monument monument : monuments) {
+                try {
+                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, Set.class).invoke(monument, map.get(monument.getId()));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
             }
         }
+        else {
+            Map<Integer, List> map = new HashMap<>();
+            for (Monument monument : monumentsWithRecords) {
+                try {
+                    map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
+            }
 
-        for (Monument monument : monuments) {
-            try {
-                Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                System.err.println("Invalid field name: " + fieldName);
-                System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                e.printStackTrace();
+            for (Monument monument : monuments) {
+                try {
+                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
             }
         }
     }
