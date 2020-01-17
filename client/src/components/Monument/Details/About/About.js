@@ -37,7 +37,7 @@ export default class About extends React.Component {
             date = (
                 <div>
                     <span className='detail-label'>Date:&nbsp;</span>
-                    {this.prettyPrintDate(monument.date)}
+                    {prettyPrintDate(monument.date)}
                 </div>
             );
         }
@@ -111,7 +111,7 @@ export default class About extends React.Component {
             lastUpdated = (
                 <div>
                     <span className='detail-label'>Last Updated:&nbsp;</span>
-                    {this.prettyPrintDate(monument.updatedDate)}
+                    {prettyPrintDate(monument.updatedDate)}
                 </div>
             );
         }
