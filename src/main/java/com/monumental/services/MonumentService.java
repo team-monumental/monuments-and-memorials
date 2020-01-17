@@ -145,46 +145,40 @@ public class MonumentService extends ModelService<Monument> {
      * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
      * @param query - The CriteriaQuery to add the searching logic to
      * @param root - The Root to use with the CriteriaQuery
-     * @param tags - The list of tag names to filter by
+     * @param tagNames - The list of tag names to filter by
      * @param isMaterial - If true, only materials will be returned. If false, NO materials will be returned
      */
     @SuppressWarnings("unchecked")
-    private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags, Boolean isMaterial) {
-        // Create a Sub-query on the monument_tag table
-        Subquery monumentTagQuery = query.subquery(Long.class);
-        Root monumentTagRoot = monumentTagQuery.from(MonumentTag.class);
-        // Join on the "monument" Many-to-One relationship of MonumentTags
-        Join<MonumentTag, Monument> monumentTagToMonumentJoin = monumentTagRoot.join("monument");
+    private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tagNames, Boolean isMaterial) {
+        // Create a Sub-query for our Joins
+        Subquery tagSubQuery = query.subquery(Long.class);
+        // Join from the monument table to the monument_tag table
+        Join<Monument, MonumentTag> monumentTags = root.join("monumentTags");
+        // Then, Join from the monument_tag table to the tag table
+        Join<MonumentTag, Tag> tags = monumentTags.join("tag");
 
-        // Create a Sub-query on the tag table
-        Subquery tagQuery = query.subquery(Long.class);
-        Root tagRoot = tagQuery.from(Tag.class);
-        // Join on the "monumentTags" One-to-Many relationship of Tags
-        Join<Tag, MonumentTag> tagToMonumentTagJoin = tagRoot.join("monumentTags");
+        // Count the number of matching Tags
+        tagSubQuery.select(builder.count(tags.get("id")));
 
-        // Count the number of matching tags
-        tagQuery.select(builder.count(tagRoot.get("id")));
-        // Where they are related to the monuments
-        // and their name is one of the filtered names
-        tagQuery.where(
+        // Where their name is one of the filtered names
+        // And their isMaterial matches the specified isMaterial
+        tagSubQuery.where(
             builder.and(
-                builder.equal(root.get("id"), join.get("id")),
-                builder.and(
-                    tagRoot.get("name").in(tags),
-                    builder.equal(tagRoot.get("isMaterial"), isMaterial)
-                )
+                tags.get("name").in(tagNames),
+                builder.equal(tags.get("isMaterial"), isMaterial)
             )
         );
+
         if (isMaterial) {
             // For materials, return monuments with at least one matching material, since most monuments
             // will only have one material it wouldn't really be useful to require that they match all the
             // material search terms
-            return builder.greaterThan(tagQuery, 0);
+            return builder.greaterThan(tagSubQuery, 0);
         } else {
             // Return the monuments who have at least the correct number of matching tags
             // If there are duplicate tags in the database then this logic is flawed, but the Tag model should already be
             // preventing those duplicates
-            return builder.greaterThanOrEqualTo(tagQuery, tags.size());
+            return builder.greaterThanOrEqualTo(tagSubQuery, tagNames.size());
         }
     }
 
