@@ -18,7 +18,6 @@ public class MonumentTag extends Model implements Serializable {
     @JoinColumn(name = "monument_id")
     private Monument monument;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;

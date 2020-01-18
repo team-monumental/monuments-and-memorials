@@ -1,7 +1,6 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,7 +23,7 @@ public class Tag extends Model implements Serializable {
     @NotNull(groups = {New.class, Existing.class}, message = "Name can not be null")
     private String name;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private Set<MonumentTag> monumentTags;
 

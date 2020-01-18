@@ -283,11 +283,15 @@ public class MonumentService extends ModelService<Monument> {
                                             : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
                                         : this.getWithCriteriaQuery(query);
 
-        this.getRelatedRecords(monuments, "monumentTags");
-        for (Monument monument : monuments) {
-            this.monumentTagService.getRelatedTags(new ArrayList<>(monument.getMonumentTags()));
-        }
         this.getRelatedRecords(monuments, "images");
+
+        for (Monument monument : monuments) {
+            System.out.println("Monument has " + monument.getMonumentTags().size() + " Tags associated with it");
+            for (MonumentTag monumentTag : monument.getMonumentTags()) {
+                System.out.println("\tTag Name: " + monumentTag.getTag().getName());
+            }
+        }
+
         return monuments;
     }
 
