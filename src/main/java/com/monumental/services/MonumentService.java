@@ -155,8 +155,9 @@ public class MonumentService extends ModelService<Monument> {
     private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tagNames, Boolean isMaterial) {
         // Create a Sub-query for our Joins
         Subquery tagSubQuery = query.subquery(Long.class);
+        Root monumentToMonumentTagToTagRoot = tagSubQuery.from(Tag.class);
         // Join from the monument table to the monument_tag table
-        Join<Monument, MonumentTag> monumentTags = root.join("monumentTags");
+        Join<Monument, MonumentTag> monumentTags = monumentToMonumentTagToTagRoot.join("monumentTags");
         // Then, Join from the monument_tag table to the tag table
         Join<MonumentTag, Tag> tags = monumentTags.join("tag");
 

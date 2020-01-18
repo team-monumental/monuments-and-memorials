@@ -1,5 +1,6 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Point;
@@ -170,7 +171,7 @@ public class Monument extends Model implements Serializable {
         this.monumentTags = monumentTags;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     public List<Tag> getTags() {
         if (this.monumentTags == null) return null;
 
@@ -183,6 +184,7 @@ public class Monument extends Model implements Serializable {
         return tags;
     }
 
+    @JsonIgnore
     public void setTags(List<Tag> tags) {
         List<Tag> materials = this.getMaterials();
         List<MonumentTag> monumentTags = new ArrayList<>();
@@ -202,7 +204,7 @@ public class Monument extends Model implements Serializable {
         this.monumentTags = new HashSet<>(monumentTags);
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     public List<Tag> getMaterials() {
         if (this.monumentTags == null) return null;
 
@@ -215,6 +217,7 @@ public class Monument extends Model implements Serializable {
         return materials;
     }
 
+    @JsonIgnore
     public void setMaterials(List<Tag> materials) {
         List<Tag> tags = this.getTags();
         List<MonumentTag> monumentTags = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -54,6 +55,7 @@ public class Tag extends Model implements Serializable {
         this.monumentTags = monumentTags;
     }
 
+    @JsonIgnore
     public List<Monument> getMonuments() {
         if (this.monumentTags == null) {
             return null;
@@ -67,6 +69,7 @@ public class Tag extends Model implements Serializable {
         return monuments;
     }
 
+    @JsonIgnore
     public void setMonuments(List<Monument> monuments) {
         List<MonumentTag> monumentTags = new ArrayList<>();
 
