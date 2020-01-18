@@ -155,21 +155,24 @@ public class MonumentService extends ModelService<Monument> {
     private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tagNames, Boolean isMaterial) {
         // Create a Sub-query for our Joins
         Subquery tagSubQuery = query.subquery(Long.class);
-        Root monumentToMonumentTagToTagRoot = tagSubQuery.from(Tag.class);
-        // Join from the monument table to the monument_tag table
-        Join<Monument, MonumentTag> monumentTags = monumentToMonumentTagToTagRoot.join("monumentTags");
-        // Then, Join from the monument_tag table to the tag table
-        Join<MonumentTag, Tag> tags = monumentTags.join("tag");
+        Root tagRoot = tagSubQuery.from(Tag.class);
+        // Join from the tag table to the monument_tag table
+        Join<Tag, MonumentTag> monumentTags = tagRoot.join("monumentTags");
+        // Then, Join from the monument_tag table to the monument table
+        Join<MonumentTag, Monument> monuments = monumentTags.join("monument");
 
-        // Count the number of matching Tags
-        tagSubQuery.select(builder.count(tags.get("id")));
+        // Count the number of matching Monuments
+        tagSubQuery.select(builder.count(monuments.get("id")));
 
-        // Where their name is one of the filtered names
-        // And their isMaterial matches the specified isMaterial
+        // Where their associated Tags' name is one of the filtered names
+        // And its isMaterial matches the specified isMaterial
         tagSubQuery.where(
             builder.and(
-                tags.get("name").in(tagNames),
-                builder.equal(tags.get("isMaterial"), isMaterial)
+                builder.equal(root.get("id"), monuments.get("id")),
+                builder.and(
+                        tagRoot.get("name").in(tagNames),
+                    builder.equal(tagRoot.get("isMaterial"), isMaterial)
+                )
             )
         );
 
