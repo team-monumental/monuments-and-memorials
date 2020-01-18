@@ -40,9 +40,6 @@ public class MonumentService extends ModelService<Monument> {
     @Autowired
     AwsS3Service s3Service;
 
-    @Autowired
-    MonumentTagService monumentTagService;
-
     /**
      * SRID for coordinates
      * Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
