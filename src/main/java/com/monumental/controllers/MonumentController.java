@@ -189,6 +189,7 @@ public class MonumentController {
         List<Monument> monuments = this.monumentService.getRelatedMonumentsByTags(tags, monumentId, limit);
         for (Monument monument : monuments) {
             Hibernate.initialize(monument.getImages());
+            Hibernate.initialize(monument.getMonumentTags());
         }
         return monuments;
     }
