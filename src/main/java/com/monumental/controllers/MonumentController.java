@@ -6,7 +6,6 @@ import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.api.CreateMonumentRequest;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.TagRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.BulkCreateResult;
 import com.monumental.util.csvparsing.ZipFileHelper;
@@ -37,9 +36,6 @@ public class MonumentController {
 
     @Autowired
     private TagService tagService;
-
-    @Autowired
-    private TagRepository tagRepository;
 
     /**
      * Create a new Monument based on the specified CreateMonumentRequest

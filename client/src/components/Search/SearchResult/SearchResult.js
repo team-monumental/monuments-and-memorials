@@ -15,8 +15,6 @@ export default class SearchResult extends React.Component {
         const imageUrl = image ? `url("${image.url}")` : null;
         const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
 
-        console.log(monument);
-
         let tags = [];
         if (monument.monumentTags) {
             monument.monumentTags.forEach(monumentTag => {

@@ -167,7 +167,7 @@ public class MonumentService extends ModelService<Monument> {
             builder.and(
                 builder.equal(root.get("id"), monuments.get("id")),
                 builder.and(
-                        tagRoot.get("name").in(tagNames),
+                    tagRoot.get("name").in(tagNames),
                     builder.equal(tagRoot.get("isMaterial"), isMaterial)
                 )
             )
@@ -281,14 +281,6 @@ public class MonumentService extends ModelService<Monument> {
                                         : this.getWithCriteriaQuery(query);
 
         this.getRelatedRecords(monuments, "images");
-
-        for (Monument monument : monuments) {
-            System.out.println("Monument has " + monument.getMonumentTags().size() + " Tags associated with it");
-            for (MonumentTag monumentTag : monument.getMonumentTags()) {
-                System.out.println("\tTag Name: " + monumentTag.getTag().getName());
-            }
-        }
-
         return monuments;
     }
 
