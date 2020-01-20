@@ -185,6 +185,9 @@ public class MonumentService extends ModelService<Monument> {
      * @param tags - List of tag names to search by
      * @param materials - List of material tag names to search by
      * @param sortType - The way in which to sort the results by
+     * @param start - The start date to filter monuments by
+     * @param end - The end date to filter monuments by
+     * @param decade - The decade to filter monuments by
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double latitude, Double longitude, Integer distance, List<String> tags,
@@ -256,6 +259,9 @@ public class MonumentService extends ModelService<Monument> {
      * @param tags - List of tag names to search by
      * @param materials - List of material tag names to search by
      * @param sortType - The way in which to sort the results by
+     * @param start - The start date to filter monuments by
+     * @param end - The end date to filter monuments by
+     * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,

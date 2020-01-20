@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Collapse, Form } from 'react-bootstrap';
 import TagsSearch from '../TagsSearch/TagsSearch';
 import search from "../../../utils/search";
-import DatePicker from 'react-datepicker/es';
+import DatePicker from 'react-datepicker';
 import * as moment from 'moment';
 
 class Filters extends React.Component {
@@ -14,7 +14,7 @@ class Filters extends React.Component {
         const { distance, decade, start, end } = props;
         let dateFiltersMode = 'hidden';
         if (decade) dateFiltersMode = 'decade';
-        if (start && end) dateFiltersMode = 'range';
+        else if (start && end) dateFiltersMode = 'range';
         this.state = {
             filters: {
                 distance: distance || '25',
