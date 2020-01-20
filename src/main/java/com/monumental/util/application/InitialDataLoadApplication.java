@@ -2,7 +2,9 @@ package com.monumental.util.application;
 
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.BulkCreateResult;
+import com.monumental.util.csvparsing.CsvFileHelper;
 import com.monumental.util.csvparsing.CsvFileReader;
+import com.monumental.util.csvparsing.ZipFileHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,13 +17,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.zip.ZipFile;
 
 /**
  * Class used to load the initial dataset into the database
- * Creates a CsvFileReader class and uses it to iterate all of the rows in the CSV
- * Turns each row into a CsvMonumentConverterResult object and accumulates them
- * Then does validation on each CsvMonumentConverterResult's Monument before inserting it into the database
- * Finally, closes the CsvFileReader
+ * If the dataset file is a CSV file, uses the CsvFileReader class to read the entire contents of the CSV file
+ * and passes them to MonumentService for processing
+ * If the dataset file is a .zip file, creates a ZipFile object and passes it to MonumentService for processing
  */
 @Configuration
 @SpringBootApplication
@@ -35,55 +37,69 @@ public class InitialDataLoadApplication {
         app.setWebApplicationType(WebApplicationType.NONE);
         ConfigurableApplicationContext context = app.run(args);
 
-        String pathToDatasetCsv = "C:\\Users\\nickb\\Documents\\Initial Dataset.csv";
+        String pathToDatasetFile = "C:\\Users\\nickb\\Documents\\Initial Dataset.csv";
 
         MonumentService monumentService = context.getBean(MonumentService.class);
 
-        // Create our CsvFileReader, passing it the path to the dataset file
-        CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetCsv);
+        BulkCreateResult bulkCreateResult = new BulkCreateResult();
 
         try {
-            csvFileReader.initialize();
+            if (CsvFileHelper.isCsvFile(pathToDatasetFile)) {
+                // Create a CsvFileReader, passing it the path to the dataset file
+                CsvFileReader csvFileReader = new CsvFileReader(pathToDatasetFile);
 
-            // Read the entire CSV file contents
-            List<String> csvContents = csvFileReader.readEntireFile();
+                // Initialize the CsvFileReader
+                csvFileReader.initialize();
 
-            // Convert the contents of the CSV file into Monument objects and insert them into the database
-            BulkCreateResult bulkCreateResult = monumentService.bulkCreateMonumentsFromCsv(csvContents);
+                // Read the entire CSV file contents
+                List<String> csvContents = csvFileReader.readEntireFile();
 
-            System.out.println("\nNumber of Monuments inserted into the database: " + bulkCreateResult.getMonumentsInsertedCount());
+                // Convert the contents of the CSV file into Monument objects and insert them into the database
+                bulkCreateResult = monumentService.bulkCreateMonumentsFromCsv(csvContents, false, null, null);
 
-            System.out.println("Total Number of Invalid Monuments: " + bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().size());
+                // Close the CsvFileReader
+                csvFileReader.close();
+            } else if (ZipFileHelper.isZipFile(pathToDatasetFile)) {
+                // Create a ZipFile using the dataset file path
+                ZipFile zipFile = new ZipFile(pathToDatasetFile);
 
-            List<Integer> invalidCsvMonumentRecordsByRowNumber = new ArrayList<>(bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().keySet());
-            Collections.sort(invalidCsvMonumentRecordsByRowNumber);
-
-            for (Integer csvRowNumber : invalidCsvMonumentRecordsByRowNumber) {
-                String invalidCsvRecordString = bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber()
-                        .get(csvRowNumber);
-                List<String> validationErrors = bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().
-                        get(csvRowNumber);
-
-                System.out.println("\n----- INVALID CSV RECORD ------");
-                System.out.println("Invalid Row Number: " + csvRowNumber);
-                System.out.println(invalidCsvRecordString);
-                System.out.println("Validation Errors:");
-
-                for (String validationError : validationErrors) {
-                    System.out.println(validationError);
-                }
+                // Convert the ZipFile into Monument objects and insert them into the database
+                bulkCreateResult = monumentService.bulkCreateMonumentsFromZip(zipFile);
             }
-
-        }
-        catch (FileNotFoundException e) {
+            else {
+                throw new IllegalArgumentException("Invalid dataset file type specified. File path: " + pathToDatasetFile);
+            }
+        } catch (FileNotFoundException e) {
             System.out.println("Unable to read from the specified filepath. File does not exist.");
-        }
-        catch (IOException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             System.out.println("Error occurred while reading from the specified file.");
+            e.printStackTrace();
         }
-        finally {
-            csvFileReader.close();
-            System.exit(0);
+
+        System.out.println("\nNumber of Monuments inserted into the database: " + bulkCreateResult.getMonumentsInsertedCount());
+
+        System.out.println("Total Number of Invalid Monuments: " + bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().size());
+
+        List<Integer> invalidCsvMonumentRecordsByRowNumber = new ArrayList<>(bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().keySet());
+        Collections.sort(invalidCsvMonumentRecordsByRowNumber);
+
+        for (Integer csvRowNumber : invalidCsvMonumentRecordsByRowNumber) {
+            String invalidCsvRecordString = bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber()
+                    .get(csvRowNumber);
+            List<String> validationErrors = bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().
+                    get(csvRowNumber);
+
+            System.out.println("\n----- INVALID CSV RECORD ------");
+            System.out.println("Invalid Row Number: " + csvRowNumber);
+            System.out.println(invalidCsvRecordString);
+            System.out.println("Validation Errors:");
+
+            for (String validationError : validationErrors) {
+                System.out.println(validationError);
+            }
         }
+
+        System.exit(0);
     }
 }

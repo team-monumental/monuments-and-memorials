@@ -275,6 +275,11 @@ public class CsvMonumentConverterResult {
             }
         }
 
+        // Images
+        if (this.monument.getImages().size() > 0) {
+            stringBuilder.append("Number of Images: ").append(this.monument.getImages().size()).append("\n");
+        }
+
         return stringBuilder.toString();
     }
 
