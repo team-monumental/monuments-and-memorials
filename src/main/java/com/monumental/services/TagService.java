@@ -51,7 +51,7 @@ public class TagService extends ModelService<Tag> {
 
     /**
      * Safely create a new tag without duplication
-     * This method should be used ANYTIME you wish to associated a Tag with a Monument
+     * This method should be used ANYTIME you wish to associate a Tag with a Monument
      * @param name          The name of the tag to create
      * @param monuments     The list of monuments to associate it with
      * @param isMaterial    Whether or not the tag is a material
