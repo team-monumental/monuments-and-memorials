@@ -90,7 +90,7 @@ export default class LocationSearch extends React.Component {
         };
 
         return (
-            <div className="form-control-sm p-0 position-relative">
+            <div className="location-search position-relative">
                 <PlacesAutocomplete
                     value={searchQuery}
                     onChange={newSearchQuery => this.handleChange(newSearchQuery)}
