@@ -53,6 +53,7 @@ export default class AboutInformation extends React.Component {
                 <h1>
                     About Monuments + Memorials
                 </h1>
+                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
                     <span className='font-italic'>Monuments + Memorials</span> is a crowd-sourced initiative developed at
                     the Rochester Institute of Technology under the direction of Dr. Juilee Decker. Students in her spring
@@ -85,6 +86,7 @@ export default class AboutInformation extends React.Component {
                 <h3 className='font-italic'>
                     Contributors:
                 </h3>
+                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
                     We invite contributions from anyone. If you are interested in contributing, please click here. Your
                     submissions will be recognized in our list of contributors:
