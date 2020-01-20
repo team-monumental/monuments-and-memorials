@@ -31,6 +31,13 @@ export default class Details extends React.Component {
                 else return a.id - b.id;
             });
 
+        let tags = [];
+        if (monument.monumentTags) {
+            monument.monumentTags.forEach(monumentTag => {
+                tags.push(monumentTag.tag);
+            });
+        }
+
         return (
             <div className="main">
                 <div>
@@ -42,7 +49,7 @@ export default class Details extends React.Component {
                             <div className="field font-italic"><Address monument={monument}/></div>
                             <div className="field">{monument.description}</div>
                         </div>
-                        <Tags tags={(monument.materials || []).concat(monument.tags || [])}/>
+                        <Tags tags={tags}/>
                     </div>
                 </div>
                 <Gallery images={images}/>

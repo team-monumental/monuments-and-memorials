@@ -15,6 +15,13 @@ export default class SearchResult extends React.Component {
         const imageUrl = image ? `url("${image.url}")` : null;
         const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
 
+        let tags = [];
+        if (monument.monumentTags) {
+            monument.monumentTags.forEach(monumentTag => {
+                tags.push(monumentTag.tag);
+            });
+        }
+
         return (
             <div className="search-result">
                 <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
@@ -26,7 +33,7 @@ export default class SearchResult extends React.Component {
                     </Card.Title>
                     <Card.Body>
                         <Address monument={monument}/>
-                        <Tags tags={(monument.materials || []).concat(monument.tags || [])}/>
+                        <Tags tags={tags}/>
                     </Card.Body>
                 </Card>
             </div>

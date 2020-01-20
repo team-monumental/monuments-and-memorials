@@ -24,7 +24,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      * Get all tags for the specified monument
      * @param id Id of the monument to get the tags for
      */
-    @Query("select t from Tag t join t.monuments monument where monument.id = :id")
+    @Query("select t from Tag t join t.monumentTags monumentTag where monumentTag.monument.id = :id")
     List<Tag> getAllByMonumentId(@Param("id") Integer id);
 
     List<Tag> getAllByName(String name);

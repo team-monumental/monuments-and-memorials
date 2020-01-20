@@ -97,13 +97,14 @@ export default function fetchMonument(id) {
                 dispatch(fetchNearbyMonumentsError(error));
             }
 
-            const tags = (monument.tags || [])
-                .concat(monument.materials || [])
-                .map(tag => tag.name);
+            let tagNames = [];
+            monument.monumentTags.forEach(monumentTag => {
+                tagNames.push(monumentTag.tag.name);
+            });
 
-            if (tags.length > 0) {
+            if (tagNames.length > 0) {
                 queryOptions = {
-                    tags: tags,
+                    tags: tagNames,
                     limit: 5,
                     monumentId: id
                 };

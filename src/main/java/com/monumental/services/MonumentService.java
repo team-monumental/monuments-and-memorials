@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.Monument;
+import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.util.csvparsing.*;
@@ -144,39 +145,44 @@ public class MonumentService extends ModelService<Monument> {
      * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
      * @param query - The CriteriaQuery to add the searching logic to
      * @param root - The Root to use with the CriteriaQuery
-     * @param tags - The list of tag names to filter by
+     * @param tagNames - The list of tag names to filter by
      * @param isMaterial - If true, only materials will be returned. If false, NO materials will be returned
      */
     @SuppressWarnings("unchecked")
-    private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tags, Boolean isMaterial) {
-        // Create a sub-query on the tags table
-        Subquery tagQuery = query.subquery(Long.class);
-        Root tagRoot = tagQuery.from(Tag.class);
-        // Join on the "monuments" ManyToMany relationship of Tags
-        Join<Tag, Monument> join = tagRoot.join("monuments");
-        // Count the number of matching tags
-        tagQuery.select(builder.count(tagRoot.get("id")));
-        // Where they are related to the monuments
-        // and their name is one of the filtered names
-        tagQuery.where(
+    private Predicate buildTagsQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, List<String> tagNames, Boolean isMaterial) {
+        // Create a Sub-query for our Joins
+        Subquery tagSubQuery = query.subquery(Long.class);
+        Root tagRoot = tagSubQuery.from(Tag.class);
+        // Join from the tag table to the monument_tag table
+        Join<Tag, MonumentTag> monumentTags = tagRoot.join("monumentTags");
+        // Then, Join from the monument_tag table to the monument table
+        Join<MonumentTag, Monument> monuments = monumentTags.join("monument");
+
+        // Count the number of matching Monuments
+        tagSubQuery.select(builder.count(monuments.get("id")));
+
+        // Where their associated Tags' name is one of the filtered names
+        // And its isMaterial matches the specified isMaterial
+        tagSubQuery.where(
             builder.and(
-                builder.equal(root.get("id"), join.get("id")),
+                builder.equal(root.get("id"), monuments.get("id")),
                 builder.and(
-                    tagRoot.get("name").in(tags),
+                    tagRoot.get("name").in(tagNames),
                     builder.equal(tagRoot.get("isMaterial"), isMaterial)
                 )
             )
         );
+
         if (isMaterial) {
             // For materials, return monuments with at least one matching material, since most monuments
             // will only have one material it wouldn't really be useful to require that they match all the
             // material search terms
-            return builder.greaterThan(tagQuery, 0);
+            return builder.greaterThan(tagSubQuery, 0);
         } else {
             // Return the monuments who have at least the correct number of matching tags
             // If there are duplicate tags in the database then this logic is flawed, but the Tag model should already be
             // preventing those duplicates
-            return builder.greaterThanOrEqualTo(tagQuery, tags.size());
+            return builder.greaterThanOrEqualTo(tagSubQuery, tagNames.size());
         }
     }
 
@@ -290,7 +296,6 @@ public class MonumentService extends ModelService<Monument> {
                                             : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
                                         : this.getWithCriteriaQuery(query);
 
-        this.getRelatedRecords(monuments, "tags");
         this.getRelatedRecords(monuments, "images");
         return monuments;
     }
@@ -339,24 +344,49 @@ public class MonumentService extends ModelService<Monument> {
 
         String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 
-        Map<Integer, List> map = new HashMap<>();
-        for (Monument monument : monumentsWithRecords) {
-            try {
-                map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                System.err.println("Invalid field name: " + fieldName);
-                System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                e.printStackTrace();
+        // "monumentTags" is a special case because it's a Set, not a List
+        if (fieldName.equals("monumentTags")) {
+            Map<Integer, Set> map = new HashMap<>();
+            for (Monument monument : monumentsWithRecords) {
+                try {
+                    map.put(monument.getId(), (Set) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
+            }
+
+            for (Monument monument : monuments) {
+                try {
+                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, Set.class).invoke(monument, map.get(monument.getId()));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
             }
         }
+        else {
+            Map<Integer, List> map = new HashMap<>();
+            for (Monument monument : monumentsWithRecords) {
+                try {
+                    map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
+            }
 
-        for (Monument monument : monuments) {
-            try {
-                Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                System.err.println("Invalid field name: " + fieldName);
-                System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                e.printStackTrace();
+            for (Monument monument : monuments) {
+                try {
+                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    System.err.println("Invalid field name: " + fieldName);
+                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -370,6 +400,10 @@ public class MonumentService extends ModelService<Monument> {
      * @return List<Monument> - The List of Monuments with matching Tags/Materials, ordered by number matching Tags/Materials
      */
     public List<Monument> getRelatedMonumentsByTags(List<String> tags, Integer monumentId, Integer limit) {
+        if (tags == null || monumentId == null || limit == null) {
+            return null;
+        }
+
         List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit));
         List<Monument> monuments = new ArrayList<>();
         for (Tuple result : results) {
@@ -545,39 +579,36 @@ public class MonumentService extends ModelService<Monument> {
         int monumentsInsertedCount = 0;
 
         for (CsvMonumentConverterResult validResult : validResults) {
-            // Insert the Monument
             try {
+                // Insert the Monument
                 Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
                 bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
+
+                List<Monument> monuments = new ArrayList<>();
+                monuments.add(insertedMonument);
+
+                // Insert all of the Tags associated with the Monument
+                List<String> tagNames = validResult.getTagNames();
+                if (tagNames != null && tagNames.size() > 0) {
+                    for (String tagName : tagNames) {
+                        this.tagService.createTag(tagName, monuments, false);
+                    }
+                }
+
+                // Insert all of the Materials associated with the Monument
+                List<String> materialNames = validResult.getMaterialNames();
+                if (materialNames != null && materialNames.size() > 0) {
+                    for (String materialName : materialNames) {
+                        this.tagService.createTag(materialName, monuments, true);
+                    }
+                }
+
             } catch (DataIntegrityViolationException e) {
                 // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
                 // These are disregarded for now - the correct tags are still being created
             }
+
             monumentsInsertedCount++;
-
-            // Insert all of the Tags associated with the Monument
-            List<Tag> tags = validResult.getTags();
-            if (tags == null) {
-                tags = new ArrayList<>();
-            }
-
-            List<Tag> materials = validResult.getMaterials();
-            if (materials == null) {
-                materials = new ArrayList<>();
-            }
-
-            tags.addAll(materials);
-
-            if (tags.size() > 0) {
-                for (Tag tag : tags) {
-                    try {
-                        tagService.createTag(tag.getName(), tag.getMonuments(), tag.getIsMaterial());
-                    } catch (DataIntegrityViolationException e) {
-                        // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                        // These are disregarded for now - the correct tags are still being created
-                    }
-                }
-            }
         }
 
         bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
@@ -612,8 +643,6 @@ public class MonumentService extends ModelService<Monument> {
             }
         }
 
-        System.out.println(imageFileNames);
-
         if (csvFileCount != 1) {
             throw new InvalidZipException("Invalid number of CSV files found in .zip: " + csvFileCount);
         }
@@ -640,7 +669,6 @@ public class MonumentService extends ModelService<Monument> {
      */
     private String preProcessImageForCsvRow(String csvRow, List<String> imageFileNames, ZipFile zipFile) {
         String imageFileName = CsvMonumentConverter.getImageFileNameFromCsvRow(csvRow);
-        System.out.println("IMAGE FILE NAME: " + imageFileName);
 
         // If the uploaded .zip file contains the CSV row's image filename, upload the image to S3 and
         // set the CSV row's image filename column to the S3 Object URL

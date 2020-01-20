@@ -105,7 +105,7 @@ public class CsvMonumentConverter {
                     String[] materialArray = value.split(",");
 
                     for (String materialValue : materialArray) {
-                        result.addTag(createTag(materialValue, monument, true));
+                        result.getMaterialNames().add(cleanTagName(materialValue));
                     }
 
                     break;
@@ -132,7 +132,7 @@ public class CsvMonumentConverter {
                     String[] tagArray = value.split(",");
 
                     for (String tagValue : tagArray) {
-                        result.addTag(createTag(tagValue, monument, false));
+                        result.getTagNames().add(cleanTagName(tagValue));
                     }
 
                     break;
@@ -427,16 +427,23 @@ public class CsvMonumentConverter {
                 "Tags,Contributors,References";
     }
 
-    private static Tag createTag(String tagValue, Monument monument, boolean isMaterial) {
-        Tag newTag = new Tag();
+    /**
+     * Cleans a CSV Tag name
+     * Removes any whitespace and capitalizes the first letter to attempt to avoid duplicates
+     * @param tagName - String of the CSV Tag name to clean
+     * @return String - The cleaned Tag name
+     */
+    public static String cleanTagName(String tagName) {
+        if (tagName == null) {
+            return null;
+        }
 
-        // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
-        tagValue = tagValue.strip();
-        tagValue = tagValue.substring(0, 1).toUpperCase() + tagValue.substring(1);
-        newTag.setName(tagValue);
-        newTag.addMonument(monument);
-        newTag.setIsMaterial(isMaterial);
-        return newTag;
+        if (tagName.isEmpty()) {
+            return "";
+        }
+
+        tagName = tagName.strip();
+        return tagName.substring(0, 1).toUpperCase() + tagName.substring(1);
     }
 
     /**
