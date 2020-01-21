@@ -97,4 +97,72 @@ public class StringHelperUnitTests {
 
         assertEquals("Te\"st", result);
     }
+
+    /** parseState Tests **/
+
+    @Test
+    public void testStringHelper_parseState_NullPassed() {
+        assertNull(StringHelper.parseState(null));
+    }
+
+    @Test
+    public void testStringHelper_parseState_EmptyStringPassed() {
+        assertNull(StringHelper.parseState(""));
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoAbbreviation() {
+        String result = StringHelper.parseState("co");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoAbbreviation_MixedCase() {
+        String result = StringHelper.parseState("cO");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoFullName() {
+        String result = StringHelper.parseState("colorado");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoFullName_MixedCase() {
+        String result = StringHelper.parseState("ColorADo");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoAbbreviation() {
+        String result = StringHelper.parseState("PR");
+
+        assertEquals("Puerto Rico", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoAbbreviation_MixedCase() {
+        String result = StringHelper.parseState("Pr");
+
+        assertEquals("Puerto Rico", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoFullName() {
+        String result = StringHelper.parseState("puerto rico");
+
+        assertEquals("Puerto Rico", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoFullName_MixedCase() {
+        String result = StringHelper.parseState("pUERTo RicO");
+
+        assertEquals("Puerto Rico", result);
+    }
 }
