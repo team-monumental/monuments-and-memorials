@@ -4,7 +4,7 @@ import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
-import com.monumental.models.api.MonumentAboutPageStatistics;
+import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.util.csvparsing.*;

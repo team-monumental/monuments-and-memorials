@@ -1,9 +1,9 @@
-package com.monumental.models.api;
+package com.monumental.controllers.helpers;
 
 import java.util.List;
 
 /**
- * Model class for an API request to create a Monument object
+ * Helper class to represent an API request to create a Monument object
  * Contains any attributes that can be specified via an API request to create a new Monument
  */
 public class CreateMonumentRequest {

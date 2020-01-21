@@ -1,11 +1,11 @@
-package com.monumental.models.api;
+package com.monumental.controllers.helpers;
 
 import com.monumental.models.Monument;
 
 import java.util.HashMap;
 
 /**
- * Model class that holds statistics about the Monuments in the system for the About Page
+ * Helper class that holds statistics about the Monuments in the system for the About Page
  */
 public class MonumentAboutPageStatistics {
 
