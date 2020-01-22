@@ -4,11 +4,9 @@ import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
-import com.monumental.exceptions.ResourceNotFoundException;
-import com.monumental.models.Image;
-import com.monumental.models.Monument;
-import com.monumental.models.Reference;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
+import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
@@ -16,7 +14,6 @@ import com.monumental.services.TagService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
-import com.vividsolutions.jts.geom.Point;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-
-import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 @RestController
 @Transactional
