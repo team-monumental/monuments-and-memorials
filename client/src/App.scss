@@ -79,14 +79,13 @@ h1 {
     font-size: 24px;
 }
 
-.homePageImage {
-    object-fit: fill;
+#homePageImage {
+    background-image: url('images/home_page_image.jpg');
     width: 100%;
-    height: auto;
+    height: 300px;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
-    //background-size: cover;
 }
 
 #welcome-page-body {

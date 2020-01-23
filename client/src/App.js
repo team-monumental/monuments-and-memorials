@@ -15,7 +15,7 @@ import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
-import SuggestChanges from './components/Monument/SuggestChanges/SuggestChanges';
+import SuggestChanges from './pages/SuggestChanges/SuggestChanges';
 
 class App extends React.Component {
 
@@ -50,9 +50,7 @@ class App extends React.Component {
                                     <h1>
                                         Welcome to Monuments + Memorials
                                     </h1>
-                                    <div>
-                                        <img className='homePageImage' src={process.env.PUBLIC_URL + '/home_page_image.jpg'}/>
-                                    </div>
+                                    <div id='homePageImage'/>
                                     <div>
                                         <div className='about-information-container'>
                                             <p>

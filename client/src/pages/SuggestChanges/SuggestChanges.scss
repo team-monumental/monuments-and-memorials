@@ -1,0 +1,17 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+html {
+  font-size: 14px;
+}
+
+* {
+  font-family: Roboto, Arial, sans-serif;
+}
+
+#homepage_suggestion {
+  max-width: 60vw;
+  height: auto;
+  text-align: center;
+}
