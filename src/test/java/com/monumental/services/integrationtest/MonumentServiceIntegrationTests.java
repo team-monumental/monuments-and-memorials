@@ -15,6 +15,8 @@ import com.monumental.services.TagService;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.opencsv.CSVReader;
+import com.monumental.util.csvparsing.BulkCreateResult;
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1943,6 +1945,9 @@ public class MonumentServiceIntegrationTests {
 
         assertEquals(3, result.getReferences().size());
         assertEquals(3, result.getImages().size());
+
+        assertEquals(9, result.getMonumentTags().size());
+
         assertEquals(6, result.getMaterials().size());
         assertEquals(3, result.getTags().size());
     }

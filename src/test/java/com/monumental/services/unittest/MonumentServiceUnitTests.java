@@ -520,7 +520,7 @@ public class MonumentServiceUnitTests {
         assertEquals("Title", monument.getTitle());
         assertNull(monument.getAddress());
         assertNull(monument.getArtist());
-        assertEquals("The Title in null, null was created by null.", monument.getDescription());
+        assertEquals("The Title.", monument.getDescription());
         assertNull(monument.getInscription());
     }
 

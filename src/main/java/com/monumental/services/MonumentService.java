@@ -820,6 +820,10 @@ public class MonumentService extends ModelService<Monument> {
         // Save the Monument with the associated References, Images, Materials and Tags
         createdMonument = this.monumentRepository.save(createdMonument);
 
+        // Load the associated Materials and Tags into memory on the new Monument
+        createdMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), true));
+        createdMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), false));
+
         return createdMonument;
     }
 
