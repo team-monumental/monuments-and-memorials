@@ -91,4 +91,94 @@ public class TagRepositoryIntegrationTests {
         assertEquals(1, results.size());
         assertEquals(tag.getName(), results.get(0).getName());
     }
+
+    /* getAllByMonumentIdAndIsMaterial Tests **/
+
+    @Test
+    public void testTagRepository_getAllByMonumentIdAndIsMaterial_NoTagsWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        this.tagService.createTag("Tag", new ArrayList<>(), false);
+
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentIdAndIsMaterial_OneTagWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag", monuments, false);
+
+        assertEquals(1, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentIdAndIsMaterial_OneMaterialWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material", monuments, true);
+
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+        assertEquals(1, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentIdAndIsMaterial_TwoTagsWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentIdAndIsMaterial_TwoMaterialsWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testTagRepository_getAllByMonumentIdAndIsMaterial_VariousTagsAndMaterialsWithMonumentId() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+        this.tagService.createTag("Tag 3", monuments, false);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+        this.tagService.createTag("Material 3", monuments, true);
+
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
 }
