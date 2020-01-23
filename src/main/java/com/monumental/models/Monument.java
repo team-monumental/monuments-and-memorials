@@ -201,7 +201,6 @@ public class Monument extends Model implements Serializable {
             }
         }
 
-        this.monumentTags = null;
         this.monumentTags = new HashSet<>(monumentTags);
     }
 
@@ -235,7 +234,6 @@ public class Monument extends Model implements Serializable {
             }
         }
 
-        this.monumentTags = null;
         this.monumentTags = new HashSet<>(monumentTags);
     }
 
