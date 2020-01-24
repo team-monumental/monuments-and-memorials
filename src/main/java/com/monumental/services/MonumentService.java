@@ -834,6 +834,10 @@ public class MonumentService extends ModelService<Monument> {
      * @return Monument - The Monument with the updated attributes
      */
     public Monument updateMonument(Integer id, UpdateMonumentRequest newMonument) {
+        if (id == null || newMonument == null) {
+            return null;
+        }
+
         Optional<Monument> optionalMonument = this.monumentRepository.findById(id);
 
         if (optionalMonument.isEmpty()) {
@@ -917,28 +921,32 @@ public class MonumentService extends ModelService<Monument> {
         /* Materials section */
 
         // Update the Materials associated with the Monument
-        if (newMonument.getNewMaterials() != null && newMonument.getNewMaterials().size() > 0) {
+        this.updateMonumentTags(currentMonument, newMonument.getNewMaterials(), true);
+
+        // Create any new Materials that may have been created
+        if (newMonument.getCreatedMaterials() != null && newMonument.getCreatedMaterials().size() > 0) {
             List<Monument> monumentList = new ArrayList<>();
             monumentList.add(currentMonument);
 
-            // Get the names of the current Materials associated with the Monument
-            List<String> currentMaterialNames = new ArrayList<>();
-            for (Tag currentMaterial : currentMonument.getMaterials()) {
-                currentMaterialNames.add(currentMaterial.getName());
+            for (String createdMaterialName : newMonument.getCreatedMaterials()) {
+                Tag createdMaterial = this.tagService.createTag(createdMaterialName, monumentList, true);
+                currentMonument.getMonumentTags().add(new MonumentTag(currentMonument, createdMaterial));
             }
+        }
 
-            // Associate any Materials with the Monument that weren't already associated
-            for (String newMaterialName : newMonument.getNewMaterials()) {
-                if (!currentMaterialNames.contains(newMaterialName)) {
-                    this.tagService.createTag(newMaterialName, monumentList, true);
-                }
-            }
+        /* Tags section */
 
-            // Un-associate any Materials from the Monument that were associated previously and no longer are
-            for (String currentMaterialName : currentMaterialNames) {
-                if (!newMonument.getNewMaterials().contains(currentMaterialName)) {
+        // Update the Tags associated with the Monument
+        this.updateMonumentTags(currentMonument, newMonument.getNewTags(), false);
 
-                }
+        // Create any new Tags that may have been created
+        if (newMonument.getCreatedTags() != null && newMonument.getCreatedTags().size() > 0) {
+            List<Monument> monumentList = new ArrayList<>();
+            monumentList.add(currentMonument);
+
+            for (String createdTagName : newMonument.getCreatedTags()) {
+                Tag createdTag = this.tagService.createTag(createdTagName, monumentList, true);
+                currentMonument.getMonumentTags().add(new MonumentTag(currentMonument, createdTag));
             }
         }
 
@@ -1142,6 +1150,55 @@ public class MonumentService extends ModelService<Monument> {
             if (!primaryImageFound) {
                 monument.getImages().get(0).setIsPrimary(true);
                 this.imageRepository.save(monument.getImages().get(0));
+            }
+        }
+    }
+
+    /**
+     * Updates the Tags/Materials associated with the specified Monument to be the Tags/Materials with the specified
+     * names
+     * Note that any Tags/Materials that were previously associated with the Monument and are NOT in the newTagNames
+     * List will be un-associated from the Monument
+     * @param monument - Monument to update the associated Tags/Materials for
+     * @param newTagNames - List of the new Tag/Material names to associate with the Monument
+     * @param areMaterials - True if the newTagNames holds a list of Material names, False otherwise
+     */
+    public void updateMonumentTags(Monument monument, List<String> newTagNames, boolean areMaterials) {
+        if (monument != null && newTagNames != null) {
+            List<Monument> monuments = new ArrayList<>();
+            monuments.add(monument);
+
+            // Get the names of the current Tags/Materials associated with the Monument
+            List<String> currentTagNames = new ArrayList<>();
+            List<Tag> currentTags = areMaterials ? monument.getMaterials() : monument.getTags();
+
+            for (Tag currentTag : currentTags) {
+                currentTagNames.add(currentTag.getName());
+            }
+
+            // Associate any Tags/Materials with the Monument that weren't already associated
+            List<Tag> newTags = new ArrayList<>();
+            for (String newTagName : newTagNames) {
+                if (!currentTagNames.contains(newTagName)) {
+                    newTags.add(this.tagService.createTag(newTagName, monuments, areMaterials));
+                }
+            }
+
+            // Un-associate any Tags/Materials from the Monument that were associated previously and no longer are
+            for (Tag currentTag : currentTags) {
+                if (!newTagNames.contains(currentTag.getName())) {
+                    this.tagService.removeTagFromMonument(currentTag, monument);
+                }
+                else {
+                    newTags.add(currentTag);
+                }
+            }
+
+            if (areMaterials) {
+                monument.setMaterials(newTags);
+            }
+            else {
+                monument.setTags(newTags);
             }
         }
     }

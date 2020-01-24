@@ -2,6 +2,8 @@ package com.monumental.services.integrationtest;
 
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
+import com.monumental.controllers.helpers.UpdateMonumentRequest;
+import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
@@ -16,6 +18,7 @@ import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.opencsv.CSVReader;
 import com.monumental.util.csvparsing.BulkCreateResult;
+import com.vividsolutions.jts.geom.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2117,5 +2120,877 @@ public class MonumentServiceIntegrationTests {
         assertEquals(6, this.tagRepository.getAllByIsMaterial(true).size());
         assertEquals(6, this.tagRepository.getAllByIsMaterial(false).size());
         assertEquals(12, this.tagRepository.getAllByMonumentId(result.getId()).size());
+    }
+
+    /* updateMonumentTags Tests */
+
+    @Test
+    public void testMonumentService_updateMonumentTags_NullMonument() {
+        Monument monument = null;
+
+        this.monumentService.updateMonumentTags(monument, new ArrayList<>(), false);
+
+        assertNull(monument);
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_NullTagNames() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        this.monumentService.updateMonumentTags(monument, null, false);
+
+        assertEquals(0, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_NoMaterialsAssociated_AssociateOneMaterial() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 1");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(1, monument.getMonumentTags().size());
+        assertEquals(1, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_NoMaterialsAssociated_AssociateThreeMaterials() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 1");
+        newMaterialNames.add("Material 2");
+        newMaterialNames.add("Material 3");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(3, monument.getMonumentTags().size());
+        assertEquals(3, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_OneMaterialAssociated_AssociateTwoMore() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+
+        monument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true));
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 1");
+        newMaterialNames.add("Material 2");
+        newMaterialNames.add("Material 3");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(3, monument.getMonumentTags().size());
+        assertEquals(3, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_OneMaterialAssociated_AssociateTwoMore_AndUnassociateOne() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+
+        monument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true));
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 2");
+        newMaterialNames.add("Material 3");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(2, monument.getMonumentTags().size());
+        assertEquals(2, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_ThreeMaterialsAssociated_UnassociateOneAtATime() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+        this.tagService.createTag("Material 3", monuments, true);
+
+        monument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true));
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 2");
+        newMaterialNames.add("Material 3");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(2, monument.getMonumentTags().size());
+        assertEquals(2, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+
+        newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 2");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(1, monument.getMonumentTags().size());
+        assertEquals(1, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+
+        newMaterialNames = new ArrayList<>();
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+
+        assertEquals(0, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_NoTagsAssociated_AssociateOneTag() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 1");
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(1, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(1, monument.getTags().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_NoTagsAssociated_AssociateThreeTags() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 1");
+        newTagNames.add("Tag 2");
+        newTagNames.add("Tag 3");
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(3, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(3, monument.getTags().size());
+
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_OneTagAssociated_AssociateTwoMore() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+
+        monument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false));
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 1");
+        newTagNames.add("Tag 2");
+        newTagNames.add("Tag 3");
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(3, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(3, monument.getTags().size());
+
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_OneTagAssociated_AssociateTwoMore_AndUnassociateOne() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+
+        monument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false));
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 2");
+        newTagNames.add("Tag 3");
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(2, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(2, monument.getTags().size());
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_ThreeTagsAssociated_UnassociateOneAtATime() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+        this.tagService.createTag("Tag 3", monuments, false);
+
+        monument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false));
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 2");
+        newTagNames.add("Tag 3");
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(2, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(2, monument.getTags().size());
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+
+        newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 2");
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(1, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(1, monument.getTags().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+
+        newTagNames = new ArrayList<>();
+
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(0, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonumentTags_AssociateAndUnassociateVariousMaterialsAndTags() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        monument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true));
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        monument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false));
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("Material 1");
+        newMaterialNames.add("Material 2");
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("Tag 1");
+        newTagNames.add("Tag 2");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(4, monument.getMonumentTags().size());
+        assertEquals(2, monument.getMaterials().size());
+        assertEquals(2, monument.getTags().size());
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+
+        newMaterialNames.add("Material 3");
+
+        newTagNames.add("Tag 3");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(6, monument.getMonumentTags().size());
+        assertEquals(3, monument.getMaterials().size());
+        assertEquals(3, monument.getTags().size());
+
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+        assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+
+        newMaterialNames.remove("Material 1");
+
+        newTagNames.remove("Tag 1");
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(4, monument.getMonumentTags().size());
+        assertEquals(2, monument.getMaterials().size());
+        assertEquals(2, monument.getTags().size());
+
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+        assertEquals(2, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+
+        newMaterialNames = new ArrayList<>();
+
+        newTagNames = new ArrayList<>();
+
+        this.monumentService.updateMonumentTags(monument, newMaterialNames, true);
+        this.monumentService.updateMonumentTags(monument, newTagNames, false);
+
+        assertEquals(0, monument.getMonumentTags().size());
+        assertEquals(0, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
+        assertEquals(0, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
+    }
+
+    /* updateMonument Tests */
+
+    @Test
+    public void testMonumentService_updateMonument_IdNull() {
+        assertNull(this.monumentService.updateMonument(null, new UpdateMonumentRequest()));
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateMonumentRequestNull() {
+        assertNull(this.monumentService.updateMonument(1, null));
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testMonumentService_updateMonument_NoMonumentWithId() {
+        this.monumentService.updateMonument(1, new UpdateMonumentRequest());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateTitle() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateAddress() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateArtist() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateDescription() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateInscription() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateCoordinates() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateDate() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewDate("2012-04-23T18:25:43.511Z");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(23, calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateYear() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(0, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateYearAndMonth() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_AddNewReferences() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("New Reference URL 1");
+        newReferenceUrls.add("New Reference URL 2");
+        newReferenceUrls.add("New Reference URL 3");
+
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, monument.getReferences().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_AddNewReferences_AlreadyExistingReferences() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("New Reference URL 1");
+        newReferenceUrls.add("New Reference URL 2");
+        newReferenceUrls.add("New Reference URL 3");
+
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(5, monument.getReferences().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateReferences() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference1.getId(), "New Reference URL 1");
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 1) {
+                assertEquals("New Reference URL 1", reference.getUrl());
+            }
+            else if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
     }
 }

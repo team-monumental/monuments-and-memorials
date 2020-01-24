@@ -2,6 +2,7 @@ package com.monumental.controllers.helpers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class to represent an API request to update an existing Monument record
@@ -30,7 +31,7 @@ public class UpdateMonumentRequest {
 
     private String newDate;
 
-    private HashMap<Integer, String> updatedReferencesUrlsById;
+    private Map<Integer, String> updatedReferencesUrlsById;
 
     private List<String> newReferenceUrls;
 
@@ -130,11 +131,11 @@ public class UpdateMonumentRequest {
         this.newDate = newDate;
     }
 
-    public HashMap<Integer, String> getUpdatedReferencesUrlsById() {
+    public Map<Integer, String> getUpdatedReferencesUrlsById() {
         return this.updatedReferencesUrlsById;
     }
 
-    public void setUpdatedReferencesUrlsById(HashMap<Integer, String> updatedReferencesUrlsById) {
+    public void setUpdatedReferencesUrlsById(Map<Integer, String> updatedReferencesUrlsById) {
         this.updatedReferencesUrlsById = updatedReferencesUrlsById;
     }
 
