@@ -44,7 +44,7 @@ export default class Header extends React.Component {
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
                 <div className="left">
-                    <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo"/>
+                    <img className="header-icon" src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo"/>
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
@@ -65,7 +65,7 @@ export default class Header extends React.Component {
                     {window.innerWidth < 768 && <>
                         <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
                             <Modal.Header closeButton>
-                                <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo" width="35px" height="35px"/>
+                                <img className="header-icon" src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo" width="35px" height="35px"/>
                             </Modal.Header>
                             <Modal.Body>
                                 <SearchBar onCloseModal={() => {

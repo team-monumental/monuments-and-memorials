@@ -24,7 +24,7 @@ export default class BarChart extends React.Component {
 
     render() {
         return (
-            <div className='bar-chart-container'>
+            <div className="bar-chart-container">
                 <canvas
                     id="bar-chart"
                     ref={this.chartRef}

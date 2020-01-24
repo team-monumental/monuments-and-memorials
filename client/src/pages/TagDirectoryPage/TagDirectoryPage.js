@@ -29,22 +29,22 @@ class TagDirectoryPage extends React.Component {
         const allMaterials = tags.filter(tag => tag.isMaterial);
 
         return (
-            <div className='tag-directory-page-container'>
+            <div className="tag-directory-page-container">
                 <Spinner show={fetchTagsPending}/>
                 <div className="page-title">
                     <h1>
                         Tag Directory
                     </h1>
                 </div>
-                <div className='columns-container'>
-                    <div className='tags-column column'>
-                        <h2 className='font-weight-bold'>
+                <div className="columns-container">
+                    <div className="tags-column column">
+                        <h2 className="font-weight-bold">
                             Tags
                         </h2>
                         <Tags tags={allTags} selectable={false}/>
                     </div>
-                    <div className='materials-column column'>
-                        <h2 className='font-weight-bold'>
+                    <div className="materials-column column">
+                        <h2 className="font-weight-bold">
                             Materials
                         </h2>
                         <Tags tags={allMaterials} selectable={false}/>

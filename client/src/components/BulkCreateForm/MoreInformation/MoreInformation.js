@@ -38,7 +38,7 @@ export default class MoreInformation extends React.Component {
                     <div className="h7">
                         Header Row
                     </div>
-                    <div className='subsection-information'>
+                    <div className="subsection-information">
                         <p>
                             You do NOT need to have a header row in your CSV file. If you include one, an invalid record
                             will be created.
@@ -47,141 +47,141 @@ export default class MoreInformation extends React.Component {
                     <div className="h7">
                         Columns
                     </div>
-                    <div className='subsection-information'>
+                    <div className="subsection-information">
                         The order of the columns in your CSV file should be:
                         <ol>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Submitted By:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The name of the contributor who gathered the data for this Monument or Memorial
                                     record.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Artist:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The name of the artist who created the Monument or Memorial.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Title:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The title of the Monument or Memorial.
                                 </div>
-                                <div className='column-explanation-notice'>
+                                <div className="column-explanation-notice">
                                     THIS IS A REQUIRED FIELD.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Date:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The date that the Monument or Memorial was created. The format of the date must be:
                                     "dd-MM-yyyy". For example: "24-08-1999" would be August 24th, 1999. If the day and
                                     month are unknown, simply use the format: "yyyy".
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Materials:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The material that the Monument or Memorial is made out of. To include more than one
                                     Material, simply separate them with a comma.
                                 </div>
-                                <div className='column-explanation-notice'>
+                                <div className="column-explanation-notice">
                                     THIS IS A REQUIRED FIELD.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Inscription:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     Any text inscriptions that are written on the Monument or Memorial.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Latitude:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The latitude of the Monument or Memorial.
                                 </div>
-                                <div className='column-explanation-notice'>
+                                <div className="column-explanation-notice">
                                     SPECIFYING THIS FIELD AND "Longitude" OR SPECIFYING "Address" IS REQUIRED.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Longitude:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The longitude of the Monument or Memorial.
                                 </div>
-                                <div className='column-explanation-notice'>
+                                <div className="column-explanation-notice">
                                     SPECIFYING THIS FIELD AND "Latitude" OR SPECIFYING "Address" IS REQUIRED.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     City:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The city the Monument or Memorial is located in.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     State:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The state the Monument or Memorial is located in.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Address:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The address of the Monument or Memorial.
                                 </div>
-                                <div className='column-explanation-notice'>
+                                <div className="column-explanation-notice">
                                     SPECIFYING THIS FIELD OR SPECIFYING "Latitude" AND "Longitude" IS REQUIRED.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Tags:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     Any words or phrases that categorize or describe the Monument or Memorial. To
                                     include more than one Tag, simply separate them with a comma.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Reference:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     Any URL or link where more information can be found about the Monument or Memorial.
                                 </div>
                             </li>
                             <li>
-                                <div className='column-name'>
+                                <div className="column-name">
                                     Image Filename:
                                 </div>
-                                <div className='column-explanation'>
+                                <div className="column-explanation">
                                     The name of the image file that is associated with the Monument or Memorial.
                                 </div>
-                                <div className='column-explanation-notice'>
+                                <div className="column-explanation-notice">
                                     This column will only be used when a .zip file is uploaded!
                                 </div>
                             </li>

@@ -16,7 +16,7 @@ export default class ContributorsList extends React.Component {
 
             return (
                 <div>
-                    <div className='contributors-list-shown-container'>
+                    <div className="contributors-list-shown-container">
                         {
                             contributorsToDisplay.map((contributor) => {
                                 return <div key={contributor}>{contributor}</div>;
@@ -25,7 +25,7 @@ export default class ContributorsList extends React.Component {
                     </div>
 
                     <Collapse in={showingAllContributors}>
-                        <div className='contributors-list-hidden-container'>
+                        <div className="contributors-list-hidden-container">
                             {
                                 hiddenContributors.map((contributor) => {
                                     return <div key={contributor}>{contributor}</div>

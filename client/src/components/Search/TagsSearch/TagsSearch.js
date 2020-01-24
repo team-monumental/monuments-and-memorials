@@ -72,7 +72,7 @@ class TagsSearch extends React.Component {
             };
 
             createNewTagDisplay = (
-                <div className='new-tag-container'>
+                <div className="new-tag-container">
                     <p>Create New:</p>
                     <Tags
                         selectable

@@ -52,7 +52,7 @@ export default class NumberOfMonumentsByStateBarChart extends React.Component {
         };
 
         const chartDisplay = (
-            <div className='monuments-by-state-bar-chart-container'>
+            <div className="monuments-by-state-bar-chart-container">
                 <BarChart
                     data={chartData}
                     options={chartOptions}

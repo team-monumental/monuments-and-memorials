@@ -436,11 +436,11 @@ export default class CreateForm extends React.Component {
             materials, showingReviewModal } = this.state;
 
         const advancedInformationLink = (
-            <div className='advanced-information-link more-link' onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
+            <div className="advanced-information-link more-link" onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
         );
 
         const hideAdvancedInformationLink = (
-            <div className='advanced-information-link hide-link' onClick={() => this.handleAdvancedInformationClick()}>Hide More Information</div>
+            <div className="advanced-information-link hide-link" onClick={() => this.handleAdvancedInformationClick()}>Hide More Information</div>
         );
 
         let dateInput;
@@ -449,15 +449,15 @@ export default class CreateForm extends React.Component {
             <Form.Group controlId="create-form-date-year">
                 <Form.Label>Year:</Form.Label>
                 <Form.Control
-                    type='number'
+                    type="number"
                     name="year"
                     placeholder="YYYY"
                     value={year.value}
                     onChange={(event) => this.handleInputChange(event)}
                     isInvalid={!year.isValid}
-                    className='text-control-small'
+                    className="text-control-small"
                 />
-                <Form.Control.Feedback type='invalid'>{year.message}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">{year.message}</Form.Control.Feedback>
             </Form.Group>
         );
 
@@ -468,15 +468,15 @@ export default class CreateForm extends React.Component {
             case 'month-year':
                 dateInput = (
                     <Form.Row>
-                        <Form.Group controlId='create-form-date-month'>
+                        <Form.Group controlId="create-form-date-month">
                             <Form.Label>Month:</Form.Label>
                             <Form.Control
                                 as="select"
-                                name='month'
+                                name="month"
                                 value={month.value}
                                 onChange={(event) => this.handleInputChange(event)}
                                 isInvalid={!month.isValid}
-                                className='select-control mr-2'
+                                className="select-control mr-2"
                             >
                                 <option value="0">January</option>
                                 <option value="1">February</option>
@@ -491,7 +491,7 @@ export default class CreateForm extends React.Component {
                                 <option value="10">November</option>
                                 <option value="11">December</option>
                             </Form.Control>
-                            <Form.Control.Feedback type='invalid'>{month.message}</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">{month.message}</Form.Control.Feedback>
                         </Form.Group>
 
                         {dateYearInput}
@@ -520,27 +520,27 @@ export default class CreateForm extends React.Component {
         }
 
         const referenceInputs = references.map((reference, index) => (
-            <div className='reference-container' key={index}>
+            <div className="reference-container" key={index}>
                 <Form.Label>Reference:</Form.Label>
                 <Form.Control
                     type="text"
                     name={'reference-' + index}
-                    placeholder='Reference URL'
+                    placeholder="Reference URL"
                     value={reference.value}
                     onChange={(event) => this.handleReferenceChange(event)}
                     isInvalid={!reference.isValid}
-                    className='text-control'
+                    className="text-control"
                 />
-                <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">{reference.message}</Form.Control.Feedback>
             </div>
         ));
 
         const invalidMaterials = (
-            <div className='invalid-feedback materials'>{materials.message}</div>
+            <div className="invalid-feedback materials">{materials.message}</div>
         );
 
         return (
-            <div className='create-form-container'>
+            <div className="create-form-container">
                 <div className="h5">
                     Create a new Monument or Memorial
                 </div>
@@ -556,9 +556,9 @@ export default class CreateForm extends React.Component {
                             value={title.value}
                             onChange={(event) => this.handleInputChange(event)}
                             isInvalid={!title.isValid}
-                            className='text-control'
+                            className="text-control"
                         />
-                        <Form.Control.Feedback type='invalid'>{title.message}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{title.message}</Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Materials */}
@@ -575,8 +575,8 @@ export default class CreateForm extends React.Component {
                         {!materials.isValid && invalidMaterials}
                     </Form.Group>
 
-                    <div className='address-coordinates-container'>
-                        <span className='font-weight-bold'>Please specify one of the following:</span>
+                    <div className="address-coordinates-container">
+                        <span className="font-weight-bold">Please specify one of the following:</span>
 
                         {/* Address */}
                         <Form.Group controlId="create-form-address">
@@ -588,13 +588,13 @@ export default class CreateForm extends React.Component {
                                 value={address.value}
                                 onChange={(event) => this.handleInputChange(event)}
                                 isInvalid={!address.isValid}
-                                className='text-control'
+                                className="text-control"
                             />
-                            <Form.Control.Feedback type='invalid'>{address.message}</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">{address.message}</Form.Control.Feedback>
                         </Form.Group>
 
                         {/* Coordinates */}
-                        <Form.Group controlId='create-form-coordinates'>
+                        <Form.Group controlId="create-form-coordinates">
                             <Form.Label>Coordinates:</Form.Label>
                             <Form.Row>
                                 <Form.Control
@@ -604,19 +604,19 @@ export default class CreateForm extends React.Component {
                                     value={latitude.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!latitude.isValid}
-                                    className='text-control-small mr-2'
+                                    className="text-control-small mr-2"
                                 />
-                                <Form.Control.Feedback type='invalid'>{latitude.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
                                 <Form.Control
                                     type="text"
-                                    name='longitude'
-                                    placeholder='Longitude'
+                                    name="longitude"
+                                    placeholder="Longitude"
                                     value={longitude.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!longitude.isValid}
-                                    className='text-control-small'
+                                    className="text-control-small"
                                 />
-                                <Form.Control.Feedback type='invalid'>{longitude.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
                             </Form.Row>
                         </Form.Group>
                     </div>
@@ -628,12 +628,12 @@ export default class CreateForm extends React.Component {
                             withIcon={false}
                             imgExtension={['.jpg', '.png']}
                             label=""
-                            fileSizeError='File size is too large'
-                            fileTypeError='File type is not supported'
+                            fileSizeError="File size is too large"
+                            fileTypeError="File type is not supported"
                             withPreview={true}
                             onChange={(files) => this.handleImageUploaderChange(files)}
                             key={imageUploaderKey}
-                            errorClass='invalid-feedback'
+                            errorClass="invalid-feedback"
                         />
                     </Form.Group>
 
@@ -649,22 +649,22 @@ export default class CreateForm extends React.Component {
                                     value={artist.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!artist.isValid}
-                                    className='text-control'
+                                    className="text-control"
                                 />
-                                <Form.Control.Feedback type='invalid'>{artist.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{artist.message}</Form.Control.Feedback>
                             </Form.Group>
 
-                            <div className='date-container'>
+                            <div className="date-container">
                                 {/* Date */}
                                 <Form.Group controlId="create-form-date-select">
                                     <Form.Label>Date:</Form.Label>
                                     <Form.Control
                                         as="select"
-                                        className='select-control'
+                                        className="select-control"
                                         onChange={(event) => this.handleDateSelectChange(event)}
                                     >
                                         <option value="year">Year</option>
-                                        <option value='month-year'>Month/Year</option>
+                                        <option value="month-year">Month/Year</option>
                                         <option value="exact-date">Exact Date</option>
                                     </Form.Control>
                                 </Form.Group>
@@ -674,35 +674,35 @@ export default class CreateForm extends React.Component {
                             </div>
 
                             {/* Description */}
-                            <Form.Group controlId='create-form-description'>
+                            <Form.Group controlId="create-form-description">
                                 <Form.Label>Description:</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows="3"
-                                    name='description'
-                                    placeholder='Description'
+                                    name="description"
+                                    placeholder="Description"
                                     value={description.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!description.isValid}
-                                    className='multi-line-text-control'
+                                    className="multi-line-text-control"
                                 />
-                                <Form.Control.Feedback type='invalid'>{description.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{description.message}</Form.Control.Feedback>
                             </Form.Group>
 
                             {/* Inscription */}
-                            <Form.Group controlId='create-form-inscription'>
+                            <Form.Group controlId="create-form-inscription">
                                 <Form.Label>Inscription:</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows="3"
-                                    name='inscription'
-                                    placeholder='Inscription'
+                                    name="inscription"
+                                    placeholder="Inscription"
                                     value={inscription.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!inscription.isValid}
-                                    className='multi-line-text-control'
+                                    className="multi-line-text-control"
                                 />
-                                <Form.Control.Feedback type='invalid'>{inscription.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{inscription.message}</Form.Control.Feedback>
                             </Form.Group>
 
                             {/* Tags */}
@@ -717,13 +717,13 @@ export default class CreateForm extends React.Component {
                                 />
                             </Form.Group>
 
-                            <div className='references-container'>
+                            <div className="references-container">
                                 {/* References */}
-                                <Form.Group controlId='create-form-references'>
+                                <Form.Group controlId="create-form-references">
                                     {referenceInputs}
                                 </Form.Group>
 
-                                <div className='add-reference-link' onClick={() => this.handleAddAnotherReferenceLinkClick()}>+ Add Another Reference</div>
+                                <div className="add-reference-link" onClick={() => this.handleAddAnotherReferenceLinkClick()}>+ Add Another Reference</div>
                             </div>
                         </div>
                     </Collapse>
@@ -735,23 +735,23 @@ export default class CreateForm extends React.Component {
                         <Button
                             variant="primary"
                             type="submit"
-                            className='mr-4 mt-1'
+                            className="mr-4 mt-1"
                         >
                             Submit
                         </Button>
 
                         <Button
-                            variant='secondary'
-                            type='button'
+                            variant="secondary"
+                            type="button"
                             onClick={() => this.resetForm(true)}
-                            className='mr-4 mt-1'
+                            className="mr-4 mt-1"
                         >
                             Clear
                         </Button>
 
                         <Button
-                            variant='danger'
-                            type='button'
+                            variant="danger"
+                            type="button"
                             onClick={() => this.handleCancelButtonClick()}
                             className="mt-1"
                         >
@@ -760,7 +760,7 @@ export default class CreateForm extends React.Component {
                     </ButtonToolbar>
                 </Form>
 
-                <div className='no-image-modal-container'>
+                <div className="no-image-modal-container">
                     <NoImageModal
                         showing={showingNoImageModal}
                         onClose={() => this.handleNoImageModalClose()}
@@ -769,7 +769,7 @@ export default class CreateForm extends React.Component {
                     />
                 </div>
 
-                <div className='review-modal-container'>
+                <div className="review-modal-container">
                     <ReviewModal
                         showing={showingReviewModal}
                         onCancel={() => this.handleReviewModalCancel()}

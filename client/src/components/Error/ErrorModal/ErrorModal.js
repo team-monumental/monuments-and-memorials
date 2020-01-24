@@ -22,7 +22,7 @@ export default class ErrorModal extends React.Component {
 
         if (errorMessage) {
             errorMessageDisplay = (
-                <p className='font-weight-bold'>{errorMessage}</p>
+                <p className="font-weight-bold">{errorMessage}</p>
             );
         }
 
@@ -47,7 +47,7 @@ export default class ErrorModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer className="error-modal">
                     <Button
-                        variant='danger'
+                        variant="danger"
                         onClick={() => this.handleClose()}
                     >
                         Close
