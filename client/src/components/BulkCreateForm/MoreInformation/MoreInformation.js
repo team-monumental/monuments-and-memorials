@@ -35,7 +35,7 @@ export default class MoreInformation extends React.Component {
                     How do I format my CSV file?
                 </Card.Subtitle>
                 <Card.Body>
-                    <div className='h7'>
+                    <div className="h7">
                         Header Row
                     </div>
                     <div className='subsection-information'>
@@ -44,7 +44,7 @@ export default class MoreInformation extends React.Component {
                             will be created.
                         </p>
                     </div>
-                    <div className='h7'>
+                    <div className="h7">
                         Columns
                     </div>
                     <div className='subsection-information'>

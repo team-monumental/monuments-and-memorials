@@ -78,7 +78,7 @@ class TagsSearch extends React.Component {
                         selectable
                         onSelect={(value, tag) => this.handleNewTagSelect(value, tag)}
                         tags={[tag]}
-                        selectedIcon='clear'
+                        selectedIcon="clear"
                     />
                 </div>
             );
@@ -88,7 +88,7 @@ class TagsSearch extends React.Component {
             <div className={className !== undefined ? "tags-search " + className : "tags-search"}>
                 <div className="selected-tags">
                     <Tags selectable onSelect={this.handleSelectTag.bind(this)} tags={selectedTags} selectedIcon="clear"/>
-                    <Tags selectable onSelect={this.handleNewTagSelect.bind(this)} tags={createdTags} selectedIcon='clear'/>
+                    <Tags selectable onSelect={this.handleNewTagSelect.bind(this)} tags={createdTags} selectedIcon="clear"/>
                 </div>
                 <div className="search">
                     <input type="text"

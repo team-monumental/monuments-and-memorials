@@ -33,19 +33,19 @@ export default class ErrorModal extends React.Component {
             >
                 <Modal.Header
                     closeButton
-                    className='error-modal'
+                    className="error-modal"
                 >
                     <Modal.Title>
                         Oops! An error occurred...
                     </Modal.Title>
                 </Modal.Header>
-                <hr className='error-modal'/>
-                <Modal.Body className='error-modal'>
+                <hr className="error-modal"/>
+                <Modal.Body className="error-modal">
                     <p>An error occurred while processing your request.</p>
                     <p>Any additional information we have will be displayed below:</p>
                     {errorMessageDisplay}
                 </Modal.Body>
-                <Modal.Footer className='error-modal'>
+                <Modal.Footer className="error-modal">
                     <Button
                         variant='danger'
                         onClick={() => this.handleClose()}

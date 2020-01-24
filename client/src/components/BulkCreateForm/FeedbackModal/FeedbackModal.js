@@ -58,9 +58,9 @@ export default class FeedbackModal extends React.Component {
                         <div className='row-number'>
                             <span className='font-weight-bold'>Row Number: </span>{key}
                         </div>
-                        <div className='csv-row'>
+                        <div className="csv-row">
                             <span className='font-weight-bold'>CSV Row:</span>
-                            <div className='csv-row-details'>
+                            <div className="csv-row-details">
                                 {bulkCreateResult.invalidCsvMonumentRecordsByRowNumber[key]}
                             </div>
                         </div>
@@ -103,7 +103,7 @@ export default class FeedbackModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        variant='primary'
+                        variant="primary"
                         onClick={() => this.handleClose()}
                     >
                         Continue

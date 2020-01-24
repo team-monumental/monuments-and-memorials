@@ -65,7 +65,7 @@ export default class Header extends React.Component {
                     {window.innerWidth < 768 && <>
                         <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
                             <Modal.Header closeButton>
-                                <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo" width='35px' height='35px'/>
+                                <img className='header-icon' src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo" width="35px" height="35px"/>
                             </Modal.Header>
                             <Modal.Body>
                                 <SearchBar onCloseModal={() => {

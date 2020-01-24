@@ -31,7 +31,7 @@ export default class AboutInformation extends React.Component {
             <NavLink onClick={e => {
                 e.preventDefault();
                 window.location.replace('/map');
-            }} to='/map' key='map'>click here</NavLink>
+            }} to="/map" key="map">click here</NavLink>
         );
 
         const readMoreContributorsLink = (
@@ -117,7 +117,7 @@ export default class AboutInformation extends React.Component {
                     Statistics:
                 </h3>
                 <div className='statistics-container'>
-                    <div className='statistics-row'>
+                    <div className="statistics-row">
                         <StatisticCard
                             statistic={monumentStatistics.totalNumberOfMonuments}
                             description='Total number of Monuments and Memorials'
@@ -127,7 +127,7 @@ export default class AboutInformation extends React.Component {
                             description={monumentStatistics.oldestMonument
                                 ? 'Oldest Monument or Memorial on record (Date: ' + monumentStatistics.oldestMonument.date + ')'
                                 : null}
-                            statisticFontSize='small'
+                            statisticFontSize="small"
                             link={monumentStatistics.oldestMonument ? '/monuments/' + monumentStatistics.oldestMonument.id : null}
                         />
                         <StatisticCard
@@ -135,7 +135,7 @@ export default class AboutInformation extends React.Component {
                             description={monumentStatistics.newestMonument
                                 ? 'Newest Monument or Memorial on record (Date: ' + monumentStatistics.newestMonument.date + ')'
                                 : null}
-                            statisticFontSize='small'
+                            statisticFontSize="small"
                             link={monumentStatistics.newestMonument ? '/monuments/' + monumentStatistics.newestMonument.id : null}
                         />
                     </div>

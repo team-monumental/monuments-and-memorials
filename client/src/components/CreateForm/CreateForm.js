@@ -446,12 +446,12 @@ export default class CreateForm extends React.Component {
         let dateInput;
 
         const dateYearInput = (
-            <Form.Group controlId='create-form-date-year'>
+            <Form.Group controlId="create-form-date-year">
                 <Form.Label>Year:</Form.Label>
                 <Form.Control
                     type='number'
-                    name='year'
-                    placeholder='YYYY'
+                    name="year"
+                    placeholder="YYYY"
                     value={year.value}
                     onChange={(event) => this.handleInputChange(event)}
                     isInvalid={!year.isValid}
@@ -471,25 +471,25 @@ export default class CreateForm extends React.Component {
                         <Form.Group controlId='create-form-date-month'>
                             <Form.Label>Month:</Form.Label>
                             <Form.Control
-                                as='select'
+                                as="select"
                                 name='month'
                                 value={month.value}
                                 onChange={(event) => this.handleInputChange(event)}
                                 isInvalid={!month.isValid}
                                 className='select-control mr-2'
                             >
-                                <option value='0'>January</option>
-                                <option value='1'>February</option>
-                                <option value='2'>March</option>
-                                <option value='3'>April</option>
-                                <option value='4'>May</option>
-                                <option value='5'>June</option>
-                                <option value='6'>July</option>
-                                <option value='7'>August</option>
-                                <option value='8'>September</option>
-                                <option value='9'>October</option>
-                                <option value='10'>November</option>
-                                <option value='11'>December</option>
+                                <option value="0">January</option>
+                                <option value="1">February</option>
+                                <option value="2">March</option>
+                                <option value="3">April</option>
+                                <option value="4">May</option>
+                                <option value="5">June</option>
+                                <option value="6">July</option>
+                                <option value="7">August</option>
+                                <option value="8">September</option>
+                                <option value="9">October</option>
+                                <option value="10">November</option>
+                                <option value="11">December</option>
                             </Form.Control>
                             <Form.Control.Feedback type='invalid'>{month.message}</Form.Control.Feedback>
                         </Form.Group>
@@ -504,7 +504,7 @@ export default class CreateForm extends React.Component {
                 const currentDate = new Date();
 
                 dateInput = (
-                    <Form.Group controlId='create-form-datepicker'>
+                    <Form.Group controlId="create-form-datepicker">
                         <Form.Label>Choose a Date:</Form.Label>
                         <DatePicker
                             selected={datePickerCurrentDate}
@@ -523,7 +523,7 @@ export default class CreateForm extends React.Component {
             <div className='reference-container' key={index}>
                 <Form.Label>Reference:</Form.Label>
                 <Form.Control
-                    type='text'
+                    type="text"
                     name={'reference-' + index}
                     placeholder='Reference URL'
                     value={reference.value}
@@ -541,18 +541,18 @@ export default class CreateForm extends React.Component {
 
         return (
             <div className='create-form-container'>
-                <div className='h5'>
+                <div className="h5">
                     Create a new Monument or Memorial
                 </div>
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
-                    <Form.Group controlId='create-form-title'>
+                    <Form.Group controlId="create-form-title">
                         <Form.Label>Title:</Form.Label>
                         <Form.Control
-                            type='text'
-                            name='title'
-                            placeholder='Title'
+                            type="text"
+                            name="title"
+                            placeholder="Title"
                             value={title.value}
                             onChange={(event) => this.handleInputChange(event)}
                             isInvalid={!title.isValid}
@@ -562,10 +562,10 @@ export default class CreateForm extends React.Component {
                     </Form.Group>
 
                     {/* Materials */}
-                    <Form.Group controlId='create-form-materials'>
+                    <Form.Group controlId="create-form-materials">
                         <Form.Label>Materials:</Form.Label>
                         <TagsSearch
-                            variant='materials'
+                            variant="materials"
                             onChange={(variant, selectedMaterials, createdMaterials) =>
                                 this.handleMaterialSelect(variant, selectedMaterials, createdMaterials)}
                             allowTagCreation={true}
@@ -579,12 +579,12 @@ export default class CreateForm extends React.Component {
                         <span className='font-weight-bold'>Please specify one of the following:</span>
 
                         {/* Address */}
-                        <Form.Group controlId='create-form-address'>
+                        <Form.Group controlId="create-form-address">
                             <Form.Label>Address:</Form.Label>
                             <Form.Control
-                                type='text'
-                                name='address'
-                                placeholder='Address'
+                                type="text"
+                                name="address"
+                                placeholder="Address"
                                 value={address.value}
                                 onChange={(event) => this.handleInputChange(event)}
                                 isInvalid={!address.isValid}
@@ -598,9 +598,9 @@ export default class CreateForm extends React.Component {
                             <Form.Label>Coordinates:</Form.Label>
                             <Form.Row>
                                 <Form.Control
-                                    type='text'
-                                    name='latitude'
-                                    placeholder='Latitude'
+                                    type="text"
+                                    name="latitude"
+                                    placeholder="Latitude"
                                     value={latitude.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!latitude.isValid}
@@ -608,7 +608,7 @@ export default class CreateForm extends React.Component {
                                 />
                                 <Form.Control.Feedback type='invalid'>{latitude.message}</Form.Control.Feedback>
                                 <Form.Control
-                                    type='text'
+                                    type="text"
                                     name='longitude'
                                     placeholder='Longitude'
                                     value={longitude.value}
@@ -622,12 +622,12 @@ export default class CreateForm extends React.Component {
                     </div>
 
                     {/* Images */}
-                    <Form.Group controlId='create-form-image'>
+                    <Form.Group controlId="create-form-image">
                         <Form.Label>Images:</Form.Label>
                         <ImageUploader
                             withIcon={false}
                             imgExtension={['.jpg', '.png']}
-                            label=''
+                            label=""
                             fileSizeError='File size is too large'
                             fileTypeError='File type is not supported'
                             withPreview={true}
@@ -640,12 +640,12 @@ export default class CreateForm extends React.Component {
                     <Collapse in={showingAdvancedInformation}>
                         <div>
                             {/* Artist */}
-                            <Form.Group controlId='create-form-artist'>
+                            <Form.Group controlId="create-form-artist">
                                 <Form.Label>Artist:</Form.Label>
                                 <Form.Control
-                                    type='text'
-                                    name='artist'
-                                    placeholder='Artist'
+                                    type="text"
+                                    name="artist"
+                                    placeholder="Artist"
                                     value={artist.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!artist.isValid}
@@ -656,16 +656,16 @@ export default class CreateForm extends React.Component {
 
                             <div className='date-container'>
                                 {/* Date */}
-                                <Form.Group controlId='create-form-date-select'>
+                                <Form.Group controlId="create-form-date-select">
                                     <Form.Label>Date:</Form.Label>
                                     <Form.Control
-                                        as='select'
+                                        as="select"
                                         className='select-control'
                                         onChange={(event) => this.handleDateSelectChange(event)}
                                     >
-                                        <option value='year'>Year</option>
+                                        <option value="year">Year</option>
                                         <option value='month-year'>Month/Year</option>
-                                        <option value='exact-date'>Exact Date</option>
+                                        <option value="exact-date">Exact Date</option>
                                     </Form.Control>
                                 </Form.Group>
 
@@ -677,8 +677,8 @@ export default class CreateForm extends React.Component {
                             <Form.Group controlId='create-form-description'>
                                 <Form.Label>Description:</Form.Label>
                                 <Form.Control
-                                    as='textarea'
-                                    rows='3'
+                                    as="textarea"
+                                    rows="3"
                                     name='description'
                                     placeholder='Description'
                                     value={description.value}
@@ -693,8 +693,8 @@ export default class CreateForm extends React.Component {
                             <Form.Group controlId='create-form-inscription'>
                                 <Form.Label>Inscription:</Form.Label>
                                 <Form.Control
-                                    as='textarea'
-                                    rows='3'
+                                    as="textarea"
+                                    rows="3"
                                     name='inscription'
                                     placeholder='Inscription'
                                     value={inscription.value}
@@ -706,10 +706,10 @@ export default class CreateForm extends React.Component {
                             </Form.Group>
 
                             {/* Tags */}
-                            <Form.Group controlId='create-form-tags'>
+                            <Form.Group controlId="create-form-tags">
                                 <Form.Label>Tags:</Form.Label>
                                 <TagsSearch
-                                    variant='tags'
+                                    variant="tags"
                                     onChange={(variant, selectedTags, createdTags) =>
                                         this.handleTagSelect(variant, selectedTags, createdTags)}
                                     allowTagCreation={true}
@@ -733,8 +733,8 @@ export default class CreateForm extends React.Component {
 
                     <ButtonToolbar>
                         <Button
-                            variant='primary'
-                            type='submit'
+                            variant="primary"
+                            type="submit"
                             className='mr-4 mt-1'
                         >
                             Submit
@@ -753,7 +753,7 @@ export default class CreateForm extends React.Component {
                             variant='danger'
                             type='button'
                             onClick={() => this.handleCancelButtonClick()}
-                            className='mt-1'
+                            className="mt-1"
                         >
                             Cancel
                         </Button>

@@ -27,7 +27,7 @@ export default class NoImageModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer className='no-image-modal'>
                     <Button
-                        variant='primary'
+                        variant="primary"
                         onClick={onCancel}
                         className='no-image-modal'
                     >

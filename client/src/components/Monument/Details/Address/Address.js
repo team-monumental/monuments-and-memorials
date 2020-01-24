@@ -22,7 +22,7 @@ export default class Address extends React.Component {
             return (
                 <div className='address-container font-italic'>
                     {locationIcon}
-                    <span className='city-state'>{[monument.city, monument.state].filter(str => str && str.trim()).join(', ')}</span>
+                    <span className="city-state">{[monument.city, monument.state].filter(str => str && str.trim()).join(', ')}</span>
                 </div>
             );
         }

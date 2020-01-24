@@ -31,7 +31,7 @@ class TagDirectoryPage extends React.Component {
         return (
             <div className='tag-directory-page-container'>
                 <Spinner show={fetchTagsPending}/>
-                <div className='page-title'>
+                <div className="page-title">
                     <h1>
                         Tag Directory
                     </h1>

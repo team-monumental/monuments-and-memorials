@@ -164,22 +164,22 @@ export default class BulkCreateForm extends React.Component {
 
         return (
             <div className='bulk-create-form-container'>
-                <div className='h5'>
+                <div className="h5">
                     Bulk Create Monuments and Memorials
                 </div>
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
-                    <Form.Group className='file-upload-form-group'>
+                    <Form.Group className="file-upload-form-group">
                         <Form.Label>Upload a CSV or Zip File:</Form.Label>
                         <label htmlFor='file-upload-input' className='file-upload-input-label'>
                             <span>CHOOSE A FILE</span>
                         </label>
                         <Form.Control
-                            type='file'
+                            type="file"
                             id='file-upload-input'
                             onChange={(event) => this.handleFileUploadChange(event)}
                             isInvalid={!fileUpload.isValid}
-                            accept='.csv,.zip'
+                            accept=".csv,.zip"
                             className='file-upload-input'
                             key={fileUploadInputKey}
                         />
@@ -200,8 +200,8 @@ export default class BulkCreateForm extends React.Component {
 
                     <ButtonToolbar className={showingMoreInformation ? 'button-toolbar-extra-padding' : null}>
                         <Button
-                            variant='primary'
-                            type='submit'
+                            variant="primary"
+                            type="submit"
                             className='mr-4 mt-1'
                         >
                             Submit
@@ -220,7 +220,7 @@ export default class BulkCreateForm extends React.Component {
                             variant='danger'
                             type='button'
                             onClick={() => this.handleCancelButtonClick()}
-                            className='mt-1'
+                            className="mt-1"
                         >
                             Cancel
                         </Button>
