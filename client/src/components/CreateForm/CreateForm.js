@@ -219,14 +219,14 @@ export default class CreateForm extends React.Component {
         inscription.isValid = true;
         inscription.message = '';
 
-        references.forEach(reference => {
+        for (let reference of references) {
             reference.isValid = true;
             reference.message = '';
 
             if (resetValue) {
                 reference.value = '';
             }
-        });
+        }
 
         materials.isValid = true;
         materials.message = '';
@@ -351,7 +351,7 @@ export default class CreateForm extends React.Component {
 
         /* References Validation */
         /* Check that the References are valid URLs */
-        references.forEach(reference => {
+        for (let reference of references) {
             if (!validator.isEmpty(reference.value)) {
                 if (!validator.isURL(reference.value)) {
                     reference.isValid = false;
@@ -359,7 +359,7 @@ export default class CreateForm extends React.Component {
                     formIsValid = false;
                 }
             }
-        });
+        }
 
         if (!formIsValid) {
             this.setState({title, address, latitude, longitude, year, month, references});
@@ -519,25 +519,21 @@ export default class CreateForm extends React.Component {
                 dateInput = <div/>;
         }
 
-        const referenceInputs = [];
-
-        references.forEach((reference, index) => {
-            referenceInputs.push(
-                <div className='reference-container' key={index}>
-                    <Form.Label>Reference:</Form.Label>
-                    <Form.Control
-                        type='text'
-                        name={'reference-' + index}
-                        placeholder='Reference URL'
-                        value={reference.value}
-                        onChange={(event) => this.handleReferenceChange(event)}
-                        isInvalid={!reference.isValid}
-                        className='text-control'
-                    />
-                    <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
-                </div>
-            );
-        });
+        const referenceInputs = references.map((reference, index) => (
+            <div className='reference-container' key={index}>
+                <Form.Label>Reference:</Form.Label>
+                <Form.Control
+                    type='text'
+                    name={'reference-' + index}
+                    placeholder='Reference URL'
+                    value={reference.value}
+                    onChange={(event) => this.handleReferenceChange(event)}
+                    isInvalid={!reference.isValid}
+                    className='text-control'
+                />
+                <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
+            </div>
+        ));
 
         const invalidMaterials = (
             <div className='invalid-feedback materials'>{materials.message}</div>

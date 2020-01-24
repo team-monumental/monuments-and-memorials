@@ -33,9 +33,7 @@ export default class Details extends React.Component {
 
         let tags = [];
         if (monument.monumentTags) {
-            monument.monumentTags.forEach(monumentTag => {
-                tags.push(monumentTag.tag);
-            });
+            tags = monument.monumentTags.map(monumentTag => monumentTag.tag);
         }
 
         return (
