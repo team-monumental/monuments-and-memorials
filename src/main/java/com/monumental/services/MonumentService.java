@@ -918,40 +918,25 @@ public class MonumentService extends ModelService<Monument> {
         // If for some reason the primary Image is deleted, default to the first Image
         this.resetMonumentPrimaryImage(currentMonument);
 
+        currentMonument = this.monumentRepository.save(currentMonument);
+
         /* Materials section */
+
+        // Pull all of the current Materials for the currentMonument into memory
+        currentMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(currentMonument.getId(), true));
 
         // Update the Materials associated with the Monument
         this.updateMonumentTags(currentMonument, newMonument.getNewMaterials(), true);
 
-        // Create any new Materials that may have been created
-        if (newMonument.getCreatedMaterials() != null && newMonument.getCreatedMaterials().size() > 0) {
-            List<Monument> monumentList = new ArrayList<>();
-            monumentList.add(currentMonument);
-
-            for (String createdMaterialName : newMonument.getCreatedMaterials()) {
-                Tag createdMaterial = this.tagService.createTag(createdMaterialName, monumentList, true);
-                currentMonument.getMonumentTags().add(new MonumentTag(currentMonument, createdMaterial));
-            }
-        }
-
         /* Tags section */
+
+        // Pull all of the current Tags for the currentMonument into memory
+        currentMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(currentMonument.getId(), false));
 
         // Update the Tags associated with the Monument
         this.updateMonumentTags(currentMonument, newMonument.getNewTags(), false);
 
-        // Create any new Tags that may have been created
-        if (newMonument.getCreatedTags() != null && newMonument.getCreatedTags().size() > 0) {
-            List<Monument> monumentList = new ArrayList<>();
-            monumentList.add(currentMonument);
-
-            for (String createdTagName : newMonument.getCreatedTags()) {
-                Tag createdTag = this.tagService.createTag(createdTagName, monumentList, true);
-                currentMonument.getMonumentTags().add(new MonumentTag(currentMonument, createdTag));
-            }
-        }
-
-        // This will save the Monument with all of its associated records
-        return this.monumentRepository.save(currentMonument);
+        return currentMonument;
     }
 
     /**
@@ -972,6 +957,9 @@ public class MonumentService extends ModelService<Monument> {
             if (!isNullOrEmpty(referenceUrl)) {
                 Reference reference = new Reference(referenceUrl);
                 reference.setMonument(monument);
+
+                reference = this.referenceRepository.save(reference);
+
                 references.add(reference);
             }
         }
@@ -1009,6 +997,7 @@ public class MonumentService extends ModelService<Monument> {
 
                 Image image = new Image(imageUrl, isPrimary);
                 image.setMonument(monument);
+                image = this.imageRepository.save(image);
                 images.add(image);
             }
         }

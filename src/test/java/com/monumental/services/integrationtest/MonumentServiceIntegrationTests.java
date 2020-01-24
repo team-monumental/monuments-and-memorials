@@ -2993,4 +2993,1761 @@ public class MonumentServiceIntegrationTests {
             }
         }
     }
+
+    @Test
+    public void testMonumentService_updateMonument_DeleteReferences() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_AddNewImages() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+
+        newMonument.setNewImageUrls(newImageUrls);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(3, monument.getImages().size());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_AddNewImages_AlreadyExistingImages() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+
+        newMonument.setNewImageUrls(newImageUrls);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(5, monument.getImages().size());
+
+        for (Image image : monument.getImages()) {
+            if (image.getId() == 1) {
+                assertTrue(image.getIsPrimary());
+            }
+            else {
+                assertFalse(image.getIsPrimary());
+            }
+        }
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdatePrimaryImage() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(5, monument.getImages().size());
+
+        for (Image image : monument.getImages()) {
+            if (image.getId() == 2) {
+                assertTrue(image.getIsPrimary());
+            }
+            else {
+                assertFalse(image.getIsPrimary());
+            }
+        }
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_DeleteImages() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image1.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        for (Image image : monument.getImages()) {
+            if (image.getId() == 2) {
+                assertTrue(image.getIsPrimary());
+            }
+            else {
+                assertFalse(image.getIsPrimary());
+            }
+        }
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_DeleteImages_PrimaryImageDeleted() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_NewMaterialsAssociated() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(3, monument.getMonumentTags().size());
+        assertEquals(3, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_NewMaterialsAssociated_SomeAlreadyAssociated() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+        newMaterialNames.add("Material 1");
+        newMaterialNames.add("Material 2");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(5, monument.getMonumentTags().size());
+        assertEquals(5, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UnassociateMaterials() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+        newMaterialNames.add("Material 2");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(4, monument.getMonumentTags().size());
+        assertEquals(4, monument.getMaterials().size());
+        assertEquals(0, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_NewTagsAssociated() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+        newMaterialNames.add("Material 2");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("New Tag 1");
+        newTagNames.add("New Tag 2");
+        newTagNames.add("New Tag 3");
+
+        newMonument.setNewTags(newTagNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(7, monument.getMonumentTags().size());
+        assertEquals(4, monument.getMaterials().size());
+        assertEquals(3, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_NewTagsAssociated_SomeAlreadyAssociated() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+        newMaterialNames.add("Material 2");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("New Tag 1");
+        newTagNames.add("New Tag 2");
+        newTagNames.add("New Tag 3");
+        newTagNames.add("Tag 1");
+        newTagNames.add("Tag 2");
+
+        newMonument.setNewTags(newTagNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(9, monument.getMonumentTags().size());
+        assertEquals(4, monument.getMaterials().size());
+        assertEquals(5, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UnassociateTags() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+        newMaterialNames.add("Material 2");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("New Tag 1");
+        newTagNames.add("New Tag 2");
+        newTagNames.add("New Tag 3");
+        newTagNames.add("Tag 2");
+
+        newMonument.setNewTags(newTagNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        for (Reference reference : monument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(4, monument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : monument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(8, monument.getMonumentTags().size());
+        assertEquals(4, monument.getMaterials().size());
+        assertEquals(4, monument.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_DatabaseValuesCorrect() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Material 1", monuments, true);
+        this.tagService.createTag("Material 2", monuments, true);
+
+        this.tagService.createTag("Tag 1", monuments, false);
+        this.tagService.createTag("Tag 2", monuments, false);
+
+        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
+        newMonument.setNewTitle("New Title");
+        newMonument.setNewAddress("New Address");
+        newMonument.setNewArtist("New Artist");
+        newMonument.setNewDescription("New Description");
+        newMonument.setNewInscription("New Inscription");
+        newMonument.setNewLongitude(95.0);
+        newMonument.setNewLatitude(185.0);
+        newMonument.setNewYear("2012");
+        newMonument.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        newMonument.setNewReferenceUrls(newReferenceUrls);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        newMonument.setNewImageUrls(newImageUrls);
+
+        newMonument.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image2.getId());
+        newMonument.setDeletedImageIds(deletedImageIds);
+
+        List<String> newMaterialNames = new ArrayList<>();
+        newMaterialNames.add("New Material 1");
+        newMaterialNames.add("New Material 2");
+        newMaterialNames.add("New Material 3");
+        newMaterialNames.add("Material 2");
+
+        newMonument.setNewMaterials(newMaterialNames);
+
+        List<String> newTagNames = new ArrayList<>();
+        newTagNames.add("New Tag 1");
+        newTagNames.add("New Tag 2");
+        newTagNames.add("New Tag 3");
+        newTagNames.add("Tag 2");
+
+        newMonument.setNewTags(newTagNames);
+
+        this.monumentService.updateMonument(monument.getId(), newMonument);
+
+        Monument updatedMonument = this.monumentRepository.getOne(monument.getId());
+
+        assertEquals("New Title", updatedMonument.getTitle());
+        assertEquals("New Address", updatedMonument.getAddress());
+        assertEquals("New Artist", updatedMonument.getArtist());
+        assertEquals("New Description", updatedMonument.getDescription());
+        assertEquals("New Inscription", updatedMonument.getInscription());
+
+        assertEquals(95.0, updatedMonument.getLon(), 0.0);
+        assertEquals(185.0, updatedMonument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(updatedMonument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, updatedMonument.getReferences().size());
+
+        for (Reference reference : updatedMonument.getReferences()) {
+            if (reference.getId() == 2) {
+                assertEquals("New Reference URL 2", reference.getUrl());
+            }
+            else {
+                assertEquals("Reference URL 3", reference.getUrl());
+            }
+        }
+
+        assertEquals(2, this.referenceRepository.getAllByMonumentId(updatedMonument.getId()).size());
+
+        assertEquals(4, updatedMonument.getImages().size());
+
+        boolean primaryImageFound = false;
+        for (Image image : updatedMonument.getImages()) {
+            if (image.getIsPrimary()) {
+                primaryImageFound = true;
+                break;
+            }
+        }
+
+        assertTrue(primaryImageFound);
+
+        assertEquals(4, this.imageRepository.getAllByMonumentId(updatedMonument.getId()).size());
+
+        assertEquals(4, this.tagRepository.getAllByMonumentIdAndIsMaterial(updatedMonument.getId(), false).size());
+        assertEquals(4, this.tagRepository.getAllByMonumentIdAndIsMaterial(updatedMonument.getId(), true).size());
+    }
 }

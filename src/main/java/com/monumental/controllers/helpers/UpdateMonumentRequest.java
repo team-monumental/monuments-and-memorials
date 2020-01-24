@@ -45,11 +45,7 @@ public class UpdateMonumentRequest {
 
     private List<String> newMaterials;
 
-    private List<String> createdMaterials;
-
     private List<String> newTags;
-
-    private List<String> createdTags;
 
     public String getNewTitle() {
         return this.newTitle;
@@ -187,27 +183,11 @@ public class UpdateMonumentRequest {
         this.newMaterials = newMaterials;
     }
 
-    public List<String> getCreatedMaterials() {
-        return this.createdMaterials;
-    }
-
-    public void setCreatedMaterials(List<String> createdMaterials) {
-        this.createdMaterials = createdMaterials;
-    }
-
     public List<String> getNewTags() {
         return this.newTags;
     }
 
     public void setNewTags(List<String> newTags) {
         this.newTags = newTags;
-    }
-
-    public List<String> getCreatedTags() {
-        return this.createdTags;
-    }
-
-    public void setCreatedTags(List<String> createdTags) {
-        this.createdTags = createdTags;
     }
 }
