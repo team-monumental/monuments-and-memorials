@@ -46,6 +46,12 @@
     background-color: #E3E6E8;
     border-color: #E3E6E8;
     color: black;
+
+    &:hover {
+      background-color: #B4B6B8;
+      border-color: #B4B6B8;
+      color: black;
+    }
   }
 
   .advanced-information-link {

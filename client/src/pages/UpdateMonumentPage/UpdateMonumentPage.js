@@ -43,7 +43,7 @@ class UpdateMonumentPage extends React.Component {
         const { fetchMonumentForUpdatePending, updateMonumentPending, monument, updatedMonument, error } = this.props;
 
         if (error === null && updatedMonument.id !== undefined) {
-            //this.props.history.push(`/monuments/${updatedMonument.id}`);
+            this.props.history.push(`/monuments/${updatedMonument.id}`);
         }
 
         return (

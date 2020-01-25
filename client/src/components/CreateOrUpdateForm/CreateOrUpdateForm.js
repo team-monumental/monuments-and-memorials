@@ -398,12 +398,11 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     /**
-     * Build the form object to send to the onSubmit handler when creating a new Monument
+     * Build the form object for creating a new Monument
      */
-    submitCreateForm() {
+    buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
             datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
-        const { onSubmit } = this.props;
 
         let createForm = {
             title: title.value,
@@ -436,17 +435,24 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
         }
 
-        onSubmit(createForm);
+        return createForm;
     }
 
     /**
-     * Build the form object to send to the onSubmit handler when updating a Monument
+     * Send the form for creating a new Monument to the onSubmit handler
      */
-    submitUpdateForm(id) {
-        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
-            datePickerCurrentDate, references, images, imagesForUpdate, materials, newMaterials, tags,
-            newTags } = this.state;
+    submitCreateForm() {
         const { onSubmit } = this.props;
+        onSubmit(this.buildCreateForm());
+    }
+
+    /**
+     * Build the form object for updating a Monument
+     */
+    buildUpdateForm() {
+        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
+            datePickerCurrentDate, references, images, imagesForUpdate, materials, tags } = this.state;
+        let { newMaterials, newTags } = this.state;
 
         let updateForm = {
             newTitle: title.value,
@@ -456,12 +462,16 @@ export default class CreateOrUpdateForm extends React.Component {
             newInscription: inscription.value === '' ? null : inscription.value,
             newLatitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? null : longitude.value,
-            images: images,
-            newMaterials: materials.materialObjects.map(material => material.name),
-            createdMaterials: newMaterials.map(newMaterial => newMaterial.name),
-            newTags: tags.map(tag => tag.name),
-            createdTags: newTags.map(newTag => newTag.name)
+            images: images
         };
+
+        let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
+        let createdMaterialNames = newMaterials.map(newMaterial => newMaterial.name);
+        updateForm.newMaterials = newlyAssociatedMaterialNames.concat(createdMaterialNames);
+
+        let newlyAssociatedTagNames = tags.map(tag => tag.name);
+        let createdTagNames = newTags.map(newTag => newTag.name);
+        updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
 
         switch (dateSelectValue) {
             case 'year':
@@ -508,7 +518,15 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         });
 
-        onSubmit(id, updateForm);
+        return updateForm;
+    }
+
+    /**
+     * Send the form for updating a Monument to the onSubmit handler
+     */
+    submitUpdateForm(id) {
+        const { onSubmit } = this.props;
+        onSubmit(id, this.buildUpdateForm());
     }
 
     handleReviewModalCancel() {
@@ -564,26 +582,30 @@ export default class CreateOrUpdateForm extends React.Component {
             references = monumentReferences.length ? monumentReferences : references;
         }
 
-        if (monument.materials && monument.materials.length) {
-            let monumentMaterials = [];
-            monument.materials.forEach(material => {
-                material.selected = true;
-                monumentMaterials.push(material);
-            });
+        if (monument.monumentTags && monument.monumentTags.length) {
+            let associatedMaterials = [];
+            let associatedTags = [];
 
-            materials.materialObjects = monumentMaterials;
-            this.materialsSelectRef.current.state.selectedTags = monumentMaterials;
-        }
+            for (const monumentTag of monument.monumentTags) {
+                monumentTag.tag.selected = true;
 
-        if (monument.tags && monument.tags.length) {
-            let monumentTags = [];
-            monument.tags.forEach(tag => {
-                tag.selected = true;
-                monumentTags.push(tag);
-            });
+                if (monumentTag.tag.isMaterial) {
+                    associatedMaterials.push(monumentTag.tag);
+                }
+                else {
+                    associatedTags.push(monumentTag.tag);
+                }
+            }
 
-            tags = monumentTags;
-            this.tagsSelectRef.current.state.selectedTags = monumentTags;
+            if (associatedMaterials.length) {
+                materials.materialObjects = associatedMaterials;
+                this.materialsSelectRef.current.state.selectedTags = associatedMaterials;
+            }
+
+            if (associatedTags.length) {
+                tags = associatedTags;
+                this.tagsSelectRef.current.state.selectedTags = associatedTags;
+            }
         }
 
         if (monument.images && monument.images.length) {
@@ -1188,7 +1210,7 @@ export default class CreateOrUpdateForm extends React.Component {
                         showing={showingReviewModal}
                         onCancel={() => this.handleReviewModalCancel()}
                         onConfirm={() => this.submitForm()}
-                        form={this.buildForm()}
+                        form={this.buildCreateForm()}
                         dateSelectValue={dateSelectValue}
                     />
                 </div>

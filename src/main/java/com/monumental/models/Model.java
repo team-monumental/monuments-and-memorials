@@ -28,7 +28,7 @@ public abstract class Model {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false)
     @Null(groups = New.class, message = "ID can not be specified on insert")
     @NotNull(groups = Existing.class, message = "ID can not be null on update")
