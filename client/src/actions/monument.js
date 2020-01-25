@@ -98,9 +98,9 @@ export default function fetchMonument(id) {
             }
 
             let tagNames = [];
-            monument.monumentTags.forEach(monumentTag => {
-                tagNames.push(monumentTag.tag.name);
-            });
+            if (monument.monumentTags) {
+                tagNames = monument.monumentTags.map(monumentTag => monumentTag.tag.name);
+            }
 
             if (tagNames.length > 0) {
                 queryOptions = {

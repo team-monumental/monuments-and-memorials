@@ -149,48 +149,48 @@ export default class BulkCreateForm extends React.Component {
         const { fileUpload, showingMoreInformation, fileUploadInputKey } = this.state;
 
         const moreInformationLink = (
-            <div className='more-information-link'
+            <div className="more-information-link"
                  onClick={() => this.handleMoreInformationClick()}>
                 Show More Information
             </div>
         );
 
         const hideMoreInformationLink = (
-            <div className='more-information-link hide-link'
+            <div className="more-information-link hide-link"
                  onClick={() => this.handleMoreInformationClick()}>
                 Hide More Information
             </div>
         );
 
         return (
-            <div className='bulk-create-form-container'>
-                <div className='h5'>
+            <div className="bulk-create-form-container">
+                <div className="h5">
                     Bulk Create Monuments and Memorials
                 </div>
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
-                    <Form.Group className='file-upload-form-group'>
+                    <Form.Group className="file-upload-form-group">
                         <Form.Label>Upload a CSV or Zip File:</Form.Label>
-                        <label htmlFor='file-upload-input' className='file-upload-input-label'>
+                        <label htmlFor="file-upload-input" className="file-upload-input-label">
                             <span>CHOOSE A FILE</span>
                         </label>
                         <Form.Control
-                            type='file'
-                            id='file-upload-input'
+                            type="file"
+                            id="file-upload-input"
                             onChange={(event) => this.handleFileUploadChange(event)}
                             isInvalid={!fileUpload.isValid}
-                            accept='.csv,.zip'
-                            className='file-upload-input'
+                            accept=".csv,.zip"
+                            className="file-upload-input"
                             key={fileUploadInputKey}
                         />
-                        <Form.Control.Feedback type='invalid'>{fileUpload.errorMessage}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{fileUpload.errorMessage}</Form.Control.Feedback>
                         <div className={fileUpload.isValid ? 'file-upload-input-file-name' : 'd-none'}>
                             {fileUpload.message}
                         </div>
                     </Form.Group>
 
                     <Collapse in={showingMoreInformation}>
-                        <div className='more-information-container'>
+                        <div className="more-information-container">
                             <MoreInformation/>
                         </div>
                     </Collapse>
@@ -200,34 +200,34 @@ export default class BulkCreateForm extends React.Component {
 
                     <ButtonToolbar className={showingMoreInformation ? 'button-toolbar-extra-padding' : null}>
                         <Button
-                            variant='primary'
-                            type='submit'
-                            className='mr-4 mt-1'
+                            variant="primary"
+                            type="submit"
+                            className="mr-4 mt-1"
                         >
                             Submit
                         </Button>
 
                         <Button
-                            variant='secondary'
-                            type='button'
+                            variant="secondary"
+                            type="button"
                             onClick={() => this.resetForm(true)}
-                            className='mr-4 mt-1'
+                            className="mr-4 mt-1"
                         >
                             Clear
                         </Button>
 
                         <Button
-                            variant='danger'
-                            type='button'
+                            variant="danger"
+                            type="button"
                             onClick={() => this.handleCancelButtonClick()}
-                            className='mt-1'
+                            className="mt-1"
                         >
                             Cancel
                         </Button>
                     </ButtonToolbar>
                 </Form>
 
-                <div className='feedback-modal-container'>
+                <div className="feedback-modal-container">
                     <FeedbackModal
                         bulkCreateResult={bulkCreateResult}
                         onClose={() => this.handleFeedbackModalClose()}

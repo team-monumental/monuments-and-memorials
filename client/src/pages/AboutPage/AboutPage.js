@@ -26,7 +26,7 @@ class AboutPage extends React.Component {
         } = this.props;
 
         return (
-            <div className='about-page-container'>
+            <div className="about-page-container">
                 <Spinner show={fetchContributorsPending || fetchMonumentStatisticsPending}/>
                 <AboutInformation
                     contributors={contributorsError ? null : contributors}

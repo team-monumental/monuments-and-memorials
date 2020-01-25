@@ -44,9 +44,9 @@ class App extends React.Component {
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <Route path="/create" component={CreateMonumentPage}/>
-                            <Route path='/bulk-create' component={MonumentBulkCreatePage}/>
-                            <Route path='/tag-directory' component={TagDirectoryPage}/>
-                            <Route path='/about' component={AboutPage}/>
+                            <Route path="/bulk-create" component={MonumentBulkCreatePage}/>
+                            <Route path="/tag-directory" component={TagDirectoryPage}/>
+                            <Route path="/about" component={AboutPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

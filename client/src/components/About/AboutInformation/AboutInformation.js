@@ -31,39 +31,39 @@ export default class AboutInformation extends React.Component {
             <NavLink onClick={e => {
                 e.preventDefault();
                 window.location.replace('/map');
-            }} to='/map' key='map'>click here</NavLink>
+            }} to="/map" key="map">click here</NavLink>
         );
 
         const readMoreContributorsLink = (
-            <div className='more-contributors-link'
+            <div className="more-contributors-link"
                  onClick={() => this.handleMoreContributorsClick()}>
                 Read More
             </div>
         );
 
         const hideMoreContributorsLink = (
-            <div className='more-contributors-link hide-link'
+            <div className="more-contributors-link hide-link"
                  onClick={() => this.handleMoreContributorsClick()}>
                 Hide
             </div>
         );
 
         return (
-            <div className='about-information-container'>
+            <div className="about-information-container">
                 <h1>
                     About Monuments + Memorials
                 </h1>
                 {/* TODO: Replace click here with link to sign-in page */}
                 <p>
-                    <span className='font-italic'>Monuments + Memorials</span> is a crowd-sourced initiative developed at
+                    <span className="font-italic">Monuments + Memorials</span> is a crowd-sourced initiative developed at
                     the Rochester Institute of Technology under the direction of Dr. Juilee Decker. Students in her spring
-                    2019 history course <span className='font-italic'>Monuments & Memory</span> began data collection by
+                    2019 history course <span className="font-italic">Monuments & Memory</span> began data collection by
                     examining 26 states or territories in the US. The following fall, software engineering students in the
                     Golisano College of Computer and Information Sciences built this web application to house data and to
                     generate further interest and data collection. To view monuments and memorials, {mapNavLink}. To enter
                     data, click here.
                 </p>
-                <h3 className='font-italic'>
+                <h3 className="font-italic">
                     Background:
                 </h3>
                 <p>
@@ -83,7 +83,7 @@ export default class AboutInformation extends React.Component {
                     anyone to contribute information and an image of monuments and memorials in these areas. If you have
                     any questions, please contact the project coordinator, Juilee Decker jdgsh@rit.edu.
                 </p>
-                <h3 className='font-italic'>
+                <h3 className="font-italic">
                     Contributors:
                 </h3>
                 {/* TODO: Replace click here with link to sign-in page */}
@@ -92,7 +92,7 @@ export default class AboutInformation extends React.Component {
                     submissions will be recognized in our list of contributors:
                 </p>
 
-                <div className='contributors-list-container'>
+                <div className="contributors-list-container">
                     <ContributorsList
                         contributors={contributors}
                         showingAllContributors={showingAllContributors}
@@ -102,32 +102,32 @@ export default class AboutInformation extends React.Component {
                     {showingAllContributors && hideMoreContributorsLink}
                 </div>
 
-                <h3 className='font-italic'>
+                <h3 className="font-italic">
                     Acknowledgements:
                 </h3>
                 <p>
-                    <span className='font-weight-bold'>Software engineering students:</span> AJ Delposen, Nick Deyette, Ben Smith, Ben Vogler<br/>
-                    <span className='font-weight-bold'>Advisors:</span> Eric Mansfield, Samuel Malachowsky, Jim Vallino<br/>
+                    <span className="font-weight-bold">Software engineering students:</span> AJ Delposen, Nick Deyette, Ben Smith, Ben Vogler<br/>
+                    <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky, Jim Vallino<br/>
                     Lizzy Carr, research assistant<br/>
                     Connie Froass, graphic design<br/>
-                    Students in HIS 322 course, <span className='font-italic'>Monuments & Memory</span>, spring 2019 and
+                    Students in HIS 322 course, <span className="font-italic">Monuments & Memory</span>, spring 2019 and
                     spring 2020
                 </p>
-                <h3 className='font-italic'>
+                <h3 className="font-italic">
                     Statistics:
                 </h3>
-                <div className='statistics-container'>
-                    <div className='statistics-row'>
+                <div className="statistics-container">
+                    <div className="statistics-row">
                         <StatisticCard
                             statistic={monumentStatistics.totalNumberOfMonuments}
-                            description='Total number of Monuments and Memorials'
+                            description="Total number of Monuments and Memorials"
                         />
                         <StatisticCard
                             statistic={monumentStatistics.oldestMonument ? monumentStatistics.oldestMonument.title : null}
                             description={monumentStatistics.oldestMonument
                                 ? 'Oldest Monument or Memorial on record (Date: ' + monumentStatistics.oldestMonument.date + ')'
                                 : null}
-                            statisticFontSize='small'
+                            statisticFontSize="small"
                             link={monumentStatistics.oldestMonument ? '/monuments/' + monumentStatistics.oldestMonument.id : null}
                         />
                         <StatisticCard
@@ -135,11 +135,11 @@ export default class AboutInformation extends React.Component {
                             description={monumentStatistics.newestMonument
                                 ? 'Newest Monument or Memorial on record (Date: ' + monumentStatistics.newestMonument.date + ')'
                                 : null}
-                            statisticFontSize='small'
+                            statisticFontSize="small"
                             link={monumentStatistics.newestMonument ? '/monuments/' + monumentStatistics.newestMonument.id : null}
                         />
                     </div>
-                    <div className='statistics-row last'>
+                    <div className="statistics-row last">
                         <StatisticCard
                             statistic={monumentStatistics.numberOfMonumentsInRandomState}
                             description={'Number of Monuments in ' + monumentStatistics.randomState}
@@ -150,7 +150,7 @@ export default class AboutInformation extends React.Component {
                         />
                     </div>
                 </div>
-                <div className='charts-container'>
+                <div className="charts-container">
                     <NumberOfMonumentsByStateBarChart
                         numberOfMonumentsByState={monumentStatistics.numberOfMonumentsByState}
                     />

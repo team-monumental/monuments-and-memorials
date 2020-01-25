@@ -27,7 +27,7 @@ export default class StatisticCard extends React.Component {
 
         if (statistic && description) {
             return (
-                <div className='statistic-card-container'>
+                <div className="statistic-card-container">
                     <Card>
                         <Card.Title className={statisticFontSizeClassName}>
                             {statisticWithLink ? statisticWithLink : statistic}
