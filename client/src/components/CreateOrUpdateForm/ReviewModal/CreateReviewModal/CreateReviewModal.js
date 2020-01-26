@@ -1,13 +1,13 @@
 import React from 'react';
-import './ReviewModal.scss';
+import './CreateReviewModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { prettyPrintDate } from '../../../utils/string-util';
+import { prettyPrintDate } from '../../../../utils/string-util';
 
 /**
  * Presentational component for the Modal shown before a Monument Creation is completed
  */
-export default class ReviewModal extends React.Component {
+export default class CreateReviewModal extends React.Component {
 
     render() {
         const { showing, onCancel, onConfirm, form, dateSelectValue } = this.props;
@@ -89,13 +89,13 @@ export default class ReviewModal extends React.Component {
                 show={showing}
                 onHide={onCancel}
             >
-                <Modal.Header className="review-modal">
+                <Modal.Header className='create-review-modal'>
                     <Modal.Title>
                         Review Creation
                     </Modal.Title>
                 </Modal.Header>
-                <hr className="review-modal"/>
-                <Modal.Body className="review-modal">
+                <hr className='create-review-modal'/>
+                <Modal.Body className='create-review-modal'>
                     <p>Please review the data you entered for correctness and completeness!</p>
                     <p>*Fields marked with an asterisk are required.</p>
                     <p>**Address OR Latitude AND Longitude are required.</p>
