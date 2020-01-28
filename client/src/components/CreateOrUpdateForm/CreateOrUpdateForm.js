@@ -1225,8 +1225,10 @@ export default class CreateOrUpdateForm extends React.Component {
                     <UpdateReviewModal
                         showing={showingUpdateReviewModal}
                         onCancel={() => this.handleUpdateReviewModalCancel()}
+                        onConfirm={() => this.submitUpdateForm(monument.id)}
                         oldMonument={monument}
                         newMonument={this.buildUpdateForm()}
+                        dateSelectValue={dateSelectValue}
                     />
                 </div>
             </div>

@@ -162,7 +162,7 @@ export default class CreateReviewModal extends React.Component {
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className="review-modal">
+                <Modal.Footer className='create-review-modal'>
                     <Button
                         variant="danger"
                         onClick={onCancel}
