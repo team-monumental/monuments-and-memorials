@@ -110,8 +110,67 @@ export default class UpdateReviewModal extends React.Component {
         );
     }
 
+    renderUnchangedTags(unchangedTags, areMaterials) {
+        let unchangedTagsDisplay = <span className='font-weight-bold'>NONE</span>;
+
+        if (unchangedTags && unchangedTags.length) {
+            unchangedTagsDisplay = (
+                <ul className={areMaterials ? 'unchanged-materials-list' : 'unchanged-tags-list'}>
+                    {unchangedTags.map(unchangedTag => <li key={unchangedTag}>{unchangedTag}</li>)}
+                </ul>
+            );
+        }
+
+        return (
+            <div className={areMaterials ? 'unchanged-materials' : 'unchanged-tags'}>
+                <span className='attribute-label'>{areMaterials ? 'Unchanged Materials:' : 'Unchanged Tags:'}&nbsp;</span>
+                {unchangedTagsDisplay}
+            </div>
+        );
+    }
+
+    renderAddedTags(addedTags, areMaterials) {
+        let addedTagsDisplay = <span className='font-weight-bold'>NONE</span>;
+
+        if (addedTags && addedTags.length) {
+            addedTagsDisplay = (
+                <ul className={areMaterials ? 'added-materials-list' : 'added-tags-list'}>
+                    {addedTags.map(addedTag => <li className='added' key={addedTag}>{addedTag}</li>)}
+                </ul>
+            );
+        }
+
+        return (
+            <div className={areMaterials ? 'added-materials' : 'added-tags'}>
+                <span className='attribute-label'>{areMaterials ? 'Added Materials:' : 'Added Tags:'}&nbsp;</span>
+                {addedTagsDisplay}
+            </div>
+        );
+    }
+
+    renderRemovedTags(removedTags, areMaterials) {
+        let removedTagsDisplay = <span className='font-weight-bold'>NONE</span>;
+
+        if (removedTags && removedTags.length) {
+            removedTagsDisplay = (
+                <ul className={areMaterials ? 'removed-materials-list' : 'removed-tags-list'}>
+                    {removedTags.map(removedTag => <li className='removed' key={removedTag}>{removedTag}</li>)}
+                </ul>
+            );
+        }
+
+        return (
+            <div className={areMaterials ? 'removed-materials' : 'removed-tags'}>
+                <span className='attribute-label'>{areMaterials ? 'Removed Materials:' : 'Removed Tags:'}&nbsp;</span>
+                {removedTagsDisplay}
+            </div>
+        );
+    }
+
     renderTagUpdates() {
         const { oldMonument, newMonument } = this.props;
+
+        let tagUpdates = [];
 
         if (oldMonument && oldMonument.monumentTags && newMonument) {
             const oldMonumentMaterialNames = [];
@@ -149,8 +208,41 @@ export default class UpdateReviewModal extends React.Component {
                         removedMaterials.push(oldMaterialName);
                     }
                 }
+
+                tagUpdates.push(this.renderUnchangedTags(unchangedMaterials, true));
+                tagUpdates.push(this.renderAddedTags(addedMaterials, true));
+                tagUpdates.push(this.renderRemovedTags(removedMaterials, true));
+            }
+
+            if (newMonument.newTags && newMonument.newTags.length) {
+                const addedTags = [];
+                const removedTags = [];
+                const unchangedTags = [];
+
+                // Find added and unchanged Tags
+                for (const newTagName of newMonument.newTags) {
+                    if (!oldMonumentTagNames.includes(newTagName)) {
+                        addedTags.push(newTagName);
+                    }
+                    else {
+                        unchangedTags.push(newTagName);
+                    }
+                }
+
+                // Find removed Tags
+                for (const oldTagName of oldMonumentTagNames) {
+                    if (!newMonument.newTags.includes(oldTagName)) {
+                        removedTags.push(oldTagName);
+                    }
+                }
+
+                tagUpdates.push(this.renderUnchangedTags(unchangedTags, false));
+                tagUpdates.push(this.renderAddedTags(addedTags, false));
+                tagUpdates.push(this.renderRemovedTags(removedTags, false));
             }
         }
+
+        return tagUpdates;
     }
 
     renderAttributeUpdates() {

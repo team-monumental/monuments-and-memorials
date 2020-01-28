@@ -40,10 +40,6 @@
             font-size: 36px;
           }
 
-          .attribute-label {
-            font-weight: bold;
-          }
-
           .old-attribute {
             padding-right: 0.25rem;
           }
@@ -57,6 +53,10 @@
             font-weight: bold;
           }
         }
+      }
+
+      .attribute-label {
+        font-weight: bold;
       }
     }
 
@@ -75,5 +75,15 @@
     width: 100%;
     border-top: 2px solid rgba(0, 0, 0, 0.1);
     margin-bottom: 0;
+  }
+
+  .added {
+    color: green;
+    font-weight: bold;
+  }
+
+  .removed {
+    color: red;
+    font-weight: bold;
   }
 }
