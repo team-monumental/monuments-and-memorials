@@ -1,10 +1,11 @@
 import React from 'react';
 import './BulkCreateForm.scss';
-import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
+import { Form, Card, Button } from 'react-bootstrap';
 import validator from 'validator';
 import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
-import MoreInformation from './MoreInformation/MoreInformation';
 import FeedbackModal from './FeedbackModal/FeedbackModal';
+import * as JSZip from 'jszip';
+import * as CSVParser from 'csvtojson';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -16,14 +17,24 @@ export default class BulkCreateForm extends React.Component {
 
         this.state = {
             fileUpload: {
-                file: {},
-                fileType: '',
+                csv: null,
+                zip: null,
+                images: [],
                 isValid: true,
-                message: 'No file chosen',
                 errorMessage: ''
             },
-            showingMoreInformation: false,
-            fileUploadInputKey: 0
+            fileUploadInputKey: 0,
+            showFieldMapping: false,
+            mapping: [],
+            fields: [
+                        'artist', 'title', 'date', 'coordinates', 'city', 'state', 'address', 'description', 'inscription', 'tags',
+                        'materials', 'images', 'references', 'contributions'
+                    ].map(field => {
+                        return {
+                            name: field,
+                            selected: false
+                        }
+                    })
         };
     }
 
@@ -41,22 +52,46 @@ export default class BulkCreateForm extends React.Component {
      * Handles when a file is uploaded to the file upload input
      * @param event - The upload event fired by the input
      */
-    handleFileUploadChange(event) {
+    async handleFileUploadChange(event) {
         const { fileUpload } = this.state;
 
         this.resetForm(false);
 
         if (validator.matches(event.target.value, csvFileRegex)) {
-            fileUpload.file = event.target.files[0];
-            fileUpload.message = event.target.files[0].name;
-            fileUpload.fileType = '.csv';
+            fileUpload.csv = event.target.files[0];
             this.setState({fileUpload});
+            this.readCSVHeaders();
         }
         else if (validator.matches(event.target.value, zipFileRegex)) {
-            fileUpload.file = event.target.files[0];
-            fileUpload.message = event.target.files[0].name;
-            fileUpload.fileType = '.zip';
+            fileUpload.zip = event.target.files[0];
+            let content = await JSZip.loadAsync(fileUpload.zip);
+
+            for (let fileName in content.files) {
+                if (!content.files.hasOwnProperty(fileName) || fileName.startsWith('__MACOSX')) continue;
+                if (fileName.endsWith('.csv')) {
+                    if (fileUpload.csv) {
+                        fileUpload.errorMessage = 'Your zip file contained multiple csv files. Please only upload one csv file at a time.';
+                        fileUpload.csv = null;
+                        fileUpload.zip = null;
+                        fileUpload.images = [];
+                        fileUpload.isValid = false;
+                        break;
+                    }
+                    fileUpload.csv = content.files[fileName];
+                } else {
+                    fileUpload.images.push(content.files[fileName]);
+                }
+            }
+
+            if (!fileUpload.csv && !fileUpload.errorMessage) {
+                fileUpload.errorMessage = 'Your zip file didn\'t contain a csv file. Please check the contents of your zip file and try again.';
+                fileUpload.zip = null;
+                fileUpload.images = [];
+                fileUpload.isValid = false;
+            }
+
             this.setState({fileUpload});
+            this.readCSVHeaders();
         }
         else {
             event.target.value = '';
@@ -64,10 +99,42 @@ export default class BulkCreateForm extends React.Component {
         }
     }
 
-    handleMoreInformationClick() {
-        const { showingMoreInformation } = this.state;
+    async readCSVHeaders() {
+        const csv = this.state.fileUpload.csv;
+        if (!csv) return;
 
-        this.setState({showingMoreInformation: !showingMoreInformation});
+        let headersString;
+        let shouldContinue = false;
+        // For files read from a zip file
+        if (csv.async && typeof csv.async === 'function') {
+            headersString = await csv.async('string');
+        // For files uploaded directly
+        } else {
+            shouldContinue = true;
+            const reader = new FileReader();
+            await new Promise(resolve => {
+                reader.onload = (e => {
+                    headersString = e.target.result;
+                    resolve();
+                });
+                reader.readAsText(csv);
+            });
+        }
+
+        headersString = headersString.split('\n')[0];
+
+        CSVParser().fromString(headersString)
+            .on('header', async headers => {
+                if (shouldContinue) {
+                    await this.setState({showFieldMapping: true});
+                }
+                this.setState({mapping: headers.map(header => {
+                        return {
+                            originalField: header,
+                            mappedField: ''
+                        }
+                    })})
+            });
     }
 
     /**
@@ -83,18 +150,14 @@ export default class BulkCreateForm extends React.Component {
         fileUpload.errorMessage = '';
 
         if (resetValue) {
-            fileUpload.file = {};
+            fileUpload.csv = null;
+            fileUpload.zip = null;
+            fileUpload.images = [];
             fileUpload.message = 'No file chosen';
             fileUploadInputKey++;
         }
 
         this.setState({fileUpload, fileUploadInputKey});
-    }
-
-    handleCancelButtonClick() {
-        const { onCancelButtonClick } = this.props;
-
-        onCancelButtonClick();
     }
 
     /**
@@ -145,95 +208,162 @@ export default class BulkCreateForm extends React.Component {
     }
 
     render() {
-        const { bulkCreateResult } = this.props;
-        const { fileUpload, showingMoreInformation, fileUploadInputKey } = this.state;
-
-        const moreInformationLink = (
-            <div className="more-information-link"
-                 onClick={() => this.handleMoreInformationClick()}>
-                Show More Information
-            </div>
-        );
-
-        const hideMoreInformationLink = (
-            <div className="more-information-link hide-link"
-                 onClick={() => this.handleMoreInformationClick()}>
-                Hide More Information
-            </div>
-        );
+        const { fileUpload, showFieldMapping } = this.state;
 
         return (
-            <div className="bulk-create-form-container">
-                <div className="h5">
+            <Card className="bulk-create-form-container">
+                <Card.Title>
                     Bulk Create Monuments and Memorials
-                </div>
-
-                <Form onSubmit={(event) => this.handleSubmit(event)}>
-                    <Form.Group className="file-upload-form-group">
-                        <Form.Label>Upload a CSV or Zip File:</Form.Label>
-                        <label htmlFor="file-upload-input" className="file-upload-input-label">
-                            <span>CHOOSE A FILE</span>
-                        </label>
-                        <Form.Control
-                            type="file"
-                            id="file-upload-input"
-                            onChange={(event) => this.handleFileUploadChange(event)}
-                            isInvalid={!fileUpload.isValid}
-                            accept=".csv,.zip"
-                            className="file-upload-input"
-                            key={fileUploadInputKey}
-                        />
-                        <Form.Control.Feedback type="invalid">{fileUpload.errorMessage}</Form.Control.Feedback>
-                        <div className={fileUpload.isValid ? 'file-upload-input-file-name' : 'd-none'}>
-                            {fileUpload.message}
-                        </div>
-                    </Form.Group>
-
-                    <Collapse in={showingMoreInformation}>
-                        <div className="more-information-container">
-                            <MoreInformation/>
-                        </div>
-                    </Collapse>
-
-                    {!showingMoreInformation && moreInformationLink}
-                    {showingMoreInformation && hideMoreInformationLink}
-
-                    <ButtonToolbar className={showingMoreInformation ? 'button-toolbar-extra-padding' : null}>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            className="mr-4 mt-1"
-                        >
-                            Submit
-                        </Button>
-
-                        <Button
-                            variant="secondary"
-                            type="button"
-                            onClick={() => this.resetForm(true)}
-                            className="mr-4 mt-1"
-                        >
-                            Clear
-                        </Button>
-
-                        <Button
-                            variant="danger"
-                            type="button"
-                            onClick={() => this.handleCancelButtonClick()}
-                            className="mt-1"
-                        >
-                            Cancel
-                        </Button>
-                    </ButtonToolbar>
-                </Form>
-
-                <div className="feedback-modal-container">
-                    <FeedbackModal
-                        bulkCreateResult={bulkCreateResult}
-                        onClose={() => this.handleFeedbackModalClose()}
-                    />
-                </div>
-            </div>
+                </Card.Title>
+                {!showFieldMapping && <>
+                    {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
+                    {fileUpload.images.length > 0 && this.renderUploadedFiles()}
+                </>}
+                {showFieldMapping && this.renderFieldMapping()}
+            </Card>
         );
+    }
+
+    renderFileUpload() {
+        const { bulkCreateResult } = this.props;
+        const { fileUpload, fileUploadInputKey } = this.state;
+        return (<Card.Body>
+            <Card.Subtitle className="mt-2">
+                CSV Upload
+            </Card.Subtitle>
+            <p className="mb-4">
+                You can create multiple monuments or memorials by uploading
+                a <code>.csv</code> file with information about them.
+            </p>
+            <Card.Subtitle>
+                Zip Upload
+            </Card.Subtitle>
+            <p className="mb-4">
+                If you're uploading images with your monuments, you must create
+                a <code>.zip</code> file containing
+                your <code>.csv</code> file and your image files.
+            </p>
+            <Form onSubmit={(event) => this.handleSubmit(event)}>
+                <Form.Group className="d-flex flex-column align-items-center mb-0">
+                    <label htmlFor="file-upload-input" className="file-upload-input-label btn btn-outline-primary mb-0">
+                        <span>Upload CSV or Zip</span>
+                    </label>
+                    <Form.Control
+                        type="file"
+                        id="file-upload-input"
+                        onChange={(event) => this.handleFileUploadChange(event)}
+                        isInvalid={!fileUpload.isValid}
+                        accept=".csv,.zip"
+                        className="file-upload-input"
+                        key={fileUploadInputKey}
+                    />
+                    <Form.Control.Feedback type="invalid">{fileUpload.errorMessage}</Form.Control.Feedback>
+                </Form.Group>
+            </Form>
+
+            <div className="feedback-modal-container">
+                <FeedbackModal
+                    bulkCreateResult={bulkCreateResult}
+                    onClose={() => this.handleFeedbackModalClose()}
+                />
+            </div>
+        </Card.Body>)
+    }
+
+    renderUploadedFiles() {
+        const { fileUpload } = this.state;
+        return (<>
+            <Card.Body>
+                <Card.Subtitle className="d-flex align-items-center">
+                    <i className="material-icons mr-1">
+                        notes
+                    </i>
+                    Uploaded CSV File
+                </Card.Subtitle>
+                <div className="pl-1">
+                    {fileUpload.csv && fileUpload.csv.name}
+                </div>
+                <Card.Subtitle className="d-flex align-items-center mt-3">
+                    <i className="material-icons mr-1">
+                        image
+                    </i>
+                    Uploaded Image Files ({fileUpload.images.length})
+                </Card.Subtitle>
+                <ul className="list-unstyled pl-1">
+                {fileUpload.images.map(file => (
+                    <li key={file.name} className="mb-1">
+                        {file.name}
+                    </li>
+                ))}
+                </ul>
+            </Card.Body>
+            <Card.Footer className="d-flex justify-content-end">
+                <Button variant="bare" onClick={() => this.resetForm(true)}>
+                    Cancel
+                </Button>
+                <Button onClick={() => this.setState({showFieldMapping: true})}>
+                    Continue
+                </Button>
+            </Card.Footer>
+        </>)
+    }
+
+    renderFieldMapping() {
+        const { mapping, fields } = this.state;
+
+        return (<>
+            <Card.Body>
+                <div className="field-mapping-table">
+                    <div className="d-flex row">
+                        <div className="column font-weight-bold">
+                            Your Fields
+                        </div>
+                        <div className="column font-weight-bold">
+                        </div>
+                        <div className="column font-weight-bold">
+                            Our Fields
+                        </div>
+                    </div>
+                    {mapping.map(pair => (
+                        <div className="d-flex row" key={pair.originalField}>
+                            <div className="column d-flex align-items-center">{pair.originalField}</div>
+                            <div className="column d-flex align-items-center justify-content-center">
+                                <i className="material-icons">
+                                    arrow_right_alt
+                                </i>
+                            </div>
+                            <div className="column d-flex justify-content-end my-1">
+                                <Form.Control as="select" className="mr-3" value={pair.mappedField} onChange={event => {
+                                    pair.mappedField = event.currentTarget.value;
+                                    fields.forEach(field => {
+                                        field.selected = !!mapping.find(currentPair => {
+                                            return currentPair.mappedField === field.name;
+                                        });
+                                    });
+                                    this.setState({mapping, fields});
+                                }}>
+                                    <option value={null}>Select a Field</option>
+                                    {fields.map(field => (
+                                        <option key={field.name}
+                                                disabled={field.selected && field.name !== pair.mappedField}
+                                                value={field.name}>
+                                            {field.name}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </Card.Body>
+            <Card.Footer className="d-flex justify-content-end">
+                <Button variant="bare" onClick={() => this.resetForm(true)}>
+                    Cancel
+                </Button>
+                <Button>
+                    Continue
+                </Button>
+            </Card.Footer>
+        </>)
     }
 }

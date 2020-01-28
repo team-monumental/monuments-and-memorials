@@ -2,7 +2,6 @@ import React from 'react';
 import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
 import { readCsvFileContents } from '../../utils/file-util';
 import bulkCreateMonuments, { bulkCreateMonumentsZip } from '../../actions/bulk-create';
@@ -32,10 +31,6 @@ class MonumentBulkCreatePage extends React.Component {
         return state.bulkCreatePage;
     }
 
-    handleBulkCreateFormCancelButtonClick() {
-        this.props.history.goBack();
-    }
-
     async handleBulkCreateCsvFormSubmit(form) {
         const { dispatch } = this.props;
 
@@ -62,19 +57,13 @@ class MonumentBulkCreatePage extends React.Component {
         const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result, error } = this.props;
 
         return (
-            <div className="bulk-create-page-container">
+            <div className="page d-flex justify-content-center">
                 <Spinner show={bulkCreateMonumentsPending || bulkCreateMonumentsZipPending}/>
-                <div className="column thank-you-column">
-                    <ContributionAppreciation/>
-                </div>
-                <div className="column form-column">
-                    <BulkCreateForm
-                        onCancelButtonClick={() => this.handleBulkCreateFormCancelButtonClick()}
-                        onCsvSubmit={(form) => this.handleBulkCreateCsvFormSubmit(form)}
-                        onZipSubmit={(form) => this.handleBulkCreateZipFormSubmit(form)}
-                        bulkCreateResult={result}
-                    />
-                </div>
+                <BulkCreateForm
+                    onCsvSubmit={(form) => this.handleBulkCreateCsvFormSubmit(form)}
+                    onZipSubmit={(form) => this.handleBulkCreateZipFormSubmit(form)}
+                    bulkCreateResult={result}
+                />
                 <ErrorModal
                     showing={showingErrorModal}
                     errorMessage={error ? error.message : ''}

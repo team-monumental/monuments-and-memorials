@@ -1,6 +1,7 @@
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
+@import "./theme.scss";
 
 html {
     font-size: 13px;
@@ -59,20 +60,35 @@ homepage-map {
     }
 }
 
-.h5.h5, .h6.h6 {
-    letter-spacing: -0.4px;
-    color: #61616D;
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    letter-spacing: -0.4px !important;
+    color: #61616D !important;
 }
 
-.h5.h5 {
-    font-weight: 500;
-    font-size: 28px;
+.card-title.h5 {
+    font-size: 1.5rem;
 }
 
-.h6.h6 {
-    font-weight: bold;
-    font-size: 24px;
+.h1 {
+    font-size: 2rem !important;
 }
+
+.card-footer {
+    background-color: rgba(0,0,0,0) !important;
+}
+
+.invalid-feedback {
+    font-size: 100% !important;
+}
+
+.btn-link-secondary:hover {
+    color: $primary !important;
+}
+
+.btn-bare:hover {
+    color: $primary !important;
+}
+
 
 .min-width-select {
     width: min-content !important;

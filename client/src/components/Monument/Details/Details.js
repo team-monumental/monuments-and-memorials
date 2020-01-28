@@ -39,7 +39,7 @@ export default class Details extends React.Component {
         return (
             <div className="main">
                 <div>
-                    <div className="h5">
+                    <div className="h1">
                         {monument.title}
                     </div>
                     <div>
