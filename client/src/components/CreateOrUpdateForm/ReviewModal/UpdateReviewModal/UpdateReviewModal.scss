@@ -32,13 +32,13 @@
         padding: 0.5rem;
         font-size: medium;
 
+        i {
+          font-size: 36px;
+        }
+
         .attribute-update {
           display: flex;
           align-items: center;
-
-          i {
-            font-size: 36px;
-          }
 
           .old-attribute {
             padding-right: 0.25rem;
@@ -51,6 +51,15 @@
           .none {
             color: red;
             font-weight: bold;
+          }
+        }
+
+        .updated-references {
+          .reference-update-list {
+            .reference-update {
+              display: flex;
+              align-items: center;
+            }
           }
         }
       }

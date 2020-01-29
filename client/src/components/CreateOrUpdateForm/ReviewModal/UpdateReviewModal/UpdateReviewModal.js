@@ -3,6 +3,7 @@ import './UpdateReviewModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
+import {getS3ImageNameFromObjectUrl} from "../../../../utils/api-util";
 
 /**
  * Presentational component for the Modal shown before a Monument Update is completed
@@ -245,6 +246,175 @@ export default class UpdateReviewModal extends React.Component {
         return tagUpdates;
     }
 
+    renderReferenceUpdate(oldReferenceValue, newReferenceValue) {
+        return (
+            <li key={newReferenceValue} className='reference-update'>
+                <span className='old-attribute'>{oldReferenceValue}</span>
+                <i className='material-icons'>arrow_right_alt</i>
+                <span className='new-attribute'>{newReferenceValue}</span>
+                {
+                    oldReferenceValue === newReferenceValue ?
+                        <span className='no-attribute-change font-weight-bold'>&nbsp;(NO  CHANGES)</span> :
+                        <div/>
+                }
+            </li>
+        );
+    }
+
+    renderAddedReference(addedReferenceUrl) {
+        return (
+            <li key={addedReferenceUrl} className='reference added'>{addedReferenceUrl}</li>
+        );
+    }
+
+    renderDeletedReference(deletedReferenceUrl) {
+        return (
+            <li key={deletedReferenceUrl} className='reference removed'>{deletedReferenceUrl}</li>
+        );
+    }
+
+    renderReferenceUpdates() {
+        const { oldMonument, newMonument } = this.props;
+
+        let referenceUpdates = [];
+        let deletedReferenceValues = [];
+
+        // Changed Reference URLs
+        if (oldMonument.references && oldMonument.references.length) {
+            const changedReferences = [];
+
+            // While we're looping, gather the deleted Reference values as well
+            for (const reference of oldMonument.references) {
+                if (newMonument.deletedReferenceIds.includes(reference.id)) {
+                    deletedReferenceValues.push(reference.url);
+                }
+                else {
+                    const newReferenceValue = newMonument.updatedReferencesUrlsById[reference.id];
+
+                    if (reference.url !== newReferenceValue) {
+                        changedReferences.push(this.renderReferenceUpdate(reference.url, newReferenceValue));
+                    }
+                }
+            }
+
+            let changedReferencesDisplay = (
+                <div className='updated-references'>
+                    <span className='attribute-label'>Updated References:&nbsp;</span>
+                    {
+                        changedReferences.length ?
+                            <ul className='reference-update-list'>{changedReferences}</ul> :
+                            <span className='font-weight-bold'>NONE</span>
+                    }
+                </div>
+            );
+
+            referenceUpdates.push(changedReferencesDisplay);
+        }
+
+        // Added References
+        if (newMonument.newReferenceUrls && newMonument.newReferenceUrls) {
+            const addedReferences = [];
+
+            for (const newReferenceUrl of newMonument.newReferenceUrls) {
+                addedReferences.push(this.renderAddedReference(newReferenceUrl));
+            }
+
+            let addedReferencesDisplay = (
+                <div className='added-references'>
+                    <span className='attribute-label'>Added References:&nbsp;</span>
+                    {
+                        addedReferences.length ?
+                            <ul className='added-references-list'>{addedReferences}</ul> :
+                            <span className='font-weight-bold'>NONE</span>
+                    }
+                </div>
+            );
+
+            referenceUpdates.push(addedReferencesDisplay);
+        }
+
+        // Deleted References
+        let deletedReferencesDisplay = <span className='font-weight-bold'>NONE</span>;
+
+        if (deletedReferenceValues.length) {
+            let deletedReferences = [];
+
+            for (const deletedReferenceValue of deletedReferenceValues) {
+                deletedReferences.push(this.renderDeletedReference(deletedReferenceValue));
+            }
+
+            deletedReferencesDisplay = (
+                <ul className='deleted-references-list'>{deletedReferences}</ul>
+            );
+        }
+
+        referenceUpdates.push(
+            <div className='deleted-references'>
+                <span className='attribute-label'>Deleted References:&nbsp;</span>
+                {deletedReferencesDisplay}
+            </div>
+        );
+
+        return referenceUpdates;
+    }
+
+    renderAddedImages() {
+        const { addedImages } = this.props;
+
+        let addedImagesDisplay = <span className='font-weight-bold'>NONE</span>;
+
+        if (addedImages && addedImages.length) {
+            let addedImagesList = [];
+
+            for (const addedImage of addedImages) {
+                addedImagesList.push(<li className='added' key={addedImage.name}>{addedImage.name}</li>);
+            }
+
+            addedImagesDisplay = <ul className='added-images-list'>{addedImagesList}</ul>;
+        }
+
+        return (
+            <div className='added-images'>
+                <span className='attribute-label'>Added Images:&nbsp;</span>
+                {addedImagesDisplay}
+            </div>
+        );
+    }
+
+    renderDeletedImages() {
+        const { newMonument } = this.props;
+
+        let deletedImagesDisplay = <span className='font-weight-bold'>NONE</span>;
+
+        if (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) {
+            let deletedImagesList = [];
+
+            for (const deletedImageUrl of newMonument.deletedImageUrls) {
+                deletedImagesList.push(
+                    <li className='removed' key={deletedImageUrl}>{getS3ImageNameFromObjectUrl(deletedImageUrl)}</li>
+                );
+            }
+
+            deletedImagesDisplay = <ul className='deleted-images-list'>{deletedImagesList}</ul>;
+        }
+
+        return (
+            <div className='deleted-images'>
+                <span className='attribute-label'>Deleted Images:&nbsp;</span>
+                {deletedImagesDisplay}
+            </div>
+        );
+    }
+
+    renderImageUpdates() {
+        let imageUpdates = [];
+
+        imageUpdates.push(this.renderAddedImages());
+        imageUpdates.push(this.renderDeletedImages());
+
+        return imageUpdates;
+    }
+
     renderAttributeUpdates() {
         const { oldMonument, newMonument } = this.props;
 
@@ -290,7 +460,13 @@ export default class UpdateReviewModal extends React.Component {
             attributeUpdates.push(this.renderAttributeUpdate('Inscription', oldInscription, newInscription));
 
             /* Materials and Tags */
-            attributeUpdates.push(this.renderTagUpdates())
+            attributeUpdates.push(this.renderTagUpdates());
+
+            /* References */
+            attributeUpdates.push(this.renderReferenceUpdates());
+
+            /* Images */
+            attributeUpdates.push(this.renderImageUpdates());
         }
 
         return attributeUpdates;

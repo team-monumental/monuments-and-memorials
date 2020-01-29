@@ -837,7 +837,7 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
-            materials, showingCreateReviewModal, imagesForUpdate, showingUpdateReviewModal } = this.state;
+            materials, showingCreateReviewModal, imagesForUpdate, showingUpdateReviewModal, images } = this.state;
         const { monument } = this.props;
 
         const advancedInformationLink = (
@@ -1228,6 +1228,7 @@ export default class CreateOrUpdateForm extends React.Component {
                         onConfirm={() => this.submitUpdateForm(monument.id)}
                         oldMonument={monument}
                         newMonument={this.buildUpdateForm()}
+                        addedImages={images}
                         dateSelectValue={dateSelectValue}
                     />
                 </div>

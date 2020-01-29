@@ -204,3 +204,12 @@ function getS3ImageObjectKeyFromObjectUrl(objectUrl) {
     const objectUrlArray = objectUrl.split('/');
     return s3ImageBucketFolderName + objectUrlArray[objectUrlArray.length - 1];
 }
+
+/**
+ * Helper function to get the Image name using the specified S3 Object URL
+ * @param objectUrl - The Object URL to use to parse the Image name
+ */
+export function getS3ImageNameFromObjectUrl(objectUrl) {
+    const objectUrlArray = objectUrl.split('/');
+    return objectUrlArray[objectUrlArray.length - 1];
+}
