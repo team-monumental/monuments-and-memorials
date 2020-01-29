@@ -561,16 +561,16 @@ export default class CreateOrUpdateForm extends React.Component {
             monumentExactDate = new Date(parseInt(monumentYear), monumentMonthInt, monumentDateArray[2]);
         }
 
-        title.value = monument.title ? monument.title : '';
-        address.value = monument.address ? monument.address : '';
+        title.value = monument.title ?? '';
+        address.value = monument.address ?? '';
         latitude.value = monument.lat ? monument.lat.toString() : '';
         longitude.value = monument.lon ? monument.lon.toString() : '';
-        artist.value = monument.artist ? monument.artist : '';
-        description.value = monument.description ? monument.description : '';
-        inscription.value = monument.inscription ? monument.inscription : '';
-        year.value = monumentYear ? monumentYear : '';
-        month.value = monumentMonth ? monumentMonth : '';
-        datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+        artist.value = monument.artist ?? '';
+        description.value = monument.description ?? '';
+        inscription.value = monument.inscription ?? '';
+        year.value = monumentYear ?? '';
+        month.value = monumentMonth ?? '';
+        datePickerCurrentDate = monumentExactDate ?? new Date();
 
         if (monument.references && monument.references.length) {
             let monumentReferences = [];
