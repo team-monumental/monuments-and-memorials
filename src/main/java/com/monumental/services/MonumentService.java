@@ -1058,8 +1058,8 @@ public class MonumentService extends ModelService<Monument> {
                 this.referenceRepository.deleteById(referenceId);
             }
 
+            // Since the References may be loaded on the Monument, we need to remove them
             if (monument.getReferences() != null) {
-                // Since the References may be loaded on the Monument, we need to remove them
                 List<Reference> newReferences = new ArrayList<>();
                 for (Reference currentReference : monument.getReferences()) {
                     if (currentReference.getId() != null && !deletedReferenceIds.contains(currentReference.getId())) {
@@ -1109,8 +1109,8 @@ public class MonumentService extends ModelService<Monument> {
                 this.imageRepository.deleteById(imageId);
             }
 
+            // Since the Images may be loaded onto the Monument, we need to remove them before we save
             if (monument.getImages() != null) {
-                // Since the Images may be loaded onto the Monument, we need to remove them before we save
                 List<Image> newImages = new ArrayList<>();
                 for (Image currentImage : monument.getImages()) {
                     if (currentImage.getId() != null && !deletedImageIds.contains(currentImage.getId())) {
