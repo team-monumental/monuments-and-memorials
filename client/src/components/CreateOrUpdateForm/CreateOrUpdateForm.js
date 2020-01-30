@@ -1,7 +1,7 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
-import {latitudeRegex, longitudeRegex} from "../../utils/regex-util";
+import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
@@ -77,8 +77,8 @@ export default class CreateOrUpdateForm extends React.Component {
             },
             references: [reference],
             images: [],
+            imagesForUpdate:[],
             imageUploaderKey: 0,
-            showingNoImageModal: false,
             materials: {
                 materialObjects: [],
                 isValid: true,
@@ -87,8 +87,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newMaterials: [],
             tags: [],
             newTags: [],
+            showingNoImageModal: false,
             showingCreateReviewModal: false,
-            imagesForUpdate:[],
             showingUpdateReviewModal: false
         };
 
@@ -96,108 +96,9 @@ export default class CreateOrUpdateForm extends React.Component {
         this.tagsSelectRef = React.createRef();
     }
 
-    handleAdvancedInformationClick() {
-        const { showingAdvancedInformation } = this.state;
-
-        this.setState({showingAdvancedInformation: !showingAdvancedInformation});
-    }
-
-    handleDateSelectChange(event) {
-        this.setState({dateSelectValue: event.target.value});
-    }
-
-    handleDatePickerChange(date) {
-        this.setState({datePickerCurrentDate: date});
-    }
-
-    handleAddAnotherReferenceLinkClick() {
-        const newReference = {
-            value: '',
-            isValid: true,
-            message: ''
-        };
-        const { references } = this.state;
-
-        references.push(newReference);
-
-        this.setState({references});
-    }
-
-    handleInputChange(event) {
-        const currentState = this.state[event.target.name];
-        currentState.value = event.target.value;
-
-        this.setState({[event.target.name]: currentState});
-    }
-
-    handleReferenceChange(event) {
-        const currentReferences = this.state.references;
-        const index = parseInt(event.target.name.split('-')[1]);
-
-        currentReferences[index].value = event.target.value;
-
-        this.setState({references: currentReferences});
-    }
-
-    async handleImageUploaderChange(files) {
-        await this.setState({images: files});
-    }
-
-    handleCancelButtonClick() {
-        const { onCancelButtonClick } = this.props;
-
-        onCancelButtonClick();
-    }
-
-    handleNoImageModalClose() {
-        this.setState({showingNoImageModal: false});
-    }
-
-    handleNoImageModalContinue() {
-        const { monument } = this.props;
-
-        this.setState({showingNoImageModal: false});
-
-        if (!monument) {
-            this.setState({showingCreateReviewModal: true});
-        }
-        else {
-            this.setState({showingUpdateReviewModal: true});
-        }
-    }
-
-    handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
-        const { materials } = this.state;
-        let { newMaterials } = this.state;
-
-        materials.materialObjects = selectedMaterials;
-        newMaterials = createdMaterials;
-        this.setState({materials, newMaterials});
-    }
-
-    handleTagSelect(variant, selectedTags, createdTags) {
-        this.setState({tags: selectedTags, newTags: createdTags});
-    }
-
-    handleSubmit(event) {
-        const { monument } = this.props;
-
-        event.preventDefault();
-
-        this.clearForm(false);
-
-        if (this.validateForm()) {
-            if (!this.validateImages()) {
-                this.setState({showingNoImageModal: true});
-            }
-            else {
-                if (!monument) {
-                    this.setState({showingCreateReviewModal: true});
-                }
-                else {
-                    this.setState({showingUpdateReviewModal: true});
-                }
-            }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+            this.setFormFieldValuesForUpdate();
         }
     }
 
@@ -275,6 +176,102 @@ export default class CreateOrUpdateForm extends React.Component {
 
         this.setState({title, address, latitude, longitude, year, month, artist, description, inscription,
             datePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags, newTags});
+    }
+
+    /**
+     * Sets the values of Form fields to be the values of the Monument that is being updated
+     */
+    setFormFieldValuesForUpdate() {
+        const { monument } = this.props;
+        const { title, address, latitude, longitude, year, month, artist, description, inscription,
+            materials } = this.state;
+        let { datePickerCurrentDate, references, tags, imagesForUpdate, images, imageUploaderKey } = this.state;
+
+        let monumentYear, monumentMonth, monumentExactDate;
+
+        if (monument.date) {
+            const monumentDateArray = monument.date.split('-');
+
+            monumentYear = monumentDateArray[0];
+
+            let monumentMonthInt = parseInt(monumentDateArray[1]) - 1;
+            monumentMonth = (monumentMonthInt).toString();
+
+            monumentExactDate = new Date(parseInt(monumentYear), monumentMonthInt, monumentDateArray[2]);
+        }
+
+        title.value = monument.title ? monument.title : '';
+        address.value = monument.address ? monument.address : '';
+        latitude.value = monument.lat ? monument.lat.toString() : '';
+        longitude.value = monument.lon ? monument.lon.toString() : '';
+        artist.value = monument.artist ? monument.artist : '';
+        description.value = monument.description ? monument.description : '';
+        inscription.value = monument.inscription ? monument.inscription : '';
+        year.value = monumentYear ? monumentYear : '';
+        month.value = monumentMonth ? monumentMonth : '';
+        datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+
+        if (monument.references && monument.references.length) {
+            let monumentReferences = [];
+            monument.references.forEach(reference => {
+                let monumentReference = {
+                    id: reference.id,
+                    value: reference.url,
+                    isValid: true,
+                    message: ''
+                };
+
+                monumentReferences.push(monumentReference);
+            });
+
+            references = monumentReferences.length ? monumentReferences : references;
+        }
+
+        if (monument.monumentTags && monument.monumentTags.length) {
+            let associatedMaterials = [];
+            let associatedTags = [];
+
+            for (const monumentTag of monument.monumentTags) {
+                monumentTag.tag.selected = true;
+
+                if (monumentTag.tag.isMaterial) {
+                    associatedMaterials.push(monumentTag.tag);
+                }
+                else {
+                    associatedTags.push(monumentTag.tag);
+                }
+            }
+
+            if (associatedMaterials.length) {
+                materials.materialObjects = associatedMaterials;
+                this.materialsSelectRef.current.state.selectedTags = associatedMaterials;
+            }
+
+            if (associatedTags.length) {
+                tags = associatedTags;
+                this.tagsSelectRef.current.state.selectedTags = associatedTags;
+            }
+        }
+
+        if (monument.images && monument.images.length) {
+            imagesForUpdate = [];
+            monument.images.forEach(image => {
+                imagesForUpdate.push(
+                    {
+                        id: image.id,
+                        url: image.url,
+                        isPrimary: image.isPrimary,
+                        hasBeenDeleted: false
+                    }
+                );
+            });
+        }
+
+        images = [];
+        imageUploaderKey++;
+
+        this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
+            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey});
     }
 
     /**
@@ -531,114 +528,47 @@ export default class CreateOrUpdateForm extends React.Component {
         onSubmit(id, this.buildUpdateForm());
     }
 
-    handleCreateReviewModalCancel() {
-        this.setState({showingCreateReviewModal: false});
+    handleInputChange(event) {
+        const currentState = this.state[event.target.name];
+        currentState.value = event.target.value;
+
+        this.setState({[event.target.name]: currentState});
     }
 
-    handleUpdateReviewModalCancel() {
-        this.setState({showingUpdateReviewModal: false});
+    handleAdvancedInformationClick() {
+        const { showingAdvancedInformation } = this.state;
+
+        this.setState({showingAdvancedInformation: !showingAdvancedInformation});
     }
 
-    /**
-     * Sets the values of Form fields to be the values of the Monument that is being updated
-     */
-    setFormFieldValuesForUpdate() {
-        const { monument } = this.props;
-        const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            materials } = this.state;
-        let { datePickerCurrentDate, references, tags, imagesForUpdate, images, imageUploaderKey } = this.state;
-
-        let monumentYear, monumentMonth, monumentExactDate;
-
-        if (monument.date) {
-            const monumentDateArray = monument.date.split('-');
-
-            monumentYear = monumentDateArray[0];
-
-            let monumentMonthInt = parseInt(monumentDateArray[1]) - 1;
-            monumentMonth = (monumentMonthInt).toString();
-
-            monumentExactDate = new Date(parseInt(monumentYear), monumentMonthInt, monumentDateArray[2]);
-        }
-
-        title.value = monument.title ?? '';
-        address.value = monument.address ?? '';
-        latitude.value = monument.lat ? monument.lat.toString() : '';
-        longitude.value = monument.lon ? monument.lon.toString() : '';
-        artist.value = monument.artist ?? '';
-        description.value = monument.description ?? '';
-        inscription.value = monument.inscription ?? '';
-        year.value = monumentYear ?? '';
-        month.value = monumentMonth ?? '';
-        datePickerCurrentDate = monumentExactDate ?? new Date();
-
-        if (monument.references && monument.references.length) {
-            let monumentReferences = [];
-            monument.references.forEach(reference => {
-                let monumentReference = {
-                    id: reference.id,
-                    value: reference.url,
-                    isValid: true,
-                    message: ''
-                };
-
-                monumentReferences.push(monumentReference);
-            });
-
-            references = monumentReferences.length ? monumentReferences : references;
-        }
-
-        if (monument.monumentTags && monument.monumentTags.length) {
-            let associatedMaterials = [];
-            let associatedTags = [];
-
-            for (const monumentTag of monument.monumentTags) {
-                monumentTag.tag.selected = true;
-
-                if (monumentTag.tag.isMaterial) {
-                    associatedMaterials.push(monumentTag.tag);
-                }
-                else {
-                    associatedTags.push(monumentTag.tag);
-                }
-            }
-
-            if (associatedMaterials.length) {
-                materials.materialObjects = associatedMaterials;
-                this.materialsSelectRef.current.state.selectedTags = associatedMaterials;
-            }
-
-            if (associatedTags.length) {
-                tags = associatedTags;
-                this.tagsSelectRef.current.state.selectedTags = associatedTags;
-            }
-        }
-
-        if (monument.images && monument.images.length) {
-            imagesForUpdate = [];
-            monument.images.forEach(image => {
-                imagesForUpdate.push(
-                    {
-                        id: image.id,
-                        url: image.url,
-                        isPrimary: image.isPrimary,
-                        hasBeenDeleted: false
-                    }
-                );
-            });
-        }
-
-        images = [];
-        imageUploaderKey++;
-
-        this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey});
+    handleDateSelectChange(event) {
+        this.setState({dateSelectValue: event.target.value});
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
-            this.setFormFieldValuesForUpdate();
-        }
+    handleDatePickerChange(date) {
+        this.setState({datePickerCurrentDate: date});
+    }
+
+    handleReferenceChange(event) {
+        const currentReferences = this.state.references;
+        const index = parseInt(event.target.name.split('-')[1]);
+
+        currentReferences[index].value = event.target.value;
+
+        this.setState({references: currentReferences});
+    }
+
+    handleAddAnotherReferenceLinkClick() {
+        const newReference = {
+            value: '',
+            isValid: true,
+            message: ''
+        };
+        const { references } = this.state;
+
+        references.push(newReference);
+
+        this.setState({references});
     }
 
     handleReferenceDeleteButtonClick(event, reference, index) {
@@ -662,6 +592,10 @@ export default class CreateOrUpdateForm extends React.Component {
         referenceFromState['deleted'] = false;
 
         this.setState({references});
+    }
+
+    async handleImageUploaderChange(files) {
+        await this.setState({images: files});
     }
 
     handleImageIsPrimaryCheckboxClick(event, image) {
@@ -723,6 +657,72 @@ export default class CreateOrUpdateForm extends React.Component {
         this.setState({imagesForUpdate});
     }
 
+    handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
+        const { materials } = this.state;
+        let { newMaterials } = this.state;
+
+        materials.materialObjects = selectedMaterials;
+        newMaterials = createdMaterials;
+        this.setState({materials, newMaterials});
+    }
+
+    handleTagSelect(variant, selectedTags, createdTags) {
+        this.setState({tags: selectedTags, newTags: createdTags});
+    }
+
+    handleSubmit(event) {
+        const { monument } = this.props;
+
+        event.preventDefault();
+
+        this.clearForm(false);
+
+        if (this.validateForm()) {
+            if (!this.validateImages()) {
+                this.setState({showingNoImageModal: true});
+            }
+            else {
+                if (!monument) {
+                    this.setState({showingCreateReviewModal: true});
+                }
+                else {
+                    this.setState({showingUpdateReviewModal: true});
+                }
+            }
+        }
+    }
+
+    handleCancelButtonClick() {
+        const { onCancelButtonClick } = this.props;
+
+        onCancelButtonClick();
+    }
+
+    handleNoImageModalClose() {
+        this.setState({showingNoImageModal: false});
+    }
+
+    handleNoImageModalContinue() {
+        const { monument } = this.props;
+
+        this.setState({showingNoImageModal: false});
+
+        if (!monument) {
+            this.setState({showingCreateReviewModal: true});
+        }
+        else {
+            this.setState({showingUpdateReviewModal: true});
+        }
+    }
+
+    handleCreateReviewModalCancel() {
+        this.setState({showingCreateReviewModal: false});
+    }
+
+    handleUpdateReviewModalCancel() {
+        this.setState({showingUpdateReviewModal: false});
+    }
+
     renderReferenceDeleteButton(reference, index) {
         if (!reference.deleted) {
             return (
@@ -750,38 +750,37 @@ export default class CreateOrUpdateForm extends React.Component {
         const { monument } = this.props;
 
         if (monument) {
-            const isPrimaryMessage = (
-                <div className='image-is-primary-message'>
-                    Is Primary Image:
-                </div>
-            );
+            let isPrimaryIcon;
 
             if (image.isPrimary) {
-                return (
-                    <div className='is-primary-container'>
-                        {isPrimaryMessage}
-                        <i
-                            className='material-icons image-is-primary-checkbox'
-                            onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
-                        >
-                            check_box
-                        </i>
-                    </div>
+                isPrimaryIcon = (
+                    <i
+                        className='material-icons image-is-primary-checkbox'
+                        onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
+                    >
+                        check_box
+                    </i>
                 );
             }
             else {
-                return (
-                    <div className='is-primary-container'>
-                        {isPrimaryMessage}
-                        <i
-                            className='material-icons image-is-primary-checkbox'
-                            onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
-                        >
-                            check_box_outline_blank
-                        </i>
-                    </div>
+                isPrimaryIcon = (
+                    <i
+                        className='material-icons image-is-primary-checkbox'
+                        onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
+                    >
+                        check_box_outline_blank
+                    </i>
                 );
             }
+
+            return (
+                <div className='is-primary-container'>
+                    <div className='image-is-primary-message'>
+                        Is Primary Image:
+                    </div>
+                    {isPrimaryIcon}
+                </div>
+            );
         }
         else {
             return (
