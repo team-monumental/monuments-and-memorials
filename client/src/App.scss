@@ -79,21 +79,6 @@ h1 {
     font-size: 24px;
 }
 
-#homePageImage {
-    background-image: url('images/home_page_image.jpg');
-    width: 100%;
-    height: 65vh;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-}
-
-#welcome-page-body {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
 p {
     max-width: 85%;
     margin-left: auto;
