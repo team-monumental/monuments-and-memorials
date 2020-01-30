@@ -213,7 +213,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         if (monument.references && monument.references.length) {
             let monumentReferences = [];
-            monument.references.forEach(reference => {
+            for (const reference of monument.references) {
                 let monumentReference = {
                     id: reference.id,
                     value: reference.url,
@@ -222,7 +222,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 };
 
                 monumentReferences.push(monumentReference);
-            });
+            }
 
             references = monumentReferences.length ? monumentReferences : references;
         }
@@ -255,7 +255,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         if (monument.images && monument.images.length) {
             imagesForUpdate = [];
-            monument.images.forEach(image => {
+            for (const image of monument.images) {
                 imagesForUpdate.push(
                     {
                         id: image.id,
@@ -263,8 +263,8 @@ export default class CreateOrUpdateForm extends React.Component {
                         isPrimary: image.isPrimary,
                         hasBeenDeleted: false
                     }
-                );
-            });
+                )
+            }
         }
 
         images = [];
@@ -490,7 +490,8 @@ export default class CreateOrUpdateForm extends React.Component {
         updateForm.updatedReferencesUrlsById = {};
         updateForm.newReferenceUrls = [];
         updateForm.deletedReferenceIds = [];
-        references.forEach(reference => {
+
+        for (const reference of references) {
             if (reference.id) {
                 if (reference.deleted === true) {
                     updateForm.deletedReferenceIds.push(reference.id);
@@ -502,11 +503,12 @@ export default class CreateOrUpdateForm extends React.Component {
             else {
                 updateForm.newReferenceUrls.push(reference.value);
             }
-        });
+        }
 
         updateForm.deletedImageUrls = [];
         updateForm.deletedImageIds = [];
-        imagesForUpdate.forEach(imageForUpdate => {
+
+        for (const imageForUpdate of imagesForUpdate) {
             if (imageForUpdate.isPrimary) {
                 updateForm.newPrimaryImageId = imageForUpdate.id;
             }
@@ -515,7 +517,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 updateForm.deletedImageUrls.push(imageForUpdate.url);
                 updateForm.deletedImageIds.push(imageForUpdate.id);
             }
-        });
+        }
 
         return updateForm;
     }
@@ -607,17 +609,17 @@ export default class CreateOrUpdateForm extends React.Component {
         else {
             image.isPrimary = true;
 
-            images.forEach(i => {
+            for (const i of images) {
                 if (i.url !== image.url) {
                     i.isPrimary = false;
                 }
-            });
+            }
 
-            imagesForUpdate.forEach(i => {
+            for (const i of imagesForUpdate) {
                 if (i.url !== image.url) {
                     i.isPrimary = false;
                 }
-            });
+            }
         }
 
         this.setState({images, imagesForUpdate});
@@ -627,11 +629,12 @@ export default class CreateOrUpdateForm extends React.Component {
         const { imagesForUpdate } = this.state;
 
         let imageForUpdateFromState;
-        imagesForUpdate.forEach(imageForUpdate => {
+        for (const imageForUpdate of imagesForUpdate) {
             if (imageForUpdate.id === image.id) {
                 imageForUpdateFromState = imageForUpdate;
+                break;
             }
-        });
+        }
 
         if (imageForUpdateFromState) {
             imageForUpdateFromState.hasBeenDeleted = true;
@@ -644,11 +647,12 @@ export default class CreateOrUpdateForm extends React.Component {
         const { imagesForUpdate } = this.state;
 
         let imageForUpdateFromState;
-        imagesForUpdate.forEach(imageForUpdate => {
+        for (const imageForUpdate of imagesForUpdate) {
             if (imageForUpdate.id === image.id) {
                 imageForUpdateFromState = imageForUpdate;
+                break;
             }
-        });
+        }
 
         if (imageForUpdateFromState) {
             imageForUpdateFromState.hasBeenDeleted = false;
@@ -925,7 +929,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         const referenceInputs = [];
 
-        references.forEach((reference, index) => {
+        for (const [index, reference] of references.entries()) {
             referenceInputs.push(
                 <div className='reference-container' key={index}>
                     <Form.Label>Reference:</Form.Label>
@@ -942,7 +946,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
                 </div>
             );
-        });
+        }
         
         const invalidMaterials = (
             <div className="invalid-feedback materials">{materials.message}</div>
@@ -951,7 +955,7 @@ export default class CreateOrUpdateForm extends React.Component {
         let imagesForUpdateDisplay;
         if (imagesForUpdate.length) {
             let imageDisplays = [];
-            imagesForUpdate.forEach(image => {
+            for (const image of imagesForUpdate) {
                 imageDisplays.push(
                     <div
                         className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
@@ -965,7 +969,7 @@ export default class CreateOrUpdateForm extends React.Component {
                         {this.renderImageIsPrimaryCheckbox(image)}
                     </div>
                 );
-            });
+            }
 
             imagesForUpdateDisplay = (
                 <div>
