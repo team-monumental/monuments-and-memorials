@@ -3,7 +3,7 @@ import './UpdateReviewModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
-import {getS3ImageNameFromObjectUrl} from "../../../../utils/api-util";
+import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
 
 /**
  * Presentational component for the Modal shown before a Monument Update is completed

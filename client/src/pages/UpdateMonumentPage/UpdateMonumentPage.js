@@ -3,10 +3,10 @@ import './UpdateMonumentPage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import fetchMonumentForUpdate, { updateMonument } from '../../actions/update-monument';
-import CreateOrUpdateForm from "../../components/CreateOrUpdateForm/CreateOrUpdateForm";
+import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
-import uploadImagesToS3, {deleteImagesFromS3} from "../../utils/api-util";
+import uploadImagesToS3, { deleteImagesFromS3 } from '../../utils/api-util';
 
 /**
  * Root container for the page to update an existing Monument
