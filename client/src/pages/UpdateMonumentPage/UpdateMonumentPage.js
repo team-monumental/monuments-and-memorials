@@ -47,12 +47,12 @@ class UpdateMonumentPage extends React.Component {
         }
 
         return (
-            <div className='update-monument-page-container'>
+            <div className="update-monument-page-container">
                 <Spinner show={fetchMonumentForUpdatePending || updateMonumentPending}/>
                 <div className="column thank-you-column">
                     <ContributionAppreciation/>
                 </div>
-                <div className='column form-column'>
+                <div className="column form-column">
                     <CreateOrUpdateForm
                         monument={monument}
                         onCancelButtonClick={() => this.handleCreateOrUpdateFormCancelButtonClick()}

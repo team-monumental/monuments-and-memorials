@@ -731,7 +731,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (!reference.deleted) {
             return (
                 <div
-                    className='delete-button reference'
+                    className="delete-button reference"
                     onClick={e => this.handleReferenceDeleteButtonClick(e, reference, index)}
                 >
                     X
@@ -741,7 +741,7 @@ export default class CreateOrUpdateForm extends React.Component {
         else {
             return (
                 <i
-                    className='material-icons undo-delete-button reference'
+                    className="material-icons undo-delete-button reference"
                     onClick={e => this.handleReferenceUndoDeleteButtonClick(e, reference)}
                 >
                     undo
@@ -759,7 +759,7 @@ export default class CreateOrUpdateForm extends React.Component {
             if (image.isPrimary) {
                 isPrimaryIcon = (
                     <i
-                        className='material-icons image-is-primary-checkbox'
+                        className="material-icons image-is-primary-checkbox"
                         onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
                     >
                         check_box
@@ -769,7 +769,7 @@ export default class CreateOrUpdateForm extends React.Component {
             else {
                 isPrimaryIcon = (
                     <i
-                        className='material-icons image-is-primary-checkbox'
+                        className="material-icons image-is-primary-checkbox"
                         onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
                     >
                         check_box_outline_blank
@@ -778,8 +778,8 @@ export default class CreateOrUpdateForm extends React.Component {
             }
 
             return (
-                <div className='is-primary-container'>
-                    <div className='image-is-primary-message'>
+                <div className="is-primary-container">
+                    <div className="image-is-primary-message">
                         Is Primary Image:
                     </div>
                     {isPrimaryIcon}
@@ -797,7 +797,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (image.hasBeenDeleted) {
             return (
                 <i
-                    className='material-icons undo-delete-button image'
+                    className="material-icons undo-delete-button image"
                     onClick={e => this.handleImageForUpdateUndoDeleteButtonClick(e, image)}
                 >
                     undo
@@ -807,7 +807,7 @@ export default class CreateOrUpdateForm extends React.Component {
         else {
             return (
                 <div
-                    className='delete-button'
+                    className="delete-button"
                     onClick={e => this.handleImageForUpdateDeleteButtonClick(e, image)}
                 >
                     X
@@ -822,9 +822,9 @@ export default class CreateOrUpdateForm extends React.Component {
         if (monument) {
             return (
                 <Button
-                    type='button'
+                    type="button"
                     onClick={() => this.setFormFieldValuesForUpdate()}
-                    className='reset-button mr-4 mt-1'
+                    className="reset-button mr-4 mt-1"
                 >
                     Reset
                 </Button>
@@ -931,19 +931,19 @@ export default class CreateOrUpdateForm extends React.Component {
 
         for (const [index, reference] of references.entries()) {
             referenceInputs.push(
-                <div className='reference-container' key={index}>
+                <div className="reference-container" key={index}>
                     <Form.Label>Reference:</Form.Label>
                     <Form.Control
-                        type='text'
+                        type="text"
                         name={'reference-' + index}
-                        placeholder='Reference URL'
+                        placeholder="Reference URL"
                         value={reference.value}
                         onChange={(event) => this.handleReferenceChange(event)}
                         isInvalid={!reference.isValid}
                         className={reference.deleted ? 'text-control deleted-reference' : 'text-control'}
                     />
                     {monument ? this.renderReferenceDeleteButton(reference, index) : <div/>}
-                    <Form.Control.Feedback type='invalid'>{reference.message}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">{reference.message}</Form.Control.Feedback>
                 </div>
             );
         }
@@ -974,7 +974,7 @@ export default class CreateOrUpdateForm extends React.Component {
             imagesForUpdateDisplay = (
                 <div>
                     <Form.Label>Current Images:</Form.Label>
-                    <div className='images-for-update-container'>
+                    <div className="images-for-update-container">
                         {imageDisplays}
                     </div>
                 </div>
@@ -982,10 +982,10 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         return (
-            <div className='create-form-container'>
+            <div className="create-form-container">
                 {monument
-                    ? <div className='h5 update'>Update an existing Monument or Memorial</div>
-                    : <div className='h5 create'>Create a new Monument or Memorial</div>}
+                    ? <div className="h5 update">Update an existing Monument or Memorial</div>
+                    : <div className="h5 create">Create a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
@@ -1064,7 +1064,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     </div>
 
                     {/* Images */}
-                    <Form.Group controlId='create-form-image'>
+                    <Form.Group controlId="create-form-image">
                         <Form.Label>{monument ? 'Add More Images:' : 'Images:'}</Form.Label>
                         <ImageUploader
                             withIcon={false}
@@ -1184,10 +1184,10 @@ export default class CreateOrUpdateForm extends React.Component {
                         </Button>
 
                         <Button
-                            variant='secondary'
-                            type='button'
+                            variant="secondary"
+                            type="button"
                             onClick={() => this.clearForm(true)}
-                            className='mr-4 mt-1'
+                            className="mr-4 mt-1"
                         >
                             Clear
                         </Button>
@@ -1214,7 +1214,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     />
                 </div>
 
-                <div className='create-review-modal-container'>
+                <div className="create-review-modal-container">
                     <CreateReviewModal
                         showing={showingCreateReviewModal}
                         onCancel={() => this.handleCreateReviewModalCancel()}
@@ -1224,7 +1224,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     />
                 </div>
 
-                <div className='update-review-modal-container'>
+                <div className="update-review-modal-container">
                     <UpdateReviewModal
                         showing={showingUpdateReviewModal}
                         onCancel={() => this.handleUpdateReviewModalCancel()}

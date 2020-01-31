@@ -46,7 +46,7 @@ class App extends React.Component {
                             <Route path="/bulk-create" component={MonumentBulkCreatePage}/>
                             <Route path="/tag-directory" component={TagDirectoryPage}/>
                             <Route path="/about" component={AboutPage}/>
-                            <Route path='/update-monument/:monumentId' component={UpdateMonumentPage}/>
+                            <Route path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

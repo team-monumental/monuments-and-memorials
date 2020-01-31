@@ -89,13 +89,13 @@ export default class CreateReviewModal extends React.Component {
                 show={showing}
                 onHide={onCancel}
             >
-                <Modal.Header className='create-review-modal'>
+                <Modal.Header className="create-review-modal">
                     <Modal.Title>
                         Review Creation
                     </Modal.Title>
                 </Modal.Header>
-                <hr className='create-review-modal'/>
-                <Modal.Body className='create-review-modal'>
+                <hr className="create-review-modal"/>
+                <Modal.Body className="create-review-modal">
                     <p>Please review the data you entered for correctness and completeness!</p>
                     <p>*Fields marked with an asterisk are required.</p>
                     <p>**Address OR Latitude AND Longitude are required.</p>
@@ -162,7 +162,7 @@ export default class CreateReviewModal extends React.Component {
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className='create-review-modal'>
+                <Modal.Footer className="create-review-modal">
                     <Button
                         variant="danger"
                         onClick={onCancel}
