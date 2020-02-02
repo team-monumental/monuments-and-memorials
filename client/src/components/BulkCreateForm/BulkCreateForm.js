@@ -27,7 +27,7 @@ export default class BulkCreateForm extends React.Component {
             showFieldMapping: false,
             mapping: [],
             fields: [
-                        'artist', 'title', 'date', 'coordinates', 'city', 'state', 'address', 'description', 'inscription', 'tags',
+                        'artist', 'title', 'date', 'latitude', 'longitude', 'city', 'state', 'address', 'description', 'inscription', 'tags',
                         'materials', 'images', 'references', 'contributions'
                     ].map(field => {
                         return {
@@ -38,14 +38,35 @@ export default class BulkCreateForm extends React.Component {
         };
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
 
-        this.resetForm(false);
+    /**
+     * Build the form object to send to the onSubmit handler
+     */
+    submitMapping() {
+        const { fileUpload, mapping } = this.state;
+        const { onSubmit } = this.props;
 
-        if (this.validateForm()) {
-            this.submitForm();
+        // Reformat the mapping into the Map<String, String> format the backend uses
+        let map = {};
+        for (let row of mapping) {
+            if (!row.mappedField) continue;
+            map[row.originalField] = row.mappedField;
         }
+
+        const form = {
+            csv: fileUpload.csv,
+            zip: fileUpload.zip,
+            mapping: JSON.stringify(map)
+        };
+
+        if (fileUpload.zip) {
+            // When dealing with zip files, we set the csv to JSZip's object for the CSV file so that we can read the
+            // headers, but it's not the real JavaScript File object, and it isn't useful on the backend, so we don't
+            // want to include it in the request
+            delete form.csv;
+        }
+
+        onSubmit(form);
     }
 
     /**
@@ -160,49 +181,6 @@ export default class BulkCreateForm extends React.Component {
         this.setState({fileUpload, fileUploadInputKey});
     }
 
-    /**
-     * Validates the Form
-     * If any of the inputs are invalid, the entire Form is considered invalid
-     * @returns {boolean} - True if the Form is valid, False otherwise
-     */
-    validateForm() {
-        const { fileUpload } = this.state;
-        let formIsValid = true;
-
-        /* File Upload Validation */
-        /* A File upload is required */
-        if (fileUpload.file.size === undefined) {
-            fileUpload.isValid = false;
-            fileUpload.errorMessage = 'A file is required';
-            formIsValid = false;
-        }
-
-        if (!formIsValid) {
-            this.setState({fileUpload});
-        }
-
-        return formIsValid;
-    }
-
-    /**
-     * Build the form object to send to the onSubmit handler
-     */
-    submitForm() {
-        const { fileUpload } = this.state;
-        const { onCsvSubmit, onZipSubmit } = this.props;
-
-        let form = {
-            file: fileUpload.file
-        };
-
-        if (fileUpload.fileType === '.zip') {
-            onZipSubmit(form);
-        }
-        else {
-            onCsvSubmit(form);
-        }
-    }
-
     handleFeedbackModalClose() {
         this.resetForm(true);
     }
@@ -243,7 +221,7 @@ export default class BulkCreateForm extends React.Component {
                 a <code>.zip</code> file containing
                 your <code>.csv</code> file and your image files.
             </p>
-            <Form onSubmit={(event) => this.handleSubmit(event)}>
+            <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">
                     <label htmlFor="file-upload-input" className="file-upload-input-label btn btn-outline-primary mb-0">
                         <span>Upload CSV or Zip</span>
@@ -309,7 +287,7 @@ export default class BulkCreateForm extends React.Component {
     }
 
     renderFieldMapping() {
-        const { mapping, fields } = this.state;
+        const { mapping, fields, fileUpload } = this.state;
 
         return (<>
             <Card.Body>
@@ -356,11 +334,12 @@ export default class BulkCreateForm extends React.Component {
                     ))}
                 </div>
             </Card.Body>
+
             <Card.Footer className="d-flex justify-content-end">
                 <Button variant="bare" onClick={() => this.resetForm(true)}>
                     Cancel
                 </Button>
-                <Button>
+                <Button onClick={(event) => this.submitMapping(event)}>
                     Continue
                 </Button>
             </Card.Footer>

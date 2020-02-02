@@ -34,14 +34,15 @@ export async function get(url) {
  * Send a POST request to the specified url with the specified data
  * @param url - URL to send the POST to
  * @param data - JSON data to send to the specified URL
+ * @param contentType
  */
-export async function post(url, data) {
+export async function post(url, data, contentType = 'application/json') {
     let error = null;
     let res = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': contentType
         }
     })
         .then(async (res) => {

@@ -1,25 +1,29 @@
 package com.monumental.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
+import com.monumental.controllers.helpers.CreateMonumentRequest;
+import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.controllers.helpers.CreateMonumentRequest;
-import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
+import com.monumental.services.TagService;
 import com.monumental.util.csvparsing.BulkCreateResult;
 import com.monumental.util.csvparsing.ZipFileHelper;
-import org.hibernate.Hibernate;
-import com.monumental.services.TagService;
+import com.opencsv.CSVReader;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.zip.ZipFile;
 
@@ -196,21 +200,44 @@ public class MonumentController {
      * @param csvContents - List of Strings, where each String is a CSV row
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
-    @PostMapping("/api/monument/bulk-create")
-    public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
-        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents, false, null, null);
-    }
+//    @PostMapping("/api/monument/bulk-create")
+//    public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
+//        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents, false, null, null);
+//    }
 
     /**
-     * Create many Monuments based on the specified .zip file
-     * @param file - MultipartFile representation of the .zip file
+     * Create many Monuments based on the specified .zip or .csv file
+     * @param request - Contains the field mapping and the file to process
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
-     * @throws IOException - If any I/O errors occur while processing the .zip file
+     * @throws IOException - If any I/O errors occur while processing the .zip or .csv file
      */
-    @PostMapping(value = "/api/monument/bulk-create/zip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) throws IOException {
-        ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(file);
-        return this.monumentService.bulkCreateMonumentsFromZip(zipFile);
+    @PostMapping(value = "/api/monument/bulk-create")
+    public BulkCreateResult bulkCreateMonumentsWithImages(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
+
+        String json = new String(request.getMapping().getBytes());
+        ObjectMapper mapper = new ObjectMapper();
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> mapping = mapper.readValue(json, Map.class);
+
+        if (request.getZip() != null) {
+            ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(request.getZip());
+            return this.monumentService.bulkCreateMonumentsFromZip(zipFile, mapping);
+        } else {
+            // TODO: Find the right home for this file parsing
+            BufferedReader br;
+            try {
+                String line;
+                InputStream is = request.getCsv().getInputStream();
+                br = new BufferedReader(new InputStreamReader(is));
+                List<String[]> result = new CSVReader(br).readAll();
+                return this.monumentService.bulkCreateMonuments(result, mapping, null);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                // TODO: Handle this correctly
+                return new BulkCreateResult();
+            }
+        }
     }
 
     /**

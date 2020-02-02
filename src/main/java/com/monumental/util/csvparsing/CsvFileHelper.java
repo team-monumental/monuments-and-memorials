@@ -1,9 +1,20 @@
 package com.monumental.util.csvparsing;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Class that defines common methods needed when interfacing with CSV files
  */
 public class CsvFileHelper {
+
+    /**
+     * Constant for the regex to split on commas only if the comma has zero or an even number of quotes ahead of it
+     * See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
+     */
+    private static final String csvRegex = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
     /**
      * Static method to determine if the filePath points to a CSV file
@@ -15,5 +26,17 @@ public class CsvFileHelper {
         String fileExtension = fileExtensionArray[fileExtensionArray.length - 1];
 
         return fileExtension.equals("csv");
+    }
+
+    public static List<String> parseCSVRow(String row) {
+        return Arrays.asList(row.split(csvRegex, -1));
+    }
+
+    public static Map<Integer, String> getFieldPositions(String[] headers, Map<String, String> mapping) {
+        Map<Integer, String> map = new HashMap<>();
+        for (int i = 0; i < headers.length; i++) {
+            map.put(i, mapping.get(headers[i]));
+        }
+        return map;
     }
 }

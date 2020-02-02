@@ -3,8 +3,7 @@ import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
-import { readCsvFileContents } from '../../utils/file-util';
-import bulkCreateMonuments, { bulkCreateMonumentsZip } from '../../actions/bulk-create';
+import { bulkCreateMonuments } from '../../actions/bulk-create';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
 
@@ -31,21 +30,11 @@ class MonumentBulkCreatePage extends React.Component {
         return state.bulkCreatePage;
     }
 
-    async handleBulkCreateCsvFormSubmit(form) {
+    handleSubmit(form) {
         const { dispatch } = this.props;
 
-        // First, read all of the lines of the CSV file into an array
-        const csvContents = await readCsvFileContents(form.file);
-
-        // Then, send the array to be processed
-        dispatch(bulkCreateMonuments(csvContents));
-    }
-
-    handleBulkCreateZipFormSubmit(form) {
-        const { dispatch } = this.props;
-
-        // Send the .zip file to the server to be processed
-        dispatch(bulkCreateMonumentsZip(form.file));
+        // Send the .zip or .csv file and the mapping to the server to be processed
+        dispatch(bulkCreateMonuments(form));
     }
 
     handleErrorModalClose() {
@@ -60,8 +49,7 @@ class MonumentBulkCreatePage extends React.Component {
             <div className="page d-flex justify-content-center">
                 <Spinner show={bulkCreateMonumentsPending || bulkCreateMonumentsZipPending}/>
                 <BulkCreateForm
-                    onCsvSubmit={(form) => this.handleBulkCreateCsvFormSubmit(form)}
-                    onZipSubmit={(form) => this.handleBulkCreateZipFormSubmit(form)}
+                    onSubmit={(form) => this.handleSubmit(form)}
                     bulkCreateResult={result}
                 />
                 <ErrorModal

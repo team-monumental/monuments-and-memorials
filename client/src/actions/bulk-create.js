@@ -5,42 +5,6 @@ import {
 import { post, postFile } from '../utils/api-util';
 import { addError } from './errors';
 
-function bulkCreateMonumentsPending() {
-    return {
-        type: BULK_CREATE_MONUMENTS_PENDING
-    };
-}
-
-function bulkCreateMonumentsSuccess(result) {
-    return {
-        type: BULK_CREATE_MONUMENTS_SUCCESS,
-        payload: result
-    };
-}
-
-function bulkCreateMonumentsError(error) {
-    return {
-        type: BULK_CREATE_MONUMENTS_ERROR,
-        error: error
-    };
-}
-
-export default function bulkCreateMonuments(csvContents) {
-    return async dispatch => {
-        dispatch(bulkCreateMonumentsPending());
-
-        try {
-            const result = await post('/api/monument/bulk-create', csvContents);
-            dispatch(bulkCreateMonumentsSuccess(result));
-        } catch (error) {
-            dispatch(bulkCreateMonumentsError(error));
-            dispatch(addError({
-                message: error.message
-            }));
-        }
-    };
-}
-
 function bulkCreateMonumentsZipPending() {
     return {
         type: BULK_CREATE_MONUMENTS_ZIP_PENDING
@@ -61,12 +25,29 @@ function bulkCreateMonumentsZipError(error) {
     };
 }
 
-export function bulkCreateMonumentsZip(zipFile) {
+export function bulkCreateMonuments(form) {
     return async dispatch => {
         dispatch(bulkCreateMonumentsZipPending());
 
         try {
-            const result = await postFile('/api/monument/bulk-create/zip', zipFile);
+            console.log('POST', form);
+
+            var formData = new FormData();
+
+            if (form.csv) {
+                formData.append('csv', form.csv);
+            } else if (form.zip) {
+                formData.append('zip', form.zip);
+            }
+
+            formData.append('mapping', new Blob([form.mapping], {
+                type: 'application/json'
+            }));
+            const result = await fetch('/api/monument/bulk-create', {
+                method: 'post',
+                body: formData
+            });
+            // const result = await post('/api/monument/bulk-create', form, 'multipart/form-data');
             dispatch(bulkCreateMonumentsZipSuccess(result));
         } catch (error) {
             dispatch(bulkCreateMonumentsZipError(error));
