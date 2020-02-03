@@ -4,13 +4,37 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
+import Collapse from "react-bootstrap/Collapse";
 
 /**
  * Presentational component for the Modal shown before a Monument Update is completed
  */
 export default class UpdateReviewModal extends React.Component {
 
-    renderAttributeUpdate(attributeLabel, oldAttribute, newAttribute) {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showingUnchangedAttributes: false
+        }
+    }
+
+    /**
+     * Compares oldAttribute to the newAttribute
+     * Returns True if the attribute changed, False otherwise
+     * @param oldAttribute - Old attribute value to compare
+     * @param newAttribute - New attribute value to compare
+     */
+    didAttributeChange(oldAttribute, newAttribute) {
+        return oldAttribute !== newAttribute
+    }
+
+    handleShowUnchangedAttributesClick() {
+        const { showingUnchangedAttributes } = this.state;
+        this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
+    }
+
+    renderAttributeChange(attributeLabel, oldAttribute, newAttribute) {
         return (
             <div className="attribute-update">
                 <span className="attribute-label">{attributeLabel}:&nbsp;</span>
@@ -25,11 +49,26 @@ export default class UpdateReviewModal extends React.Component {
                         <span className="new-attribute">{newAttribute}</span> :
                         <span className="new-attribute none">NONE</span>
                 }
+            </div>
+        );
+    }
+
+    renderUnchangedAttribute(attributeLabel, oldAttribute, newAttribute) {
+        return (
+            <div className="attribute-update">
+                <span className="attribute-label">{attributeLabel}:&nbsp;</span>
                 {
-                    oldAttribute === newAttribute ?
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span> :
-                        <div/>
+                    oldAttribute.length ?
+                        <span className="old-attribute">{oldAttribute}</span> :
+                        <span className="old-attribute none">NONE</span>
                 }
+                <i className="material-icons">arrow_right_alt</i>
+                {
+                    newAttribute.length ?
+                        <span className="new-attribute">{newAttribute}</span> :
+                        <span className="new-attribute none">NONE</span>
+                }
+                <span className="no-attribute-change font-weight-bold">&nbsp;(NO CHANGES)</span>
             </div>
         );
     }
@@ -416,60 +455,121 @@ export default class UpdateReviewModal extends React.Component {
     }
 
     renderAttributeUpdates() {
+        const { showingUnchangedAttributes } = this.state;
         const { oldMonument, newMonument } = this.props;
 
-        let attributeUpdates = [];
+        const showUnchangedAttributesLink = (
+            <div className="show-unchanged-changes-link"
+                 onClick={() => this.handleShowUnchangedAttributesClick()}>
+                Show Unchanged Attributes
+            </div>
+        );
+
+        const hideUnchangedAttributesLink = (
+            <div className="show-unchanged-changes-link"
+                 onClick={() => this.handleShowUnchangedAttributesClick()}>
+                Hide Unchanged Attributes
+            </div>
+        );
+
+        let changedAttributes = [];
+        let unchangedAttributes = [];
 
         if (oldMonument && newMonument) {
             /* Title */
             let oldTitle = oldMonument.title ? oldMonument.title : '';
             let newTitle = newMonument.newTitle ? newMonument.newTitle : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Title', oldTitle, newTitle));
+            this.didAttributeChange(oldTitle, newTitle) ?
+                changedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Title', oldTitle, newTitle));
 
             /* Artist */
             let oldArtist = oldMonument.artist ? oldMonument.artist : '';
             let newArtist = newMonument.newArtist ? newMonument.newArtist : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Artist', oldArtist, newArtist));
+            this.didAttributeChange(oldArtist, newArtist) ?
+                changedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Artist', oldArtist, newArtist));
 
             /* Date */
-            attributeUpdates.push(this.renderDateUpdate());
+            //attributeUpdates.push(this.renderDateUpdate());
 
             /* Address */
             let oldAddress = oldMonument.address ? oldMonument.address : '';
             let newAddress = newMonument.newAddress ? newMonument.newAddress : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Address', oldAddress, newAddress));
+            this.didAttributeChange(oldAddress, newAddress) ?
+                changedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Address', oldAddress, newAddress));
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             let newLatitude = newMonument.newLatitude ? newMonument.newLatitude : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Latitude', oldLatitude, newLatitude));
+            this.didAttributeChange(oldLatitude, newLatitude) ?
+                changedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Latitude', oldLatitude, newLatitude));
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
             let newLongitude = newMonument.newLongitude ? newMonument.newLongitude : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Longitude', oldLongitude, newLongitude));
+            this.didAttributeChange(oldLongitude, newLongitude) ?
+                changedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Longitude', oldLongitude, newLongitude));
 
             /* Description */
             let oldDescription = oldMonument.description ? oldMonument.description : '';
             let newDescription = newMonument.newDescription ? newMonument.newDescription : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Description', oldDescription, newDescription));
+            this.didAttributeChange(oldDescription, newDescription) ?
+                changedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Description', oldDescription, newDescription));
 
             /* Inscription */
             let oldInscription = oldMonument.inscription ? oldMonument.inscription : '';
             let newInscription = newMonument.newInscription ? newMonument.newInscription : '';
-            attributeUpdates.push(this.renderAttributeUpdate('Inscription', oldInscription, newInscription));
+            this.didAttributeChange(oldInscription, newInscription) ?
+                changedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription)) :
+                unchangedAttributes.push(this.renderUnchangedAttribute('Inscription', oldInscription, newInscription));
 
             /* Materials and Tags */
-            attributeUpdates.push(this.renderTagUpdates());
+            //attributeUpdates.push(this.renderTagUpdates());
 
             /* References */
-            attributeUpdates.push(this.renderReferenceUpdates());
+            //attributeUpdates.push(this.renderReferenceUpdates());
 
             /* Images */
-            attributeUpdates.push(this.renderImageUpdates());
+            //attributeUpdates.push(this.renderImageUpdates());
         }
 
-        return attributeUpdates;
+        if (!changedAttributes.length) {
+            changedAttributes = (
+                <div className="no-attributes-changed-message">
+                    No attributes changed!
+                </div>
+            );
+        }
+
+        if (!unchangedAttributes.length) {
+            unchangedAttributes = (
+                <div className='no-attributes-changed-message'>
+                    No unchanged attributes!
+                </div>
+            );
+        }
+
+        return (
+            <div className="attributes-updates">
+                <div className="changed-attributes">
+                    {changedAttributes}
+                </div>
+                <Collapse in={showingUnchangedAttributes}>
+                    <div className="unchanged-attributes">
+                        <hr className="unchanged-attributes-divider"/>
+                        {unchangedAttributes}
+                    </div>
+                </Collapse>
+
+                {!showingUnchangedAttributes && showUnchangedAttributesLink}
+                {showingUnchangedAttributes && hideUnchangedAttributesLink}
+            </div>
+        );
     }
 
     render() {
