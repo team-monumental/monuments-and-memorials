@@ -6,13 +6,13 @@
   height: 100%;
   display: flex;
   flex-wrap: wrap;
-  flex-direction: column;
+  flex-direction: column-reverse;
   > div {
       flex: 33%;
   }
 
-  @include media-breakpoint-down(md) {
-    flex-direction: column-reverse;
+  @include media-breakpoint-up(lg) {
+    flex-direction: row;
   }
 }
 
