@@ -9,6 +9,12 @@
   flex-direction: column-reverse;
   > div {
       flex: 33%;
+      &.map-column {
+          flex: 10%;
+          @include media-breakpoint-up(lg) {
+              flex: 33%;
+          }
+      }
   }
 
   @include media-breakpoint-up(lg) {
