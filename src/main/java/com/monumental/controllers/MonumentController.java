@@ -222,14 +222,10 @@ public class MonumentController {
         MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(
                 parseResult.csvContents, parseResult.mapping, parseResult.zipFile
         );
-        List<CsvMonumentConverterResult> validResults = new ArrayList<>();
-        for (Integer rowNumber : validationResult.getResults().keySet()) {
-            CsvMonumentConverterResult result = validationResult.getResults().get(rowNumber);
-            if (result.getErrors().size() > 0) continue;
-            validResults.add(result);
-        }
 
-        return this.monumentService.bulkCreateMonuments(validResults);
+        return this.monumentService.bulkCreateMonuments(
+                new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
+        );
     }
 
     /**

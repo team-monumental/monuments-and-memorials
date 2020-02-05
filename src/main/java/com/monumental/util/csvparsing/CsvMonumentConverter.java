@@ -35,7 +35,7 @@ public class CsvMonumentConverter {
             for (int i = 0; i < values.size(); i++) {
                 String field = fields.get(i);
                 String value = values.get(i);
-                if (field == null) continue;
+                if (field == null || value.equals("")) continue;
                 switch (field) {
                     case "submittedBy":
                         Contribution contribution = parseContribution(value);
@@ -153,7 +153,9 @@ public class CsvMonumentConverter {
         List<String> names = new ArrayList<>();
 
         for (String materialValue : materialArray) {
-            names.add(cleanTagName(materialValue));
+            String name = cleanTagName(materialValue);
+            if (name.equals("")) continue;
+            names.add(name);
         }
         return names;
     }
