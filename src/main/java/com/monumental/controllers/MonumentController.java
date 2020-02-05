@@ -1,9 +1,9 @@
 package com.monumental.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
@@ -11,21 +11,19 @@ import com.monumental.models.Reference;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import com.monumental.util.csvparsing.BulkCreateResult;
-import com.monumental.util.csvparsing.ZipFileHelper;
-import com.opencsv.CSVReader;
+import com.monumental.util.csvparsing.CsvMonumentConverterResult;
+import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.vividsolutions.jts.geom.Point;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
-import java.util.zip.ZipFile;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -196,48 +194,42 @@ public class MonumentController {
     }
 
     /**
-     * Create many Monuments based on the specified CSV file contents
-     * @param csvContents - List of Strings, where each String is a CSV row
-     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
-     */
-//    @PostMapping("/api/monument/bulk-create")
-//    public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
-//        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents, false, null, null);
-//    }
-
-    /**
-     * Create many Monuments based on the specified .zip or .csv file
+     * Validate which rows in the specified .csv (or .csv within .zip) file are valid
      * @param request - Contains the field mapping and the file to process
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
-     * @throws IOException - If any I/O errors occur while processing the .zip or .csv file
      */
-    @PostMapping(value = "/api/monument/bulk-create")
-    public BulkCreateResult bulkCreateMonumentsWithImages(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
-
-        String json = new String(request.getMapping().getBytes());
-        ObjectMapper mapper = new ObjectMapper();
-
-        @SuppressWarnings("unchecked")
-        Map<String, String> mapping = mapper.readValue(json, Map.class);
-
-        if (request.getZip() != null) {
-            ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(request.getZip());
-            return this.monumentService.bulkCreateMonumentsFromZip(zipFile, mapping);
-        } else {
-            // TODO: Find the right home for this file parsing
-            BufferedReader br;
-            try {
-                String line;
-                InputStream is = request.getCsv().getInputStream();
-                br = new BufferedReader(new InputStreamReader(is));
-                List<String[]> result = new CSVReader(br).readAll();
-                return this.monumentService.bulkCreateMonuments(result, mapping, null);
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                // TODO: Handle this correctly
-                return new BulkCreateResult();
-            }
+    @PostMapping(value = "/api/monument/bulk/validate")
+    public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
+        try {
+            BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+        } catch (InvalidZipException | IOException e) {
+            MonumentBulkValidationResult result = new MonumentBulkValidationResult();
+            result.setError(e.getMessage());
+            return result;
         }
+    }
+
+    /**
+     * Create monuments from csv or zip
+     * @param request - Contains the field mapping and the file to process
+     * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
+     */
+    @PostMapping(value = "/api/monument/bulk/create")
+    public List<Monument> createMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
+        BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+
+        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(
+                parseResult.csvContents, parseResult.mapping, parseResult.zipFile
+        );
+        List<CsvMonumentConverterResult> validResults = new ArrayList<>();
+        for (Integer rowNumber : validationResult.getResults().keySet()) {
+            CsvMonumentConverterResult result = validationResult.getResults().get(rowNumber);
+            if (result.getErrors().size() > 0) continue;
+            validResults.add(result);
+        }
+
+        return this.monumentService.bulkCreateMonuments(validResults);
     }
 
     /**

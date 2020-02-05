@@ -23,3 +23,20 @@
         }
     }
 }
+
+.validation-table-wrapper {
+    max-height: calc(100vh - 400px);
+    overflow-y: auto;
+
+    .validation-table {
+        table-layout: fixed;
+
+        th:first-child {
+            width: 56px;
+        }
+
+        td:first-child {
+            width: 56px;
+        }
+    }
+}

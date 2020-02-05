@@ -3,7 +3,7 @@ import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
-import { bulkCreateMonuments } from '../../actions/bulk-create';
+import { bulkValidateMonuments, bulkCreateMonuments } from '../../actions/bulk';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
 
@@ -16,7 +16,9 @@ class MonumentBulkCreatePage extends React.Component {
         super(props);
 
         this.state = {
-            showingErrorModal: false
+            showingErrorModal: false,
+            showValidationResults: false,
+            showCreateResults: false
         };
     }
 
@@ -30,11 +32,20 @@ class MonumentBulkCreatePage extends React.Component {
         return state.bulkCreatePage;
     }
 
-    handleSubmit(form) {
+    handleValidationSubmit(form) {
+        const { dispatch } = this.props;
+
+        // Send the .zip or .csv file and the mapping to the server to be processed
+        dispatch(bulkValidateMonuments(form));
+        this.setState({showValidationResults: true});
+    }
+
+    handleCreateSubmit(form) {
         const { dispatch } = this.props;
 
         // Send the .zip or .csv file and the mapping to the server to be processed
         dispatch(bulkCreateMonuments(form));
+        this.setState({showValidationResults: false, showCreateResults: true});
     }
 
     handleErrorModalClose() {
@@ -42,19 +53,26 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        const { showingErrorModal } = this.state;
-        const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result, error } = this.props;
+        const { showingErrorModal, showValidationResults } = this.state;
+        const {
+            bulkCreateMonumentsPending, bulkValidateMonumentsPending, validationResult, validationError,
+            createResult, createError
+        } = this.props;
 
         return (
             <div className="page d-flex justify-content-center">
-                <Spinner show={bulkCreateMonumentsPending || bulkCreateMonumentsZipPending}/>
+                <Spinner show={bulkCreateMonumentsPending || bulkValidateMonumentsPending}/>
                 <BulkCreateForm
-                    onSubmit={(form) => this.handleSubmit(form)}
-                    bulkCreateResult={result}
+                    onValidationSubmit={(form) => this.handleValidationSubmit(form)}
+                    onCreateSubmit={(form) => this.handleCreateSubmit(form)}
+                    onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
+                    validationResult={validationResult}
+                    createResult={createResult}
+                    showValidationResults={showValidationResults && !bulkValidateMonumentsPending}
                 />
                 <ErrorModal
                     showing={showingErrorModal}
-                    errorMessage={error ? error.message : ''}
+                    errorMessage={(validationError || createError || {}).message || ''}
                     onClose={() => this.handleErrorModalClose()}
                 />
             </div>

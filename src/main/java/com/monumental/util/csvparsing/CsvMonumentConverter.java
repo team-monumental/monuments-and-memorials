@@ -20,7 +20,7 @@ import java.util.zip.ZipFile;
 public class CsvMonumentConverter {
 
     public static List<CsvMonumentConverterResult> convertCsvRows(List<String[]> csvRows, Map<String, String> mapping,
-                                                                  ZipFile zipFile, AwsS3Service s3Service) {
+                                                                  ZipFile zipFile) {
         String[] headers = csvRows.get(0);
         csvRows.remove(0);
 
@@ -52,7 +52,7 @@ public class CsvMonumentConverter {
                         try {
                             monument.setDate(parseDate(value));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
                         break;
                     case "materials":
@@ -64,12 +64,16 @@ public class CsvMonumentConverter {
                     case "latitude":
                         try {
                             latitude = Double.parseDouble(value);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } catch (NumberFormatException e) {
+                            result.getWarnings().add("Latitude should be a valid number.");
                         }
                         break;
                     case "longitude":
-                        longitude = Double.parseDouble(value);
+                        try {
+                            longitude = Double.parseDouble(value);
+                        } catch (NumberFormatException e) {
+                            result.getWarnings().add("Longitude should be a valid number.");
+                        }
                         break;
                     case "city":
                         monument.setCity(value);
@@ -89,10 +93,13 @@ public class CsvMonumentConverter {
                         monument.getReferences().add(reference);
                         break;
                     case "images":
-                        Image image = parseImage(value, zipFile, s3Service);
-                        if (image != null) {
-                            image.setMonument(monument);
-                            monument.getImages().add(image);
+                        if (zipFile != null) {
+                            ZipEntry imageZipEntry = zipFile.getEntry(value);
+                            if (imageZipEntry == null) {
+                                result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
+                            }
+                        } else {
+                            result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
                         }
                         break;
                 }
@@ -102,6 +109,7 @@ public class CsvMonumentConverter {
             monument.setCoordinates(point);
 
             result.setMonument(monument);
+            result.validate();
             results.add(result);
         }
         return results;

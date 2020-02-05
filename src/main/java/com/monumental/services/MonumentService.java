@@ -9,18 +9,24 @@ import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
+import com.opencsv.CSVReader;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -528,73 +534,11 @@ public class MonumentService extends ModelService<Monument> {
         );
     }
 
-    /**
-     * Create Monument records from the specified List of CSV Strings
-     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
-     * @param mapping - Map of the CSV file's fields to our fields
-     * @param zipFile - ZipFile containing the image files to use for image pre-processing
-     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
-     */
-    public BulkCreateResult bulkCreateMonuments(List<String[]> csvList, Map<String, String> mapping,
-                                                ZipFile zipFile) {
-        if (csvList == null) {
-            return null;
-        }
-
-        BulkCreateResult bulkCreateResult = new BulkCreateResult();
-        ArrayList<CsvMonumentConverterResult> validResults = new ArrayList<>();
-
-        List<CsvMonumentConverterResult> results = CsvMonumentConverter.convertCsvRows(csvList, mapping, zipFile, s3Service);
-        for (int i = 0; i < results.size(); i++) {
-            CsvMonumentConverterResult result = results.get(i);
-            CsvMonumentConverterResult.ValidationResult validationResult = result.validate();
-            if (validationResult.isValid()) {
-                validResults.add(result);
-            }
-            else {
-                bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().put(i, result.toString());
-                bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().put(i,
-                        validationResult.getValidationErrors());
-            }
-        }
-
-        int monumentsInsertedCount = 0;
-
-        for (CsvMonumentConverterResult validResult : validResults) {
-            try {
-                // Insert the Monument
-                Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
-                bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
-
-                List<Monument> monuments = new ArrayList<>();
-                monuments.add(insertedMonument);
-
-                // Insert all of the Tags associated with the Monument
-                List<String> tagNames = validResult.getTagNames();
-                if (tagNames != null && tagNames.size() > 0) {
-                    for (String tagName : tagNames) {
-                        this.tagService.createTag(tagName, monuments, false);
-                    }
-                }
-
-                // Insert all of the Materials associated with the Monument
-                List<String> materialNames = validResult.getMaterialNames();
-                if (materialNames != null && materialNames.size() > 0) {
-                    for (String materialName : materialNames) {
-                        this.tagService.createTag(materialName, monuments, true);
-                    }
-                }
-
-            } catch (DataIntegrityViolationException e) {
-                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                // These are disregarded for now - the correct tags are still being created
-            }
-
-            monumentsInsertedCount++;
-        }
-
-        bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
-        return bulkCreateResult;
+    public List<String[]> readCSV(MultipartFile csv) throws IOException {
+        BufferedReader br;
+        InputStream is = csv.getInputStream();
+        br = new BufferedReader(new InputStreamReader(is));
+        return new CSVReader(br).readAll();
     }
 
     /**
@@ -604,10 +548,9 @@ public class MonumentService extends ModelService<Monument> {
      * @throws InvalidZipException - If there is not exactly 1 CSV file in the .zip file
      * @throws IOException - If there are any I/O errors while processing the ZipFile
      */
-    public BulkCreateResult bulkCreateMonumentsFromZip(ZipFile zipFile, Map<String, String> mapping) throws InvalidZipException, IOException {
+    public List<String[]> readCSVFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
         // Search for CSV files in the .zip file
         // If the number of CSV files found is not exactly 1, error
-        // Also collect of the image filenames in the ZipFile
         int csvFileCount = 0;
         ZipEntry csvEntry = null;
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
@@ -626,15 +569,76 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Get the contents as CSV rows from the CSV file
-        List<String[]> csvContents = ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
+        return ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
+    }
 
-        // Pre-process and process the CSV contents and images
-        BulkCreateResult result = this.bulkCreateMonuments(csvContents, mapping, zipFile);
+    /**
+     * Create Monument records from the specified List of CSV Strings
+     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
+     * @param mapping - Map of the CSV file's fields to our fields
+     * @param zipFile - ZipFile containing the image files to use for image pre-processing
+     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
+     */
+    public MonumentBulkValidationResult validateMonumentCSV(List<String[]> csvList, Map<String, String> mapping,
+                                                            ZipFile zipFile) throws IOException {
+        if (csvList == null) {
+            return null;
+        }
 
-        // Close the ZipFile
-        zipFile.close();
+        MonumentBulkValidationResult monumentBulkValidationResult = new MonumentBulkValidationResult();
 
-        return result;
+        List<CsvMonumentConverterResult> results = CsvMonumentConverter.convertCsvRows(csvList, mapping, zipFile);
+        for (int i = 0; i < results.size(); i++) {
+            monumentBulkValidationResult.getResults().put(i + 1, results.get(i));
+        }
+
+        if (zipFile != null) {
+            zipFile.close();
+        }
+
+        return monumentBulkValidationResult;
+    }
+
+    public List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults) {
+        List<Monument> monuments = new ArrayList<>();
+        for (CsvMonumentConverterResult result : csvResults) {
+            int index = csvResults.indexOf(result);
+            try {
+                // Insert the Monument
+                Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
+                monuments.add(insertedMonument);
+                // Insert all of the Tags associated with the Monument
+                Set<String> tagNames = result.getTagNames();
+                if (tagNames != null && tagNames.size() > 0) {
+                    for (String tagName : tagNames) {
+                        this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
+                    }
+                }
+
+                // Insert all of the Materials associated with the Monument
+                List<String> materialNames = result.getMaterialNames();
+                if (materialNames != null && materialNames.size() > 0) {
+                    for (String materialName : materialNames) {
+                        this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
+                    }
+                }
+
+                // TODO: Upload images to S3
+            } catch (DataIntegrityViolationException e) {
+                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
+                // These are disregarded for now - the correct tags are still being created
+                System.out.println("Duplicate monument_tag was not created");
+            } catch (Exception e) {
+                if (ExceptionUtils.getRootCause(e).getMessage().contains("duplicate key")) {
+                    // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
+                    // These are disregarded for now - the correct tags are still being created
+                    System.out.println("Duplicate monument_tag was not created");
+                } else {
+                    throw e;
+                }
+            }
+        }
+        return monuments;
     }
 
     @SuppressWarnings("unchecked")
