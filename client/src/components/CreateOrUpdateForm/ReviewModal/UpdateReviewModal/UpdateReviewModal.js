@@ -4,8 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
-import Collapse from "react-bootstrap/Collapse";
-import {isEmptyObject} from "../../../../utils/object-util";
+import Collapse from 'react-bootstrap/Collapse';
 
 /**
  * Presentational component for the Modal shown before a Monument Update is completed
@@ -24,8 +23,8 @@ export default class UpdateReviewModal extends React.Component {
      * Iterates through the oldMonument's Materials and Tags
      * as well as the newMonument's Materials and Tags to
      * determine the unchanged, added and removed Materials and Tags
-     * Done once in this method then stored in the state so we don't
-     * loop multiple times
+     * Done once in this method so we don't have to loop multiple times
+     * Stores the changes in an object to return
      */
     collectTagChanges() {
         const { oldMonument, newMonument } = this.props;
@@ -102,12 +101,71 @@ export default class UpdateReviewModal extends React.Component {
         };
     }
 
+    /**
+     * Iterates through the oldMonument's References
+     * as well as the newMonument's References to
+     * determine the unchanged, added and removed References
+     * Done once in this method so we don't have to loop multiple times
+     * Stores the changes in an object to return
+     */
+    collectReferenceChanges() {
+        const { oldMonument, newMonument } = this.props;
+
+        let deletedReferences = [];
+        let changedReferences = [];
+        let unchangedReferences = [];
+        let addedReferences = [];
+
+        // Gather changed, unchanged and deleted References
+        if (oldMonument.references && oldMonument.references.length) {
+            for (const reference of oldMonument.references) {
+                // Deleted
+                if (newMonument.deletedReferenceIds.includes(reference.id)) {
+                    deletedReferences.push(reference.url);
+                }
+                else {
+                    const newReferenceValue = newMonument.updatedReferencesUrlsById[reference.id];
+
+                    // Changed
+                    if (reference.url !== newReferenceValue) {
+                        changedReferences.push(
+                            {
+                                oldReferenceValue: reference.url,
+                                newReferenceValue
+                            }
+                        );
+                    }
+                    // Unchanged
+                    else {
+                        unchangedReferences.push(reference.url);
+                    }
+                }
+            }
+        }
+
+        // Gather added References
+        if (newMonument.newReferenceUrls && newMonument.newReferenceUrls) {
+            for (const newReferenceUrl of newMonument.newReferenceUrls) {
+                if (newReferenceUrl !== '') {
+                    addedReferences.push(newReferenceUrl);
+                }
+            }
+        }
+
+        return {
+            deletedReferences,
+            changedReferences,
+            unchangedReferences,
+            addedReferences
+        };
+    }
+
     handleShowUnchangedAttributesClick() {
         const { showingUnchangedAttributes } = this.state;
         this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
     }
 
-    renderAttributeChange(attributeLabel, oldAttribute, newAttribute) {
+    renderAttributeChange(attributeLabel, oldAttribute, newAttribute, didChange) {
         return (
             <div className="attribute-update">
                 <span className="attribute-label">{attributeLabel}:&nbsp;</span>
@@ -122,31 +180,16 @@ export default class UpdateReviewModal extends React.Component {
                         <span className="new-attribute">{newAttribute}</span> :
                         <span className="new-attribute none">NONE</span>
                 }
+                {
+                    didChange ?
+                        <div/> :
+                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO CHANGES)</span>
+                }
             </div>
         );
     }
 
-    renderUnchangedAttribute(attributeLabel, oldAttribute, newAttribute) {
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">{attributeLabel}:&nbsp;</span>
-                {
-                    oldAttribute.length ?
-                        <span className="old-attribute">{oldAttribute}</span> :
-                        <span className="old-attribute none">NONE</span>
-                }
-                <i className="material-icons">arrow_right_alt</i>
-                {
-                    newAttribute.length ?
-                        <span className="new-attribute">{newAttribute}</span> :
-                        <span className="new-attribute none">NONE</span>
-                }
-                <span className="no-attribute-change font-weight-bold">&nbsp;(NO CHANGES)</span>
-            </div>
-        );
-    }
-
-    renderYearChange(oldYear, newYear) {
+    renderYearChange(oldYear, newYear, didChange) {
         let oldYearDisplay = <span className="old-attribute none">NONE</span>;
         let newYearDisplay = <span className="new-attribute none">NONE</span>;
 
@@ -164,34 +207,16 @@ export default class UpdateReviewModal extends React.Component {
                 {oldYearDisplay}
                 <i className="material-icons">arrow_right_alt</i>
                 {newYearDisplay}
+                {
+                    didChange ?
+                        <div/> :
+                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
+                }
             </div>
         );
     }
 
-    renderUnchangedYear(oldYear, newYear) {
-        let oldYearDisplay = <span className="old-attribute none">NONE</span>;
-        let newYearDisplay = <span className="new-attribute none">NONE</span>;
-
-        if (oldYear) {
-            oldYearDisplay = <span className="old-attribute">{oldYear}</span>;
-        }
-
-        if (newYear && newYear.length) {
-            newYearDisplay = <span className="new-attribute">{newYear}</span>;
-        }
-
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
-                {oldYearDisplay}
-                <i className="material-icons">arrow_right_alt</i>
-                {newYearDisplay}
-                <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-            </div>
-        );
-    }
-
-    renderMonthYearChange(oldYear, oldMonth, newYear, newMonth) {
+    renderMonthYearChange(oldYear, oldMonth, newYear, newMonth, didChange) {
         let oldMonthYearDisplay = <span className="old-attribute none">NONE</span>;
         let newMonthYearDisplay = <span className="new-attribute none">NONE</span>;
 
@@ -209,34 +234,16 @@ export default class UpdateReviewModal extends React.Component {
                 {oldMonthYearDisplay}
                 <i className="material-icons">arrow_right_alt</i>
                 {newMonthYearDisplay}
+                {
+                    didChange ?
+                        <div/> :
+                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
+                }
             </div>
         );
     }
 
-    renderUnchangedMonthYear(oldYear, oldMonth, newYear, newMonth) {
-        let oldMonthYearDisplay = <span className="old-attribute none">NONE</span>;
-        let newMonthYearDisplay = <span className="new-attribute none">NONE</span>;
-
-        if (oldMonth) {
-            oldMonthYearDisplay = <span className="old-attribute">{`${prettyPrintMonth(oldMonth)}, ${oldYear}`}</span>;
-        }
-
-        if (newMonth && newYear && newYear.length) {
-            newMonthYearDisplay = <span className="new-attribute">{`${prettyPrintMonth(newMonth)}, ${newYear}`}</span>
-        }
-
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
-                {oldMonthYearDisplay}
-                <i className="material-icons">arrow_right_alt</i>
-                {newMonthYearDisplay}
-                <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-            </div>
-        );
-    }
-
-    renderExactDateChange(oldDate, newDate) {
+    renderExactDateChange(oldDate, newDate, didChange) {
         let oldDateDisplay = <span className="old-attribute none">NONE</span>;
         let newDateDisplay = <span className="new-attribute none">NONE</span>;
 
@@ -254,29 +261,11 @@ export default class UpdateReviewModal extends React.Component {
                 {oldDateDisplay}
                 <i className="material-icons">arrow_right_alt</i>
                 {newDateDisplay}
-            </div>
-        );
-    }
-
-    renderUnchangedExactDate(oldDate, newDate) {
-        let oldDateDisplay = <span className="old-attribute none">NONE</span>;
-        let newDateDisplay = <span className="new-attribute none">NONE</span>;
-
-        if (oldDate) {
-            oldDateDisplay = <span className="old-attribute">{prettyPrintDate(oldDate)}</span>;
-        }
-
-        if (newDate) {
-            newDateDisplay = <span className="old-attribute">{prettyPrintDate(newDate)}</span>;
-        }
-
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
-                {oldDateDisplay}
-                <i className="material-icons">arrow_right_alt</i>
-                {newDateDisplay}
-                <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
+                {
+                    didChange ?
+                        <div/> :
+                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
+                }
             </div>
         );
     }
@@ -338,18 +327,67 @@ export default class UpdateReviewModal extends React.Component {
         );
     }
 
-    renderReferenceUpdate(oldReferenceValue, newReferenceValue) {
+    renderUnchangedReferences(unchangedReferences) {
+        let unchangedReferenceDisplays = [];
+
+        for (const unchangedReference of unchangedReferences) {
+            unchangedReferenceDisplays.push(this.renderReferenceChange(unchangedReference, unchangedReference, false));
+        }
+
         return (
-            <li key={newReferenceValue} className="reference-update">
+            <div className="changed-references">
+                <span className="attribute-label">Unchanged References:&nbsp;</span>
+                    <ul className="changed-references-list">{unchangedReferenceDisplays}</ul>
+            </div>
+        );
+    }
+
+    renderChangedReferences(changedReferences) {
+        let changedReferenceDisplays = [];
+
+        for (const changedReference of changedReferences) {
+            changedReferenceDisplays.push(this.renderReferenceChange(changedReference.oldReferenceValue, changedReference.newReferenceValue, true));
+        }
+
+        return (
+            <div className="changed-references">
+                <span className="attribute-label">Changed References:&nbsp;</span>
+                    <ul className="changed-references-list">{changedReferenceDisplays}</ul>
+            </div>
+        );
+    }
+
+    renderReferenceChange(oldReferenceValue, newReferenceValue, didChange) {
+        return (
+            <li key={newReferenceValue} className="reference-change">
                 <span className="old-attribute">{oldReferenceValue}</span>
                 <i className="material-icons">arrow_right_alt</i>
                 <span className="new-attribute">{newReferenceValue}</span>
                 {
-                    oldReferenceValue === newReferenceValue ?
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span> :
-                        <div/>
+                    didChange ?
+                        <div/> :
+                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
                 }
             </li>
+        );
+    }
+
+    renderAddedReferences(addedReferences) {
+        let addedReferenceDisplay = [];
+
+        for (const addedReference of addedReferences) {
+            addedReferenceDisplay.push(this.renderAddedReference(addedReference));
+        }
+
+        return (
+            <div className="added-references">
+                <span className="attribute-label">Added References:&nbsp;</span>
+                {
+                    addedReferenceDisplay.length ?
+                        <ul className="added-references-list">{addedReferenceDisplay}</ul> :
+                        <span className="font-weight-bold">NONE</span>
+                }
+            </div>
         );
     }
 
@@ -359,95 +397,29 @@ export default class UpdateReviewModal extends React.Component {
         );
     }
 
+    renderDeletedReferences(deletedReferences) {
+        let deletedReferenceDisplays = [];
+
+        for (const deletedReference of deletedReferences) {
+            deletedReferenceDisplays.push(this.renderDeletedReference(deletedReference));
+        }
+
+        return (
+            <div className="deleted-references">
+                <span className="attribute-label">Deleted References:&nbsp;</span>
+                {
+                    deletedReferenceDisplays.length ?
+                        <ul className="deleted-references-list">{deletedReferenceDisplays}</ul> :
+                        <span className="font-weight-bold">NONE</span>
+                }
+            </div>
+        );
+    }
+
     renderDeletedReference(deletedReferenceUrl) {
         return (
             <li key={deletedReferenceUrl} className="reference removed">{deletedReferenceUrl}</li>
         );
-    }
-
-    renderReferenceUpdates() {
-        const { oldMonument, newMonument } = this.props;
-
-        let referenceUpdates = [];
-        let deletedReferenceValues = [];
-
-        // Changed Reference URLs
-        if (oldMonument.references && oldMonument.references.length) {
-            const changedReferences = [];
-
-            // While we're looping, gather the deleted Reference values as well
-            for (const reference of oldMonument.references) {
-                if (newMonument.deletedReferenceIds.includes(reference.id)) {
-                    deletedReferenceValues.push(reference.url);
-                }
-                else {
-                    const newReferenceValue = newMonument.updatedReferencesUrlsById[reference.id];
-
-                    if (reference.url !== newReferenceValue) {
-                        changedReferences.push(this.renderReferenceUpdate(reference.url, newReferenceValue));
-                    }
-                }
-            }
-
-            let changedReferencesDisplay = (
-                <div className="updated-references">
-                    <span className="attribute-label">Updated References:&nbsp;</span>
-                    {
-                        changedReferences.length ?
-                            <ul className="reference-update-list">{changedReferences}</ul> :
-                            <span className="font-weight-bold">NONE</span>
-                    }
-                </div>
-            );
-
-            referenceUpdates.push(changedReferencesDisplay);
-        }
-
-        // Added References
-        if (newMonument.newReferenceUrls && newMonument.newReferenceUrls) {
-            const addedReferences = [];
-
-            for (const newReferenceUrl of newMonument.newReferenceUrls) {
-                addedReferences.push(this.renderAddedReference(newReferenceUrl));
-            }
-
-            let addedReferencesDisplay = (
-                <div className="added-references">
-                    <span className="attribute-label">Added References:&nbsp;</span>
-                    {
-                        addedReferences.length ?
-                            <ul className="added-references-list">{addedReferences}</ul> :
-                            <span className="font-weight-bold">NONE</span>
-                    }
-                </div>
-            );
-
-            referenceUpdates.push(addedReferencesDisplay);
-        }
-
-        // Deleted References
-        let deletedReferencesDisplay = <span className="font-weight-bold">NONE</span>;
-
-        if (deletedReferenceValues.length) {
-            let deletedReferences = [];
-
-            for (const deletedReferenceValue of deletedReferenceValues) {
-                deletedReferences.push(this.renderDeletedReference(deletedReferenceValue));
-            }
-
-            deletedReferencesDisplay = (
-                <ul className="deleted-references-list">{deletedReferences}</ul>
-            );
-        }
-
-        referenceUpdates.push(
-            <div className="deleted-references">
-                <span className="attribute-label">Deleted References:&nbsp;</span>
-                {deletedReferencesDisplay}
-            </div>
-        );
-
-        return referenceUpdates;
     }
 
     renderAddedImages() {
@@ -498,18 +470,9 @@ export default class UpdateReviewModal extends React.Component {
         );
     }
 
-    renderImageUpdates() {
-        let imageUpdates = [];
-
-        imageUpdates.push(this.renderAddedImages());
-        imageUpdates.push(this.renderDeletedImages());
-
-        return imageUpdates;
-    }
-
     renderAttributeUpdates() {
         const { showingUnchangedAttributes } = this.state;
-        const { oldMonument, newMonument, dateSelectValue } = this.props;
+        const { oldMonument, newMonument, dateSelectValue, addedImages } = this.props;
 
         const showUnchangedAttributesLink = (
             <div className="show-unchanged-changes-link"
@@ -533,15 +496,15 @@ export default class UpdateReviewModal extends React.Component {
             let oldTitle = oldMonument.title ? oldMonument.title : '';
             let newTitle = newMonument.newTitle ? newMonument.newTitle : '';
             (oldTitle !== newTitle) ?
-                changedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Title', oldTitle, newTitle));
+                changedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle, false));
 
             /* Artist */
             let oldArtist = oldMonument.artist ? oldMonument.artist : '';
             let newArtist = newMonument.newArtist ? newMonument.newArtist : '';
             (oldArtist !== newArtist) ?
-                changedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Artist', oldArtist, newArtist));
+                changedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist, false));
 
             /* Date */
             let oldMonumentYear, oldMonumentMonth;
@@ -556,22 +519,22 @@ export default class UpdateReviewModal extends React.Component {
             switch(dateSelectValue) {
                 case 'year':
                     (oldMonumentYear !== newMonument.newYear) ?
-                        changedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear)) :
-                        unchangedAttributes.push(this.renderUnchangedYear(oldMonumentYear, newMonument.newYear));
+                        changedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, true)) :
+                        unchangedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, false));
                     break;
                 case 'month-year':
                     if (oldMonumentYear !== newMonument.newYear &&
                         oldMonumentMonth !== newMonument.newMonth) {
-                        changedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth));
+                        changedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth, true));
                     }
                     else {
-                        unchangedAttributes.push(this.renderUnchangedMonthYear(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth));
+                        unchangedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth, false));
                     }
                     break;
                 case 'exact-date':
                     (prettyPrintDate(oldMonument.date) !== prettyPrintDate(newMonument.newDate)) ?
-                        changedAttributes.push(this.renderExactDateChange(oldMonument.date, newMonument.newDate)) :
-                        unchangedAttributes.push(this.renderUnchangedExactDate(oldMonument.date, newMonument.newDate));
+                        changedAttributes.push(this.renderExactDateChange(oldMonument.date, newMonument.newDate, true)) :
+                        unchangedAttributes.push(this.renderExactDateChange(oldMonument.date, newMonument.newDate, false));
                     break;
                 default:
                     break;
@@ -581,36 +544,36 @@ export default class UpdateReviewModal extends React.Component {
             let oldAddress = oldMonument.address ? oldMonument.address : '';
             let newAddress = newMonument.newAddress ? newMonument.newAddress : '';
             (oldAddress !== newAddress) ?
-                changedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Address', oldAddress, newAddress));
+                changedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress, false));
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             let newLatitude = newMonument.newLatitude ? newMonument.newLatitude : '';
             (oldLatitude !== newLatitude) ?
-                changedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Latitude', oldLatitude, newLatitude));
+                changedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude, false));
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
             let newLongitude = newMonument.newLongitude ? newMonument.newLongitude : '';
             (oldLongitude !== newLongitude) ?
-                changedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Longitude', oldLongitude, newLongitude));
+                changedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude, false));
 
             /* Description */
             let oldDescription = oldMonument.description ? oldMonument.description : '';
             let newDescription = newMonument.newDescription ? newMonument.newDescription : '';
             (oldDescription !== newDescription) ?
-                changedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Description', oldDescription, newDescription));
+                changedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription, false));
 
             /* Inscription */
             let oldInscription = oldMonument.inscription ? oldMonument.inscription : '';
             let newInscription = newMonument.newInscription ? newMonument.newInscription : '';
             (oldInscription !== newInscription) ?
-                changedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription)) :
-                unchangedAttributes.push(this.renderUnchangedAttribute('Inscription', oldInscription, newInscription));
+                changedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription, false));
 
             /* Materials and Tags */
             const tagChanges = this.collectTagChanges();
@@ -636,10 +599,32 @@ export default class UpdateReviewModal extends React.Component {
                 unchangedAttributes.push(this.renderRemovedTags(tagChanges.removedTags, false));
 
             /* References */
-            //attributeUpdates.push(this.renderReferenceUpdates());
+            const referenceChanges = this.collectReferenceChanges();
+
+            if (referenceChanges.unchangedReferences.length) {
+                unchangedAttributes.push(this.renderUnchangedReferences(referenceChanges.unchangedReferences));
+            }
+
+            if (referenceChanges.changedReferences.length) {
+                changedAttributes.push(this.renderChangedReferences(referenceChanges.changedReferences));
+            }
+
+            referenceChanges.addedReferences.length ?
+                changedAttributes.push(this.renderAddedReferences(referenceChanges.addedReferences)) :
+                unchangedAttributes.push(this.renderAddedReferences(referenceChanges.addedReferences));
+
+            referenceChanges.deletedReferences.length ?
+                changedAttributes.push(this.renderDeletedReferences(referenceChanges.deletedReferences)) :
+                unchangedAttributes.push(this.renderDeletedReferences(referenceChanges.deletedReferences));
 
             /* Images */
-            //attributeUpdates.push(this.renderImageUpdates());
+            (addedImages && addedImages.length) ?
+                changedAttributes.push(this.renderAddedImages()) :
+                unchangedAttributes.push(this.renderAddedImages());
+
+            (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) ?
+                changedAttributes.push(this.renderDeletedImages()) :
+                unchangedAttributes.push(this.renderDeletedImages());
         }
 
         if (!changedAttributes.length) {
