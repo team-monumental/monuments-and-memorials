@@ -392,7 +392,7 @@ export default class CreateOrUpdateForm extends React.Component {
             return !(!images || !images.length);
         }
         else {
-            return !(!imagesForUpdate || !imagesForUpdate.length);
+            return (!(!imagesForUpdate || !imagesForUpdate.length)) || (!(!images || !images.length));
         }
     }
 
@@ -741,7 +741,7 @@ export default class CreateOrUpdateForm extends React.Component {
         else {
             return (
                 <i
-                    className="material-icons undo-delete-button reference"
+                    className="material-icons delete-button undo reference"
                     onClick={e => this.handleReferenceUndoDeleteButtonClick(e, reference)}
                 >
                     undo
@@ -797,7 +797,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (image.hasBeenDeleted) {
             return (
                 <i
-                    className="material-icons undo-delete-button image"
+                    className="material-icons delete-button undo"
                     onClick={e => this.handleImageForUpdateUndoDeleteButtonClick(e, image)}
                 >
                     undo
