@@ -455,12 +455,12 @@ export default class CreateOrUpdateForm extends React.Component {
 
         let updateForm = {
             newTitle: title.value,
-            newAddress: address.value === '' ? null : address.value,
-            newArtist: artist.value === '' ? null : artist.value,
-            newDescription: description.value === '' ? null : description.value,
-            newInscription: inscription.value === '' ? null : inscription.value,
-            newLatitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
-            newLongitude: (latitude.value === '' && longitude.value === '') ? null : longitude.value,
+            newAddress: address.value === '' ? undefined : address.value,
+            newArtist: artist.value === '' ? undefined : artist.value,
+            newDescription: description.value === '' ? undefined : description.value,
+            newInscription: inscription.value === '' ? undefined : inscription.value,
+            newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
+            newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images: images
         };
 
@@ -474,10 +474,10 @@ export default class CreateOrUpdateForm extends React.Component {
 
         switch (dateSelectValue) {
             case 'year':
-                updateForm.newYear = year.value === '' ? null : year.value;
+                updateForm.newYear = year.value === '' ? undefined : year.value;
                 break;
             case 'month-year':
-                updateForm.newYear = year.value === '' ? null : year.value;
+                updateForm.newYear = year.value === '' ? undefined : year.value;
                 updateForm.newMonth = month.value;
                 break;
             case 'exact-date':

@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
 import Collapse from "react-bootstrap/Collapse";
+import {isEmptyObject} from "../../../../utils/object-util";
 
 /**
  * Presentational component for the Modal shown before a Monument Update is completed
@@ -20,13 +21,85 @@ export default class UpdateReviewModal extends React.Component {
     }
 
     /**
-     * Compares oldAttribute to the newAttribute
-     * Returns True if the attribute changed, False otherwise
-     * @param oldAttribute - Old attribute value to compare
-     * @param newAttribute - New attribute value to compare
+     * Iterates through the oldMonument's Materials and Tags
+     * as well as the newMonument's Materials and Tags to
+     * determine the unchanged, added and removed Materials and Tags
+     * Done once in this method then stored in the state so we don't
+     * loop multiple times
      */
-    didAttributeChange(oldAttribute, newAttribute) {
-        return oldAttribute !== newAttribute
+    collectTagChanges() {
+        const { oldMonument, newMonument } = this.props;
+
+        const unchangedMaterials = [];
+        const addedMaterials = [];
+        const removedMaterials = [];
+        const unchangedTags = [];
+        const addedTags = [];
+        const removedTags = [];
+
+        if (oldMonument && oldMonument.monumentTags && newMonument) {
+            const oldMonumentMaterialNames = [];
+            const oldMonumentTagNames = [];
+
+            // Gather the names of the oldMonument's Materials and Tags
+            for (const monumentTag of oldMonument.monumentTags) {
+                if (monumentTag.tag) {
+                    if (monumentTag.tag.isMaterial) {
+                        oldMonumentMaterialNames.push(monumentTag.tag.name);
+                    }
+                    else {
+                        oldMonumentTagNames.push(monumentTag.tag.name);
+                    }
+                }
+            }
+
+            // Find the added and unchanged Materials
+            if (newMonument.newMaterials && newMonument.newMaterials.length) {
+                for (const newMaterialName of newMonument.newMaterials) {
+                    if (!oldMonumentMaterialNames.includes(newMaterialName)) {
+                        addedMaterials.push(newMaterialName);
+                    }
+                    else {
+                        unchangedMaterials.push(newMaterialName);
+                    }
+                }
+
+                // Find the removed Materials
+                for (const oldMaterialName of oldMonumentMaterialNames) {
+                    if (!newMonument.newMaterials.includes(oldMaterialName)) {
+                        removedMaterials.push(oldMaterialName);
+                    }
+                }
+            }
+
+            // Find the added and unchanged Tags
+            if (newMonument.newTags && newMonument.newTags.length) {
+                for (const newTagName of newMonument.newTags) {
+                    if (!oldMonumentTagNames.includes(newTagName)) {
+                        addedTags.push(newTagName);
+                    }
+                    else {
+                        unchangedTags.push(newTagName);
+                    }
+                }
+
+                // Find the removed Tags
+                for (const oldTagName of oldMonumentTagNames) {
+                    if (!newMonument.newTags.includes(oldTagName)) {
+                        removedTags.push(oldTagName);
+                    }
+                }
+            }
+        }
+
+        return {
+            unchangedMaterials,
+            addedMaterials,
+            removedMaterials,
+            unchangedTags,
+            addedTags,
+            removedTags
+        };
     }
 
     handleShowUnchangedAttributesClick() {
@@ -73,79 +146,137 @@ export default class UpdateReviewModal extends React.Component {
         );
     }
 
-    renderDateUpdate() {
-        const { oldMonument, newMonument, dateSelectValue } = this.props;
+    renderYearChange(oldYear, newYear) {
+        let oldYearDisplay = <span className="old-attribute none">NONE</span>;
+        let newYearDisplay = <span className="new-attribute none">NONE</span>;
 
-        let oldDate = <span className="old-attribute none">NONE</span>;
-        let newDate = <span className="new-attribute none">NONE</span>;
-        let noAttributeChange = <div/>;
-
-        let oldMonumentYear, oldMonumentMonth;
-
-        if (oldMonument.date) {
-            const oldMonumentDateArray = oldMonument.date.split('-');
-            oldMonumentYear = oldMonumentDateArray[0];
-            // Need to make the month 0-based
-            oldMonumentMonth = (parseInt(oldMonumentDateArray[1]) - 1).toString()
+        if (oldYear) {
+            oldYearDisplay = <span className="old-attribute">{oldYear}</span>;
         }
 
-        switch (dateSelectValue) {
-            case 'year':
-                if (oldMonumentYear) {
-                    oldDate = <span className="old-attribute">{oldMonumentYear}</span>;
-                }
-
-                if (newMonument.newYear && newMonument.newYear.length) {
-                    newDate = <span className="new-attribute">{newMonument.newYear}</span>;
-                }
-
-                if (oldMonumentYear === newMonument.newYear) {
-                    noAttributeChange = (
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                    );
-                }
-                break;
-            case 'month-year':
-                if (oldMonumentMonth) {
-                    oldDate = <span className="old-attribute">{`${prettyPrintMonth(oldMonumentMonth)}, ${oldMonumentYear}`}</span>;
-                }
-
-                if (newMonument.newMonth && newMonument.newYear && newMonument.newYear.length) {
-                    newDate = <span className="new-attribute">{`${prettyPrintMonth(newMonument.newMonth)}, ${newMonument.newYear}`}</span>
-                }
-
-                if (oldMonumentYear === newMonument.newYear && oldMonumentMonth === newMonument.newMonth) {
-                    noAttributeChange = (
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                    );
-                }
-                break;
-            case 'exact-date':
-                if (oldMonument.date) {
-                    oldDate = <span className="old-attribute">{prettyPrintDate(oldMonument.date)}</span>;
-                }
-
-                if (newMonument.newDate) {
-                    newDate = <span className="old-attribute">{prettyPrintDate(newMonument.newDate)}</span>;
-                }
-
-                if (prettyPrintDate(oldMonument.date) === prettyPrintDate(newMonument.newDate)) {
-                    noAttributeChange = (
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                    );
-                }
-                break;
-            default:
-                break;
+        if (newYear && newYear.length) {
+            newYearDisplay = <span className="new-attribute">{newYear}</span>;
         }
 
         return (
             <div className="attribute-update">
                 <span className="attribute-label">Date:&nbsp;</span>
-                {oldDate}
+                {oldYearDisplay}
                 <i className="material-icons">arrow_right_alt</i>
-                {newDate}
-                {noAttributeChange}
+                {newYearDisplay}
+            </div>
+        );
+    }
+
+    renderUnchangedYear(oldYear, newYear) {
+        let oldYearDisplay = <span className="old-attribute none">NONE</span>;
+        let newYearDisplay = <span className="new-attribute none">NONE</span>;
+
+        if (oldYear) {
+            oldYearDisplay = <span className="old-attribute">{oldYear}</span>;
+        }
+
+        if (newYear && newYear.length) {
+            newYearDisplay = <span className="new-attribute">{newYear}</span>;
+        }
+
+        return (
+            <div className="attribute-update">
+                <span className="attribute-label">Date:&nbsp;</span>
+                {oldYearDisplay}
+                <i className="material-icons">arrow_right_alt</i>
+                {newYearDisplay}
+                <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
+            </div>
+        );
+    }
+
+    renderMonthYearChange(oldYear, oldMonth, newYear, newMonth) {
+        let oldMonthYearDisplay = <span className="old-attribute none">NONE</span>;
+        let newMonthYearDisplay = <span className="new-attribute none">NONE</span>;
+
+        if (oldMonth) {
+            oldMonthYearDisplay = <span className="old-attribute">{`${prettyPrintMonth(oldMonth)}, ${oldYear}`}</span>;
+        }
+
+        if (newMonth && newYear && newYear.length) {
+            newMonthYearDisplay = <span className="new-attribute">{`${prettyPrintMonth(newMonth)}, ${newYear}`}</span>
+        }
+
+        return (
+            <div className="attribute-update">
+                <span className="attribute-label">Date:&nbsp;</span>
+                {oldMonthYearDisplay}
+                <i className="material-icons">arrow_right_alt</i>
+                {newMonthYearDisplay}
+            </div>
+        );
+    }
+
+    renderUnchangedMonthYear(oldYear, oldMonth, newYear, newMonth) {
+        let oldMonthYearDisplay = <span className="old-attribute none">NONE</span>;
+        let newMonthYearDisplay = <span className="new-attribute none">NONE</span>;
+
+        if (oldMonth) {
+            oldMonthYearDisplay = <span className="old-attribute">{`${prettyPrintMonth(oldMonth)}, ${oldYear}`}</span>;
+        }
+
+        if (newMonth && newYear && newYear.length) {
+            newMonthYearDisplay = <span className="new-attribute">{`${prettyPrintMonth(newMonth)}, ${newYear}`}</span>
+        }
+
+        return (
+            <div className="attribute-update">
+                <span className="attribute-label">Date:&nbsp;</span>
+                {oldMonthYearDisplay}
+                <i className="material-icons">arrow_right_alt</i>
+                {newMonthYearDisplay}
+                <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
+            </div>
+        );
+    }
+
+    renderExactDateChange(oldDate, newDate) {
+        let oldDateDisplay = <span className="old-attribute none">NONE</span>;
+        let newDateDisplay = <span className="new-attribute none">NONE</span>;
+
+        if (oldDate) {
+            oldDateDisplay = <span className="old-attribute">{prettyPrintDate(oldDate)}</span>;
+        }
+
+        if (newDate) {
+            newDateDisplay = <span className="old-attribute">{prettyPrintDate(newDate)}</span>;
+        }
+
+        return (
+            <div className="attribute-update">
+                <span className="attribute-label">Date:&nbsp;</span>
+                {oldDateDisplay}
+                <i className="material-icons">arrow_right_alt</i>
+                {newDateDisplay}
+            </div>
+        );
+    }
+
+    renderUnchangedExactDate(oldDate, newDate) {
+        let oldDateDisplay = <span className="old-attribute none">NONE</span>;
+        let newDateDisplay = <span className="new-attribute none">NONE</span>;
+
+        if (oldDate) {
+            oldDateDisplay = <span className="old-attribute">{prettyPrintDate(oldDate)}</span>;
+        }
+
+        if (newDate) {
+            newDateDisplay = <span className="old-attribute">{prettyPrintDate(newDate)}</span>;
+        }
+
+        return (
+            <div className="attribute-update">
+                <span className="attribute-label">Date:&nbsp;</span>
+                {oldDateDisplay}
+                <i className="material-icons">arrow_right_alt</i>
+                {newDateDisplay}
+                <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
             </div>
         );
     }
@@ -205,84 +336,6 @@ export default class UpdateReviewModal extends React.Component {
                 {removedTagsDisplay}
             </div>
         );
-    }
-
-    renderTagUpdates() {
-        const { oldMonument, newMonument } = this.props;
-
-        let tagUpdates = [];
-
-        if (oldMonument && oldMonument.monumentTags && newMonument) {
-            const oldMonumentMaterialNames = [];
-            const oldMonumentTagNames = [];
-
-            for (const monumentTag of oldMonument.monumentTags) {
-                if (monumentTag.tag) {
-                    if (monumentTag.tag.isMaterial) {
-                        oldMonumentMaterialNames.push(monumentTag.tag.name);
-                    }
-                    else {
-                        oldMonumentTagNames.push(monumentTag.tag.name);
-                    }
-                }
-            }
-
-            if (newMonument.newMaterials && newMonument.newMaterials.length) {
-                const addedMaterials = [];
-                const removedMaterials = [];
-                const unchangedMaterials = [];
-
-                // Find added and unchanged Materials
-                for (const newMaterialName of newMonument.newMaterials) {
-                    if (!oldMonumentMaterialNames.includes(newMaterialName)) {
-                        addedMaterials.push(newMaterialName);
-                    }
-                    else {
-                        unchangedMaterials.push(newMaterialName);
-                    }
-                }
-
-                // Find removed Materials
-                for (const oldMaterialName of oldMonumentMaterialNames) {
-                    if (!newMonument.newMaterials.includes(oldMaterialName)) {
-                        removedMaterials.push(oldMaterialName);
-                    }
-                }
-
-                tagUpdates.push(this.renderUnchangedTags(unchangedMaterials, true));
-                tagUpdates.push(this.renderAddedTags(addedMaterials, true));
-                tagUpdates.push(this.renderRemovedTags(removedMaterials, true));
-            }
-
-            if (newMonument.newTags && newMonument.newTags.length) {
-                const addedTags = [];
-                const removedTags = [];
-                const unchangedTags = [];
-
-                // Find added and unchanged Tags
-                for (const newTagName of newMonument.newTags) {
-                    if (!oldMonumentTagNames.includes(newTagName)) {
-                        addedTags.push(newTagName);
-                    }
-                    else {
-                        unchangedTags.push(newTagName);
-                    }
-                }
-
-                // Find removed Tags
-                for (const oldTagName of oldMonumentTagNames) {
-                    if (!newMonument.newTags.includes(oldTagName)) {
-                        removedTags.push(oldTagName);
-                    }
-                }
-
-                tagUpdates.push(this.renderUnchangedTags(unchangedTags, false));
-                tagUpdates.push(this.renderAddedTags(addedTags, false));
-                tagUpdates.push(this.renderRemovedTags(removedTags, false));
-            }
-        }
-
-        return tagUpdates;
     }
 
     renderReferenceUpdate(oldReferenceValue, newReferenceValue) {
@@ -456,7 +509,7 @@ export default class UpdateReviewModal extends React.Component {
 
     renderAttributeUpdates() {
         const { showingUnchangedAttributes } = this.state;
-        const { oldMonument, newMonument } = this.props;
+        const { oldMonument, newMonument, dateSelectValue } = this.props;
 
         const showUnchangedAttributesLink = (
             <div className="show-unchanged-changes-link"
@@ -479,57 +532,108 @@ export default class UpdateReviewModal extends React.Component {
             /* Title */
             let oldTitle = oldMonument.title ? oldMonument.title : '';
             let newTitle = newMonument.newTitle ? newMonument.newTitle : '';
-            this.didAttributeChange(oldTitle, newTitle) ?
+            (oldTitle !== newTitle) ?
                 changedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Title', oldTitle, newTitle));
 
             /* Artist */
             let oldArtist = oldMonument.artist ? oldMonument.artist : '';
             let newArtist = newMonument.newArtist ? newMonument.newArtist : '';
-            this.didAttributeChange(oldArtist, newArtist) ?
+            (oldArtist !== newArtist) ?
                 changedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Artist', oldArtist, newArtist));
 
             /* Date */
-            //attributeUpdates.push(this.renderDateUpdate());
+            let oldMonumentYear, oldMonumentMonth;
+
+            if (oldMonument.date) {
+                const oldMonumentDateArray = oldMonument.date.split('-');
+                oldMonumentYear = oldMonumentDateArray[0];
+                // Need to make the month 0-based
+                oldMonumentMonth = (parseInt(oldMonumentDateArray[1]) - 1).toString()
+            }
+
+            switch(dateSelectValue) {
+                case 'year':
+                    (oldMonumentYear !== newMonument.newYear) ?
+                        changedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear)) :
+                        unchangedAttributes.push(this.renderUnchangedYear(oldMonumentYear, newMonument.newYear));
+                    break;
+                case 'month-year':
+                    if (oldMonumentYear !== newMonument.newYear &&
+                        oldMonumentMonth !== newMonument.newMonth) {
+                        changedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth));
+                    }
+                    else {
+                        unchangedAttributes.push(this.renderUnchangedMonthYear(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth));
+                    }
+                    break;
+                case 'exact-date':
+                    (prettyPrintDate(oldMonument.date) !== prettyPrintDate(newMonument.newDate)) ?
+                        changedAttributes.push(this.renderExactDateChange(oldMonument.date, newMonument.newDate)) :
+                        unchangedAttributes.push(this.renderUnchangedExactDate(oldMonument.date, newMonument.newDate));
+                    break;
+                default:
+                    break;
+            }
 
             /* Address */
             let oldAddress = oldMonument.address ? oldMonument.address : '';
             let newAddress = newMonument.newAddress ? newMonument.newAddress : '';
-            this.didAttributeChange(oldAddress, newAddress) ?
+            (oldAddress !== newAddress) ?
                 changedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Address', oldAddress, newAddress));
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             let newLatitude = newMonument.newLatitude ? newMonument.newLatitude : '';
-            this.didAttributeChange(oldLatitude, newLatitude) ?
+            (oldLatitude !== newLatitude) ?
                 changedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Latitude', oldLatitude, newLatitude));
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
             let newLongitude = newMonument.newLongitude ? newMonument.newLongitude : '';
-            this.didAttributeChange(oldLongitude, newLongitude) ?
+            (oldLongitude !== newLongitude) ?
                 changedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Longitude', oldLongitude, newLongitude));
 
             /* Description */
             let oldDescription = oldMonument.description ? oldMonument.description : '';
             let newDescription = newMonument.newDescription ? newMonument.newDescription : '';
-            this.didAttributeChange(oldDescription, newDescription) ?
+            (oldDescription !== newDescription) ?
                 changedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Description', oldDescription, newDescription));
 
             /* Inscription */
             let oldInscription = oldMonument.inscription ? oldMonument.inscription : '';
             let newInscription = newMonument.newInscription ? newMonument.newInscription : '';
-            this.didAttributeChange(oldInscription, newInscription) ?
+            (oldInscription !== newInscription) ?
                 changedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription)) :
                 unchangedAttributes.push(this.renderUnchangedAttribute('Inscription', oldInscription, newInscription));
 
             /* Materials and Tags */
-            //attributeUpdates.push(this.renderTagUpdates());
+            const tagChanges = this.collectTagChanges();
+
+            unchangedAttributes.push(this.renderUnchangedTags(tagChanges.unchangedMaterials, true));
+
+            tagChanges.addedMaterials.length ?
+                changedAttributes.push(this.renderAddedTags(tagChanges.addedMaterials, true)) :
+                unchangedAttributes.push(this.renderAddedTags(tagChanges.addedMaterials, true));
+
+            tagChanges.removedMaterials.length ?
+                changedAttributes.push(this.renderRemovedTags(tagChanges.removedMaterials, true)) :
+                unchangedAttributes.push(this.renderRemovedTags(tagChanges.removedMaterials, true));
+
+            unchangedAttributes.push(this.renderUnchangedTags(tagChanges.unchangedTags, false));
+
+            tagChanges.addedTags.length ?
+                changedAttributes.push(this.renderAddedTags(tagChanges.addedTags, false)) :
+                unchangedAttributes.push(this.renderAddedTags(tagChanges.addedTags, false));
+
+            tagChanges.removedTags.length ?
+                changedAttributes.push(this.renderRemovedTags(tagChanges.removedTags, false)) :
+                unchangedAttributes.push(this.renderRemovedTags(tagChanges.removedTags, false));
 
             /* References */
             //attributeUpdates.push(this.renderReferenceUpdates());
