@@ -816,6 +816,27 @@ export default class CreateOrUpdateForm extends React.Component {
         }
     }
 
+    renderClearButton() {
+        const { monument } = this.props;
+
+        if (!monument) {
+            return (
+                <Button
+                    type="button"
+                    onClick={() => this.clearForm(true)}
+                    className="reset-button mr-4 mt-1"
+                >
+                    Clear
+                </Button>
+            );
+        }
+        else {
+            return (
+                <div/>
+            );
+        }
+    }
+
     renderResetButton() {
         const { monument } = this.props;
 
@@ -985,7 +1006,7 @@ export default class CreateOrUpdateForm extends React.Component {
             <div className="create-form-container">
                 {monument
                     ? <div className="h5 update">Update an existing Monument or Memorial</div>
-                    : <div className="h5 create">Create a new Monument or Memorial</div>}
+                    : <div className="h5 create">Suggest a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
@@ -1183,15 +1204,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             Submit
                         </Button>
 
-                        <Button
-                            variant="secondary"
-                            type="button"
-                            onClick={() => this.clearForm(true)}
-                            className="mr-4 mt-1"
-                        >
-                            Clear
-                        </Button>
-
+                        {this.renderClearButton()}
                         {this.renderResetButton()}
 
                         <Button
