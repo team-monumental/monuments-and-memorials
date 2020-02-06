@@ -16,7 +16,7 @@ export default class About extends React.Component {
         if (monument.title) {
             title = (
                 <div>
-                    <span className='detail-label'>Title:&nbsp;</span>
+                    <span className="detail-label">Title:&nbsp;</span>
                     {monument.title}
                 </div>
             );
@@ -26,7 +26,7 @@ export default class About extends React.Component {
         if (monument.artist) {
             artist = (
                 <div>
-                    <span className='detail-label'>Artist:&nbsp;</span>
+                    <span className="detail-label">Artist:&nbsp;</span>
                     {monument.artist}
                 </div>
             );
@@ -36,8 +36,8 @@ export default class About extends React.Component {
         if (monument.date) {
             date = (
                 <div>
-                    <span className='detail-label'>Date:&nbsp;</span>
-                    {this.prettyPrintDate(monument.date)}
+                    <span className="detail-label">Date:&nbsp;</span>
+                    {prettyPrintDate(monument.date)}
                 </div>
             );
         }
@@ -46,7 +46,7 @@ export default class About extends React.Component {
         if (monument.city) {
             city = (
                 <div>
-                    <span className='detail-label'>City:&nbsp;</span>
+                    <span className="detail-label">City:&nbsp;</span>
                     {monument.city}
                 </div>
             );
@@ -56,7 +56,7 @@ export default class About extends React.Component {
         if (monument.state) {
             state = (
                 <div>
-                    <span className='detail-label'>State:&nbsp;</span>
+                    <span className="detail-label">State:&nbsp;</span>
                     {monument.state}
                 </div>
             );
@@ -66,7 +66,7 @@ export default class About extends React.Component {
         if (monument.address) {
             address = (
                 <div>
-                    <span className='detail-label'>Address:&nbsp;</span>
+                    <span className="detail-label">Address:&nbsp;</span>
                     {monument.address}
                 </div>
             )
@@ -76,7 +76,7 @@ export default class About extends React.Component {
         if (monument.coordinates) {
             coordinates = (
                 <div>
-                    <span className='detail-label'>Coordinates:&nbsp;</span>
+                    <span className="detail-label">Coordinates:&nbsp;</span>
                     {monument.coordinates.coordinates[1]}, {monument.coordinates.coordinates[0]}
                 </div>
             );
@@ -86,7 +86,7 @@ export default class About extends React.Component {
         if (monument.materials && monument.materials.length) {
             materialsList = (
                 <div>
-                    <span className='detail-label'>Materials:&nbsp;</span>
+                    <span className="detail-label">Materials:&nbsp;</span>
                     <ul>
                         {monument.materials.map(material => <li key={material.id}>{material.name}</li>)}
                     </ul>
@@ -98,7 +98,7 @@ export default class About extends React.Component {
         if (monument.tags && monument.tags.length) {
             tagsList = (
                 <div>
-                    <span className='detail-label'>Tags:&nbsp;</span>
+                    <span className="detail-label">Tags:&nbsp;</span>
                     <ul>
                         {monument.tags.map(tag => <li key={tag.id}>{tag.name}</li>)}
                     </ul>
@@ -110,8 +110,8 @@ export default class About extends React.Component {
         if (monument.updatedDate) {
             lastUpdated = (
                 <div>
-                    <span className='detail-label'>Last Updated:&nbsp;</span>
-                    {this.prettyPrintDate(monument.updatedDate)}
+                    <span className="detail-label">Last Updated:&nbsp;</span>
+                    {prettyPrintDate(monument.updatedDate)}
                 </div>
             );
         }

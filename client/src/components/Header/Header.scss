@@ -1,7 +1,70 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
 .header {
     display: flex;
-    padding: 2rem;
     font-size: 0.875rem;
+    position: relative;
+    padding: 1rem;
+    @include media-breakpoint-up(lg) {
+        padding: 2rem;
+    }
+
+    .header-icon {
+        object-fit: cover;
+    }
+
+    .desktop-links {
+        display: none;
+        @include media-breakpoint-up(lg) {
+            flex: 20%;
+            display: inline-block;
+            margin-left: 2rem;
+        }
+    }
+
+    .search-bar-container {
+        width: 100%;
+    }
+
+    .search-bar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    .location-search, .text-search {
+        margin-right: 0.5rem;
+        input.form-control {
+            width: 270px;
+        }
+    }
+
+    .cheeseburger-menu {
+        ul {
+            padding-inline-start: 2rem;
+            padding-right: 2rem;
+            margin: 2rem 0 0;
+            li {
+                list-style-type: none;
+            }
+        }
+    }
+
+    .search-icon {
+        margin-right: 1rem;
+    }
+
+    .search-icon, .menu-icon {
+        padding: 0;
+        display: flex;
+        align-items: center;
+        i {
+            font-size: 2.25rem;
+        }
+    }
 
     .left {
         flex: 20%;
@@ -17,6 +80,11 @@
         flex: 20%;
         display: flex;
         justify-content: flex-end;
+    }
+
+    .header-icon {
+        width: 35px;
+        height: 35px;
     }
 
     .right > * {
@@ -48,9 +116,5 @@
 
     .header-link:hover, .header-link.active, .btn-link-secondary:hover {
         color: #42b883;
-    }
-
-    input.form-control {
-        width: 270px;
     }
 }

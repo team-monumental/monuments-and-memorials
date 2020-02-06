@@ -62,12 +62,12 @@ class MonumentBulkCreatePage extends React.Component {
         const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result, error } = this.props;
 
         return (
-            <div className='bulk-create-page-container'>
+            <div className="bulk-create-page-container">
                 <Spinner show={bulkCreateMonumentsPending || bulkCreateMonumentsZipPending}/>
-                <div className='column thank-you-column'>
+                <div className="column thank-you-column">
                     <ContributionAppreciation/>
                 </div>
-                <div className='column form-column'>
+                <div className="column form-column">
                     <BulkCreateForm
                         onCancelButtonClick={() => this.handleBulkCreateFormCancelButtonClick()}
                         onCsvSubmit={(form) => this.handleBulkCreateCsvFormSubmit(form)}

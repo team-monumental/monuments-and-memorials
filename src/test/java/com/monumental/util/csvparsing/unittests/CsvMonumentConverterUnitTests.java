@@ -1,7 +1,6 @@
 package com.monumental.util.csvparsing.unittests;
 
 import com.monumental.models.Monument;
-import com.monumental.models.Tag;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import org.junit.Test;
@@ -50,8 +49,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         assertEquals(0, monumentResult.getContributions().size());
         assertEquals(0, monumentResult.getReferences().size());
@@ -68,8 +67,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getState());
         assertNull(monumentResult.getAddress());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     @Test
@@ -78,8 +77,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
         assertEquals(1, monumentResult.getReferences().size());
@@ -97,8 +96,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getLon());
         assertNull(monumentResult.getCoordinates());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     @Test
@@ -107,8 +106,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getMaterialNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.JANUARY, 1);
@@ -132,8 +131,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getLon());
         assertNull(monumentResult.getCoordinates());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     @Test
@@ -142,8 +141,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
@@ -167,8 +166,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getLon());
         assertNull(monumentResult.getCoordinates());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     @Test
@@ -177,8 +176,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
         assertEquals(1, monumentResult.getReferences().size());
@@ -196,8 +195,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getLon());
         assertNull(monumentResult.getCoordinates());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     @Test
@@ -206,8 +205,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
@@ -227,8 +226,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test State", monumentResult.getState());
         assertEquals("Test Address", monumentResult.getAddress());
 
-        assertEquals(2, materialResults.size());
-        assertEquals(0, tagResults.size());
+        assertEquals(2, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
 
         assertNull(monumentResult.getLat());
         assertNull(monumentResult.getLon());
@@ -241,8 +240,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
@@ -262,8 +261,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test State", monumentResult.getState());
         assertEquals("Test Address", monumentResult.getAddress());
 
-        assertEquals(0, materialResults.size());
-        assertEquals(3, tagResults.size());
+        assertEquals(0, materialNameResults.size());
+        assertEquals(3, tagNameResults.size());
 
         assertNull(monumentResult.getLat());
         assertNull(monumentResult.getLon());
@@ -276,8 +275,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
@@ -297,8 +296,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test State", monumentResult.getState());
         assertEquals("Test Address", monumentResult.getAddress());
 
-        assertEquals(2, materialResults.size());
-        assertEquals(3, tagResults.size());
+        assertEquals(2, materialNameResults.size());
+        assertEquals(3, tagNameResults.size());
 
         assertNull(monumentResult.getLat());
         assertNull(monumentResult.getLon());
@@ -311,8 +310,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
@@ -335,8 +334,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test State", monumentResult.getState());
         assertEquals("Test Address", monumentResult.getAddress());
 
-        assertEquals(2, materialResults.size());
-        assertEquals(3, tagResults.size());
+        assertEquals(2, materialNameResults.size());
+        assertEquals(3, tagNameResults.size());
     }
 
     @Test
@@ -345,8 +344,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, true);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
         assertEquals(1, monumentResult.getReferences().size());
@@ -367,8 +366,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getLon());
         assertNull(monumentResult.getCoordinates());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     @Test
@@ -377,8 +376,8 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow, false);
         Monument monumentResult = result.getMonument();
-        List<Tag> materialResults = result.getMaterials();
-        List<Tag> tagResults = result.getTags();
+        List<String> materialNameResults = result.getMaterialNames();
+        List<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
         assertEquals(1, monumentResult.getReferences().size());
@@ -399,8 +398,8 @@ public class CsvMonumentConverterUnitTests {
         assertNull(monumentResult.getLon());
         assertNull(monumentResult.getCoordinates());
 
-        assertNull(materialResults);
-        assertNull(tagResults);
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
     }
 
     /** getImageFileNameFromCsvRow Tests **/
@@ -512,5 +511,40 @@ public class CsvMonumentConverterUnitTests {
         String result = CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
 
         assertEquals("Test Submitted By,Test Artist,Test Title,,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,", result);
+    }
+
+    /* cleanTagName Tests */
+
+    @Test
+    public void testCsvMonumentConverter_cleanTagName_NullTagName() {
+        assertNull(CsvMonumentConverter.cleanTagName(null));
+    }
+
+    @Test
+    public void testCsvMonumentConverter_cleanTagName_EmptyTagName() {
+        String result = CsvMonumentConverter.cleanTagName("");
+
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testCsvMonumentConverter_cleanTagName_WhitespaceInTagName() {
+        String result = CsvMonumentConverter.cleanTagName("  Test  \n");
+
+        assertEquals("Test", result);
+    }
+
+    @Test
+    public void testCsvMonumentConverter_cleanTagName_UncapitalizedTagName() {
+        String result = CsvMonumentConverter.cleanTagName("test");
+
+        assertEquals("Test", result);
+    }
+
+    @Test
+    public void testCsvMonumentConverter_cleanTagName_UncapitalizedTagNameWithWhitespace() {
+        String result = CsvMonumentConverter.cleanTagName("  test  \n\r");
+
+        assertEquals("Test", result);
     }
 }

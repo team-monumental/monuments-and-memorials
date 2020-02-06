@@ -10,7 +10,7 @@ export default class ErrorScreen extends React.Component {
         const { errors } = this.props;
 
         return (
-            <div className='error-screen-container'>
+            <div className="error-screen-container">
                 <h1>
                     Oops! An error occurred...
                 </h1>
@@ -19,7 +19,7 @@ export default class ErrorScreen extends React.Component {
                 </p>
                 {errors.map((error) => (
                     <p
-                        className='font-weight-bold'
+                        className="font-weight-bold"
                         key={error.id}
                     >
                         {error.message}

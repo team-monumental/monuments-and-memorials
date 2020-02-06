@@ -51,21 +51,24 @@ class SearchBar extends React.Component {
             d: distanceFilter,
             address: locationAddress
         }, this.props.history);
+        if(typeof this.props.onCloseModal == 'function') {
+            this.props.onCloseModal();
+        }
     }
 
     render() {
         const { textSearchQuery, locationAddress } = this.state;
         return (
-            <Form inline className="d-none d-lg-flex">
+            <Form inline className="search-bar">
                 <TextSearch value={textSearchQuery}
                             onKeyDown={event => this.handleKeyDown(event)}
-                            className="form-control form-control-sm mr-sm-2"
+                            className="form-control form-control-sm"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
                             onClear={() => this.handleTextSearchClear()}/>
                 <LocationSearch value={locationAddress}
-                                className="form-control form-control-sm mr-sm-2"
+                                className="form-control form-control-sm"
                                 onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
-                <Button variant="primary btn-sm" onClick={() => this.search()}>Search</Button>
+                <Button variant="primary btn-sm" className="search-button" onClick={() => this.search()}>Search</Button>
             </Form>
         )
     }
