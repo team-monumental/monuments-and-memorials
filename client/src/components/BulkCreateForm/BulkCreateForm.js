@@ -391,12 +391,9 @@ export default class BulkCreateForm extends React.Component {
             </>);
         }
 
-        console.log({errorCount, warningCount});
-
         let errorString = [];
         if (errorCount > 0) errorString.push(errorCount + ' error' + (errorCount > 1 ? 's' : ''));
         if (warningCount > 0) errorString.push(warningCount + ' warning' + (warningCount > 1 ? 's' : ''));
-        console.log(errorString);
         errorString = errorString.join(' and ');
 
         const fileString = (<code>{fileUpload.zip ? '.zip' : '.csv'}</code>);
