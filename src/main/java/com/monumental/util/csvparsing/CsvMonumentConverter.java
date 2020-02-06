@@ -154,7 +154,7 @@ public class CsvMonumentConverter {
 
         for (String materialValue : materialArray) {
             String name = cleanTagName(materialValue);
-            if (name.equals("")) continue;
+            if (name == null || name.equals("")) continue;
             names.add(name);
         }
         return names;
