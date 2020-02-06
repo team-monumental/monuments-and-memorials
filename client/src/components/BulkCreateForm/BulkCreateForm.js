@@ -447,12 +447,12 @@ export default class BulkCreateForm extends React.Component {
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
                 {warningCount > 0 && errorCount === 0 &&
-                    <Button variant="warning" className="mr-2" onClick={(event) => this.bulkUpload(event)}>
+                    <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
                         Continue With Warnings
                     </Button>
                 }
                 {errorCount > 0 &&
-                    <Button variant="danger" className="mr-2" onClick={(event) => this.bulkUpload(event)}>
+                    <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
                         Continue With Errors
                     </Button>
                 }
