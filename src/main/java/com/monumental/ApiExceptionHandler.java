@@ -49,7 +49,7 @@ public class ApiExceptionHandler {
     // Handler for MaxUploadSizeExceededExceptions
     @ExceptionHandler({ MaxUploadSizeExceededException.class })
     public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "The uploaded file is too large. The largest file upload size supported is 300MB");
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "The uploaded file is too large. The largest file upload size supported is 500MB");
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
