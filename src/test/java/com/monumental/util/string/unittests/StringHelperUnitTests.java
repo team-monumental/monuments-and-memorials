@@ -37,28 +37,6 @@ public class StringHelperUnitTests {
         assertFalse(StringHelper.isNullOrEmpty(string));
     }
 
-    /** buildAwsS3ObjectUrl Tests **/
-
-    @Test
-    public void testStringHelper_buildAwsS3ObjectUrl_NoFolderInObjectKey() {
-        String bucketName = "bucket";
-        String objectKey = "object";
-
-        String result = StringHelper.buildAwsS3ObjectUrl(bucketName, objectKey);
-
-        assertEquals("https://bucket.s3.us-east-2.amazonaws.com/object", result);
-    }
-
-    @Test
-    public void testStringHelper_buildAwsS3ObjectUrl_FolderInObjectKey() {
-        String bucketName = "bucket";
-        String objectKey = "folder/object";
-
-        String result = StringHelper.buildAwsS3ObjectUrl(bucketName, objectKey);
-
-        assertEquals("https://bucket.s3.us-east-2.amazonaws.com/folder/object", result);
-    }
-
     /** removeBeginningAndEndingQuotes Tests **/
 
     @Test
@@ -118,5 +96,73 @@ public class StringHelperUnitTests {
         String result = StringHelper.removeBeginningAndEndingQuotes(string);
 
         assertEquals("Te\"st", result);
+    }
+
+    /** parseState Tests **/
+
+    @Test
+    public void testStringHelper_parseState_NullPassed() {
+        assertNull(StringHelper.parseState(null));
+    }
+
+    @Test
+    public void testStringHelper_parseState_EmptyStringPassed() {
+        assertNull(StringHelper.parseState(""));
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoAbbreviation() {
+        String result = StringHelper.parseState("co");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoAbbreviation_MixedCase() {
+        String result = StringHelper.parseState("cO");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoFullName() {
+        String result = StringHelper.parseState("colorado");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_ColoradoFullName_MixedCase() {
+        String result = StringHelper.parseState("ColorADo");
+
+        assertEquals("Colorado", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoAbbreviation() {
+        String result = StringHelper.parseState("PR");
+
+        assertEquals("Puerto Rico", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoAbbreviation_MixedCase() {
+        String result = StringHelper.parseState("Pr");
+
+        assertEquals("Puerto Rico", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoFullName() {
+        String result = StringHelper.parseState("puerto rico");
+
+        assertEquals("Puerto Rico", result);
+    }
+
+    @Test
+    public void testStringHelper_parseState_PuertoRicoFullName_MixedCase() {
+        String result = StringHelper.parseState("pUERTo RicO");
+
+        assertEquals("Puerto Rico", result);
     }
 }

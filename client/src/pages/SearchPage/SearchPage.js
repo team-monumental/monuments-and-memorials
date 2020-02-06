@@ -75,8 +75,15 @@ class SearchPage extends React.Component {
     }
 
     handleFilterChange(filters) {
+        for (let prop in filters) {
+            if (!filters.hasOwnProperty(prop)) continue;
+            if (filters[prop] === 'null') filters[prop] = null;
+        }
         this.search({
-            d: filters.distance
+            d: filters.distance,
+            decade: filters.decade,
+            start: filters.start,
+            end: filters.end
         });
     }
 

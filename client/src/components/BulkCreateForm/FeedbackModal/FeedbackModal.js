@@ -55,17 +55,17 @@ export default class FeedbackModal extends React.Component {
                         className={'invalid-csv-row-detail-container'}
                         key={key}
                     >
-                        <div className='row-number'>
-                            <span className='font-weight-bold'>Row Number: </span>{key}
+                        <div className="row-number">
+                            <span className="font-weight-bold">Row Number: </span>{key}
                         </div>
-                        <div className='csv-row'>
-                            <span className='font-weight-bold'>CSV Row:</span>
-                            <div className='csv-row-details'>
+                        <div className="csv-row">
+                            <span className="font-weight-bold">CSV Row:</span>
+                            <div className="csv-row-details">
                                 {bulkCreateResult.invalidCsvMonumentRecordsByRowNumber[key]}
                             </div>
                         </div>
-                        <div className='reasons'>
-                            <span className='font-weight-bold'>Reasons: </span>
+                        <div className="reasons">
+                            <span className="font-weight-bold">Reasons: </span>
                             <ul>
                                 {invalidReasons}
                             </ul>
@@ -76,9 +76,9 @@ export default class FeedbackModal extends React.Component {
         }
 
         const invalidCsvRowsSection = (
-            <div className='invalid-csv-rows-container'>
+            <div className="invalid-csv-rows-container">
                 <h6>Invalid CSV Row(s):</h6>
-                <div className='invalid-csv-rows-detail-container'>
+                <div className="invalid-csv-rows-detail-container">
                     {invalidCsvRowsSectionDetails}
                 </div>
             </div>
@@ -103,7 +103,7 @@ export default class FeedbackModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        variant='primary'
+                        variant="primary"
                         onClick={() => this.handleClose()}
                     >
                         Continue

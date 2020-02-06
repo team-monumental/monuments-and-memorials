@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("the Title in City, State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("the Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -44,7 +47,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The Title in City, State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -53,7 +58,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("ThE Title in City, State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("ThE Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -62,7 +69,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The TheTitle in City, State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The TheTitle in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -74,7 +83,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The Title in City, State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -88,7 +99,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The Title in City, State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -108,7 +121,10 @@ public class MonumentUnitTests {
         assertEquals("The Title in City, State was created by Artist in 2019. You may find further information " +
                 "about this monument or memorial at: URL", result);
          */
-        assertEquals("The Title in City, State was created by Artist in 2019.", result);
+
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -136,7 +152,10 @@ public class MonumentUnitTests {
         assertEquals("The Title in City, State was created by Artist in 2019. You may find further information " +
                 "about this monument or memorial at: URL1", result);
          */
-        assertEquals("The Title in City, State was created by Artist in 2019.", result);
+
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City, State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -161,7 +180,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The Title in City was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -170,7 +191,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The Title in State was created by Artist in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in State was created by Artist in " + currentYear + ".", result);
     }
 
     @Test
@@ -179,7 +202,9 @@ public class MonumentUnitTests {
 
         String result = monument.getDescription();
 
-        assertEquals("The Title in City, State was created in 2019.", result);
+        Calendar calendar = Calendar.getInstance();
+        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+        assertEquals("The Title in City, State was created in " + currentYear + ".", result);
     }
 
     @Test

@@ -13,7 +13,7 @@ export default class ReviewModal extends React.Component {
         const { showing, onCancel, onConfirm, form, dateSelectValue } = this.props;
 
         let date = (
-            <span className='missing-attribute'>NONE</span>
+            <span className="missing-attribute">NONE</span>
         );
         switch (dateSelectValue) {
             case 'year':
@@ -41,7 +41,7 @@ export default class ReviewModal extends React.Component {
         );
 
         let tags = (
-            <span className='missing-attribute'>NONE</span>
+            <span className="missing-attribute">NONE</span>
         );
         if (form.tags && form.tags.length) {
             tags = (
@@ -53,7 +53,7 @@ export default class ReviewModal extends React.Component {
         }
 
         let references = (
-            <span className='missing-attribute'>NONE</span>
+            <span className="missing-attribute">NONE</span>
         );
         if (form.references) {
             let referenceList = [];
@@ -74,7 +74,7 @@ export default class ReviewModal extends React.Component {
         }
 
         let images = (
-            <span className='missing-attribute'>NONE</span>
+            <span className="missing-attribute">NONE</span>
         );
         if (form.images && form.images.length) {
             images = (
@@ -89,88 +89,88 @@ export default class ReviewModal extends React.Component {
                 show={showing}
                 onHide={onCancel}
             >
-                <Modal.Header className='review-modal'>
+                <Modal.Header className="review-modal">
                     <Modal.Title>
                         Review Creation
                     </Modal.Title>
                 </Modal.Header>
-                <hr className='review-modal'/>
-                <Modal.Body className='review-modal'>
+                <hr className="review-modal"/>
+                <Modal.Body className="review-modal">
                     <p>Please review the data you entered for correctness and completeness!</p>
                     <p>*Fields marked with an asterisk are required.</p>
                     <p>**Address OR Latitude AND Longitude are required.</p>
-                    <div className='attributes-container'>
-                        <div className='attribute'>
-                            <span className='attribute-label'>*Title:&nbsp;</span>
+                    <div className="attributes-container">
+                        <div className="attribute">
+                            <span className="attribute-label">*Title:&nbsp;</span>
                             {form.title}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>Artist:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">Artist:&nbsp;</span>
                             {form.artist ? form.artist : (
-                                <span className='missing-attribute'>NONE</span>
+                                <span className="missing-attribute">NONE</span>
                             )}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>Date:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">Date:&nbsp;</span>
                             {date}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>**Address:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">**Address:&nbsp;</span>
                             {form.address ? form.address : (
-                                <span className='missing-attribute'>NONE</span>
+                                <span className="missing-attribute">NONE</span>
                             )}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>**Latitude:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">**Latitude:&nbsp;</span>
                             {form.latitude ? form.latitude : (
-                                <span className='missing-attribute'>NONE</span>
+                                <span className="missing-attribute">NONE</span>
                             )}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>**Longitude:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">**Longitude:&nbsp;</span>
                             {form.longitude ? form.longitude : (
-                                <span className='missing-attribute'>NONE</span>
+                                <span className="missing-attribute">NONE</span>
                             )}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>Description:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">Description:&nbsp;</span>
                             {form.description ? form.description : (
-                                <span className='missing-attribute'>NONE</span>
+                                <span className="missing-attribute">NONE</span>
                             )}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>Inscription:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">Inscription:&nbsp;</span>
                             {form.inscription ? form.inscription : (
-                                <span className='missing-attribute'>NONE</span>
+                                <span className="missing-attribute">NONE</span>
                             )}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>*Materials:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">*Materials:&nbsp;</span>
                             {materials}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>Tags:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">Tags:&nbsp;</span>
                             {tags}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>References:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">References:&nbsp;</span>
                             {references}
                         </div>
-                        <div className='attribute'>
-                            <span className='attribute-label'>Images:&nbsp;</span>
+                        <div className="attribute">
+                            <span className="attribute-label">Images:&nbsp;</span>
                             {images}
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className='review-modal'>
+                <Modal.Footer className="review-modal">
                     <Button
-                        variant='danger'
+                        variant="danger"
                         onClick={onCancel}
                     >
                         Go Back
                     </Button>
                     <Button
-                        variant='primary'
+                        variant="primary"
                         onClick={onConfirm}
                     >
                         Confirm

@@ -1,17 +1,16 @@
 package com.monumental.services;
 
 import com.monumental.models.Monument;
+import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
+import com.monumental.repositories.MonumentTagRepository;
 import com.monumental.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.*;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -21,6 +20,9 @@ public class TagService extends ModelService<Tag> {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private MonumentTagRepository monumentTagRepository;
 
     /**
      * Search for tags by name, allowing for some fuzziness and ordering by how closely they match
@@ -49,6 +51,7 @@ public class TagService extends ModelService<Tag> {
 
     /**
      * Safely create a new tag without duplication
+     * This method should be used ANYTIME you wish to associate a Tag with a Monument
      * @param name          The name of the tag to create
      * @param monuments     The list of monuments to associate it with
      * @param isMaterial    Whether or not the tag is a material
@@ -67,8 +70,49 @@ public class TagService extends ModelService<Tag> {
             tag.setName(name);
             tag.setIsMaterial(isMaterial);
         }
-        tag.getMonuments().addAll(monuments);
+
+        this.initializeAllLazyLoadedCollections(tag);
+
+        for (Monument monument : monuments) {
+            tag.addMonument(monument);
+        }
+
         this.tagRepository.saveAndFlush(tag);
         return tag;
+    }
+
+    /**
+     * Remove the specified Tag from the specified Monument
+     * This method should be used ANYTIME you want to remove an association between a Monument and a Tag
+     * @param tag - Tag to remove from the specified Monument
+     * @param monument - Monument to remove the specified Tag from
+     * @return Tag - The updated Tag with the specified Monument removed
+     */
+    public Tag removeTagFromMonument(Tag tag, Monument monument) {
+        if (tag == null || monument == null) {
+            return null;
+        }
+
+        this.initializeAllLazyLoadedCollections(tag);
+
+        if (tag.getMonumentTags() != null && tag.getMonumentTags().size() > 0) {
+            List<MonumentTag> newMonumentTags = new ArrayList<>();
+            for (MonumentTag monumentTag : tag.getMonumentTags()) {
+                if (monumentTag.getMonument().getId() != null) {
+                    if (monumentTag.getMonument().getId().equals(monument.getId())) {
+                        this.monumentTagRepository.delete(monumentTag);
+                    }
+                    else {
+                        newMonumentTags.add(monumentTag);
+                    }
+                }
+            }
+
+            tag.setMonumentTags(new HashSet<>(newMonumentTags));
+            tag = this.tagRepository.saveAndFlush(tag);
+            return tag;
+        }
+
+        return null;
     }
 }
