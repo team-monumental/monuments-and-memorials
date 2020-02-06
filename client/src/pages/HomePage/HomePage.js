@@ -16,10 +16,10 @@ export default class HomePage extends React.Component {
 
         return (
             <div id="welcome-page-body">
-                <h1>
+                <div id='home-page-title'>
                     Welcome to Monuments + Memorials
-                </h1>
-                <div id='homePageImage'/>
+                </div>
+                <div id='home-page-image'/>
                 <div>
                     <p>
                         Thank you for visiting <span className='font-italic'>Monuments + Memorials</span>, a crowd-sourced initiative developed at Rochester Institute of Technology.

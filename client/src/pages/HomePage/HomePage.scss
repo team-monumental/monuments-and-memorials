@@ -8,11 +8,36 @@
   flex-wrap: wrap;
 }
 
-#homePageImage {
-  background-image: url('/home_page_image.jpg');
+#home-page-title {
+  font-size: 1.35em;
+
+  @include media-breakpoint-up(md) {
+    font-size: 2em;
+  }
+}
+
+#home-page-image {
   width: 100%;
-  height: 65vh;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+
+  @include media-breakpoint-down(sm) {
+    background-image: url('/home_page_mobile_image.jpg');
+    height: 30vh;
+  }
+
+  @include media-breakpoint-up(sm) {
+    background-image: url('/home_page_large_image.jpg');
+
+    @include media-breakpoint-up(md) {
+      height: 30vh;
+    }
+
+    @include media-breakpoint-up(lg) {
+      height: 60vh;
+    }
+  }
 }
