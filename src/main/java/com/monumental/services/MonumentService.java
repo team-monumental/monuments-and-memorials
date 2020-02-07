@@ -284,6 +284,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
                                  Integer distance, List<String> tags, List<String> materials, SortType sortType,
                                  Date start, Date end, Integer decade) {
@@ -306,6 +307,7 @@ public class MonumentService extends ModelService<Monument> {
         for (Monument monument : monuments) {
             monument.getTags();
             monument.getMaterials();
+            monument.getImages().size();
         }
         return monuments;
     }
