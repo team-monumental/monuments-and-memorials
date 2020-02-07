@@ -6,6 +6,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import static org.junit.Assert.*;
 
 /**
@@ -31,7 +35,13 @@ public class AwsS3ServiceTest {
         String objectKey = "folder/object";
 
         String result = AwsS3Service.getObjectUrl(objectKey);
-
-        assertEquals("https://" + AwsS3Service.bucketName + ".s3.us-east-2.amazonaws.com/folder/object", result);
+        try {
+            assertEquals("https://" + AwsS3Service.bucketName + ".s3.us-east-2.amazonaws.com/" + URLEncoder.encode(
+                    objectKey,
+                    StandardCharsets.UTF_8.toString()
+            ), result);
+        } catch (UnsupportedEncodingException e) {
+            fail(e.getMessage());
+        }
     }
 }
