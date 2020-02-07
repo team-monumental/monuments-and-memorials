@@ -12,11 +12,6 @@ import * as moment from 'moment';
  */
 export default class Search extends React.Component {
 
-    handlePageChange(page) {
-        const { onPageChange } = this.props;
-        onPageChange(page);
-    }
-
     /**
      * Whenever the monuments list changes (in length or at least one id has changed), scroll the search results
      * up to the top, so that we see the first of the new results instead of wherever we might have been
@@ -33,7 +28,8 @@ export default class Search extends React.Component {
                 });
             }
             if (didChange) {
-                document.querySelector('.search-column').scrollTo({top: 0});
+                let searchColumn = document.querySelector('.search-column');
+                if (searchColumn) searchColumn.scrollTo({top: 0});
             }
         }
     }
@@ -56,31 +52,31 @@ export default class Search extends React.Component {
         }).sort())];
 
         return (
-                <div className="search-results-page">
-                    <div className="map-column">
-                        <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
-                    </div>
-                    <div className="search-column">
-                        <div className="search-header">
-                            <Filters onChange={filters => onFilterChange(filters)}
+            <div className="search-results-page">
+                <div className="map-column d-none d-md-flex">
+                    <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
+                </div>
+                <div className="search-column">
+                    <div className="search-header">
+                        <Filters onChange={filters => onFilterChange(filters)}
                                      showDistance={lat && lon} distance={distance}
                                      tags={tags} materials={materials} decades={decades} decade={decade}
                                      start={start} end={end}/>
-                            <SearchInfo count={count} page={page} limit={limit} sort={sort}
-                                        onLimitChange={onLimitChange}
-                                        onSortChange={onSortChange}
-                                        showDistanceSort={lat && lon}/>
-                        </div>
-                        <div className="search-results">
-                            <SearchResults monuments={monuments} limit={limit} page={page}/>
-                        </div>
-                        <div className="pagination-container">
-                            <Pagination count={pageCount}
-                                        page={page - 1}
-                                        onPage={page => this.handlePageChange(page + 1)}/>
-                        </div>
+                        <SearchInfo count={count} page={page} limit={limit} sort={sort}
+                                    onLimitChange={onLimitChange}
+                                    onSortChange={onSortChange}
+                                    showDistanceSort={lat && lon}/>
+                    </div>
+                    <div className="search-results">
+                        <SearchResults monuments={monuments} limit={limit} page={page}/>
+                    </div>
+                    <div className="pagination-container">
+                        <Pagination count={pageCount}
+                                    page={page - 1}
+                                    onPage={page => this.handlePageChange(page + 1)}/>
                     </div>
                 </div>
+            </div>
         )
     }
 }
