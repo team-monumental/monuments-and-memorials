@@ -97,7 +97,7 @@ public class AwsS3Service {
                 Integer number = Integer.parseInt(Pattern.compile(captureRegex).matcher(objectKey).group(0)) + 1;
                 objectKey = objectKey.replaceAll(checkRegex, "(" + number + ")");
             } else {
-                objectKey += "+(1)";
+                objectKey += " (1)";
             }
             return objectKey;
         }
