@@ -11,7 +11,7 @@ const httpMethodTypes = ['GET', 'POST', 'PUT'];
  * Send a GET request to the specified URL
  * @param url - URL to send the GET to
  */
-export default async function get(url) {
+export async function get(url) {
     return await sendRequest(url);
 }
 

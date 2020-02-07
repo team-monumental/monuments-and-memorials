@@ -1,7 +1,7 @@
 import { SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_ERROR, SEARCH_MONUMENTS_SUCCESS } from '../constants';
 import * as QueryString from 'query-string';
 import { addError } from './errors';
-import get from '../utils/api-util';
+import { get } from '../utils/api-util';
 
 function searchMonumentsPending() {
     return {

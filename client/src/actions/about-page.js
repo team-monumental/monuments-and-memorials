@@ -3,7 +3,7 @@ import {
     ABOUT_PAGE_FETCH_CONTRIBUTORS_ERROR, ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_PENDING,
     ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_SUCCESS, ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_ERROR
 } from '../constants';
-import get from '../utils/api-util';
+import { get } from '../utils/api-util';
 
 function fetchContributorsPending() {
     return {

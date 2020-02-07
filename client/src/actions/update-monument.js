@@ -3,7 +3,7 @@ import {
     UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
 } from '../constants';
 import { addError } from './errors';
-import get, { put } from '../utils/api-util';
+import { get, put } from '../utils/api-util';
 
 const actions = {
     fetch: 'fetch',

@@ -1,7 +1,7 @@
 import {
     TAG_DIRECTORY_FETCH_TAGS_PENDING, TAG_DIRECTORY_FETCH_TAGS_SUCCESS, TAG_DIRECTORY_FETCH_TAGS_ERROR
 } from '../constants';
-import get from '../utils/api-util';
+import { get } from '../utils/api-util';
 
 function fetchTagsPending() {
     return {

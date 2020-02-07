@@ -3,7 +3,7 @@ import { FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, F
     FETCH_RELATED_MONUMENTS_SUCCESS, FETCH_RELATED_MONUMENTS_ERROR
 } from '../constants';
 import * as QueryString from 'query-string';
-import get from '../utils/api-util';
+import { get } from '../utils/api-util';
 import { addError } from './errors';
 
 function fetchMonumentPending() {

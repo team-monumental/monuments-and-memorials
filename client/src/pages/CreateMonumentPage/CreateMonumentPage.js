@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import ContributionAppreciation from "../../components/ContributionAppreciation/ContributionAppreciation";
 import createMonument from "../../actions/create";
-import uploadImagesToS3 from "../../utils/api-util";
+import { uploadImagesToS3 } from '../../utils/api-util';
 import Spinner from "../../components/Spinner/Spinner";
 import { withRouter } from "react-router-dom";
 

@@ -6,7 +6,7 @@ import fetchMonumentForUpdate, { updateMonument } from '../../actions/update-mon
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
-import uploadImagesToS3, { deleteImagesFromS3 } from '../../utils/api-util';
+import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 
 /**
  * Root container for the page to update an existing Monument
