@@ -129,7 +129,7 @@ export default class BulkCreateForm extends React.Component {
     }
 
     async readCSVHeaders() {
-        const csv = this.state.fileUpload.csv;
+        const { fields, fileUpload: { csv } } = this.state;
         if (!csv) return;
 
         let headersString;
@@ -157,12 +157,27 @@ export default class BulkCreateForm extends React.Component {
                 if (shouldContinue) {
                     await this.setState({showFieldMapping: true});
                 }
-                this.setState({mapping: headers.map(header => {
-                        return {
-                            originalField: header,
-                            mappedField: ''
+                const mapping = headers.map(header => {
+                    let mappedField = '';
+                    for (let field of fields) {
+                        let name = field.name.toLowerCase().trim();
+                        let label = field.name.toLowerCase().trim();
+                        let trimmedHeader = header.toLowerCase().trim();
+                        if ((name === trimmedHeader || label === trimmedHeader ||
+                             name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
+                             trimmedHeader.includes(name) || trimmedHeader.includes(label)) &&
+                             !field.selected && trimmedHeader) {
+                            field.selected = true;
+                            mappedField = field.name;
                         }
-                    })})
+                    }
+                    return {
+                        originalField: header,
+                        mappedField
+                    }
+                });
+
+                this.setState({mapping, fields})
             });
     }
 

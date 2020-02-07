@@ -64,17 +64,21 @@ public class ZipFileHelper {
      * @throws IOException - If any I/O errors occur when reading from the ZipFile or ZipEntry
      */
     public static File convertZipEntryToFile(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
+
         // Get the system's temp directory path
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
+
+        // In case the application left an unusual state, delete the temp image if it exists
+        Files.deleteIfExists(Paths.get(tempDirectoryPath + zipEntry.getName()));
 
         // Get the contents of the ZipEntry
         InputStream zipEntryInputStream = zipFile.getInputStream(zipEntry);
 
         // Copy the contents of the ZipEntry into a temp File inside the Temp directory
-        Files.copy(zipEntryInputStream, Paths.get(tempDirectoryPath + "tempImageForUpload"));
+        Files.copy(zipEntryInputStream, Paths.get(tempDirectoryPath + zipEntry.getName()));
 
         // Get a File object for the new temp File
-        return new File(tempDirectoryPath + "tempImageForUpload");
+        return new File(tempDirectoryPath + zipEntry.getName());
     }
 
     /**

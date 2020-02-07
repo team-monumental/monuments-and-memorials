@@ -1,11 +1,12 @@
 package com.monumental.util.csvparsing;
 
-import com.monumental.models.*;
-import com.monumental.services.AwsS3Service;
+import com.monumental.models.Contribution;
+import com.monumental.models.Monument;
+import com.monumental.models.Reference;
+import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
 import com.vividsolutions.jts.geom.Point;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -97,6 +98,12 @@ public class CsvMonumentConverter {
                             ZipEntry imageZipEntry = zipFile.getEntry(value);
                             if (imageZipEntry == null) {
                                 result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
+                            } else {
+                                try {
+                                    result.getImageFiles().add(ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry));
+                                } catch (IOException e) {
+                                    result.getErrors().add("Failed to read image file from .zip");
+                                }
                             }
                         } else {
                             result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
@@ -164,29 +171,6 @@ public class CsvMonumentConverter {
         Reference reference = new Reference();
         reference.setUrl(value);
         return reference;
-    }
-
-    private static Image parseImage(String value, ZipFile zipFile, AwsS3Service s3Service) {
-        // Get the ZipEntry for the Image
-        ZipEntry imageZipEntry = zipFile.getEntry(value);
-        if (imageZipEntry == null) return null;
-        String objectUrl = null;
-        try {
-            // Convert the ZipEntry into a File object
-            File fileToUpload = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
-            // Upload the File to S3
-            objectUrl = s3Service.storeObject(AwsS3Service.imageBucketName, AwsS3Service.imageFolderName + value, fileToUpload);
-            // Delete the temp File created
-            fileToUpload.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: Report errors to the result object
-        }
-        Image image = new Image();
-        image.setIsPrimary(true);
-        image.setUrl(objectUrl);
-
-        return image;
     }
 
     /**

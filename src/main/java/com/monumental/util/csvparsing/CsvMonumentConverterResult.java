@@ -4,6 +4,7 @@ import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.util.string.StringHelper;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -20,6 +21,8 @@ public class CsvMonumentConverterResult {
     private Set<String> tagNames = new HashSet<>();
 
     private List<String> materialNames = new ArrayList<>();
+
+    private List<File> imageFiles = new ArrayList<>();
 
     private List<String> errors = new ArrayList<>();
 
@@ -47,6 +50,14 @@ public class CsvMonumentConverterResult {
 
     public void setMaterialNames(List<String> materialNames) {
         this.materialNames = materialNames;
+    }
+
+    public List<File> getImageFiles() {
+        return this.imageFiles;
+    }
+
+    public void setImageFiles(List<File> imageFiles) {
+        this.imageFiles = imageFiles;
     }
 
     public List<String> getErrors() {

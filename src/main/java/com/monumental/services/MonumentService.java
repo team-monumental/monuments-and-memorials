@@ -1,7 +1,9 @@
 package com.monumental.services;
 
+import com.amazonaws.SdkClientException;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
@@ -14,19 +16,14 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -603,38 +600,49 @@ public class MonumentService extends ModelService<Monument> {
         List<Monument> monuments = new ArrayList<>();
         for (CsvMonumentConverterResult result : csvResults) {
             int index = csvResults.indexOf(result);
-            try {
-                // Insert the Monument
-                Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
-                monuments.add(insertedMonument);
-                // Insert all of the Tags associated with the Monument
-                Set<String> tagNames = result.getTagNames();
-                if (tagNames != null && tagNames.size() > 0) {
-                    for (String tagName : tagNames) {
-                        this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
-                    }
+            // Insert the Monument
+            Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
+            monuments.add(insertedMonument);
+            // Insert all of the Tags associated with the Monument
+            Set<String> tagNames = result.getTagNames();
+            if (tagNames != null && tagNames.size() > 0) {
+                for (String tagName : tagNames) {
+                    this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
                 }
+            }
 
-                // Insert all of the Materials associated with the Monument
-                List<String> materialNames = result.getMaterialNames();
-                if (materialNames != null && materialNames.size() > 0) {
-                    for (String materialName : materialNames) {
-                        this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
-                    }
+            // Insert all of the Materials associated with the Monument
+            List<String> materialNames = result.getMaterialNames();
+            if (materialNames != null && materialNames.size() > 0) {
+                for (String materialName : materialNames) {
+                    this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
                 }
+            }
 
-                // TODO: Upload images to S3
-            } catch (DataIntegrityViolationException e) {
-                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                // These are disregarded for now - the correct tags are still being created
-                System.out.println("Duplicate monument_tag was not created");
-            } catch (Exception e) {
-                if (ExceptionUtils.getRootCause(e).getMessage().contains("duplicate key")) {
-                    // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                    // These are disregarded for now - the correct tags are still being created
-                    System.out.println("Duplicate monument_tag was not created");
-                } else {
-                    throw e;
+            List<File> imageFiles = result.getImageFiles();
+            if (imageFiles != null && imageFiles.size() > 0) {
+                boolean encounteredS3Exception = false;
+                for (File imageFile : imageFiles) {
+                    // Upload the File to S3
+                    try {
+                        String objectUrl = this.s3Service.storeObject(
+                                AwsS3Service.imageFolderName + imageFile.getName(),
+                                imageFile
+                        );
+                        Image image = new Image();
+                        image.setUrl(objectUrl);
+                        image.setMonument(insertedMonument);
+                        image.setIsPrimary(true);
+                        insertedMonument.getImages().add(image);
+                        this.monumentRepository.save(insertedMonument);
+                    } catch (SdkClientException e) {
+                        encounteredS3Exception = true;
+                    }
+                    // Delete the temp File created
+                    imageFile.delete();
+                }
+                if (encounteredS3Exception) {
+                    result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
                 }
             }
         }
