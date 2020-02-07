@@ -5,7 +5,7 @@ import searchPage from './reducers/search';
 import mapPage from './reducers/map';
 import { tagsSearch, tagsLoad, materialsLoad, materialsSearch } from './reducers/tagsSearch';
 import createPage from './reducers/create'
-import bulkCreatePage from './reducers/bulk-create';
+import bulkCreatePage from './reducers/bulk';
 import tagDirectoryPage from './reducers/tagDirectory';
 import aboutPage from './reducers/about-page';
 

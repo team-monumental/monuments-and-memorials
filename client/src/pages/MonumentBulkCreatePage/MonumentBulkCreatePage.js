@@ -2,10 +2,8 @@ import React from 'react';
 import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
-import { readCsvFileContents } from '../../utils/file-util';
-import bulkCreateMonuments, { bulkCreateMonumentsZip } from '../../actions/bulk-create';
+import { bulkValidateMonuments, bulkCreateMonuments } from '../../actions/bulk';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
 
@@ -18,7 +16,9 @@ class MonumentBulkCreatePage extends React.Component {
         super(props);
 
         this.state = {
-            showingErrorModal: false
+            showingErrorModal: false,
+            showValidationResults: false,
+            showCreateResults: false
         };
     }
 
@@ -32,25 +32,20 @@ class MonumentBulkCreatePage extends React.Component {
         return state.bulkCreatePage;
     }
 
-    handleBulkCreateFormCancelButtonClick() {
-        this.props.history.goBack();
-    }
-
-    async handleBulkCreateCsvFormSubmit(form) {
+    handleValidationSubmit(form) {
         const { dispatch } = this.props;
 
-        // First, read all of the lines of the CSV file into an array
-        const csvContents = await readCsvFileContents(form.file);
-
-        // Then, send the array to be processed
-        dispatch(bulkCreateMonuments(csvContents));
+        // Send the .zip or .csv file and the mapping to the server to be processed
+        dispatch(bulkValidateMonuments(form));
+        this.setState({showValidationResults: true});
     }
 
-    handleBulkCreateZipFormSubmit(form) {
+    handleCreateSubmit(form) {
         const { dispatch } = this.props;
 
-        // Send the .zip file to the server to be processed
-        dispatch(bulkCreateMonumentsZip(form.file));
+        // Send the .zip or .csv file and the mapping to the server to be processed
+        dispatch(bulkCreateMonuments(form));
+        this.setState({showValidationResults: false, showCreateResults: true});
     }
 
     handleErrorModalClose() {
@@ -58,26 +53,26 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        const { showingErrorModal } = this.state;
-        const { bulkCreateMonumentsPending, bulkCreateMonumentsZipPending, result, error } = this.props;
+        const { showingErrorModal, showValidationResults } = this.state;
+        const {
+            bulkCreateMonumentsPending, bulkValidateMonumentsPending, validationResult, validationError,
+            createResult, createError
+        } = this.props;
 
         return (
-            <div className="bulk-create-page-container">
-                <Spinner show={bulkCreateMonumentsPending || bulkCreateMonumentsZipPending}/>
-                <div className="column thank-you-column">
-                    <ContributionAppreciation/>
-                </div>
-                <div className="column form-column">
-                    <BulkCreateForm
-                        onCancelButtonClick={() => this.handleBulkCreateFormCancelButtonClick()}
-                        onCsvSubmit={(form) => this.handleBulkCreateCsvFormSubmit(form)}
-                        onZipSubmit={(form) => this.handleBulkCreateZipFormSubmit(form)}
-                        bulkCreateResult={result}
-                    />
-                </div>
+            <div className="page d-flex justify-content-center">
+                <Spinner show={bulkCreateMonumentsPending || bulkValidateMonumentsPending}/>
+                <BulkCreateForm
+                    onValidationSubmit={(form) => this.handleValidationSubmit(form)}
+                    onCreateSubmit={(form) => this.handleCreateSubmit(form)}
+                    onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
+                    validationResult={validationResult}
+                    createResult={createResult}
+                    showValidationResults={showValidationResults && !bulkValidateMonumentsPending}
+                />
                 <ErrorModal
                     showing={showingErrorModal}
-                    errorMessage={error ? error.message : ''}
+                    errorMessage={(validationError || createError || {}).message || ''}
                     onClose={() => this.handleErrorModalClose()}
                 />
             </div>
