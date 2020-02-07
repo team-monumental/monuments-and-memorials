@@ -20,7 +20,7 @@ public class CsvMonumentConverterResult {
 
     private Set<String> tagNames = new HashSet<>();
 
-    private List<String> materialNames = new ArrayList<>();
+    private Set<String> materialNames = new HashSet<>();
 
     private List<File> imageFiles = new ArrayList<>();
 
@@ -44,11 +44,11 @@ public class CsvMonumentConverterResult {
         this.tagNames = tagNames;
     }
 
-    public List<String> getMaterialNames() {
+    public Set<String> getMaterialNames() {
         return this.materialNames;
     }
 
-    public void setMaterialNames(List<String> materialNames) {
+    public void setMaterialNames(Set<String> materialNames) {
         this.materialNames = materialNames;
     }
 

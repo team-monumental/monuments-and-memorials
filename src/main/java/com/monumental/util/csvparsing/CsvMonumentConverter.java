@@ -20,6 +20,13 @@ import java.util.zip.ZipFile;
  */
 public class CsvMonumentConverter {
 
+    /**
+     * Convert CSV rows into CsvMonumentConverterResults
+     * @param csvRows - List of String Arrays of cells in a CSV
+     * @param mapping - The field mapping between the CSV's headers and our fields, provided by the user
+     * @param zipFile - The zip file containing the images to be uploaded, or null if a csv was uploaded directly
+     * @return The conversion results, with any warnings or errors
+     */
     public static List<CsvMonumentConverterResult> convertCsvRows(List<String[]> csvRows, Map<String, String> mapping,
                                                                   ZipFile zipFile) {
         String[] headers = csvRows.get(0);
@@ -154,7 +161,7 @@ public class CsvMonumentConverter {
     }
 
     private static List<String> parseTags(String value) {
-        // Split on commas in-case there are more than one Material in the column
+        // Split on commas in-case there are more than one Tag in the column
         String[] materialArray = value.split(",");
 
         List<String> names = new ArrayList<>();
@@ -336,6 +343,7 @@ public class CsvMonumentConverter {
         tagName = tagName.strip();
         if (tagName.length() > 0) {
             return tagName.substring(0, 1).toUpperCase() + tagName.substring(1);
-        } else return null;
+        }
+        return null;
     }
 }

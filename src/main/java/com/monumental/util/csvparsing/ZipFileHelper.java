@@ -64,7 +64,6 @@ public class ZipFileHelper {
      * @throws IOException - If any I/O errors occur when reading from the ZipFile or ZipEntry
      */
     public static File convertZipEntryToFile(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
-
         // Get the system's temp directory path
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
 

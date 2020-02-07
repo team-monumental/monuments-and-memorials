@@ -525,10 +525,14 @@ public class MonumentService extends ModelService<Monument> {
         return monumentBulkValidationResult;
     }
 
+    /**
+     * Insert validated monument CSV rows and related objects
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @return List of inserted monuments
+     */
     public List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults) {
         List<Monument> monuments = new ArrayList<>();
         for (CsvMonumentConverterResult result : csvResults) {
-            int index = csvResults.indexOf(result);
             // Insert the Monument
             Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
             monuments.add(insertedMonument);
@@ -541,7 +545,7 @@ public class MonumentService extends ModelService<Monument> {
             }
 
             // Insert all of the Materials associated with the Monument
-            List<String> materialNames = result.getMaterialNames();
+            Set<String> materialNames = result.getMaterialNames();
             if (materialNames != null && materialNames.size() > 0) {
                 for (String materialName : materialNames) {
                     this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
@@ -566,7 +570,6 @@ public class MonumentService extends ModelService<Monument> {
                         image.setMonument(insertedMonument);
                         image.setIsPrimary(i == 0);
                         insertedMonument.getImages().add(image);
-                        this.monumentRepository.save(insertedMonument);
                     } catch (SdkClientException e) {
                         encounteredS3Exception = true;
                     }
@@ -578,6 +581,7 @@ public class MonumentService extends ModelService<Monument> {
                 }
             }
         }
+        this.monumentRepository.saveAll(monuments);
         return monuments;
     }
 

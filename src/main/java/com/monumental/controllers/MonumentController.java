@@ -196,7 +196,7 @@ public class MonumentController {
     /**
      * Validate which rows in the specified .csv (or .csv within .zip) file are valid
      * @param request - Contains the field mapping and the file to process
-     * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
+     * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
     @PostMapping(value = "/api/monument/bulk/validate")
     public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {

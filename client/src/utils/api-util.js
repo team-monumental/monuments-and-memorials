@@ -34,7 +34,7 @@ export async function get(url) {
  * Send a POST request to the specified url with the specified data
  * @param url - URL to send the POST to
  * @param data - JSON data to send to the specified URL
- * @param contentType
+ * @param contentType - The ContentType header, defaults to 'application/json'
  */
 export async function post(url, data, contentType = 'application/json') {
     let error = null;

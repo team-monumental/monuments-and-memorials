@@ -10,10 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -58,7 +55,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -75,7 +72,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -93,7 +90,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -112,7 +109,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -132,7 +129,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -152,7 +149,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -173,7 +170,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -200,7 +197,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -227,7 +224,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -254,7 +251,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -280,7 +277,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -312,7 +309,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 
@@ -352,7 +349,7 @@ public class CsvMonumentConverterResultUnitTests {
         Monument monument = new Monument();
         monument.setTitle("Title");
 
-        List<String> materialNames = new ArrayList<>();
+        Set<String> materialNames = new HashSet<>();
         materialNames.add("Material");
         result.setMaterialNames(materialNames);
 

@@ -88,18 +88,22 @@ public class AwsS3Service {
     }
 
     public static String generateUniqueKey(String objectKey) {
-        if (isUniqueKey(objectKey)) return objectKey;
-        else {
+
+        Integer number = null;
+
+        while (!isUniqueKey(objectKey)) {
             String checkRegex = "/\\([0-9]*\\)/$";
             String captureRegex = "/\\(([0-9]*)\\)/$";
             // If the key already ends with "(1)", for example
             if (objectKey.contains(checkRegex)) {
-                Integer number = Integer.parseInt(Pattern.compile(captureRegex).matcher(objectKey).group(0)) + 1;
+                if (number == null) number = Integer.parseInt(Pattern.compile(captureRegex).matcher(objectKey).group(0));
+                number++;
                 objectKey = objectKey.replaceAll(checkRegex, "(" + number + ")");
             } else {
                 objectKey += " (1)";
             }
-            return objectKey;
         }
+
+        return objectKey;
     }
 }

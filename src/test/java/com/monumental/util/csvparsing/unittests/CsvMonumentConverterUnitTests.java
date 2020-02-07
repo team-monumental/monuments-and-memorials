@@ -30,7 +30,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         assertEquals(0, monumentResult.getContributions().size());
@@ -59,7 +59,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
@@ -89,7 +89,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -125,7 +125,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -161,7 +161,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
@@ -191,7 +191,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -227,7 +227,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -263,7 +263,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -299,7 +299,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -334,7 +334,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
@@ -363,7 +363,7 @@ public class CsvMonumentConverterUnitTests {
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
-        List<String> materialNameResults = result.getMaterialNames();
+        Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
         assertEquals(1, monumentResult.getContributions().size());
