@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -285,6 +284,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
                                  Integer distance, List<String> tags, List<String> materials, SortType sortType,
                                  Date start, Date end, Integer decade) {
@@ -299,12 +299,16 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         List<Monument> monuments = limit != null
-                                        ? page != null
-                                            ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
-                                            : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-                                        : this.getWithCriteriaQuery(query);
-
-        this.getRelatedRecords(monuments, "images");
+            ? page != null
+                ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+            : this.getWithCriteriaQuery(query);
+        // Cause hibernate to load in the related records
+        for (Monument monument : monuments) {
+            monument.getTags();
+            monument.getMaterials();
+            monument.getImages();
+        }
         return monuments;
     }
 
@@ -324,79 +328,6 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
-    }
-
-    /**
-     * Gets the related records and sets them on the monument objects, using only one extra SQL query
-     * @param monuments Monuments to get related records for - these objects are updated directly using the setter
-     *                  but no database update is called
-     */
-    private void getRelatedRecords(List<Monument> monuments, String fieldName) {
-        if (monuments.size() == 0) return;
-        CriteriaBuilder builder = this.getCriteriaBuilder();
-        CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
-        Root<Monument> root = this.createRoot(query);
-        query.select(root);
-        root.fetch(fieldName, JoinType.LEFT);
-
-        List<Integer> ids = new ArrayList<>();
-        for (Monument monument : monuments) {
-            ids.add(monument.getId());
-        }
-
-        query.where(
-            root.get("id").in(ids)
-        );
-
-        List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);
-
-        String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-
-        // "monumentTags" is a special case because it's a Set, not a List
-        if (fieldName.equals("monumentTags")) {
-            Map<Integer, Set> map = new HashMap<>();
-            for (Monument monument : monumentsWithRecords) {
-                try {
-                    map.put(monument.getId(), (Set) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-
-            for (Monument monument : monuments) {
-                try {
-                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, Set.class).invoke(monument, map.get(monument.getId()));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-        }
-        else {
-            Map<Integer, List> map = new HashMap<>();
-            for (Monument monument : monumentsWithRecords) {
-                try {
-                    map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-
-            for (Monument monument : monuments) {
-                try {
-                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     /**
