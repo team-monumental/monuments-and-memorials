@@ -1,5 +1,5 @@
 import { FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS, FETCH_MAP_MONUMENTS_ERROR } from '../constants';
-import { get } from '../utils/api-util';
+import get from '../utils/api-util';
 import { addError } from './errors';
 
 function fetchMonumentsPending() {

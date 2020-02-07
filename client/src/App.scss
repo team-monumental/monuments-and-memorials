@@ -132,9 +132,7 @@ p {
     }
 }
 
-.modal-dialog {
-    &.update-review-modal-dialog {
-        width: 60vw;
-        max-width: none !important;
-    }
+.modal-dialog.update-review-modal-dialog {
+    width: 60vw;
+    max-width: none !important;
 }

@@ -3,44 +3,29 @@ import {
     UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
 } from '../constants';
 import { addError } from './errors';
-import { get, put } from '../utils/api-util';
+import get, { put } from '../utils/api-util';
 
-function fetchMonumentForUpdatePending() {
+const actions = {
+    fetch: 'fetch',
+    update: 'update'
+};
+
+function pending(action) {
     return {
-        type: FETCH_MONUMENT_UPDATE_PENDING
+        type: action === actions.fetch ? FETCH_MONUMENT_UPDATE_PENDING : UPDATE_MONUMENT_PENDING
     };
 }
 
-function fetchMonumentForUpdateSuccess(monument) {
+function success(action, result) {
     return {
-        type: FETCH_MONUMENT_UPDATE_SUCCESS,
-        payload: monument
+        type: action === actions.fetch ? FETCH_MONUMENT_UPDATE_SUCCESS : UPDATE_MONUMENT_SUCCESS,
+        payload: result
     };
 }
 
-function fetchMonumentForUpdateError(error) {
+function error(action, error) {
     return {
-        type: FETCH_MONUMENT_UPDATE_ERROR,
-        error: error
-    };
-}
-
-function updateMonumentPending() {
-    return {
-        type: UPDATE_MONUMENT_PENDING
-    };
-}
-
-function updateMonumentSuccess(updatedMonument) {
-    return {
-        type: UPDATE_MONUMENT_SUCCESS,
-        payload: updatedMonument
-    };
-}
-
-function updateMonumentError(error) {
-    return {
-        type: UPDATE_MONUMENT_ERROR,
+        type: action === actions.fetch ? FETCH_MONUMENT_UPDATE_ERROR : UPDATE_MONUMENT_ERROR,
         error: error
     };
 }
@@ -49,16 +34,18 @@ function updateMonumentError(error) {
  * Queries for a Monument and all related records to be displayed on the Update Monument Page
  */
 export default function fetchMonumentForUpdate(id) {
+    const fetch = 'fetch';
+
     return async dispatch => {
-        dispatch(fetchMonumentForUpdatePending());
+        dispatch(pending(fetch));
 
         try {
             const monument = await get(`/api/monument/${id}?cascade=true`);
-            dispatch(fetchMonumentForUpdateSuccess(monument));
-        } catch(error) {
-            dispatch(fetchMonumentForUpdateError(error));
+            dispatch(success(fetch, monument));
+        } catch(err) {
+            dispatch(error(fetch, err));
             dispatch(addError({
-                message: error.message
+                message: err.message
             }));
         }
     };
@@ -69,16 +56,18 @@ export default function fetchMonumentForUpdate(id) {
  * in newMonument
  */
 export function updateMonument(id, newMonument) {
+    const update = 'update';
+
     return async dispatch => {
-        dispatch(updateMonumentPending());
+        dispatch(pending(update));
 
         try {
             const updatedMonument = await put(`/api/monument/${id}`, newMonument);
-            dispatch(updateMonumentSuccess(updatedMonument));
-        } catch (error) {
-            dispatch(updateMonumentError(error));
+            dispatch(success(update, updatedMonument));
+        } catch (err) {
+            dispatch(error(update, err));
             dispatch(addError({
-                message: error.message
+                message: err.message
             }));
         }
     };

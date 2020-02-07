@@ -1,131 +1,97 @@
-import * as AWS from "aws-sdk";
+import * as AWS from 'aws-sdk';
 
 // Constant for the S3 Bucket name where the Monument images are stored
 const s3ImageBucketName = 'monument-images';
 // Constant for the S3 folder name where the Monument images are stored
 const s3ImageBucketFolderName = 'images/';
 
+const httpMethodTypes = ['GET', 'POST', 'PUT'];
+
 /**
- * Send a GET request to the specified url
+ * Send a GET request to the specified URL
  * @param url - URL to send the GET to
  */
-export async function get(url) {
-    let error = null;
-    let res = await fetch(url)
-        .then(async (res) => {
-            if (!res.ok) {
-                let errorMessage = await res.text();
-
-                try {
-                    errorMessage = JSON.parse(errorMessage);
-                } catch (error) {}
-
-                throw Error(errorMessage.message);
-            }
-            return res;
-        })
-        .then(res => res.json())
-        .catch(err => error = err);
-    if (error || res.error) throw(error || res.error);
-    else return res;
+export default async function get(url) {
+    return await sendRequest(url);
 }
 
 /**
- * Send a POST request to the specified url with the specified data
+ * Send a POST request to the specified URL with the specified data
  * @param url - URL to send the POST to
- * @param data - JSON data to send to the specified URL
- * @param contentType - The ContentType header, defaults to 'application/json'
+ * @param data - Data to send to the specified URL
  */
-export async function post(url, data, contentType = 'application/json') {
-    let error = null;
-    let res = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': contentType
-        }
-    })
-        .then(async (res) => {
-            if (!res.ok) {
-                let errorMessage = await res.text();
-
-                try {
-                    errorMessage = JSON.parse(errorMessage);
-                } catch (error) {}
-
-                throw Error(errorMessage.message);
-            }
-            return res;
-        })
-        .then(res => res.json())
-        .catch(err => error = err);
-    if (error || res.error) throw(error || res.error);
-    else return res;
+export async function post(url, data) {
+    return await sendRequest(url, 'POST', data);
 }
 
 /**
- * Send a POST request to the specified url with the specified file
+ * Send a POST request to the specified URL with the specified file
  * @param url - URL to send the POST to
- * @param file - File data to send to the specified URL
+ * @param file - File to send to the specified URL
  */
 export async function postFile(url, file) {
-    let error = null;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    let res = await fetch(url, {
-        method: 'POST',
-        body: formData
-    })
-        .then(async (res) => {
-            if (!res.ok) {
-                let errorMessage = await res.text();
-
-                try {
-                    errorMessage = JSON.parse(errorMessage);
-                } catch (error) {}
-
-                throw Error(errorMessage.message);
-            }
-            return res;
-        })
-        .then(res => res.json())
-        .catch(err => error = err);
-    if (error || res.error) throw(error || res.error);
-    else return res;
+    return await sendRequest(url, 'POST', undefined, file);
 }
 
 /**
- * Send a PUT request to the specified url with the specified data
+ * Send a PUT request to the specified URL with the specified data
  * @param url - URL to send the PUT to
- * @param data - JSON data to send to the specified URL
+ * @param data - Data to send to the specified URL
+ * @param contentType - The ContentType header, defaults to 'application/json'
  */
-export async function put(url, data) {
-    let error = null;
-    let res = await fetch(url, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
+export async function put(url, data, contentType = 'application/json') {
+    return await sendRequest(url, 'PUT', data, undefined, contentType);
+}
+
+/**
+ * Generic function to send an HTTP request to a specified URL
+ * with specified data
+ * @param url - URL to send the request to
+ * @param methodType - String for the type of HTTP request to send
+ *        Defaults to 'GET'
+ * @param data - Data to send to the URL, Defaults to undefined
+ * @param file - File to send to the URL, Defaults to undefined
+ * @param contentType - The ContentType header, defaults to 'application/json'
+ */
+async function sendRequest(url, methodType='GET', data=undefined, file=undefined, contentType = 'application/json') {
+    if (httpMethodTypes.includes(methodType) && url) {
+        let error = null;
+
+        let configuration = {
+            method: methodType
+        };
+
+        if (data) {
+            configuration.body = JSON.stringify(data);
+            configuration.headers = {
+                'Content-Type': contentType
+            };
         }
-    })
-        .then(async (res) => {
-            if (!res.ok) {
-                let errorMessage = await res.text();
+        else if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
 
-                try {
-                    errorMessage = JSON.parse(errorMessage);
-                } catch (error) {}
+            configuration.body = formData;
+        }
 
-                throw Error(errorMessage.message);
-            }
-            return res;
-        })
-        .then(res => res.json())
-        .catch(err => error = err);
-    if (error || res.error) throw(error || res.error);
-    else return res;
+        let res = await fetch(url, configuration)
+            .then(async (res) => {
+                if (!res.ok) {
+                    let errorMessage = await res.text();
+
+                    try {
+                        errorMessage = JSON.parse(errorMessage);
+                    } catch (error) {}
+
+                    throw Error(errorMessage.message);
+                }
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => error = err);
+        if (error || res.error) throw(error || res.error);
+        else return res;
+    }
 }
 
 /**
@@ -133,7 +99,7 @@ export async function put(url, data) {
  * @param images - List of images to upload to S3
  * @returns {Promise<[]>} - Promise that when awaited, returns a List of S3 Object keys for the uploaded images
  */
-export default async function uploadImagesToS3(images) {
+export async function uploadImagesToS3(images) {
     // Setup the global AWS config
     AWS.config.update({
         region: 'us-east-2',
