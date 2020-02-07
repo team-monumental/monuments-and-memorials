@@ -27,9 +27,8 @@ export default class Search extends React.Component {
                 });
             }
             if (didChange) {
-                if(document.getElementById('search-column')) {
-                    document.querySelector('search-column').scrollTo({top: 0});
-                }
+                let searchColumn = document.querySelector('.search-column');
+                if (searchColumn) searchColumn.scrollTo({top: 0});
             }
         }
     }
@@ -43,7 +42,7 @@ export default class Search extends React.Component {
 
         return (
             <div className="search-results-page">
-                <div className="map-column d-none d-sm-none d-md-flex">
+                <div className="map-column d-none d-md-flex">
                     <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
                 </div>
                 <div className="search-column">
