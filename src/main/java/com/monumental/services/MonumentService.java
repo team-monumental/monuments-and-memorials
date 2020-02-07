@@ -621,12 +621,14 @@ public class MonumentService extends ModelService<Monument> {
 
             List<File> imageFiles = result.getImageFiles();
             if (imageFiles != null && imageFiles.size() > 0) {
+                String tempDirectoryPath = System.getProperty("java.io.tmpdir");
                 boolean encounteredS3Exception = false;
                 for (File imageFile : imageFiles) {
                     // Upload the File to S3
                     try {
+                        String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
                         String objectUrl = this.s3Service.storeObject(
-                                AwsS3Service.imageFolderName + imageFile.getName(),
+                                AwsS3Service.imageFolderName + name,
                                 imageFile
                         );
                         Image image = new Image();

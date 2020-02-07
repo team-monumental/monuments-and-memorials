@@ -68,17 +68,19 @@ public class ZipFileHelper {
         // Get the system's temp directory path
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
 
+        String pathName = tempDirectoryPath + "/" + zipEntry.getName();
+
         // In case the application left an unusual state, delete the temp image if it exists
-        Files.deleteIfExists(Paths.get(tempDirectoryPath + zipEntry.getName()));
+        Files.deleteIfExists(Paths.get(pathName));
 
         // Get the contents of the ZipEntry
         InputStream zipEntryInputStream = zipFile.getInputStream(zipEntry);
 
         // Copy the contents of the ZipEntry into a temp File inside the Temp directory
-        Files.copy(zipEntryInputStream, Paths.get(tempDirectoryPath + zipEntry.getName()));
+        Files.copy(zipEntryInputStream, Paths.get(pathName));
 
         // Get a File object for the new temp File
-        return new File(tempDirectoryPath + zipEntry.getName());
+        return new File(pathName);
     }
 
     /**
