@@ -19,21 +19,19 @@ public class AwsS3ServiceTest {
 
     @Test
     public void testAwsS3Service_getObjectUrl_NoFolderInObjectKey() {
-        String bucketName = "bucket";
         String objectKey = "object";
 
-        String result = AwsS3Service.getObjectUrl(bucketName, objectKey);
+        String result = AwsS3Service.getObjectUrl(objectKey);
 
-        assertEquals("https://bucket.s3.us-east-2.amazonaws.com/object", result);
+        assertEquals("https://" + AwsS3Service.bucketName + ".s3.us-east-2.amazonaws.com/object", result);
     }
 
     @Test
     public void testAwsS3Service_getObjectUrl_FolderInObjectKey() {
-        String bucketName = "bucket";
         String objectKey = "folder/object";
 
-        String result = AwsS3Service.getObjectUrl(bucketName, objectKey);
+        String result = AwsS3Service.getObjectUrl(objectKey);
 
-        assertEquals("https://bucket.s3.us-east-2.amazonaws.com/folder/object", result);
+        assertEquals("https://" + AwsS3Service.bucketName + ".s3.us-east-2.amazonaws.com/folder/object", result);
     }
 }
