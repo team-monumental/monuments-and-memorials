@@ -3,7 +3,7 @@
 @import "../node_modules/bootstrap/scss/mixins";
 
 html {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 * {
@@ -72,4 +72,28 @@ homepage-map {
 .h6.h6 {
     font-weight: bold;
     font-size: 24px;
+}
+
+.min-width-select {
+    width: min-content !important;
+    padding: 0.25rem 0.5rem !important;
+}
+
+.mobile-search-modal {
+    .modal-dialog {
+        margin: 0;
+        .modal-content {
+            border-radius: 0;
+            border: 0;
+        }
+    }
+    .search-bar {
+        display: flex;
+        flex-direction: column;
+        padding-top: 0.5rem;
+        .location-search, .text-search, .search-button {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+    }
 }

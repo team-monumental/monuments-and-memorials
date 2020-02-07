@@ -5,6 +5,7 @@ import MapResults from './MapResults/MapResults';
 import Filters from './Filters/Filters';
 import SearchInfo from './SearchInfo/SearchInfo';
 import SearchResults from './SearchResults/SearchResults';
+import * as moment from 'moment';
 
 /**
  * Root presentational component for the search page
@@ -34,11 +35,21 @@ export default class Search extends React.Component {
     }
 
     render() {
-        const { monuments, onLimitChange, onSortChange, lat, lon, sort, distance, onFilterChange, tags, materials } = this.props;
+        const {
+            monuments, onLimitChange, onSortChange, lat, lon, sort, d: distance, decade,
+            onFilterChange, tags, materials, start, end
+        } = this.props;
         const [ count, page, limit ] = [ this.props.count, this.props.page, this.props.limit ]
             .map(value => parseInt(value) || 0);
 
         const pageCount = Math.ceil(count / limit);
+
+        // Create an array of decades from the monument years, then remove any duplicates and sort
+        const decades = [...new Set(monuments.map(monument => {
+            const date = moment(monument.date);
+            // Turn the year into its decade
+            return Math.floor(date.year() / 10) * 10;
+        }).sort())];
 
         return (
             <div className="search-results-page">
@@ -48,8 +59,9 @@ export default class Search extends React.Component {
                 <div className="search-column">
                     <div className="search-header">
                         <Filters onChange={filters => onFilterChange(filters)}
-                                 showDistance={lat && lon} distance={distance}
-                                 tags={tags} materials={materials}/>
+                                     showDistance={lat && lon} distance={distance}
+                                     tags={tags} materials={materials} decades={decades} decade={decade}
+                                     start={start} end={end}/>
                         <SearchInfo count={count} page={page} limit={limit} sort={sort}
                                     onLimitChange={onLimitChange}
                                     onSortChange={onSortChange}

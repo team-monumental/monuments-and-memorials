@@ -1,12 +1,14 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Model class for a Tag
@@ -21,19 +23,17 @@ public class Tag extends Model implements Serializable {
     @NotNull(groups = {New.class, Existing.class}, message = "Name can not be null")
     private String name;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ManyToMany(cascade = { CascadeType.DETACH })
-    @JoinTable(
-            name = "monument_tag",
-            joinColumns = { @JoinColumn(name = "tag_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "monument_id", referencedColumnName = "id") },
-            uniqueConstraints = { @UniqueConstraint(columnNames = {"tag_id", "monument_id"}) }
-    )
-    private List<Monument> monuments;
+    @JsonIgnore
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private Set<MonumentTag> monumentTags;
 
     @Column(name = "is_material")
     private Boolean isMaterial;
 
+    /**
+     * IMPORTANT NOTE: In order to avoid duplicate Tags and create a correct Monument-to-Tag relationship,
+     * use TagService.createTag() instead of using this constructor
+     */
     public Tag() {
         this.setMonuments(new ArrayList<>());
     }
@@ -46,12 +46,37 @@ public class Tag extends Model implements Serializable {
         this.name = name;
     }
 
-    public List<Monument> getMonuments() {
-        return this.monuments;
+    public Set<MonumentTag> getMonumentTags() {
+        return this.monumentTags;
     }
 
+    public void setMonumentTags(Set<MonumentTag> monumentTags) {
+        this.monumentTags = monumentTags;
+    }
+
+    @JsonIgnore
+    public List<Monument> getMonuments() {
+        if (this.monumentTags == null) {
+            return null;
+        }
+
+        List<Monument> monuments = new ArrayList<>();
+        for (MonumentTag monumentTag : this.monumentTags) {
+            monuments.add(monumentTag.getMonument());
+        }
+
+        return monuments;
+    }
+
+    @JsonIgnore
     public void setMonuments(List<Monument> monuments) {
-        this.monuments = monuments;
+        List<MonumentTag> monumentTags = new ArrayList<>();
+
+        for (Monument monument : monuments) {
+            monumentTags.add(new MonumentTag(monument, this));
+        }
+
+        this.monumentTags = new HashSet<>(monumentTags);
     }
 
     public Boolean getIsMaterial() {
@@ -63,28 +88,21 @@ public class Tag extends Model implements Serializable {
     }
 
     /**
-     * Adds a Monument to the List
+     * Associates a specified Monument with this Tag
      * Will do nothing if the specified Monument is null
-     * Will make a new ArrayList if this.monuments is null
-     * @param monument - Monument to add to the list
+     * Note that this only creates an association in-memory
+     * The association still needs to be persisted to the database
+     * @param monument - Monument to associate with this Tag
      */
     public void addMonument(Monument monument) {
-        if (this.monuments == null) {
-            this.monuments = new ArrayList<>();
+        if (this.monumentTags == null) {
+            this.monumentTags = new HashSet<>();
         }
 
         if (monument == null) {
             return;
         }
 
-        this.monuments.add(monument);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Tag)) return false;
-        Tag tag = (Tag) obj;
-        return tag.getName().equals(this.getName());
+        this.monumentTags.add(new MonumentTag(monument, this));
     }
 }

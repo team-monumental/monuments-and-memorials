@@ -12,6 +12,18 @@ const s3ImageBucketFolderName = 'images/';
 export async function get(url) {
     let error = null;
     let res = await fetch(url)
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
+            }
+            return res;
+        })
         .then(res => res.json())
         .catch(err => error = err);
     if (error || res.error) throw(error || res.error);
@@ -32,6 +44,51 @@ export async function post(url, data) {
             'Content-Type': 'application/json'
         }
     })
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
+            }
+            return res;
+        })
+        .then(res => res.json())
+        .catch(err => error = err);
+    if (error || res.error) throw(error || res.error);
+    else return res;
+}
+
+/**
+ * Send a POST request to the specified url with the specified file
+ * @param url - URL to send the POST to
+ * @param file - File data to send to the specified URL
+ */
+export async function postFile(url, file) {
+    let error = null;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let res = await fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorMessage = await res.text();
+
+                try {
+                    errorMessage = JSON.parse(errorMessage);
+                } catch (error) {}
+
+                throw Error(errorMessage.message);
+            }
+            return res;
+        })
         .then(res => res.json())
         .catch(err => error = err);
     if (error || res.error) throw(error || res.error);

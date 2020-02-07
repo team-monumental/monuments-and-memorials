@@ -6,13 +6,19 @@
   height: 100%;
   display: flex;
   flex-wrap: wrap;
-  flex-direction: column;
+  flex-direction: column-reverse;
   > div {
       flex: 33%;
+      &.map-column {
+          flex: 10%;
+          @include media-breakpoint-up(lg) {
+              flex: 33%;
+          }
+      }
   }
 
-  @include media-breakpoint-down(md) {
-    flex-direction: column-reverse;
+  @include media-breakpoint-up(lg) {
+    flex-direction: row;
   }
 }
 
@@ -76,6 +82,7 @@
   z-index: 1;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
+  overflow-y: visible;
 
   .search-info {
     display: flex;

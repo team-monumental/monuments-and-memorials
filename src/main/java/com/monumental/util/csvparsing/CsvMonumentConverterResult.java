@@ -3,7 +3,6 @@ package com.monumental.util.csvparsing;
 import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
 import com.monumental.util.string.StringHelper;
 
 import java.net.MalformedURLException;
@@ -22,10 +21,13 @@ public class CsvMonumentConverterResult {
 
     private Monument monument;
 
-    private List<Tag> tags;
+    private List<String> tagNames;
+
+    private List<String> materialNames;
 
     public CsvMonumentConverterResult() {
-
+        this.tagNames = new ArrayList<>();
+        this.materialNames = new ArrayList<>();
     }
 
     public Monument getMonument() {
@@ -36,55 +38,20 @@ public class CsvMonumentConverterResult {
         this.monument = monument;
     }
 
-    public List<Tag> getTags() {
-        if (this.tags == null) return null;
-        List<Tag> tags = new ArrayList<>();
-        for (Tag tag : this.tags) {
-            if (!tag.getIsMaterial()) tags.add(tag);
-        }
-        return tags;
+    public List<String> getTagNames() {
+        return this.tagNames;
     }
 
-    public void setTags(List<Tag> tags) {
-        List<Tag> materials = this.getMaterials();
-        if (this.tags != null && materials != null && materials.size() > 0) {
-            materials.addAll(tags);
-            this.tags = materials;
-        } else {
-            this.tags = tags;
-        }
+    public void setTagNames(List<String> tagNames) {
+        this.tagNames = tagNames;
     }
 
-    public List<Tag> getMaterials() {
-        if (this.tags == null) return null;
-        List<Tag> materials = new ArrayList<>();
-        for (Tag tag : this.tags) {
-            if (tag.getIsMaterial()) materials.add(tag);
-        }
-        return materials;
+    public List<String> getMaterialNames() {
+        return this.materialNames;
     }
 
-    public void setMaterials(List<Tag> materials) {
-        List<Tag> tags = this.getTags();
-        if (this.tags != null && tags != null && tags.size() > 0) {
-            tags.addAll(materials);
-            this.tags = tags;
-        } else {
-            this.tags = materials;
-        }
-    }
-
-    /**
-     * Add a Tag to this.tags
-     * If this.tags is null, initializes it to a new ArrayList
-     * @param tag - Tag to add to this.tags
-     */
-    public void addTag(Tag tag) {
-        if (this.tags == null) {
-            this.tags = new ArrayList<>();
-        }
-
-        this.tags.add(tag);
+    public void setMaterialNames(List<String> materialNames) {
+        this.materialNames = materialNames;
     }
 
     /**
@@ -107,7 +74,7 @@ public class CsvMonumentConverterResult {
 
         /* Materials Validation */
         /* Materials is a required field */
-        if (this.getMaterials() == null || this.getMaterials().size() == 0) {
+        if (this.getMaterialNames() == null || this.getMaterialNames().size() == 0) {
             validationErrors.add("At least one Material is required");
         }
 
@@ -204,12 +171,12 @@ public class CsvMonumentConverterResult {
 
         // Materials
         stringBuilder.append("Materials:\n");
-        if (this.getMaterials() == null || this.getMaterials().size() == 0) {
+        if (this.getMaterialNames() == null || this.getMaterialNames().size() == 0) {
             stringBuilder.append("<NULL>").append("\n");
         }
         else {
-            for (Tag material : this.getMaterials()) {
-                stringBuilder.append("\t").append(material.getName()).append("\n");
+            for (String materialName : this.getMaterialNames()) {
+                stringBuilder.append("\t").append(materialName).append("\n");
             }
         }
 
@@ -259,10 +226,10 @@ public class CsvMonumentConverterResult {
         stringBuilder.append("\n");
 
         // Tags
-        if (this.getTags() != null && this.getTags().size() > 0) {
+        if (this.getTagNames() != null && this.getTagNames().size() > 0) {
             stringBuilder.append("Tags:\n");
-            for (Tag tag : this.getTags()) {
-                stringBuilder.append("\t").append(tag.getName()).append("\n");
+            for (String tagName : this.getTagNames()) {
+                stringBuilder.append("\t").append(tagName).append("\n");
             }
         }
 
@@ -273,6 +240,11 @@ public class CsvMonumentConverterResult {
             for (Reference reference : this.monument.getReferences()) {
                 stringBuilder.append("\t").append(reference.getUrl()).append("\n");
             }
+        }
+
+        // Images
+        if (this.monument.getImages().size() > 0) {
+            stringBuilder.append("Number of Images: ").append(this.monument.getImages().size()).append("\n");
         }
 
         return stringBuilder.toString();

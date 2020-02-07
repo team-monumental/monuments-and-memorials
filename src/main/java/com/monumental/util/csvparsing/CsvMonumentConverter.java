@@ -1,6 +1,7 @@
 package com.monumental.util.csvparsing;
 
 import com.monumental.models.*;
+import com.monumental.services.AwsS3Service;
 import com.monumental.services.MonumentService;
 import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Point;
@@ -23,18 +24,23 @@ public class CsvMonumentConverter {
     public static final int numberOfCsvColumns = 14;
 
     /**
+     * Constant for the regex to split on commas only if the comma has zero or an even number of quotes ahead of it
+     * See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
+     */
+    private static final String csvRegex = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
+
+    /**
      * Static method for converting a CSV row representing a Monument into a CsvMonumentConverterResult object
      * @param csvRow - CSV row representing a Monument, as a String
+     * @param fromZipFile - True if the csvRow originated from a .zip file, False otherwise
      * @return CsvMonumentConverterResult - the CsvMonumentConverterResult that is represented by the CSV row
      */
-    public static CsvMonumentConverterResult convertCsvRow(String csvRow) {
+    public static CsvMonumentConverterResult convertCsvRow(String csvRow, boolean fromZipFile) {
         if (csvRow == null) {
             return null;
         }
 
-        // Regex to split on commas only if the comma has zero or an even number of quotes ahead of it
-        // See: https://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
-        String[] csvRowArray = csvRow.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+        String[] csvRowArray = csvRow.split(csvRegex, -1);
 
         // If the length of the CSV row is not the expected length, throw an exception
         if (csvRowArray.length != numberOfCsvColumns) {
@@ -99,7 +105,7 @@ public class CsvMonumentConverter {
                     String[] materialArray = value.split(",");
 
                     for (String materialValue : materialArray) {
-                        result.addTag(createTag(materialValue, monument, true));
+                        result.getMaterialNames().add(cleanTagName(materialValue));
                     }
 
                     break;
@@ -126,7 +132,7 @@ public class CsvMonumentConverter {
                     String[] tagArray = value.split(",");
 
                     for (String tagValue : tagArray) {
-                        result.addTag(createTag(tagValue, monument, false));
+                        result.getTagNames().add(cleanTagName(tagValue));
                     }
 
                     break;
@@ -137,19 +143,25 @@ public class CsvMonumentConverter {
 
                     monument.getReferences().add(newReference);
                     break;
-                    // TODO: Support images in Bulk Monument Creation
-                /*case 25: // Image filename
-                    if (!value.isEmpty()) {
-                        value = formatJpgImageFileName(value);
+                case 13: // Image filename
+                    Image newImage = new Image();
+                    newImage.setIsPrimary(true);
 
-                        Image newImage = new Image();
-                        newImage.setUrl(StringHelper.buildAwsS3ObjectUrl("monument-images", "images/" + value));
-                        newImage.setIsPrimary(true);
-                        newImage.setMonument(monument);
-
-                        monument.getImages().add(newImage);
+                    // If the csvRow came from a .zip file, assume that this column already has an S3 Object URL in it,
+                    // meaning we do not need to do any extra work
+                    if (fromZipFile) {
+                        newImage.setUrl(value);
                     }
-                    break;*/
+                    // Otherwise the csvRow came from a CSV file, meaning we have to transform the filename into
+                    // S3 Object URL
+                    else {
+                        newImage.setUrl(AwsS3Service.getObjectUrl(AwsS3Service.imageBucketName, AwsS3Service.imageFolderName + value));
+                    }
+
+                    newImage.setMonument(monument);
+
+                    monument.getImages().add(newImage);
+                    break;
             }
         }
 
@@ -415,23 +427,75 @@ public class CsvMonumentConverter {
                 "Tags,Contributors,References";
     }
 
-    private static String formatJpgImageFileName(String fileName) {
-        if (!fileName.endsWith(".jpg")) {
-            fileName = fileName + ".jpg";
+    /**
+     * Cleans a CSV Tag name
+     * Removes any whitespace and capitalizes the first letter to attempt to avoid duplicates
+     * @param tagName - String of the CSV Tag name to clean
+     * @return String - The cleaned Tag name
+     */
+    public static String cleanTagName(String tagName) {
+        if (tagName == null) {
+            return null;
         }
 
-        return fileName;
+        if (tagName.isEmpty()) {
+            return "";
+        }
+
+        tagName = tagName.strip();
+        return tagName.substring(0, 1).toUpperCase() + tagName.substring(1);
     }
 
-    private static Tag createTag(String tagValue, Monument monument, boolean isMaterial) {
-        Tag newTag = new Tag();
+    /**
+     * Get the value of the image filename column from the specified csvRow
+     * @param csvRow - String representing the CSV row to get the filename from
+     * @return String - Value of the image filename column from the specified csvRow
+     */
+    public static String getImageFileNameFromCsvRow(String csvRow) {
+        if (csvRow == null) {
+            return null;
+        }
 
-        // Set the first letter of the Tag to upper-case to attempt to reduce duplicates
-        tagValue = tagValue.strip();
-        tagValue = tagValue.substring(0, 1).toUpperCase() + tagValue.substring(1);
-        newTag.setName(tagValue);
-        newTag.addMonument(monument);
-        newTag.setIsMaterial(isMaterial);
-        return newTag;
+        String[] csvRowArray = csvRow.split(csvRegex, -1);
+
+        // If the length of the CSV row is not the expected length, throw an exception
+        if (csvRowArray.length != numberOfCsvColumns) {
+            throw new IllegalArgumentException("Invalid number of CSV columns");
+        }
+
+        // Get the value of the image filename column, which is the last column in the file
+        return csvRowArray[numberOfCsvColumns - 1];
+    }
+
+    /**
+     * Set the value of the image filename column on the specified csvRow to the specified imageFileName
+     * @param csvRow - String representing the CSV row to set the imageFileName on
+     * @param imageFileName - String of the image filename to set on the specified CSV row
+     * @return String - The new CSV row with the imageFileName set
+     */
+    public static String setImageFileNameOnCsvRow(String csvRow, String imageFileName) {
+        if (csvRow == null || imageFileName == null) {
+            return null;
+        }
+
+        String[] csvRowArray = csvRow.split(csvRegex, -1);
+
+        // If the length of the CSV row is not the expected length, throw an exception
+        if (csvRowArray.length != numberOfCsvColumns) {
+            throw new IllegalArgumentException("Invalid number of CSV columns");
+        }
+
+        csvRowArray[numberOfCsvColumns - 1] = imageFileName;
+
+        StringBuilder newCsvRowBuilder = new StringBuilder();
+        for (int i = 0; i < csvRowArray.length; i++) {
+            newCsvRowBuilder.append(csvRowArray[i]);
+
+            if (i != (csvRowArray.length - 1)) {
+                newCsvRowBuilder.append(",");
+            }
+        }
+
+        return newCsvRowBuilder.toString();
     }
 }

@@ -33,7 +33,7 @@ export default class TextSearch extends React.Component {
         const { searchPlaceholder, searchQuery } = this.state;
         const { className, onKeyDown } = this.props;
         return (
-            <div className="position-relative">
+            <div className="text-search position-relative">
                 <input type="text"
                        value={searchQuery}
                        onChange={(event) => this.handleChange(event)}

@@ -1,0 +1,61 @@
+@import "../../../theme";
+
+.about-information-container {
+  h1 {
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+
+  p {
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: large;
+  }
+
+  h3 {
+    padding-left: 16rem;
+  }
+
+  .contributors-list-container {
+    background-color: lightgray;
+    font-weight: bold;
+    max-width: 20%;
+    margin-left: calc((100% / 2) - 15rem);
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: large;
+    border: thin solid;
+
+    .more-contributors-link {
+      cursor: pointer;
+      color: $primary;
+      text-decoration: underline;
+      font-size: medium;
+    }
+  }
+
+  .statistics-container {
+    margin-left: 30rem;
+
+    .statistics-row {
+      width: 100%;
+      display: inline-block;
+
+      &.last {
+        margin-left: 11.5rem;
+      }
+
+      .card {
+        margin-bottom: 2rem;
+        margin-left: 2rem;
+        float: left;
+      }
+    }
+  }
+
+  .charts-container {
+    padding-top: 2rem;
+  }
+}
