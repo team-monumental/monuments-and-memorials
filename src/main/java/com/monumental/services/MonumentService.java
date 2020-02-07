@@ -623,7 +623,8 @@ public class MonumentService extends ModelService<Monument> {
             if (imageFiles != null && imageFiles.size() > 0) {
                 String tempDirectoryPath = System.getProperty("java.io.tmpdir");
                 boolean encounteredS3Exception = false;
-                for (File imageFile : imageFiles) {
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    File imageFile = imageFiles.get(0);
                     // Upload the File to S3
                     try {
                         String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
@@ -634,7 +635,7 @@ public class MonumentService extends ModelService<Monument> {
                         Image image = new Image();
                         image.setUrl(objectUrl);
                         image.setMonument(insertedMonument);
-                        image.setIsPrimary(true);
+                        image.setIsPrimary(i == 0);
                         insertedMonument.getImages().add(image);
                         this.monumentRepository.save(insertedMonument);
                     } catch (SdkClientException e) {
