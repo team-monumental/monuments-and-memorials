@@ -30,23 +30,6 @@ public class AsyncMonumentService extends AsyncService {
     @Autowired
     AwsS3Service s3Service;
 
-    @Async
-    public CompletableFuture<String> testAsync(AsyncJob job) {
-        System.out.println("STARTING ASYNC JOB");
-        try {
-            for (double i = 0; i < 10; i++) {
-                Thread.sleep(1000);
-                job.setProgress((i + 1) / 10);
-            }
-        } catch (InterruptedException e) {
-            System.err.println("Failed to sleep for 3 seconds");
-            e.printStackTrace();
-            return CompletableFuture.completedFuture("Failure");
-        }
-        return CompletableFuture.completedFuture("Success");
-    }
-
-
     /**
      * Insert validated monument CSV rows and related objects
      * @param job - The AsyncJob to report progress to
