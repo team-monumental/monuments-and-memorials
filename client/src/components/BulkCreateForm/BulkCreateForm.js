@@ -216,7 +216,7 @@ export default class BulkCreateForm extends React.Component {
 
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults } = this.props;
+        const { showValidationResults, showCreateResults } = this.props;
 
         return (
             <Card className="bulk-create-form-container">
@@ -227,8 +227,9 @@ export default class BulkCreateForm extends React.Component {
                     {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
-                {showFieldMapping && !showValidationResults && this.renderFieldMapping()}
+                {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
                 {showValidationResults && this.renderValidationResults()}
+                {showCreateResults && this.renderCreateResults()}
             </Card>
         );
     }
@@ -275,28 +276,30 @@ export default class BulkCreateForm extends React.Component {
         const { fileUpload } = this.state;
         return (<>
             <Card.Body>
-                <Card.Subtitle className="d-flex align-items-center">
-                    <i className="material-icons mr-1">
-                        notes
-                    </i>
-                    Uploaded CSV File
-                </Card.Subtitle>
-                <div className="pl-1">
-                    {fileUpload.csv && fileUpload.csv.name}
+                <div className="zip-list-wrapper">
+                    <Card.Subtitle className="d-flex align-items-center">
+                        <i className="material-icons mr-1">
+                            notes
+                        </i>
+                        Uploaded CSV File
+                    </Card.Subtitle>
+                    <div className="pl-1">
+                        {fileUpload.csv && fileUpload.csv.name}
+                    </div>
+                    <Card.Subtitle className="d-flex align-items-center mt-3">
+                        <i className="material-icons mr-1">
+                            image
+                        </i>
+                        Uploaded Image Files ({fileUpload.images.length})
+                    </Card.Subtitle>
+                    <ul className="list-unstyled pl-1">
+                    {fileUpload.images.map(file => (
+                        <li key={file.name} className="mb-1">
+                            {file.name}
+                        </li>
+                    ))}
+                    </ul>
                 </div>
-                <Card.Subtitle className="d-flex align-items-center mt-3">
-                    <i className="material-icons mr-1">
-                        image
-                    </i>
-                    Uploaded Image Files ({fileUpload.images.length})
-                </Card.Subtitle>
-                <ul className="list-unstyled pl-1">
-                {fileUpload.images.map(file => (
-                    <li key={file.name} className="mb-1">
-                        {file.name}
-                    </li>
-                ))}
-                </ul>
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
                 <Button variant="bare" onClick={() => this.resetForm(true)}>
@@ -310,7 +313,7 @@ export default class BulkCreateForm extends React.Component {
     }
 
     renderFieldMapping() {
-        const { mapping, fields, fileUpload } = this.state;
+        const { mapping, fields } = this.state;
 
         return (<>
             <Card.Body>
@@ -477,5 +480,17 @@ export default class BulkCreateForm extends React.Component {
                 </Button>
             </Card.Footer>
         </>);
+    }
+
+    renderCreateResults() {
+        const { createResult } = this.props;
+        return (
+            <Card.Body>
+                <h5>Success!</h5>
+                <div>
+                    {createResult.length} monuments or memorials have been created. I would list them out here, but pretty soon they're just going to be suggestions anyway!
+                </div>
+            </Card.Body>
+        );
     }
 }
