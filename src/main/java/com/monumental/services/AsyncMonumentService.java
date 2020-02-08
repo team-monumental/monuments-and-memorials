@@ -95,6 +95,7 @@ public class AsyncMonumentService extends AsyncService {
             }
         }
         this.monumentRepository.saveAll(monuments);
+        job.setProgress(1.0);
         return CompletableFuture.completedFuture(monuments);
     }
 }
