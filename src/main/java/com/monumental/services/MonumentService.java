@@ -18,6 +18,8 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -525,66 +528,6 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         return monumentBulkValidationResult;
-    }
-
-    /**
-     * Insert validated monument CSV rows and related objects
-     * @param csvResults - The validated CSV rows, converted into monuments
-     * @return List of inserted monuments
-     */
-    public List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults) {
-        List<Monument> monuments = new ArrayList<>();
-        for (CsvMonumentConverterResult result : csvResults) {
-            // Insert the Monument
-            Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
-            monuments.add(insertedMonument);
-            // Insert all of the Tags associated with the Monument
-            Set<String> tagNames = result.getTagNames();
-            if (tagNames != null && tagNames.size() > 0) {
-                for (String tagName : tagNames) {
-                    this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
-                }
-            }
-
-            // Insert all of the Materials associated with the Monument
-            Set<String> materialNames = result.getMaterialNames();
-            if (materialNames != null && materialNames.size() > 0) {
-                for (String materialName : materialNames) {
-                    this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
-                }
-            }
-
-            List<File> imageFiles = result.getImageFiles();
-            if (imageFiles != null && imageFiles.size() > 0) {
-                String tempDirectoryPath = System.getProperty("java.io.tmpdir");
-                boolean encounteredS3Exception = false;
-                for (int i = 0; i < imageFiles.size(); i++) {
-                    File imageFile = imageFiles.get(0);
-                    // Upload the File to S3
-                    try {
-                        String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
-                        String objectUrl = this.s3Service.storeObject(
-                                AwsS3Service.imageFolderName + name,
-                                imageFile
-                        );
-                        Image image = new Image();
-                        image.setUrl(objectUrl);
-                        image.setMonument(insertedMonument);
-                        image.setIsPrimary(i == 0);
-                        insertedMonument.getImages().add(image);
-                    } catch (SdkClientException e) {
-                        encounteredS3Exception = true;
-                    }
-                    // Delete the temp File created
-                    imageFile.delete();
-                }
-                if (encounteredS3Exception) {
-                    result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
-                }
-            }
-        }
-        this.monumentRepository.saveAll(monuments);
-        return monuments;
     }
 
     @SuppressWarnings("unchecked")
