@@ -90,7 +90,7 @@ public class AsyncMonumentService extends AsyncService {
             }
 
             // Report progress
-            if (i != csvResults.size()) {
+            if (i != csvResults.size() - 1) {
                 job.setProgress((double) (i + 1) / csvResults.size());
             }
         }
