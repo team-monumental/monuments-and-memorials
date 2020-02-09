@@ -1,12 +1,15 @@
 package com.monumental.services;
 
+import com.amazonaws.SdkClientException;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
 import com.opencsv.CSVReader;
@@ -16,6 +19,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +29,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -523,6 +528,99 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         return monumentBulkValidationResult;
+    }
+
+    /**
+     * SYNCHRONOUSLY bulk create monuments from CSV. Since this method is synchronous, long CSVs could take
+     * a significant amount of time to process and hold up the thread or HTTP request.
+     * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk create behavior
+     * can be tested synchronously
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @return - List of inserted monuments
+     */
+    public List<Monument> bulkCreateMonumentsSync(List<CsvMonumentConverterResult> csvResults) {
+        return this.bulkCreateMonuments(csvResults, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY bulk create monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - CompletableFuture of List of inserted monuments
+     */
+    @Async
+    public CompletableFuture<List<Monument>> bulkCreateMonumentsAsync(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        return CompletableFuture.completedFuture(this.bulkCreateMonuments(csvResults, job));
+    }
+
+    /**
+     * Bulk create monuments from CSV. If job is not null, progress will be reported as the monuments are created.
+     * This method should only be called through MonumentService.bulkCreateMonumentsSync or
+     * AsyncMonumentService.bulkCreateMonumentsAsync
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - List of inserted monuments
+     */
+    private List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        List<Monument> monuments = new ArrayList<>();
+        for (int i = 0; i < csvResults.size(); i++) {
+            CsvMonumentConverterResult result = csvResults.get(i);
+            // Insert the Monument
+            Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
+            monuments.add(insertedMonument);
+            // Insert all of the Tags associated with the Monument
+            Set<String> tagNames = result.getTagNames();
+            if (tagNames != null && tagNames.size() > 0) {
+                for (String tagName : tagNames) {
+                    this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
+                }
+            }
+
+            // Insert all of the Materials associated with the Monument
+            Set<String> materialNames = result.getMaterialNames();
+            if (materialNames != null && materialNames.size() > 0) {
+                for (String materialName : materialNames) {
+                    this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
+                }
+            }
+
+            List<File> imageFiles = result.getImageFiles();
+            if (imageFiles != null && imageFiles.size() > 0) {
+                String tempDirectoryPath = System.getProperty("java.io.tmpdir");
+                boolean encounteredS3Exception = false;
+                for (int j = 0; i < imageFiles.size(); j++) {
+                    File imageFile = imageFiles.get(j);
+                    // Upload the File to S3
+                    try {
+                        String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
+                        String objectUrl = this.s3Service.storeObject(
+                                AwsS3Service.imageFolderName + name,
+                                imageFile
+                        );
+                        Image image = new Image();
+                        image.setUrl(objectUrl);
+                        image.setMonument(insertedMonument);
+                        image.setIsPrimary(j == 0);
+                        insertedMonument.getImages().add(image);
+                    } catch (SdkClientException e) {
+                        encounteredS3Exception = true;
+                    }
+                    // Delete the temp File created
+                    imageFile.delete();
+                }
+                if (encounteredS3Exception) {
+                    result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
+                }
+            }
+
+            // Report progress
+            if (job != null && i != csvResults.size() - 1) {
+                job.setProgress((double) (i + 1) / csvResults.size());
+            }
+        }
+        this.monumentRepository.saveAll(monuments);
+        if (job != null) job.setProgress(1.0);
+        return monuments;
     }
 
     @SuppressWarnings("unchecked")

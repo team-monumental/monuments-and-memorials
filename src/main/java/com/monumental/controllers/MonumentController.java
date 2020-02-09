@@ -9,7 +9,7 @@ import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.services.AsyncMonumentService;
+import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.util.async.AsyncJob;
@@ -38,10 +38,10 @@ public class MonumentController {
     private MonumentRepository monumentRepository;
 
     @Autowired
-    private MonumentService monumentService;
+    private AsyncJobService asyncJobService;
 
     @Autowired
-    private AsyncMonumentService asyncMonumentService;
+    private MonumentService monumentService;
 
     @Autowired
     private TagService tagService;
@@ -233,10 +233,10 @@ public class MonumentController {
          * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the CompletableFuture
          * must be passed to the AsyncJob, making it difficult to do so dynamically
          */
-        AsyncJob job = this.asyncMonumentService.createJob();
-        job.setFuture(this.asyncMonumentService.bulkCreateMonuments(
-                job,
-                new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setFuture(this.monumentService.bulkCreateMonumentsAsync(
+                new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values()),
+                job
         ));
         return job;
     }
@@ -248,7 +248,7 @@ public class MonumentController {
      */
     @GetMapping("/api/monument/bulk/create/progress/{id}")
     public AsyncJob getBulkCreateMonumentJob(@PathVariable Integer id) {
-        return this.asyncMonumentService.getJob(id);
+        return this.asyncJobService.getJob(id);
     }
 
     /**
@@ -263,7 +263,7 @@ public class MonumentController {
     @SuppressWarnings("unchecked")
     public List<Monument> getBulkCreateMonumentJobResult(@PathVariable Integer id)
             throws ExecutionException, InterruptedException {
-        return (List<Monument>) this.asyncMonumentService.getJob(id).getFuture().get();
+        return (List<Monument>) this.asyncJobService.getJob(id).getFuture().get();
     }
 
     /**

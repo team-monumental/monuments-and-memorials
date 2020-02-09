@@ -1,15 +1,16 @@
 package com.monumental.services;
 
 import com.monumental.util.async.AsyncJob;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This abstract class should be extended by asynchronous services that need to maintain
- * an internal job queue in order to report progress and results of AsyncJobs as they run
+ * This service maintains an internal job queue in order to report progress and results of AsyncJobs as they run
  */
-public abstract class AsyncService {
+@Service
+public class AsyncJobService {
 
     private Map<Integer, AsyncJob> jobs = new HashMap<>();
 
