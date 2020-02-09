@@ -50,10 +50,10 @@ public class MonumentServiceIntegrationTests {
     @Autowired
     TagService tagService;
 
-    public static String headers = "contributors,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
+    public static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
 
     public static Map<String, String> mapping = Map.ofEntries(
-        Map.entry("contributors", "contributors"),
+        Map.entry("contributions", "contributions"),
         Map.entry("artist", "artist"),
         Map.entry("title", "title"),
         Map.entry("date", "date"),
