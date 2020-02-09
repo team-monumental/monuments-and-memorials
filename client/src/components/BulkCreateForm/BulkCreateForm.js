@@ -5,6 +5,8 @@ import validator from 'validator';
 import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
 import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
+import { parse as toCSV } from 'json2csv';
+import moment from 'moment';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -217,6 +219,22 @@ export default class BulkCreateForm extends React.Component {
         });
     }
 
+    downloadCSV(results) {
+        const fields = ['Row Number', 'Warnings', 'Errors'];
+        results = results.map(result => {return {
+            'Row Number': result.index,
+            'Warnings': result.warnings.join('\n'),
+            'Errors': result.errors.join('\n')
+        }});
+        const csv = 'data:text/csv;charset=utf-8,' + toCSV(results, {fields});
+        const encodedUri = encodeURI(csv);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Validation Results ${moment().format('YYYY-MM-DD hh:mm')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+
     render() {
         const { fileUpload, showFieldMapping } = this.state;
         const { showValidationResults, showCreateResults } = this.props;
@@ -419,6 +437,8 @@ export default class BulkCreateForm extends React.Component {
 
         const fileString = (<code>{fileUpload.zip ? '.zip' : '.csv'}</code>);
 
+        results = results.filter(result => result.errors.length > 0 || result.warnings.length > 0);
+
         return (<>
             <Card.Body>
                 <div>
@@ -436,18 +456,17 @@ export default class BulkCreateForm extends React.Component {
                         </thead>
                         <tbody>
                             {
-                                results.filter(result => result.errors.length > 0 || result.warnings.length > 0)
-                                    .map(result => (
-                                        <tr key={result.index}>
-                                            <td>{result.index}</td>
-                                            <td>{result.warnings.map((warning, index) => (
-                                                <div key={index}>{warning}</div>
-                                            ))}</td>
-                                            <td>{result.errors.map((error, index) => (
-                                                <div key={index}>{error}</div>
-                                            ))}</td>
-                                        </tr>
-                                    ))
+                                results.map(result => (
+                                    <tr key={result.index}>
+                                        <td>{result.index}</td>
+                                        <td>{result.warnings.map((warning, index) => (
+                                            <div key={index}>{warning}</div>
+                                        ))}</td>
+                                        <td>{result.errors.map((error, index) => (
+                                            <div key={index}>{error}</div>
+                                        ))}</td>
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
@@ -467,6 +486,9 @@ export default class BulkCreateForm extends React.Component {
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
+                <Button variant="light" className="mr-2" onClick={() => this.downloadCSV(results)}>
+                    Export to CSV
+                </Button>
                 {warningCount > 0 && errorCount === 0 &&
                     <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
                         Continue With Warnings

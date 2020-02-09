@@ -8,6 +8,7 @@
     "chart.js": "^2.9.3",
     "cheeseburger-menu": "0.0.13",
     "csvtojson": "^2.0.10",
+    "json2csv": "^4.5.4",
     "jszip": "^3.2.2",
     "leaflet": "^1.5.1",
     "moment": "^2.24.0",
