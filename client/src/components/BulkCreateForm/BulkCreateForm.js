@@ -129,7 +129,7 @@ export default class BulkCreateForm extends React.Component {
     }
 
     async readCSVHeaders() {
-        const { fields, fileUpload: { csv } } = this.state;
+        const { fields, fileUpload: { csv, zip } } = this.state;
         if (!csv) return;
 
         let headersString;
@@ -160,8 +160,11 @@ export default class BulkCreateForm extends React.Component {
                 const mapping = headers.map(header => {
                     let mappedField = '';
                     for (let field of fields) {
+                        // By default don't select images on CSV uploads since they don't work.
+                        // If the user chooses to select it, let them get the warnings later about it
+                        if (field.name === 'images' && !zip) continue;
                         let name = field.name.toLowerCase().trim();
-                        let label = field.name.toLowerCase().trim();
+                        let label = field.label.toLowerCase().trim();
                         let trimmedHeader = header.toLowerCase().trim();
                         if ((name === trimmedHeader || label === trimmedHeader ||
                              name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
