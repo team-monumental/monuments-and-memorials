@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 
-// Constant for the S3 Bucket name where the Monument images are stored
-const s3ImageBucketName = 'monument-images';
+// Constant for the S3 Bucket name for the project
+const s3ImageBucketName = 'monuments-and-memorials';
 // Constant for the S3 folder name where the Monument images are stored
 const s3ImageBucketFolderName = 'images/';
 
@@ -164,18 +164,20 @@ export async function deleteImagesFromS3(imageUrls) {
 
 /**
  * Helper function to get the S3 Object Key for an Image using the specified Object URL
- * @param objectUrl - The Object URL to use to parse the Image Object Key
+ * @param encodedObjectUrl - The encoded Object URL to use to parse the Image Object Key
  */
-function getS3ImageObjectKeyFromObjectUrl(objectUrl) {
-    const objectUrlArray = objectUrl.split('/');
-    return s3ImageBucketFolderName + objectUrlArray[objectUrlArray.length - 1];
+export function getS3ImageObjectKeyFromObjectUrl(encodedObjectUrl) {
+    const decodedObjectUrl = decodeURIComponent(encodedObjectUrl);
+    const decodedObjectUrlArray = decodedObjectUrl.split('/');
+    return s3ImageBucketFolderName + decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
 }
 
 /**
  * Helper function to get the Image name using the specified S3 Object URL
- * @param objectUrl - The Object URL to use to parse the Image name
+ * @param encodedObjectUrl - The encoded Object URL to use to parse the Image name
  */
-export function getS3ImageNameFromObjectUrl(objectUrl) {
-    const objectUrlArray = objectUrl.split('/');
-    return objectUrlArray[objectUrlArray.length - 1];
+export function getS3ImageNameFromObjectUrl(encodedObjectUrl) {
+    const decodedObjectUrl = decodeURIComponent(encodedObjectUrl);
+    const decodedObjectUrlArray = decodedObjectUrl.split('/');
+    return decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
 }
