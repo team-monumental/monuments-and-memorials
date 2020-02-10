@@ -17,7 +17,6 @@ import com.monumental.services.TagService;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.opencsv.CSVReader;
-import com.monumental.util.csvparsing.BulkCreateResult;
 import com.vividsolutions.jts.geom.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
