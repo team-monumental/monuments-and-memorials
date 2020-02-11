@@ -5,7 +5,6 @@ import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
 import com.monumental.services.MonumentService;
-import com.vividsolutions.jts.geom.Point;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -45,7 +44,7 @@ public class CsvMonumentConverter {
                 String value = values.get(i);
                 if (field == null || value.equals("")) continue;
                 switch (field) {
-                    case "submittedBy":
+                    case "contributions":
                         Contribution contribution = parseContribution(value);
                         contribution.setMonument(monument);
                         monument.getContributions().add(contribution);
@@ -95,7 +94,7 @@ public class CsvMonumentConverter {
                     case "tags":
                         result.getTagNames().addAll(parseTags(value));
                         break;
-                    case "reference":
+                    case "references":
                         Reference reference = parseReference(value);
                         reference.setMonument(monument);
                         monument.getReferences().add(reference);
@@ -119,8 +118,7 @@ public class CsvMonumentConverter {
                 }
             }
 
-            Point point = MonumentService.createMonumentPoint(longitude, latitude);
-            monument.setCoordinates(point);
+            monument.setCoordinates(MonumentService.createMonumentPoint(longitude, latitude));
 
             result.setMonument(monument);
             result.validate();

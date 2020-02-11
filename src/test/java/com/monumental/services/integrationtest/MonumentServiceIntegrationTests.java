@@ -50,10 +50,10 @@ public class MonumentServiceIntegrationTests {
     @Autowired
     TagService tagService;
 
-    public static String headers = "submittedBy,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,reference,images";
+    public static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
 
     public static Map<String, String> mapping = Map.ofEntries(
-        Map.entry("submittedBy", "submittedBy"),
+        Map.entry("contributions", "contributions"),
         Map.entry("artist", "artist"),
         Map.entry("title", "title"),
         Map.entry("date", "date"),
@@ -65,7 +65,7 @@ public class MonumentServiceIntegrationTests {
         Map.entry("state", "state"),
         Map.entry("address", "address"),
         Map.entry("tags", "tags"),
-        Map.entry("reference", "reference"),
+        Map.entry("references", "references"),
         Map.entry("images", "images")
     );
 
@@ -97,7 +97,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_bulkCreateMonumentsFromCsv_EmptyCsvList() {
         List<CsvMonumentConverterResult> csvResults = new ArrayList<>();
 
-        List<Monument> results = this.monumentService.bulkCreateMonuments(csvResults);
+        List<Monument> results = this.monumentService.bulkCreateMonumentsSync(csvResults);
 
         assertEquals(0, results.size());
     }
@@ -107,7 +107,7 @@ public class MonumentServiceIntegrationTests {
         String csvRow = "Test Submitted By,Test Artist,,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
 
-        List<Monument> creationResult = this.monumentService.bulkCreateMonuments(
+        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
             new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
         );
 
@@ -127,7 +127,7 @@ public class MonumentServiceIntegrationTests {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
 
-        List<Monument> creationResult = this.monumentService.bulkCreateMonuments(
+        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
             new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
         );
 
@@ -148,7 +148,7 @@ public class MonumentServiceIntegrationTests {
                          "\nTest Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",,";
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
 
-        List<Monument> creationResult = this.monumentService.bulkCreateMonuments(
+        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
             new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
         );
 
@@ -174,7 +174,7 @@ public class MonumentServiceIntegrationTests {
                          "\n,Test Artist,Test Title,,\"Material 1, Material 2\",,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
 
-        List<Monument> creationResult = this.monumentService.bulkCreateMonuments(
+        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
             new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
         );
 
@@ -198,8 +198,8 @@ public class MonumentServiceIntegrationTests {
 
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
 
-        List<Monument> creationResult = this.monumentService.bulkCreateMonuments(
-                new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
+        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
+            new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
         );
 
         assertEquals(2, validationResult.getValidResults().size());

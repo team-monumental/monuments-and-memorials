@@ -6,6 +6,7 @@ import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
 import { bulkValidateMonuments, bulkCreateMonuments } from '../../actions/bulk';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
+import { Modal, ProgressBar } from 'react-bootstrap';
 
 /**
  * Root container for the page to bulk create Monuments
@@ -53,23 +54,37 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        const { showingErrorModal, showValidationResults } = this.state;
+        let { showingErrorModal, showValidationResults } = this.state;
         const {
             bulkCreateMonumentsPending, bulkValidateMonumentsPending, validationResult, validationError,
-            createResult, createError
+            createResult, createError, createProgress
         } = this.props;
+
+        const showCreateResults = createResult && !bulkCreateMonumentsPending;
+        showValidationResults = !showCreateResults && showValidationResults && !bulkValidateMonumentsPending;
 
         return (
             <div className="page d-flex justify-content-center">
-                <Spinner show={bulkCreateMonumentsPending || bulkValidateMonumentsPending}/>
+                <Spinner show={bulkValidateMonumentsPending}/>
                 <BulkCreateForm
                     onValidationSubmit={(form) => this.handleValidationSubmit(form)}
                     onCreateSubmit={(form) => this.handleCreateSubmit(form)}
                     onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
-                    validationResult={validationResult}
-                    createResult={createResult}
-                    showValidationResults={showValidationResults && !bulkValidateMonumentsPending}
+                    {...{validationResult, createResult, showValidationResults, showCreateResults}}
                 />
+                <Modal show={bulkCreateMonumentsPending}>
+                    <Modal.Header className="pb-0">
+                        <Modal.Title>
+                            Bulk Creating Monuments or Memorials
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="mb-2">
+                            Please wait while your monuments or memorials are created...
+                        </div>
+                        <ProgressBar now={createProgress * 100}/>
+                    </Modal.Body>
+                </Modal>
                 <ErrorModal
                     showing={showingErrorModal}
                     errorMessage={(validationError || createError || {}).message || ''}

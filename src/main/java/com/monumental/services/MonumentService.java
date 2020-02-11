@@ -9,15 +9,17 @@ import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
 import com.opencsv.CSVReader;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -528,13 +531,40 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Insert validated monument CSV rows and related objects
+     * SYNCHRONOUSLY bulk create monuments from CSV. Since this method is synchronous, long CSVs could take
+     * a significant amount of time to process and hold up the thread or HTTP request.
+     * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk create behavior
+     * can be tested synchronously
      * @param csvResults - The validated CSV rows, converted into monuments
-     * @return List of inserted monuments
+     * @return - List of inserted monuments
      */
-    public List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults) {
+    public List<Monument> bulkCreateMonumentsSync(List<CsvMonumentConverterResult> csvResults) {
+        return this.bulkCreateMonuments(csvResults, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY bulk create monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - CompletableFuture of List of inserted monuments
+     */
+    @Async
+    public CompletableFuture<List<Monument>> bulkCreateMonumentsAsync(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        return CompletableFuture.completedFuture(this.bulkCreateMonuments(csvResults, job));
+    }
+
+    /**
+     * Bulk create monuments from CSV. If job is not null, progress will be reported as the monuments are created.
+     * This method should only be called through MonumentService.bulkCreateMonumentsSync or
+     * AsyncMonumentService.bulkCreateMonumentsAsync
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - List of inserted monuments
+     */
+    private List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
         List<Monument> monuments = new ArrayList<>();
-        for (CsvMonumentConverterResult result : csvResults) {
+        for (int i = 0; i < csvResults.size(); i++) {
+            CsvMonumentConverterResult result = csvResults.get(i);
             // Insert the Monument
             Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
             monuments.add(insertedMonument);
@@ -558,8 +588,8 @@ public class MonumentService extends ModelService<Monument> {
             if (imageFiles != null && imageFiles.size() > 0) {
                 String tempDirectoryPath = System.getProperty("java.io.tmpdir");
                 boolean encounteredS3Exception = false;
-                for (int i = 0; i < imageFiles.size(); i++) {
-                    File imageFile = imageFiles.get(0);
+                for (int j = 0; j < imageFiles.size(); j++) {
+                    File imageFile = imageFiles.get(j);
                     // Upload the File to S3
                     try {
                         String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
@@ -570,7 +600,7 @@ public class MonumentService extends ModelService<Monument> {
                         Image image = new Image();
                         image.setUrl(objectUrl);
                         image.setMonument(insertedMonument);
-                        image.setIsPrimary(i == 0);
+                        image.setIsPrimary(j == 0);
                         insertedMonument.getImages().add(image);
                     } catch (SdkClientException e) {
                         encounteredS3Exception = true;
@@ -582,8 +612,14 @@ public class MonumentService extends ModelService<Monument> {
                     result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
                 }
             }
+
+            // Report progress
+            if (job != null && i != csvResults.size() - 1) {
+                job.setProgress((double) (i + 1) / csvResults.size());
+            }
         }
         this.monumentRepository.saveAll(monuments);
+        if (job != null) job.setProgress(1.0);
         return monuments;
     }
 

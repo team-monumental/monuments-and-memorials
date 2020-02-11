@@ -5,6 +5,8 @@ import validator from 'validator';
 import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
 import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
+import { parse as toCSV } from 'json2csv';
+import moment from 'moment';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -129,7 +131,7 @@ export default class BulkCreateForm extends React.Component {
     }
 
     async readCSVHeaders() {
-        const { fields, fileUpload: { csv } } = this.state;
+        const { fields, fileUpload: { csv, zip } } = this.state;
         if (!csv) return;
 
         let headersString;
@@ -160,8 +162,11 @@ export default class BulkCreateForm extends React.Component {
                 const mapping = headers.map(header => {
                     let mappedField = '';
                     for (let field of fields) {
+                        // By default don't select images on CSV uploads since they don't work.
+                        // If the user chooses to select it, let them get the warnings later about it
+                        if (field.name === 'images' && !zip) continue;
                         let name = field.name.toLowerCase().trim();
-                        let label = field.name.toLowerCase().trim();
+                        let label = field.label.toLowerCase().trim();
                         let trimmedHeader = header.toLowerCase().trim();
                         if ((name === trimmedHeader || label === trimmedHeader ||
                              name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
@@ -214,9 +219,25 @@ export default class BulkCreateForm extends React.Component {
         });
     }
 
+    downloadCSV(results) {
+        const fields = ['Row Number', 'Warnings', 'Errors'];
+        results = results.map(result => {return {
+            'Row Number': result.index,
+            'Warnings': result.warnings.join('\n'),
+            'Errors': result.errors.join('\n')
+        }});
+        const csv = 'data:text/csv;charset=utf-8,' + toCSV(results, {fields});
+        const encodedUri = encodeURI(csv);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Validation Results ${moment().format('YYYY-MM-DD hh:mm')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults } = this.props;
+        const { showValidationResults, showCreateResults } = this.props;
 
         return (
             <Card className="bulk-create-form-container">
@@ -227,8 +248,9 @@ export default class BulkCreateForm extends React.Component {
                     {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
-                {showFieldMapping && !showValidationResults && this.renderFieldMapping()}
+                {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
                 {showValidationResults && this.renderValidationResults()}
+                {showCreateResults && this.renderCreateResults()}
             </Card>
         );
     }
@@ -275,28 +297,30 @@ export default class BulkCreateForm extends React.Component {
         const { fileUpload } = this.state;
         return (<>
             <Card.Body>
-                <Card.Subtitle className="d-flex align-items-center">
-                    <i className="material-icons mr-1">
-                        notes
-                    </i>
-                    Uploaded CSV File
-                </Card.Subtitle>
-                <div className="pl-1">
-                    {fileUpload.csv && fileUpload.csv.name}
+                <div className="zip-list-wrapper">
+                    <Card.Subtitle className="d-flex align-items-center">
+                        <i className="material-icons mr-1">
+                            notes
+                        </i>
+                        Uploaded CSV File
+                    </Card.Subtitle>
+                    <div className="pl-1">
+                        {fileUpload.csv && fileUpload.csv.name}
+                    </div>
+                    <Card.Subtitle className="d-flex align-items-center mt-3">
+                        <i className="material-icons mr-1">
+                            image
+                        </i>
+                        Uploaded Image Files ({fileUpload.images.length})
+                    </Card.Subtitle>
+                    <ul className="list-unstyled pl-1">
+                    {fileUpload.images.map(file => (
+                        <li key={file.name} className="mb-1">
+                            {file.name}
+                        </li>
+                    ))}
+                    </ul>
                 </div>
-                <Card.Subtitle className="d-flex align-items-center mt-3">
-                    <i className="material-icons mr-1">
-                        image
-                    </i>
-                    Uploaded Image Files ({fileUpload.images.length})
-                </Card.Subtitle>
-                <ul className="list-unstyled pl-1">
-                {fileUpload.images.map(file => (
-                    <li key={file.name} className="mb-1">
-                        {file.name}
-                    </li>
-                ))}
-                </ul>
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
                 <Button variant="bare" onClick={() => this.resetForm(true)}>
@@ -310,7 +334,7 @@ export default class BulkCreateForm extends React.Component {
     }
 
     renderFieldMapping() {
-        const { mapping, fields, fileUpload } = this.state;
+        const { mapping, fields } = this.state;
 
         return (<>
             <Card.Body>
@@ -413,6 +437,8 @@ export default class BulkCreateForm extends React.Component {
 
         const fileString = (<code>{fileUpload.zip ? '.zip' : '.csv'}</code>);
 
+        results = results.filter(result => result.errors.length > 0 || result.warnings.length > 0);
+
         return (<>
             <Card.Body>
                 <div>
@@ -430,18 +456,17 @@ export default class BulkCreateForm extends React.Component {
                         </thead>
                         <tbody>
                             {
-                                results.filter(result => result.errors.length > 0 || result.warnings.length > 0)
-                                    .map(result => (
-                                        <tr key={result.index}>
-                                            <td>{result.index}</td>
-                                            <td>{result.warnings.map((warning, index) => (
-                                                <div key={index}>{warning}</div>
-                                            ))}</td>
-                                            <td>{result.errors.map((error, index) => (
-                                                <div key={index}>{error}</div>
-                                            ))}</td>
-                                        </tr>
-                                    ))
+                                results.map(result => (
+                                    <tr key={result.index}>
+                                        <td>{result.index}</td>
+                                        <td>{result.warnings.map((warning, index) => (
+                                            <div key={index}>{warning}</div>
+                                        ))}</td>
+                                        <td>{result.errors.map((error, index) => (
+                                            <div key={index}>{error}</div>
+                                        ))}</td>
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
@@ -461,6 +486,9 @@ export default class BulkCreateForm extends React.Component {
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
+                <Button variant="light" className="mr-2" onClick={() => this.downloadCSV(results)}>
+                    Export to CSV
+                </Button>
                 {warningCount > 0 && errorCount === 0 &&
                     <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
                         Continue With Warnings
@@ -477,5 +505,17 @@ export default class BulkCreateForm extends React.Component {
                 </Button>
             </Card.Footer>
         </>);
+    }
+
+    renderCreateResults() {
+        const { createResult } = this.props;
+        return (
+            <Card.Body>
+                <h5>Success!</h5>
+                <div>
+                    {createResult.length} monuments or memorials have been created. I would list them out here, but pretty soon they're just going to be suggestions anyway!
+                </div>
+            </Card.Body>
+        );
     }
 }

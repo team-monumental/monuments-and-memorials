@@ -16,7 +16,8 @@ export default function bulkCreatePage(state = initialState, action) {
         case BULK_CREATE_MONUMENTS_PENDING:
             return {
                 ...state,
-                bulkCreateMonumentsPending: true
+                bulkCreateMonumentsPending: true,
+                createProgress: action.progress
             };
         case BULK_CREATE_MONUMENTS_SUCCESS:
             return {

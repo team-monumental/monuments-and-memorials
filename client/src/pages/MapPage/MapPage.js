@@ -15,7 +15,7 @@ class MapPage extends React.Component {
         dispatch(fetchMonuments());
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (window.innerWidth < 700) {
             this.setState({zoomSize: 3});
         }
