@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom';
 import {Button, Modal} from 'react-bootstrap';
 import SearchBar from './SearchBar/SearchBar';
 import CheeseburgerMenu from 'cheeseburger-menu'
+import Logo from '../Logo/Logo';
+import { Link } from 'react-router-dom';
 
 export default class Header extends React.Component {
 
@@ -44,7 +46,7 @@ export default class Header extends React.Component {
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
                 <div className="left">
-                    <img className="header-icon" src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo"/>
+                    <Logo size="35px"/>
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
@@ -65,7 +67,7 @@ export default class Header extends React.Component {
                     {window.innerWidth < 768 && <>
                         <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
                             <Modal.Header closeButton>
-                                <img className="header-icon" src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo" width="35px" height="35px"/>
+                                <Logo size="35px"/>
                             </Modal.Header>
                             <Modal.Body>
                                 <SearchBar onCloseModal={() => {
@@ -79,8 +81,8 @@ export default class Header extends React.Component {
                 <div className="right">
                     {/* Desktop */}
                     {window.innerWidth >= 992 && <div className="login-signup-buttons">
-                        <Button size="sm" variant="link-secondary" className="text-nowrap">Log in</Button>
-                        <Button size="sm" className="text-nowrap">Sign up</Button>
+                        <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap">Log in</Link>
+                        <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
                     </div>}
                     {/* Mobile */}
                     {window.innerWidth < 768 && <>

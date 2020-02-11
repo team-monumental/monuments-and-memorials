@@ -1,6 +1,7 @@
 package com.monumental;
 
 import com.monumental.exceptions.ApiError;
+import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.util.string.StringHelper;
@@ -27,6 +28,17 @@ public class ApiExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
                         "Requested resource not found" :
+                        exception.getMessage()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    // Handler for InvalidEmailOrPasswordExceptions
+    @ExceptionHandler({ InvalidEmailOrPasswordException.class })
+    public ResponseEntity<Object> handleInvalidEmailOrPasswordException(InvalidEmailOrPasswordException exception) {
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
+                StringHelper.isNullOrEmpty(exception.getMessage()) ?
+                        "Invalid email or password." :
                         exception.getMessage()
         );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

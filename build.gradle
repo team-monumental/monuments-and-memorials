@@ -41,6 +41,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-security')
     implementation('me.alidg:errors-spring-boot-starter:1.4.0')
     implementation('com.sun.xml.bind:jaxb-impl:2.3.0')
     implementation('com.sun.xml.bind:jaxb-core:2.3.0')
@@ -84,11 +85,6 @@ task appNpmBuild(type: NpmTask, dependsOn: [appNpmInstall]) {
 task copyWebApp(type: Copy, dependsOn: [appNpmBuild]) {
     from 'client/build'
     into 'build/resources/main/static/'
-}
-
-task dataLoad(type: JavaExec) {
-    main = "com.monumental.util.application.InitialDataLoadApplication"
-    classpath = sourceSets.main.getRuntimeClasspath()
 }
 
 // Enable this to ALWAYS build react when building the Java app

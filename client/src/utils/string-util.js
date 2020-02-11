@@ -7,6 +7,9 @@ export function prettyPrintDate(date) {
     return date.format('dddd, MMMM Do, YYYY');
 }
 
+export const validEmailRegex =
+    RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
+
 /**
  * Return the name of the month for the specified month string (0-based)
  * For example, "00" will return "January" and "11" will return "December"

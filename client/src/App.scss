@@ -108,6 +108,7 @@ p {
     color: $primary !important;
 }
 
+
 .min-width-select {
     width: min-content !important;
     padding: 0.25rem 0.5rem !important;
@@ -135,4 +136,15 @@ p {
 .modal-dialog.update-review-modal-dialog {
     width: 60vw;
     max-width: none !important;
+}
+
+.card-header {
+    background-color: rgba(0,0,0,0) !important;
+    border-bottom: 0 !important;
+}
+
+.error-message {
+    color: $danger;
+    min-width: 100%;
+    width: 0;
 }
