@@ -42,9 +42,7 @@ export default class HomePage extends React.Component {
                         If you have any questions, please contact the project coordinator, <b>Juilee Decker jdgsh@rit.edu</b>.
                     </p>
                 </div>
-                <div>
-                    <SuggestChanges/>
-                </div>
+                <SuggestChanges/>
             </div>
         );
     }
