@@ -78,10 +78,10 @@ export default class Header extends React.Component {
 
                 <div className="right">
                     {/* Desktop */}
-                    {window.innerWidth >= 992 && <>
-                        <Button size="sm" variant="link-secondary">Log in</Button>
-                        <Button size="sm">Sign up</Button>
-                    </>}
+                    {window.innerWidth >= 992 && <div className="login-signup-buttons">
+                        <Button size="sm" variant="link-secondary" className="text-nowrap">Log in</Button>
+                        <Button size="sm" className="text-nowrap">Sign up</Button>
+                    </div>}
                     {/* Mobile */}
                     {window.innerWidth < 768 && <>
                         <Button variant="link-secondary" className="search-icon" onClick={() => this.setState({isSearchModalOpen: true})}>

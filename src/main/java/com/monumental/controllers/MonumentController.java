@@ -1,27 +1,32 @@
 package com.monumental.controllers;
 
+import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
+import com.monumental.controllers.helpers.CreateMonumentRequest;
+import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.controllers.helpers.CreateMonumentRequest;
-import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
-import com.monumental.util.csvparsing.BulkCreateResult;
-import com.monumental.util.csvparsing.ZipFileHelper;
-import org.hibernate.Hibernate;
 import com.monumental.services.TagService;
+import com.monumental.util.async.AsyncJob;
+import com.monumental.util.csvparsing.CsvMonumentConverterResult;
+import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.*;
-import java.util.zip.ZipFile;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -31,6 +36,9 @@ public class MonumentController {
 
     @Autowired
     private MonumentRepository monumentRepository;
+
+    @Autowired
+    private AsyncJobService asyncJobService;
 
     @Autowired
     private MonumentService monumentService;
@@ -192,25 +200,70 @@ public class MonumentController {
     }
 
     /**
-     * Create many Monuments based on the specified CSV file contents
-     * @param csvContents - List of Strings, where each String is a CSV row
-     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
+     * Validate which rows in the specified .csv (or .csv within .zip) file are valid
+     * @param request - Contains the field mapping and the file to process
+     * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
-    @PostMapping("/api/monument/bulk-create")
-    public BulkCreateResult bulkCreateMonuments(@RequestBody List<String> csvContents) {
-        return this.monumentService.bulkCreateMonumentsFromCsv(csvContents, false, null, null);
+    @PostMapping("/api/monument/bulk/validate")
+    public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
+        try {
+            BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+        } catch (InvalidZipException | IOException e) {
+            MonumentBulkValidationResult result = new MonumentBulkValidationResult();
+            result.setError(e.getMessage());
+            return result;
+        }
     }
 
     /**
-     * Create many Monuments based on the specified .zip file
-     * @param file - MultipartFile representation of the .zip file
-     * @return BulkCreateResult - Object representing the results of the Bulk Monument Create operation
-     * @throws IOException - If any I/O errors occur while processing the .zip file
+     * Start the job to create monuments from csv or zip
+     * @param request - Contains the field mapping and the file to process
+     * @return AsyncJob - Object containing the Id of the job created and the current value of the Future object
      */
-    @PostMapping(value = "/api/monument/bulk-create/zip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BulkCreateResult bulkCreateMonumentsWithImages(@RequestBody MultipartFile file) throws IOException {
-        ZipFile zipFile = ZipFileHelper.convertMultipartFileToZipFile(file);
-        return this.monumentService.bulkCreateMonumentsFromZip(zipFile);
+    @PostMapping("/api/monument/bulk/create/start")
+    public AsyncJob startBulkCreateMonumentJob(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
+        BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+
+        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(
+                parseResult.csvContents, parseResult.mapping, parseResult.zipFile
+        );
+
+        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
+         * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the CompletableFuture
+         * must be passed to the AsyncJob, making it difficult to do so dynamically
+         */
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setFuture(this.monumentService.bulkCreateMonumentsAsync(
+                new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values()),
+                job
+        ));
+        return job;
+    }
+
+    /**
+     * Check the progress of a create bulk monuments job
+     * @param id - Id of the job to check
+     * @return AsyncJob - Object containing the Id of the job and the current value of the Future object
+     */
+    @GetMapping("/api/monument/bulk/create/progress/{id}")
+    public AsyncJob getBulkCreateMonumentJob(@PathVariable Integer id) {
+        return this.asyncJobService.getJob(id);
+    }
+
+    /**
+     * Get the final result of a create bulk monuments job. If the job is not completed yet this will wait for it to
+     * complete, so be sure to call getBulkCreateMonumentJob and check the status before calling this
+     * @param id - Id of the job to get the result of
+     * @return List<Monument> - The monuments created
+     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
+     * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
+     */
+    @GetMapping("/api/monument/bulk/create/result/{id}")
+    @SuppressWarnings("unchecked")
+    public List<Monument> getBulkCreateMonumentJobResult(@PathVariable Integer id)
+            throws ExecutionException, InterruptedException {
+        return (List<Monument>) this.asyncJobService.getJob(id).getFuture().get();
     }
 
     /**

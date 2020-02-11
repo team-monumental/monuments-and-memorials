@@ -1,31 +1,35 @@
 package com.monumental.services;
 
+import com.amazonaws.SdkClientException;
+import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
-import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
+import com.opencsv.CSVReader;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -283,6 +287,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
                                  Integer distance, List<String> tags, List<String> materials, SortType sortType,
                                  Date start, Date end, Integer decade) {
@@ -297,12 +302,16 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         List<Monument> monuments = limit != null
-                                        ? page != null
-                                            ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
-                                            : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-                                        : this.getWithCriteriaQuery(query);
-
-        this.getRelatedRecords(monuments, "images");
+            ? page != null
+                ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+            : this.getWithCriteriaQuery(query);
+        // Cause hibernate to load in the related records
+        for (Monument monument : monuments) {
+            monument.getTags();
+            monument.getMaterials();
+            monument.getImages().size();
+        }
         return monuments;
     }
 
@@ -322,79 +331,6 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
-    }
-
-    /**
-     * Gets the related records and sets them on the monument objects, using only one extra SQL query
-     * @param monuments Monuments to get related records for - these objects are updated directly using the setter
-     *                  but no database update is called
-     */
-    private void getRelatedRecords(List<Monument> monuments, String fieldName) {
-        if (monuments.size() == 0) return;
-        CriteriaBuilder builder = this.getCriteriaBuilder();
-        CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
-        Root<Monument> root = this.createRoot(query);
-        query.select(root);
-        root.fetch(fieldName, JoinType.LEFT);
-
-        List<Integer> ids = new ArrayList<>();
-        for (Monument monument : monuments) {
-            ids.add(monument.getId());
-        }
-
-        query.where(
-            root.get("id").in(ids)
-        );
-
-        List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);
-
-        String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-
-        // "monumentTags" is a special case because it's a Set, not a List
-        if (fieldName.equals("monumentTags")) {
-            Map<Integer, Set> map = new HashMap<>();
-            for (Monument monument : monumentsWithRecords) {
-                try {
-                    map.put(monument.getId(), (Set) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-
-            for (Monument monument : monuments) {
-                try {
-                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, Set.class).invoke(monument, map.get(monument.getId()));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-        }
-        else {
-            Map<Integer, List> map = new HashMap<>();
-            for (Monument monument : monumentsWithRecords) {
-                try {
-                    map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-
-            for (Monument monument : monuments) {
-                try {
-                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     /**
@@ -529,97 +465,11 @@ public class MonumentService extends ModelService<Monument> {
         );
     }
 
-    /**
-     * Create Monument records from the specified List of CSV Strings
-     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
-     * @param preprocessImages - If True, indicates that image pre-processing needs to be done on the CSV row because
-     *                         it originated from a .zip file
-     * @param imageFileNames - List of Strings containing the image filenames to use for image pre-processing
-     * @param zipFile - ZipFile containing the image files to use for image pre-processing
-     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
-     */
-    public BulkCreateResult bulkCreateMonumentsFromCsv(List<String> csvList, boolean preprocessImages,
-                                                       List<String> imageFileNames, ZipFile zipFile) {
-        if (csvList == null) {
-            return null;
-        }
-
-        BulkCreateResult bulkCreateResult = new BulkCreateResult();
-        ArrayList<CsvMonumentConverterResult> validResults = new ArrayList<>();
-        Integer rowNumber = 0;
-
-        for (String csvRow : csvList) {
-            // Increment the rowNumber counter
-            rowNumber++;
-
-            // Do row pre-processing if necessary
-            if (preprocessImages) {
-                if (imageFileNames == null || zipFile == null) {
-                    return null;
-                }
-
-                csvRow = this.preProcessImageForCsvRow(csvRow, imageFileNames, zipFile);
-            }
-
-            try {
-                // Convert the row into a CsvMonumentConverterResult object
-                CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip(), preprocessImages);
-
-                // Validate the result
-                CsvMonumentConverterResult.ValidationResult validationResult = result.validate();
-
-                if (validationResult.isValid()) {
-                    validResults.add(result);
-                }
-                else {
-                    bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().put(rowNumber, result.toString());
-                    bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().put(rowNumber,
-                            validationResult.getValidationErrors());
-                }
-            } catch (Exception e) {
-                System.out.println("ERROR processing row number: " + rowNumber);
-                System.out.println(e.toString());
-            }
-        }
-
-        int monumentsInsertedCount = 0;
-
-        for (CsvMonumentConverterResult validResult : validResults) {
-            try {
-                // Insert the Monument
-                Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
-                bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
-
-                List<Monument> monuments = new ArrayList<>();
-                monuments.add(insertedMonument);
-
-                // Insert all of the Tags associated with the Monument
-                List<String> tagNames = validResult.getTagNames();
-                if (tagNames != null && tagNames.size() > 0) {
-                    for (String tagName : tagNames) {
-                        this.tagService.createTag(tagName, monuments, false);
-                    }
-                }
-
-                // Insert all of the Materials associated with the Monument
-                List<String> materialNames = validResult.getMaterialNames();
-                if (materialNames != null && materialNames.size() > 0) {
-                    for (String materialName : materialNames) {
-                        this.tagService.createTag(materialName, monuments, true);
-                    }
-                }
-
-            } catch (DataIntegrityViolationException e) {
-                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                // These are disregarded for now - the correct tags are still being created
-            }
-
-            monumentsInsertedCount++;
-        }
-
-        bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
-
-        return bulkCreateResult;
+    public List<String[]> readCSV(MultipartFile csv) throws IOException {
+        BufferedReader br;
+        InputStream is = csv.getInputStream();
+        br = new BufferedReader(new InputStreamReader(is));
+        return new CSVReader(br).readAll();
     }
 
     /**
@@ -629,23 +479,19 @@ public class MonumentService extends ModelService<Monument> {
      * @throws InvalidZipException - If there is not exactly 1 CSV file in the .zip file
      * @throws IOException - If there are any I/O errors while processing the ZipFile
      */
-    public BulkCreateResult bulkCreateMonumentsFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
+    public List<String[]> readCSVFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
         // Search for CSV files in the .zip file
         // If the number of CSV files found is not exactly 1, error
-        // Also collect of the image filenames in the ZipFile
         int csvFileCount = 0;
         ZipEntry csvEntry = null;
-        List<String> imageFileNames = new ArrayList<>();
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while(zipEntries.hasMoreElements()) {
             ZipEntry zipEntry = zipEntries.nextElement();
+            if (zipEntry.getName().contains("__MACOSX")) continue;
 
             if (CsvFileHelper.isCsvFile(zipEntry.getName())) {
                 csvEntry = zipEntry;
                 csvFileCount++;
-            }
-            else if (ImageFileHelper.isSupportedImageFile(zipEntry.getName())) {
-                imageFileNames.add(zipEntry.getName());
             }
         }
 
@@ -654,51 +500,127 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Get the contents as CSV rows from the CSV file
-        List<String> csvContents = ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
-
-        // Pre-process and process the CSV contents and images
-        BulkCreateResult result = this.bulkCreateMonumentsFromCsv(csvContents, true, imageFileNames, zipFile);
-
-        // Close the ZipFile
-        zipFile.close();
-
-        return result;
+        return ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
     }
 
     /**
-     * Perform image pre-processing for the specified csvRow String
-     * If any I/OExceptions occur when trying to read from the ZipFile, the image file path is set to blank
-     * @param csvRow - String representation of the CSV row to pre-process
-     * @param imageFileNames - List of Strings containing the filenames of the images
-     * @param zipFile - ZipFile containing all of the image files
-     * @return String - The modified CSV row with the appropriate image file path
+     * Create Monument records from the specified List of CSV Strings
+     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
+     * @param mapping - Map of the CSV file's fields to our fields
+     * @param zipFile - ZipFile containing the image files to use for image pre-processing
+     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
-    private String preProcessImageForCsvRow(String csvRow, List<String> imageFileNames, ZipFile zipFile) {
-        String imageFileName = CsvMonumentConverter.getImageFileNameFromCsvRow(csvRow);
+    public MonumentBulkValidationResult validateMonumentCSV(List<String[]> csvList, Map<String, String> mapping,
+                                                            ZipFile zipFile) throws IOException {
+        if (csvList == null) {
+            return null;
+        }
 
-        // If the uploaded .zip file contains the CSV row's image filename, upload the image to S3 and
-        // set the CSV row's image filename column to the S3 Object URL
-        if (imageFileNames.contains(imageFileName)) {
-            // Get the ZipEntry for the Image
-            ZipEntry imageZipEntry = zipFile.getEntry(imageFileName);
-            try {
-                // Convert the ZipEntry into a File object
-                File fileToUpload = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
-                // Upload the File to S3
-                String objectUrl = this.s3Service.storeObject(AwsS3Service.imageBucketName, AwsS3Service.imageFolderName + imageFileName, fileToUpload);
-                // Delete the temp File created
-                fileToUpload.delete();
-                // Set the CSV Row's image filename column to the Object URL
-                return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, objectUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
+        MonumentBulkValidationResult monumentBulkValidationResult = new MonumentBulkValidationResult();
+
+        List<CsvMonumentConverterResult> results = CsvMonumentConverter.convertCsvRows(csvList, mapping, zipFile);
+        for (int i = 0; i < results.size(); i++) {
+            monumentBulkValidationResult.getResults().put(i + 1, results.get(i));
+        }
+
+        if (zipFile != null) {
+            zipFile.close();
+        }
+
+        return monumentBulkValidationResult;
+    }
+
+    /**
+     * SYNCHRONOUSLY bulk create monuments from CSV. Since this method is synchronous, long CSVs could take
+     * a significant amount of time to process and hold up the thread or HTTP request.
+     * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk create behavior
+     * can be tested synchronously
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @return - List of inserted monuments
+     */
+    public List<Monument> bulkCreateMonumentsSync(List<CsvMonumentConverterResult> csvResults) {
+        return this.bulkCreateMonuments(csvResults, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY bulk create monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - CompletableFuture of List of inserted monuments
+     */
+    @Async
+    public CompletableFuture<List<Monument>> bulkCreateMonumentsAsync(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        return CompletableFuture.completedFuture(this.bulkCreateMonuments(csvResults, job));
+    }
+
+    /**
+     * Bulk create monuments from CSV. If job is not null, progress will be reported as the monuments are created.
+     * This method should only be called through MonumentService.bulkCreateMonumentsSync or
+     * AsyncMonumentService.bulkCreateMonumentsAsync
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - List of inserted monuments
+     */
+    private List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        List<Monument> monuments = new ArrayList<>();
+        for (int i = 0; i < csvResults.size(); i++) {
+            CsvMonumentConverterResult result = csvResults.get(i);
+            // Insert the Monument
+            Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
+            monuments.add(insertedMonument);
+            // Insert all of the Tags associated with the Monument
+            Set<String> tagNames = result.getTagNames();
+            if (tagNames != null && tagNames.size() > 0) {
+                for (String tagName : tagNames) {
+                    this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
+                }
+            }
+
+            // Insert all of the Materials associated with the Monument
+            Set<String> materialNames = result.getMaterialNames();
+            if (materialNames != null && materialNames.size() > 0) {
+                for (String materialName : materialNames) {
+                    this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
+                }
+            }
+
+            List<File> imageFiles = result.getImageFiles();
+            if (imageFiles != null && imageFiles.size() > 0) {
+                String tempDirectoryPath = System.getProperty("java.io.tmpdir");
+                boolean encounteredS3Exception = false;
+                for (int j = 0; j < imageFiles.size(); j++) {
+                    File imageFile = imageFiles.get(j);
+                    // Upload the File to S3
+                    try {
+                        String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
+                        String objectUrl = this.s3Service.storeObject(
+                                AwsS3Service.imageFolderName + name,
+                                imageFile
+                        );
+                        Image image = new Image();
+                        image.setUrl(objectUrl);
+                        image.setMonument(insertedMonument);
+                        image.setIsPrimary(j == 0);
+                        insertedMonument.getImages().add(image);
+                    } catch (SdkClientException e) {
+                        encounteredS3Exception = true;
+                    }
+                    // Delete the temp File created
+                    imageFile.delete();
+                }
+                if (encounteredS3Exception) {
+                    result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
+                }
+            }
+
+            // Report progress
+            if (job != null && i != csvResults.size() - 1) {
+                job.setProgress((double) (i + 1) / csvResults.size());
             }
         }
-        // Otherwise, set the CSV row's image filename column to blank
-        else {
-            return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
-        }
+        this.monumentRepository.saveAll(monuments);
+        if (job != null) job.setProgress(1.0);
+        return monuments;
     }
 
     @SuppressWarnings("unchecked")

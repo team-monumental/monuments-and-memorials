@@ -1,5 +1,6 @@
 package com.monumental.util.csvparsing;
 
+import com.opencsv.CSVReader;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -41,28 +42,16 @@ public class ZipFileHelper {
      * @param csvFileZipEntry - ZipEntry for the CSV file to read into a List of Strings
      * @return List<String> - Entire contents of the CSV file ZipEntry, split on newlines
      */
-    public static List<String> readEntireCsvFileFromZipEntry(ZipFile zipFile, ZipEntry csvFileZipEntry) {
-        List<String> csvFileContents = new ArrayList<>();
-        String csvRow;
-
+    public static List<String[]> readEntireCsvFileFromZipEntry(ZipFile zipFile, ZipEntry csvFileZipEntry) {
         try {
             InputStream csvFileInputStream = zipFile.getInputStream(csvFileZipEntry);
             InputStreamReader csvFileInputStreamReader = new InputStreamReader(csvFileInputStream);
             BufferedReader csvFileBufferedReader = new BufferedReader(csvFileInputStreamReader);
-
-            while ((csvRow = csvFileBufferedReader.readLine()) != null) {
-                csvFileContents.add(csvRow);
-            }
-
-            csvFileBufferedReader.close();
-            csvFileInputStreamReader.close();
-            csvFileInputStream.close();
+            CSVReader reader = new CSVReader(csvFileBufferedReader);
+            return reader.readAll();
         } catch (IOException e) {
-            csvFileContents = new ArrayList<>();
-            return csvFileContents;
+            return new ArrayList<>();
         }
-
-        return csvFileContents;
     }
 
     /**
@@ -78,14 +67,19 @@ public class ZipFileHelper {
         // Get the system's temp directory path
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
 
+        String pathName = tempDirectoryPath + "/" + zipEntry.getName();
+
+        // In case the application left an unusual state, delete the temp image if it exists
+        Files.deleteIfExists(Paths.get(pathName));
+
         // Get the contents of the ZipEntry
         InputStream zipEntryInputStream = zipFile.getInputStream(zipEntry);
 
         // Copy the contents of the ZipEntry into a temp File inside the Temp directory
-        Files.copy(zipEntryInputStream, Paths.get(tempDirectoryPath + "tempImageForUpload"));
+        Files.copy(zipEntryInputStream, Paths.get(pathName));
 
         // Get a File object for the new temp File
-        return new File(tempDirectoryPath + "tempImageForUpload");
+        return new File(pathName);
     }
 
     /**
