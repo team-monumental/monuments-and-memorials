@@ -1,3 +1,7 @@
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../node_modules/bootstrap/scss/mixins";
+
 .filters {
     margin-bottom: 1rem;
 }
@@ -5,9 +9,18 @@
 .tags-container {
     margin-top: 1rem;
     display: flex;
+    flex-direction: column;
+    @include media-breakpoint-up(sm) {
+        flex-direction: row;
+    }
     .tags-search {
         flex: 50%;
-        margin-right: 1rem;
+        margin-bottom: 1rem;
+        @include media-breakpoint-up(sm) {
+            margin-bottom: 0;
+            margin-right: 1rem;
+        }
+
         &:last-child {
             margin-right: 0;
         }
