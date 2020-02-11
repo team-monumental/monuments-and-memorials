@@ -1,11 +1,11 @@
 import {
     BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR,
-    BULK_CREATE_MONUMENTS_ZIP_PENDING, BULK_CREATE_MONUMENTS_ZIP_SUCCESS, BULK_CREATE_MONUMENTS_ZIP_ERROR
+    BULK_VALIDATE_MONUMENTS_PENDING, BULK_VALIDATE_MONUMENTS_SUCCESS, BULK_VALIDATE_MONUMENTS_ERROR
 } from '../constants';
 
 const initialState = {
     bulkCreateMonumentsPending: false,
-    bulkCreateMonumentsZipPending: false,
+    bulkValidateMonumentsPending: false,
     result: {},
     error: null
 };
@@ -16,36 +16,37 @@ export default function bulkCreatePage(state = initialState, action) {
         case BULK_CREATE_MONUMENTS_PENDING:
             return {
                 ...state,
-                bulkCreateMonumentsPending: true
+                bulkCreateMonumentsPending: true,
+                createProgress: action.progress
             };
         case BULK_CREATE_MONUMENTS_SUCCESS:
             return {
                 ...state,
                 bulkCreateMonumentsPending: false,
-                result: action.payload
+                createResult: action.payload
             };
         case BULK_CREATE_MONUMENTS_ERROR:
             return {
                 ...state,
                 bulkCreateMonumentsPending: false,
-                error: action.error
+                createError: action.error
             };
-        case BULK_CREATE_MONUMENTS_ZIP_PENDING:
+        case BULK_VALIDATE_MONUMENTS_PENDING:
             return {
                 ...state,
-                bulkCreateMonumentsZipPending: true
+                bulkValidateMonumentsPending: true
             };
-        case BULK_CREATE_MONUMENTS_ZIP_SUCCESS:
+        case BULK_VALIDATE_MONUMENTS_SUCCESS:
             return {
                 ...state,
-                bulkCreateMonumentsZipPending: false,
-                result: action.payload
+                bulkValidateMonumentsPending: false,
+                validationResult: action.payload
             };
-        case BULK_CREATE_MONUMENTS_ZIP_ERROR:
+        case BULK_VALIDATE_MONUMENTS_ERROR:
             return {
                 ...state,
-                bulkCreateMonumentsZipPending: false,
-                error: action.error
+                bulkValidateMonumentsPending: false,
+                validationError: action.error
             };
         default:
             return state;

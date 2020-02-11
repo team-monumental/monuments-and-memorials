@@ -1,9 +1,10 @@
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
+@import "./theme.scss";
 
 html {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 * {
@@ -70,19 +71,17 @@ h1 {
     padding-bottom: 1rem;
 }
 
-.h5.h5, .h6.h6 {
-    letter-spacing: -0.4px;
-    color: #61616D;
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    letter-spacing: -0.4px !important;
+    color: #61616D !important;
 }
 
-.h5.h5 {
-    font-weight: 500;
-    font-size: 28px;
+.card-title.h5 {
+    font-size: 1.5rem;
 }
 
-.h6.h6 {
-    font-weight: bold;
-    font-size: 24px;
+.h1 {
+    font-size: 2rem !important;
 }
 
 p {
@@ -91,4 +90,44 @@ p {
     margin-right: auto;
     text-align: center;
     font-size: large;
+}
+
+.card-footer {
+    background-color: rgba(0,0,0,0) !important;
+}
+
+.invalid-feedback {
+    font-size: 100% !important;
+}
+
+.btn-link-secondary:hover {
+    color: $primary !important;
+}
+
+.btn-bare:hover {
+    color: $primary !important;
+}
+
+.min-width-select {
+    width: min-content !important;
+    padding: 0.25rem 0.5rem !important;
+}
+
+.mobile-search-modal {
+    .modal-dialog {
+        margin: 0;
+        .modal-content {
+            border-radius: 0;
+            border: 0;
+        }
+    }
+    .search-bar {
+        display: flex;
+        flex-direction: column;
+        padding-top: 0.5rem;
+        .location-search, .text-search, .search-button {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+    }
 }

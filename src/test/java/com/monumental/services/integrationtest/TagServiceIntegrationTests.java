@@ -1,6 +1,7 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
+import com.monumental.models.Tag;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.services.TagService;
@@ -185,6 +186,182 @@ public class TagServiceIntegrationTests {
         assertEquals(2, this.tagRepository.findAll().size());
         assertEquals(2, this.tagRepository.getAllByName("Name").size());
         assertEquals(2, this.tagRepository.getAllByMonumentId(monument.getId()).size());
+    }
+
+    /** removeTagFromMonument Tests **/
+
+    @Test
+    public void testTagService_removeTagFromMonument_NullTag_NullMonument() {
+        assertNull(this.tagService.removeTagFromMonument(null, null));
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_NonNullTag_NullMonument() {
+        Tag tag = new Tag();
+
+        assertNull(this.tagService.removeTagFromMonument(tag, null));
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_NullTag_NonNullMonument() {
+        Monument monument = new Monument();
+
+        assertNull(this.tagService.removeTagFromMonument(null, monument));
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_NullMonumentTags() {
+        Tag tag = new Tag();
+        tag.setMonumentTags(null);
+
+        Monument monument = new Monument();
+
+        assertNull(this.tagService.removeTagFromMonument(tag, monument));
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_EmptyMonumentTags() {
+        Tag tag = new Tag();
+        Monument monument = new Monument();
+
+        assertNull(this.tagService.removeTagFromMonument(tag, monument));
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_OneTagRemoved() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        Tag tag = this.tagService.createTag("Tag", monuments, false);
+
+        Tag result = this.tagService.removeTagFromMonument(tag, monument);
+
+        assertEquals(0, result.getMonumentTags().size());
+        assertEquals(0, result.getMonuments().size());
+        assertEquals(0, this.tagRepository.getAllByMonumentId(monument.getId()).size());
+        assertEquals(0, this.monumentRepository.getAllByTagId(result.getId()).size());
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_NoTagsRemoved() {
+        Monument monument1 = new Monument();
+        monument1 = this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2 = this.monumentRepository.save(monument2);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+
+        Tag tag = this.tagService.createTag("Tag", monuments, false);
+
+        Tag result = this.tagService.removeTagFromMonument(tag, monument2);
+
+        assertEquals(1, result.getMonumentTags().size());
+        assertEquals(1, result.getMonuments().size());
+        assertEquals(1, this.tagRepository.getAllByMonumentId(monument1.getId()).size());
+        assertEquals(1, this.monumentRepository.getAllByTagId(result.getId()).size());
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_TwoTags_OneTagRemoved() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        Tag tag1 = this.tagService.createTag("Tag 1", monuments, false);
+        Tag tag2 = this.tagService.createTag("Tag 2", monuments, false);
+
+        Tag result = this.tagService.removeTagFromMonument(tag1, monument);
+
+        assertEquals(0, result.getMonumentTags().size());
+        assertEquals(1, tag2.getMonumentTags().size());
+
+        assertEquals(0, result.getMonuments().size());
+        assertEquals(1, tag2.getMonuments().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentId(monument.getId()).size());
+
+        assertEquals(0, this.monumentRepository.getAllByTagId(result.getId()).size());
+        assertEquals(1, this.monumentRepository.getAllByTagId(tag2.getId()).size());
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_ThreeTags_TwoRemoved() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        Tag tag1 = this.tagService.createTag("Tag 1", monuments, false);
+        Tag tag2 = this.tagService.createTag("Tag 2", monuments, false);
+        Tag tag3 = this.tagService.createTag("Tag 3", monuments, false);
+
+        tag1 = this.tagService.removeTagFromMonument(tag1, monument);
+        tag3 = this.tagService.removeTagFromMonument(tag3, monument);
+
+        assertEquals(0, tag1.getMonumentTags().size());
+        assertEquals(1, tag2.getMonumentTags().size());
+        assertEquals(0, tag3.getMonumentTags().size());
+
+        assertEquals(0, tag1.getMonuments().size());
+        assertEquals(1, tag2.getMonuments().size());
+        assertEquals(0, tag3.getMonuments().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentId(monument.getId()).size());
+
+        assertEquals(0, this.monumentRepository.getAllByTagId(tag1.getId()).size());
+        assertEquals(1, this.monumentRepository.getAllByTagId(tag2.getId()).size());
+        assertEquals(0, this.monumentRepository.getAllByTagId(tag3.getId()).size());
+    }
+
+    @Test
+    public void testTagService_removeTagFromMonument_ThreeTags_ThreeMonuments() {
+        Monument monument1 = new Monument();
+        monument1 = this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2 = this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3 = this.monumentRepository.save(monument3);
+
+        List<Monument> monuments = new ArrayList<>();
+        monuments.add(monument1);
+        monuments.add(monument2);
+        monuments.add(monument3);
+
+        Tag tag1 = this.tagService.createTag("Tag 1", monuments, false);
+        Tag tag2 = this.tagService.createTag("Tag 2", monuments, false);
+        Tag tag3 = this.tagService.createTag("Tag 3", monuments, false);
+
+        tag1 = this.tagService.removeTagFromMonument(tag1, monument1);
+
+        tag3 = this.tagService.removeTagFromMonument(tag3, monument1);
+        tag3 = this.tagService.removeTagFromMonument(tag3, monument2);
+        tag3 = this.tagService.removeTagFromMonument(tag3, monument3);
+
+        assertEquals(2, tag1.getMonumentTags().size());
+        assertEquals(3, tag2.getMonumentTags().size());
+        assertEquals(0, tag3.getMonumentTags().size());
+
+        assertEquals(2, tag1.getMonuments().size());
+        assertEquals(3, tag2.getMonuments().size());
+        assertEquals(0, tag3.getMonuments().size());
+
+        assertEquals(1, this.tagRepository.getAllByMonumentId(monument1.getId()).size());
+        assertEquals(2, this.tagRepository.getAllByMonumentId(monument2.getId()).size());
+        assertEquals(2, this.tagRepository.getAllByMonumentId(monument3.getId()).size());
+
+        assertEquals(2, this.monumentRepository.getAllByTagId(tag1.getId()).size());
+        assertEquals(3, this.monumentRepository.getAllByTagId(tag2.getId()).size());
+        assertEquals(0, this.monumentRepository.getAllByTagId(tag3.getId()).size());
     }
 
     /**

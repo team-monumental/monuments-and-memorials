@@ -31,10 +31,15 @@ export default class Details extends React.Component {
                 else return a.id - b.id;
             });
 
+        let tags = [];
+        if (monument.monumentTags) {
+            tags = monument.monumentTags.map(monumentTag => monumentTag.tag);
+        }
+
         return (
             <div className="main">
                 <div>
-                    <div className="h5">
+                    <div className="h1">
                         {monument.title}
                     </div>
                     <div>
@@ -42,7 +47,7 @@ export default class Details extends React.Component {
                             <div className="field font-italic"><Address monument={monument}/></div>
                             <div className="field">{monument.description}</div>
                         </div>
-                        <Tags tags={(monument.materials || []).concat(monument.tags || [])}/>
+                        <Tags tags={tags}/>
                     </div>
                 </div>
                 <Gallery images={images}/>

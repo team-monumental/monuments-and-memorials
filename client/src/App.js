@@ -15,6 +15,7 @@ import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
 import HomePage from "./pages/HomePage/HomePage";
+import AboutPage from './pages/AboutPage/AboutPage';
 
 class App extends React.Component {
 
@@ -41,8 +42,9 @@ class App extends React.Component {
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <Route path="/create" component={CreateMonumentPage}/>
-                            <Route path='/bulk-create' component={MonumentBulkCreatePage}/>
-                            <Route path='/tag-directory' component={TagDirectoryPage}/>
+                            <Route path="/bulk-create" component={MonumentBulkCreatePage}/>
+                            <Route path="/tag-directory" component={TagDirectoryPage}/>
+                            <Route path="/about" component={AboutPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

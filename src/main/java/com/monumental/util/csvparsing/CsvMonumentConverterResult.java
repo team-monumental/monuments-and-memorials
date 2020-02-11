@@ -1,17 +1,13 @@
 package com.monumental.util.csvparsing;
 
-import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
 import com.monumental.util.string.StringHelper;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -22,11 +18,15 @@ public class CsvMonumentConverterResult {
 
     private Monument monument;
 
-    private List<Tag> tags;
+    private Set<String> tagNames = new HashSet<>();
 
-    public CsvMonumentConverterResult() {
+    private Set<String> materialNames = new HashSet<>();
 
-    }
+    private List<File> imageFiles = new ArrayList<>();
+
+    private List<String> errors = new ArrayList<>();
+
+    private List<String> warnings = new ArrayList<>();
 
     public Monument getMonument() {
         return this.monument;
@@ -36,85 +36,70 @@ public class CsvMonumentConverterResult {
         this.monument = monument;
     }
 
-    public List<Tag> getTags() {
-        if (this.tags == null) return null;
-        List<Tag> tags = new ArrayList<>();
-        for (Tag tag : this.tags) {
-            if (!tag.getIsMaterial()) tags.add(tag);
-        }
-        return tags;
+    public Set<String> getTagNames() {
+        return this.tagNames;
     }
 
-    public void setTags(List<Tag> tags) {
-        List<Tag> materials = this.getMaterials();
-        if (this.tags != null && materials != null && materials.size() > 0) {
-            materials.addAll(tags);
-            this.tags = materials;
-        } else {
-            this.tags = tags;
-        }
+    public void setTagNames(Set<String> tagNames) {
+        this.tagNames = tagNames;
     }
 
-    public List<Tag> getMaterials() {
-        if (this.tags == null) return null;
-        List<Tag> materials = new ArrayList<>();
-        for (Tag tag : this.tags) {
-            if (tag.getIsMaterial()) materials.add(tag);
-        }
-        return materials;
+    public Set<String> getMaterialNames() {
+        return this.materialNames;
     }
 
-    public void setMaterials(List<Tag> materials) {
-        List<Tag> tags = this.getTags();
-        if (this.tags != null && tags != null && tags.size() > 0) {
-            tags.addAll(materials);
-            this.tags = tags;
-        } else {
-            this.tags = materials;
-        }
+    public void setMaterialNames(Set<String> materialNames) {
+        this.materialNames = materialNames;
     }
 
-    /**
-     * Add a Tag to this.tags
-     * If this.tags is null, initializes it to a new ArrayList
-     * @param tag - Tag to add to this.tags
-     */
-    public void addTag(Tag tag) {
-        if (this.tags == null) {
-            this.tags = new ArrayList<>();
-        }
+    public List<File> getImageFiles() {
+        return this.imageFiles;
+    }
 
-        this.tags.add(tag);
+    public void setImageFiles(List<File> imageFiles) {
+        this.imageFiles = imageFiles;
+    }
+
+    public List<String> getErrors() {
+        return this.errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
+
+    public List<String> getWarnings() {
+        return this.warnings;
+    }
+
+    public void setWarnings(List<String> warnings) {
+        this.warnings = warnings;
     }
 
     /**
-     * Validates this CsvMonumentConverterResult
-     * If any of the validations fail, this CsvMonumentConverterResult is considered invalid
-     * @return ValidationResult - ValidationResult object representing the result of the validation
+     * Validates this CsvMonumentConverterResult, populating errors and warnings
      */
-    public ValidationResult validate() {
+    public void validate() {
         if (this.monument == null) {
-            throw new IllegalArgumentException("Monument can not be null");
+            this.getErrors().add("Monument can not be null");
         }
-
-        List<String> validationErrors = new ArrayList<>();
 
         /* Title Validation */
         /* Title is a required field */
         if (isNullOrEmpty(this.monument.getTitle())) {
-            validationErrors.add("Title is required");
+            this.getErrors().add("Title is required");
         }
 
         /* Materials Validation */
         /* Materials is a required field */
-        if (this.getMaterials() == null || this.getMaterials().size() == 0) {
-            validationErrors.add("At least one Material is required");
+        if (this.getMaterialNames() == null || this.getMaterialNames().size() == 0) {
+            this.getErrors().add("At least one Material is required");
         }
 
         /* Address or Coordinates Validation */
         /* An Address OR Coordinates must be specified */
         if (isNullOrEmpty(this.monument.getAddress()) && this.monument.getCoordinates() == null) {
-            validationErrors.add("Address OR Coordinates are required");
+            this.getErrors().add("Address OR Coordinates are required");
         }
 
         /* Latitude Validation */
@@ -122,7 +107,7 @@ public class CsvMonumentConverterResult {
         if (isNullOrEmpty(this.monument.getAddress()) && this.monument.getCoordinates() != null) {
             String latitudeString = this.monument.getLat().toString();
             if (!latitudeString.matches(StringHelper.latitudeRegex)) {
-                validationErrors.add("Latitude must be valid");
+                this.getErrors().add("Latitude must be valid");
             }
         }
 
@@ -131,7 +116,7 @@ public class CsvMonumentConverterResult {
         if (isNullOrEmpty(this.monument.getAddress()) && this.monument.getCoordinates() != null) {
             String longitudeString = this.monument.getLon().toString();
             if (!longitudeString.matches(StringHelper.longitudeRegex)) {
-                validationErrors.add("Longitude must be valid");
+                this.getErrors().add("Longitude must be valid");
             }
         }
 
@@ -140,7 +125,7 @@ public class CsvMonumentConverterResult {
         if (this.monument.getDate() != null) {
             Date currentDate = new Date();
             if (this.monument.getDate().after(currentDate)) {
-                validationErrors.add("Date must be valid");
+                this.getWarnings().add("Date should not be in the future.");
             }
         }
 
@@ -151,160 +136,11 @@ public class CsvMonumentConverterResult {
                 try {
                     URL url = new URL(reference.getUrl());
                 } catch (MalformedURLException e) {
-                    if (!validationErrors.contains("All References must be valid URLs")) {
-                        validationErrors.add("All References must be valid URLs");
+                    if (!this.getErrors().contains("All References must be valid URLs")) {
+                        this.getErrors().add("All References must be valid URLs");
                     }
                 }
             }
-        }
-
-        ValidationResult validationResult = new ValidationResult();
-        validationResult.setValidationErrors(validationErrors);
-
-        return validationResult;
-    }
-
-    @Override
-    public String toString() {
-        if (this.monument == null) {
-            return null;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        // Contributions
-        if (this.monument.getContributions().size() > 0) {
-            stringBuilder.append("Contributors:\n");
-
-            for (Contribution contribution : this.monument.getContributions()) {
-                stringBuilder.append("\t").append(contribution.getSubmittedBy()).append("\n");
-            }
-        }
-
-        // Artist
-        if (!isNullOrEmpty(this.monument.getArtist())) {
-            stringBuilder.append("Artist: ").append(this.monument.getArtist()).append("\n");
-        }
-
-        // Title
-        stringBuilder.append("Title: ");
-        if (isNullOrEmpty(this.monument.getTitle())) {
-            stringBuilder.append("<NULL>");
-        }
-        else {
-            stringBuilder.append(this.monument.getTitle());
-        }
-        stringBuilder.append("\n");
-
-        // Date
-        if (this.monument.getDate() != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            stringBuilder.append("Date: ").append(simpleDateFormat.format(this.monument.getDate())).append("\n");
-        }
-
-        // Materials
-        stringBuilder.append("Materials:\n");
-        if (this.getMaterials() == null || this.getMaterials().size() == 0) {
-            stringBuilder.append("<NULL>").append("\n");
-        }
-        else {
-            for (Tag material : this.getMaterials()) {
-                stringBuilder.append("\t").append(material.getName()).append("\n");
-            }
-        }
-
-        // Inscription
-        if (!isNullOrEmpty(this.monument.getInscription())) {
-            stringBuilder.append("Inscription: ").append(this.monument.getInscription()).append("\n");
-        }
-
-        // Latitude
-        stringBuilder.append("Latitude: ");
-        if (this.getMonument().getCoordinates() == null) {
-            stringBuilder.append("<NULL>");
-        }
-        else {
-            stringBuilder.append(this.monument.getLat());
-        }
-        stringBuilder.append("\n");
-
-        // Longitude
-        stringBuilder.append("Longitude: ");
-        if (this.getMonument().getCoordinates() == null) {
-            stringBuilder.append("<NULL>");
-        }
-        else {
-            stringBuilder.append(this.monument.getLon());
-        }
-        stringBuilder.append("\n");
-
-        // City
-        if (!isNullOrEmpty(this.monument.getCity())) {
-            stringBuilder.append("City: ").append(this.monument.getCity()).append("\n");
-        }
-
-        // State
-        if (!isNullOrEmpty(this.monument.getState())) {
-            stringBuilder.append("State: ").append(this.monument.getState()).append("\n");
-        }
-
-        // Address
-        stringBuilder.append("Address: ");
-        if (isNullOrEmpty(this.monument.getAddress())) {
-            stringBuilder.append("<NULL>");
-        }
-        else {
-            stringBuilder.append(this.monument.getAddress());
-        }
-        stringBuilder.append("\n");
-
-        // Tags
-        if (this.getTags() != null && this.getTags().size() > 0) {
-            stringBuilder.append("Tags:\n");
-            for (Tag tag : this.getTags()) {
-                stringBuilder.append("\t").append(tag.getName()).append("\n");
-            }
-        }
-
-        // References
-        if (this.monument.getReferences().size() > 0) {
-            stringBuilder.append("References:\n");
-
-            for (Reference reference : this.monument.getReferences()) {
-                stringBuilder.append("\t").append(reference.getUrl()).append("\n");
-            }
-        }
-
-        // Images
-        if (this.monument.getImages().size() > 0) {
-            stringBuilder.append("Number of Images: ").append(this.monument.getImages().size()).append("\n");
-        }
-
-        return stringBuilder.toString();
-    }
-
-    /**
-     * Inner-class to represent the result of a call to CsvMonumentConverterResult.validate()
-     */
-    public static class ValidationResult {
-
-        private List<String> validationErrors;
-
-        /**
-         * Determines if this ValidationResult is valid or not
-         * A ValidationResult is valid if it has no validation errors
-         * @return True if this ValidationResult is valid, false otherwise
-         */
-        public boolean isValid() {
-            return this.validationErrors.size() == 0;
-        }
-
-        public List<String> getValidationErrors() {
-            return this.validationErrors;
-        }
-
-        public void setValidationErrors(List<String> validationErrors) {
-            this.validationErrors = validationErrors;
         }
     }
 }

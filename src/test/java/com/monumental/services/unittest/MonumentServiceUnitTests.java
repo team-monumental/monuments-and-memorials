@@ -1,7 +1,6 @@
 package com.monumental.services.unittest;
 
 import com.monumental.services.MonumentService;
-import com.monumental.util.csvparsing.BulkCreateResult;
 import com.vividsolutions.jts.geom.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
