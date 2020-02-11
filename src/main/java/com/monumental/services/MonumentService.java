@@ -588,7 +588,7 @@ public class MonumentService extends ModelService<Monument> {
             if (imageFiles != null && imageFiles.size() > 0) {
                 String tempDirectoryPath = System.getProperty("java.io.tmpdir");
                 boolean encounteredS3Exception = false;
-                for (int j = 0; i < imageFiles.size(); j++) {
+                for (int j = 0; j < imageFiles.size(); j++) {
                     File imageFile = imageFiles.get(j);
                     // Upload the File to S3
                     try {
