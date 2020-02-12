@@ -48,8 +48,8 @@ public class GoogleMapsService {
             GeoApiContext context = this.buildGeoApiContext();
             if (context != null) {
                 System.out.println("[GOOGLE MAPS SERVICE]: Making geocode request for address: " + address);
-                GeocodingResult[] results = GeocodingApi.geocode(context, address).
-                        await();
+                GeocodingResult[] results = GeocodingApi.geocode(context, address)
+                        .await();
                 return MonumentService.createMonumentPoint(results[0].geometry.location.lng,
                         results[0].geometry.location.lat);
             }
@@ -67,7 +67,6 @@ public class GoogleMapsService {
      * @return GeoApiContext - new GeoApiContext, null if the GOOGLE_API_KEY is "default"
      */
     private GeoApiContext buildGeoApiContext() {
-        System.out.println(GOOGLE_API_KEY);
         if (GOOGLE_API_KEY.equals("default")) {
             return null;
         }
