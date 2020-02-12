@@ -10,7 +10,6 @@ import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
-import com.monumental.services.TagService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
@@ -18,7 +17,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +34,6 @@ public class MonumentController {
 
     @Autowired
     private MonumentService monumentService;
-
-    @Autowired
-    private TagService tagService;
 
     /**
      * Create a new Monument based on the specified CreateMonumentRequest
