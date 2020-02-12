@@ -4,9 +4,14 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class CreateUserRequest {
+
     @NotNull
     @NotEmpty
-    private String name;
+    private String firstName;
+
+    @NotNull
+    @NotEmpty
+    private String lastName;
 
     @NotNull
     @NotEmpty
@@ -17,12 +22,20 @@ public class CreateUserRequest {
     private String password;
     private String matchingPassword;
 
-    public String getName() {
-        return this.name;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

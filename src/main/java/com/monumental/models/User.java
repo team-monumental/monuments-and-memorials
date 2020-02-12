@@ -15,10 +15,15 @@ import javax.validation.constraints.NotNull;
 @Table(name = "`user`")
 public class User extends Model {
 
-    @Column(name = "name")
-    @NotNull(message = "Name can not be null")
+    @Column(name = "first_name")
+    @NotNull(message = "First name can not be null")
     @NotEmpty
-    private String name;
+    private String firstName;
+
+    @Column(name = "last_name")
+    @NotNull(message = "Last name can not be null")
+    @NotEmpty
+    private String lastName;
 
     @Column(name = "email", unique = true)
     @NotNull(message = "Email address can not be null")
@@ -40,12 +45,20 @@ public class User extends Model {
     @NotNull
     private boolean isEnabled = false;
 
-    public String getName() {
-        return this.name;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

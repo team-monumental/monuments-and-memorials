@@ -12,12 +12,14 @@ export default class Signup extends React.Component {
         super(props);
         this.state = {
             validated: false,
-            name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             password: '',
             matchingPassword: '',
             errors: {
-                name: '',
+                firstName: '',
+                lastName: '',
                 email: '',
                 password: '',
                 matchingPassword: ''
@@ -27,7 +29,7 @@ export default class Signup extends React.Component {
 
     validateForm(errors) {
         let valid = true;
-        for (let name of ['name', 'email', 'password', 'matchingPassword']) {
+        for (let name of ['firstName', 'lastName', 'email', 'password', 'matchingPassword']) {
             this.handleChange({
                 target: {
                     name,
@@ -44,10 +46,10 @@ export default class Signup extends React.Component {
 
     handleSubmit(event) {
         const { onSignup } = this.props;
-        const { errors, email, password, matchingPassword, name } = this.state;
+        const { errors, email, password, matchingPassword, firstName, lastName } = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
-            onSignup({email, password, matchingPassword, name});
+            onSignup({email, password, matchingPassword, firstName, lastName});
         }
     }
 
@@ -57,10 +59,15 @@ export default class Signup extends React.Component {
         if (event.preventDefault) event.preventDefault();
 
         switch (name) {
-            case 'name':
-                errors.name = value
+            case 'firstName':
+                errors.firstName = value
                     ? ''
-                    : 'Full Name is required';
+                    : 'First name is required';
+                break;
+            case 'lastName':
+                errors.lastName = value
+                    ? ''
+                    : 'Last name is required';
                 break;
             case 'email':
                 errors.email = validEmailRegex.test(value)
@@ -85,7 +92,7 @@ export default class Signup extends React.Component {
     }
 
     render() {
-        const { email, password, matchingPassword, name, errors, validated } = this.state;
+        const { email, password, matchingPassword, firstName, lastName, errors, validated } = this.state;
         const { error, result } = this.props;
 
         return (
@@ -102,18 +109,32 @@ export default class Signup extends React.Component {
                     {!result &&
                         <Form className="signup-form" noValidate onSubmit={event => this.handleSubmit(event)}>
                             <Form.Group>
-                                <Form.Label>Full Name</Form.Label>
+                                <Form.Label>First Name</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="name"
-                                    value={name}
+                                    name="firstName"
+                                    value={firstName}
                                     onChange={event => this.handleChange(event)}
                                     className="text-control"
                                     required
                                     noValidate
-                                    isInvalid={errors.name && validated}
+                                    isInvalid={errors.firstName && validated}
                                 />
-                                <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Last Name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="lastName"
+                                    value={lastName}
+                                    onChange={event => this.handleChange(event)}
+                                    className="text-control"
+                                    required
+                                    noValidate
+                                    isInvalid={errors.lastName && validated}
+                                />
+                                <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Email Address</Form.Label>

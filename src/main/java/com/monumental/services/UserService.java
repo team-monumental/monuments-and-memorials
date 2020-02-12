@@ -29,7 +29,8 @@ public class UserService extends ModelService<User> {
         user.setEmail(userRequest.getEmail());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setRole(Role.COLLABORATOR);
-        user.setName(userRequest.getName());
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
         // TODO: Disable once email verification is in place
         user.setIsEnabled(true);
         this.userRepository.save(user);
