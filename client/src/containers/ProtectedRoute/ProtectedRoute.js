@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as QueryString from 'query-string';
 
 /**
  * Wraps React Router's Route component with some permissions checking, allowing routes
