@@ -5,6 +5,8 @@ import com.monumental.util.string.StringHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -30,15 +32,29 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    // Handler for InvalidEmailOrPasswordExceptions
-    @ExceptionHandler({ InvalidEmailOrPasswordException.class })
-    public ResponseEntity<Object> handleInvalidEmailOrPasswordException(InvalidEmailOrPasswordException exception) {
-        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
+    private ResponseEntity<Object> handleLoginException(Exception exception) {
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
                         "Invalid email or password." :
                         exception.getMessage()
         );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    // Handler for InvalidEmailOrPasswordExceptions
+    @ExceptionHandler({ InvalidEmailOrPasswordException.class })
+    public ResponseEntity<Object> handleInvalidEmailOrPasswordException(InvalidEmailOrPasswordException exception) {
+        return handleLoginException(exception);
+    }
+
+    @ExceptionHandler({ UsernameNotFoundException.class })
+    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception) {
+        return handleLoginException(exception);
+    }
+
+    @ExceptionHandler({ BadCredentialsException.class })
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException exception) {
+        return handleLoginException(exception);
     }
 
     // Handler for UnauthorizedException

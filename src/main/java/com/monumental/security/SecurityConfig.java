@@ -1,5 +1,7 @@
 package com.monumental.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -21,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +47,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                         // Prevent redirect attempt after successfully logging in
+                        System.out.println();
+                    }
+                })
+                .failureHandler(new AuthenticationFailureHandler() {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws InvalidEmailOrPasswordException, IOException {
+                        // Prevent redirect attempt after failing to log in
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("message", "Invalid email or password.");
+                        response.getOutputStream().println(new ObjectMapper().writeValueAsString(data));
                     }
                 })
                 .loginPage("/api/login")

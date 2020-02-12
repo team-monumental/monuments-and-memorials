@@ -62,7 +62,7 @@ export function login(user, callback) {
                 credentials: 'include'
             });
             if (!result.ok) {
-                return dispatch(error(result.message));
+                return dispatch(error(actions.login, await result.json()));
             }
             dispatch(getUserSession(callback));
             dispatch(success(actions.login, result));

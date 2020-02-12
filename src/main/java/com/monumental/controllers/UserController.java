@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/api/session")
-    @PreAuthorize("hasRole('COLLABORATOR')")
+    @PreAuthorize("isAuthenticated()")
     public User getSession() throws UnauthorizedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserDetails)) {
