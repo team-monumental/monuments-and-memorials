@@ -14,6 +14,7 @@ import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
+import HomePage from "./pages/HomePage/HomePage";
 import AboutPage from './pages/AboutPage/AboutPage';
 
 class App extends React.Component {
@@ -27,6 +28,7 @@ class App extends React.Component {
 
     render() {
         const { headerHeight } = this.state;
+
         return (
             <div className="App">
                 <Helmet title={'Monuments and Memorials'}/>
@@ -36,11 +38,7 @@ class App extends React.Component {
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
                             <Route path="/map" component={MapPage}/>
-                            <Route exact path="/">
-                                <div style={{display: 'flex', justifyContent: 'center'}}>
-                                    <h1>Welcome!</h1>
-                                </div>
-                            </Route>
+                            <Route exact path="/" component={HomePage}/>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <Route path="/create" component={CreateMonumentPage}/>
