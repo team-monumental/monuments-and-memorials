@@ -1,8 +1,6 @@
 package com.monumental.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -16,19 +14,28 @@ import javax.validation.constraints.NotNull;
 public class User extends Model {
 
     @Column(name = "name")
-    @NotNull(groups = {New.class, Existing.class}, message = "Name can not be null")
-    @NotEmpty(groups = {New.class, Existing.class})
+    @NotNull(message = "Name can not be null")
+    @NotEmpty
     private String name;
 
     @Column(name = "email", unique = true)
-    @NotNull(groups = {New.class, Existing.class}, message = "Email address can not be null")
-    @NotEmpty(groups = {New.class, Existing.class})
+    @NotNull(message = "Email address can not be null")
+    @NotEmpty
     private String email;
 
     @Column(name = "password")
-    @NotNull(groups = {New.class, Existing.class}, message = "Password can not be null")
-    @NotEmpty(groups = {New.class, Existing.class})
+    @NotNull(message = "Password can not be null")
+    @NotEmpty
     private String password;
+
+    @Column(name = "`role`")
+    @NotNull(message = "Role can not be null")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name = "is_enabled")
+    @NotNull
+    private boolean isEnabled = false;
 
     public String getName() {
         return this.name;
@@ -52,5 +59,21 @@ public class User extends Model {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return this.role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean getIsEnabled() {
+        return this.isEnabled;
+    }
+
+    public void setIsEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 }

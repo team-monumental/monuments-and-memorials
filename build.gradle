@@ -53,6 +53,7 @@ dependencies {
     implementation('com.bedatadriven:jackson-datatype-jts:2.4')
     implementation('com.amazonaws:aws-java-sdk-s3:1.11.665')
     implementation('com.opencsv:opencsv:3.7')
+    implementation('io.jsonwebtoken:jjwt:0.9.1')
     // Geodb includes H2 as a dependency, so no need to import it separately
     implementation group: 'org.opengeo', name: 'geodb', version: '0.8'
     testImplementation('org.springframework.boot:spring-boot-starter-test')

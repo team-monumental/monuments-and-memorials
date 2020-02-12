@@ -6,13 +6,13 @@ const actions = {
         pending: SIGNUP_PENDING,
         success: SIGNUP_SUCCESS,
         error: SIGNUP_ERROR,
-        uri: '/api/user/signup'
+        uri: '/api/signup'
     },
     login: {
         pending: LOGIN_PENDING,
         success: LOGIN_SUCCESS,
         error: LOGIN_ERROR,
-        uri: '/api/user/login'
+        uri: '/api/login'
     }
 };
 
@@ -40,21 +40,31 @@ function error(action, error) {
 }
 
 export function signup(user) {
-    return doAction(actions.signup, user);
+    return async dispatch => {
+        dispatch(pending(actions.signup));
+        try {
+            const result = await post(actions.signup.uri, user);
+            dispatch(success(actions.signup, result));
+            dispatch(login(user));
+        } catch (err) {
+            dispatch(error(actions.signup, err));
+        }
+    };
 }
 
 export function login(user) {
-    return doAction(actions.login, user);
-}
-
-function doAction(action, user) {
     return async dispatch => {
-        dispatch(pending(action));
+        dispatch(pending(actions.login));
         try {
-            const result = await post(action.uri, user);
-            dispatch(success(action, result));
+            const result = await fetch(actions.login.uri, {
+                method: 'POST',
+                body: new URLSearchParams({username: user.email || user.username, password: user.password}),
+                credentials: 'same-origin'
+            });
+            // TODO: redirect, and make a reducer for the user session
+            dispatch(success(actions.login, result));
         } catch (err) {
-            dispatch(error(action, err));
+            dispatch(error(actions.login, err));
         }
     };
 }

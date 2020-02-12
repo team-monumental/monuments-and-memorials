@@ -18,7 +18,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import AboutPage from './pages/AboutPage/AboutPage';
 import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';
-import SignupPage from './pages/SIgnupPage/SignupPage';
+import SignupPage from './pages/SignupPage/SignupPage';
 import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
 import { Roles } from './utils/authentication-util';
 

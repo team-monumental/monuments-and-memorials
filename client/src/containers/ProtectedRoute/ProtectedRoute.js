@@ -14,31 +14,14 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-        const { authentication, oneOf, allOf, any, component: Component } = this.props;
+        const { authentication, oneOf, any, component: Component } = this.props;
 
-        let canView = true;
+        let canView = false;
+        let loggedIn = authentication && authentication.role;
 
-        if ((!authentication || !authentication.roles) && (oneOf || allOf || any)) {
-            canView = false;
-        } else {
-            if (oneOf) {
-                canView = false;
-                for (let role of oneOf) {
-                    if (authentication.roles.includes(role)) {
-                        canView = true;
-                        break;
-                    }
-                }
-            }
-            if (allOf) {
-                for (let role of allOf) {
-                    if (!authentication.roles.includes(role)) {
-                        canView = false;
-                        break;
-                    }
-                }
-            }
-        }
+        if (!loggedIn && (oneOf || any)) canView = false;
+        else if (oneOf) canView = oneOf.includes(authentication.role);
+        else if (any) canView = true;
 
         return (
             <Route {...this.props} component={null} render={(props) => (

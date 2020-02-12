@@ -9,12 +9,14 @@ class SignupPage extends React.Component {
 
     static mapStateToProps(state) {
         console.log('state', state);
-        return state.signup;
+        return {
+            ...state.signup,
+            authentication: state.authentication
+        };
     }
 
     render() {
-        const { dispatch, pending, error, result } = this.props;
-        console.log('result', result);
+        const { dispatch, pending, error, result, authentication } = this.props;
         return (
             <div className="page d-flex justify-content-center mt-5">
                 <Spinner show={pending}/>
