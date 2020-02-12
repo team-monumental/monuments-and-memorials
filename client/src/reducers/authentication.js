@@ -1,4 +1,8 @@
-import { SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS, LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS, CREATE_SESSION, CLEAR_SESSION } from '../constants';
+import {
+    SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS,
+    LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS,
+    CREATE_SESSION, CLEAR_SESSION
+} from '../constants';
 import basicReducer from '../utils/basicReducer';
 
 const signupInitialState = {

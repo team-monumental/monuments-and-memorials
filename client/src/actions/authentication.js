@@ -1,5 +1,9 @@
-import { SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS, LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS, CREATE_SESSION, CLEAR_SESSION } from '../constants';
-import { post } from "../utils/api-util";
+import {
+    SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS,
+    LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS,
+    CREATE_SESSION, CLEAR_SESSION
+} from '../constants';
+import { post } from '../utils/api-util';
 
 const actions = {
     signup: {
