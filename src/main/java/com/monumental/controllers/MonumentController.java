@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@Transactional
 public class MonumentController {
 
     @Autowired
