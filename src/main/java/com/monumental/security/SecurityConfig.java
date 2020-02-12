@@ -3,14 +3,17 @@ package com.monumental.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -31,30 +34,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // We permit ALL routes (except some API routes) because authentication needs to be checked by
-        // react router, NOT by spring security, since you can navigate to pages through the SPA
         http.authorizeRequests()
-            .antMatchers("/", "/public/*", "/build/*", "/api/signup", "/api/login").permitAll()
-            .antMatchers("/api/*").authenticated()
-            .and()
+                .anyRequest().permitAll()
+                .and()
             .formLogin()
-            .loginPage("/api/login")
-            .successHandler(new AuthenticationSuccessHandler() {
+                .successHandler(new AuthenticationSuccessHandler() {
+                    @Override
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        // Prevent redirect attempt after successfully logging in
+                    }
+                })
+                .loginPage("/api/login")
+                .permitAll()
+                .and()
+            .httpBasic()
+            .authenticationEntryPoint(new AuthenticationEntryPoint() {
                 @Override
-                public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                    // Don't redirect, react can do it
+                public void commence(HttpServletRequest request, HttpServletResponse response,
+                                     AuthenticationException authException) throws IOException, ServletException {
+                    response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
                 }
             })
-            .permitAll()
-            .and()
-            .httpBasic()
             .and()
             .csrf().disable()
             .logout()
-            .logoutUrl("/api/logout")
-            .logoutSuccessUrl("/")
-            .invalidateHttpSession(true)
-            .deleteCookies("JSESSIONID");
+                .logoutUrl("/api/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
     }
 
     @Bean
@@ -62,16 +69,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(this.userDetailService)
-            .and()
-            .jdbcAuthentication()
-            .dataSource(this.dataSource)
-            .passwordEncoder(passwordEncoder());
-//            .usersByUsernameQuery("select email as username, password, is_enabled as enabled"
-//                    + " from \"user\" where email=?")
-//            .authoritiesByUsernameQuery("select email as username, role"
-//                    + "from \"user\" where email=?");
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
     }
 }

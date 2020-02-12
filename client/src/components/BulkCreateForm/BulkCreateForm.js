@@ -398,7 +398,7 @@ export default class BulkCreateForm extends React.Component {
         const { validationResult } = this.props;
 
         // TODO: Handle general errors
-        const { error } = validationResult;
+        // const { error } = validationResult;
 
         let results = [];
         for (let index in validationResult.results) {

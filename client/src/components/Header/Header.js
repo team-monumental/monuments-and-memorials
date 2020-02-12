@@ -6,8 +6,9 @@ import SearchBar from './SearchBar/SearchBar';
 import CheeseburgerMenu from 'cheeseburger-menu'
 import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
 
     links = [
         {name: 'Home', route: '/', exact: true},
@@ -25,6 +26,10 @@ export default class Header extends React.Component {
         this.resize = this.resize.bind(this);
     }
 
+    static mapStateToProps(state) {
+        return {session: state.session};
+    }
+
     componentDidMount() {
         this.props.onRender(this.divRef.clientHeight);
         window.addEventListener("resize", this.resize.bind(this));
@@ -36,6 +41,7 @@ export default class Header extends React.Component {
     }
 
     render() {
+        const { session, onLogout } = this.props;
         let headerLinks = this.links.map(link =>
             <NavLink onClick={e => {
                 e.preventDefault();
@@ -81,8 +87,17 @@ export default class Header extends React.Component {
                 <div className="right">
                     {/* Desktop */}
                     {window.innerWidth >= 992 && <div className="login-signup-buttons">
-                        <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap">Log in</Link>
-                        <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
+                        {!session.pending && <>
+                            {session.user &&
+                                <Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">
+                                    Log out
+                                </Button>
+                            }
+                            {!session.user && <>
+                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap">Log in</Link>
+                                <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
+                            </>}
+                        </>}
                     </div>}
                     {/* Mobile */}
                     {window.innerWidth < 768 && <>
@@ -107,8 +122,13 @@ export default class Header extends React.Component {
                                     )}
                                 </div>
                                 <hr/>
-                                <li><Button size="sm" variant="link-secondary" className="p-0">Log in</Button></li>
-                                <li><Button size="sm" variant="link-secondary" className="p-0">Sign up</Button></li>
+                                {session.user &&
+                                    <li><Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">Log out</Button></li>
+                                }
+                                {!session.user && <>
+                                    <li><Link to="/login" className="btn btn-sm btn-link-secondary p-0">Log in</Link></li>
+                                    <li><Link to="/signup" className="btn btn-sm btn-link-secondary p-0">Sign up</Link></li>
+                                </>}
                             </ul>
                         </CheeseburgerMenu>
                     </>}
@@ -117,3 +137,5 @@ export default class Header extends React.Component {
         );
     }
 }
+
+export default connect(Header.mapStateToProps)(Header);

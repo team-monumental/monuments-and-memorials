@@ -4,22 +4,43 @@ import { connect } from 'react-redux';
 import Login from '../../components/Login/Login';
 import { login } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
+import * as QueryString from 'query-string';
+import { withRouter, Redirect } from 'react-router-dom';
 
 class LoginPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            redirect: null
+        };
+    }
 
     static mapStateToProps(state) {
         return state.login;
     }
 
+    onLogin(data) {
+        const { dispatch } = this.props;
+        const redirect = QueryString.parse(this.props.location.search).redirect || '/';
+        dispatch(login(data, () => {
+            this.setState({redirect});
+        }))
+    }
+
     render() {
-        const { pending, error, result, dispatch } = this.props;
+        const { error, result } = this.props;
+        const { redirect } = this.state;
+        const warn = QueryString.parse(this.props.location.search).warn === 'true';
+        if (redirect) {
+            return (<Redirect to={redirect}/>);
+        }
         return (
             <div className="page d-flex justify-content-center mt-5">
-                <Spinner show={pending}/>
-                <Login onLogin={data => dispatch(login(data))} result={result} error={error && error.message}/>
+                <Login onLogin={data => this.onLogin(data)} result={result} error={error && error.message} warn={warn}/>
             </div>
         )
     }
 }
 
-export default connect(LoginPage.mapStateToProps)(LoginPage);
+export default withRouter(connect(LoginPage.mapStateToProps)(LoginPage));

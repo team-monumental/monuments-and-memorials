@@ -1,5 +1,7 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -23,6 +25,7 @@ public class User extends Model {
     @NotEmpty
     private String email;
 
+    @JsonIgnore
     @Column(name = "password")
     @NotNull(message = "Password can not be null")
     @NotEmpty

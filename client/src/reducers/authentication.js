@@ -1,4 +1,4 @@
-import { SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS, LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS } from '../constants';
+import { SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS, LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS, CREATE_SESSION, CLEAR_SESSION } from '../constants';
 import basicReducer from '../utils/basicReducer';
 
 const signupInitialState = {
@@ -27,4 +27,26 @@ export function login(state = loginInitialState, action) {
         success: LOGIN_SUCCESS,
         error: LOGIN_ERROR
     });
+}
+
+const sessionInitialState = {
+    pending: true,
+    user: null
+};
+
+export function session(state = sessionInitialState, action) {
+    switch(action.type) {
+        case CREATE_SESSION:
+            return {
+                ...state,
+                ...action.payload
+            };
+        case CLEAR_SESSION:
+            return {
+                pending: false,
+                user: null
+            };
+        default:
+            return state;
+    }
 }

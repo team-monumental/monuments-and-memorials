@@ -48,7 +48,7 @@ export default class Login extends React.Component {
     }
 
     handleChange(event) {
-        const { errors, password } = this.state;
+        const { errors } = this.state;
         const { name, value } = event.target;
         if (event.preventDefault) event.preventDefault();
 
@@ -72,7 +72,7 @@ export default class Login extends React.Component {
 
     render() {
         const { email, password, validated, errors } = this.state;
-        const { error } = this.props;
+        const { error, warn } = this.props;
 
         return (
             <Card className="login">
@@ -85,6 +85,9 @@ export default class Login extends React.Component {
                     </Card.Title>
                 </Card.Header>
                 <Card.Body>
+                    {warn && <div className="error-message mb-3">
+                        You must log in to view that page.
+                    </div>}
                     <Form className="login-form" noValidate onSubmit={event => this.handleSubmit(event)}>
                         <Form.Group>
                             <Form.Label>Email Address</Form.Label>

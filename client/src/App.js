@@ -21,6 +21,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import SignupPage from './pages/SignupPage/SignupPage';
 import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
 import { Roles } from './utils/authentication-util';
+import { getUserSession, logout } from './actions/authentication';
 
 class App extends React.Component {
 
@@ -31,15 +32,24 @@ class App extends React.Component {
         };
     }
 
+    componentDidMount() {
+        const { dispatch } = this.props;
+        dispatch(getUserSession());
+    }
+
+    async clearUserSession() {
+        const { dispatch } = this.props;
+        dispatch(logout());
+    }
+
     render() {
         const { headerHeight } = this.state;
-
         return (
             <div className="App">
                 <Helmet title={'Monuments and Memorials'}/>
                 <Toaster/>
                 <Router>
-                    <Header onRender={headerHeight => this.setState({headerHeight})}/>
+                    <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
                             <Route path="/map" component={MapPage}/>
@@ -49,7 +59,7 @@ class App extends React.Component {
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <ProtectedRoute path="/create" component={CreateMonumentPage}/>
-                            <ProtectedRoute path="/bulk-create" component={MonumentBulkCreatePage} oneOf={[Roles.partner, Roles.researcher]}/>
+                            <ProtectedRoute path="/bulk-create" component={MonumentBulkCreatePage} oneOf={[Roles.PARTNER, Roles.RESEARCHER]}/>
                             <Route path="/tag-directory" component={TagDirectoryPage}/>
                             <Route path="/about" component={AboutPage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>

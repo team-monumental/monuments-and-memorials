@@ -1,5 +1,7 @@
+import { CREATE_SESSION } from '../constants';
+
 export const Roles = {
-    collaborator: 'COLLABORATOR',
-    partner: 'PARTNER',
-    researcher: 'RESEARCHER'
+    COLLABORATOR: 'COLLABORATOR',
+    PARTNER: 'PARTNER',
+    RESEARCHER: 'RESEARCHER'
 };

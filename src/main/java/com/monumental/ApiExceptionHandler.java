@@ -1,9 +1,6 @@
 package com.monumental;
 
-import com.monumental.exceptions.ApiError;
-import com.monumental.exceptions.InvalidEmailOrPasswordException;
-import com.monumental.exceptions.InvalidZipException;
-import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.*;
 import com.monumental.util.string.StringHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +36,17 @@ public class ApiExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
                         "Invalid email or password." :
+                        exception.getMessage()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    // Handler for UnauthorizedException
+    @ExceptionHandler({ UnauthorizedException.class })
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException exception) {
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
+                StringHelper.isNullOrEmpty(exception.getMessage()) ?
+                        HttpStatus.UNAUTHORIZED.getReasonPhrase() :
                         exception.getMessage()
         );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

@@ -66,7 +66,7 @@ async function sendRequest(url, methodType='GET', data=undefined, file=undefined
             configuration.body = JSON.stringify(data);
             configuration.headers = {
                 'Content-Type': contentType,
-                credentials: 'same-origin'
+                credentials: 'include'
             };
         }
         else if (file) {
