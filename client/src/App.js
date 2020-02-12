@@ -16,6 +16,7 @@ import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkC
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
 import HomePage from "./pages/HomePage/HomePage";
 import AboutPage from './pages/AboutPage/AboutPage';
+import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 
 class App extends React.Component {
 
@@ -45,6 +46,7 @@ class App extends React.Component {
                             <Route path="/bulk-create" component={MonumentBulkCreatePage}/>
                             <Route path="/tag-directory" component={TagDirectoryPage}/>
                             <Route path="/about" component={AboutPage}/>
+                            <Route path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

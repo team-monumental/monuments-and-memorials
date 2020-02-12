@@ -4,10 +4,9 @@ import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.ResourceNotFoundException;
-import com.monumental.models.Image;
 import com.monumental.models.Monument;
-import com.monumental.models.Reference;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
@@ -15,7 +14,6 @@ import com.monumental.services.TagService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
-import com.vividsolutions.jts.geom.Point;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-
-import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 @RestController
 @Transactional
@@ -53,95 +48,7 @@ public class MonumentController {
      */
     @PostMapping("/api/monument")
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
-        Point point = MonumentService.createMonumentPoint(monumentRequest.getLongitude(),
-                monumentRequest.getLatitude());
-
-        Date date;
-
-        if (!isNullOrEmpty(monumentRequest.getDate())) {
-            date = MonumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
-        }
-        else {
-            date = MonumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
-        }
-
-        Monument createdMonument = new Monument();
-        createdMonument.setArtist(monumentRequest.getArtist());
-        createdMonument.setTitle(monumentRequest.getTitle());
-        createdMonument.setDate(date);
-        createdMonument.setAddress(monumentRequest.getAddress());
-        createdMonument.setCoordinates(point);
-        createdMonument.setDescription(monumentRequest.getDescription());
-        createdMonument.setInscription(monumentRequest.getInscription());
-
-        // Save the initial Monument
-        createdMonument = this.monumentRepository.save(createdMonument);
-
-        /* References Section */
-        List<Reference> references = new ArrayList<>();
-        if (monumentRequest.getReferences() != null && monumentRequest.getReferences().size() > 0) {
-            for (String referenceUrl : monumentRequest.getReferences()) {
-                if (!isNullOrEmpty(referenceUrl)) {
-                    Reference reference = new Reference(referenceUrl);
-                    reference.setMonument(createdMonument);
-                    references.add(reference);
-                }
-            }
-        }
-        createdMonument.setReferences(references);
-
-        /* Images Section */
-        List<Image> images = new ArrayList<>();
-        int imagesCount = 0;
-        if (monumentRequest.getImages() != null && monumentRequest.getImages().size() > 0) {
-            for (String imageUrl : monumentRequest.getImages()) {
-                if (!isNullOrEmpty(imageUrl)) {
-                    imagesCount++;
-                    boolean isPrimary = imagesCount == 1;
-
-                    Image image = new Image(imageUrl, isPrimary);
-                    image.setMonument(createdMonument);
-                    images.add(image);
-                }
-            }
-        }
-        createdMonument.setImages(images);
-
-        List<Monument> createdMonumentList = new ArrayList<>();
-        createdMonumentList.add(createdMonument);
-
-        /* Materials Section */
-        if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
-            for (String materialName : monumentRequest.getMaterials()) {
-                this.tagService.createTag(materialName, createdMonumentList, true);
-            }
-        }
-
-        /* New Materials Section */
-        if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
-            for (String newMaterialName : monumentRequest.getNewMaterials()) {
-                this.tagService.createTag(newMaterialName, createdMonumentList, true);
-            }
-        }
-
-        /* Tags Section */
-        if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
-            for (String tagName : monumentRequest.getTags()) {
-                this.tagService.createTag(tagName, createdMonumentList, false);
-            }
-        }
-
-        /* New Tags Section */
-        if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
-            for (String newTagName : monumentRequest.getNewTags()) {
-                this.tagService.createTag(newTagName, createdMonumentList, false);
-            }
-        }
-
-        // Save the Monument with the associated References, Images, Materials and Tags
-        createdMonument = this.monumentRepository.save(createdMonument);
-
-        return createdMonument;
+        return this.monumentService.createMonument(monumentRequest);
     }
 
     /**
@@ -177,14 +84,12 @@ public class MonumentController {
     /**
      * Update an existing Monument with the specified ID to have the specified attributes
      * @param id - ID of the Monument to update
-     * @param monument - Monument containing the new attributes for the specified ID
+     * @param newMonument - UpdateMonumentRequest containing the new attributes for the Monument
      * @return Monument - The updated Monument
      */
     @PutMapping("/api/monument/{id}")
-    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody Monument monument) {
-        monument.setId(id);
-        this.monumentRepository.save(monument);
-        return monument;
+    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody UpdateMonumentRequest newMonument) {
+        return this.monumentService.updateMonument(id, newMonument);
     }
 
     @GetMapping("/api/monuments/related")

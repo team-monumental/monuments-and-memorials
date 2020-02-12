@@ -2,10 +2,10 @@ import React from 'react';
 import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 
-import CreateForm from '../../components/CreateForm/CreateForm';
+import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import ContributionAppreciation from "../../components/ContributionAppreciation/ContributionAppreciation";
 import createMonument from "../../actions/create";
-import uploadImagesToS3 from "../../utils/api-util";
+import { uploadImagesToS3 } from '../../utils/api-util';
 import Spinner from "../../components/Spinner/Spinner";
 import { withRouter } from "react-router-dom";
 
@@ -18,11 +18,11 @@ class CreateMonumentPage extends React.Component {
         return state.createPage;
     }
 
-    handleCreateFormCancelButtonClick() {
+    handleCreateOrUpdateFormCancelButtonClick() {
         this.props.history.goBack();
     }
 
-    async handleCreateFormSubmit(form) {
+    async handleCreateOrUpdateFormSubmit(form) {
         const { dispatch } = this.props;
 
         // First, upload the images to S3 and save the URLs in the form
@@ -46,9 +46,9 @@ class CreateMonumentPage extends React.Component {
                     <ContributionAppreciation/>
                 </div>
                 <div className="column form-column">
-                    <CreateForm
-                        onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
-                        onSubmit={(form) => this.handleCreateFormSubmit(form)}
+                    <CreateOrUpdateForm
+                        onCancelButtonClick={() => this.handleCreateOrUpdateFormCancelButtonClick()}
+                        onSubmit={(form) => this.handleCreateOrUpdateFormSubmit(form)}
                     />
                 </div>
             </div>

@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * For now, this class simply serves as the required User entity for AbstractAuditable which Model extends
+ * For now, this class simply serves as the User entity for Model's createdBy and lastModifiedBy
  * TODO: Implement User model and roles system
  */
 @Entity

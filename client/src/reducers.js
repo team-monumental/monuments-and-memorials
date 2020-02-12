@@ -8,12 +8,13 @@ import createPage from './reducers/create'
 import bulkCreatePage from './reducers/bulk';
 import tagDirectoryPage from './reducers/tagDirectory';
 import aboutPage from './reducers/about-page';
+import updateMonumentPage from './reducers/update-monument';
 
 // These reducers are loaded into redux in index.js
 // New reducers must always be added here or they won't do anything
 const Reducers = {
     toasts, errors, monumentPage, searchPage, mapPage, tagsSearch, tagsLoad, materialsSearch,
-    materialsLoad, createPage, bulkCreatePage, tagDirectoryPage, aboutPage
+    materialsLoad, createPage, bulkCreatePage, tagDirectoryPage, aboutPage, updateMonumentPage
 };
 
 export default Reducers;

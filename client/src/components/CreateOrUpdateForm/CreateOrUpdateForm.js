@@ -1,19 +1,21 @@
 import React from 'react';
-import './CreateForm.scss';
+import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
-import {latitudeRegex, longitudeRegex} from "../../utils/regex-util";
+import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import NoImageModal from './NoImageModal/NoImageModal';
-import ReviewModal from './ReviewModal/ReviewModal';
+import CreateReviewModal from './ReviewModal/CreateReviewModal/CreateReviewModal';
+import { isEmptyObject } from '../../utils/object-util';
+import UpdateReviewModal from './ReviewModal/UpdateReviewModal/UpdateReviewModal';
 
 /**
- * Presentational component for the Form for creating a new Monument
+ * Presentational component for the Form for creating a new Monument or updating an existing Monument
  */
-export default class CreateForm extends React.Component {
+export default class CreateOrUpdateForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -75,8 +77,8 @@ export default class CreateForm extends React.Component {
             },
             references: [reference],
             images: [],
+            imagesForUpdate:[],
             imageUploaderKey: 0,
-            showingNoImageModal: false,
             materials: {
                 materialObjects: [],
                 isValid: true,
@@ -85,109 +87,27 @@ export default class CreateForm extends React.Component {
             newMaterials: [],
             tags: [],
             newTags: [],
-            showingReviewModal: false
+            showingNoImageModal: false,
+            showingCreateReviewModal: false,
+            showingUpdateReviewModal: false
         };
 
         this.materialsSelectRef = React.createRef();
         this.tagsSelectRef = React.createRef();
     }
 
-    handleAdvancedInformationClick() {
-        const { showingAdvancedInformation } = this.state;
-
-        this.setState({showingAdvancedInformation: !showingAdvancedInformation});
-    }
-
-    handleDateSelectChange(event) {
-        this.setState({dateSelectValue: event.target.value});
-    }
-
-    handleDatePickerChange(date) {
-        this.setState({datePickerCurrentDate: date});
-    }
-
-    handleAddAnotherReferenceLinkClick() {
-        const newReference = {
-            value: '',
-            isValid: true,
-            message: ''
-        };
-        const { references } = this.state;
-
-        references.push(newReference);
-
-        this.setState({references});
-    }
-
-    handleInputChange(event) {
-        const currentState = this.state[event.target.name];
-        currentState.value = event.target.value;
-
-        this.setState({[event.target.name]: currentState});
-    }
-
-    handleReferenceChange(event) {
-        const currentReferences = this.state.references;
-        const index = parseInt(event.target.name.split('-')[1]);
-
-        currentReferences[index].value = event.target.value;
-
-        this.setState({references: currentReferences});
-    }
-
-    async handleImageUploaderChange(files) {
-        await this.setState({images: files});
-    }
-
-    handleCancelButtonClick() {
-        const { onCancelButtonClick } = this.props;
-
-        onCancelButtonClick();
-    }
-
-    handleNoImageModalClose() {
-        this.setState({showingNoImageModal: false});
-    }
-
-    async handleNoImageModalContinue() {
-        await this.setState({showingNoImageModal: false});
-        this.setState({showingReviewModal: true});
-    }
-
-    handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
-        const { materials } = this.state;
-        let { newMaterials } = this.state;
-
-        materials.materialObjects = selectedMaterials;
-        newMaterials = createdMaterials;
-        this.setState({materials, newMaterials});
-    }
-
-    handleTagSelect(variant, selectedTags, createdTags) {
-        this.setState({tags: selectedTags, newTags: createdTags});
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-
-        this.resetForm(false);
-
-        if (this.validateForm()) {
-            if (!this.validateImages()) {
-                this.setState({showingNoImageModal: true});
-            }
-            else {
-                this.setState({showingReviewModal: true});
-            }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+            this.setFormFieldValuesForUpdate();
         }
     }
 
     /**
-     * Resets the state of the Form
+     * Clear the state of the Form
      * This means resetting the validation state for all inputs to true and clearing all error messages
-     * @param resetValue - If true, also resets the values inside the inputs
+     * @param clearValues - If true, also clears the values inside the inputs
      */
-    resetForm(resetValue) {
+    clearForm(clearValues) {
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
             references } = this.state;
         let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
@@ -223,7 +143,7 @@ export default class CreateForm extends React.Component {
             reference.isValid = true;
             reference.message = '';
 
-            if (resetValue) {
+            if (clearValues) {
                 reference.value = '';
             }
         }
@@ -231,7 +151,7 @@ export default class CreateForm extends React.Component {
         materials.isValid = true;
         materials.message = '';
 
-        if (resetValue) {
+        if (clearValues) {
             title.value = '';
             address.value = '';
             latitude.value = '';
@@ -256,6 +176,102 @@ export default class CreateForm extends React.Component {
 
         this.setState({title, address, latitude, longitude, year, month, artist, description, inscription,
             datePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags, newTags});
+    }
+
+    /**
+     * Sets the values of Form fields to be the values of the Monument that is being updated
+     */
+    setFormFieldValuesForUpdate() {
+        const { monument } = this.props;
+        const { title, address, latitude, longitude, year, month, artist, description, inscription,
+            materials } = this.state;
+        let { datePickerCurrentDate, references, tags, imagesForUpdate, images, imageUploaderKey } = this.state;
+
+        let monumentYear, monumentMonth, monumentExactDate;
+
+        if (monument.date) {
+            const monumentDateArray = monument.date.split('-');
+
+            monumentYear = monumentDateArray[0];
+
+            let monumentMonthInt = parseInt(monumentDateArray[1]) - 1;
+            monumentMonth = (monumentMonthInt).toString();
+
+            monumentExactDate = new Date(parseInt(monumentYear), monumentMonthInt, monumentDateArray[2]);
+        }
+
+        title.value = monument.title ? monument.title : '';
+        address.value = monument.address ? monument.address : '';
+        latitude.value = monument.lat ? monument.lat.toString() : '';
+        longitude.value = monument.lon ? monument.lon.toString() : '';
+        artist.value = monument.artist ? monument.artist : '';
+        description.value = monument.description ? monument.description : '';
+        inscription.value = monument.inscription ? monument.inscription : '';
+        year.value = monumentYear ? monumentYear : '';
+        month.value = monumentMonth ? monumentMonth : '';
+        datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+
+        if (monument.references && monument.references.length) {
+            let monumentReferences = [];
+            for (const reference of monument.references) {
+                let monumentReference = {
+                    id: reference.id,
+                    value: reference.url,
+                    isValid: true,
+                    message: ''
+                };
+
+                monumentReferences.push(monumentReference);
+            }
+
+            references = monumentReferences.length ? monumentReferences : references;
+        }
+
+        if (monument.monumentTags && monument.monumentTags.length) {
+            let associatedMaterials = [];
+            let associatedTags = [];
+
+            for (const monumentTag of monument.monumentTags) {
+                monumentTag.tag.selected = true;
+
+                if (monumentTag.tag.isMaterial) {
+                    associatedMaterials.push(monumentTag.tag);
+                }
+                else {
+                    associatedTags.push(monumentTag.tag);
+                }
+            }
+
+            if (associatedMaterials.length) {
+                materials.materialObjects = associatedMaterials;
+                this.materialsSelectRef.current.state.selectedTags = associatedMaterials;
+            }
+
+            if (associatedTags.length) {
+                tags = associatedTags;
+                this.tagsSelectRef.current.state.selectedTags = associatedTags;
+            }
+        }
+
+        if (monument.images && monument.images.length) {
+            imagesForUpdate = [];
+            for (const image of monument.images) {
+                imagesForUpdate.push(
+                    {
+                        id: image.id,
+                        url: image.url,
+                        isPrimary: image.isPrimary,
+                        hasBeenDeleted: false
+                    }
+                )
+            }
+        }
+
+        images = [];
+        imageUploaderKey++;
+
+        this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
+            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey});
     }
 
     /**
@@ -369,19 +385,25 @@ export default class CreateForm extends React.Component {
     }
 
     validateImages() {
-        const { images } = this.state;
+        const { images, imagesForUpdate } = this.state;
+        const { monument } = this.props;
 
-        return !(!images || !images.length);
+        if (!monument) {
+            return !(!images || !images.length);
+        }
+        else {
+            return (!(!imagesForUpdate || !imagesForUpdate.length)) || (!(!images || !images.length));
+        }
     }
 
     /**
-     * Build the form object based on the current values of the inputs
+     * Build the form object for creating a new Monument
      */
-    buildForm() {
+    buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
-        datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
+            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
 
-        let form = {
+        let createForm = {
             title: title.value,
             address: address.value === '' ? null : address.value,
             latitude: (latitude.value === '' && longitude.value === '') ? null : latitude.value,
@@ -399,41 +421,448 @@ export default class CreateForm extends React.Component {
 
         switch (dateSelectValue) {
             case 'year':
-                form.year = year.value === '' ? null : year.value;
+                createForm.year = year.value === '' ? null : year.value;
                 break;
             case 'month-year':
-                form.year = year.value === '' ? null : year.value;
-                form.month = month.value;
+                createForm.year = year.value === '' ? null : year.value;
+                createForm.month = month.value;
                 break;
             case 'exact-date':
-                form.date = datePickerCurrentDate;
+                createForm.date = datePickerCurrentDate;
                 break;
             default:
                 break;
         }
 
-        return form;
+        return createForm;
     }
 
     /**
-     * Build a form object and send it to the onSubmit handler
+     * Send the form for creating a new Monument to the onSubmit handler
      */
-    submitForm() {
+    submitCreateForm() {
         const { onSubmit } = this.props;
-
-        let form = this.buildForm();
-
-        onSubmit(form);
+        onSubmit(this.buildCreateForm());
     }
 
-    handleReviewModalCancel() {
-        this.setState({showingReviewModal: false});
+    /**
+     * Build the form object for updating a Monument
+     */
+    buildUpdateForm() {
+        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
+            datePickerCurrentDate, references, images, imagesForUpdate, materials, tags } = this.state;
+        let { newMaterials, newTags } = this.state;
+
+        let updateForm = {
+            newTitle: title.value,
+            newAddress: address.value === '' ? undefined : address.value,
+            newArtist: artist.value === '' ? undefined : artist.value,
+            newDescription: description.value === '' ? undefined : description.value,
+            newInscription: inscription.value === '' ? undefined : inscription.value,
+            newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
+            newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
+            images: images
+        };
+
+        let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
+        let createdMaterialNames = newMaterials.map(newMaterial => newMaterial.name);
+        updateForm.newMaterials = newlyAssociatedMaterialNames.concat(createdMaterialNames);
+
+        let newlyAssociatedTagNames = tags.map(tag => tag.name);
+        let createdTagNames = newTags.map(newTag => newTag.name);
+        updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
+
+        switch (dateSelectValue) {
+            case 'year':
+                updateForm.newYear = year.value === '' ? undefined : year.value;
+                break;
+            case 'month-year':
+                updateForm.newYear = year.value === '' ? undefined : year.value;
+                updateForm.newMonth = month.value;
+                break;
+            case 'exact-date':
+                updateForm.newDate = datePickerCurrentDate;
+                break;
+            default:
+                break;
+        }
+
+        updateForm.updatedReferencesUrlsById = {};
+        updateForm.newReferenceUrls = [];
+        updateForm.deletedReferenceIds = [];
+
+        for (const reference of references) {
+            if (reference.id) {
+                if (reference.deleted === true) {
+                    updateForm.deletedReferenceIds.push(reference.id);
+                }
+                else {
+                    updateForm.updatedReferencesUrlsById[reference.id] = reference.value;
+                }
+            }
+            else {
+                updateForm.newReferenceUrls.push(reference.value);
+            }
+        }
+
+        updateForm.deletedImageUrls = [];
+        updateForm.deletedImageIds = [];
+
+        for (const imageForUpdate of imagesForUpdate) {
+            if (imageForUpdate.isPrimary) {
+                updateForm.newPrimaryImageId = imageForUpdate.id;
+            }
+
+            if (imageForUpdate.hasBeenDeleted) {
+                updateForm.deletedImageUrls.push(imageForUpdate.url);
+                updateForm.deletedImageIds.push(imageForUpdate.id);
+            }
+        }
+
+        return updateForm;
+    }
+
+    /**
+     * Send the form for updating a Monument to the onSubmit handler
+     */
+    submitUpdateForm(id) {
+        const { onSubmit } = this.props;
+        onSubmit(id, this.buildUpdateForm());
+    }
+
+    handleInputChange(event) {
+        const currentState = this.state[event.target.name];
+        currentState.value = event.target.value;
+
+        this.setState({[event.target.name]: currentState});
+    }
+
+    handleAdvancedInformationClick() {
+        const { showingAdvancedInformation } = this.state;
+
+        this.setState({showingAdvancedInformation: !showingAdvancedInformation});
+    }
+
+    handleDateSelectChange(event) {
+        this.setState({dateSelectValue: event.target.value});
+    }
+
+    handleDatePickerChange(date) {
+        this.setState({datePickerCurrentDate: date});
+    }
+
+    handleReferenceChange(event) {
+        const currentReferences = this.state.references;
+        const index = parseInt(event.target.name.split('-')[1]);
+
+        currentReferences[index].value = event.target.value;
+
+        this.setState({references: currentReferences});
+    }
+
+    handleAddAnotherReferenceLinkClick() {
+        const newReference = {
+            value: '',
+            isValid: true,
+            message: ''
+        };
+        const { references } = this.state;
+
+        references.push(newReference);
+
+        this.setState({references});
+    }
+
+    handleReferenceDeleteButtonClick(event, reference, index) {
+        const { references } = this.state;
+
+        if (reference.id) {
+            const referenceFromState = references.filter(r => r.id === reference.id)[0];
+            referenceFromState['deleted'] = true;
+        }
+        else {
+            references.splice(index, 1);
+        }
+
+        this.setState({references});
+    }
+
+    handleReferenceUndoDeleteButtonClick(event, reference) {
+        const { references } = this.state;
+
+        const referenceFromState = references.filter(r => r.id === reference.id)[0];
+        referenceFromState['deleted'] = false;
+
+        this.setState({references});
+    }
+
+    async handleImageUploaderChange(files) {
+        await this.setState({images: files});
+    }
+
+    handleImageIsPrimaryCheckboxClick(event, image) {
+        const { images, imagesForUpdate } = this.state;
+
+        if (image.isPrimary) {
+            image.isPrimary = false;
+        }
+        else {
+            image.isPrimary = true;
+
+            for (const i of images) {
+                if (i.url !== image.url) {
+                    i.isPrimary = false;
+                }
+            }
+
+            for (const i of imagesForUpdate) {
+                if (i.url !== image.url) {
+                    i.isPrimary = false;
+                }
+            }
+        }
+
+        this.setState({images, imagesForUpdate});
+    }
+
+    handleImageForUpdateDeleteButtonClick(event, image) {
+        const { imagesForUpdate } = this.state;
+
+        let imageForUpdateFromState;
+        for (const imageForUpdate of imagesForUpdate) {
+            if (imageForUpdate.id === image.id) {
+                imageForUpdateFromState = imageForUpdate;
+                break;
+            }
+        }
+
+        if (imageForUpdateFromState) {
+            imageForUpdateFromState.hasBeenDeleted = true;
+        }
+
+        this.setState({imagesForUpdate});
+    }
+
+    handleImageForUpdateUndoDeleteButtonClick(event, image) {
+        const { imagesForUpdate } = this.state;
+
+        let imageForUpdateFromState;
+        for (const imageForUpdate of imagesForUpdate) {
+            if (imageForUpdate.id === image.id) {
+                imageForUpdateFromState = imageForUpdate;
+                break;
+            }
+        }
+
+        if (imageForUpdateFromState) {
+            imageForUpdateFromState.hasBeenDeleted = false;
+        }
+
+        this.setState({imagesForUpdate});
+    }
+
+    handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
+        const { materials } = this.state;
+        let { newMaterials } = this.state;
+
+        materials.materialObjects = selectedMaterials;
+        newMaterials = createdMaterials;
+        this.setState({materials, newMaterials});
+    }
+
+    handleTagSelect(variant, selectedTags, createdTags) {
+        this.setState({tags: selectedTags, newTags: createdTags});
+    }
+
+    handleSubmit(event) {
+        const { monument } = this.props;
+
+        event.preventDefault();
+
+        this.clearForm(false);
+
+        if (this.validateForm()) {
+            if (!this.validateImages()) {
+                this.setState({showingNoImageModal: true});
+            }
+            else {
+                if (!monument) {
+                    this.setState({showingCreateReviewModal: true});
+                }
+                else {
+                    this.setState({showingUpdateReviewModal: true});
+                }
+            }
+        }
+    }
+
+    handleCancelButtonClick() {
+        const { onCancelButtonClick } = this.props;
+
+        onCancelButtonClick();
+    }
+
+    handleNoImageModalClose() {
+        this.setState({showingNoImageModal: false});
+    }
+
+    handleNoImageModalContinue() {
+        const { monument } = this.props;
+
+        this.setState({showingNoImageModal: false});
+
+        if (!monument) {
+            this.setState({showingCreateReviewModal: true});
+        }
+        else {
+            this.setState({showingUpdateReviewModal: true});
+        }
+    }
+
+    handleCreateReviewModalCancel() {
+        this.setState({showingCreateReviewModal: false});
+    }
+
+    handleUpdateReviewModalCancel() {
+        this.setState({showingUpdateReviewModal: false});
+    }
+
+    renderReferenceDeleteButton(reference, index) {
+        if (!reference.deleted) {
+            return (
+                <div
+                    className="delete-button reference"
+                    onClick={e => this.handleReferenceDeleteButtonClick(e, reference, index)}
+                >
+                    X
+                </div>
+            );
+        }
+        else {
+            return (
+                <i
+                    className="material-icons delete-button undo reference"
+                    onClick={e => this.handleReferenceUndoDeleteButtonClick(e, reference)}
+                >
+                    undo
+                </i>
+            );
+        }
+    }
+
+    renderImageIsPrimaryCheckbox(image) {
+        const { monument } = this.props;
+
+        if (monument) {
+            let isPrimaryIcon;
+
+            if (image.isPrimary) {
+                isPrimaryIcon = (
+                    <i
+                        className="material-icons image-is-primary-checkbox"
+                        onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
+                    >
+                        check_box
+                    </i>
+                );
+            }
+            else {
+                isPrimaryIcon = (
+                    <i
+                        className="material-icons image-is-primary-checkbox"
+                        onClick={e => this.handleImageIsPrimaryCheckboxClick(e, image)}
+                    >
+                        check_box_outline_blank
+                    </i>
+                );
+            }
+
+            return (
+                <div className="is-primary-container">
+                    <div className="image-is-primary-message">
+                        Is Primary Image:
+                    </div>
+                    {isPrimaryIcon}
+                </div>
+            );
+        }
+        else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderImageDeleteButton(image) {
+        if (image.hasBeenDeleted) {
+            return (
+                <i
+                    className="material-icons delete-button undo"
+                    onClick={e => this.handleImageForUpdateUndoDeleteButtonClick(e, image)}
+                >
+                    undo
+                </i>
+            );
+        }
+        else {
+            return (
+                <div
+                    className="delete-button"
+                    onClick={e => this.handleImageForUpdateDeleteButtonClick(e, image)}
+                >
+                    X
+                </div>
+            );
+        }
+    }
+
+    renderClearButton() {
+        const { monument } = this.props;
+
+        if (!monument) {
+            return (
+                <Button
+                    type="button"
+                    onClick={() => this.clearForm(true)}
+                    className="reset-button mr-4 mt-1"
+                >
+                    Clear
+                </Button>
+            );
+        }
+        else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderResetButton() {
+        const { monument } = this.props;
+
+        if (monument) {
+            return (
+                <Button
+                    type="button"
+                    onClick={() => this.setFormFieldValuesForUpdate()}
+                    className="reset-button mr-4 mt-1"
+                >
+                    Reset
+                </Button>
+            );
+        }
+        else {
+            return (
+                <div/>
+            );
+        }
     }
 
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
-            materials, showingReviewModal } = this.state;
+            materials, showingCreateReviewModal, imagesForUpdate, showingUpdateReviewModal, images } = this.state;
+        const { monument } = this.props;
 
         const advancedInformationLink = (
             <div className="advanced-information-link more-link" onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
@@ -519,31 +948,65 @@ export default class CreateForm extends React.Component {
                 dateInput = <div/>;
         }
 
-        const referenceInputs = references.map((reference, index) => (
-            <div className="reference-container" key={index}>
-                <Form.Label>Reference:</Form.Label>
-                <Form.Control
-                    type="text"
-                    name={'reference-' + index}
-                    placeholder="Reference URL"
-                    value={reference.value}
-                    onChange={(event) => this.handleReferenceChange(event)}
-                    isInvalid={!reference.isValid}
-                    className="text-control"
-                />
-                <Form.Control.Feedback type="invalid">{reference.message}</Form.Control.Feedback>
-            </div>
-        ));
+        const referenceInputs = [];
 
+        for (const [index, reference] of references.entries()) {
+            referenceInputs.push(
+                <div className="reference-container" key={index}>
+                    <Form.Label>Reference:</Form.Label>
+                    <Form.Control
+                        type="text"
+                        name={'reference-' + index}
+                        placeholder="Reference URL"
+                        value={reference.value}
+                        onChange={(event) => this.handleReferenceChange(event)}
+                        isInvalid={!reference.isValid}
+                        className={reference.deleted ? 'text-control deleted-reference' : 'text-control'}
+                    />
+                    {monument ? this.renderReferenceDeleteButton(reference, index) : <div/>}
+                    <Form.Control.Feedback type="invalid">{reference.message}</Form.Control.Feedback>
+                </div>
+            );
+        }
+        
         const invalidMaterials = (
             <div className="invalid-feedback materials">{materials.message}</div>
         );
 
+        let imagesForUpdateDisplay;
+        if (imagesForUpdate.length) {
+            let imageDisplays = [];
+            for (const image of imagesForUpdate) {
+                imageDisplays.push(
+                    <div
+                        className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
+                        key={image.id}
+                    >
+                        {this.renderImageDeleteButton(image)}
+                        <div
+                            className={image.hasBeenDeleted ? 'image-for-update deleted' : 'image-for-update'}
+                            style={{backgroundImage: `url("${image.url}")`}}
+                        />
+                        {this.renderImageIsPrimaryCheckbox(image)}
+                    </div>
+                );
+            }
+
+            imagesForUpdateDisplay = (
+                <div>
+                    <Form.Label>Current Images:</Form.Label>
+                    <div className="images-for-update-container">
+                        {imageDisplays}
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="create-form-container">
-                <div className="h5">
-                    Create a new Monument or Memorial
-                </div>
+                {monument
+                    ? <div className="h5 update">Update an existing Monument or Memorial</div>
+                    : <div className="h5 create">Suggest a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
@@ -623,7 +1086,7 @@ export default class CreateForm extends React.Component {
 
                     {/* Images */}
                     <Form.Group controlId="create-form-image">
-                        <Form.Label>Images:</Form.Label>
+                        <Form.Label>{monument ? 'Add More Images:' : 'Images:'}</Form.Label>
                         <ImageUploader
                             withIcon={false}
                             imgExtension={['.jpg', '.png']}
@@ -635,6 +1098,7 @@ export default class CreateForm extends React.Component {
                             key={imageUploaderKey}
                             errorClass="invalid-feedback"
                         />
+                        {imagesForUpdateDisplay}
                     </Form.Group>
 
                     <Collapse in={showingAdvancedInformation}>
@@ -731,7 +1195,7 @@ export default class CreateForm extends React.Component {
                     {!showingAdvancedInformation && advancedInformationLink}
                     {showingAdvancedInformation && hideAdvancedInformationLink}
 
-                    <ButtonToolbar>
+                    <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
                         <Button
                             variant="primary"
                             type="submit"
@@ -740,14 +1204,8 @@ export default class CreateForm extends React.Component {
                             Submit
                         </Button>
 
-                        <Button
-                            variant="secondary"
-                            type="button"
-                            onClick={() => this.resetForm(true)}
-                            className="mr-4 mt-1"
-                        >
-                            Clear
-                        </Button>
+                        {this.renderClearButton()}
+                        {this.renderResetButton()}
 
                         <Button
                             variant="danger"
@@ -769,12 +1227,24 @@ export default class CreateForm extends React.Component {
                     />
                 </div>
 
-                <div className="review-modal-container">
-                    <ReviewModal
-                        showing={showingReviewModal}
-                        onCancel={() => this.handleReviewModalCancel()}
-                        onConfirm={() => this.submitForm()}
-                        form={this.buildForm()}
+                <div className="create-review-modal-container">
+                    <CreateReviewModal
+                        showing={showingCreateReviewModal}
+                        onCancel={() => this.handleCreateReviewModalCancel()}
+                        onConfirm={() => this.submitCreateForm()}
+                        form={this.buildCreateForm()}
+                        dateSelectValue={dateSelectValue}
+                    />
+                </div>
+
+                <div className="update-review-modal-container">
+                    <UpdateReviewModal
+                        showing={showingUpdateReviewModal}
+                        onCancel={() => this.handleUpdateReviewModalCancel()}
+                        onConfirm={() => this.submitUpdateForm(monument.id)}
+                        oldMonument={monument}
+                        newMonument={this.buildUpdateForm()}
+                        addedImages={images}
                         dateSelectValue={dateSelectValue}
                     />
                 </div>
