@@ -31,7 +31,6 @@ import java.util.concurrent.ExecutionException;
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 @RestController
-@Transactional
 public class MonumentController {
 
     @Autowired
