@@ -19,9 +19,10 @@ export async function get(url) {
  * Send a POST request to the specified URL with the specified data
  * @param url - URL to send the POST to
  * @param data - Data to send to the specified URL
+ * @param contentType - The ContentType header, defaults to 'application/json'
  */
-export async function post(url, data) {
-    return await sendRequest(url, 'POST', data);
+export async function post(url, data, contentType = 'application/json') {
+    return await sendRequest(url, 'POST', data, undefined, contentType);
 }
 
 /**
