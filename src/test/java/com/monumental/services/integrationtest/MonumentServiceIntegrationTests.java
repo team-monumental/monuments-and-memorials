@@ -112,7 +112,6 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_bulkCreateMonumentsFromCsv_EmptyCsvList() {
-        System.out.println("In test!");
         List<CsvMonumentConverterResult> csvResults = new ArrayList<>();
 
         List<Monument> results = this.monumentService.bulkCreateMonumentsSync(csvResults);
