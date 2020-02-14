@@ -67,7 +67,7 @@ public class GoogleMapsService {
      * @return GeoApiContext - new GeoApiContext, null if the GOOGLE_API_KEY is "default"
      */
     private GeoApiContext buildGeoApiContext() {
-        if (GOOGLE_API_KEY.equals("default")) {
+        if (this.GOOGLE_API_KEY.equals("default")) {
             return null;
         }
 

@@ -855,9 +855,8 @@ public class MonumentService extends ModelService<Monument> {
         Monument currentMonument = optionalMonument.get();
         this.initializeAllLazyLoadedCollections(currentMonument);
 
-        // Store the old Monument's address and coordinates
-        String oldMonumentAddress = currentMonument.getAddress();
-        Point oldMonumentCoordinates = currentMonument.getCoordinates();
+        String oldAddress = currentMonument.getAddress();
+        Point oldCoordinates = currentMonument.getCoordinates();
 
         // Update basic String fields
         this.setBasicFieldsOnMonument(currentMonument, newMonument.getNewTitle(), newMonument.getNewAddress(),
@@ -869,7 +868,7 @@ public class MonumentService extends ModelService<Monument> {
         currentMonument.setCoordinates(point);
 
         // In the situation that the address or coordinates were removed or changed, try to populate them with correct data
-        this.populateUpdatedMonumentLocation(currentMonument, oldMonumentAddress, oldMonumentCoordinates);
+        this.populateUpdatedMonumentLocation(currentMonument, oldAddress, oldCoordinates);
 
         // Update the Date
         Date date;
@@ -1224,10 +1223,7 @@ public class MonumentService extends ModelService<Monument> {
         else if (monument.getCoordinates() == null && monument.getAddress() != null) {
             com.google.maps.model.Geometry geometry = this.googleMapsService.getCoordinatesFromAddress(monument.getAddress());
             if (geometry != null) {
-                Point coordinates = createMonumentPoint(geometry.location.lng, geometry.location.lat);
-                if (coordinates != null) {
-                    monument.setCoordinates(coordinates);
-                }
+                monument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
             }
         }
     }
@@ -1236,21 +1232,21 @@ public class MonumentService extends ModelService<Monument> {
      * Populates the address and coordinates field on a Monument being updated, if necessary
      * We always want Monument records to have coordinates and an address
      * @param newMonument - Monument containing the new, updated fields
-     * @param oldMonumentAddress - String containing the old Monument's address
-     * @param oldMonumentCoordinates - Point containing the old Monument's coordinates
+     * @param oldAddress - String containing the Monument's old address
+     * @param oldCoordinates - Point containing the Monument's old coordinates
      */
-    public void populateUpdatedMonumentLocation(Monument newMonument, String oldMonumentAddress, Point oldMonumentCoordinates) {
-        this.populateUpdatedMonumentAddress(newMonument, oldMonumentAddress, oldMonumentCoordinates);
-        this.populateUpdatedMonumentCoordinates(newMonument, oldMonumentCoordinates, oldMonumentAddress);
+    public void populateUpdatedMonumentLocation(Monument newMonument, String oldAddress, Point oldCoordinates) {
+        this.populateUpdatedMonumentAddress(newMonument, oldAddress, oldCoordinates);
+        this.populateUpdatedMonumentCoordinates(newMonument, oldCoordinates, oldAddress);
     }
 
     /**
      * Populates the address field on a Monument being updated, if necessary
      * @param newMonument - Monument containing the new, updated fields
-     * @param oldMonumentAddress - String containing the old Monument's address
-     * @param oldMonumentCoordinates - Point containing the old Monument's coordinates
+     * @param oldAddress - String containing the Monument's old address
+     * @param oldCoordinates - Point containing the Monument's old coordinates
      */
-    private void populateUpdatedMonumentAddress(Monument newMonument, String oldMonumentAddress, Point oldMonumentCoordinates) {
+    private void populateUpdatedMonumentAddress(Monument newMonument, String oldAddress, Point oldCoordinates) {
         // If the new Monument has an address, no need to reverse geocode
         if (newMonument.getAddress() != null) {
             return;
@@ -1262,8 +1258,8 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // If the coordinates match, set the address on the new Monument
-        if (oldMonumentCoordinates != null && newMonument.getCoordinates().equals(oldMonumentCoordinates)) {
-            newMonument.setAddress(oldMonumentAddress);
+        if (oldCoordinates != null && newMonument.getCoordinates().equals(oldCoordinates)) {
+            newMonument.setAddress(oldAddress);
             return;
         }
 
@@ -1278,10 +1274,10 @@ public class MonumentService extends ModelService<Monument> {
      * Populates the coordinates field on a Monument being updated, if necessary
      * We always want Monument records to have coordinates and an address
      * @param newMonument - Monument containing the new, updated fields
-     * @param oldMonumentCoordinates - Point containing the old Monument's coordinates
-     * @param oldMonumentAddress - String containing the old Monument's address
+     * @param oldCoordinates - Point containing the Monument's old coordinates
+     * @param oldAddress - String containing the Monument's old address
      */
-    private void populateUpdatedMonumentCoordinates(Monument newMonument, Point oldMonumentCoordinates, String oldMonumentAddress) {
+    private void populateUpdatedMonumentCoordinates(Monument newMonument, Point oldCoordinates, String oldAddress) {
         // If the new Monument has coordinates, no need to geocode
         if (newMonument.getCoordinates() != null) {
             return;
@@ -1293,18 +1289,15 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // If the addresses match, set the coordinates on the new record
-        if (newMonument.getAddress().equals(oldMonumentAddress)) {
-            newMonument.setCoordinates(oldMonumentCoordinates);
+        if (newMonument.getAddress().equals(oldAddress)) {
+            newMonument.setCoordinates(oldCoordinates);
             return;
         }
 
         // Perform geocode
         com.google.maps.model.Geometry geometry = this.googleMapsService.getCoordinatesFromAddress(newMonument.getAddress());
         if (geometry != null) {
-            Point coordinates = createMonumentPoint(geometry.location.lng, geometry.location.lat);
-            if (coordinates != null) {
-                newMonument.setCoordinates(coordinates);
-            }
+            newMonument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
         }
     }
 }
