@@ -12,16 +12,20 @@ import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.opencsv.CSVReader;
 import com.vividsolutions.jts.geom.Point;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -36,6 +40,7 @@ import java.util.Map;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Test class used to integration test MonumentService
@@ -64,6 +69,9 @@ public class MonumentServiceIntegrationTests {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @MockBean
+    GoogleMapsService googleMapsServiceMock;
 
     public static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
 
@@ -95,8 +103,6 @@ public class MonumentServiceIntegrationTests {
         }
     }
 
-    /** bulkCreateMonumentsFromCsv Tests **/
-
     private MonumentBulkValidationResult validateCSV(String csvRows) {
         try {
             List<String[]> csvList = parseCSVString(csvRows);
@@ -106,6 +112,12 @@ public class MonumentServiceIntegrationTests {
             fail("An IOException occurred");
             return new MonumentBulkValidationResult();
         }
+    }
+
+    @Before
+    public void initializeMocks() {
+        Mockito.when(this.googleMapsServiceMock.getAddressFromCoordinates(any(Double.class), any(Double.class))).thenReturn(null);
+        Mockito.when(this.googleMapsServiceMock.getCoordinatesFromAddress(any(String.class))).thenReturn(null);
     }
 
     /** bulkCreateMonumentsFromCsv Tests **/
