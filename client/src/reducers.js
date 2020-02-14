@@ -8,7 +8,7 @@ import createPage from './reducers/create'
 import bulkCreatePage from './reducers/bulk';
 import tagDirectoryPage from './reducers/tagDirectory';
 import aboutPage from './reducers/about-page';
-import { signup, login, session } from './reducers/authentication';
+import { signup, login, session, confirmSignup, resendConfirmation } from './reducers/authentication';
 import updateMonumentPage from './reducers/update-monument';
 
 // These reducers are loaded into redux in index.js
@@ -16,7 +16,7 @@ import updateMonumentPage from './reducers/update-monument';
 const Reducers = {
     toasts, errors, monumentPage, searchPage, mapPage, tagsSearch, tagsLoad, materialsSearch,
     materialsLoad, createPage, bulkCreatePage, tagDirectoryPage, aboutPage, updateMonumentPage,
-    login, signup, session
+    login, signup, session, confirmSignup, resendConfirmation
 };
 
 export default Reducers;

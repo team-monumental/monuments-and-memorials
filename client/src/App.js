@@ -22,6 +22,7 @@ import SignupPage from './pages/SignupPage/SignupPage';
 import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
 import { Roles } from './utils/authentication-util';
 import { getUserSession, logout } from './actions/authentication';
+import ConfirmSignupPage from './pages/ConfirmSignupPage/ConfirmSignupPage';
 
 class App extends React.Component {
 
@@ -55,7 +56,7 @@ class App extends React.Component {
                             <Route path="/map" component={MapPage}/>
                             <Route exact path="/" component={HomePage}/>
                             <Route path="/login" component={LoginPage}/>
-                            <Route path="/signup" component={SignupPage}/>
+                            <Route exact path="/signup" component={SignupPage}/>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <ProtectedRoute path="/create" component={CreateMonumentPage}/>
@@ -63,6 +64,7 @@ class App extends React.Component {
                             <Route path="/tag-directory" component={TagDirectoryPage}/>
                             <Route path="/about" component={AboutPage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
+                            <Route path="/signup/confirm" component={ConfirmSignupPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>
