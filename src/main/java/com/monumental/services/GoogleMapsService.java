@@ -4,6 +4,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
 import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Point;
@@ -37,9 +38,9 @@ public class GoogleMapsService {
     /**
      * Get a set of coordinates from the specified address using Google Maps
      * @param address - String for the address to geocode
-     * @return Point - Point object containing the latitude and longitude of the address
+     * @return Geometry - Google Maps Geometry containing the location data for the address
      */
-    public Point getCoordinatesFromAddress(String address) {
+    public Geometry getCoordinatesFromAddress(String address) {
         if (StringHelper.isNullOrEmpty(address)) {
             return null;
         }
@@ -50,8 +51,7 @@ public class GoogleMapsService {
                 System.out.println("[GOOGLE MAPS SERVICE]: Making geocode request for address: " + address);
                 GeocodingResult[] results = GeocodingApi.geocode(context, address)
                         .await();
-                return MonumentService.createMonumentPoint(results[0].geometry.location.lng,
-                        results[0].geometry.location.lat);
+                return results[0].geometry;
             }
         } catch (ApiException | InterruptedException | IOException e) {
             System.out.println("[GOOGLE MAPS SERVICE]: Error when attempting to make geocode request for address: " + address);
