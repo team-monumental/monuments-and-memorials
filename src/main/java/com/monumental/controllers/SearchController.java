@@ -55,7 +55,7 @@ public class SearchController {
         Date startDate = StringHelper.parseNullableDate(start);
         Date endDate = StringHelper.parseNullableDate(end);
         return this.monumentService.search(
-                searchQuery, page, limit, latitude, longitude, distance, tags, materials,
+                searchQuery, page, limit, 0.1, latitude, longitude, distance, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
                 startDate, endDate, decade
         );
