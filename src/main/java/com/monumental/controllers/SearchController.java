@@ -2,6 +2,7 @@ package com.monumental.controllers;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
+import com.monumental.repositories.MonumentRepository;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.util.string.StringHelper;
@@ -22,6 +23,9 @@ public class SearchController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private MonumentRepository monumentRepository;
+
     /**
      * This function lets you search Monuments via a few different request parameters
      * Ex: GET http://localhost:8080/api/search/monuments/?q=Memorial&limit=25&page=1
@@ -41,7 +45,7 @@ public class SearchController {
                                           @RequestParam(required = false, defaultValue = "25") String limit,
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
-                                          @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
+                                          @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
                                           @RequestParam(required = false) List<String> tags,
                                           @RequestParam(required = false) List<String> materials,
                                           @RequestParam(required = false, value = "sort", defaultValue = "relevance") String sortType,
@@ -64,7 +68,7 @@ public class SearchController {
     public Integer countMonumentSearch(@RequestParam(required = false, value = "q") String searchQuery,
                                        @RequestParam(required = false, value = "lat") Double latitude,
                                        @RequestParam(required = false, value = "lon") Double longitude,
-                                       @RequestParam(required = false, value = "d", defaultValue = "25") Integer distance,
+                                       @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
                                        @RequestParam(required = false) List<String> tags,
                                        @RequestParam(required = false) List<String> materials,
                                        @RequestParam(required = false) String start,
@@ -82,5 +86,11 @@ public class SearchController {
     public List<Tag> searchTags(@RequestParam(required = false, value = "q") String searchQuery,
                                 @RequestParam(required = false, value = "materials") Boolean isMaterial) {
         return this.tagService.search(searchQuery, isMaterial);
+    }
+
+    @GetMapping("/api/search/duplicates")
+    public List<Monument> searchMonuments(@RequestParam(required = true, value = "id") Integer id) {
+        Monument monument = this.monumentRepository.getOne(id);
+        return this.monumentService.findDuplicateMonuments(monument);
     }
 }

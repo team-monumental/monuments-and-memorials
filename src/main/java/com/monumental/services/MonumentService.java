@@ -129,9 +129,9 @@ public class MonumentService extends ModelService<Monument> {
      * @param orderByDistance If true, results will be ordered by distance ascending
      */
     private Predicate buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude, Double longitude,
-                                        Integer miles, Boolean orderByDistance) {
+                                        Double miles, Boolean orderByDistance) {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
-        Integer feet = miles * 5280;
+        Double feet = miles * 5280;
 
         Expression monumentCoordinates = builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
             builder.literal(feetSrid)
@@ -228,7 +228,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
-                                  Double latitude, Double longitude, Integer distance, List<String> tags,
+                                  Double latitude, Double longitude, Double distance, List<String> tags,
                                   List<String> materials, SortType sortType, Date start, Date end, Integer decade) {
 
         List<Predicate> predicates = new ArrayList<>();
@@ -303,7 +303,7 @@ public class MonumentService extends ModelService<Monument> {
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
-                                 Integer distance, List<String> tags, List<String> materials, SortType sortType,
+                                 Double distance, List<String> tags, List<String> materials, SortType sortType,
                                  Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
@@ -327,7 +327,7 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Count the total number of results for a Monument search
      */
-    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Integer distance,
+    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
                                       List<String> tags, List<String> materials, Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -1314,5 +1314,30 @@ public class MonumentService extends ModelService<Monument> {
         if (geometry != null) {
             newMonument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
         }
+    }
+
+    /**
+     * Search for any potential "duplicate" Monuments given a Monument
+     * A "duplicate" Monument is defined as one that is within .1 of a mile
+     * AND has a similar name
+     * @param monument - Monument to use to search for potential duplicates
+     * @return List<Monument> - List of potential duplicate Monuments given the specified Monument
+     */
+    public List<Monument> findDuplicateMonuments(Monument monument) {
+        if (monument.getTitle() != null && monument.getCoordinates() != null) {
+            List<Monument> duplicatesWithSameMonument = this.search(monument.getTitle(), "1", "25", monument.getLat(),
+                    monument.getLon(), .1, null, null, SortType.DISTANCE, null, null, null);
+
+            List<Monument> duplicatesWithoutSameMonument = new ArrayList<>();
+            for (Monument m : duplicatesWithSameMonument) {
+                if (!m.getId().equals(monument.getId())) {
+                    duplicatesWithoutSameMonument.add(m);
+                }
+            }
+
+            return duplicatesWithoutSameMonument;
+        }
+
+        return new ArrayList<>();
     }
 }
