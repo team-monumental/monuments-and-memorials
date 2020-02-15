@@ -217,6 +217,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param query - The CriteriaQuery to add the searching logic to
      * @param root - The Root to use with the CriteriaQuery
      * @param searchQuery - The String search query that will get passed into the pg_tgrm similarity function
+     * @param threshold - The threshold (0-1) to limit the results by in the pg_tgrm similary function.
+     *                  You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
@@ -228,8 +230,9 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
-                                  Double latitude, Double longitude, Double distance, List<String> tags,
-                                  List<String> materials, SortType sortType, Date start, Date end, Integer decade) {
+                                  Double threshold, Double latitude, Double longitude, Double distance,
+                                  List<String> tags, List<String> materials, SortType sortType, Date start, Date end,
+                                  Integer decade) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -252,7 +255,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (!isNullOrEmpty(searchQuery)) {
-            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, sortByRelevance));
+            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, threshold, sortByRelevance));
         }
 
         if (latitude != null && longitude != null && distance != null) {
@@ -268,9 +271,9 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (start != null && end != null) {
-            predicates.add(this.buildDateRangeQuery(builder, query, root, start, end));
+            predicates.add(this.buildDateRangeQuery(builder, root, start, end));
         } else if (decade != null) {
-            predicates.add(this.buildDecadeQuery(builder, query, root, decade));
+            predicates.add(this.buildDecadeQuery(builder, root, decade));
         }
 
         switch (predicates.size()) {
@@ -291,6 +294,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param searchQuery - The string search query that will get passed into the pg_tgrm similarity function
      * @param page - The page number of Monument results to return
      * @param limit - The maximum number of Monument results to return
+     * @param threshold - The threshold (0-1) to limit the results by for th pg_tgrm similarity function
+     *                  You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
@@ -302,16 +307,16 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
-    public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
-                                 Double distance, List<String> tags, List<String> materials, SortType sortType,
-                                 Date start, Date end, Integer decade) {
+    public List<Monument> search(String searchQuery, String page, String limit, Double threshold, Double latitude,
+                                 Double longitude, Double distance, List<String> tags, List<String> materials,
+                                 SortType sortType, Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, sortType,
+            builder, query, root, searchQuery, threshold, latitude, longitude, distance, tags, materials, sortType,
             start, end, decade
         );
 
@@ -335,7 +340,7 @@ public class MonumentService extends ModelService<Monument> {
         query.select(builder.countDistinct(root));
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, SortType.NONE,
+            builder, query, root, searchQuery, 0.1, latitude, longitude, distance, tags, materials, SortType.NONE,
             start, end, decade
         );
 
@@ -635,12 +640,12 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     @SuppressWarnings("unchecked")
-    private Predicate buildDateRangeQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Date start, Date end) {
+    private Predicate buildDateRangeQuery(CriteriaBuilder builder, Root root, Date start, Date end) {
         return builder.between(root.get("date"), start, end);
     }
 
     @SuppressWarnings("unchecked")
-    private Predicate buildDecadeQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Integer decade) {
+    private Predicate buildDecadeQuery(CriteriaBuilder builder, Root root, Integer decade) {
         Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
         Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
         return builder.between(root.get("date"), start, end);
@@ -654,7 +659,7 @@ public class MonumentService extends ModelService<Monument> {
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
-        List<Monument> allMonumentOldestFirst = this.search(null,null, null, null, null, null, null, null,
+        List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
                 SortType.OLDEST, null, null, null);
 
         // Total number of Monuments
@@ -1325,8 +1330,8 @@ public class MonumentService extends ModelService<Monument> {
      */
     public List<Monument> findDuplicateMonuments(Monument monument) {
         if (monument.getTitle() != null && monument.getCoordinates() != null) {
-            List<Monument> duplicatesWithSameMonument = this.search(monument.getTitle(), "1", "25", monument.getLat(),
-                    monument.getLon(), .1, null, null, SortType.DISTANCE, null, null, null);
+            List<Monument> duplicatesWithSameMonument = this.search(monument.getTitle(), "1", "25", 0.9,
+                    monument.getLat(), monument.getLon(), .1, null, null, SortType.DISTANCE, null, null, null);
 
             List<Monument> duplicatesWithoutSameMonument = new ArrayList<>();
             for (Monument m : duplicatesWithSameMonument) {
