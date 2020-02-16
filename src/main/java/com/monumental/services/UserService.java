@@ -77,6 +77,7 @@ public class UserService extends ModelService<User> {
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
+        email.setFrom("monumentsplusmemorials@gmail.com");
         email.setSubject(subject);
         email.setText(message + "\n\n" + confirmationUrl);
         mailSender.send(email);
