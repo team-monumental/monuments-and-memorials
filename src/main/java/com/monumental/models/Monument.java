@@ -2,7 +2,6 @@ package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.monumental.listeners.MonumentListener;
 import com.monumental.util.string.StringHelper;
 import com.vividsolutions.jts.geom.Point;
 import org.hibernate.LazyInitializationException;
@@ -20,7 +19,6 @@ import java.util.*;
  */
 
 @Entity
-@EntityListeners(MonumentListener.class)
 public class Monument extends Model implements Serializable {
 
     @Column(name = "artist")
