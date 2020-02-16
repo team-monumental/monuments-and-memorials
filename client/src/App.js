@@ -17,6 +17,11 @@ import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
 import HomePage from "./pages/HomePage/HomePage";
 import AboutPage from './pages/AboutPage/AboutPage';
 import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import SignupPage from './pages/SignupPage/SignupPage';
+import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
+import { Roles } from './utils/authentication-util';
+import { getUserSession, logout } from './actions/authentication';
 
 class App extends React.Component {
 
@@ -27,26 +32,37 @@ class App extends React.Component {
         };
     }
 
+    componentDidMount() {
+        const { dispatch } = this.props;
+        dispatch(getUserSession());
+    }
+
+    async clearUserSession() {
+        const { dispatch } = this.props;
+        dispatch(logout());
+    }
+
     render() {
         const { headerHeight } = this.state;
-
         return (
             <div className="App">
                 <Helmet title={'Monuments and Memorials'}/>
                 <Toaster/>
                 <Router>
-                    <Header onRender={headerHeight => this.setState({headerHeight})}/>
+                    <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
                             <Route path="/map" component={MapPage}/>
                             <Route exact path="/" component={HomePage}/>
+                            <Route path="/login" component={LoginPage}/>
+                            <Route path="/signup" component={SignupPage}/>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
-                            <Route path="/create" component={CreateMonumentPage}/>
-                            <Route path="/bulk-create" component={MonumentBulkCreatePage}/>
+                            <ProtectedRoute path="/create" component={CreateMonumentPage}/>
+                            <ProtectedRoute path="/bulk-create" component={MonumentBulkCreatePage} oneOf={[Roles.PARTNER, Roles.RESEARCHER]}/>
                             <Route path="/tag-directory" component={TagDirectoryPage}/>
                             <Route path="/about" component={AboutPage}/>
-                            <Route path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
+                            <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

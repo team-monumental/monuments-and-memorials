@@ -1,0 +1,17 @@
+@import "../../theme.scss";
+
+.login {
+    .card-body {
+        min-width: calc(300px + 2.5rem);
+    }
+    .login-form {
+        input, button {
+            margin-bottom: 1rem;
+        }
+    }
+
+    .logo {
+        position: absolute;
+        transform: translate(-40px, -5px);
+    }
+}

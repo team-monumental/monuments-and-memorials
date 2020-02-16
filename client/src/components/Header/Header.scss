@@ -12,10 +12,6 @@
         padding: 2rem;
     }
 
-    .header-icon {
-        object-fit: cover;
-    }
-
     .desktop-links {
         display: none;
         @include media-breakpoint-up(lg) {
@@ -87,11 +83,6 @@
         .login-signup-buttons {
             height: min-content;
         }
-    }
-
-    .header-icon {
-        width: 35px;
-        height: 35px;
     }
 
     .right > * {
