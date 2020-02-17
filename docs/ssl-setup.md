@@ -21,12 +21,6 @@ At this point it's important to make sure that the HTTP (80) and HTTPS (443) por
 
 ![](https://i.imgur.com/QVHiuqe.png)
 
-In order to verify the domain name, we need to disable the port forwarding from 80 to 8080, as this will interfere with certbot. Assuming iptables-persistent is setup correctly, you can just reboot the VM after to restore the configuration.
-
-```bash
-sudo iptables -F -t nat
-```
-
 Then we can run a certbot dry run to make sure everything is working (dry runs have a higher request limit, so if something is wrong you won't hit the request limit on their production server)
 
 ```bash
