@@ -1,0 +1,1 @@
+%monumental   ALL=NOPASSWD: /bin/systemctl start monumental, /bin/systemctl stop monumental, /usr/bin/java

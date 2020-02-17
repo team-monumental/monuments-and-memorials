@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -45,5 +46,10 @@ public class AppConfig {
     @Bean
     public JtsModule jtsModule() {
         return new JtsModule();
+    }
+
+    @Bean
+    public JavaMailSenderImpl mailSender() {
+        return new JavaMailSenderImpl();
     }
 }
