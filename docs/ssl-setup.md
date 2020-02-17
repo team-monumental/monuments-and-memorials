@@ -31,7 +31,7 @@ If all goes well, run the same command without `--dry-run`
 
 ### Step 3: Configure With Spring Boot
 
-We need to convert the created `.pem` certificake into the `pkcs12` format that Spring expects. Leave the password blank.
+We need to convert the created `.pem` certificate into the `pkcs12` format that Spring expects. Leave the password blank.
 
 ```bash
 sudo openssl pkcs12 -export -in /etc/letsencrypt/live/monuments.us.org/fullchain.pem -inkey /etc/letsencrypt/live/monuments.us.org/privkey.pem -out /etc/letsencrypt/live/monuments.us.org/keystore.p12 -name tomcat -CAfile /etc/letsencrypt/live/monuments.us.org/chain.pem -caname root
