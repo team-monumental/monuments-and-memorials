@@ -3,7 +3,8 @@
 !gradle/wrapper/gradle-wrapper.jar
 
 ### SSL ###
-keystore.p12
+*.p12
+*.pem
 
 ### STS ###
 .apt_generated
