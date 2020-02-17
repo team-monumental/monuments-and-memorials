@@ -1,15 +1,20 @@
 package com.monumental.controllers;
 
+import com.google.maps.model.Geometry;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
-import com.monumental.repositories.MonumentRepository;
+import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.util.string.StringHelper;
+import javassist.tools.web.BadHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +29,7 @@ public class SearchController {
     private TagService tagService;
 
     @Autowired
-    private MonumentRepository monumentRepository;
+    private GoogleMapsService googleMapsService;
 
     /**
      * This function lets you search Monuments via a few different request parameters
@@ -89,8 +94,20 @@ public class SearchController {
     }
 
     @GetMapping("/api/search/duplicates")
-    public List<Monument> searchMonuments(@RequestParam(required = true, value = "id") Integer id) {
-        Monument monument = this.monumentRepository.getOne(id);
-        return this.monumentService.findDuplicateMonuments(monument);
+    public List<Monument> searchDuplicates(@RequestParam(value = "title") String title,
+                                           @RequestParam(required = false, value = "lat") Double latitude,
+                                           @RequestParam(required = false, value = "lon") Double longitude,
+                                           @RequestParam(required = false, value = "address") String address) {
+        if (latitude == null && longitude == null && address == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lat AND lon OR address is required");
+        }
+
+        if ((latitude == null || longitude == null) && address != null) {
+            Geometry point = this.googleMapsService.getCoordinatesFromAddress(address);
+            latitude = point.location.lat;
+            longitude = point.location.lng;
+        }
+
+        return this.monumentService.findDuplicateMonuments(title, latitude, longitude);
     }
 }

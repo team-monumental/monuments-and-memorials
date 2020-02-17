@@ -1,14 +1,13 @@
 import React from 'react';
 import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
-
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
-import ContributionAppreciation from "../../components/ContributionAppreciation/ContributionAppreciation";
-import createMonument from "../../actions/create";
+import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
+import createMonument from '../../actions/create';
 import { uploadImagesToS3 } from '../../utils/api-util';
-import Spinner from "../../components/Spinner/Spinner";
-import { withRouter } from "react-router-dom";
 import { Helmet } from 'react-helmet';
+import Spinner from '../../components/Spinner/Spinner';
+import { withRouter } from 'react-router-dom';
 
 /**
  * Root container for the page to create a new Monument
@@ -16,7 +15,10 @@ import { Helmet } from 'react-helmet';
 class CreateMonumentPage extends React.Component {
 
     static mapStateToProps(state) {
-        return state.createPage;
+        return {
+            ...state.createPage,
+            ...state.duplicateMonuments
+        };
     }
 
     handleCreateOrUpdateFormCancelButtonClick() {
@@ -34,16 +36,16 @@ class CreateMonumentPage extends React.Component {
     }
 
     render() {
-        const { createMonumentPending, monument, error } = this.props;
+        const { createMonumentPending, monument, createError, fetchDuplicatesPending } = this.props;
 
-        if (error === null && monument.id !== undefined) {
+        if (createError === null && monument.id !== undefined) {
             this.props.history.push(`/monuments/${monument.id}`);
         }
 
         return (
             <div className="create-page-container">
                 <Helmet title="Create | Monuments and Memorials"/>
-                <Spinner show={createMonumentPending}/>
+                <Spinner show={createMonumentPending || fetchDuplicatesPending}/>
                 <div className="column thank-you-column">
                     <ContributionAppreciation/>
                 </div>

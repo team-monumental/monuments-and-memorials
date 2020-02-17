@@ -1322,25 +1322,18 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Search for any potential "duplicate" Monuments given a Monument
+     * Search for any potential "duplicate" Monuments given a title and coordinates
      * A "duplicate" Monument is defined as one that is within .1 of a mile
      * AND has a similar name
-     * @param monument - Monument to use to search for potential duplicates
-     * @return List<Monument> - List of potential duplicate Monuments given the specified Monument
+     * @param title - Title of the Monument to search against
+     * @param latitude - Latitude of the Monument to search against
+     * @param longitude - Longitude of the Monument to search against
+     * @return List<Monument> - List of potential duplicate Monuments given the specified title and coordinates
      */
-    public List<Monument> findDuplicateMonuments(Monument monument) {
-        if (monument.getTitle() != null && monument.getCoordinates() != null) {
-            List<Monument> duplicatesWithSameMonument = this.search(monument.getTitle(), "1", "25", 0.9,
-                    monument.getLat(), monument.getLon(), .1, null, null, SortType.DISTANCE, null, null, null);
-
-            List<Monument> duplicatesWithoutSameMonument = new ArrayList<>();
-            for (Monument m : duplicatesWithSameMonument) {
-                if (!m.getId().equals(monument.getId())) {
-                    duplicatesWithoutSameMonument.add(m);
-                }
-            }
-
-            return duplicatesWithoutSameMonument;
+    public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude) {
+        if (title != null && latitude != null && longitude != null) {
+            return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
+                    null, null);
         }
 
         return new ArrayList<>();
