@@ -2,7 +2,7 @@ import { FETCH_DUPLICATES_PENDING, FETCH_DUPLICATES_SUCCESS, FETCH_DUPLICATES_ER
 
 const initialState = {
     fetchDuplicatesPending: false,
-    duplicates: [],
+    duplicates: undefined,
     duplicatesError: null
 };
 

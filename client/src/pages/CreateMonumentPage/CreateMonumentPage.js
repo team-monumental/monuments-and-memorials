@@ -8,11 +8,23 @@ import { uploadImagesToS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
 import { withRouter } from 'react-router-dom';
+import fetchDuplicates from '../../actions/duplicates';
+import DuplicateMonuments from '../../components/Monument/DuplicateMonuments/DuplicateMonuments';
 
 /**
  * Root container for the page to create a new Monument
  */
 class CreateMonumentPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showingNoImageModal: false,
+            showingCreateReviewModal: false,
+            showingDuplicateMonuments: false
+        };
+    }
 
     static mapStateToProps(state) {
         return {
@@ -21,18 +33,55 @@ class CreateMonumentPage extends React.Component {
         };
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!prevProps.duplicates && this.props.duplicates) {
+            if (this.props.duplicates.length) {
+                this.setState({showingDuplicateMonuments: true});
+            }
+            else {
+                this.setState({showingNoImageModal: true});
+            }
+        }
+    }
+
     handleCreateOrUpdateFormCancelButtonClick() {
         this.props.history.goBack();
     }
 
-    async handleCreateOrUpdateFormSubmit(form) {
+    handleCreateOrUpdateFormSubmit(form) {
         const { dispatch } = this.props;
+        dispatch(fetchDuplicates(form.title, form.latitude, form.longitude, form.address));
 
         // First, upload the images to S3 and save the URLs in the form
-        form.images = await uploadImagesToS3(form.images);
+        //form.images = await uploadImagesToS3(form.images);
 
         // Then, create the Monument
-        dispatch(createMonument(form));
+        //dispatch(createMonument(form));
+    }
+
+    handleDuplicateMonumentsCancelButtonClick() {
+        this.setState({showingDuplicateMonuments: false});
+    }
+
+    handleDuplicateMonumentsContinueButtonClick() {
+        this.setState({showingDuplicateMonuments: false});
+    }
+
+    renderDuplicateMonuments() {
+        const { duplicates } = this.props;
+        const { showingDuplicateMonuments } = this.state;
+
+        if (showingDuplicateMonuments) {
+            return (
+                <DuplicateMonuments duplicates={duplicates}
+                                    onCancel={() => this.handleDuplicateMonumentsCancelButtonClick()}
+                                    onConfirm={() => this.handleDuplicateMonumentsContinueButtonClick()}
+                                    showing={showingDuplicateMonuments}/>
+            );
+        }
+        else {
+            return <div/>;
+        }
     }
 
     render() {
@@ -55,6 +104,8 @@ class CreateMonumentPage extends React.Component {
                         onSubmit={(form) => this.handleCreateOrUpdateFormSubmit(form)}
                     />
                 </div>
+
+                {this.renderDuplicateMonuments()}
             </div>
         );
     }

@@ -30,8 +30,8 @@ export default function fetchDuplicates(title, latitude, longitude, address) {
         try {
             const queryString = QueryString.stringify({
                 title: title,
-                latitude: latitude,
-                longitude: longitude,
+                lat: latitude,
+                lon: longitude,
                 address: address
             });
 

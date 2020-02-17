@@ -87,8 +87,6 @@ export default class CreateOrUpdateForm extends React.Component {
             newMaterials: [],
             tags: [],
             newTags: [],
-            showingNoImageModal: false,
-            showingCreateReviewModal: false,
             showingUpdateReviewModal: false
         };
 
@@ -675,23 +673,18 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     handleSubmit(event) {
-        const { monument } = this.props;
+        const { monument, onSubmit } = this.props;
 
         event.preventDefault();
 
         this.clearForm(false);
 
         if (this.validateForm()) {
-            if (!this.validateImages()) {
-                this.setState({showingNoImageModal: true});
+            if (!monument) {
+                onSubmit(this.buildCreateForm());
             }
             else {
-                if (!monument) {
-                    this.setState({showingCreateReviewModal: true});
-                }
-                else {
-                    this.setState({showingUpdateReviewModal: true});
-                }
+                onSubmit(this.buildUpdateForm());
             }
         }
     }
