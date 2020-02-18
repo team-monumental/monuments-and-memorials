@@ -12,7 +12,8 @@ export default function duplicateMonuments(state = initialState, action) {
         case FETCH_DUPLICATES_PENDING:
             return {
                 ...state,
-                fetchDuplicatesPending: true
+                fetchDuplicatesPending: true,
+                duplicates: undefined
             };
         case FETCH_DUPLICATES_SUCCESS:
             return {
