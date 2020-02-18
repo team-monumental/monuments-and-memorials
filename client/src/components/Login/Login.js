@@ -94,6 +94,7 @@ export default class Login extends React.Component {
                             <Form.Control
                                 type="text"
                                 name="email"
+                                autocomplete="username"
                                 value={email}
                                 onChange={event => this.handleChange(event)}
                                 minLength="3"
@@ -109,6 +110,7 @@ export default class Login extends React.Component {
                             <Form.Control
                                 type="password"
                                 name="password"
+                                autocomplete="current-password"
                                 value={password}
                                 onChange={event => this.handleChange(event)}
                                 minLength="3"

@@ -57,13 +57,13 @@ function error(action, error) {
     };
 }
 
-export function signup(user, callback) {
+export function signup(user) {
     return async dispatch => {
         dispatch(pending(actions.signup));
         try {
             const result = await post(actions.signup.uri, user);
             dispatch(success(actions.signup, result));
-            dispatch(login(user, callback));
+            dispatch(login(user));
         } catch (err) {
             dispatch(error(actions.signup, err));
         }
