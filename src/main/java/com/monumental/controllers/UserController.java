@@ -34,7 +34,9 @@ public class UserController {
 
     // This is an environment variable that should be set to the public domain name of the server
     // By default this uses the localhost setup, on the VM it should be set to the actual public server domain name
-    @Value("${PUBLIC_URL:http://localhost:8080}")
+    // For localhost, it uses the react dev server url. If you are not using the react dev server you must override
+    // this value to be http://localhost:8080
+    @Value("${PUBLIC_URL:http://localhost:3000}")
     private String publicUrl;
 
     @PostMapping("/api/signup")
