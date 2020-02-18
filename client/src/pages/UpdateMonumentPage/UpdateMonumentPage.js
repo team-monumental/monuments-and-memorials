@@ -8,11 +8,23 @@ import Spinner from '../../components/Spinner/Spinner';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
+import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
 
 /**
  * Root container for the page to update an existing Monument
  */
 class UpdateMonumentPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showingReviewModal: false,
+            monument: undefined,
+            form: undefined,
+            addedImages: []
+        };
+    }
 
     static mapStateToProps(state) {
         return state.updateMonumentPage;
@@ -23,12 +35,9 @@ class UpdateMonumentPage extends React.Component {
         dispatch(fetchMonumentForUpdate(monumentId));
     }
 
-    handleCreateOrUpdateFormCancelButtonClick() {
-        this.props.history.goBack();
-    }
-
-    async handleCreateOrUpdateFormSubmit(id, form) {
+    async submitUpdateForm() {
         const { dispatch } = this.props;
+        const { form, monument } = this.state;
 
         // First, upload the new images to S3 and save the URLs in the form
         form.newImageUrls = await uploadImagesToS3(form.images);
@@ -37,7 +46,34 @@ class UpdateMonumentPage extends React.Component {
         await deleteImagesFromS3(form.deletedImageUrls);
 
         // Finally, update the Monument
-        dispatch(updateMonument(id, form));
+        dispatch(updateMonument(monument.id, form));
+    }
+
+    handleUpdateFormCancelButtonClick() {
+        this.props.history.goBack();
+    }
+
+    handleUpdateFormSubmit(monument, form, addedImages) {
+        this.setState({monument: monument, form: form, addedImages: addedImages, showingReviewModal: true});
+    }
+
+    handleReviewModalCancel() {
+        this.setState({showingReviewModal: false});
+    }
+
+    renderReviewModal() {
+        const { showingReviewModal, monument, form, addedImages } = this.state;
+
+        return (
+            <UpdateReviewModal
+                showing={showingReviewModal}
+                onCancel={() => this.handleReviewModalCancel()}
+                onConfirm={() => this.submitUpdateForm()}
+                oldMonument={monument}
+                newMonument={form}
+                addedImages={addedImages}
+            />
+        );
     }
 
     render() {
@@ -57,10 +93,12 @@ class UpdateMonumentPage extends React.Component {
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         monument={monument}
-                        onCancelButtonClick={() => this.handleCreateOrUpdateFormCancelButtonClick()}
-                        onSubmit={(id, form) => this.handleCreateOrUpdateFormSubmit(id, form)}
+                        onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
+                        onSubmit={(id, form) => this.handleUpdateFormSubmit(id, form)}
                     />
                 </div>
+
+                {this.renderReviewModal()}
             </div>
         );
     }

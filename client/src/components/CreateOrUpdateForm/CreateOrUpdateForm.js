@@ -7,10 +7,7 @@ import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
-import NoImageModal from './NoImageModal/NoImageModal';
-import CreateReviewModal from './ReviewModal/CreateReviewModal/CreateReviewModal';
 import { isEmptyObject } from '../../utils/object-util';
-import UpdateReviewModal from './ReviewModal/UpdateReviewModal/UpdateReviewModal';
 
 /**
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
@@ -86,8 +83,7 @@ export default class CreateOrUpdateForm extends React.Component {
             },
             newMaterials: [],
             tags: [],
-            newTags: [],
-            showingUpdateReviewModal: false
+            newTags: []
         };
 
         this.materialsSelectRef = React.createRef();
@@ -382,16 +378,10 @@ export default class CreateOrUpdateForm extends React.Component {
         return formIsValid;
     }
 
-    validateImages() {
+    validateImagesForUpdate() {
         const { images, imagesForUpdate } = this.state;
-        const { monument } = this.props;
 
-        if (!monument) {
-            return !(!images || !images.length);
-        }
-        else {
-            return (!(!imagesForUpdate || !imagesForUpdate.length)) || (!(!images || !images.length));
-        }
+        return (!(!imagesForUpdate || !imagesForUpdate.length)) || (!(!images || !images.length));
     }
 
     /**
@@ -414,7 +404,8 @@ export default class CreateOrUpdateForm extends React.Component {
             materials: materials.materialObjects.map(material => material.name),
             newMaterials: newMaterials.map(newMaterial => newMaterial.name),
             tags: tags.map(tag => tag.name),
-            newTags: newTags.map(newTag => newTag.name)
+            newTags: newTags.map(newTag => newTag.name),
+            dateSelectValue: dateSelectValue
         };
 
         switch (dateSelectValue) {
@@ -436,14 +427,6 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     /**
-     * Send the form for creating a new Monument to the onSubmit handler
-     */
-    submitCreateForm() {
-        const { onSubmit } = this.props;
-        onSubmit(this.buildCreateForm());
-    }
-
-    /**
      * Build the form object for updating a Monument
      */
     buildUpdateForm() {
@@ -459,7 +442,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newInscription: inscription.value === '' ? undefined : inscription.value,
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
-            images: images
+            images: images,
+            dateSelectValue: dateSelectValue
         };
 
         let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
@@ -674,6 +658,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
     handleSubmit(event) {
         const { monument, onSubmit } = this.props;
+        const { images } = this.state;
 
         event.preventDefault();
 
@@ -684,7 +669,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 onSubmit(this.buildCreateForm());
             }
             else {
-                onSubmit(this.buildUpdateForm());
+                onSubmit(monument, this.buildUpdateForm(), images);
             }
         }
     }
@@ -693,31 +678,6 @@ export default class CreateOrUpdateForm extends React.Component {
         const { onCancelButtonClick } = this.props;
 
         onCancelButtonClick();
-    }
-
-    handleNoImageModalClose() {
-        this.setState({showingNoImageModal: false});
-    }
-
-    handleNoImageModalContinue() {
-        const { monument } = this.props;
-
-        this.setState({showingNoImageModal: false});
-
-        if (!monument) {
-            this.setState({showingCreateReviewModal: true});
-        }
-        else {
-            this.setState({showingUpdateReviewModal: true});
-        }
-    }
-
-    handleCreateReviewModalCancel() {
-        this.setState({showingCreateReviewModal: false});
-    }
-
-    handleUpdateReviewModalCancel() {
-        this.setState({showingUpdateReviewModal: false});
     }
 
     renderReferenceDeleteButton(reference, index) {
@@ -853,8 +813,8 @@ export default class CreateOrUpdateForm extends React.Component {
 
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
-            longitude, year, month, artist, description, inscription, references, imageUploaderKey, showingNoImageModal,
-            materials, showingCreateReviewModal, imagesForUpdate, showingUpdateReviewModal, images } = this.state;
+            longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
+            imagesForUpdate, images } = this.state;
         const { monument } = this.props;
 
         const advancedInformationLink = (
@@ -1210,37 +1170,6 @@ export default class CreateOrUpdateForm extends React.Component {
                         </Button>
                     </ButtonToolbar>
                 </Form>
-
-                <div className="no-image-modal-container">
-                    <NoImageModal
-                        showing={showingNoImageModal}
-                        onClose={() => this.handleNoImageModalClose()}
-                        onCancel={() => this.handleNoImageModalClose()}
-                        onContinue={() => this.handleNoImageModalContinue()}
-                    />
-                </div>
-
-                <div className="create-review-modal-container">
-                    <CreateReviewModal
-                        showing={showingCreateReviewModal}
-                        onCancel={() => this.handleCreateReviewModalCancel()}
-                        onConfirm={() => this.submitCreateForm()}
-                        form={this.buildCreateForm()}
-                        dateSelectValue={dateSelectValue}
-                    />
-                </div>
-
-                <div className="update-review-modal-container">
-                    <UpdateReviewModal
-                        showing={showingUpdateReviewModal}
-                        onCancel={() => this.handleUpdateReviewModalCancel()}
-                        onConfirm={() => this.submitUpdateForm(monument.id)}
-                        oldMonument={monument}
-                        newMonument={this.buildUpdateForm()}
-                        addedImages={images}
-                        dateSelectValue={dateSelectValue}
-                    />
-                </div>
             </div>
         );
     }

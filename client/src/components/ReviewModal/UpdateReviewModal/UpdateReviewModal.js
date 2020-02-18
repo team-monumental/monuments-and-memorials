@@ -2,8 +2,8 @@ import React from 'react';
 import './UpdateReviewModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
-import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
+import { prettyPrintDate, prettyPrintMonth } from '../../../utils/string-util';
+import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
 import Collapse from 'react-bootstrap/Collapse';
 
 /**
@@ -472,7 +472,7 @@ export default class UpdateReviewModal extends React.Component {
 
     renderAttributeUpdates() {
         const { showingUnchangedAttributes } = this.state;
-        const { oldMonument, newMonument, dateSelectValue, addedImages } = this.props;
+        const { oldMonument, newMonument, addedImages } = this.props;
 
         const showUnchangedAttributesLink = (
             <div className="show-unchanged-changes-link"
@@ -516,7 +516,7 @@ export default class UpdateReviewModal extends React.Component {
                 oldMonumentMonth = (parseInt(oldMonumentDateArray[1]) - 1).toString()
             }
 
-            switch(dateSelectValue) {
+            switch(newMonument.dateSelectValue) {
                 case 'year':
                     (oldMonumentYear !== newMonument.newYear) ?
                         changedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, true)) :
