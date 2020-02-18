@@ -131,7 +131,7 @@ sudo cp docs/monumental.service /etc/systemd/system/monumental.service
 sudo systemctl enable monumental.service
 ```
 
-Once your service is created, you will need to edit it and add the SES environment variables
+Once your service is created, you will need to edit it and add the production environment variables
 
 ```bash
 sudo systemctl edit monumental
@@ -143,6 +143,7 @@ This will open a file editor, where you should create the following
 [Service]
 Environment="SES_ACCESS_KEY_ID=<access key>"
 Environment="SES_SECRET_ACCESS_KEY=<access key>"
+Environment="PUBLIC_URL=https://monuments.us.org"
 ```
 
 Next, add rules to the firewall to forward port 443 to port 8443
