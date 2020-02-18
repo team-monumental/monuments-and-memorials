@@ -117,6 +117,12 @@ Change this git config setting to allow pushing to the checked out branch
 git config receive.denyCurrentBranch ignore
 ```
 
+Add your `.env` file to `client/`. It should look like
+
+```
+REACT_APP_GOOGLE_API_KEY=<Google API Client Key>
+```
+
 Run the build so that the server is ready to be run
 
 ```bash
