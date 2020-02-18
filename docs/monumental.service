@@ -5,6 +5,7 @@
 Description=Monuments and Memorials Java/Spring Boot Web Server Service
 
 [Service]
+User=ubuntu
 WorkingDirectory=/home/ubuntu/monuments-and-memorials
 ExecStart=/home/ubuntu/monuments-and-memorials/run.sh
 SuccessExitStatus=143
