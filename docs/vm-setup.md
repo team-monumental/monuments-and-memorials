@@ -131,7 +131,21 @@ sudo cp docs/monumental.service /etc/systemd/system/monumental.service
 sudo systemctl enable monumental.service
 ```
 
-Add rules to the firewall to forward port 443 to port 8443
+Once your service is created, you will need to edit it and add the SES environment variables
+
+```bash
+sudo systemctl edit monumental
+```
+
+This will open a file editor, where you should create the following
+
+```bash
+[Service]
+Environment="SES_ACCESS_KEY_ID=<access key>"
+Environment="SES_SECRET_ACCESS_KEY=<access key>"
+```
+
+Next, add rules to the firewall to forward port 443 to port 8443
 
 ```bash
 sudo iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
@@ -146,7 +160,7 @@ Then install `iptables-persistent`, when it asks if you'd like to save the curre
 sudo apt-get install iptables-persistent
 ```
 
-At this time you should go to the EC2 console, find the security group being used for the instance, and update its inbound port rules, opening ports 80 and 443. **Be sure to keep port 22 open**
+At this time you should go to the EC2 console, find the security group being used for the instance, and update its inbound port rules, opening ports 80 and 443. **Be sure to keep port 22 open**. You may want to open port 8443 here as well so that you can test if the port redirect is working.
 
 ![](https://i.imgur.com/8QkinUy.png)
 
