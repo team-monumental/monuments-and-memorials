@@ -19,7 +19,7 @@ sudo apt-get install certbot
 
 At this point it's important to make sure that the HTTP (80) and HTTPS (443) ports are open in the EC2 security group
 
-![](https://i.imgur.com/QVHiuqe.png)
+![](https://i.imgur.com/8QkinUy.png)
 
 Then we can run a certbot dry run to make sure everything is working (dry runs have a higher request limit, so if something is wrong you won't hit the request limit on their production server)
 
