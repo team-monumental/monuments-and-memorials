@@ -12,6 +12,11 @@ import * as moment from 'moment';
  */
 export default class Search extends React.Component {
 
+    handlePageChange(page) {
+        const { onPageChange } = this.props;
+        onPageChange(page);
+    }
+
     /**
      * Whenever the monuments list changes (in length or at least one id has changed), scroll the search results
      * up to the top, so that we see the first of the new results instead of wherever we might have been
