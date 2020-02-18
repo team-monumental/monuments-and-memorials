@@ -103,14 +103,6 @@ Start by cloning the repository
 git clone https://github.com/team-monumental/monuments-and-memorials.git
 ```
 
-Add this line to the sudoers file so that git can run the build script without sudo. Note that this may not be necessary if using the default `ubuntu` user on EC2 as it doesn't require password authentication for sudo uses anyway
-
-```bash
-sudo visudo
-Under the $admin ALL=(ALL) ALL line add:
-%ubuntu ALL=NOPASSWD: /bin/systemctl start monumental, /bin/systemctl stop monumental, /usr/bin/java
-```
-
 Setup the githook to make the repository build the project when changes are pushed to it
 
 ```bash
@@ -118,6 +110,11 @@ cd monuments-and-memorials
 cp docs/post-receive .git/hooks
 chmod u+rwx .git/hooks/post-receive
 chmod u+rwx run.sh
+```
+
+Change this git config setting to allow pushing to the checked out branch
+```bash
+git config receive.denyCurrentBranch ignore
 ```
 
 Run the build so that the server is ready to be run
