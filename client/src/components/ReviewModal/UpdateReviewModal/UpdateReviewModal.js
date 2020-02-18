@@ -637,7 +637,7 @@ export default class UpdateReviewModal extends React.Component {
 
         if (!unchangedAttributes.length) {
             unchangedAttributes = (
-                <div className='no-attributes-changed-message'>
+                <div className="no-attributes-changed-message">
                     No unchanged attributes!
                 </div>
             );
@@ -682,7 +682,7 @@ export default class UpdateReviewModal extends React.Component {
                         {this.renderAttributeUpdates()}
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className="update-review-modal">
                     <Button
                         variant="danger"
                         onClick={onCancel}

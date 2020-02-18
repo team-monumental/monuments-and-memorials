@@ -16,7 +16,7 @@ export default class NoImageModal extends React.Component {
                 show={showing}
                 onHide={onClose}
             >
-                <Modal.Header closeButton className="no-image-modal">
+                <Modal.Header className="no-image-modal">
                     <Modal.Title>No Images Uploaded</Modal.Title>
                 </Modal.Header>
                 <hr className="no-image-modal"/>

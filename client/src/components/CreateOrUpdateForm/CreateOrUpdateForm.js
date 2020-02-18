@@ -814,7 +814,7 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate, images } = this.state;
+            imagesForUpdate } = this.state;
         const { monument } = this.props;
 
         const advancedInformationLink = (

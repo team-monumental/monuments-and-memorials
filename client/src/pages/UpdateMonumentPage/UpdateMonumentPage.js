@@ -94,7 +94,7 @@ class UpdateMonumentPage extends React.Component {
                     <CreateOrUpdateForm
                         monument={monument}
                         onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
-                        onSubmit={(id, form) => this.handleUpdateFormSubmit(id, form)}
+                        onSubmit={(id, form, addedImages) => this.handleUpdateFormSubmit(id, form, addedImages)}
                     />
                 </div>
 
