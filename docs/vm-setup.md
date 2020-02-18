@@ -161,7 +161,7 @@ At this point, you can restart the service once more
 sudo systemctl restart monumental
 ```
 
-And check if the frontend is visible on port 80. If it's not, try port 8080. If it's visible on 8080 and not 80 then there is a firewall issue. If it's visible on neither, you will need to check if the server is running. You can use `journalctl` to view the services logs. For example, viewing the 100 most recent lines:
+And check if the frontend is visible on port 443. If it's not, try port 8443. If it's visible on 8443 and not 443 then there is a firewall issue. If it's visible on neither, you will need to check if the server is running. You can use `journalctl` to view the services logs. For example, viewing the 100 most recent lines:
 
 ```bash
 sudo journalctl -u monumental.service -n 100
