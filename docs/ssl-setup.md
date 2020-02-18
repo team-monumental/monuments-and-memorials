@@ -60,7 +60,7 @@ sudo systemctl restart monumental
 
 Since this project does not have long term technical support, it's critical that the certificate renew completely automatically.
 
-I have created a bash script, `ssl-renew.sh` in the root of the repository that should be run after certbot's automatic renewal. You may need to modify it slightly if file/path names are different or other changes to the process were made.
+`ssl-renew.sh` in the root of the repository should be run before the certificate expires every three months. You may need to modify it slightly if file/path names are different or other changes to the process were made.
 
 Once you are satisfied with the script, you can test it by changing `sudo certbot renew` to `sudo certbot renew --dry-run`. Then run the script `./ssl-renew` and check that the server's SSL still works when it starts up. Note that this is still using your existing certificate, not a new one, but should be a valid test.
 
