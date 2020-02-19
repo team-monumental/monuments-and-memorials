@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * Class used to configure Beans for the application
@@ -18,9 +18,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class AppConfig {
 
     @Bean
-    public ResourceBundleMessageSource messageSource() {
+    public ResourceBundleMessageSource resourceBundleMessageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasenames("messages/resource");
+        source.setBasenames("messages/resource", "messages/email");
         source.setUseCodeAsDefaultMessage(true);
 
         return source;

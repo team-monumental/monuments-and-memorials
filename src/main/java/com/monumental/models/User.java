@@ -43,7 +43,11 @@ public class User extends Model {
 
     @Column(name = "is_enabled")
     @NotNull
-    private boolean isEnabled = false;
+    private boolean isEnabled = true;
+
+    @Column(name = "is_email_verified")
+    @NotNull
+    private boolean isEmailVerified = false;
 
     public String getFirstName() {
         return this.firstName;
@@ -91,5 +95,13 @@ public class User extends Model {
 
     public void setIsEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public boolean getIsEmailVerified() {
+        return this.isEmailVerified;
+    }
+
+    public void setIsEmailVerified(boolean isEmailVerified) {
+        this.isEmailVerified = isEmailVerified;
     }
 }

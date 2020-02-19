@@ -2,6 +2,10 @@
 /build/
 !gradle/wrapper/gradle-wrapper.jar
 
+### SSL ###
+*.p12
+*.pem
+
 ### STS ###
 .apt_generated
 .classpath

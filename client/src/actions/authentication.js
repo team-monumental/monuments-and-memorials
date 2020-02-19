@@ -1,6 +1,8 @@
 import {
     SIGNUP_ERROR, SIGNUP_PENDING, SIGNUP_SUCCESS,
     LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS,
+    CONFIRM_SIGNUP_ERROR, CONFIRM_SIGNUP_PENDING, CONFIRM_SIGNUP_SUCCESS,
+    RESEND_CONFIRMATION_ERROR, RESEND_CONFIRMATION_PENDING, RESEND_CONFIRMATION_SUCCESS,
     CREATE_SESSION, CLEAR_SESSION
 } from '../constants';
 import { post } from '../utils/api-util';
@@ -17,6 +19,18 @@ const actions = {
         success: LOGIN_SUCCESS,
         error: LOGIN_ERROR,
         uri: '/api/login'
+    },
+    confirm: {
+        pending: CONFIRM_SIGNUP_PENDING,
+        success: CONFIRM_SIGNUP_SUCCESS,
+        error: CONFIRM_SIGNUP_ERROR,
+        uri: '/api/signup/confirm'
+    },
+    resend: {
+        pending: RESEND_CONFIRMATION_PENDING,
+        success: RESEND_CONFIRMATION_SUCCESS,
+        error: RESEND_CONFIRMATION_ERROR,
+        uri: '/api/signup/confirm/resend'
     }
 };
 
@@ -43,13 +57,13 @@ function error(action, error) {
     };
 }
 
-export function signup(user, callback) {
+export function signup(user) {
     return async dispatch => {
         dispatch(pending(actions.signup));
         try {
             const result = await post(actions.signup.uri, user);
             dispatch(success(actions.signup, result));
-            dispatch(login(user, callback));
+            dispatch(login(user));
         } catch (err) {
             dispatch(error(actions.signup, err));
         }
@@ -94,7 +108,7 @@ export function clearUserSession() {
 
 export function getUserSession(callback) {
     return async dispatch => {
-        let res = await fetch('/api/session');
+        const res = await fetch('/api/session');
         if (!res.ok) {
             // User is not authenticated
             return dispatch(createUserSession(null));
@@ -106,11 +120,55 @@ export function getUserSession(callback) {
 
 export function logout(callback) {
     return async dispatch => {
-        let res = await fetch('/api/logout');
+        const res = await fetch('/api/logout');
         if (!res.ok) {
             // Failed to logout, may need to handle this in the future
             return;
         }
         dispatch(clearUserSession());
+    }
+}
+
+export function confirmSignup(token) {
+    return async dispatch => {
+        dispatch(pending(actions.confirm));
+        try {
+            const result = await post(actions.confirm.uri + '?token=' + token);
+            if (result.success) {
+                dispatch({
+                    type: actions.confirm.success,
+                    payload: {
+                        success: true,
+                        error: null
+                    }
+                });
+            } else {
+                dispatch(error(actions.confirm, true));
+            }
+        } catch (err) {
+            dispatch(error(actions.confirm, err.message));
+        }
+    };
+}
+
+export function resendConfirmation(user) {
+    return async dispatch => {
+        dispatch(pending(actions.resend));
+        try {
+            const result = await post(actions.resend.uri, user);
+            if (result.success) {
+                dispatch({
+                    type: actions.resend.success,
+                    payload: {
+                        success: true,
+                        error: null
+                    }
+                });
+            } else {
+                dispatch(error(actions.resend, true));
+            }
+        } catch (err) {
+            dispatch(error(actions.resend, err.message));
+        }
     }
 }
