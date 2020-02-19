@@ -4,14 +4,34 @@
     .card-body {
         min-width: calc(300px + 2.5rem);
     }
+
     .login-form {
         input, button {
             margin-bottom: 1rem;
         }
     }
 
+    .form-group-container {
+        padding: 0 1.25rem;
+    }
+
     .logo {
         position: absolute;
         transform: translate(-40px, -5px);
+    }
+
+    .links-container {
+        display: flex;
+        .link-container {
+            flex-basis: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            &:first-child {
+                border-right: 1px solid rgba(0,0,0,0.1);
+            }
+        }
     }
 }
