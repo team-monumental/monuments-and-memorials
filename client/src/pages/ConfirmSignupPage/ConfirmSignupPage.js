@@ -22,7 +22,6 @@ class ConfirmSignupPage extends React.Component {
     }
 
     initialize() {
-        console.log('init');
         const { dispatch, location: { search }, session } = this.props;
         const params = search && QueryString.parse(search);
 
@@ -30,7 +29,6 @@ class ConfirmSignupPage extends React.Component {
         const resend = params && params.resend;
 
         if (resend) {
-            console.log('resend', session.user);
             if (session.user) {
                 return this.resendConfirmation();
             } else {
@@ -119,13 +117,13 @@ class ConfirmSignupPage extends React.Component {
                     <Card.Body>
                         {error && <>
                             {errorMessage} {session.user && allowResend &&
-                        <Button
-                           variant="link"
-                           className="p-0"
-                           onClick={() => this.beginResendConfirmation()}>
-                            Try sending a new one.
-                        </Button>
-                        }
+                                <Button
+                                   variant="link"
+                                   className="p-0"
+                                   onClick={() => this.beginResendConfirmation()}>
+                                    Try sending a new one.
+                                </Button>
+                            }
                         </>}
                         {success && successMessage}
                     </Card.Body>

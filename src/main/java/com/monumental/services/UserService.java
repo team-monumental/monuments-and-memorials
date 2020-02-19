@@ -9,6 +9,7 @@ import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,6 +37,9 @@ public class UserService extends ModelService<User> {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
+    private String outboundEmailAddress;
 
     public User signup(CreateUserRequest userRequest, String appUrl, Locale locale) throws InvalidEmailOrPasswordException {
         if (this.userRepository.getByEmail(userRequest.getEmail()) != null) {
@@ -77,7 +81,7 @@ public class UserService extends ModelService<User> {
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
-        email.setFrom("noreply@monuments.us.org");
+        email.setFrom(outboundEmailAddress);
         email.setSubject(subject);
         email.setText(message + "\n\n" + confirmationUrl);
         mailSender.send(email);

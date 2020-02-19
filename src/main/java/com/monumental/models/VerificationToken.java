@@ -1,16 +1,14 @@
 package com.monumental.models;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
 @Entity
 public class VerificationToken extends Model {
-    private static final int EXPIRATION = 60 * 24;
 
     @Column(name = "token")
     @NotNull
