@@ -141,7 +141,7 @@ export default class Signup extends React.Component {
                                 <Form.Control
                                     type="email"
                                     name="email"
-                                    autocomplete="username"
+                                    autoComplete="username"
                                     value={email}
                                     onChange={event => this.handleChange(event)}
                                     className="text-control"
@@ -156,7 +156,7 @@ export default class Signup extends React.Component {
                                 <Form.Control
                                     type="password"
                                     name="password"
-                                    autocomplete="new-password"
+                                    autoComplete="new-password"
                                     value={password}
                                     onChange={event => this.handleChange(event)}
                                     minLength="8"
@@ -172,7 +172,7 @@ export default class Signup extends React.Component {
                                 <Form.Control
                                     type="password"
                                     name="matchingPassword"
-                                    autocomplete="new-password"
+                                    autoComplete="new-password"
                                     value={matchingPassword}
                                     onChange={event => this.handleChange(event)}
                                     className="text-control"

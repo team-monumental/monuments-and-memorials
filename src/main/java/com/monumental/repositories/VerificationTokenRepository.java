@@ -10,6 +10,6 @@ public interface VerificationTokenRepository extends JpaRepository<VerificationT
 
     VerificationToken getByToken(String token);
 
-    List<VerificationToken> findAllByUser(User user);
+    List<VerificationToken> findAllByUserAndType(User user, VerificationToken.Type type);
 
 }

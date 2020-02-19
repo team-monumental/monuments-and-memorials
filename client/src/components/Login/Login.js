@@ -72,74 +72,74 @@ export default class Login extends React.Component {
 
     render() {
         const { email, password, validated, errors } = this.state;
-        const { error, warn, onPasswordReset } = this.props;
+        const { error, warn } = this.props;
 
         return (
-            <div className="d-flex flex-column">
-                <Card className="login mb-4">
-                    <Card.Header>
-                        <Card.Title className="text-center">
-                            <Logo size="35px"/>
-                            <span>
-                                Login
-                            </span>
-                        </Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        {warn && <div className="error-message mb-3">
-                            You must log in to view that page.
+            <Card className="login">
+                <Card.Header>
+                    <Card.Title className="text-center">
+                        <Logo size="35px"/>
+                        <span>
+                            Login
+                        </span>
+                    </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                    {warn && <div className="error-message mb-3">
+                        You must log in to view that page.
+                    </div>}
+                    <Form className="login-form" noValidate onSubmit={event => this.handleSubmit(event)}>
+                        <Form.Group>
+                            <Form.Label>Email Address</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="email"
+                                autoComplete="username"
+                                value={email}
+                                onChange={event => this.handleChange(event)}
+                                minLength="3"
+                                className="text-control"
+                                required
+                                noValidate
+                                isInvalid={errors.email && validated}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="password"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={event => this.handleChange(event)}
+                                minLength="3"
+                                className="text-control"
+                                required
+                                noValidate
+                                isInvalid={errors.password && validated}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                        </Form.Group>
+                        {error && <div className="error-message mb-3">
+                            {error}
                         </div>}
-                        <Form className="login-form" noValidate onSubmit={event => this.handleSubmit(event)}>
-                            <Form.Group>
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="email"
-                                    autocomplete="username"
-                                    value={email}
-                                    onChange={event => this.handleChange(event)}
-                                    minLength="3"
-                                    className="text-control"
-                                    required
-                                    noValidate
-                                    isInvalid={errors.email && validated}
-                                />
-                                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    autocomplete="current-password"
-                                    value={password}
-                                    onChange={event => this.handleChange(event)}
-                                    minLength="3"
-                                    className="text-control"
-                                    required
-                                    noValidate
-                                    isInvalid={errors.password && validated}
-                                />
-                                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-                            </Form.Group>
-                            {error && <div className="error-message mb-3">
-                                {error}
-                            </div>}
-                            <Button type="submit" className="w-100">
-                                Log In
-                            </Button>
-                        </Form>
-                        <div className="text-center">
-                            <Button variant="link" className="p-0 mb-2" onClick={() => onPasswordReset()}>Forgot your password?</Button>
-                        </div>
-                        <div className="text-center">
-                            Not a member? <Link to="/signup">
-                                Sign up now
-                            </Link>
-                        </div>
-                    </Card.Body>
-                </Card>
-            </div>
+                        <Button type="submit" className="w-100">
+                            Log In
+                        </Button>
+                    </Form>
+                    <div className="text-center mb-2">
+                        <Link to="/password-reset">
+                            Forgot your password?
+                        </Link>
+                    </div>
+                    <div className="text-center">
+                        Not a member? <Link to="/signup">
+                            Sign up now
+                        </Link>
+                    </div>
+                </Card.Body>
+            </Card>
         )
     }
 }

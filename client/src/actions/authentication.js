@@ -3,7 +3,9 @@ import {
     LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS,
     CONFIRM_SIGNUP_ERROR, CONFIRM_SIGNUP_PENDING, CONFIRM_SIGNUP_SUCCESS,
     RESEND_CONFIRMATION_ERROR, RESEND_CONFIRMATION_PENDING, RESEND_CONFIRMATION_SUCCESS,
-    CREATE_SESSION, CLEAR_SESSION
+    CREATE_SESSION, CLEAR_SESSION,
+    BEGIN_PASSWORD_RESET_ERROR, BEGIN_PASSWORD_RESET_PENDING, BEGIN_PASSWORD_RESET_SUCCESS,
+    FINISH_PASSWORD_RESET_ERROR, FINISH_PASSWORD_RESET_PENDING, FINISH_PASSWORD_RESET_SUCCESS
 } from '../constants';
 import { post } from '../utils/api-util';
 
@@ -31,6 +33,18 @@ const actions = {
         success: RESEND_CONFIRMATION_SUCCESS,
         error: RESEND_CONFIRMATION_ERROR,
         uri: '/api/signup/confirm/resend'
+    },
+    beginPasswordReset: {
+        pending: BEGIN_PASSWORD_RESET_PENDING,
+        success: BEGIN_PASSWORD_RESET_SUCCESS,
+        error: BEGIN_PASSWORD_RESET_ERROR,
+        uri: '/api/reset-password'
+    },
+    finishPasswordReset: {
+        pending: FINISH_PASSWORD_RESET_PENDING,
+        success: FINISH_PASSWORD_RESET_SUCCESS,
+        error: FINISH_PASSWORD_RESET_ERROR,
+        uri: '/api/reset-password/confirm'
     }
 };
 
@@ -169,6 +183,47 @@ export function resendConfirmation(user) {
             }
         } catch (err) {
             dispatch(error(actions.resend, err.message));
+        }
+    }
+}
+
+export function beginPasswordReset(email) {
+    return async dispatch => {
+        dispatch(pending(actions.beginPasswordReset));
+        try {
+            const result = await post(actions.beginPasswordReset.uri + '?email=' + email);
+            dispatch({
+                type: actions.beginPasswordReset.success,
+                payload: {
+                    ...result,
+                    error: null
+                }
+            });
+        } catch (err) {
+            dispatch(error(actions.beginPasswordReset, err.message));
+        }
+    }
+}
+
+export function finishPasswordReset(data) {
+    return async dispatch => {
+        dispatch(pending(actions.finishPasswordReset));
+        try {
+            const result = await post(actions.finishPasswordReset.uri, data);
+            if (result.success) {
+                dispatch({
+                    type: actions.finishPasswordReset.success,
+                    payload: {
+                        ...result,
+                        error: null
+                    }
+                });
+                dispatch(login({email: result.email, password: data.newPassword}));
+            } else {
+                dispatch(error(actions.finishPasswordReset, true));
+            }
+        } catch (err) {
+            dispatch(error(actions.finishPasswordReset, err.message));
         }
     }
 }
