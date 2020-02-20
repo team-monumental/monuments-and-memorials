@@ -10,6 +10,6 @@ public interface VerificationTokenRepository extends JpaRepository<VerificationT
 
     VerificationToken getByToken(String token);
 
-    List<VerificationToken> deleteAllByUserAndType(User user, VerificationToken.Type type);
+    void deleteAllByUserAndType(User user, VerificationToken.Type type);
 
 }
