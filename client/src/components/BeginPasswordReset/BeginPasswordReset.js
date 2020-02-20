@@ -41,16 +41,14 @@ export default class BeginPasswordReset extends React.Component {
 
     handleChange(event) {
         const { errors } = this.state;
-        const { name, value } = event.target;
+        const { value } = event.target;
         if (event.preventDefault) event.preventDefault();
 
-        if (name === 'email') {
-            errors.email = validEmailRegex.test(value)
-                ? ''
-                : 'Email is not valid';
-        }
+        errors.email = validEmailRegex.test(value)
+            ? ''
+            : 'Email is not valid';
 
-        this.setState({errors, [name]: value})
+        this.setState({errors, email: value})
     }
 
     render() {
