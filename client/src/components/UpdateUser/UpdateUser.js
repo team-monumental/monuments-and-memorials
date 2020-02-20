@@ -1,11 +1,11 @@
 import * as React from 'react';
-import './UpdateAccount.scss';
+import './UpdateUser.scss';
 import { Card, Form } from 'react-bootstrap';
 import { validEmailRegex } from '../../utils/string-util';
 import Button from 'react-bootstrap/Button';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
-export class UpdateAccount extends React.Component {
+export class UpdateUser extends React.Component {
 
     constructor(props) {
         super(props);
@@ -79,7 +79,10 @@ export class UpdateAccount extends React.Component {
 
     render() {
         const { email, firstName, lastName, errors, validated } = this.state;
-        const { error, result, history } = this.props;
+        const { error, success, needsConfirmation, history, user } = this.props;
+
+        const hasChanges = (email !== user.email) || (firstName !== user.firstName) || (lastName !== user.lastName);
+
         return (
             <div className="d-flex flex-column align-items-center">
                 <Card className="mb-4">
@@ -87,7 +90,7 @@ export class UpdateAccount extends React.Component {
                         <Card.Title>Update Your Information</Card.Title>
                     </Card.Header>
                     <Card.Body>
-                        {!result &&
+                        {!success &&
                             <Form className="update-account-form" noValidate onSubmit={event => this.handleSubmit(event)}>
                                 <Form.Group>
                                     <Form.Label>First Name</Form.Label>
@@ -135,25 +138,36 @@ export class UpdateAccount extends React.Component {
                                 {error && <div className="error-message mb-3">
                                     {error}
                                 </div>}
-                                <Button type="submit" className="w-100">
+                                <Button type="submit" className="w-100" disabled={!hasChanges}>
                                     Submit
                                 </Button>
                             </Form>
                         }
-                        {result &&
+                        {success && <>
                             <div>
-                                Your information has been updated Successfully.
+                                Your information has been updated successfully.
                             </div>
-                        }
+                            {needsConfirmation && <>
+                                <div className="my-2 needs-confirmation-text">An email has been sent to your new email address with instructions on how to finish changing your email address.</div>
+                                <div>You will now need to log in again with your new email address.</div>
+                            </>}
+                        </>}
                     </Card.Body>
-                    {result &&
+                    {success &&
                         <Card.Footer className="d-flex justify-content-end">
-                            <Button onClick={() => history.goBack()}>
-                                <i className="material-icons">
-                                    arrow_back
-                                </i>
-                                Back
-                            </Button>
+                            {needsConfirmation &&
+                                <Link to="/login" className="btn btn-primary">
+                                    Log In
+                                </Link>
+                            }
+                            {!needsConfirmation &&
+                                <Button onClick={() => history.goBack()}>
+                                    <i className="material-icons">
+                                        arrow_back
+                                    </i>
+                                    Back
+                                </Button>
+                            }
                         </Card.Footer>
                     }
                 </Card>
@@ -162,4 +176,4 @@ export class UpdateAccount extends React.Component {
     }
 }
 
-export default withRouter(UpdateAccount);
+export default withRouter(UpdateUser);

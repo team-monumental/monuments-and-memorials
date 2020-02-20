@@ -101,6 +101,7 @@ export function clearUserSession() {
 export function getUserSession(callback) {
     return async dispatch => {
         const res = await fetch('/api/session');
+        console.log(res);
         if (!res.ok) {
             // User is not authenticated
             return dispatch(createUserSession(null));
@@ -127,7 +128,7 @@ export function confirmSignup(token) {
         try {
             const result = await post(actions.confirm.uri + '?token=' + token);
             if (result.success) {
-                dispatch(success(actions.confirm.success, {success: true}));
+                dispatch(success(actions.confirm, {success: true}));
             } else {
                 dispatch(error(actions.confirm, true));
             }

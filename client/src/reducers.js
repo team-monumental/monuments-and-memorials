@@ -10,13 +10,15 @@ import tagDirectoryPage from './reducers/tagDirectory';
 import aboutPage from './reducers/about-page';
 import { signup, login, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset } from './reducers/authentication';
 import updateMonumentPage from './reducers/update-monument';
+import { updateUser, confirmEmailChange } from './reducers/user';
 
 // These reducers are loaded into redux in index.js
 // New reducers must always be added here or they won't do anything
 const Reducers = {
     toasts, errors, monumentPage, searchPage, mapPage, tagsSearch, tagsLoad, materialsSearch,
     materialsLoad, createPage, bulkCreatePage, tagDirectoryPage, aboutPage, updateMonumentPage,
-    login, signup, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset
+    login, signup, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset,
+    updateUser, confirmEmailChange
 };
 
 export default Reducers;

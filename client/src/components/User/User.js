@@ -1,9 +1,9 @@
 import * as React from 'react';
-import './Account.scss';
+import './User.scss';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export default class Account extends React.Component {
+export default class User extends React.Component {
     render() {
         const { user } = this.props;
         return (
@@ -23,6 +23,18 @@ export default class Account extends React.Component {
                         }
                         <div className="mb-2">
                             Email Address: {user.email}
+                            <div className="mt-2 pl-2 font-italic">
+                                {!user.isEmailVerified && <>
+                                    Your email address is not yet verified. <Link to="/signup/confirm?resend=true">
+                                        Click here
+                                    </Link> to resend the verification email.
+                                </>}
+                                {user.isEmailVerified && <>
+                                    <i className="material-icons text-primary verified-icon">
+                                        check_circle
+                                    </i> Verified
+                                </>}
+                            </div>
                         </div>
                         <div className="mb-2">
                             <Link to="/account/update">

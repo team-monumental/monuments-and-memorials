@@ -2,6 +2,8 @@ package com.monumental.services;
 
 import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
+import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Role;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
@@ -13,9 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -39,8 +47,27 @@ public class UserService extends ModelService<User> {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
     private String outboundEmailAddress;
+
+    public UserDetails getSession() throws UnauthorizedException {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof UserDetails)) {
+            throw new UnauthorizedException();
+        }
+        return (UserDetails) principal;
+    }
+
+    public User getCurrentUser() throws UnauthorizedException {
+        return this.getCurrentUser(this.getSession());
+    }
+
+    public User getCurrentUser(UserDetails session) throws UnauthorizedException {
+        return this.userRepository.getByEmail(session.getUsername());
+    }
 
     public User signup(CreateUserRequest userRequest, String appUrl, Locale locale) throws InvalidEmailOrPasswordException {
         if (this.userRepository.getByEmail(userRequest.getEmail()) != null) {
@@ -59,7 +86,7 @@ public class UserService extends ModelService<User> {
         user.setIsEmailVerified(false);
         this.userRepository.save(user);
 
-        this.sendVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.SIGNUP), appUrl, locale);
+        this.sendSignupVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.EMAIL), appUrl, locale);
 
         return user;
     }
@@ -73,6 +100,23 @@ public class UserService extends ModelService<User> {
         this.sendPasswordResetEmail(user, this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET), appUrl, locale);
     }
 
+    public void invalidateSession(HttpServletRequest request, HttpServletResponse response) {
+        request.getSession().invalidate();
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (!cookie.getName().equals("JSESSIONID")) continue;
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+    }
+
+    public void deleteAllVerificationTokensOfTypeForUser(User user, VerificationToken.Type type) {
+        List<VerificationToken> tokens = this.tokenRepository.findAllByUserAndType(user, type);
+        if (tokens != null && tokens.size() > 0) {
+            this.tokenRepository.deleteAll(tokens);
+        }
+    }
+
     public VerificationToken generateVerificationToken(User user, VerificationToken.Type type) {
         this.tokenRepository.deleteAllByUserAndType(user, type);
         String token = UUID.randomUUID().toString();
@@ -84,7 +128,48 @@ public class UserService extends ModelService<User> {
         return verificationToken;
     }
 
-    public void sendVerificationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
+    public void verifyToken(String token) throws ResourceNotFoundException{
+        VerificationToken verificationToken = this.tokenRepository.getByToken(token);
+
+        if (verificationToken == null) {
+            throw new ResourceNotFoundException("Invalid verification token.");
+        }
+
+        User user = verificationToken.getUser();
+        user.setIsEmailVerified(true);
+        this.userRepository.save(user);
+        this.tokenRepository.delete(verificationToken);
+    }
+
+    public void sendEmailChangeVerificationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
+        String recipientAddress = user.getEmail();
+        String subject = "Verify your Monuments and Memorials email address";
+        String confirmationUrl
+                = appUrl + "/account/update/confirm?token=" + token.getToken();
+        String message = this.messages.getMessage("email-change.begin", null, locale);
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(recipientAddress);
+        email.setFrom(outboundEmailAddress);
+        email.setSubject(subject);
+        email.setText(message + "\n\n" + confirmationUrl);
+        mailSender.send(email);
+    }
+
+    public void sendEmailChangeConfirmationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
+        String recipientAddress = user.getEmail();
+        String subject = "Your Monuments and Memorials email address has been changed";
+        String message = this.messages.getMessage("email-change.begin", null, locale);
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(recipientAddress);
+        email.setFrom(outboundEmailAddress);
+        email.setSubject(subject);
+        email.setText(message);
+        mailSender.send(email);
+    }
+
+    public void sendSignupVerificationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
         String recipientAddress = user.getEmail();
         String subject = "Finish creating your Monuments and Memorials account";
         String confirmationUrl

@@ -22,6 +22,11 @@ export default function basicReducer(state, action, constants) {
                 pending: false,
                 error: action.error
             };
+        case constants.reset:
+            return {
+                pending: false,
+                error: null
+            };
         default:
             return state;
     }

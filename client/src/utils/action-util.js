@@ -28,3 +28,9 @@ export function error(action, error) {
         error
     };
 }
+
+export function reset(action) {
+    return {
+        type: action.reset
+    };
+}

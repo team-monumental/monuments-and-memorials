@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class VerificationToken extends Model {
 
     public enum Type {
-        SIGNUP,
+        EMAIL,
         PASSWORD_RESET
     }
 
