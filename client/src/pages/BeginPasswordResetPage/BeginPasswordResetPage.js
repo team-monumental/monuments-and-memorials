@@ -25,7 +25,7 @@ class BeginPasswordResetPage extends React.Component {
                 {pending && <Spinner show={pending}/>}
                 <BeginPasswordReset onResetPassword={data => this.onSubmit(data)}
                     success={success}
-                    error={error && error.message}/>
+                    error={error}/>
             </div>
         )
     }
