@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.validation.ValidationException;
 import java.util.Map;
 
 @RestController
@@ -93,7 +94,7 @@ public class UserController {
     }
 
     @PostMapping("/api/reset-password/confirm")
-    public Map<String, Object> confirmPasswordReset(@RequestBody PasswordResetRequest resetRequest, WebRequest request) throws ResourceNotFoundException, InvalidEmailOrPasswordException {
+    public Map<String, Object> confirmPasswordReset(@RequestBody PasswordResetRequest resetRequest, WebRequest request) throws ResourceNotFoundException, ValidationException {
         VerificationToken verificationToken = this.tokenRepository.getByToken(resetRequest.getToken());
 
         if (verificationToken == null) {
@@ -105,11 +106,6 @@ public class UserController {
         }
 
         User user = verificationToken.getUser();
-
-        if (!this.passwordEncoder.matches(resetRequest.getPassword(), user.getPassword())) {
-            throw new InvalidEmailOrPasswordException("Invalid password. Please enter your current password.");
-        }
-
         user.setPassword(this.passwordEncoder.encode(resetRequest.getNewPassword()));
         this.userRepository.save(user);
         this.tokenRepository.delete(verificationToken);

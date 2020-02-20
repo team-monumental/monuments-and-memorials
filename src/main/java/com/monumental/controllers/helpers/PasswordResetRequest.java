@@ -4,8 +4,6 @@ public class PasswordResetRequest {
 
     private String token;
 
-    private String password;
-
     private String newPassword;
 
     private String matchingNewPassword;
@@ -16,14 +14,6 @@ public class PasswordResetRequest {
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getNewPassword() {

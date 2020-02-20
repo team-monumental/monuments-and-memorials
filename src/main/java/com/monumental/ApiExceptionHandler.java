@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import javax.validation.ValidationException;
 import java.io.IOException;
 
 /**
@@ -45,6 +46,16 @@ public class ApiExceptionHandler {
     @ExceptionHandler({ InvalidEmailOrPasswordException.class })
     public ResponseEntity<Object> handleInvalidEmailOrPasswordException(InvalidEmailOrPasswordException exception) {
         return handleLoginException(exception);
+    }
+
+    @ExceptionHandler({ ValidationException.class })
+    public ResponseEntity<Object> handleValidationException(ValidationException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,
+                StringHelper.isNullOrEmpty(exception.getMessage()) ?
+                        "Bad Request" :
+                        exception.getMessage()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({ UsernameNotFoundException.class })

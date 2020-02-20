@@ -73,15 +73,8 @@ public class UserService extends ModelService<User> {
         this.sendPasswordResetEmail(user, this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET), appUrl, locale);
     }
 
-    public void deleteAllVerificationTokensOfTypeForUser(User user, VerificationToken.Type type) {
-        List<VerificationToken> tokens = this.tokenRepository.findAllByUserAndType(user, type);
-        if (tokens != null && tokens.size() > 0) {
-            this.tokenRepository.deleteAll(tokens);
-        }
-    }
-
     public VerificationToken generateVerificationToken(User user, VerificationToken.Type type) {
-        this.deleteAllVerificationTokensOfTypeForUser(user, type);
+        this.tokenRepository.deleteAllByUserAndType(user, type);
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);

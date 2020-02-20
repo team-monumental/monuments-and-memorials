@@ -9,7 +9,6 @@ import Spinner from '../../components/Spinner/Spinner';
 class BeginPasswordResetPage extends React.Component {
 
     static mapStateToProps(state) {
-        console.log(state);
         return state.beginPasswordReset;
     }
 

@@ -14,11 +14,9 @@ export class FinishPasswordReset extends React.Component {
             redirect: null,
             validated: false,
             token: null,
-            password: '',
             newPassword: '',
             matchingNewPassword: '',
             errors: {
-                password: '',
                 newPassword: '',
                 matchingNewPassword: ''
             }
@@ -43,7 +41,7 @@ export class FinishPasswordReset extends React.Component {
 
     validateForm(errors) {
         let valid = true;
-        for (let name of ['password', 'newPassword', 'matchingNewPassword']) {
+        for (let name of ['newPassword', 'matchingNewPassword']) {
             this.handleChange({
                 target: {
                     name,
@@ -60,10 +58,10 @@ export class FinishPasswordReset extends React.Component {
 
     handleSubmit(event) {
         const { onResetPassword } = this.props;
-        const { errors, token, password, newPassword, matchingNewPassword } = this.state;
+        const { errors, token, newPassword, matchingNewPassword } = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
-            onResetPassword({token, password, newPassword, matchingNewPassword});
+            onResetPassword({token, newPassword, matchingNewPassword});
         }
     }
 
@@ -73,9 +71,6 @@ export class FinishPasswordReset extends React.Component {
         if (event.preventDefault) event.preventDefault();
 
         switch (name) {
-            case 'password':
-                errors.password = typeof value === 'string' && value.length > 0;
-                break;
             case 'newPassword':
                 errors.newPassword = value.length < 8
                     ? 'Password must be 8 characters long'
@@ -94,7 +89,7 @@ export class FinishPasswordReset extends React.Component {
     }
 
     render() {
-        const { password, newPassword, matchingNewPassword, validated, errors } = this.state;
+        const { newPassword, matchingNewPassword, validated, errors } = this.state;
         const { error, success } = this.props;
 
         return (
@@ -110,22 +105,6 @@ export class FinishPasswordReset extends React.Component {
                 <Card.Body>
                     {!success &&
                         <Form className="password-reset-form" noValidate onSubmit={event => this.handleSubmit(event)}>
-                            <Form.Group>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    autoComplete="current-password"
-                                    value={password}
-                                    onChange={event => this.handleChange(event)}
-                                    minLength="8"
-                                    className="text-control"
-                                    required
-                                    noValidate
-                                    isInvalid={errors.password && validated}
-                                />
-                                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-                            </Form.Group>
                             <Form.Group>
                                 <Form.Label>New Password</Form.Label>
                                 <Form.Control
