@@ -8,8 +8,20 @@ class MapPage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            zoomSize: '5'
+        };
         const { dispatch } = props;
         dispatch(fetchMonuments());
+    }
+
+    componentDidMount() {
+        if (window.innerWidth < 700) {
+            this.setState({zoomSize: 3});
+        }
+        else if (window.innerWidth >= 700 && window.innerWidth < 1600) {
+            this.setState({zoomSize: 4});
+        }
     }
 
     static mapStateToProps(state) {
@@ -24,7 +36,7 @@ class MapPage extends React.Component {
         const { monuments } = this.props;
         return (
             <div className="map-page">
-                <MapResults monuments={monuments} useCircleMarkers zoom="5"/>
+                <MapResults monuments={monuments} useCircleMarkers zoom={this.state.zoomSize}/>
             </div>
         );
     }

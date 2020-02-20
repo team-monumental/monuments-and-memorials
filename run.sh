@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo java -jar build/libs/monuments-and-memorials-0.0.1-SNAPSHOT.jar --server.port=80
+java -jar build/libs/monuments-and-memorials-0.0.1-SNAPSHOT.jar --spring.profiles.active=production

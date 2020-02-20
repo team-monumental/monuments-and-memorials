@@ -1,31 +1,41 @@
 package com.monumental.services;
 
+import com.amazonaws.SdkClientException;
+import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.controllers.helpers.CreateMonumentRequest;
+import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.MonumentTag;
 import com.monumental.models.Tag;
-import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.models.Reference;
+import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
+import com.opencsv.CSVReader;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -45,6 +55,15 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    ReferenceRepository referenceRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
+
+    @Autowired
+    GoogleMapsService googleMapsService;
 
     /**
      * SRID for coordinates
@@ -283,6 +302,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
                                  Integer distance, List<String> tags, List<String> materials, SortType sortType,
                                  Date start, Date end, Integer decade) {
@@ -297,12 +317,16 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         List<Monument> monuments = limit != null
-                                        ? page != null
-                                            ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
-                                            : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-                                        : this.getWithCriteriaQuery(query);
-
-        this.getRelatedRecords(monuments, "images");
+            ? page != null
+                ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+            : this.getWithCriteriaQuery(query);
+        // Cause hibernate to load in the related records
+        for (Monument monument : monuments) {
+            monument.getTags();
+            monument.getMaterials();
+            monument.getImages().size();
+        }
         return monuments;
     }
 
@@ -322,79 +346,6 @@ public class MonumentService extends ModelService<Monument> {
         );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
-    }
-
-    /**
-     * Gets the related records and sets them on the monument objects, using only one extra SQL query
-     * @param monuments Monuments to get related records for - these objects are updated directly using the setter
-     *                  but no database update is called
-     */
-    private void getRelatedRecords(List<Monument> monuments, String fieldName) {
-        if (monuments.size() == 0) return;
-        CriteriaBuilder builder = this.getCriteriaBuilder();
-        CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
-        Root<Monument> root = this.createRoot(query);
-        query.select(root);
-        root.fetch(fieldName, JoinType.LEFT);
-
-        List<Integer> ids = new ArrayList<>();
-        for (Monument monument : monuments) {
-            ids.add(monument.getId());
-        }
-
-        query.where(
-            root.get("id").in(ids)
-        );
-
-        List<Monument> monumentsWithRecords = this.getWithCriteriaQuery(query);
-
-        String capitalizedFieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-
-        // "monumentTags" is a special case because it's a Set, not a List
-        if (fieldName.equals("monumentTags")) {
-            Map<Integer, Set> map = new HashMap<>();
-            for (Monument monument : monumentsWithRecords) {
-                try {
-                    map.put(monument.getId(), (Set) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-
-            for (Monument monument : monuments) {
-                try {
-                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, Set.class).invoke(monument, map.get(monument.getId()));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-        }
-        else {
-            Map<Integer, List> map = new HashMap<>();
-            for (Monument monument : monumentsWithRecords) {
-                try {
-                    map.put(monument.getId(), (List) Monument.class.getDeclaredMethod("get" + capitalizedFieldName).invoke(monument));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use getter: get" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-
-            for (Monument monument : monuments) {
-                try {
-                    Monument.class.getDeclaredMethod("set" + capitalizedFieldName, List.class).invoke(monument, map.get(monument.getId()));
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    System.err.println("Invalid field name: " + fieldName);
-                    System.err.println("Occurred while trying to use setter: set" + capitalizedFieldName);
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     /**
@@ -529,97 +480,11 @@ public class MonumentService extends ModelService<Monument> {
         );
     }
 
-    /**
-     * Create Monument records from the specified List of CSV Strings
-     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
-     * @param preprocessImages - If True, indicates that image pre-processing needs to be done on the CSV row because
-     *                         it originated from a .zip file
-     * @param imageFileNames - List of Strings containing the image filenames to use for image pre-processing
-     * @param zipFile - ZipFile containing the image files to use for image pre-processing
-     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
-     */
-    public BulkCreateResult bulkCreateMonumentsFromCsv(List<String> csvList, boolean preprocessImages,
-                                                       List<String> imageFileNames, ZipFile zipFile) {
-        if (csvList == null) {
-            return null;
-        }
-
-        BulkCreateResult bulkCreateResult = new BulkCreateResult();
-        ArrayList<CsvMonumentConverterResult> validResults = new ArrayList<>();
-        Integer rowNumber = 0;
-
-        for (String csvRow : csvList) {
-            // Increment the rowNumber counter
-            rowNumber++;
-
-            // Do row pre-processing if necessary
-            if (preprocessImages) {
-                if (imageFileNames == null || zipFile == null) {
-                    return null;
-                }
-
-                csvRow = this.preProcessImageForCsvRow(csvRow, imageFileNames, zipFile);
-            }
-
-            try {
-                // Convert the row into a CsvMonumentConverterResult object
-                CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRow(csvRow.strip(), preprocessImages);
-
-                // Validate the result
-                CsvMonumentConverterResult.ValidationResult validationResult = result.validate();
-
-                if (validationResult.isValid()) {
-                    validResults.add(result);
-                }
-                else {
-                    bulkCreateResult.getInvalidCsvMonumentRecordsByRowNumber().put(rowNumber, result.toString());
-                    bulkCreateResult.getInvalidCsvMonumentRecordErrorsByRowNumber().put(rowNumber,
-                            validationResult.getValidationErrors());
-                }
-            } catch (Exception e) {
-                System.out.println("ERROR processing row number: " + rowNumber);
-                System.out.println(e.toString());
-            }
-        }
-
-        int monumentsInsertedCount = 0;
-
-        for (CsvMonumentConverterResult validResult : validResults) {
-            try {
-                // Insert the Monument
-                Monument insertedMonument = monumentRepository.saveAndFlush(validResult.getMonument());
-                bulkCreateResult.getValidMonumentRecords().add(insertedMonument);
-
-                List<Monument> monuments = new ArrayList<>();
-                monuments.add(insertedMonument);
-
-                // Insert all of the Tags associated with the Monument
-                List<String> tagNames = validResult.getTagNames();
-                if (tagNames != null && tagNames.size() > 0) {
-                    for (String tagName : tagNames) {
-                        this.tagService.createTag(tagName, monuments, false);
-                    }
-                }
-
-                // Insert all of the Materials associated with the Monument
-                List<String> materialNames = validResult.getMaterialNames();
-                if (materialNames != null && materialNames.size() > 0) {
-                    for (String materialName : materialNames) {
-                        this.tagService.createTag(materialName, monuments, true);
-                    }
-                }
-
-            } catch (DataIntegrityViolationException e) {
-                // TODO: Determine how duplicate "monument_tag" (join table) records are being inserted
-                // These are disregarded for now - the correct tags are still being created
-            }
-
-            monumentsInsertedCount++;
-        }
-
-        bulkCreateResult.setMonumentsInsertedCount(monumentsInsertedCount);
-
-        return bulkCreateResult;
+    public List<String[]> readCSV(MultipartFile csv) throws IOException {
+        BufferedReader br;
+        InputStream is = csv.getInputStream();
+        br = new BufferedReader(new InputStreamReader(is));
+        return new CSVReader(br).readAll();
     }
 
     /**
@@ -629,23 +494,19 @@ public class MonumentService extends ModelService<Monument> {
      * @throws InvalidZipException - If there is not exactly 1 CSV file in the .zip file
      * @throws IOException - If there are any I/O errors while processing the ZipFile
      */
-    public BulkCreateResult bulkCreateMonumentsFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
+    public List<String[]> readCSVFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
         // Search for CSV files in the .zip file
         // If the number of CSV files found is not exactly 1, error
-        // Also collect of the image filenames in the ZipFile
         int csvFileCount = 0;
         ZipEntry csvEntry = null;
-        List<String> imageFileNames = new ArrayList<>();
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while(zipEntries.hasMoreElements()) {
             ZipEntry zipEntry = zipEntries.nextElement();
+            if (zipEntry.getName().contains("__MACOSX")) continue;
 
             if (CsvFileHelper.isCsvFile(zipEntry.getName())) {
                 csvEntry = zipEntry;
                 csvFileCount++;
-            }
-            else if (ImageFileHelper.isSupportedImageFile(zipEntry.getName())) {
-                imageFileNames.add(zipEntry.getName());
             }
         }
 
@@ -654,51 +515,129 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Get the contents as CSV rows from the CSV file
-        List<String> csvContents = ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
-
-        // Pre-process and process the CSV contents and images
-        BulkCreateResult result = this.bulkCreateMonumentsFromCsv(csvContents, true, imageFileNames, zipFile);
-
-        // Close the ZipFile
-        zipFile.close();
-
-        return result;
+        return ZipFileHelper.readEntireCsvFileFromZipEntry(zipFile, csvEntry);
     }
 
     /**
-     * Perform image pre-processing for the specified csvRow String
-     * If any I/OExceptions occur when trying to read from the ZipFile, the image file path is set to blank
-     * @param csvRow - String representation of the CSV row to pre-process
-     * @param imageFileNames - List of Strings containing the filenames of the images
-     * @param zipFile - ZipFile containing all of the image files
-     * @return String - The modified CSV row with the appropriate image file path
+     * Create Monument records from the specified List of CSV Strings
+     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
+     * @param mapping - Map of the CSV file's fields to our fields
+     * @param zipFile - ZipFile containing the image files to use for image pre-processing
+     * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
-    private String preProcessImageForCsvRow(String csvRow, List<String> imageFileNames, ZipFile zipFile) {
-        String imageFileName = CsvMonumentConverter.getImageFileNameFromCsvRow(csvRow);
+    public MonumentBulkValidationResult validateMonumentCSV(List<String[]> csvList, Map<String, String> mapping,
+                                                            ZipFile zipFile) throws IOException {
+        if (csvList == null) {
+            return null;
+        }
 
-        // If the uploaded .zip file contains the CSV row's image filename, upload the image to S3 and
-        // set the CSV row's image filename column to the S3 Object URL
-        if (imageFileNames.contains(imageFileName)) {
-            // Get the ZipEntry for the Image
-            ZipEntry imageZipEntry = zipFile.getEntry(imageFileName);
-            try {
-                // Convert the ZipEntry into a File object
-                File fileToUpload = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
-                // Upload the File to S3
-                String objectUrl = this.s3Service.storeObject(AwsS3Service.imageBucketName, AwsS3Service.imageFolderName + imageFileName, fileToUpload);
-                // Delete the temp File created
-                fileToUpload.delete();
-                // Set the CSV Row's image filename column to the Object URL
-                return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, objectUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
+        MonumentBulkValidationResult monumentBulkValidationResult = new MonumentBulkValidationResult();
+
+        List<CsvMonumentConverterResult> results = CsvMonumentConverter.convertCsvRows(csvList, mapping, zipFile);
+        for (int i = 0; i < results.size(); i++) {
+            monumentBulkValidationResult.getResults().put(i + 1, results.get(i));
+        }
+
+        if (zipFile != null) {
+            zipFile.close();
+        }
+
+        return monumentBulkValidationResult;
+    }
+
+    /**
+     * SYNCHRONOUSLY bulk create monuments from CSV. Since this method is synchronous, long CSVs could take
+     * a significant amount of time to process and hold up the thread or HTTP request.
+     * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk create behavior
+     * can be tested synchronously
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @return - List of inserted monuments
+     */
+    public List<Monument> bulkCreateMonumentsSync(List<CsvMonumentConverterResult> csvResults) {
+        return this.bulkCreateMonuments(csvResults, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY bulk create monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - CompletableFuture of List of inserted monuments
+     */
+    @Async
+    public CompletableFuture<List<Monument>> bulkCreateMonumentsAsync(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        return CompletableFuture.completedFuture(this.bulkCreateMonuments(csvResults, job));
+    }
+
+    /**
+     * Bulk create monuments from CSV. If job is not null, progress will be reported as the monuments are created.
+     * This method should only be called through MonumentService.bulkCreateMonumentsSync or
+     * AsyncMonumentService.bulkCreateMonumentsAsync
+     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - List of inserted monuments
+     */
+    private List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+        List<Monument> monuments = new ArrayList<>();
+        for (int i = 0; i < csvResults.size(); i++) {
+            CsvMonumentConverterResult result = csvResults.get(i);
+            // In the situation where only the address OR coordinates were specified, populate the missing field
+            this.populateNewMonumentLocation(result.getMonument());
+            // Insert the Monument
+            Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
+            monuments.add(insertedMonument);
+            // Insert all of the Tags associated with the Monument
+            Set<String> tagNames = result.getTagNames();
+            if (tagNames != null && tagNames.size() > 0) {
+                for (String tagName : tagNames) {
+                    this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
+                }
+            }
+
+            // Insert all of the Materials associated with the Monument
+            Set<String> materialNames = result.getMaterialNames();
+            if (materialNames != null && materialNames.size() > 0) {
+                for (String materialName : materialNames) {
+                    this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
+                }
+            }
+
+            List<File> imageFiles = result.getImageFiles();
+            if (imageFiles != null && imageFiles.size() > 0) {
+                String tempDirectoryPath = System.getProperty("java.io.tmpdir");
+                boolean encounteredS3Exception = false;
+                for (int j = 0; j < imageFiles.size(); j++) {
+                    File imageFile = imageFiles.get(j);
+                    // Upload the File to S3
+                    try {
+                        String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
+                        String objectUrl = this.s3Service.storeObject(
+                                AwsS3Service.imageFolderName + name,
+                                imageFile
+                        );
+                        Image image = new Image();
+                        image.setUrl(objectUrl);
+                        image.setMonument(insertedMonument);
+                        image.setIsPrimary(j == 0);
+                        insertedMonument.getImages().add(image);
+                    } catch (SdkClientException e) {
+                        encounteredS3Exception = true;
+                    }
+                    // Delete the temp File created
+                    imageFile.delete();
+                }
+                if (encounteredS3Exception) {
+                    result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
+                }
+            }
+
+            // Report progress
+            if (job != null && i != csvResults.size() - 1) {
+                job.setProgress((double) (i + 1) / csvResults.size());
             }
         }
-        // Otherwise, set the CSV row's image filename column to blank
-        else {
-            return CsvMonumentConverter.setImageFileNameOnCsvRow(csvRow, "");
-        }
+        this.monumentRepository.saveAll(monuments);
+        if (job != null) job.setProgress(1.0);
+        return monuments;
     }
 
     @SuppressWarnings("unchecked")
@@ -793,5 +732,572 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         return statistics;
+    }
+
+    /**
+     * Create a new Monument based on the attributes in the specified CreateMonumentRequest object
+     * @param monumentRequest - The CreateMonumentRequest object to use to create the new Monument
+     * @return Monument - The newly created Monument based on the specified CreateMonumentRequest
+     */
+    public Monument createMonument(CreateMonumentRequest monumentRequest) {
+        if (monumentRequest == null) {
+            return null;
+        }
+
+        Monument createdMonument = new Monument();
+
+        // Set basic String fields
+        this.setBasicFieldsOnMonument(createdMonument, monumentRequest.getTitle(), monumentRequest.getAddress(),
+                monumentRequest.getArtist(), monumentRequest.getDescription(), monumentRequest.getInscription());
+
+        // Set the Coordinates
+        Point point = MonumentService.createMonumentPoint(monumentRequest.getLongitude(),
+                monumentRequest.getLatitude());
+
+        createdMonument.setCoordinates(point);
+
+        // In the situation where only the address OR coordinates were specified, populate the missing field
+        this.populateNewMonumentLocation(createdMonument);
+
+        // Set the Date
+        Date date;
+
+        if (!isNullOrEmpty(monumentRequest.getDate())) {
+            date = MonumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
+        }
+        else {
+            date = MonumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
+        }
+
+        createdMonument.setDate(date);
+
+        // Save the initial Monument
+        createdMonument = this.monumentRepository.save(createdMonument);
+
+        /* References Section */
+        List<Reference> references = new ArrayList<>();
+        if (monumentRequest.getReferences() != null && monumentRequest.getReferences().size() > 0) {
+            references = this.createMonumentReferences(monumentRequest.getReferences(), createdMonument);
+        }
+        createdMonument.setReferences(references);
+
+        /* Images Section */
+        List<Image> images = new ArrayList<>();
+        if (monumentRequest.getImages() != null && monumentRequest.getImages().size() > 0) {
+            images = this.createMonumentImages(monumentRequest.getImages(), createdMonument);
+        }
+        createdMonument.setImages(images);
+
+        List<Monument> createdMonumentList = new ArrayList<>();
+        createdMonumentList.add(createdMonument);
+
+        /* Materials Section */
+        List<Tag> materials = new ArrayList<>();
+        if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
+            for (String materialName : monumentRequest.getMaterials()) {
+                materials.add(this.tagService.createTag(materialName, createdMonumentList, true));
+            }
+        }
+
+        /* New Materials Section */
+        if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
+            for (String newMaterialName : monumentRequest.getNewMaterials()) {
+                materials.add(this.tagService.createTag(newMaterialName, createdMonumentList, true));
+            }
+        }
+
+        createdMonument.setMaterials(materials);
+
+        /* Tags Section */
+        List<Tag> tags = new ArrayList<>();
+        if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
+            for (String tagName : monumentRequest.getTags()) {
+                tags.add(this.tagService.createTag(tagName, createdMonumentList, false));
+            }
+        }
+
+        /* New Tags Section */
+        if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
+            for (String newTagName : monumentRequest.getNewTags()) {
+                tags.add(this.tagService.createTag(newTagName, createdMonumentList, false));
+            }
+        }
+
+        createdMonument.setTags(tags);
+
+        // Save the Monument with the associated References, Images, Materials and Tags
+        createdMonument = this.monumentRepository.save(createdMonument);
+
+        // Load the associated Materials and Tags into memory on the new Monument
+        createdMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), true));
+        createdMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), false));
+
+        return createdMonument;
+    }
+
+    /**
+     * Update the Monument with the specified ID to have the specified attributes
+     * @param id - Integer ID of the Monument to update
+     * @param newMonument - UpdateMonumentRequest object containing the new attributes for the Monument
+     * @return Monument - The Monument with the updated attributes
+     */
+    public Monument updateMonument(Integer id, UpdateMonumentRequest newMonument) {
+        if (id == null || newMonument == null) {
+            return null;
+        }
+
+        Optional<Monument> optionalMonument = this.monumentRepository.findById(id);
+
+        if (optionalMonument.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+
+        Monument currentMonument = optionalMonument.get();
+        this.initializeAllLazyLoadedCollections(currentMonument);
+
+        String oldAddress = currentMonument.getAddress();
+        Point oldCoordinates = currentMonument.getCoordinates();
+
+        // Update basic String fields
+        this.setBasicFieldsOnMonument(currentMonument, newMonument.getNewTitle(), newMonument.getNewAddress(),
+                newMonument.getNewArtist(), newMonument.getNewDescription(), newMonument.getNewInscription());
+
+        // Update the Coordinates
+        Point point = MonumentService.createMonumentPoint(newMonument.getNewLongitude(),
+                newMonument.getNewLatitude());
+        currentMonument.setCoordinates(point);
+
+        // In the situation that the address or coordinates were removed or changed, try to populate them with correct data
+        this.populateUpdatedMonumentLocation(currentMonument, oldAddress, oldCoordinates);
+
+        // Update the Date
+        Date date;
+
+        if (!isNullOrEmpty(newMonument.getNewDate())) {
+            date = MonumentService.createMonumentDateFromJsonDate(newMonument.getNewDate());
+        }
+        else {
+            date = MonumentService.createMonumentDate(newMonument.getNewYear(), newMonument.getNewMonth());
+        }
+
+        currentMonument.setDate(date);
+
+        // Save the current updates
+        currentMonument = this.monumentRepository.save(currentMonument);
+
+        /* References section */
+
+        // Update any current Reference URLs
+        this.updateMonumentReferences(currentMonument, newMonument.getUpdatedReferencesUrlsById());
+
+        // Add any newly created References
+        if (newMonument.getNewReferenceUrls() != null && newMonument.getNewReferenceUrls().size() > 0) {
+            List<Reference> newReferences = this.createMonumentReferences(newMonument.getNewReferenceUrls(), currentMonument);
+
+            // If the Monument has no References, we can just set them
+            if (currentMonument.getReferences() == null || currentMonument.getReferences().size() == 0) {
+                currentMonument.setReferences(newReferences);
+            }
+            // Otherwise, we need to add them to the current List
+            else {
+                currentMonument.getReferences().addAll(newReferences);
+            }
+        }
+
+        // Delete any References
+        this.deleteMonumentReferences(currentMonument, newMonument.getDeletedReferenceIds());
+
+        /* Images section */
+
+        // Add any new Images
+        if (newMonument.getNewImageUrls() != null && newMonument.getNewImageUrls().size() > 0) {
+            List<Image> newImages = this.createMonumentImages(newMonument.getNewImageUrls(), currentMonument);
+
+            // If the Monument does not have any Images, we can just set them
+            if (currentMonument.getImages() == null || currentMonument.getImages().size() == 0) {
+                currentMonument.setImages(newImages);
+            }
+            // Otherwise we need them to add them to the List
+            else {
+                currentMonument.getImages().addAll(newImages);
+            }
+        }
+
+        // Update the primary Image
+        this.updateMonumentPrimaryImage(currentMonument, newMonument.getNewPrimaryImageId());
+
+        // Delete any Images
+        this.deleteMonumentImages(currentMonument, newMonument.getDeletedImageIds());
+
+        // If for some reason the primary Image is deleted, default to the first Image
+        this.resetMonumentPrimaryImage(currentMonument);
+
+        currentMonument = this.monumentRepository.save(currentMonument);
+
+        /* Materials section */
+
+        // Pull all of the current Materials for the currentMonument into memory
+        currentMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(currentMonument.getId(), true));
+
+        // Update the Materials associated with the Monument
+        this.updateMonumentTags(currentMonument, newMonument.getNewMaterials(), true);
+
+        /* Tags section */
+
+        // Pull all of the current Tags for the currentMonument into memory
+        currentMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(currentMonument.getId(), false));
+
+        // Update the Tags associated with the Monument
+        this.updateMonumentTags(currentMonument, newMonument.getNewTags(), false);
+
+        return currentMonument;
+    }
+
+    /**
+     * Create References using the specified referenceUrls and associate them with the specified Monument
+     * @param referenceUrls - List of Strings for the URLs to use for the References
+     * @param monument - Monument to associate the new References with
+     * @return List<Reference> - List of new References with the specified referenceUrls and associated with the
+     * specified Monument
+     */
+    public List<Reference> createMonumentReferences(List<String> referenceUrls, Monument monument) {
+        if (referenceUrls == null || monument == null) {
+            return null;
+        }
+
+        List<Reference> references = new ArrayList<>();
+
+        for (String referenceUrl : referenceUrls) {
+            if (!isNullOrEmpty(referenceUrl)) {
+                Reference reference = new Reference(referenceUrl);
+                reference.setMonument(monument);
+
+                reference = this.referenceRepository.save(reference);
+
+                references.add(reference);
+            }
+        }
+
+        return references;
+    }
+
+    /**
+     * Create Images using the specified imageUrls and associate them with the specified Monument
+     * @param imageUrls - List of Strings for the URLs to use for the Images
+     * @param monument - Monument to associate the new Images with
+     * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
+     */
+    public List<Image> createMonumentImages(List<String> imageUrls, Monument monument) {
+        if (imageUrls == null || monument == null) {
+            return null;
+        }
+
+        List<Image> images = new ArrayList<>();
+        int imagesCount = 0;
+
+        if (monument.getImages() != null && monument.getImages().size() > 0) {
+            for (Image image : monument.getImages()) {
+                if (image.getIsPrimary()) {
+                    imagesCount = monument.getImages().size();
+                    break;
+                }
+            }
+        }
+
+        for (String imageUrl : imageUrls) {
+            if (!isNullOrEmpty(imageUrl)) {
+                imagesCount++;
+                boolean isPrimary = imagesCount == 1;
+
+                Image image = new Image(imageUrl, isPrimary);
+                image.setMonument(monument);
+                image = this.imageRepository.save(image);
+                images.add(image);
+            }
+        }
+
+        return images;
+    }
+
+    /**
+     * Sets the basic String fields on a specified Monument to the specified values
+     * @param monument - The Monument object to set the fields on
+     * @param title - String for the title of the Monument. Cannot be null or empty
+     * @param address - String for the address of the Monument
+     * @param artist - String for the artist of the Monument
+     * @param description - String for the description of the Monument
+     * @param inscription - String for the inscription of the Monument
+     * @throws IllegalArgumentException - If the specified title is null or empty
+     */
+    public void setBasicFieldsOnMonument(Monument monument, String title, String address, String artist,
+                                         String description, String inscription) {
+        if (monument != null) {
+            if (isNullOrEmpty(title)) {
+                throw new IllegalArgumentException("Monument can not have a null or empty title");
+            }
+
+            monument.setTitle(title);
+            monument.setAddress(address);
+            monument.setArtist(artist);
+            monument.setDescription(description);
+            monument.setInscription(inscription);
+        }
+    }
+
+    /**
+     * Update the specified Monument's References to have the new Reference URLs specified
+     * @param monument - Monument to update the associated References on
+     * @param newReferenceUrlsById - Map of Reference ID to new Reference URL to use for updating
+     */
+    public void updateMonumentReferences(Monument monument, Map<Integer, String> newReferenceUrlsById) {
+        if (monument != null && monument.getReferences() != null && newReferenceUrlsById != null &&
+                monument.getReferences().size() > 0 && newReferenceUrlsById.size() > 0) {
+            for (Reference currentReference : monument.getReferences()) {
+                if (newReferenceUrlsById.containsKey(currentReference.getId())) {
+                    currentReference.setUrl(newReferenceUrlsById.get(currentReference.getId()));
+                    this.referenceRepository.save(currentReference);
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete the specified Monument's References based on the specified IDs
+     * @param monument - Monument whose associated References to delete
+     * @param deletedReferenceIds - List of Reference IDs to delete and remove from the Monument
+     */
+    public void deleteMonumentReferences(Monument monument, List<Integer> deletedReferenceIds) {
+        if (monument != null && deletedReferenceIds != null && deletedReferenceIds.size() > 0) {
+            for (Integer referenceId : deletedReferenceIds) {
+                this.referenceRepository.deleteById(referenceId);
+            }
+
+            // Since the References may be loaded on the Monument, we need to remove them
+            if (monument.getReferences() != null) {
+                List<Reference> newReferences = new ArrayList<>();
+                for (Reference currentReference : monument.getReferences()) {
+                    if (currentReference.getId() != null && !deletedReferenceIds.contains(currentReference.getId())) {
+                        newReferences.add(currentReference);
+                    }
+                }
+                monument.setReferences(newReferences);
+            }
+        }
+    }
+
+    /**
+     * Updates the specified Monument's primary Image to be the Image with the specified ID
+     * @param monument - Monument whose primary Image to update
+     * @param newPrimaryImageId - ID of the Image to make the primary Image
+     */
+    public void updateMonumentPrimaryImage(Monument monument, Integer newPrimaryImageId) {
+        if (monument != null && newPrimaryImageId != null) {
+            Optional<Image> optionalImage = this.imageRepository.findById(newPrimaryImageId);
+
+            if (optionalImage.isPresent()) {
+                Image image = optionalImage.get();
+                image.setIsPrimary(true);
+                this.imageRepository.save(image);
+
+                // Set all of the other Images to not be the primary
+                if (monument.getImages() != null && monument.getImages().size() > 0) {
+                    for (Image currentImage : monument.getImages()) {
+                        if (currentImage.getId() != null && !currentImage.getId().equals(newPrimaryImageId)) {
+                            currentImage.setIsPrimary(false);
+                            this.imageRepository.save(currentImage);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete the specified Monument's Images based on the specified Image IDs
+     * @param monument - Monument whose Images are to be deleted
+     * @param deletedImageIds - List of IDs of the Images to delete
+     */
+    public void deleteMonumentImages(Monument monument, List<Integer> deletedImageIds) {
+        if (monument != null && deletedImageIds != null && deletedImageIds.size() > 0) {
+            for (Integer imageId : deletedImageIds) {
+                this.imageRepository.deleteById(imageId);
+            }
+
+            // Since the Images may be loaded onto the Monument, we need to remove them before we save
+            if (monument.getImages() != null) {
+                List<Image> newImages = new ArrayList<>();
+                for (Image currentImage : monument.getImages()) {
+                    if (currentImage.getId() != null && !deletedImageIds.contains(currentImage.getId())) {
+                        newImages.add(currentImage);
+                    }
+                }
+                monument.setImages(newImages);
+            }
+        }
+    }
+
+    /**
+     * Sets the primary Image for the Monument to the first Image if it doesn't have a primary Image
+     * @param monument - Monument to reset the primary Image for
+     */
+    public void resetMonumentPrimaryImage(Monument monument) {
+        if (monument != null && monument.getImages() != null && monument.getImages().size() > 0) {
+            boolean primaryImageFound = false;
+            for (Image currentImage : monument.getImages()) {
+                if (currentImage.getIsPrimary()) {
+                    primaryImageFound = true;
+                    break;
+                }
+            }
+
+            if (!primaryImageFound) {
+                monument.getImages().get(0).setIsPrimary(true);
+                this.imageRepository.save(monument.getImages().get(0));
+            }
+        }
+    }
+
+    /**
+     * Updates the Tags/Materials associated with the specified Monument to be the Tags/Materials with the specified
+     * names
+     * Note that any Tags/Materials that were previously associated with the Monument and are NOT in the newTagNames
+     * List will be un-associated from the Monument
+     * @param monument - Monument to update the associated Tags/Materials for
+     * @param newTagNames - List of the new Tag/Material names to associate with the Monument
+     * @param areMaterials - True if the newTagNames holds a list of Material names, False otherwise
+     */
+    public void updateMonumentTags(Monument monument, List<String> newTagNames, boolean areMaterials) {
+        if (monument != null && newTagNames != null) {
+            List<Monument> monuments = new ArrayList<>();
+            monuments.add(monument);
+
+            // Get the names of the current Tags/Materials associated with the Monument
+            List<String> currentTagNames = new ArrayList<>();
+            List<Tag> currentTags = areMaterials ? monument.getMaterials() : monument.getTags();
+
+            for (Tag currentTag : currentTags) {
+                currentTagNames.add(currentTag.getName());
+            }
+
+            // Associate any Tags/Materials with the Monument that weren't already associated
+            List<Tag> newTags = new ArrayList<>();
+            for (String newTagName : newTagNames) {
+                if (!currentTagNames.contains(newTagName)) {
+                    newTags.add(this.tagService.createTag(newTagName, monuments, areMaterials));
+                }
+            }
+
+            // Un-associate any Tags/Materials from the Monument that were associated previously and no longer are
+            for (Tag currentTag : currentTags) {
+                if (!newTagNames.contains(currentTag.getName())) {
+                    this.tagService.removeTagFromMonument(currentTag, monument);
+                }
+                else {
+                    newTags.add(currentTag);
+                }
+            }
+
+            if (areMaterials) {
+                monument.setMaterials(newTags);
+            }
+            else {
+                monument.setTags(newTags);
+            }
+        }
+    }
+
+    /**
+     * Populates the address or coordinates for the specified Monument, if necessary
+     * We always want Monument records to have coordinates and an address
+     * @param monument - Monument to populate the location fields for
+     */
+    public void populateNewMonumentLocation(Monument monument) {
+        // If the Monument has no address, do a reverse geocode
+        if (monument.getAddress() == null && monument.getCoordinates() != null) {
+            String address = this.googleMapsService.getAddressFromCoordinates(monument.getLat(), monument.getLon());
+            if (address != null) {
+                monument.setAddress(address);
+            }
+        }
+        // Otherwise if the Monument has no coordinates, do a geocode
+        else if (monument.getCoordinates() == null && monument.getAddress() != null) {
+            com.google.maps.model.Geometry geometry = this.googleMapsService.getCoordinatesFromAddress(monument.getAddress());
+            if (geometry != null) {
+                monument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
+            }
+        }
+    }
+
+    /**
+     * Populates the address and coordinates field on a Monument being updated, if necessary
+     * We always want Monument records to have coordinates and an address
+     * @param newMonument - Monument containing the new, updated fields
+     * @param oldAddress - String containing the Monument's old address
+     * @param oldCoordinates - Point containing the Monument's old coordinates
+     */
+    public void populateUpdatedMonumentLocation(Monument newMonument, String oldAddress, Point oldCoordinates) {
+        this.populateUpdatedMonumentAddress(newMonument, oldAddress, oldCoordinates);
+        this.populateUpdatedMonumentCoordinates(newMonument, oldCoordinates, oldAddress);
+    }
+
+    /**
+     * Populates the address field on a Monument being updated, if necessary
+     * @param newMonument - Monument containing the new, updated fields
+     * @param oldAddress - String containing the Monument's old address
+     * @param oldCoordinates - Point containing the Monument's old coordinates
+     */
+    private void populateUpdatedMonumentAddress(Monument newMonument, String oldAddress, Point oldCoordinates) {
+        // If the new Monument has an address, no need to reverse geocode
+        if (newMonument.getAddress() != null) {
+            return;
+        }
+
+        // If the new Monument has no coordinates, we can't reverse geocode
+        if (newMonument.getCoordinates() == null) {
+            return;
+        }
+
+        // If the coordinates match, set the address on the new Monument
+        if (oldCoordinates != null && newMonument.getCoordinates().equals(oldCoordinates)) {
+            newMonument.setAddress(oldAddress);
+            return;
+        }
+
+        // Perform reverse geocoding
+        String address = this.googleMapsService.getAddressFromCoordinates(newMonument.getLat(), newMonument.getLon());
+        if (address != null) {
+            newMonument.setAddress(address);
+        }
+    }
+
+    /**
+     * Populates the coordinates field on a Monument being updated, if necessary
+     * We always want Monument records to have coordinates and an address
+     * @param newMonument - Monument containing the new, updated fields
+     * @param oldCoordinates - Point containing the Monument's old coordinates
+     * @param oldAddress - String containing the Monument's old address
+     */
+    private void populateUpdatedMonumentCoordinates(Monument newMonument, Point oldCoordinates, String oldAddress) {
+        // If the new Monument has coordinates, no need to geocode
+        if (newMonument.getCoordinates() != null) {
+            return;
+        }
+
+        // If the new Monument has no address, we can't geocode
+        if (newMonument.getAddress() == null) {
+            return;
+        }
+
+        // If the addresses match, set the coordinates on the new record
+        if (newMonument.getAddress().equals(oldAddress)) {
+            newMonument.setCoordinates(oldCoordinates);
+            return;
+        }
+
+        // Perform geocode
+        com.google.maps.model.Geometry geometry = this.googleMapsService.getCoordinatesFromAddress(newMonument.getAddress());
+        if (geometry != null) {
+            newMonument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
+        }
     }
 }

@@ -1,0 +1,5 @@
+export const Roles = {
+    COLLABORATOR: 'COLLABORATOR',
+    PARTNER: 'PARTNER',
+    RESEARCHER: 'RESEARCHER'
+};

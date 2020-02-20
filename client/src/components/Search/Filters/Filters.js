@@ -57,6 +57,7 @@ class Filters extends React.Component {
                 this.handleFilterChange('decade', value);
                 break;
             case 'range':
+            default:
                 const [ startDate, endDate ] = value;
                 await this.handleFilterChange('start', moment(startDate).format('YYYY-MM-DD'));
                 this.handleFilterChange('end', moment(endDate).format('YYYY-MM-DD'));

@@ -51,7 +51,7 @@ public class Monument extends Model implements Serializable {
     private String inscription;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "monument")
     private Set<MonumentTag> monumentTags;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

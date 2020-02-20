@@ -1,0 +1,52 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+#welcome-page-body {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .card.card {
+    text-align: center;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: 80%;
+    }
+  }
+}
+
+#home-page-title {
+  font-size: 1.35em;
+
+  @include media-breakpoint-up(md) {
+    font-size: 2em;
+  }
+}
+
+#home-page-image {
+  width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+
+  @include media-breakpoint-down(sm) {
+    background-image: url('/home_page_mobile_image.jpg');
+    height: 30vh;
+  }
+
+  @include media-breakpoint-up(sm) {
+    background-image: url('/home_page_large_image.jpg');
+
+    @include media-breakpoint-up(md) {
+      height: 30vh;
+    }
+
+    @include media-breakpoint-up(lg) {
+      height: 60vh;
+    }
+  }
+}

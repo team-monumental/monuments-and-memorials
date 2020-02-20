@@ -1,6 +1,7 @@
 @import "../../../node_modules/bootstrap/scss/functions";
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
 
 .header {
     display: flex;
@@ -9,10 +10,6 @@
     padding: 1rem;
     @include media-breakpoint-up(lg) {
         padding: 2rem;
-    }
-
-    .header-icon {
-        object-fit: cover;
     }
 
     .desktop-links {
@@ -33,6 +30,7 @@
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: center;
+        height: 100%;
     }
 
     .location-search, .text-search {
@@ -68,6 +66,7 @@
 
     .left {
         flex: 20%;
+        white-space: nowrap;
     }
 
     .center {
@@ -80,11 +79,10 @@
         flex: 20%;
         display: flex;
         justify-content: flex-end;
-    }
-
-    .header-icon {
-        width: 35px;
-        height: 35px;
+        align-items: center;
+        .login-signup-buttons {
+            height: min-content;
+        }
     }
 
     .right > * {
@@ -114,7 +112,7 @@
         line-height: 21px;
     }
 
-    .header-link:hover, .header-link.active, .btn-link-secondary:hover {
-        color: #42b883;
+    .header-link:hover, .header-link.active {
+        color: $primary;
     }
 }

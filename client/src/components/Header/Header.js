@@ -4,8 +4,11 @@ import { NavLink } from 'react-router-dom';
 import {Button, Modal} from 'react-bootstrap';
 import SearchBar from './SearchBar/SearchBar';
 import CheeseburgerMenu from 'cheeseburger-menu'
+import Logo from '../Logo/Logo';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
 
     links = [
         {name: 'Home', route: '/', exact: true},
@@ -23,6 +26,10 @@ export default class Header extends React.Component {
         this.resize = this.resize.bind(this);
     }
 
+    static mapStateToProps(state) {
+        return {session: state.session};
+    }
+
     componentDidMount() {
         this.props.onRender(this.divRef.clientHeight);
         window.addEventListener("resize", this.resize.bind(this));
@@ -34,6 +41,7 @@ export default class Header extends React.Component {
     }
 
     render() {
+        const { session, onLogout } = this.props;
         let headerLinks = this.links.map(link =>
             <NavLink onClick={e => {
                 e.preventDefault();
@@ -44,7 +52,7 @@ export default class Header extends React.Component {
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
                 <div className="left">
-                    <img className="header-icon" src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo"/>
+                    <Logo size="35px"/>
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
@@ -65,7 +73,7 @@ export default class Header extends React.Component {
                     {window.innerWidth < 768 && <>
                         <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
                             <Modal.Header closeButton>
-                                <img className="header-icon" src={process.env.PUBLIC_URL + '/MM-logo-rev-3.png'} alt="Monuments and Memorials Logo" width="35px" height="35px"/>
+                                <Logo size="35px"/>
                             </Modal.Header>
                             <Modal.Body>
                                 <SearchBar onCloseModal={() => {
@@ -78,10 +86,19 @@ export default class Header extends React.Component {
 
                 <div className="right">
                     {/* Desktop */}
-                    {window.innerWidth >= 992 && <>
-                        <Button size="sm" variant="link-secondary">Log in</Button>
-                        <Button size="sm">Sign up</Button>
-                    </>}
+                    {window.innerWidth >= 992 && <div className="login-signup-buttons">
+                        {!session.pending && <>
+                            {session.user &&
+                                <Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">
+                                    Log out
+                                </Button>
+                            }
+                            {!session.user && <>
+                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap">Log in</Link>
+                                <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
+                            </>}
+                        </>}
+                    </div>}
                     {/* Mobile */}
                     {window.innerWidth < 768 && <>
                         <Button variant="link-secondary" className="search-icon" onClick={() => this.setState({isSearchModalOpen: true})}>
@@ -105,8 +122,13 @@ export default class Header extends React.Component {
                                     )}
                                 </div>
                                 <hr/>
-                                <li><Button size="sm" variant="link-secondary" className="p-0">Log in</Button></li>
-                                <li><Button size="sm" variant="link-secondary" className="p-0">Sign up</Button></li>
+                                {session.user &&
+                                    <li><Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">Log out</Button></li>
+                                }
+                                {!session.user && <>
+                                    <li><Link to="/login" className="btn btn-sm btn-link-secondary p-0">Log in</Link></li>
+                                    <li><Link to="/signup" className="btn btn-sm btn-link-secondary p-0">Sign up</Link></li>
+                                </>}
                             </ul>
                         </CheeseburgerMenu>
                     </>}
@@ -115,3 +137,5 @@ export default class Header extends React.Component {
         );
     }
 }
+
+export default connect(Header.mapStateToProps)(Header);
