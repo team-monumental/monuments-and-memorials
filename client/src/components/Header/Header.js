@@ -41,11 +41,11 @@ class Header extends React.Component {
     }
 
     render() {
-        const { session, onLogout } = this.props;
+        const { session, onLogout, history } = this.props;
         let headerLinks = this.links.map(link =>
             <NavLink onClick={e => {
                 e.preventDefault();
-                window.location.replace(link.route);
+                history.push(link.route);
             }} to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
         );
         return (
@@ -96,9 +96,9 @@ class Header extends React.Component {
                                     <div className="mx-2 spacer">
                                         |
                                     </div>
-                                    <Link to="/account" className="btn btn-sm btn-link-secondary p-0">
+                                    <NavLink to="/account" className="header-link" activeClassName="active">
                                         My Account
-                                    </Link>
+                                    </NavLink>
                                 </div>
                             }
                             {!session.user && <>

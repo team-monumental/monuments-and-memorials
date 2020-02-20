@@ -53,6 +53,13 @@ public class UserService extends ModelService<User> {
     @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
     private String outboundEmailAddress;
 
+    // This is an environment variable that should be set to the public domain name of the server
+    // By default this uses the localhost setup, on the VM it should be set to the actual public server domain name
+    // For localhost, it uses the react dev server url. If you are not using the react dev server you must override
+    // this value to be http://localhost:8080
+    @Value("${PUBLIC_URL:http://localhost:3000}")
+    private String publicUrl;
+
     public UserDetails getSession() throws UnauthorizedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserDetails)) {
@@ -69,7 +76,7 @@ public class UserService extends ModelService<User> {
         return this.userRepository.getByEmail(session.getUsername());
     }
 
-    public User signup(CreateUserRequest userRequest, String appUrl, Locale locale) throws InvalidEmailOrPasswordException {
+    public User signup(CreateUserRequest userRequest) throws InvalidEmailOrPasswordException {
         if (this.userRepository.getByEmail(userRequest.getEmail()) != null) {
             throw new InvalidEmailOrPasswordException("Email address already in use.");
         }
@@ -86,18 +93,18 @@ public class UserService extends ModelService<User> {
         user.setIsEmailVerified(false);
         this.userRepository.save(user);
 
-        this.sendSignupVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.EMAIL), appUrl, locale);
+        this.sendSignupVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.EMAIL));
 
         return user;
     }
 
-    public void resetPassword(String email, String appUrl, Locale locale) {
+    public void resetPassword(String email) {
         User user = this.userRepository.getByEmail(email);
         // Note: This is a security feature. We don't want the password reset form to tell everyone what email addresses are registered
         if (user == null) {
             return;
         }
-        this.sendPasswordResetEmail(user, this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET), appUrl, locale);
+        this.sendPasswordResetEmail(user, this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET));
     }
 
     public void invalidateSession(HttpServletRequest request, HttpServletResponse response) {
@@ -128,7 +135,7 @@ public class UserService extends ModelService<User> {
         return verificationToken;
     }
 
-    public void verifyToken(String token) throws ResourceNotFoundException{
+    public VerificationToken verifyToken(String token) throws ResourceNotFoundException{
         VerificationToken verificationToken = this.tokenRepository.getByToken(token);
 
         if (verificationToken == null) {
@@ -139,76 +146,47 @@ public class UserService extends ModelService<User> {
         user.setIsEmailVerified(true);
         this.userRepository.save(user);
         this.tokenRepository.delete(verificationToken);
+        return verificationToken;
     }
 
-    public void sendEmailChangeVerificationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
-        String recipientAddress = user.getEmail();
-        String subject = "Verify your Monuments and Memorials email address";
-        String confirmationUrl
-                = appUrl + "/account/update/confirm?token=" + token.getToken();
-        String message = this.messages.getMessage("email-change.begin", null, locale);
-
+    private void sendEmail(String recipientAddress, String name) {
+        this.sendEmail(recipientAddress, name, "");
+    }
+    
+    private void sendEmail(String recipientAddress, String name, String extraMessage) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
         email.setFrom(outboundEmailAddress);
-        email.setSubject(subject);
-        email.setText(message + "\n\n" + confirmationUrl);
+        email.setSubject(this.messages.getMessage(name + ".subject", null, Locale.getDefault()));
+        email.setText(this.messages.getMessage(name + ".body", null, Locale.getDefault()) + extraMessage);
         mailSender.send(email);
     }
 
-    public void sendEmailChangeConfirmationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
-        String recipientAddress = user.getEmail();
-        String subject = "Your Monuments and Memorials email address has been changed";
-        String message = this.messages.getMessage("email-change.begin", null, locale);
-
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setFrom(outboundEmailAddress);
-        email.setSubject(subject);
-        email.setText(message);
-        mailSender.send(email);
+    public void sendEmailChangeVerificationEmail(User user, VerificationToken token) {
+        this.sendEmail(
+            user.getEmail(),
+            "email-change.begin",
+            "\n\n" + this.publicUrl + "/account/update/confirm?token=" + token.getToken()
+        );
     }
 
-    public void sendSignupVerificationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
-        String recipientAddress = user.getEmail();
-        String subject = "Finish creating your Monuments and Memorials account";
-        String confirmationUrl
-                = appUrl + "/signup/confirm?token=" + token.getToken();
-        String message = this.messages.getMessage("registration.success", null, locale);
-
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setFrom(outboundEmailAddress);
-        email.setSubject(subject);
-        email.setText(message + "\n\n" + confirmationUrl);
-        mailSender.send(email);
+    public void sendSignupVerificationEmail(User user, VerificationToken token) {
+        this.sendEmail(
+            user.getEmail(),
+            "registration.success",
+            "\n\n" + this.publicUrl + "/signup/confirm?token=" + token.getToken()
+        );
     }
 
-    public void sendPasswordResetEmail(User user, VerificationToken token, String appUrl, Locale locale) {
-        String recipientAddress = user.getEmail();
-        String subject = "Reset your Monuments and Memorials password";
-        String confirmationUrl
-                = appUrl + "/password-reset/confirm?token=" + token.getToken();
-        String message = this.messages.getMessage("password-reset.begin", null, locale);
-
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setFrom(outboundEmailAddress);
-        email.setSubject(subject);
-        email.setText(message + "\n\n" + confirmationUrl);
-        mailSender.send(email);
+    public void sendPasswordResetEmail(User user, VerificationToken token) {
+        this.sendEmail(
+            user.getEmail(),
+            "password-reset.begin",
+            "\n\n" +     this.publicUrl + "/password-reset/confirm?token=" + token.getToken()
+        );
     }
 
-    public void sendPasswordResetCompleteEmail(User user, String appUrl, Locale locale) {
-        String recipientAddress = user.getEmail();
-        String subject = "Your Monuments and Memorials password has been reset";
-        String message = this.messages.getMessage("password-reset.success", null, locale);
-
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setFrom(outboundEmailAddress);
-        email.setSubject(subject);
-        email.setText(message);
-        mailSender.send(email);
+    public void sendPasswordResetCompleteEmail(User user) {
+        this.sendEmail(user.getEmail(), "password-reset.success");
     }
 }

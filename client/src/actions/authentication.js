@@ -138,13 +138,13 @@ export function confirmSignup(token) {
     };
 }
 
-export function resendConfirmation(user) {
+export function resendConfirmation(user, signup) {
     return async dispatch => {
         dispatch(pending(actions.resend));
         try {
-            const result = await post(actions.resend.uri, user);
+            const result = await post(actions.resend.uri + '?signup=' + signup, user);
             if (result.success) {
-                dispatch(success(actions.resend.success, {success: true}));
+                dispatch(success(actions.resend, {success: true}));
             } else {
                 dispatch(error(actions.resend, true));
             }
@@ -159,7 +159,7 @@ export function beginPasswordReset(email) {
         dispatch(pending(actions.beginPasswordReset));
         try {
             const result = await post(actions.beginPasswordReset.uri + '?email=' + email);
-            dispatch(success(actions.beginPasswordReset.success, result));
+            dispatch(success(actions.beginPasswordReset, result));
         } catch (err) {
             dispatch(error(actions.beginPasswordReset, err.message));
         }
@@ -172,7 +172,7 @@ export function finishPasswordReset(data) {
         try {
             const result = await post(actions.finishPasswordReset.uri, data);
             if (result.success) {
-                dispatch(success(actions.finishPasswordReset.success, result));
+                dispatch(success(actions.finishPasswordReset, result));
                 dispatch(login({email: result.email, password: data.newPassword}));
             } else {
                 dispatch(error(actions.finishPasswordReset, true));

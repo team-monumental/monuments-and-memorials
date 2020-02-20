@@ -29,7 +29,11 @@ export function updateUser(user) {
             const result = await put(actions.update.uri, user);
             if (result.success) {
                 dispatch(success(actions.update, result));
-                dispatch(getUserSession());
+                // Get the user session again so that it has up to date info
+                // If the email address was changed, don't get the session as it will log the user out prematurely
+                if (!result.needsConfirmation) {
+                    dispatch(getUserSession());
+                }
             } else {
                 dispatch(error(actions.update, true));
             }

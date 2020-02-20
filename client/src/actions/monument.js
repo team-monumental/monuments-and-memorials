@@ -51,7 +51,7 @@ export default function fetchMonument(id) {
             dispatch(pending(actions.nearby));
             try {
                 const nearbyMonuments = await get(`/api/search/monuments/?${queryString}`);
-                dispatch(success(actions.success, nearbyMonuments));
+                dispatch(success(actions.nearby, nearbyMonuments));
             } catch (err) {
                 dispatch(error(actions.nearby, err));
             }
