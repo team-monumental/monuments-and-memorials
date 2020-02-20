@@ -18,9 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ValidationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ValidationException;
 import java.util.Map;
 
 @RestController
@@ -97,7 +97,7 @@ public class UserController {
 
     @PutMapping("/api/user")
     @PreAuthorize("isAuthenticated()")
-    public Map<String, Boolean> updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws UnauthorizedException {
+    public Map<String, Boolean> updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws UnauthorizedException, ValidationException {
         User currentUser = this.userService.getCurrentUser();
         if (!user.getId().equals(currentUser.getId()) && !currentUser.getRole().equals(Role.RESEARCHER)) {
             throw new UnauthorizedException("You do not have permission to update that user.");
