@@ -7,7 +7,7 @@ import {
     BEGIN_PASSWORD_RESET_ERROR, BEGIN_PASSWORD_RESET_PENDING, BEGIN_PASSWORD_RESET_SUCCESS,
     FINISH_PASSWORD_RESET_ERROR, FINISH_PASSWORD_RESET_PENDING, FINISH_PASSWORD_RESET_SUCCESS
 } from '../constants';
-import basicReducer from '../utils/basicReducer';
+import basicReducer from '../utils/basic-reducer';
 
 const signupInitialState = {
     pending: false,

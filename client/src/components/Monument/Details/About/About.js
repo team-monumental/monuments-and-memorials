@@ -142,7 +142,9 @@ export default class About extends React.Component {
 
         return (
             <Card className="mt-4">
-                <Card.Title>About</Card.Title>
+                <Card.Header>
+                    <Card.Title>About</Card.Title>
+                </Card.Header>
                 <Card.Body>
                     <div className="detail-list">
                         {title}

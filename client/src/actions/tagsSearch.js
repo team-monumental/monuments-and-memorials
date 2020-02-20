@@ -7,108 +7,100 @@ import {
 import * as QueryString from 'query-string';
 import { get } from '../utils/api-util';
 import { addError } from './errors';
+import { pending, success, error } from '../utils/action-util';
 
-function searchPending(isMaterial) {
-    return {
-        type: isMaterial ? MATERIALS_SEARCH_PENDING : TAGS_SEARCH_PENDING
-    };
-}
-
-function searchSuccess(isMaterial, searchResults) {
-    return {
-        type: isMaterial ? MATERIALS_SEARCH_SUCCESS : TAGS_SEARCH_SUCCESS,
-        payload: {searchResults}
-    };
-}
-
-function searchError(isMaterial, error) {
-    return {
-        type: isMaterial ? MATERIALS_SEARCH_ERROR : TAGS_SEARCH_ERROR,
-        error: error
-    };
-}
+const actions = {
+    materials: {
+        search: {
+            pending: MATERIALS_SEARCH_PENDING,
+            success: MATERIALS_SEARCH_SUCCESS,
+            error: MATERIALS_SEARCH_ERROR,
+            isMaterial: true
+        },
+        load: {
+            pending: MATERIALS_LOAD_PENDING,
+            success: MATERIALS_LOAD_SUCCESS,
+            error: MATERIALS_LOAD_ERROR,
+            isMaterial: true
+        }
+    },
+    tags: {
+        search: {
+            pending: TAGS_SEARCH_PENDING,
+            success: TAGS_SEARCH_SUCCESS,
+            error: TAGS_SEARCH_ERROR,
+            isMaterial: false
+        },
+        load: {
+            pending: TAGS_LOAD_PENDING,
+            success: TAGS_LOAD_SUCCESS,
+            error: TAGS_LOAD_ERROR,
+            isMaterial: false
+        }
+    }
+};
 
 export function searchTags(queryString) {
-    return search(false, queryString);
+    return search(actions.tags.search, queryString);
 }
 
 export function searchMaterials(queryString) {
-    return search(true, queryString);
+    return search(actions.materials.search, queryString);
 }
 
-function search(isMaterial, queryString) {
+function search(action, queryString) {
     return async dispatch => {
-        dispatch(searchPending(isMaterial));
+        dispatch(pending(action));
         try {
             const tags = await get(`/api/search/tags/?${
                 QueryString.stringify({
                     q: queryString,
-                    materials: isMaterial
+                    materials: action.isMaterial
                 })
             }`);
-            dispatch(searchSuccess(isMaterial, tags));
-        } catch (error) {
-            dispatch(searchError(isMaterial, error));
+            dispatch(success(action, {searchResults: tags}));
+        } catch (err) {
+            dispatch(error(action, err));
             dispatch(addError({
-                message: error.message
+                message: err.message
             }));
         }
     }
 }
 
 export function clearTagSearchResults() {
-    return clearSearchResults(false);
+    return clearSearchResults(actions.tags.search);
 }
 
 export function clearMaterialSearchResults() {
-    return clearSearchResults(true);
+    return clearSearchResults(actions.materials.search);
 }
 
-function clearSearchResults(isMaterial) {
-    return searchSuccess(isMaterial, []);
-}
-
-function loadPending(isMaterial) {
-    return {
-        type: isMaterial ? MATERIALS_LOAD_PENDING : TAGS_LOAD_PENDING
-    };
-}
-
-function loadSuccess(isMaterial, selectedTags) {
-    return {
-        type: isMaterial ? MATERIALS_LOAD_SUCCESS : TAGS_LOAD_SUCCESS,
-        payload: {selectedTags}
-    };
-}
-
-function loadError(isMaterial, error) {
-    return {
-        type: isMaterial ? MATERIALS_LOAD_ERROR : TAGS_LOAD_ERROR,
-        error: error
-    };
+function clearSearchResults(action) {
+    return success(action, []);
 }
 
 export function loadTags(names) {
-    return load(false, names);
+    return load(actions.tags.load, names);
 }
 
 export function loadMaterials(names) {
-    return load(true, names);
+    return load(actions.materials.load, names);
 }
 
-function load(isMaterial, names) {
+function load(action, names) {
     return async dispatch => {
-        dispatch(loadPending(isMaterial));
+        dispatch(pending(action));
         try {
             const tags = await get(`/api/tags/?${QueryString.stringify({
                 names: names,
-                materials: isMaterial
+                materials: action.isMaterial
             })}`, {arrayFormat: 'comma'});
-            dispatch(loadSuccess(isMaterial, tags));
-        } catch (error) {
-            dispatch(loadError(isMaterial, error));
+            dispatch(success(action, {selectedTags: tags}));
+        } catch (err) {
+            dispatch(error(action, err));
             dispatch(addError({
-                message: error.message
+                message: err.message
             }));
         }
     }

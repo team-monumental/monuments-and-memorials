@@ -241,9 +241,11 @@ export default class BulkCreateForm extends React.Component {
 
         return (
             <Card className="bulk-create-form-container">
-                <Card.Title>
-                    Bulk Create Monuments and Memorials
-                </Card.Title>
+                <Card.Header>
+                    <Card.Title>
+                        Bulk Create Monuments and Memorials
+                    </Card.Title>
+                </Card.Header>
                 {!showFieldMapping && !showValidationResults && <>
                     {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}

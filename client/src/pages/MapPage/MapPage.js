@@ -26,7 +26,7 @@ class MapPage extends React.Component {
 
     static mapStateToProps(state) {
         if (state.mapPage) {
-            const { monuments } = state.mapPage;
+            const monuments = state.mapPage.monuments;
             if (monuments.error || monuments.errors) return {};
         }
         return state.mapPage;

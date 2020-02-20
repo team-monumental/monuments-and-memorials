@@ -25,6 +25,8 @@ import { getUserSession, logout } from './actions/authentication';
 import ConfirmSignupPage from './pages/ConfirmSignupPage/ConfirmSignupPage';
 import BeginPasswordResetPage from './pages/BeginPasswordResetPage/BeginPasswordResetPage';
 import FinishPasswordResetPage from './pages/FinishPasswordResetPage/FinishPasswordResetPage';
+import AccountPage from './pages/AccountPage/AccountPage';
+import UpdateAccountPage from './pages/UpdateAccountPage/UpdateAccountPage';
 
 class App extends React.Component {
 
@@ -69,6 +71,8 @@ class App extends React.Component {
                             <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                             <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
                             <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>
+                            <Route exact path="/account" component={AccountPage}/>
+                            <Route exact path="/account/update" component={UpdateAccountPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

@@ -89,9 +89,17 @@ class Header extends React.Component {
                     {window.innerWidth >= 992 && <div className="login-signup-buttons">
                         {!session.pending && <>
                             {session.user &&
-                                <Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">
-                                    Log out
-                                </Button>
+                                <div className="d-flex">
+                                    <Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">
+                                        Log out
+                                    </Button>
+                                    <div className="mx-2 spacer">
+                                        |
+                                    </div>
+                                    <Link to="/account" className="btn btn-sm btn-link-secondary p-0">
+                                        My Account
+                                    </Link>
+                                </div>
                             }
                             {!session.user && <>
                                 <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap">Log in</Link>

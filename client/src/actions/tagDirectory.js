@@ -2,36 +2,25 @@ import {
     TAG_DIRECTORY_FETCH_TAGS_PENDING, TAG_DIRECTORY_FETCH_TAGS_SUCCESS, TAG_DIRECTORY_FETCH_TAGS_ERROR
 } from '../constants';
 import { get } from '../utils/api-util';
+import { pending, success, error } from '../utils/action-util';
 
-function fetchTagsPending() {
-    return {
-        type: TAG_DIRECTORY_FETCH_TAGS_PENDING
-    };
-}
-
-function fetchTagsSuccess(tags) {
-    return {
-        type: TAG_DIRECTORY_FETCH_TAGS_SUCCESS,
-        payload: tags
-    };
-}
-
-function fetchTagsError(error) {
-    return {
-        type: TAG_DIRECTORY_FETCH_TAGS_ERROR,
-        error: error
-    };
-}
+const actions = {
+    fetch: {
+        pending: TAG_DIRECTORY_FETCH_TAGS_PENDING,
+        success: TAG_DIRECTORY_FETCH_TAGS_SUCCESS,
+        error: TAG_DIRECTORY_FETCH_TAGS_ERROR,
+        uri: '/api/tags'
+    }
+};
 
 export default function fetchTags() {
     return async dispatch => {
-        dispatch(fetchTagsPending());
-
+        dispatch(pending(actions.fetch));
         try {
-            const tags = await get('/api/tags');
-            dispatch(fetchTagsSuccess(tags));
-        } catch (error) {
-            dispatch(fetchTagsError(error));
+            const tags = await get(actions.fetch.uri);
+            dispatch(success(actions.fetch, tags));
+        } catch (err) {
+            dispatch(error(actions.fetch, err));
         }
     };
 }

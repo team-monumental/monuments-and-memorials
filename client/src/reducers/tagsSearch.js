@@ -4,7 +4,7 @@ import {
     MATERIALS_SEARCH_PENDING, MATERIALS_SEARCH_SUCCESS, MATERIALS_SEARCH_ERROR,
     MATERIALS_LOAD_PENDING, MATERIALS_LOAD_ERROR, MATERIALS_LOAD_SUCCESS
 } from '../constants';
-import basicReducer from '../utils/basicReducer';
+import basicReducer from '../utils/basic-reducer';
 
 const searchInitialState = {
     pending: false,

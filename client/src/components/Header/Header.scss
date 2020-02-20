@@ -115,4 +115,9 @@
     .header-link:hover, .header-link.active {
         color: $primary;
     }
+
+    .spacer {
+        font-family: 'Open Sans', sans-serif;
+        transform: translateY(1px);
+    }
 }
