@@ -24,13 +24,11 @@ export default class SearchResult extends React.Component {
             <div className="search-result">
                 <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
                 <Card>
-                    <Card.Header>
-                        <Card.Title>
-                            <a href={'/monuments/' + monument.id}>
-                                {title}
-                            </a>
-                        </Card.Title>
-                    </Card.Header>
+                    <Card.Title>
+                        <a href={'/monuments/' + monument.id}>
+                            {title}
+                        </a>
+                    </Card.Title>
                     <Card.Body>
                         <Address monument={monument}/>
                         <Tags tags={tags}/>
