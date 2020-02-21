@@ -16,6 +16,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -58,23 +59,34 @@ public class UserService extends ModelService<User> {
         user.setIsEmailVerified(false);
         this.userRepository.save(user);
 
-        this.sendVerificationEmail(user, this.generateVerificationToken(user), appUrl, locale);
+        this.sendVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.SIGNUP), appUrl, locale);
 
         return user;
     }
 
-    public VerificationToken generateVerificationToken(User user) {
+    public void resetPassword(String email, String appUrl, Locale locale) {
+        User user = this.userRepository.getByEmail(email);
+        // Note: This is a security feature. We don't want the password reset form to tell everyone what email addresses are registered
+        if (user == null) {
+            return;
+        }
+        this.sendPasswordResetEmail(user, this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET), appUrl, locale);
+    }
+
+    public VerificationToken generateVerificationToken(User user, VerificationToken.Type type) {
+        this.tokenRepository.deleteAllByUserAndType(user, type);
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
+        verificationToken.setType(type);
         this.tokenRepository.save(verificationToken);
         return verificationToken;
     }
 
     public void sendVerificationEmail(User user, VerificationToken token, String appUrl, Locale locale) {
         String recipientAddress = user.getEmail();
-        String subject = "Registration Confirmation";
+        String subject = "Finish creating your Monuments and Memorials account";
         String confirmationUrl
                 = appUrl + "/signup/confirm?token=" + token.getToken();
         String message = this.messages.getMessage("registration.success", null, locale);
@@ -84,6 +96,34 @@ public class UserService extends ModelService<User> {
         email.setFrom(outboundEmailAddress);
         email.setSubject(subject);
         email.setText(message + "\n\n" + confirmationUrl);
+        mailSender.send(email);
+    }
+
+    public void sendPasswordResetEmail(User user, VerificationToken token, String appUrl, Locale locale) {
+        String recipientAddress = user.getEmail();
+        String subject = "Reset your Monuments and Memorials password";
+        String confirmationUrl
+                = appUrl + "/password-reset/confirm?token=" + token.getToken();
+        String message = this.messages.getMessage("password-reset.begin", null, locale);
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(recipientAddress);
+        email.setFrom(outboundEmailAddress);
+        email.setSubject(subject);
+        email.setText(message + "\n\n" + confirmationUrl);
+        mailSender.send(email);
+    }
+
+    public void sendPasswordResetCompleteEmail(User user, String appUrl, Locale locale) {
+        String recipientAddress = user.getEmail();
+        String subject = "Your Monuments and Memorials password has been reset";
+        String message = this.messages.getMessage("password-reset.success", null, locale);
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(recipientAddress);
+        email.setFrom(outboundEmailAddress);
+        email.setSubject(subject);
+        email.setText(message);
         mailSender.send(email);
     }
 }

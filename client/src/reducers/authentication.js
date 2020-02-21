@@ -3,7 +3,9 @@ import {
     LOGIN_ERROR, LOGIN_PENDING, LOGIN_SUCCESS,
     CONFIRM_SIGNUP_PENDING, CONFIRM_SIGNUP_SUCCESS, CONFIRM_SIGNUP_ERROR,
     RESEND_CONFIRMATION_PENDING, RESEND_CONFIRMATION_SUCCESS, RESEND_CONFIRMATION_ERROR,
-    CREATE_SESSION, CLEAR_SESSION
+    CREATE_SESSION, CLEAR_SESSION,
+    BEGIN_PASSWORD_RESET_ERROR, BEGIN_PASSWORD_RESET_PENDING, BEGIN_PASSWORD_RESET_SUCCESS,
+    FINISH_PASSWORD_RESET_ERROR, FINISH_PASSWORD_RESET_PENDING, FINISH_PASSWORD_RESET_SUCCESS
 } from '../constants';
 import basicReducer from '../utils/basicReducer';
 
@@ -82,5 +84,27 @@ export function resendConfirmation(state = resendInitialState, action) {
         pending: RESEND_CONFIRMATION_PENDING,
         success: RESEND_CONFIRMATION_SUCCESS,
         error: RESEND_CONFIRMATION_ERROR
+    });
+}
+
+const resetPasswordInitialState = {
+    pending: false,
+    success: null,
+    error: null
+};
+
+export function beginPasswordReset(state = resetPasswordInitialState, action) {
+    return basicReducer(state, action, {
+        pending: BEGIN_PASSWORD_RESET_PENDING,
+        success: BEGIN_PASSWORD_RESET_SUCCESS,
+        error: BEGIN_PASSWORD_RESET_ERROR
+    });
+}
+
+export function finishPasswordReset(state = resetPasswordInitialState, action) {
+    return basicReducer(state, action, {
+        pending: FINISH_PASSWORD_RESET_PENDING,
+        success: FINISH_PASSWORD_RESET_SUCCESS,
+        error: FINISH_PASSWORD_RESET_ERROR
     });
 }

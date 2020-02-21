@@ -3,12 +3,14 @@ package com.monumental.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
 
 @Entity
 public class VerificationToken extends Model {
+
+    public enum Type {
+        SIGNUP,
+        PASSWORD_RESET
+    }
 
     @Column(name = "token")
     @NotNull
@@ -20,16 +22,10 @@ public class VerificationToken extends Model {
     @NotNull
     private User user;
 
-    @Column(name = "expiry_date")
+    @Column(name = "type")
     @NotNull
-    private Date expiryDate;
-
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Timestamp(cal.getTime().getTime()));
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
-    }
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     public String getToken() {
         return this.token;
@@ -47,11 +43,11 @@ public class VerificationToken extends Model {
         this.user = user;
     }
 
-    public Date getExpiryDate() {
-        return this.expiryDate;
+    public Type getType() {
+        return this.type;
     }
 
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setType(Type type) {
+        this.type = type;
     }
 }

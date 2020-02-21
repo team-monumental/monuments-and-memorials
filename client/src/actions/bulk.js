@@ -62,7 +62,7 @@ function doAction(action, form, isAsyncJob) {
                         result = await (await fetch(`/api/monument/bulk/${action}/progress/${jobId}`)).json();
                         dispatch(pending(action, result.progress));
 
-                        if (result.future.done) resolve();
+                        if (result.future && result.future.done) resolve();
                     }, 200);
                 });
                 window.clearInterval(interval);

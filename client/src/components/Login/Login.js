@@ -94,7 +94,7 @@ export default class Login extends React.Component {
                             <Form.Control
                                 type="text"
                                 name="email"
-                                autocomplete="username"
+                                autoComplete="username"
                                 value={email}
                                 onChange={event => this.handleChange(event)}
                                 minLength="3"
@@ -110,7 +110,7 @@ export default class Login extends React.Component {
                             <Form.Control
                                 type="password"
                                 name="password"
-                                autocomplete="current-password"
+                                autoComplete="current-password"
                                 value={password}
                                 onChange={event => this.handleChange(event)}
                                 minLength="3"
@@ -127,10 +127,17 @@ export default class Login extends React.Component {
                         <Button type="submit" className="w-100">
                             Log In
                         </Button>
-                        <div>
-                            Not a member? <Link to="/signup">Sign up now</Link>
-                        </div>
                     </Form>
+                    <div className="text-center mb-2">
+                        <Link to="/password-reset">
+                            Forgot your password?
+                        </Link>
+                    </div>
+                    <div className="text-center">
+                        Not a member? <Link to="/signup">
+                            Sign up now
+                        </Link>
+                    </div>
                 </Card.Body>
             </Card>
         )

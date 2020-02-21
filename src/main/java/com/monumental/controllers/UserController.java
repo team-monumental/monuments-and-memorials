@@ -1,6 +1,7 @@
 package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.CreateUserRequest;
+import com.monumental.controllers.helpers.PasswordResetRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -14,10 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.List;
+import javax.validation.ValidationException;
 import java.util.Map;
 
 @RestController
@@ -31,6 +33,9 @@ public class UserController {
 
     @Autowired
     VerificationTokenRepository tokenRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     // This is an environment variable that should be set to the public domain name of the server
     // By default this uses the localhost setup, on the VM it should be set to the actual public server domain name
@@ -72,17 +77,45 @@ public class UserController {
 
     @PostMapping("/api/signup/confirm/resend")
     public Map<String, Boolean> resendConfirmation(@RequestBody User user, WebRequest request) {
-        List<VerificationToken> tokens = this.tokenRepository.findAllByUser(user);
-        if (tokens != null && tokens.size() > 0) {
-            this.tokenRepository.deleteAll(tokens);
-        }
         User connectedUser = this.userRepository.getOne(user.getId());
         this.userService.sendVerificationEmail(
             connectedUser,
-            this.userService.generateVerificationToken(connectedUser),
+            this.userService.generateVerificationToken(connectedUser, VerificationToken.Type.SIGNUP),
             this.publicUrl,
             request.getLocale()
         );
         return Map.of("success", true);
+    }
+
+    @PostMapping("/api/reset-password")
+    public Map<String, Boolean> resetPassword(@RequestParam String email, WebRequest request) {
+        this.userService.resetPassword(email, publicUrl, request.getLocale());
+        return Map.of("success", true);
+    }
+
+    @PostMapping("/api/reset-password/confirm")
+    public Map<String, Object> confirmPasswordReset(@RequestBody PasswordResetRequest resetRequest, WebRequest request) throws ResourceNotFoundException, ValidationException {
+        VerificationToken verificationToken = this.tokenRepository.getByToken(resetRequest.getToken());
+
+        if (verificationToken == null) {
+            throw new ResourceNotFoundException("Invalid verification token.");
+        }
+
+        if (!resetRequest.getNewPassword().equals(resetRequest.getMatchingNewPassword())) {
+            throw new InvalidEmailOrPasswordException("Passwords must match.");
+        }
+
+        User user = verificationToken.getUser();
+        user.setPassword(this.passwordEncoder.encode(resetRequest.getNewPassword()));
+        this.userRepository.save(user);
+        this.tokenRepository.delete(verificationToken);
+
+        this.userService.sendPasswordResetCompleteEmail(
+            user,
+            this.publicUrl,
+            request.getLocale()
+        );
+
+        return Map.of("success", true, "email", user.getEmail());
     }
 }

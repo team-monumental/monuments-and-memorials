@@ -37,7 +37,10 @@ class LoginPage extends React.Component {
         }
         return (
             <div className="page d-flex justify-content-center mt-5">
-                <Login onLogin={data => this.onLogin(data)} result={result} error={error && error.message} warn={warn}/>
+                <Login onLogin={data => this.onLogin(data)}
+                       result={result}
+                       error={error && error.message}
+                       warn={warn}/>
             </div>
         )
     }

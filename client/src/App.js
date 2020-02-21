@@ -23,6 +23,8 @@ import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
 import { Roles } from './utils/authentication-util';
 import { getUserSession, logout } from './actions/authentication';
 import ConfirmSignupPage from './pages/ConfirmSignupPage/ConfirmSignupPage';
+import BeginPasswordResetPage from './pages/BeginPasswordResetPage/BeginPasswordResetPage';
+import FinishPasswordResetPage from './pages/FinishPasswordResetPage/FinishPasswordResetPage';
 
 class App extends React.Component {
 
@@ -53,18 +55,20 @@ class App extends React.Component {
                     <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
-                            <Route path="/map" component={MapPage}/>
+                            <Route exact path="/map" component={MapPage}/>
                             <Route exact path="/" component={HomePage}/>
-                            <Route path="/login" component={LoginPage}/>
+                            <Route exact path="/login" component={LoginPage}/>
                             <Route exact path="/signup" component={SignupPage}/>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
-                            <ProtectedRoute path="/create" component={CreateMonumentPage}/>
-                            <ProtectedRoute path="/bulk-create" component={MonumentBulkCreatePage} oneOf={[Roles.PARTNER, Roles.RESEARCHER]}/>
-                            <Route path="/tag-directory" component={TagDirectoryPage}/>
-                            <Route path="/about" component={AboutPage}/>
+                            <ProtectedRoute exact path="/create" component={CreateMonumentPage}/>
+                            <ProtectedRoute exact path="/bulk-create" component={MonumentBulkCreatePage} oneOf={[Roles.PARTNER, Roles.RESEARCHER]}/>
+                            <Route exact path="/tag-directory" component={TagDirectoryPage}/>
+                            <Route exact path="/about" component={AboutPage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
-                            <Route path="/signup/confirm" component={ConfirmSignupPage}/>
+                            <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
+                            <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
+                            <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>
