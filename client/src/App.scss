@@ -53,11 +53,6 @@ homepage-map {
     background-color: #F6F5FA;
     border: none;
     border-radius: 10px;
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-        width: 80%;
-    }
 
     .card-header {
         padding-bottom: 0;
