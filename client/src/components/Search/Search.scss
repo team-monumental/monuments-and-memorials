@@ -62,7 +62,7 @@
   }
 
   @include media-breakpoint-up(lg) {
-    width: 40rem;
+    width: 40%;
     max-width: calc(100vw - 2rem);
     height: 100%;
   }
@@ -90,12 +90,19 @@
     align-items: center;
     flex-wrap: wrap;
 
+    div {
+      margin-top: 3%;
+      @include media-breakpoint-up(md) {
+        margin-top: 0%;
+      }
+    }
+
     & > * {
       display: flex;
       white-space: nowrap;
       align-items: center;
     }
-
+    
     select, input {
       padding: 0.25rem 0.4rem;
       height: min-content;
