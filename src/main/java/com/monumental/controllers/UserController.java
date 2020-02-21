@@ -18,12 +18,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ValidationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 import java.util.Map;
 
 @RestController
+@Transactional
 public class UserController {
 
     @Autowired
@@ -67,6 +69,7 @@ public class UserController {
         return Map.of("success", true);
     }
 
+    @Transactional
     @PostMapping("/api/reset-password")
     public Map<String, Boolean> resetPassword(@RequestParam String email) {
         this.userService.resetPassword(email);
@@ -82,7 +85,7 @@ public class UserController {
         }
 
         if (!resetRequest.getNewPassword().equals(resetRequest.getMatchingNewPassword())) {
-            throw new InvalidEmailOrPasswordException("Passwords must match.");
+            throw new ValidationException("Passwords must match.");
         }
 
         User user = verificationToken.getUser();
