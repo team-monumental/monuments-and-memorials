@@ -8,7 +8,6 @@ import { updateUser, clearUpdateUser } from '../../actions/user';
 class UpdateUserPage extends React.Component {
 
     static mapStateToProps(state) {
-        console.log(state.updateUser);
         return {
             session: state.session,
             ...state.updateUser

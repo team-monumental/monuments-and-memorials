@@ -16,7 +16,7 @@ export default function createMonument(monument) {
     return async dispatch => {
         dispatch(pending(actions.create));
         try {
-            const createdMonument = await post('/api/monument', monument);
+            const createdMonument = await post(actions.create.uri, monument);
             dispatch(success(actions.create, {payload: createdMonument}));
         } catch (err) {
             dispatch(error(actions.create, err));

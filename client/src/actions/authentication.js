@@ -101,7 +101,6 @@ export function clearUserSession() {
 export function getUserSession(callback) {
     return async dispatch => {
         const res = await fetch('/api/session');
-        console.log(res);
         if (!res.ok) {
             // User is not authenticated
             return dispatch(createUserSession(null));

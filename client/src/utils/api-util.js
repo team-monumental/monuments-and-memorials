@@ -76,8 +76,6 @@ async function sendRequest(url, methodType='GET', data=undefined, file=undefined
             configuration.body = formData;
         }
 
-        console.log('fetching', url, configuration);
-
         let res = await fetch(url, configuration)
             .then(async (res) => {
                 if (!res.ok) {

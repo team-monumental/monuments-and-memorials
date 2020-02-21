@@ -38,7 +38,6 @@ export function updateUser(user) {
                 dispatch(error(actions.update, true));
             }
         } catch (err) {
-            console.error(err);
             dispatch(error(actions.update, err.message));
         }
     }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 
-class AboutPage extends React.Component {
+class UserPage extends React.Component {
 
     static mapStateToProps(state) {
         return {
@@ -25,4 +25,4 @@ class AboutPage extends React.Component {
     }
 }
 
-export default connect(AboutPage.mapStateToProps)(AboutPage);
+export default connect(UserPage.mapStateToProps)(UserPage);
