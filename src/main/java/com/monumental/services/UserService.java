@@ -24,11 +24,13 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class UserService extends ModelService<User> {
 
     @Autowired
@@ -98,6 +100,7 @@ public class UserService extends ModelService<User> {
         return user;
     }
 
+    @Transactional
     public void resetPassword(String email) {
         User user = this.userRepository.getByEmail(email);
         // Note: This is a security feature. We don't want the password reset form to tell everyone what email addresses are registered
@@ -117,6 +120,7 @@ public class UserService extends ModelService<User> {
         }
     }
 
+    @Transactional
     public VerificationToken generateVerificationToken(User user, VerificationToken.Type type) {
         this.tokenRepository.deleteAllByUserAndType(user, type);
         String token = UUID.randomUUID().toString();
