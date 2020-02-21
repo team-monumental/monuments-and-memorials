@@ -378,12 +378,6 @@ export default class CreateOrUpdateForm extends React.Component {
         return formIsValid;
     }
 
-    validateImagesForUpdate() {
-        const { images, imagesForUpdate } = this.state;
-
-        return (!(!imagesForUpdate || !imagesForUpdate.length)) || (!(!images || !images.length));
-    }
-
     /**
      * Build the form object for creating a new Monument
      */

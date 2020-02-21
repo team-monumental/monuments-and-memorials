@@ -9,6 +9,7 @@ import ContributionAppreciation from '../../components/ContributionAppreciation/
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
+import NoImageModal from '../../components/NoImageModal/NoImageModal';
 
 /**
  * Root container for the page to update an existing Monument
@@ -20,6 +21,7 @@ class UpdateMonumentPage extends React.Component {
 
         this.state = {
             showingReviewModal: false,
+            showingNoImageModal: false,
             monument: undefined,
             form: undefined,
             addedImages: []
@@ -33,6 +35,19 @@ class UpdateMonumentPage extends React.Component {
     componentDidMount() {
         const { dispatch, match: { params: { monumentId } } } = this.props;
         dispatch(fetchMonumentForUpdate(monumentId));
+    }
+
+    validateImages() {
+        const { form, addedImages } = this.state;
+
+        const imagesWereAdded = addedImages && addedImages.length;
+
+        let formHasImages = false;
+        if (form) {
+            formHasImages = form.images && form.images.length;
+        }
+
+        return imagesWereAdded || formHasImages;
     }
 
     async submitUpdateForm() {
@@ -53,12 +68,40 @@ class UpdateMonumentPage extends React.Component {
         this.props.history.goBack();
     }
 
-    handleUpdateFormSubmit(monument, form, addedImages) {
-        this.setState({monument: monument, form: form, addedImages: addedImages, showingReviewModal: true});
+    async handleUpdateFormSubmit(monument, form, addedImages) {
+        await this.setState({monument: monument, form: form, addedImages: addedImages});
+
+        if (!this.validateImages()) {
+            this.setState({showingNoImageModal: true});
+        }
+        else {
+            this.setState({showingReviewModal: true});
+        }
+    }
+
+    handleNoImageModalClose() {
+        this.setState({showingNoImageModal: false});
     }
 
     handleReviewModalCancel() {
         this.setState({showingReviewModal: false});
+    }
+
+    handleNoImageModalContinue() {
+        this.setState({showingNoImageModal: false, showingReviewModal: true});
+    }
+
+    renderNoImageModal() {
+        const { showingNoImageModal } = this.state;
+
+        return (
+            <NoImageModal
+                showing={showingNoImageModal}
+                onClose={() => this.handleNoImageModalClose()}
+                onCancel={() => this.handleNoImageModalClose()}
+                onContinue={() => this.handleNoImageModalContinue()}
+            />
+        )
     }
 
     renderReviewModal() {
@@ -98,6 +141,7 @@ class UpdateMonumentPage extends React.Component {
                     />
                 </div>
 
+                {this.renderNoImageModal()}
                 {this.renderReviewModal()}
             </div>
         );
