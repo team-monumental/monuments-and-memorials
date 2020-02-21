@@ -534,7 +534,16 @@ public class MonumentService extends ModelService<Monument> {
 
         List<CsvMonumentConverterResult> results = CsvMonumentConverter.convertCsvRows(csvList, mapping, zipFile);
         for (int i = 0; i < results.size(); i++) {
-            monumentBulkValidationResult.getResults().put(i + 1, results.get(i));
+            CsvMonumentConverterResult result = results.get(i);
+
+            List<Monument> duplicates = this.findDuplicateMonuments(result.getMonument().getTitle(),
+                    result.getMonument().getLat(), result.getMonument().getLon(), result.getMonument().getAddress());
+
+            if (duplicates.size() > 0) {
+                result.getWarnings().add("Potential duplicate records detected for this row.");
+            }
+
+            monumentBulkValidationResult.getResults().put(i + 1, result);
         }
 
         if (zipFile != null) {
@@ -1322,18 +1331,29 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Search for any potential "duplicate" Monuments given a title and coordinates
+     * Search for any potential "duplicate" Monuments given a title and coordinates or address
      * A "duplicate" Monument is defined as one that is within .1 of a mile
      * AND has a similar name
+     * If no coordinates are specified but an address is, it will be reverse-geocoded into coordinates to compare
+     * against
      * @param title - Title of the Monument to search against
      * @param latitude - Latitude of the Monument to search against
      * @param longitude - Longitude of the Monument to search against
+     * @param address - Address of the Monument to search against
      * @return List<Monument> - List of potential duplicate Monuments given the specified title and coordinates
      */
-    public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude) {
-        if (title != null && latitude != null && longitude != null) {
-            return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
-                    null, null);
+    public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude, String address) {
+        if (title != null) {
+            if ((latitude == null || longitude == null) && address != null) {
+                com.google.maps.model.Geometry point = this.googleMapsService.getCoordinatesFromAddress(address);
+                latitude = point.location.lat;
+                longitude = point.location.lng;
+            }
+
+            if (latitude != null && longitude != null) {
+                return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
+                        null, null);
+            }
         }
 
         return new ArrayList<>();
