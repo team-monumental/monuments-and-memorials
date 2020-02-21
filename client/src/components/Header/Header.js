@@ -41,12 +41,9 @@ class Header extends React.Component {
     }
 
     render() {
-        const { session, onLogout, history } = this.props;
+        const { session, onLogout } = this.props;
         let headerLinks = this.links.map(link =>
-            <NavLink onClick={e => {
-                e.preventDefault();
-                history.push(link.route);
-            }} to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
+            <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
         );
         return (
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
