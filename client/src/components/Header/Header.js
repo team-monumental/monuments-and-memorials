@@ -5,7 +5,7 @@ import {Button, Modal} from 'react-bootstrap';
 import SearchBar from './SearchBar/SearchBar';
 import CheeseburgerMenu from 'cheeseburger-menu'
 import Logo from '../Logo/Logo';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 class Header extends React.Component {
@@ -40,8 +40,18 @@ class Header extends React.Component {
         this.setState({screenWidth: window.innerWidth});
     }
 
+    handleLogout() {
+        const { onLogout, history } = this.props;
+        // If the user is currently on an authenticated route, tell ProtectedRoute not to show the unauthorized banner
+        history.replace({
+            pathname: history.location.pathname,
+            state: { suppressAuthenticationBanner: true }
+        });
+        onLogout();
+    }
+
     render() {
-        const { session, onLogout } = this.props;
+        const { session } = this.props;
         let headerLinks = this.links.map(link =>
             <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
         );
@@ -87,7 +97,7 @@ class Header extends React.Component {
                         {!session.pending && <>
                             {session.user &&
                                 <div className="d-flex">
-                                    <Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">
+                                    <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary" className="p-0 border-0 header-link">
                                         Log out
                                     </Button>
                                     <div className="mx-2 spacer">
@@ -99,7 +109,7 @@ class Header extends React.Component {
                                 </div>
                             }
                             {!session.user && <>
-                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap">Log in</Link>
+                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap header-link">Log in</Link>
                                 <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
                             </>}
                         </>}
@@ -127,12 +137,23 @@ class Header extends React.Component {
                                     )}
                                 </div>
                                 <hr/>
-                                {session.user &&
-                                    <li><Button onClick={() => onLogout()} size="sm" variant="link-secondary" className="p-0">Log out</Button></li>
-                                }
+                                {session.user && <>
+                                    <li>
+                                        <NavLink to="/account" className="header-link" activeClassName="active">
+                                            My Account
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary" className="p-0 header-link">Log out</Button>
+                                    </li>
+                                </>}
                                 {!session.user && <>
-                                    <li><Link to="/login" className="btn btn-sm btn-link-secondary p-0">Log in</Link></li>
-                                    <li><Link to="/signup" className="btn btn-sm btn-link-secondary p-0">Sign up</Link></li>
+                                    <li>
+                                        <Link to="/login" className="btn btn-sm btn-link-secondary p-0 header-link">Log in</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/signup" className="btn btn-sm btn-link-secondary p-0 header-link">Sign up</Link>
+                                    </li>
                                 </>}
                             </ul>
                         </CheeseburgerMenu>
@@ -143,4 +164,4 @@ class Header extends React.Component {
     }
 }
 
-export default connect(Header.mapStateToProps)(Header);
+export default withRouter(connect(Header.mapStateToProps)(Header));
