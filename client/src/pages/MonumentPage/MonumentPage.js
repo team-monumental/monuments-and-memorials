@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument from '../../actions/monument';
+import * as slugify from 'slugify';
 
 /**
  * Root container component for the monument record page which handles retrieving the monument
@@ -20,9 +22,30 @@ class MonumentPage extends React.Component {
         dispatch(fetchMonument(monumentId));
     }
 
+    /**
+     * This function encapsulates the logic to add the slug at the end of the url if it's not present
+     */
+    redirectToSlug() {
+        const { monument, match, history } = this.props;
+        const slug = match.params.slug;
+        // Wait for the monument to be loaded in from the API
+        // If there's no title, slugify will throw an error, so only proceed if there's a title
+        if (!monument || !monument.title) return;
+        // Slugify the monument's title
+        const newSlug = slugify(monument.title, {
+            remove: /[^a-zA-Z0-9\s]/g,
+        });
+        // Don't redirect if the correct slug is already present
+        if (slug !== newSlug) {
+            history.replace(`/monuments/${monument.id}/${newSlug}`);
+        }
+    }
+
     render() {
+        // Change the url to include the slug if it's not present
+        this.redirectToSlug();
         const {
-            monument, nearbyMonuments, relatedMonuments, fetchMonumentPending, fetchNearbyPending, fetchRelatedPending
+            monument, nearbyMonuments, relatedMonuments, fetchMonumentPending, fetchNearbyPending, fetchRelatedPending,
         } = this.props;
         return (
             <div className="page h-100">
@@ -34,4 +57,4 @@ class MonumentPage extends React.Component {
     }
 }
 
-export default connect(MonumentPage.mapStateToProps)(MonumentPage);
+export default withRouter(connect(MonumentPage.mapStateToProps)(MonumentPage));
