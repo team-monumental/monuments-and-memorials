@@ -1,8 +1,6 @@
 import React from 'react';
 import './Monument.scss';
-import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';

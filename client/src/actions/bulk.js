@@ -14,7 +14,7 @@ const actions = {
     create: {
         pending: BULK_CREATE_MONUMENTS_PENDING,
         success: BULK_CREATE_MONUMENTS_SUCCESS,
-        error: BULK_VALIDATE_MONUMENTS_ERROR,
+        error: BULK_CREATE_MONUMENTS_ERROR,
         uri: '/api/monument/bulk/create'
     }
 };

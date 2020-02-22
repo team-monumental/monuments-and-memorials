@@ -3,7 +3,6 @@ import './LoginPage.scss';
 import { connect } from 'react-redux';
 import Login from '../../components/Login/Login';
 import { login } from '../../actions/authentication';
-import Spinner from '../../components/Spinner/Spinner';
 import * as QueryString from 'query-string';
 import { withRouter, Redirect } from 'react-router-dom';
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import * as QueryString from 'query-string';
 import { confirmEmailChange } from '../../actions/user';
-import { Card, Form } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 
 class ConfirmEmailChangePage extends React.Component {
