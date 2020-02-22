@@ -32,7 +32,7 @@ export default class RelatedMonuments extends React.Component {
         const extraMonuments = (monuments && monuments.length && monuments.length > 2) ? monuments.slice(2) : [];
 
         const header = (
-            <div className="h6">
+            <div className="h4">
                 {title}
             </div>
         );
