@@ -5,8 +5,8 @@ import validator from 'validator';
 import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
 import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
-import { parse as toCSV } from 'json2csv';
 import moment from 'moment';
+import { exportToCsv } from '../../utils/export-util';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -226,7 +226,7 @@ export default class BulkCreateForm extends React.Component {
             'Warnings': result.warnings.join('\n'),
             'Errors': result.errors.join('\n')
         }});
-        const csv = 'data:text/csv;charset=utf-8,' + toCSV(results, {fields});
+        const csv = exportToCsv(fields, results);
         const encodedUri = encodeURI(csv);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);

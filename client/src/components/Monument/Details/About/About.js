@@ -1,12 +1,72 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { prettyPrintDate } from '../../../../utils/string-util';
+import Button from 'react-bootstrap/Button';
+import { exportToCsv } from '../../../../utils/export-util';
+import moment from 'moment';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
  * who has contributed to it, and the references used
  */
 export default class About extends React.Component {
+
+    downloadCSV() {
+        const { monument, contributions, references } = this.props;
+        console.log(monument);
+
+        const fields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
+            'Contributors', 'References', 'Last Updated'];
+
+        let materialsList = '';
+        if (monument.materials && monument.materials.length) {
+            const materialNames = monument.materials.map(material => material.name);
+            materialsList = materialNames.join(',');
+        }
+
+        let tagsList = '';
+        if (monument.tags && monument.tags.length) {
+            const tagNames = monument.tags.map(tag => tag.name);
+            tagsList = tagNames.join(',');
+        }
+
+        let contributionsList = '';
+        if (contributions && contributions.length) {
+            const contributors = contributions.map(contribution => contribution.submittedBy);
+            contributionsList = contributors.join(',');
+        }
+
+        let referencesList = '';
+        if (references && references.length) {
+            const referenceUrls = references.map(reference => reference.url);
+            referencesList = referenceUrls.join(',');
+        }
+        
+        const csvMonument = {
+            'Title': monument.title,
+            'Artist': monument.artist ? monument.artist : '',
+            'Date': monument.date ? prettyPrintDate(monument.date) : '',
+            'City': monument.city ? monument.city : '',
+            'State': monument.state ? monument.state : '',
+            'Address': monument.address ? monument.address : '',
+            'Coordinates': monument.coordinates ?
+                `${monument.coordinates.coordinates[1]}, ${monument.coordinates.coordinates[0]}` :
+                '',
+            'Materials' : materialsList,
+            'Tags': tagsList,
+            'Contributors': contributionsList,
+            'References': referencesList,
+            'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
+        };
+
+        const csv = exportToCsv(fields, [csvMonument]);
+        const encodedUri = encodeURI(csv);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
 
     render() {
 
@@ -160,6 +220,9 @@ export default class About extends React.Component {
                         {referencesList}
                         {lastUpdated}
                     </div>
+                    <Button variant="light" onClick={(data) => this.downloadCSV(data)}>
+                        Export to CSV
+                    </Button>
                 </Card.Body>
             </Card>
         )
