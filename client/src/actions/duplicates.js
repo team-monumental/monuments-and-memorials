@@ -1,31 +1,26 @@
 import { FETCH_DUPLICATES_PENDING, FETCH_DUPLICATES_SUCCESS, FETCH_DUPLICATES_ERROR } from '../constants';
 import { get } from '../utils/api-util';
 import * as QueryString from 'query-string';
-import { addError } from './errors';
+import { pending, success, error } from '../utils/action-util';
 
-function fetchDuplicatesPending() {
-    return {
-        type: FETCH_DUPLICATES_PENDING
-    };
-}
+const actions = {
+    duplicates: {
+        pending: FETCH_DUPLICATES_PENDING,
+        success: FETCH_DUPLICATES_SUCCESS,
+        error: FETCH_DUPLICATES_ERROR,
+    }
+};
 
-function fetchDuplicatesSuccess(duplicates) {
-    return {
-        type: FETCH_DUPLICATES_SUCCESS,
-        payload: duplicates
-    };
-}
-
-function fetchDuplicatesError(error) {
-    return {
-        type: FETCH_DUPLICATES_ERROR,
-        error: error
-    };
-}
-
+/**
+ * Queries for any duplicate Monuments based on the specified Monument attributes
+ * @param title - Monument title to use when searching for duplicates
+ * @param latitude - Monument latitude to use when searching for duplicates
+ * @param longitude - Monument longitude to use when searching for duplicates
+ * @param address - Monument address to use when searching for duplicates
+ */
 export default function fetchDuplicates(title, latitude, longitude, address) {
     return async dispatch => {
-        dispatch(fetchDuplicatesPending());
+        dispatch(pending(actions.duplicates));
 
         try {
             const queryString = QueryString.stringify({
@@ -36,12 +31,9 @@ export default function fetchDuplicates(title, latitude, longitude, address) {
             });
 
             const duplicates = await get(`/api/search/duplicates/?${queryString}`);
-            dispatch(fetchDuplicatesSuccess(duplicates));
-        } catch (error) {
-            dispatch(fetchDuplicatesError(error));
-            dispatch(addError({
-                message: error.message
-            }));
+            dispatch(success(actions.duplicates, duplicates));
+        } catch (err) {
+            dispatch(error(actions.duplicates, err));
         }
     };
 }
