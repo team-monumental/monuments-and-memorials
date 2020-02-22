@@ -29,9 +29,11 @@ export default class StatisticCard extends React.Component {
             return (
                 <div className="statistic-card-container">
                     <Card>
-                        <Card.Title className={statisticFontSizeClassName}>
-                            {statisticWithLink ? statisticWithLink : statistic}
-                        </Card.Title>
+                        <Card.Header>
+                            <Card.Title className={statisticFontSizeClassName}>
+                                {statisticWithLink ? statisticWithLink : statistic}
+                            </Card.Title>
+                        </Card.Header>
                         <Card.Footer>
                             {description}
                         </Card.Footer>

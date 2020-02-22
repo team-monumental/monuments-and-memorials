@@ -25,6 +25,9 @@ import { getUserSession, logout } from './actions/authentication';
 import ConfirmSignupPage from './pages/ConfirmSignupPage/ConfirmSignupPage';
 import BeginPasswordResetPage from './pages/BeginPasswordResetPage/BeginPasswordResetPage';
 import FinishPasswordResetPage from './pages/FinishPasswordResetPage/FinishPasswordResetPage';
+import UserPage from './pages/UserPage/UserPage';
+import UpdateUserPage from './pages/UpdateUserPage/UpdateUserPage';
+import ConfirmEmailChangePage from './pages/ConfirmEmailChangePage/ConfirmEmailChangePage';
 
 class App extends React.Component {
 
@@ -69,6 +72,9 @@ class App extends React.Component {
                             <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                             <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
                             <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>
+                            <ProtectedRoute exact path="/account" component={UserPage}/>
+                            <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
+                            <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

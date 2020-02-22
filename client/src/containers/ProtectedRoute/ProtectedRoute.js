@@ -23,7 +23,9 @@ class ProtectedRoute extends React.Component {
 
         const noAccessRedirect = (<Redirect to={{
             pathname: '/',
-            state: {alert: 'You do not have sufficient privileges to view that page.'}
+            state: history.location.state && history.location.state.suppressAuthenticationBanner ? {} : {
+                alert: 'You do not have sufficient privileges to view that page.'
+            }
         }}/>);
 
         let loggedIn = session.user && session.user.role;

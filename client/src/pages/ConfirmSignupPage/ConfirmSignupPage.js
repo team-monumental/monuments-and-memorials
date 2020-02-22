@@ -13,7 +13,8 @@ class ConfirmSignupPage extends React.Component {
         super(props);
         this.state = {
             redirect: false,
-            resend: false
+            resend: false,
+            signup: false
         };
     }
 
@@ -25,14 +26,15 @@ class ConfirmSignupPage extends React.Component {
         const { dispatch, location: { search }, session } = this.props;
         const params = search && QueryString.parse(search);
 
-        const token = params && params.token;
-        const resend = params && params.resend;
+        const token = params.token;
+        const resend = params.resend;
+        const signup = params.signup;
 
         if (resend) {
             if (session.user) {
                 return this.resendConfirmation();
             } else {
-                return this.setState({resend: true});
+                return this.setState({resend: true, signup});
             }
         }
 
@@ -53,13 +55,14 @@ class ConfirmSignupPage extends React.Component {
     }
 
     async beginResendConfirmation() {
-        await this.setState({redirect: '/signup/confirm?resend=true'});
+        await this.setState({redirect: '/signup/confirm?resend=true&signup=true'});
         this.initialize();
     }
 
     resendConfirmation() {
         const { dispatch, session: { user } } = this.props;
-        dispatch(resendConfirmation(user));
+        const { signup } = this.state;
+        dispatch(resendConfirmation(user, signup));
     }
 
     render() {

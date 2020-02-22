@@ -33,8 +33,9 @@ export default class MapResults extends React.Component {
                 </Popup>
             );
             if (useCircleMarkers) {
-                markers.push((
-                    <CircleMarker key={monument.id} center={leaflet.latLng(monument.lat, monument.lon)} radius="5">
+                const latLng = leaflet.latLng(monument.lat, monument.lon);
+                if (latLng) markers.push((
+                    <CircleMarker key={monument.id} center={latLng} radius="5">
                         {popup}
                     </CircleMarker>
                 ));

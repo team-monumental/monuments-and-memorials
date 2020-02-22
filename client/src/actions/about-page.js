@@ -4,46 +4,22 @@ import {
     ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_SUCCESS, ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_ERROR
 } from '../constants';
 import { get } from '../utils/api-util';
+import { pending, success, error } from '../utils/action-util';
 
-function fetchContributorsPending() {
-    return {
-        type: ABOUT_PAGE_FETCH_CONTRIBUTORS_PENDING
-    };
-}
-
-function fetchContributorsSuccess(contributors) {
-    return {
-        type: ABOUT_PAGE_FETCH_CONTRIBUTORS_SUCCESS,
-        payload: contributors
-    };
-}
-
-function fetchContributorsError(error) {
-    return {
-        type: ABOUT_PAGE_FETCH_CONTRIBUTORS_ERROR,
-        error: error
-    };
-}
-
-function fetchMonumentStatisticsPending() {
-    return {
-        type: ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_PENDING
-    };
-}
-
-function fetchMonumentStatisticsSuccess(statistics) {
-    return {
-        type: ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_SUCCESS,
-        payload: statistics
-    };
-}
-
-function fetchMonumentStatisticsError(error) {
-    return {
-        type: ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_ERROR,
-        error: error
-    };
-}
+const actions = {
+    contributors: {
+        pending: ABOUT_PAGE_FETCH_CONTRIBUTORS_PENDING,
+        success: ABOUT_PAGE_FETCH_CONTRIBUTORS_SUCCESS,
+        error: ABOUT_PAGE_FETCH_CONTRIBUTORS_ERROR,
+        uri: '/api/contributors'
+    },
+    statistics: {
+        pending: ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_PENDING,
+        success: ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_SUCCESS,
+        error: ABOUT_PAGE_FETCH_MONUMENT_STATISTICS_ERROR,
+        uri: '/api/monument/statistics'
+    }
+};
 
 /**
  * Queries for the statistics to display on the About Page
@@ -52,20 +28,20 @@ function fetchMonumentStatisticsError(error) {
  */
 export default function fetchAboutPageStatistics() {
     return async dispatch => {
-        dispatch(fetchContributorsPending());
+        dispatch(pending(actions.contributors));
         try {
-            const contributors = await get('/api/contributors');
-            dispatch(fetchContributorsSuccess(contributors));
-        } catch (error) {
-            dispatch(fetchContributorsError(error));
+            const contributors = await get(actions.contributors.uri);
+            dispatch(success(actions.contributors, contributors));
+        } catch (err) {
+            dispatch(error(actions.contributors, err));
         }
 
-        dispatch(fetchMonumentStatisticsPending());
+        dispatch(pending(actions.statistics));
         try {
-            const monumentStatistics = await get('/api/monument/statistics');
-            dispatch(fetchMonumentStatisticsSuccess(monumentStatistics));
-        } catch (error) {
-            dispatch(fetchMonumentStatisticsError(error));
+            const monumentStatistics = await get(actions.statistics.uri);
+            dispatch(success(actions.statistics, monumentStatistics));
+        } catch (err) {
+            dispatch(error(actions.statistics, err));
         }
     };
 }

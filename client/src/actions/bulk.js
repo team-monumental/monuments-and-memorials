@@ -2,32 +2,22 @@ import {
     BULK_VALIDATE_MONUMENTS_PENDING, BULK_VALIDATE_MONUMENTS_SUCCESS, BULK_VALIDATE_MONUMENTS_ERROR,
     BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR
 } from '../constants';
+import { pending, success, error } from '../utils/action-util';
 
 const actions = {
-    validate: 'validate',
-    create: 'create'
+    validate: {
+        pending: BULK_VALIDATE_MONUMENTS_PENDING,
+        success: BULK_VALIDATE_MONUMENTS_SUCCESS,
+        error: BULK_VALIDATE_MONUMENTS_ERROR,
+        uri: '/api/monument/bulk/validate'
+    },
+    create: {
+        pending: BULK_CREATE_MONUMENTS_PENDING,
+        success: BULK_CREATE_MONUMENTS_SUCCESS,
+        error: BULK_CREATE_MONUMENTS_ERROR,
+        uri: '/api/monument/bulk/create'
+    }
 };
-
-function pending(action, progress) {
-    return {
-        type: action === actions.validate ? BULK_VALIDATE_MONUMENTS_PENDING : BULK_CREATE_MONUMENTS_PENDING,
-        progress
-    };
-}
-
-function success(action, payload) {
-    return {
-        type: action === actions.validate ? BULK_VALIDATE_MONUMENTS_SUCCESS : BULK_CREATE_MONUMENTS_SUCCESS,
-        payload
-    };
-}
-
-function error(action, error) {
-    return {
-        type: action === actions.validate ? BULK_VALIDATE_MONUMENTS_ERROR : BULK_CREATE_MONUMENTS_ERROR,
-        error
-    };
-}
 
 function buildFormData(form) {
     const formData = new FormData();
@@ -48,7 +38,7 @@ function doAction(action, form, isAsyncJob) {
     return async dispatch => {
         dispatch(pending(action));
         try {
-            let result = await (await fetch('/api/monument/bulk/' + action + (isAsyncJob ? '/start' : ''), {
+            let result = await (await fetch(action.uri + (isAsyncJob ? '/start' : ''), {
                 method: 'post',
                 body: buildFormData(form)
             })).json();
@@ -59,7 +49,7 @@ function doAction(action, form, isAsyncJob) {
                 let interval;
                 await new Promise(resolve => {
                     interval = window.setInterval(async () => {
-                        result = await (await fetch(`/api/monument/bulk/${action}/progress/${jobId}`)).json();
+                        result = await (await fetch(`${action.uri}/progress/${jobId}`)).json();
                         dispatch(pending(action, result.progress));
 
                         if (result.future && result.future.done) resolve();
@@ -67,7 +57,7 @@ function doAction(action, form, isAsyncJob) {
                 });
                 window.clearInterval(interval);
 
-                result = await (await fetch(`/api/monument/bulk/${action}/result/${jobId}`)).json();
+                result = await (await fetch(`${action.uri}/result/${jobId}`)).json();
             }
 
             dispatch(success(action, result));

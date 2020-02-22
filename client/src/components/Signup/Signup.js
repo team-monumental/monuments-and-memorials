@@ -113,6 +113,7 @@ export default class Signup extends React.Component {
                                 <Form.Control
                                     type="text"
                                     name="firstName"
+                                    autoComplete="given-name"
                                     value={firstName}
                                     onChange={event => this.handleChange(event)}
                                     className="text-control"
@@ -127,6 +128,7 @@ export default class Signup extends React.Component {
                                 <Form.Control
                                     type="text"
                                     name="lastName"
+                                    autoComplete="family-name"
                                     value={lastName}
                                     onChange={event => this.handleChange(event)}
                                     className="text-control"

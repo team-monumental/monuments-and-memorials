@@ -1,8 +1,6 @@
 import React from 'react';
 import './Monument.scss';
-import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
@@ -11,11 +9,9 @@ import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
 /**
  * Root presentational component for the Monument record page
  */
-class Monument extends React.Component {
+export default class Monument extends React.Component {
 
     render() {
-        // Change the url to include the slug if it's not present
-        this.redirectToSlug();
 
         let { monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending } = this.props;
         if (nearbyMonuments && nearbyMonuments.length) {
@@ -44,23 +40,4 @@ class Monument extends React.Component {
             </div>
         )
     }
-
-    /**
-     * This function encapsulates the logic to add the slug at the end of the url if it's not present
-     */
-    redirectToSlug() {
-        const monument = this.props.monument;
-        const slug = this.props.match.params.slug;
-        // Wait for the monument to be loaded in from the API
-        // If there's no title, slugify will throw an error, so only proceed if there's a title
-        if (!monument || !monument.title) return;
-        // Slugify the monument's title
-        const newSlug = slugify(monument.title);
-        // Don't redirect if the correct slug is already present
-        if (slug !== newSlug) {
-            window.location.replace(`/monuments/${monument.id}/${newSlug}`);
-        }
-    }
 }
-
-export default withRouter(Monument);

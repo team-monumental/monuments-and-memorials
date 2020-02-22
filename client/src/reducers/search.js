@@ -1,5 +1,5 @@
 import { SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_SUCCESS, SEARCH_MONUMENTS_ERROR } from '../constants';
-import basicReducer from '../utils/basicReducer';
+import basicReducer from '../utils/basic-reducer';
 
 const initialState = {
     pending: false,

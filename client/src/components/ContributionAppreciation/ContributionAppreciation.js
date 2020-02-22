@@ -9,9 +9,11 @@ export default class ContributionAppreciation extends React.Component {
     render() {
         return (
             <Card>
-                <Card.Title>
-                    Thank You
-                </Card.Title>
+                <Card.Header>
+                    <Card.Title>
+                        Thank You
+                    </Card.Title>
+                </Card.Header>
                 <Card.Body>
                     <p>Thank you for taking the time to contribute to Monuments and Memorials.</p>
                 </Card.Body>

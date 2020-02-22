@@ -4,46 +4,34 @@ import {
 } from '../constants';
 import { addError } from './errors';
 import { get, put } from '../utils/api-util';
+import { pending, success, error } from '../utils/action-util';
 
 const actions = {
-    fetch: 'fetch',
-    update: 'update'
+    fetch: {
+        pending: FETCH_MONUMENT_UPDATE_PENDING,
+        success: FETCH_MONUMENT_UPDATE_SUCCESS,
+        error: FETCH_MONUMENT_UPDATE_ERROR
+    },
+    update: {
+        pending: UPDATE_MONUMENT_PENDING,
+        success: UPDATE_MONUMENT_SUCCESS,
+        error: UPDATE_MONUMENT_ERROR
+    }
 };
-
-function pending(action) {
-    return {
-        type: action === actions.fetch ? FETCH_MONUMENT_UPDATE_PENDING : UPDATE_MONUMENT_PENDING
-    };
-}
-
-function success(action, result) {
-    return {
-        type: action === actions.fetch ? FETCH_MONUMENT_UPDATE_SUCCESS : UPDATE_MONUMENT_SUCCESS,
-        payload: result
-    };
-}
-
-function error(action, error) {
-    return {
-        type: action === actions.fetch ? FETCH_MONUMENT_UPDATE_ERROR : UPDATE_MONUMENT_ERROR,
-        error: error
-    };
-}
 
 /**
  * Queries for a Monument and all related records to be displayed on the Update Monument Page
  */
 export default function fetchMonumentForUpdate(id) {
-    const fetch = 'fetch';
 
     return async dispatch => {
-        dispatch(pending(fetch));
+        dispatch(pending(actions.fetch));
 
         try {
             const monument = await get(`/api/monument/${id}?cascade=true`);
-            dispatch(success(fetch, monument));
+            dispatch(success(actions.fetch, monument));
         } catch(err) {
-            dispatch(error(fetch, err));
+            dispatch(error(actions.fetch, err));
             dispatch(addError({
                 message: err.message
             }));
@@ -56,16 +44,15 @@ export default function fetchMonumentForUpdate(id) {
  * in newMonument
  */
 export function updateMonument(id, newMonument) {
-    const update = 'update';
 
     return async dispatch => {
-        dispatch(pending(update));
+        dispatch(pending(actions.update));
 
         try {
             const updatedMonument = await put(`/api/monument/${id}`, newMonument);
-            dispatch(success(update, updatedMonument));
+            dispatch(success(actions.update, updatedMonument));
         } catch (err) {
-            dispatch(error(update, err));
+            dispatch(error(actions.update, err));
             dispatch(addError({
                 message: err.message
             }));

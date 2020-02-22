@@ -1,38 +1,27 @@
 import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
 import { post } from "../utils/api-util";
 import { addError } from './errors';
+import { pending, success, error } from '../utils/action-util';
 
-function createMonumentPending() {
-    return {
-        type: CREATE_MONUMENT_PENDING
-    };
-}
-
-function createMonumentSuccess(monument) {
-    return {
-        type: CREATE_MONUMENT_SUCCESS,
-        payload: monument
-    };
-}
-
-function createMonumentError(error) {
-    return {
-        type: CREATE_MONUMENT_ERROR,
-        error: error
-    };
-}
+const actions = {
+    create: {
+        pending: CREATE_MONUMENT_PENDING,
+        success: CREATE_MONUMENT_SUCCESS,
+        error: CREATE_MONUMENT_ERROR,
+        uri: '/api/monument'
+    }
+};
 
 export default function createMonument(monument) {
     return async dispatch => {
-        dispatch(createMonumentPending());
-
+        dispatch(pending(actions.create));
         try {
-            const createdMonument = await post('/api/monument', monument);
-            dispatch(createMonumentSuccess(createdMonument));
-        } catch (error) {
-            dispatch(createMonumentError(error));
+            const createdMonument = await post(actions.create.uri, monument);
+            dispatch(success(actions.create, createdMonument));
+        } catch (err) {
+            dispatch(error(actions.create, err));
             dispatch(addError({
-                message: error.message
+                message: err.message
             }));
         }
     };

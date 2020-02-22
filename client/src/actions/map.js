@@ -1,26 +1,16 @@
 import { FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS, FETCH_MAP_MONUMENTS_ERROR } from '../constants';
 import { get } from '../utils/api-util';
 import { addError } from './errors';
+import { success, pending, error } from '../utils/action-util';
 
-function fetchMonumentsPending() {
-    return {
-        type: FETCH_MAP_MONUMENTS_PENDING
-    };
-}
-
-function fetchMonumentsSuccess(monuments) {
-    return {
-        type: FETCH_MAP_MONUMENTS_SUCCESS,
-        payload: {monuments}
-    };
-}
-
-function fetchMonumentsError(error) {
-    return {
-        type: FETCH_MAP_MONUMENTS_ERROR,
-        error: error
-    };
-}
+const actions = {
+    fetchMonuments: {
+        pending: FETCH_MAP_MONUMENTS_PENDING,
+        success: FETCH_MAP_MONUMENTS_SUCCESS,
+        error: FETCH_MAP_MONUMENTS_ERROR,
+        uri: '/api/monuments'
+    }
+};
 
 /**
  * Queries for all monuments, to be displayed on the monument map page
@@ -28,14 +18,14 @@ function fetchMonumentsError(error) {
  */
 export default function fetchMonuments() {
     return async dispatch => {
-        dispatch(fetchMonumentsPending());
+        dispatch(pending(actions.fetchMonuments));
         try {
-            const monuments = await get(`/api/monuments`);
-            dispatch(fetchMonumentsSuccess(monuments));
-        } catch (error) {
-            dispatch(fetchMonumentsError(error));
+            const monuments = await get(actions.fetchMonuments.uri);
+            dispatch(success(actions.fetchMonuments, {monuments}));
+        } catch (err) {
+            dispatch(error(actions.fetchMonuments, err));
             dispatch(addError({
-                message: error.message
+                message: err.message
             }));
         }
     }

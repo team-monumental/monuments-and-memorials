@@ -54,8 +54,12 @@ homepage-map {
     border: none;
     border-radius: 10px;
 
+    .card-header {
+        padding-bottom: 0;
+    }
+
     .card-title {
-        padding: 1.25rem 1.25rem 0;
+        padding: 1.25rem 1.25rem 0 0;
         margin-bottom: 0;
     }
 }
@@ -78,16 +82,15 @@ h1 {
     font-size: 2rem !important;
 }
 
-p {
-    max-width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    font-size: large;
-}
-
 .card-footer {
     background-color: rgba(0,0,0,0) !important;
+}
+
+.btn .material-icons {
+    color: white;
+    font-size: 1.35em;
+    transform: translate(-2px, 4px);
+    margin-top: -4px;
 }
 
 .invalid-feedback {

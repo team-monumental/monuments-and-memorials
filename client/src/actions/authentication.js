@@ -8,6 +8,7 @@ import {
     FINISH_PASSWORD_RESET_ERROR, FINISH_PASSWORD_RESET_PENDING, FINISH_PASSWORD_RESET_SUCCESS
 } from '../constants';
 import { post } from '../utils/api-util';
+import { pending, success, error } from '../utils/action-util';
 
 const actions = {
     signup: {
@@ -48,35 +49,12 @@ const actions = {
     }
 };
 
-function pending(action) {
-    return {
-        type: action.pending
-    };
-}
-
-function success(action, payload) {
-    return {
-        type: action.success,
-        payload: {
-            result: payload,
-            error: null
-        }
-    };
-}
-
-function error(action, error) {
-    return {
-        type: action.error,
-        error
-    };
-}
-
 export function signup(user) {
     return async dispatch => {
         dispatch(pending(actions.signup));
         try {
             const result = await post(actions.signup.uri, user);
-            dispatch(success(actions.signup, result));
+            dispatch(success(actions.signup, {result: result}));
             dispatch(login(user));
         } catch (err) {
             dispatch(error(actions.signup, err));
@@ -97,7 +75,7 @@ export function login(user, callback) {
                 return dispatch(error(actions.login, await result.json()));
             }
             dispatch(getUserSession(callback));
-            dispatch(success(actions.login, result));
+            dispatch(success(actions.login, {result: result}));
         } catch (err) {
             dispatch(error(actions.login, err));
         }
@@ -149,13 +127,7 @@ export function confirmSignup(token) {
         try {
             const result = await post(actions.confirm.uri + '?token=' + token);
             if (result.success) {
-                dispatch({
-                    type: actions.confirm.success,
-                    payload: {
-                        success: true,
-                        error: null
-                    }
-                });
+                dispatch(success(actions.confirm, {success: true}));
             } else {
                 dispatch(error(actions.confirm, true));
             }
@@ -165,19 +137,13 @@ export function confirmSignup(token) {
     };
 }
 
-export function resendConfirmation(user) {
+export function resendConfirmation(user, signup) {
     return async dispatch => {
         dispatch(pending(actions.resend));
         try {
-            const result = await post(actions.resend.uri, user);
+            const result = await post(actions.resend.uri + '?signup=' + signup, user);
             if (result.success) {
-                dispatch({
-                    type: actions.resend.success,
-                    payload: {
-                        success: true,
-                        error: null
-                    }
-                });
+                dispatch(success(actions.resend, {success: true}));
             } else {
                 dispatch(error(actions.resend, true));
             }
@@ -192,13 +158,7 @@ export function beginPasswordReset(email) {
         dispatch(pending(actions.beginPasswordReset));
         try {
             const result = await post(actions.beginPasswordReset.uri + '?email=' + email);
-            dispatch({
-                type: actions.beginPasswordReset.success,
-                payload: {
-                    ...result,
-                    error: null
-                }
-            });
+            dispatch(success(actions.beginPasswordReset, result));
         } catch (err) {
             dispatch(error(actions.beginPasswordReset, err.message));
         }
@@ -211,13 +171,7 @@ export function finishPasswordReset(data) {
         try {
             const result = await post(actions.finishPasswordReset.uri, data);
             if (result.success) {
-                dispatch({
-                    type: actions.finishPasswordReset.success,
-                    payload: {
-                        ...result,
-                        error: null
-                    }
-                });
+                dispatch(success(actions.finishPasswordReset, result));
                 dispatch(login({email: result.email, password: data.newPassword}));
             } else {
                 dispatch(error(actions.finishPasswordReset, true));
