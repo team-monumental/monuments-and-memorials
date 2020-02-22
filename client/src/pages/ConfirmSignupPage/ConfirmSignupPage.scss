@@ -1,7 +1,13 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
 .confirm-signup-page {
     .card {
-        min-width: 300px;
-        max-width: 400px;
+        @include media-breakpoint-up(md) {
+            min-width: 300px;
+            max-width: 400px;
+        }
         white-space: normal;
         .card-header {
             padding-bottom: 0;

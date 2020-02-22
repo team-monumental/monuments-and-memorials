@@ -1,7 +1,13 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
 .account.page {
     .card {
-        min-width: 450px;
-        max-width: 450px;
+        @include media-breakpoint-up(md) {
+            min-width: 450px;
+            max-width: 450px;
+        }
     }
 
     .verified-icon {
