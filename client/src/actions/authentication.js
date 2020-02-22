@@ -54,7 +54,7 @@ export function signup(user) {
         dispatch(pending(actions.signup));
         try {
             const result = await post(actions.signup.uri, user);
-            dispatch(success(actions.signup, result));
+            dispatch(success(actions.signup, {result: result}));
             dispatch(login(user));
         } catch (err) {
             dispatch(error(actions.signup, err));
@@ -75,7 +75,7 @@ export function login(user, callback) {
                 return dispatch(error(actions.login, await result.json()));
             }
             dispatch(getUserSession(callback));
-            dispatch(success(actions.login, result));
+            dispatch(success(actions.login, {result: result}));
         } catch (err) {
             dispatch(error(actions.login, err));
         }

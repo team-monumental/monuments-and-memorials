@@ -31,7 +31,7 @@ export default function fetchAboutPageStatistics() {
         dispatch(pending(actions.contributors));
         try {
             const contributors = await get(actions.contributors.uri);
-            dispatch(success(actions.contributors), contributors);
+            dispatch(success(actions.contributors, contributors));
         } catch (err) {
             dispatch(error(actions.contributors, err));
         }

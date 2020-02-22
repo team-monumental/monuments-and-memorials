@@ -21,7 +21,7 @@ export default function fetchMonuments() {
         dispatch(pending(actions.fetchMonuments));
         try {
             const monuments = await get(actions.fetchMonuments.uri);
-            dispatch(success(actions.fetchMonuments,{monuments}));
+            dispatch(success(actions.fetchMonuments, {monuments}));
         } catch (err) {
             dispatch(error(actions.fetchMonuments, err));
             dispatch(addError({
