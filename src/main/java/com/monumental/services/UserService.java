@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,6 +56,9 @@ public class UserService extends ModelService<User> {
 
     @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
     private String outboundEmailAddress;
+
+    @Value("${spring.mail.username:#{null}}")
+    private String springMailUsername;
 
     // This is an environment variable that should be set to the public domain name of the server
     // By default this uses the localhost setup, on the VM it should be set to the actual public server domain name
@@ -218,16 +222,22 @@ public class UserService extends ModelService<User> {
      * end of the email template
      * TODO: This is a lazy way of not having to write email templating yet. Replace this with true templating
      * @param recipientAddress - The email address to send to
-     * @param name - The email template name
+     * @param templateName - The email template name
      * @param extraMessage - The extra content to add to the end of the template
      */
-    private void sendEmail(String recipientAddress, String name, String extraMessage) {
+    private void sendEmail(String recipientAddress, String templateName, String extraMessage) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
         email.setFrom(outboundEmailAddress);
-        email.setSubject(this.messages.getMessage(name + ".subject", null, Locale.getDefault()));
-        email.setText(this.messages.getMessage(name + ".body", null, Locale.getDefault()) + extraMessage);
-        mailSender.send(email);
+        email.setSubject(this.messages.getMessage(templateName + ".subject", null, Locale.getDefault()));
+        email.setText(this.messages.getMessage(templateName + ".body", null, Locale.getDefault()) + extraMessage);
+
+        if (this.springMailUsername == null || this.springMailUsername.equals("")) {
+            System.out.println("WARNING: You have not provided mail credentials, so the following email will NOT be sent: " + email);
+        } else {
+            System.out.println("Sent email " + templateName + " to " + outboundEmailAddress);
+            mailSender.send(email);
+        }
     }
 
     /**
