@@ -99,7 +99,7 @@ export default class Signup extends React.Component {
             <Card className="signup">
                 <Card.Header>
                     <Card.Title className="text-center">
-                        <Logo size="35px"/>
+                        <Logo/>
                         <span>
                             Sign Up
                         </span>
