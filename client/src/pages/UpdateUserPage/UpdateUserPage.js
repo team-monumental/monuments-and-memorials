@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import UpdateUser from '../../components/UpdateUser/UpdateUser';
 import { updateUser, clearUpdateUser } from '../../actions/user';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class UpdateUserPage extends React.Component {
 

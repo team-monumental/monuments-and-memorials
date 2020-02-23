@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import AboutInformation from '../../components/About/AboutInformation/AboutInformation';
 import fetchAboutPageStatistics from '../../actions/about-page';
 import Spinner from '../../components/Spinner/Spinner';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container component for the page that contains information about the site

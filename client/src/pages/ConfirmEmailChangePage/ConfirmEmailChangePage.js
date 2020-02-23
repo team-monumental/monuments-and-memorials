@@ -6,7 +6,7 @@ import * as QueryString from 'query-string';
 import { confirmEmailChange } from '../../actions/user';
 import { Card } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class ConfirmEmailChangePage extends React.Component {
 

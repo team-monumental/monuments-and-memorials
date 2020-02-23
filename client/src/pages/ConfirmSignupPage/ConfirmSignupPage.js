@@ -6,7 +6,7 @@ import * as QueryString from 'query-string';
 import { Button, Card } from 'react-bootstrap';
 import { confirmSignup, resendConfirmation } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class ConfirmSignupPage extends React.Component {
 

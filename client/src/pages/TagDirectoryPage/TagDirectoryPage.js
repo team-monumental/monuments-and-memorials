@@ -4,7 +4,7 @@ import fetchTags from '../../actions/tagDirectory';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import Tags from "../../components/Tags/Tags";
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container component for the Tag Directory Page

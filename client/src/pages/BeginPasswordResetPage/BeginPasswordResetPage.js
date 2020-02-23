@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import BeginPasswordReset from '../../components/BeginPasswordReset/BeginPasswordReset';
 import { beginPasswordReset } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class BeginPasswordResetPage extends React.Component {
 

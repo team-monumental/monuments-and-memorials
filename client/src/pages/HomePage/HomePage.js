@@ -3,7 +3,7 @@ import './HomePage.scss';
 import SuggestChanges from '../../components/Monument/SuggestChanges/SuggestChanges';
 import { NavLink, withRouter } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class HomePage extends React.Component {
 

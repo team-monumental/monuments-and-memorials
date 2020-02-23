@@ -8,7 +8,7 @@ import createMonument from "../../actions/create";
 import { uploadImagesToS3 } from '../../utils/api-util';
 import Spinner from "../../components/Spinner/Spinner";
 import { withRouter } from "react-router-dom";
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container for the page to create a new Monument

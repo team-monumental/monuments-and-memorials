@@ -5,7 +5,7 @@ import Signup from '../../components/Signup/Signup';
 import { signup } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
 import { withRouter } from 'react-router-dom';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class SignupPage extends React.Component {
 

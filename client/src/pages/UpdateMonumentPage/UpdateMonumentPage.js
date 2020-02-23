@@ -7,7 +7,7 @@ import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpda
 import Spinner from '../../components/Spinner/Spinner';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container for the page to update an existing Monument

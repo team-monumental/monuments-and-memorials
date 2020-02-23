@@ -3,7 +3,7 @@ import './UserPage.scss';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class UserPage extends React.Component {
 

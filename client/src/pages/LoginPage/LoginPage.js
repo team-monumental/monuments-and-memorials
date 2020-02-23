@@ -5,7 +5,7 @@ import Login from '../../components/Login/Login';
 import { login } from '../../actions/authentication';
 import * as QueryString from 'query-string';
 import { withRouter, Redirect } from 'react-router-dom';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class LoginPage extends React.Component {
 

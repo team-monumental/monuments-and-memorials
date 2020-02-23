@@ -7,7 +7,7 @@ import { bulkValidateMonuments, bulkCreateMonuments } from '../../actions/bulk';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
 import { Modal, ProgressBar } from 'react-bootstrap';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container for the page to bulk create Monuments

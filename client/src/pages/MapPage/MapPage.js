@@ -3,7 +3,7 @@ import './MapPage.scss';
 import MapResults from '../../components/Search/MapResults/MapResults';
 import { connect } from 'react-redux';
 import fetchMonuments from '../../actions/map';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 
 class MapPage extends React.Component {
 
