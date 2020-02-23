@@ -26,13 +26,13 @@ export default class Monument extends React.Component {
         return (
             <div className="page-container">
                 <Helmet title={title + ' | Monuments and Memorials'}/>
+                <div className="column main-column">
+                    <Details monument={monument}/>
+                </div>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
                     <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>
                     <RelatedMonuments title="Related Monuments or Memorials" monuments={relatedMonuments} pending={fetchRelatedPending}/>
-                </div>
-                <div className="column main-column">
-                    <Details monument={monument}/>
                 </div>
                 <div className="column visit-column">
                     <MapPhotoSphereTabs monument={monument}/>
