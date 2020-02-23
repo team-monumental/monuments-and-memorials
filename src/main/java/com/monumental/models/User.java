@@ -1,6 +1,7 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.monumental.security.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;

@@ -2,16 +2,14 @@ package com.monumental.services;
 
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Favorite;
-import com.monumental.models.Role;
 import com.monumental.models.User;
 import com.monumental.repositories.FavoriteRepository;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -34,40 +32,38 @@ public class FavoriteService {
 
     /**
      * Check if a User has favorited a specific Monument. By default, this uses the running user's Id. If userId is
-     * explicitly specified, it will be used instead if the running user has permission to view that user's favorites
+     * explicitly specified, it will be used instead
      * @param monumentId - The Id of the Monument to check for a favorite of
      * @param userId - An optional override if not checking for a favorite for the running user
      * @return - The Favorite, if it exists, otherwise null
-     * @throws HttpClientErrorException.Forbidden - If a userId is specified and the running user does not have permission
-     *                                              to view that user's favorites
-     * @throws ResourceNotFoundException - If there is no existing Favorite for the specified User and Monument
+     * @throws ResourceNotFoundException - If there is no existing Favorite for the specified User and Monument, or
+     *                                     there is no User for the specified userId
      */
-    public Favorite getFavorite(Integer monumentId, Integer userId)
-            throws HttpClientErrorException.Forbidden, ResourceNotFoundException {
+    public Favorite getFavoriteByMonumentIdAndUserId(Integer monumentId, Integer userId) throws ResourceNotFoundException {
         User currentUser = this.userService.getCurrentUser();
 
-        this.validateUserCanViewFavorites(currentUser, userId);
+        this.requireUserExistsIfNotNull(userId);
 
         Favorite favorite = userId == null ?
                 this.favoriteRepository.getByUserIdAndMonumentId(currentUser.getId(), monumentId) :
                 this.favoriteRepository.getByUserIdAndMonumentId(userId, monumentId);
 
         if (favorite == null) throw new ResourceNotFoundException();
+
         return favorite;
     }
 
     /**
      * Get all Favorites for a User. By default, this uses the running user's Id. If userId is explicitly specified, it
-     * will be used instead if the running user has permission to view that user's favorites
+     * will be used instead
      * @param userId - An optional override if not getting the favorites of the running user
      * @return - The Favorite, if it exists, otherwise null
-     * @throws HttpClientErrorException.Forbidden - If a userId is specified and the running user does not have permission
-     *                                              to view that user's favorites
+     * @throws ResourceNotFoundException - If a userId is specified and no such User exists
      */
-    public List<Favorite> getUserFavorites(Integer userId) throws HttpClientErrorException.Forbidden {
+    public List<Favorite> getUserFavorites(Integer userId) throws ResourceNotFoundException {
         User currentUser = this.userService.getCurrentUser();
 
-        this.validateUserCanViewFavorites(currentUser, userId);
+        this.requireUserExistsIfNotNull(userId);
 
         List<Favorite> favorites = userId == null ?
                 this.favoriteRepository.getAllByUserId(currentUser.getId()) :
@@ -78,23 +74,22 @@ public class FavoriteService {
         return favorites;
     }
 
-    public List<Favorite> getUserFavorites() throws HttpClientErrorException.Forbidden {
+    /**
+     * @see FavoriteService#getUserFavorites(Integer)
+     */
+    public List<Favorite> getUserFavorites() throws ResourceNotFoundException {
         return this.getUserFavorites(null);
     }
 
     /**
      * Create a Favorite for the specified Monument. By default, this uses the running user's Id. If userId is
-     * explicitly specified, it will be used instead if the running user has permission to change that user's favorites
+     * explicitly specified, it will be used instead
      * @param monumentId - The Id of the Monument to favorite
      * @param userId - An optional override if not favoriting for the running user
      * @return - The created Favorite
-     * @throws HttpClientErrorException.Forbidden - If a userId is specified and the running user does not have permission
-     *                                              to change that user's favorites
      */
-    public Favorite createFavorite(Integer monumentId, Integer userId) throws HttpClientErrorException.Forbidden {
+    public Favorite createFavorite(Integer monumentId, Integer userId) {
         User currentUser = this.userService.getCurrentUser();
-
-        this.validateUserCanManageFavorites(currentUser, userId);
 
         Favorite favorite = new Favorite(
             userId == null ?
@@ -109,54 +104,31 @@ public class FavoriteService {
 
     /**
      * Delete a Favorite for a specific Monument. By default, this uses the running user's Id. If userId is
-     * explicitly specified, it will be used instead if the running user has permission to change that user's favorites
+     * explicitly specified, it will be used instead
      * @param monumentId - The Id of the Monument to delete a favorite of
      * @param userId - An optional override if not deleting a favorite for the running user
-     * @throws HttpClientErrorException.Forbidden - If a userId is specified and the running user does not have permission
-     *                                              to change that user's favorites
-     * @throws ResourceNotFoundException - If there is no existing Favorite for the specified User and Monument
+     * @throws ResourceNotFoundException - If there is no existing Favorite for the specified User and Monument, or
+     *                                     there is no User for the specified userId
      */
     public void deleteFavorite(Integer monumentId, Integer userId)
-            throws HttpClientErrorException.Forbidden, HttpClientErrorException.NotFound {
-        User currentUser = this.userService.getCurrentUser();
-
-        this.validateUserCanManageFavorites(currentUser, userId);
-
-        Favorite favorite = userId == null ?
-                this.favoriteRepository.getByUserIdAndMonumentId(currentUser.getId(), monumentId) :
-                this.favoriteRepository.getByUserIdAndMonumentId(userId, monumentId);
-
-        if (favorite == null) throw new ResourceNotFoundException();
+            throws ResourceNotFoundException {
+        Favorite favorite = getFavoriteByMonumentIdAndUserId(monumentId, userId);
         this.favoriteRepository.delete(favorite);
     }
 
     /**
-     * Checks that the currentUser can view the Favorites of the specified userId. If userId is null this will always
-     * assume that this means that the running user is the target, and no exception will be thrown
-     * @param currentUser - The running User
-     * @param userId - The userId to check against
-     * @throws HttpClientErrorException.Forbidden - If a userId is specified and the running user does not have permission
-     *                                              to view that user's favorites
+     * Throw a ResourceNotFoundException if the specified userId does not match any User, if the userId is not null
+     * If the userId is null no exception will be thrown
+     * @param userId - The userId to look for
+     * @throws ResourceNotFoundException - If there is no matching User
      */
-    private void validateUserCanViewFavorites(User currentUser, Integer userId)
-            throws HttpClientErrorException.Forbidden {
-        if (userId != null && currentUser.getRole().equals(Role.COLLABORATOR)) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "You cannot view other users' favorites");
-        }
-    }
-
-    /**
-     * Checks that the currentUser can change the Favorites of the specified userId. If userId is null this will always
-     * assume that this means that the running user is the target, and no exception will be thrown
-     * @param currentUser - The running User
-     * @param userId - The userId to check against
-     * @throws HttpClientErrorException.Forbidden - If a userId is specified and the running user does not have permission
-     *                                              to change that user's favorites
-     */
-    private void validateUserCanManageFavorites(User currentUser, Integer userId)
-            throws HttpClientErrorException.Forbidden {
-        if (userId != null && !currentUser.getRole().equals(Role.RESEARCHER)) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "You cannot change other users' favorites");
+    private void requireUserExistsIfNotNull(Integer userId) throws ResourceNotFoundException {
+        if (userId != null) {
+            try {
+                this.userRepository.getOne(userId);
+            } catch (EntityNotFoundException e) {
+                throw new ResourceNotFoundException();
+            }
         }
     }
 }

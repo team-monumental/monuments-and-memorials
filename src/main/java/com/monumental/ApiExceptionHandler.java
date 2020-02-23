@@ -5,6 +5,7 @@ import com.monumental.util.string.StringHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -74,6 +75,16 @@ public class ApiExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
                         HttpStatus.UNAUTHORIZED.getReasonPhrase() :
+                        exception.getMessage()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ AccessDeniedException.class })
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException exception) {
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN,
+                StringHelper.isNullOrEmpty(exception.getMessage()) ?
+                        HttpStatus.FORBIDDEN.getReasonPhrase() :
                         exception.getMessage()
         );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
