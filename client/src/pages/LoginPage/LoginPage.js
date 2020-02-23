@@ -5,6 +5,7 @@ import Login from '../../components/Login/Login';
 import { login } from '../../actions/authentication';
 import * as QueryString from 'query-string';
 import { withRouter, Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 class LoginPage extends React.Component {
 
@@ -36,6 +37,7 @@ class LoginPage extends React.Component {
         }
         return (
             <div className="page d-flex justify-content-center mt-5">
+                <Helmet title="Login | Monuments and Memorials"/>
                 <Login onLogin={data => this.onLogin(data)}
                        result={result}
                        error={error && error.message}

@@ -6,6 +6,7 @@ import * as QueryString from 'query-string';
 import { Button, Card } from 'react-bootstrap';
 import { confirmSignup, resendConfirmation } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
+import { Helmet } from 'react-helmet';
 
 class ConfirmSignupPage extends React.Component {
 
@@ -66,6 +67,13 @@ class ConfirmSignupPage extends React.Component {
     }
 
     render() {
+        return (<>
+            <Helmet title="Confirm Signup | Monuments and Memorials"/>
+            {this.renderPage()}
+        </>);
+    }
+
+    renderPage() {
         const { confirmSignup, resendConfirmation, session } = this.props;
         const { resend, redirect } = this.state;
 

@@ -7,6 +7,7 @@ import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpda
 import Spinner from '../../components/Spinner/Spinner';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container for the page to update an existing Monument
@@ -48,6 +49,7 @@ class UpdateMonumentPage extends React.Component {
 
         return (
             <div className="update-monument-page-container">
+                {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
                 <Spinner show={fetchMonumentForUpdatePending || updateMonumentPending}/>
                 <div className="column thank-you-column">
                     <ContributionAppreciation/>

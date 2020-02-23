@@ -3,6 +3,7 @@ import './MapPage.scss';
 import MapResults from '../../components/Search/MapResults/MapResults';
 import { connect } from 'react-redux';
 import fetchMonuments from '../../actions/map';
+import { Helmet } from 'react-helmet';
 
 class MapPage extends React.Component {
 
@@ -36,6 +37,7 @@ class MapPage extends React.Component {
         const { monuments } = this.props;
         return (
             <div className="map-page">
+                <Helmet title="Map | Monuments and Memorials"/>
                 <MapResults monuments={monuments} useCircleMarkers zoom={this.state.zoomSize}/>
             </div>
         );

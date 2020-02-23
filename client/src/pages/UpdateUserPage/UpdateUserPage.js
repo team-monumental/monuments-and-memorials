@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import UpdateUser from '../../components/UpdateUser/UpdateUser';
 import { updateUser, clearUpdateUser } from '../../actions/user';
+import { Helmet } from 'react-helmet';
 
 class UpdateUserPage extends React.Component {
 
@@ -31,6 +32,7 @@ class UpdateUserPage extends React.Component {
         const { pending, success, error, needsConfirmation, session } = this.props;
         return (
             <div className="update-user page">
+                <Helmet title="Update Your Information | Monuments and Memorials"/>
                 <Spinner show={session.pending || pending}/>
                 {session.user &&
                     <UpdateUser user={session.user} success={success} error={error}

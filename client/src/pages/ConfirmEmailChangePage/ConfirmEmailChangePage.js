@@ -6,6 +6,7 @@ import * as QueryString from 'query-string';
 import { confirmEmailChange } from '../../actions/user';
 import { Card } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 class ConfirmEmailChangePage extends React.Component {
 
@@ -31,6 +32,7 @@ class ConfirmEmailChangePage extends React.Component {
         const { pending, success, error } = this.props;
         return (
             <div className="change-email-confirmation page d-flex flex-column align-items-center">
+                <Helmet title="Confirm Your Email Address | Monuments and Memorials"/>
                 <Spinner show={pending}/>
                 <Card>
                     <Card.Header>
