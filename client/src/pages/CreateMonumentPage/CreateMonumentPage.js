@@ -8,6 +8,7 @@ import createMonument from "../../actions/create";
 import { uploadImagesToS3 } from '../../utils/api-util';
 import Spinner from "../../components/Spinner/Spinner";
 import { withRouter } from "react-router-dom";
+import { Helmet } from 'react-helmet/es/Helmet';
 
 /**
  * Root container for the page to create a new Monument
@@ -41,6 +42,7 @@ class CreateMonumentPage extends React.Component {
 
         return (
             <div className="create-page-container">
+                <Helmet title="Create | Monuments and Memorials"/>
                 <Spinner show={createMonumentPending}/>
                 <div className="column thank-you-column">
                     <ContributionAppreciation/>

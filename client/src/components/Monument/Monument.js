@@ -1,6 +1,5 @@
 import React from 'react';
 import './Monument.scss';
-import { Helmet } from 'react-helmet';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
@@ -25,7 +24,6 @@ export default class Monument extends React.Component {
 
         return (
             <div className="page-container">
-                <Helmet title={title + ' | Monuments and Memorials'}/>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
                     <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>

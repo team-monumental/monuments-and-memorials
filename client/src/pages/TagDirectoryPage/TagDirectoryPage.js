@@ -4,6 +4,7 @@ import fetchTags from '../../actions/tagDirectory';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import Tags from "../../components/Tags/Tags";
+import { Helmet } from 'react-helmet/es/Helmet';
 
 /**
  * Root container component for the Tag Directory Page
@@ -30,6 +31,7 @@ class TagDirectoryPage extends React.Component {
 
         return (
             <div className="tag-directory-page-container">
+                <Helmet title="Tags and Materials | Monuments and Memorials"/>
                 <Spinner show={fetchTagsPending}/>
                 <div className="page-title">
                     <h1>

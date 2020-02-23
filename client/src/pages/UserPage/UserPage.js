@@ -3,6 +3,7 @@ import './UserPage.scss';
 import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
+import { Helmet } from 'react-helmet/es/Helmet';
 
 class UserPage extends React.Component {
 
@@ -16,6 +17,7 @@ class UserPage extends React.Component {
         const { session } = this.props;
         return (
             <div className="account page">
+                <Helmet title="Account | Monuments and Memorials"/>
                 <Spinner show={session.pending}/>
                 {session.user &&
                     <User user={session.user}/>

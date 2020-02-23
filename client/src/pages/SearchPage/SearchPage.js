@@ -5,6 +5,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
 import search from '../../utils/search';
+import { Helmet } from 'react-helmet/es/Helmet';
 
 /**
  * Root container component for the search page which handles retrieving the search results
@@ -49,6 +50,7 @@ class SearchPage extends React.Component {
         const { monuments, count, pending } = this.props;
         return (
             <div className="h-100">
+                <Helmet title="Search | Monuments and Memorials"/>
                 <Spinner show={pending}/>
                 <Search monuments={monuments} {...this.getQueryParams()} count={count}
                         onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}

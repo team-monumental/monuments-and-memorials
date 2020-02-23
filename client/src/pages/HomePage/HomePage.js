@@ -3,6 +3,7 @@ import './HomePage.scss';
 import SuggestChanges from '../../components/Monument/SuggestChanges/SuggestChanges';
 import { NavLink, withRouter } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
+import { Helmet } from 'react-helmet/es/Helmet';
 
 class HomePage extends React.Component {
 
@@ -26,6 +27,7 @@ class HomePage extends React.Component {
 
         return (
             <>
+                <Helmet title="Monuments and Memorials"/>
                 {alert && !dismissAlert &&
                     <Alert variant="danger"
                            onClose={() => this.setState({dismissAlert: true})}

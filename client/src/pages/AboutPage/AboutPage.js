@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import AboutInformation from '../../components/About/AboutInformation/AboutInformation';
 import fetchAboutPageStatistics from '../../actions/about-page';
 import Spinner from '../../components/Spinner/Spinner';
+import { Helmet } from 'react-helmet/es/Helmet';
 
 /**
  * Root container component for the page that contains information about the site
@@ -27,6 +28,7 @@ class AboutPage extends React.Component {
 
         return (
             <div className="about-page-container">
+                <Helmet title="About | Monuments and Memorials"/>
                 <Spinner show={fetchContributorsPending || fetchMonumentStatisticsPending}/>
                 <AboutInformation
                     contributors={contributorsError ? null : contributors}
