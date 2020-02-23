@@ -1,8 +1,10 @@
 import React from 'react';
+import './Details.scss';
 import Tags from '../../Tags/Tags';
 import Gallery from '../Gallery/Gallery';
 import About from './About/About';
 import Address from './Address/Address';
+import { Button } from 'react-bootstrap';
 
 /**
  * Displays all the main info about a Monument, for the Monument's record page
@@ -10,7 +12,7 @@ import Address from './Address/Address';
 export default class Details extends React.Component {
 
     render() {
-        const { monument } = this.props;
+        const { monument, favorite, fetchFavoritePending, onToggleFavorite } = this.props;
 
         let inscription;
         if (monument.inscription) {
@@ -37,10 +39,22 @@ export default class Details extends React.Component {
         }
 
         return (
-            <div className="main">
+            <div className="details">
                 <div>
-                    <div className="h1">
-                        {monument.title}
+                    <div className="d-flex">
+                        <div className="h1">
+                            {monument.title}
+                        </div>
+                        <Button disabled={fetchFavoritePending} variant="bare"
+                                onClick={() => onToggleFavorite()}
+                                className={'p-0 text-primary ml-2 mr-0 my-0 favorite-icon' + (favorite ? ' favorited' : '')}>
+                            <i className="material-icons">
+                                {favorite ? 'star' : 'star_border'}
+                            </i>
+                            <i className="material-icons hover">
+                                star
+                            </i>
+                        </Button>
                     </div>
                     <div>
                         <div className="fields">

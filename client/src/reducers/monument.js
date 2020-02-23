@@ -1,21 +1,30 @@
-import { FETCH_MONUMENT_ERROR, FETCH_MONUMENT_PENDING, FETCH_MONUMENT_SUCCESS, FETCH_NEARBY_MONUMENTS_PENDING,
+import {
+    FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, FETCH_NEARBY_MONUMENTS_PENDING,
     FETCH_NEARBY_MONUMENTS_SUCCESS, FETCH_NEARBY_MONUMENTS_ERROR, FETCH_RELATED_MONUMENTS_PENDING,
-    FETCH_RELATED_MONUMENTS_SUCCESS, FETCH_RELATED_MONUMENTS_ERROR
+    FETCH_RELATED_MONUMENTS_SUCCESS, FETCH_RELATED_MONUMENTS_ERROR, FETCH_FAVORITE_PENDING, FETCH_FAVORITE_SUCCESS,
+    FETCH_FAVORITE_ERROR, CREATE_FAVORITE_ERROR, CREATE_FAVORITE_PENDING, CREATE_FAVORITE_SUCCESS,
+    DELETE_FAVORITE_ERROR, DELETE_FAVORITE_PENDING, DELETE_FAVORITE_SUCCESS
 } from '../constants';
+import basicReducer from '../utils/basic-reducer';
 
 const initialState = {
     fetchMonumentPending: false,
     fetchNearbyPending: false,
     fetchRelatedPending: false,
+    fetchFavoritePending: false,
     monument: {},
     nearbyMonuments: {},
     relatedMonuments: {},
-    error: null
+    favorite: null,
+    fetchMonumentError: null,
+    fetchNearbyError: null,
+    fetchRelatedError: null,
+    fetchFavoriteError: null
 };
 
 // Tracks the progress of getting the monument and related records for the monument record page
 // As well as fetching the nearby and related Monuments for the Monument
-export default function monumentPage(state = initialState, action) {
+export function monumentPage(state = initialState, action) {
     switch (action.type) {
         case FETCH_MONUMENT_PENDING:
             return {
@@ -32,7 +41,7 @@ export default function monumentPage(state = initialState, action) {
             return {
                 ...state,
                 fetchMonumentPending: false,
-                error: action.error
+                fetchMonumentError: action.error
             };
         case FETCH_NEARBY_MONUMENTS_PENDING:
             return {
@@ -49,7 +58,7 @@ export default function monumentPage(state = initialState, action) {
             return {
                 ...state,
                 fetchNearbyPending: false,
-                error: action.error
+                fetchNearbyError: action.error
             };
         case FETCH_RELATED_MONUMENTS_PENDING:
             return {
@@ -66,9 +75,54 @@ export default function monumentPage(state = initialState, action) {
             return {
                 ...state,
                 fetchRelatedPending: false,
-                error: action.error
+                fetchRelatedError: action.error
+            };
+        case FETCH_FAVORITE_PENDING:
+            return {
+                ...state,
+                fetchFavoritePending: true
+            };
+        case FETCH_FAVORITE_SUCCESS:
+            return {
+                ...state,
+                fetchFavoritePending: false,
+                favorite: action.payload && action.payload.result
+            };
+        case FETCH_FAVORITE_ERROR:
+            return {
+                ...state,
+                fetchFavoritePending: false,
+                fetchFavoriteError: action.error
             };
         default:
             return state;
     }
+}
+
+const initialCreateFavoriteState = {
+    pending: false,
+    result: null,
+    error: null
+};
+
+export function createFavorite(state = initialCreateFavoriteState, action) {
+    return basicReducer(state, action, {
+        pending: CREATE_FAVORITE_PENDING,
+        success: CREATE_FAVORITE_SUCCESS,
+        error: CREATE_FAVORITE_ERROR
+    });
+}
+
+const initialDeleteFavoriteState = {
+    pending: false,
+    success: null,
+    error: null
+};
+
+export function deleteFavorite(state = initialDeleteFavoriteState, action) {
+    return basicReducer(state, action, {
+        pending: DELETE_FAVORITE_PENDING,
+        success: DELETE_FAVORITE_SUCCESS,
+        error: DELETE_FAVORITE_ERROR
+    });
 }

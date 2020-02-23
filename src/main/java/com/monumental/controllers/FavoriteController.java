@@ -30,6 +30,13 @@ public class FavoriteController {
         return this.favoriteService.getFavorite(monumentId, userId);
     }
 
+    @GetMapping("/api/favorites")
+    @PreAuthorize("isAuthenticated()")
+    public List<Favorite> getUserFavorites()
+            throws HttpClientErrorException.Forbidden {
+        return this.favoriteService.getUserFavorites();
+    }
+
     @GetMapping("/api/favorites/{userId}")
     @PreAuthorize("isAuthenticated()")
     public List<Favorite> getUserFavorites(@PathVariable(value = "userId", required = false) Integer userId)

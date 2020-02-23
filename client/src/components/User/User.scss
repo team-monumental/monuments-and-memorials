@@ -6,7 +6,7 @@
     .card {
         @include media-breakpoint-up(md) {
             min-width: 450px;
-            max-width: 450px;
+            max-width: 600px;
         }
     }
 

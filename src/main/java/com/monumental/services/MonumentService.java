@@ -302,7 +302,6 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
                                  Integer distance, List<String> tags, List<String> materials, SortType sortType,
                                  Date start, Date end, Integer decade) {
@@ -321,12 +320,7 @@ public class MonumentService extends ModelService<Monument> {
                 ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
                 : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
             : this.getWithCriteriaQuery(query);
-        // Cause hibernate to load in the related records
-        for (Monument monument : monuments) {
-            monument.getTags();
-            monument.getMaterials();
-            monument.getImages().size();
-        }
+        this.loadLazyLoadedCollections(monuments);
         return monuments;
     }
 
@@ -1238,6 +1232,27 @@ public class MonumentService extends ModelService<Monument> {
     public void populateUpdatedMonumentLocation(Monument newMonument, String oldAddress, Point oldCoordinates) {
         this.populateUpdatedMonumentAddress(newMonument, oldAddress, oldCoordinates);
         this.populateUpdatedMonumentCoordinates(newMonument, oldCoordinates, oldAddress);
+    }
+
+    /**
+     * Cause hibernate to load in the related records
+     * @param monuments - The Monuments to force load lazy loaded collections on
+     */
+    public void loadLazyLoadedCollections(List<Monument> monuments) {
+        for (Monument monument : monuments) {
+            this.loadLazyLoadedCollections(monument);
+        }
+    }
+
+    /**
+     * Cause hibernate to load in the related records
+     * @param monument - The Monument to force load lazy loaded collections on
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void loadLazyLoadedCollections(Monument monument) {
+        monument.getTags();
+        monument.getMaterials();
+        monument.getImages().size();
     }
 
     /**

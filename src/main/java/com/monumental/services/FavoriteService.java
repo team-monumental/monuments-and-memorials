@@ -29,6 +29,9 @@ public class FavoriteService {
     @Autowired
     MonumentRepository monumentRepository;
 
+    @Autowired
+    MonumentService monumentService;
+
     /**
      * Check if a User has favorited a specific Monument. By default, this uses the running user's Id. If userId is
      * explicitly specified, it will be used instead if the running user has permission to view that user's favorites
@@ -66,9 +69,17 @@ public class FavoriteService {
 
         this.validateUserCanViewFavorites(currentUser, userId);
 
-        return userId == null ?
+        List<Favorite> favorites = userId == null ?
                 this.favoriteRepository.getAllByUserId(currentUser.getId()) :
                 this.favoriteRepository.getAllByUserId(userId);
+        for (Favorite favorite : favorites) {
+            this.monumentService.loadLazyLoadedCollections(favorite.getMonument());
+        }
+        return favorites;
+    }
+
+    public List<Favorite> getUserFavorites() throws HttpClientErrorException.Forbidden {
+        return this.getUserFavorites(null);
     }
 
     /**

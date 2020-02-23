@@ -2,11 +2,12 @@ import * as React from 'react';
 import './User.scss';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Favorites from './Favorites/Favorites';
 
 export default class User extends React.Component {
 
     render() {
-        const { user } = this.props;
+        const { user, favorites } = this.props;
         return (
             <div className="d-flex flex-column align-items-center">
                 <Card className="mb-4">
@@ -49,19 +50,7 @@ export default class User extends React.Component {
                         </div>
                     </Card.Body>
                 </Card>
-                <Card>
-                    <Card.Header>
-                        <Card.Title>Your Favorites</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        {user.favorites && <>
-
-                        </>}
-                        {(!user.favorites || !user.favorites.length) && <>
-                            You don't have any favorites yet. You can favorite monuments and memorials by clicking the star on their page.
-                        </>}
-                    </Card.Body>
-                </Card>
+                <Favorites favorites={favorites.result} pending={favorites.pending} error={favorites.error}/>
             </div>
         );
     }
