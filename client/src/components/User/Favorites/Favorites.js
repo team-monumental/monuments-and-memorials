@@ -7,7 +7,7 @@ import SearchResult from '../../Search/SearchResult/SearchResult';
 export default class Favorites extends React.Component {
 
     render() {
-        const { favorites, pending } = this.props;
+        const { favorites, pending, error } = this.props;
 
         return (<>
             <Spinner show={pending}/>
@@ -21,8 +21,11 @@ export default class Favorites extends React.Component {
                             <SearchResult key={favorite.monument.id} monument={favorite.monument} includeIndexInTitle={false}/>
                         ))}
                     </>}
-                    {(!favorites || !favorites.length) && <>
+                    {(!favorites || !favorites.length) && !error && <>
                         You don't have any favorites yet. You can favorite monuments and memorials by clicking the star on their page.
+                    </>}
+                    {error && <>
+                        Oops! Something went wrong while getting your favorites.
                     </>}
                 </Card.Body>
             </Card>
