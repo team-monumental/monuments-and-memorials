@@ -30,8 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 import java.util.*;
-import java.util.Locale;
-import java.util.UUID;
 
 @Service
 @Transactional
