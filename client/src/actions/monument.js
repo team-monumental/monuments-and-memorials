@@ -39,7 +39,6 @@ const actions = {
             uri: '/api/favorite'
         },
         delete: {
-
             pending: DELETE_FAVORITE_PENDING,
             success: DELETE_FAVORITE_SUCCESS,
             error: DELETE_FAVORITE_ERROR,

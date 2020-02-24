@@ -14,7 +14,6 @@ import * as slugify from 'slugify';
 class MonumentPage extends React.Component {
 
     static mapStateToProps(state) {
-        console.log(state.monumentPage);
         return {
             ...state.monumentPage,
             createFavorite: state.createFavorite,
