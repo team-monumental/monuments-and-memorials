@@ -49,18 +49,18 @@ export default class About extends React.Component {
 
         return [{
             'Title': monument.title,
-            'Artist': monument.artist ? monument.artist : '',
+            'Artist': monument.artist || '',
             'Date': monument.date ? prettyPrintDate(monument.date) : '',
-            'City': monument.city ? monument.city : '',
-            'State': monument.state ? monument.state : '',
-            'Address': monument.address ? monument.address : '',
+            'City': monument.city || '',
+            'State': monument.state || '',
+            'Address': monument.address || '',
             'Coordinates': monument.coordinates ?
                 `${monument.coordinates.coordinates[1]}, ${monument.coordinates.coordinates[0]}` :
                 '',
             'Materials' : materialsList,
             'Tags': tagsList,
-            'Description': monument.description ? monument.description : '',
-            'Inscription': monument.inscription ? monument.inscription : '',
+            'Description': monument.description || '',
+            'Inscription': monument.inscription || '',
             'Contributors': contributionsList,
             'References': referencesList,
             'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
