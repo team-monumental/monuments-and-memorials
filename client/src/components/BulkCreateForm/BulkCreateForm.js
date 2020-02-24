@@ -13,6 +13,8 @@ import ExportToCsvButton from '../Export/ExportToCsvButton/ExportToCsvButton';
  */
 export default class BulkCreateForm extends React.Component {
 
+    csvExportFields = ['Row Number', 'Warnings', 'Errors'];
+
     constructor(props) {
         super(props);
 
@@ -217,10 +219,6 @@ export default class BulkCreateForm extends React.Component {
             showFieldMapping: false,
             mapping: []
         });
-    }
-
-    buildCsvExportFields() {
-        return ['Row Number', 'Warnings', 'Errors'];
     }
 
     buildCsvExportData(results) {
@@ -484,7 +482,7 @@ export default class BulkCreateForm extends React.Component {
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
-                <ExportToCsvButton className="mr-2" fields={this.buildCsvExportFields()} data={this.buildCsvExportData(results)}
+                <ExportToCsvButton className="mr-2" fields={this.csvExportFields} data={this.buildCsvExportData(results)}
                                    exportTitle={`Validation Results ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 {warningCount > 0 && errorCount === 0 &&
                     <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>

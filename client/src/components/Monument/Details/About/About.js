@@ -10,10 +10,8 @@ import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButt
  */
 export default class About extends React.Component {
 
-    buildCsvExportFields() {
-        return ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
-            'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
-    }
+    csvExportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
+        'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 
     buildCsvExportData() {
         const { monument, contributions, references } = this.props;
@@ -21,31 +19,18 @@ export default class About extends React.Component {
         let materialsList = '';
         let tagsList = '';
         if (monument.monumentTags && monument.monumentTags.length) {
-            const materialNames = [];
-            const tagNames = [];
-            for (const monumentTag of monument.monumentTags) {
-                if (monumentTag.tag.isMaterial) {
-                    materialNames.push(monumentTag.tag.name);
-                }
-                else {
-                    tagNames.push(monumentTag.tag.name);
-                }
-            }
-            materialsList = materialNames.join(',');
-            tagsList = tagNames.join(',');
+            materialsList = monument.monumentTags.filter(monumentTag => monumentTag.tag.isMaterial)
+                .map(monumentTag => monumentTag.tag.name).join(',');
+            tagsList = monument.monumentTags.filter(monumentTag => !monumentTag.tag.isMaterial)
+                .map(monumentTag => monumentTag.tag.name).join(',');
         }
 
-        let contributionsList = '';
-        if (contributions && contributions.length) {
-            const contributors = contributions.map(contribution => contribution.submittedBy);
-            contributionsList = contributors.join(',');
-        }
+        const prepareArray = (array=[], field) => {
+            return array.map(el => el[field]).join(',');
+        };
 
-        let referencesList = '';
-        if (references && references.length) {
-            const referenceUrls = references.map(reference => reference.url);
-            referencesList = referenceUrls.join(',');
-        }
+        const contributionsList = prepareArray(contributions, 'submittedBy');
+        const referencesList = prepareArray(references, 'url');
 
         return [{
             'Title': monument.title,
@@ -68,7 +53,6 @@ export default class About extends React.Component {
     }
 
     render() {
-
         const { monument, contributions, references } = this.props;
 
         let title;
@@ -219,7 +203,7 @@ export default class About extends React.Component {
                         {referencesList}
                         {lastUpdated}
                     </div>
-                    <ExportToCsvButton className="mt-2" fields={this.buildCsvExportFields()} data={this.buildCsvExportData()}
+                    <ExportToCsvButton className="mt-2" fields={this.csvExportFields} data={this.buildCsvExportData()}
                                        exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 </Card.Body>
             </Card>
