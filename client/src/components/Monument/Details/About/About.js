@@ -1,9 +1,8 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { prettyPrintDate } from '../../../../utils/string-util';
-import Button from 'react-bootstrap/Button';
-import { exportToCsv } from '../../../../utils/export-util';
 import moment from 'moment';
+import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButton';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
@@ -11,22 +10,28 @@ import moment from 'moment';
  */
 export default class About extends React.Component {
 
-    downloadCSV() {
-        const { monument, contributions, references } = this.props;
-        console.log(monument);
+    buildCsvExportFields() {
+        return ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
+            'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
+    }
 
-        const fields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
-            'Contributors', 'References', 'Last Updated'];
+    buildCsvExportData() {
+        const { monument, contributions, references } = this.props;
 
         let materialsList = '';
-        if (monument.materials && monument.materials.length) {
-            const materialNames = monument.materials.map(material => material.name);
-            materialsList = materialNames.join(',');
-        }
-
         let tagsList = '';
-        if (monument.tags && monument.tags.length) {
-            const tagNames = monument.tags.map(tag => tag.name);
+        if (monument.monumentTags && monument.monumentTags.length) {
+            const materialNames = [];
+            const tagNames = [];
+            for (const monumentTag of monument.monumentTags) {
+                if (monumentTag.tag.isMaterial) {
+                    materialNames.push(monumentTag.tag.name);
+                }
+                else {
+                    tagNames.push(monumentTag.tag.name);
+                }
+            }
+            materialsList = materialNames.join(',');
             tagsList = tagNames.join(',');
         }
 
@@ -41,8 +46,8 @@ export default class About extends React.Component {
             const referenceUrls = references.map(reference => reference.url);
             referencesList = referenceUrls.join(',');
         }
-        
-        const csvMonument = {
+
+        return [{
             'Title': monument.title,
             'Artist': monument.artist ? monument.artist : '',
             'Date': monument.date ? prettyPrintDate(monument.date) : '',
@@ -54,18 +59,12 @@ export default class About extends React.Component {
                 '',
             'Materials' : materialsList,
             'Tags': tagsList,
+            'Description': monument.description ? monument.description : '',
+            'Inscription': monument.inscription ? monument.inscription : '',
             'Contributors': contributionsList,
             'References': referencesList,
             'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
-        };
-
-        const csv = exportToCsv(fields, [csvMonument]);
-        const encodedUri = encodeURI(csv);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}.csv`);
-        document.body.appendChild(link);
-        link.click();
+        }];
     }
 
     render() {
@@ -220,9 +219,8 @@ export default class About extends React.Component {
                         {referencesList}
                         {lastUpdated}
                     </div>
-                    <Button variant="light" onClick={(data) => this.downloadCSV(data)}>
-                        Export to CSV
-                    </Button>
+                    <ExportToCsvButton className="mt-2" fields={this.buildCsvExportFields()} data={this.buildCsvExportData()}
+                                       exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 </Card.Body>
             </Card>
         )

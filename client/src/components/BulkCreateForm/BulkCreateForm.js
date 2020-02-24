@@ -6,7 +6,7 @@ import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
 import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
 import moment from 'moment';
-import { exportToCsv } from '../../utils/export-util';
+import ExportToCsvButton from "../Export/ExportToCsvButton/ExportToCsvButton";
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -219,20 +219,16 @@ export default class BulkCreateForm extends React.Component {
         });
     }
 
-    downloadCSV(results) {
-        const fields = ['Row Number', 'Warnings', 'Errors'];
-        results = results.map(result => {return {
+    buildCsvExportFields() {
+        return ['Row Number', 'Warnings', 'Errors'];
+    }
+
+    buildCsvExportData(results) {
+        return results.map(result => {return {
             'Row Number': result.index,
             'Warnings': result.warnings.join('\n'),
             'Errors': result.errors.join('\n')
         }});
-        const csv = exportToCsv(fields, results);
-        const encodedUri = encodeURI(csv);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Validation Results ${moment().format('YYYY-MM-DD hh:mm')}.csv`);
-        document.body.appendChild(link);
-        link.click();
     }
 
     render() {
@@ -488,9 +484,8 @@ export default class BulkCreateForm extends React.Component {
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
-                <Button variant="light" className="mr-2" onClick={() => this.downloadCSV(results)}>
-                    Export to CSV
-                </Button>
+                <ExportToCsvButton className="mr-2" fields={this.buildCsvExportFields()} data={this.buildCsvExportData(results)}
+                                   exportTitle={`Validation Results ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 {warningCount > 0 && errorCount === 0 &&
                     <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
                         Continue With Warnings
