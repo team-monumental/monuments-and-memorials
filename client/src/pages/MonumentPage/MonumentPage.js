@@ -6,6 +6,7 @@ import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument, { createFavorite, deleteFavorite } from '../../actions/monument';
 import * as slugify from 'slugify';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container component for the monument record page which handles retrieving the monument
@@ -63,6 +64,7 @@ class MonumentPage extends React.Component {
         } = this.props;
         return (
             <div className="page h-100">
+                {monument && <Helmet title={monument.title + ' | Monuments and Memorials'}/>}
                 <Spinner show={fetchMonumentPending}/>
                 <Monument monument={monument} nearbyMonuments={nearbyMonuments} relatedMonuments={relatedMonuments}
                           fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}

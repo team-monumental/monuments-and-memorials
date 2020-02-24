@@ -7,6 +7,7 @@ import { bulkValidateMonuments, bulkCreateMonuments } from '../../actions/bulk';
 import Spinner from '../../components/Spinner/Spinner';
 import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
 import { Modal, ProgressBar } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
 
 /**
  * Root container for the page to bulk create Monuments
@@ -65,6 +66,7 @@ class MonumentBulkCreatePage extends React.Component {
 
         return (
             <div className="page d-flex justify-content-center">
+                <Helmet title="Bulk Create | Monuments and Memorials"/>
                 <Spinner show={bulkValidateMonumentsPending}/>
                 <BulkCreateForm
                     onValidationSubmit={(form) => this.handleValidationSubmit(form)}

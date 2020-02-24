@@ -78,7 +78,7 @@ export default class Login extends React.Component {
             <Card className="login">
                 <Card.Header>
                     <Card.Title className="text-center">
-                        <Logo size="35px"/>
+                        <Logo/>
                         <span>
                             Login
                         </span>

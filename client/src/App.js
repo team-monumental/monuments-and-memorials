@@ -52,7 +52,7 @@ class App extends React.Component {
         const { headerHeight } = this.state;
         return (
             <div className="App">
-                <Helmet title={'Monuments and Memorials'}/>
+                <Helmet title="Monuments and Memorials"/>
                 <Toaster/>
                 <Router>
                     <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>

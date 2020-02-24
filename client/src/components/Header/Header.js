@@ -59,7 +59,7 @@ class Header extends React.Component {
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
                 <div className="left">
-                    <Logo size="35px"/>
+                    <Logo/>
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
@@ -80,7 +80,7 @@ class Header extends React.Component {
                     {window.innerWidth < 768 && <>
                         <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
                             <Modal.Header closeButton>
-                                <Logo size="35px"/>
+                                <Logo/>
                             </Modal.Header>
                             <Modal.Body>
                                 <SearchBar onCloseModal={() => {

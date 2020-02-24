@@ -1,6 +1,5 @@
 import React from 'react';
 import './Monument.scss';
-import { Helmet } from 'react-helmet';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';

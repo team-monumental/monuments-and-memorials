@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import BeginPasswordReset from '../../components/BeginPasswordReset/BeginPasswordReset';
 import { beginPasswordReset } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
+import { Helmet } from 'react-helmet';
 
 class BeginPasswordResetPage extends React.Component {
 
@@ -21,6 +22,7 @@ class BeginPasswordResetPage extends React.Component {
         const { success, error, pending } = this.props;
         return (
             <div className="page d-flex justify-content-center mt-5">
+                <Helmet title="Reset Password | Monuments and Memorials"/>
                 {pending && <Spinner show={pending}/>}
                 <BeginPasswordReset onResetPassword={data => this.onSubmit(data)}
                     success={success}

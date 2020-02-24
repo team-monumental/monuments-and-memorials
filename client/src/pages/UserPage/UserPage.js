@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 import { fetchFavorites } from '../../actions/user';
+import { Helmet } from 'react-helmet';
 
 class UserPage extends React.Component {
 
@@ -23,6 +24,7 @@ class UserPage extends React.Component {
         const { session, favorites } = this.props;
         return (
             <div className="account page">
+                <Helmet title="Account | Monuments and Memorials"/>
                 <Spinner show={session.pending}/>
                 {session.user &&
                     <User user={session.user} favorites={favorites}/>

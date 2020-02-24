@@ -59,7 +59,7 @@ export default class BeginPasswordReset extends React.Component {
             <Card className="password-reset pb-2">
                 <Card.Header>
                     <Card.Title className="text-center">
-                        <Logo size="35px"/>
+                        <Logo/>
                         <span>
                             Reset Your Password
                         </span>
