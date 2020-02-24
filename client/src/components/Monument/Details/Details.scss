@@ -1,0 +1,38 @@
+@import "../../../theme";
+
+.details {
+    .favorite-icon {
+        transform: translateY(2px);
+        cursor: pointer;
+        height: 0;
+        &:focus {
+            box-shadow: none;
+        }
+        i {
+            font-size: 24px;
+            color: $primary;
+            position: absolute;
+            transition: all 0.075s ease-in;
+            &:not(.hover) {
+                opacity: 1;
+            }
+            &.hover {
+                opacity: 0;
+            }
+        }
+        &:hover {
+            i {
+                &:not(.hover) {
+                    opacity: 0;
+                }
+                &.hover {
+                    opacity: 1;
+                    transform: scale(1.15) translate(-2px, 3px);
+                }
+            }
+        }
+        &.favorited:hover i.hover {
+            color: darken($primary, 10%);
+        }
+    }
+}

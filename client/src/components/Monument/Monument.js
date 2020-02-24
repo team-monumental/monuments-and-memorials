@@ -11,8 +11,11 @@ import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
 export default class Monument extends React.Component {
 
     render() {
+        let {
+            monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending, onToggleFavorite,
+            favorite, fetchFavoritePending
+        } = this.props;
 
-        let { monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending } = this.props;
         if (nearbyMonuments && nearbyMonuments.length) {
             nearbyMonuments = nearbyMonuments.filter(nearbyMonument => nearbyMonument.id !== monument.id);
         }
@@ -24,13 +27,15 @@ export default class Monument extends React.Component {
 
         return (
             <div className="page-container">
+                <Helmet title={title + ' | Monuments and Memorials'}/>
+                <div className="column main-column">
+                    <Details monument={monument} favorite={favorite} fetchFavoritePending={fetchFavoritePending}
+                             onToggleFavorite={() => onToggleFavorite()}/>
+                </div>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>
                     <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>
                     <RelatedMonuments title="Related Monuments or Memorials" monuments={relatedMonuments} pending={fetchRelatedPending}/>
-                </div>
-                <div className="column main-column">
-                    <Details monument={monument}/>
                 </div>
                 <div className="column visit-column">
                     <MapPhotoSphereTabs monument={monument}/>

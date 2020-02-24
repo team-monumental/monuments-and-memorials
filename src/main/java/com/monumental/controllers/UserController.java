@@ -5,16 +5,14 @@ import com.monumental.controllers.helpers.PasswordResetRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
-import com.monumental.models.Role;
+import com.monumental.security.Role;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 

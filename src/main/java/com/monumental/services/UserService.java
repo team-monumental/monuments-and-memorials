@@ -4,7 +4,7 @@ import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
-import com.monumental.models.Role;
+import com.monumental.security.Role;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
 import com.monumental.repositories.UserRepository;
@@ -15,21 +15,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -50,9 +49,6 @@ public class UserService extends ModelService<User> {
 
     @Autowired
     private JavaMailSender mailSender;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
     private String outboundEmailAddress;
@@ -205,6 +201,78 @@ public class UserService extends ModelService<User> {
         this.userRepository.save(user);
         this.tokenRepository.delete(verificationToken);
         return verificationToken;
+    }
+
+    /**
+     * Require that the current user has a specific Role, otherwise throw AccessDeniedException
+     * @param role - The Role to check for
+     * @throws AccessDeniedException - If the running User does not have the specified Role
+     * @throws UnauthorizedException - If there is no User in the session, i.e. logged out
+     */
+    public void requireUserIsInRole(Role role) throws AccessDeniedException, UnauthorizedException {
+        if (!this.getCurrentUserRoles().contains(role)) {
+            throw new AccessDeniedException("Access is denied");
+        }
+    }
+
+    /**
+     * Require that the current user have one of the desired Roles, otherwise throw AccessDeniedException
+     * @param desiredRoles - The Roles to check for
+     * @throws AccessDeniedException - If the running User has none of the specified Roles
+     * @throws UnauthorizedException - If there is no User in the session, i.e. logged out
+     */
+    public void requireUserIsInRoles(Role[] desiredRoles) throws AccessDeniedException, UnauthorizedException {
+        boolean hasRole = false;
+        List<Role> userRoles = this.getCurrentUserRoles();
+        for (Role role : desiredRoles) {
+            if (userRoles.contains(role)) {
+                hasRole = true;
+                break;
+            }
+        }
+        if (!hasRole) {
+            throw new AccessDeniedException("Access is denied");
+        }
+    }
+
+    /**
+     * Throw a ResourceNotFoundException if the specified userId does not match any User, if the userId is not null
+     * If the userId is null no exception will be thrown
+     * @param userId - The userId to look for
+     * @throws ResourceNotFoundException - If there is no matching User
+     */
+    public void requireUserExistsIfNotNull(Integer userId) throws ResourceNotFoundException {
+        if (userId != null) {
+            try {
+                this.userRepository.getOne(userId);
+            } catch (EntityNotFoundException e) {
+                throw new ResourceNotFoundException();
+            }
+        }
+    }
+
+    /**
+     * Get the Roles for the running User. This should only ever be one currently, but Spring Security
+     * allows for multiple Roles per User so we allow for it here
+     * @return - The Roles of the running User
+     * @throws UnauthorizedException - If there is no running User, i.e. not logged in
+     */
+    private List<Role> getCurrentUserRoles() throws UnauthorizedException {
+        return this.getRolesFromSession(this.getSession());
+    }
+
+    /**
+     * Get the Roles for the User of a given session.
+     * @param session - The session to check against
+     * @return - The Roles the User of the session has
+     * @throws UnauthorizedException - If the session doesn't have a logged in User
+     */
+    private List<Role> getRolesFromSession(UserDetails session) throws UnauthorizedException {
+        List<Role> roles = new ArrayList<>();
+        for (GrantedAuthority authority : session.getAuthorities()) {
+            roles.add(Role.valueOf(authority.getAuthority()));
+        }
+        return roles;
     }
 
     /**

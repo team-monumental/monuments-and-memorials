@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
-import fetchMonument from '../../actions/monument';
+import fetchMonument, { createFavorite, deleteFavorite } from '../../actions/monument';
 import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
 
@@ -15,7 +15,11 @@ import { Helmet } from 'react-helmet';
 class MonumentPage extends React.Component {
 
     static mapStateToProps(state) {
-        return state.monumentPage;
+        return {
+            ...state.monumentPage,
+            createFavorite: state.createFavorite,
+            deleteFavorite: state.deleteFavorite
+        };
     }
 
     componentDidMount() {
@@ -42,18 +46,30 @@ class MonumentPage extends React.Component {
         }
     }
 
+    handleToggleFavorite() {
+        const { favorite, monument, dispatch } = this.props;
+        if (favorite) {
+            dispatch(deleteFavorite(monument));
+        } else {
+            dispatch(createFavorite(monument));
+        }
+    }
+
     render() {
         // Change the url to include the slug if it's not present
         this.redirectToSlug();
         const {
-            monument, nearbyMonuments, relatedMonuments, fetchMonumentPending, fetchNearbyPending, fetchRelatedPending,
+            monument, nearbyMonuments, relatedMonuments, favorite,
+            fetchMonumentPending, fetchNearbyPending, fetchRelatedPending, fetchFavoritePending
         } = this.props;
         return (
             <div className="page h-100">
                 {monument && <Helmet title={monument.title + ' | Monuments and Memorials'}/>}
                 <Spinner show={fetchMonumentPending}/>
                 <Monument monument={monument} nearbyMonuments={nearbyMonuments} relatedMonuments={relatedMonuments}
-                          fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}/>
+                          fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}
+                          fetchFavoritePending={fetchFavoritePending} favorite={favorite}
+                          onToggleFavorite={() => this.handleToggleFavorite()}/>
             </div>
         );
     }

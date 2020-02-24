@@ -5,14 +5,16 @@ const s3ImageBucketName = 'monuments-and-memorials';
 // Constant for the S3 folder name where the Monument images are stored
 const s3ImageBucketFolderName = 'images/';
 
-const httpMethodTypes = ['GET', 'POST', 'PUT'];
+const httpMethodTypes = ['GET', 'POST', 'PUT', 'DELETE'];
 
 /**
  * Send a GET request to the specified URL
  * @param url - URL to send the GET to
+ * @param options - Optional params
+ * @param options.returnFullError - If true, the full error object will be returned instead of just error text
  */
-export async function get(url) {
-    return await sendRequest(url);
+export async function get(url, options = {}) {
+    return await sendRequest(url, options);
 }
 
 /**
@@ -22,7 +24,9 @@ export async function get(url) {
  * @param contentType - The ContentType header, defaults to 'application/json'
  */
 export async function post(url, data, contentType = 'application/json') {
-    return await sendRequest(url, 'POST', data, undefined, contentType);
+    return await sendRequest(url, {
+        methodType: 'POST', data, contentType
+    });
 }
 
 /**
@@ -31,7 +35,10 @@ export async function post(url, data, contentType = 'application/json') {
  * @param file - File to send to the specified URL
  */
 export async function postFile(url, file) {
-    return await sendRequest(url, 'POST', undefined, file);
+    return await sendRequest(url, {
+        methodType: 'POST',
+        file
+    });
 }
 
 /**
@@ -41,7 +48,24 @@ export async function postFile(url, file) {
  * @param contentType - The ContentType header, defaults to 'application/json'
  */
 export async function put(url, data, contentType = 'application/json') {
-    return await sendRequest(url, 'PUT', data, undefined, contentType);
+    return await sendRequest(url, {
+        methodType: 'PUT', data, contentType
+    });
+}
+
+/**
+ * Send a DELETE request to the specified URL with the specified data
+ * "delete" is a reserved keyword in javascript, so this function is named "del"
+ * @param url - URL to send the DELETE to
+ * @param data - Data to send to the specified URL
+ * @param options - Optional params
+ * @param options.returnFullError - If true, the full error object will be returned instead of just error text
+ * @param options.contentType - The ContentType header, defaults to 'application/json'
+ */
+export async function del(url, data, options) {
+    return await sendRequest(url, {
+        methodType: 'DELETE', data, ...options
+    });
 }
 
 /**
@@ -53,8 +77,10 @@ export async function put(url, data, contentType = 'application/json') {
  * @param data - Data to send to the URL, Defaults to undefined
  * @param file - File to send to the URL, Defaults to undefined
  * @param contentType - The ContentType header, defaults to 'application/json'
+ * @param returnFullError - If true, the full error object will be returned instead of just error text
  */
-async function sendRequest(url, methodType='GET', data=undefined, file=undefined, contentType = 'application/json') {
+async function sendRequest(url, {methodType='GET', data=undefined, file=undefined,
+    contentType = 'application/json', returnFullError = false}) {
     if (httpMethodTypes.includes(methodType) && url) {
         let error = null;
 
@@ -79,6 +105,7 @@ async function sendRequest(url, methodType='GET', data=undefined, file=undefined
         let res = await fetch(url, configuration)
             .then(async (res) => {
                 if (!res.ok) {
+                    if (returnFullError) throw res;
                     let errorMessage = await res.text();
 
                     try {
