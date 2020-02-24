@@ -3,6 +3,7 @@ package com.monumental.config;
 import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -18,6 +19,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing
 @EnableTransactionManagement
 public class AppConfig {
+
+    // This is an environment variable that should be set to the public domain name of the server
+    // By default this uses the localhost setup, on the VM it should be set to the actual public server domain name
+    // For localhost, it uses the react dev server url. If you are not using the react dev server you must override
+    // this value to be http://localhost:8080
+    @Value("${PUBLIC_URL:http://localhost:3000}")
+    public String publicUrl;
 
     @Bean
     public ResourceBundleMessageSource resourceBundleMessageSource() {

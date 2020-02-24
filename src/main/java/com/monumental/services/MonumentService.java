@@ -1,6 +1,7 @@
 package com.monumental.services;
 
 import com.amazonaws.SdkClientException;
+import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
@@ -64,6 +65,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     GoogleMapsService googleMapsService;
+
+    @Autowired
+    AppConfig appConfig;
 
     /**
      * SRID for coordinates
@@ -540,7 +544,14 @@ public class MonumentService extends ModelService<Monument> {
                     result.getMonument().getLat(), result.getMonument().getLon(), result.getMonument().getAddress());
 
             if (duplicates.size() > 0) {
-                result.getWarnings().add("Potential duplicate records detected for this row.");
+                StringBuilder warning = new StringBuilder("Potential duplicate records detected for this row:\n");
+
+                for (Monument duplicate : duplicates) {
+                    String url = this.appConfig.publicUrl + "/monuments/" + duplicate.getId();
+                    warning.append("<a href=").append(url).append(">").append(url).append("</a>\n");
+                }
+
+                result.getWarnings().add(warning.toString());
             }
 
             monumentBulkValidationResult.getResults().put(i + 1, result);
