@@ -209,8 +209,7 @@ public class UserService extends ModelService<User> {
      * @throws UnauthorizedException - If there is no User in the session, i.e. logged out
      */
     public void requireUserIsInRole(Role role) throws AccessDeniedException, UnauthorizedException {
-        UserDetails session = this.getSession();
-        if (!session.getAuthorities().contains(null)) {
+        if (!this.getCurrentUserRoles().contains(role)) {
             throw new AccessDeniedException("Access is denied");
         }
     }
