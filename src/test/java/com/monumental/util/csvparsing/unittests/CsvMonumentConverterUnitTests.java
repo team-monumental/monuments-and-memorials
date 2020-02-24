@@ -1,7 +1,7 @@
 package com.monumental.util.csvparsing.unittests;
 
 import com.monumental.models.Monument;
-import com.monumental.services.integrationtest.MonumentServiceIntegrationTests;
+import com.monumental.services.integrationtest.MonumentServiceMockIntegrationTests;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import org.junit.Test;
@@ -22,11 +22,11 @@ import static org.junit.Assert.*;
 public class CsvMonumentConverterUnitTests {
 
     /** convertCsvRow Tests **/
-    private Map<String, String> mapping = MonumentServiceIntegrationTests.mapping;
+    private Map<String, String> mapping = MonumentServiceMockIntegrationTests.mapping;
 
     @Test
     public void testCsvMonumentConverter_convertCsvRow_AllEmptyValues() {
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(",,,,,,,,,,,,,");
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(",,,,,,,,,,,,,");
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -55,7 +55,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -85,7 +85,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_DateFormatYear() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -121,7 +121,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_DateFormatDayMonthYear() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -157,7 +157,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_DateFormatInvalid() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -187,7 +187,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_Materials() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Metal, Bronze\",Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -223,7 +223,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_Tags() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -259,7 +259,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_MaterialsAndTags() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,,,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -295,7 +295,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_LatitudeAndLongitude() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -330,7 +330,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_Image_CsvRowFromZipFile() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,Test Image";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
@@ -359,7 +359,7 @@ public class CsvMonumentConverterUnitTests {
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_Image_CsvRowNotFromZipFile() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,TestImage.jpg";
-        List<String[]> csvList = MonumentServiceIntegrationTests.parseCSVString(csvRow);
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
         Monument monumentResult = result.getMonument();
