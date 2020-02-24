@@ -9,7 +9,6 @@ import com.monumental.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -42,7 +41,7 @@ public class FavoriteService {
     public Favorite getFavoriteByMonumentIdAndUserId(Integer monumentId, Integer userId) throws ResourceNotFoundException {
         User currentUser = this.userService.getCurrentUser();
 
-        this.requireUserExistsIfNotNull(userId);
+        this.userService.requireUserExistsIfNotNull(userId);
 
         Favorite favorite = userId == null ?
                 this.favoriteRepository.getByUserIdAndMonumentId(currentUser.getId(), monumentId) :
@@ -63,7 +62,7 @@ public class FavoriteService {
     public List<Favorite> getUserFavorites(Integer userId) throws ResourceNotFoundException {
         User currentUser = this.userService.getCurrentUser();
 
-        this.requireUserExistsIfNotNull(userId);
+        this.userService.requireUserExistsIfNotNull(userId);
 
         List<Favorite> favorites = userId == null ?
                 this.favoriteRepository.getAllByUserId(currentUser.getId()) :
@@ -114,21 +113,5 @@ public class FavoriteService {
             throws ResourceNotFoundException {
         Favorite favorite = getFavoriteByMonumentIdAndUserId(monumentId, userId);
         this.favoriteRepository.delete(favorite);
-    }
-
-    /**
-     * Throw a ResourceNotFoundException if the specified userId does not match any User, if the userId is not null
-     * If the userId is null no exception will be thrown
-     * @param userId - The userId to look for
-     * @throws ResourceNotFoundException - If there is no matching User
-     */
-    private void requireUserExistsIfNotNull(Integer userId) throws ResourceNotFoundException {
-        if (userId != null) {
-            try {
-                this.userRepository.getOne(userId);
-            } catch (EntityNotFoundException e) {
-                throw new ResourceNotFoundException();
-            }
-        }
     }
 }

@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -231,6 +232,22 @@ public class UserService extends ModelService<User> {
         }
         if (!hasRole) {
             throw new AccessDeniedException("Access is denied");
+        }
+    }
+
+    /**
+     * Throw a ResourceNotFoundException if the specified userId does not match any User, if the userId is not null
+     * If the userId is null no exception will be thrown
+     * @param userId - The userId to look for
+     * @throws ResourceNotFoundException - If there is no matching User
+     */
+    public void requireUserExistsIfNotNull(Integer userId) throws ResourceNotFoundException {
+        if (userId != null) {
+            try {
+                this.userRepository.getOne(userId);
+            } catch (EntityNotFoundException e) {
+                throw new ResourceNotFoundException();
+            }
         }
     }
 
