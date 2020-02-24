@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { exportToCsv } from '../../../utils/export-util';
 
 /**
- * Presentational component for a button to export data to CSV
+ * Presentational component for a button that exports data to CSV
  */
 export default class ExportToCsvButton extends React.Component {
 
