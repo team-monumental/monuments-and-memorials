@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { prettyPrintDate } from '../../../../utils/string-util';
+import moment from 'moment';
+import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButton';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
@@ -8,8 +10,49 @@ import { prettyPrintDate } from '../../../../utils/string-util';
  */
 export default class About extends React.Component {
 
-    render() {
+    csvExportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
+        'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 
+    buildCsvExportData() {
+        const { monument, contributions, references } = this.props;
+
+        let materialsList = '';
+        let tagsList = '';
+        if (monument.monumentTags && monument.monumentTags.length) {
+            materialsList = monument.monumentTags.filter(monumentTag => monumentTag.tag.isMaterial)
+                .map(monumentTag => monumentTag.tag.name).join(',');
+            tagsList = monument.monumentTags.filter(monumentTag => !monumentTag.tag.isMaterial)
+                .map(monumentTag => monumentTag.tag.name).join(',');
+        }
+
+        const prepareArray = (array=[], field) => {
+            return array.map(el => el[field]).join(',');
+        };
+
+        const contributionsList = prepareArray(contributions, 'submittedBy');
+        const referencesList = prepareArray(references, 'url');
+
+        return [{
+            'Title': monument.title,
+            'Artist': monument.artist || '',
+            'Date': monument.date ? prettyPrintDate(monument.date) : '',
+            'City': monument.city || '',
+            'State': monument.state || '',
+            'Address': monument.address || '',
+            'Coordinates': monument.coordinates ?
+                `${monument.coordinates.coordinates[1]}, ${monument.coordinates.coordinates[0]}` :
+                '',
+            'Materials' : materialsList,
+            'Tags': tagsList,
+            'Description': monument.description || '',
+            'Inscription': monument.inscription || '',
+            'Contributors': contributionsList,
+            'References': referencesList,
+            'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
+        }];
+    }
+
+    render() {
         const { monument, contributions, references } = this.props;
 
         let title;
@@ -160,6 +203,8 @@ export default class About extends React.Component {
                         {referencesList}
                         {lastUpdated}
                     </div>
+                    <ExportToCsvButton className="mt-2" fields={this.csvExportFields} data={this.buildCsvExportData()}
+                                       exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 </Card.Body>
             </Card>
         )
