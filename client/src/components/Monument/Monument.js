@@ -3,7 +3,7 @@ import './Monument.scss';
 import Details from './Details/Details';
 import SuggestChanges from './SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
-import RelatedMonuments from "./RelatedMonuments/RelatedMonuments";
+import RelatedMonuments from './RelatedMonuments/RelatedMonuments';
 
 /**
  * Root presentational component for the Monument record page
@@ -26,7 +26,6 @@ export default class Monument extends React.Component {
 
         return (
             <div className="page-container">
-                <Helmet title={title + ' | Monuments and Memorials'}/>
                 <div className="column main-column">
                     <Details monument={monument} favorite={favorite} fetchFavoritePending={fetchFavoritePending}
                              onToggleFavorite={() => onToggleFavorite()}/>

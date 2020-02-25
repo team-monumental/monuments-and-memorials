@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument, { createFavorite, deleteFavorite } from '../../actions/monument';
