@@ -1,7 +1,7 @@
 package com.monumental.services.integrationtest;
 
-import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
+import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
@@ -28,10 +28,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.*;
 
 import static org.junit.Assert.*;
