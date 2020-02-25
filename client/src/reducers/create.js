@@ -3,7 +3,7 @@ import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR
 const initialState = {
     createMonumentPending : false,
     monument: {},
-    error: null
+    createError: null
 };
 
 // Tracks the progress for creating a new Monument for the CreatePage
@@ -24,7 +24,7 @@ export default function createPage(state = initialState, action) {
             return {
                 ...state,
                 createMonumentPending: false,
-                error: action.error
+                createError: action.error
             };
         default:
             return state;

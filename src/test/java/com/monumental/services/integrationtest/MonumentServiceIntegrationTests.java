@@ -15,9 +15,6 @@ import com.monumental.repositories.TagRepository;
 import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import com.monumental.util.csvparsing.CsvMonumentConverterResult;
-import com.monumental.util.csvparsing.MonumentBulkValidationResult;
-import com.opencsv.CSVReader;
 import com.vividsolutions.jts.geom.Point;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +27,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.io.StringReader;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,183 +68,10 @@ public class MonumentServiceIntegrationTests {
     @MockBean
     GoogleMapsService googleMapsServiceMock;
 
-    public static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
-
-    public static Map<String, String> mapping = Map.ofEntries(
-        Map.entry("contributions", "contributions"),
-        Map.entry("artist", "artist"),
-        Map.entry("title", "title"),
-        Map.entry("date", "date"),
-        Map.entry("materials", "materials"),
-        Map.entry("inscription", "inscription"),
-        Map.entry("latitude", "latitude"),
-        Map.entry("longitude", "longitude"),
-        Map.entry("city", "city"),
-        Map.entry("state", "state"),
-        Map.entry("address", "address"),
-        Map.entry("tags", "tags"),
-        Map.entry("references", "references"),
-        Map.entry("images", "images")
-    );
-
-    public static List<String[]> parseCSVString(String csvRows) {
-        try {
-            CSVReader reader = new CSVReader(new StringReader(headers + "\n" + csvRows));
-            return reader.readAll();
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("An IOException occurred");
-            return new ArrayList<>();
-        }
-    }
-
-    private MonumentBulkValidationResult validateCSV(String csvRows) {
-        try {
-            List<String[]> csvList = parseCSVString(csvRows);
-            return this.monumentService.validateMonumentCSV(csvList, mapping, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("An IOException occurred");
-            return new MonumentBulkValidationResult();
-        }
-    }
-
     @Before
     public void initializeMocks() {
         Mockito.when(this.googleMapsServiceMock.getAddressFromCoordinates(any(Double.class), any(Double.class))).thenReturn(null);
         Mockito.when(this.googleMapsServiceMock.getCoordinatesFromAddress(any(String.class))).thenReturn(null);
-    }
-
-    /** bulkCreateMonumentsFromCsv Tests **/
-
-    @Test
-    public void testMonumentService_bulkCreateMonumentsFromCsv_EmptyCsvList() {
-        List<CsvMonumentConverterResult> csvResults = new ArrayList<>();
-
-        List<Monument> results = this.monumentService.bulkCreateMonumentsSync(csvResults);
-
-        assertEquals(0, results.size());
-    }
-
-    @Test
-    public void testMonumentService_bulkCreateMonumentsFromCsv_OneInvalidCsvRecord() {
-        String csvRow = "Test Submitted By,Test Artist,,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
-        MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
-
-        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
-            new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
-        );
-
-        assertEquals(0, creationResult.size());
-
-        assertEquals(0, validationResult.getValidResults().size());
-        assertEquals(1, validationResult.getInvalidResults().size());
-
-        CsvMonumentConverterResult validationErrors = validationResult.getInvalidResults().get(1);
-        assertEquals(2, validationErrors.getErrors().size());
-        assertTrue(validationErrors.getErrors().contains("Title is required"));
-        assertTrue(validationErrors.getErrors().contains("All References must be valid URLs"));
-    }
-
-    @Test
-    public void testMonumentService_bulkCreateMonumentsFromCsv_OneValidRecord() {
-        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
-        MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
-
-        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
-            new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
-        );
-
-        assertEquals(1, validationResult.getValidResults().size());
-        assertEquals(0, validationResult.getInvalidResults().size());
-
-        assertEquals(1, creationResult.size());
-        assertEquals(1, this.monumentRepository.findAll().size());
-
-        assertEquals(3, this.tagRepository.getAllByIsMaterial(false).size());
-
-        assertEquals(2, this.tagRepository.getAllByIsMaterial(true).size());
-    }
-
-    @Test
-    public void testMonumentService_bulkCreateMonumentsFromCsv_TwoInvalidCsvRecords() {
-        String csvRows = "Test Submitted By,Test Artist,,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference," +
-                         "\nTest Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",,";
-        MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
-
-        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
-            new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
-        );
-
-        assertEquals(0, validationResult.getValidResults().size());
-        assertEquals(0, creationResult.size());
-
-        assertEquals(2, validationResult.getInvalidResults().size());
-
-
-        CsvMonumentConverterResult validationErrorsRow1 = validationResult.getResults().get(1);
-        assertEquals(2, validationErrorsRow1.getErrors().size());
-        assertTrue(validationErrorsRow1.getErrors().contains("Title is required"));
-        assertTrue(validationErrorsRow1.getErrors().contains("All References must be valid URLs"));
-
-        CsvMonumentConverterResult validationErrorsRow2 = validationResult.getInvalidResults().get(2);
-        assertEquals(1, validationErrorsRow2.getErrors().size());
-        assertTrue(validationErrorsRow2.getErrors().contains("At least one Material is required"));
-    }
-
-    @Test
-    public void testMonumentService_bulkCreateMonumentsFromCsv_TwoValidRecords() {
-        String csvRows = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
-                         "\n,Test Artist,Test Title,,\"Material 1, Material 2\",,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
-        MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
-
-        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
-            new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
-        );
-
-        assertEquals(2, validationResult.getValidResults().size());
-        assertEquals(0, validationResult.getInvalidResults().size());
-
-        assertEquals(2, creationResult.size());
-        assertEquals(2, this.monumentRepository.findAll().size());
-
-        assertEquals(3, this.tagRepository.getAllByIsMaterial(false).size());
-
-        assertEquals(2, this.tagRepository.getAllByIsMaterial(true).size());
-    }
-
-    @Test
-    public void testMonumentService_bulkCreateMonumentsFromCsv_MixedValidAndInvalidRows() {
-        String csvRows = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
-                         "\nTest Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,93.000,184.000,Test City,Test State,,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
-                         "\n,Test Artist,Test Title,,\"Material 1, Material 2\",,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
-                         "\n,Test Artist,,,,,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
-
-        MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
-
-        List<Monument> creationResult = this.monumentService.bulkCreateMonumentsSync(
-            new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values())
-        );
-
-        assertEquals(2, validationResult.getValidResults().size());
-        assertEquals(2, validationResult.getInvalidResults().size());
-
-        CsvMonumentConverterResult validationErrorsRow2 = validationResult.getInvalidResults().get(2);
-        assertEquals(2, validationErrorsRow2.getErrors().size());
-        assertTrue(validationErrorsRow2.getErrors().contains("Latitude must be valid"));
-        assertTrue(validationErrorsRow2.getErrors().contains("Longitude must be valid"));
-
-        CsvMonumentConverterResult validationErrorsRow4 = validationResult.getInvalidResults().get(4);
-        assertEquals(2, validationErrorsRow4.getErrors().size());
-        assertTrue(validationErrorsRow4.getErrors().contains("Title is required"));
-        assertTrue(validationErrorsRow4.getErrors().contains("At least one Material is required"));
-
-        assertEquals(2, creationResult.size());
-        assertEquals(2, this.monumentRepository.findAll().size());
-
-        assertEquals(3, this.tagRepository.getAllByIsMaterial(false).size());
-
-        assertEquals(2, this.tagRepository.getAllByIsMaterial(true).size());
     }
 
     /* getRelatedMonumentsByTags Tests */

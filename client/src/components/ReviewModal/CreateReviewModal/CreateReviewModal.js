@@ -2,7 +2,7 @@ import React from 'react';
 import './CreateReviewModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { prettyPrintDate } from '../../../../utils/string-util';
+import { prettyPrintDate } from '../../../utils/string-util';
 
 /**
  * Presentational component for the Modal shown before a Monument Creation is completed
@@ -10,12 +10,16 @@ import { prettyPrintDate } from '../../../../utils/string-util';
 export default class CreateReviewModal extends React.Component {
 
     render() {
-        const { showing, onCancel, onConfirm, form, dateSelectValue } = this.props;
+        const { showing, onCancel, onConfirm, form } = this.props;
+
+        if (!form) {
+            return <div/>;
+        }
 
         let date = (
             <span className="missing-attribute">NONE</span>
         );
-        switch (dateSelectValue) {
+        switch (form.dateSelectValue) {
             case 'year':
                 if (form.year) {
                     date = `${form.year}`;

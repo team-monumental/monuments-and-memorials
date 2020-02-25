@@ -462,7 +462,7 @@ export default class BulkCreateForm extends React.Component {
                                     <tr key={result.index}>
                                         <td>{result.index}</td>
                                         <td>{result.warnings.map((warning, index) => (
-                                            <div key={index}>{warning}</div>
+                                            <div key={index} dangerouslySetInnerHTML={{__html: warning}}/>
                                         ))}</td>
                                         <td>{result.errors.map((error, index) => (
                                             <div key={index}>{error}</div>

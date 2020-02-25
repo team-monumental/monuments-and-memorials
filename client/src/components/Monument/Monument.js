@@ -23,7 +23,6 @@ export default class Monument extends React.Component {
             relatedMonuments = relatedMonuments.filter(relatedMonument => relatedMonument.id !== monument.id);
         }
         if (!monument) return (<div/>);
-        const title = monument.title;
 
         return (
             <div className="page-container">

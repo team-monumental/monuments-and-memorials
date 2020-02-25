@@ -1,5 +1,6 @@
 package com.monumental.services;
 
+import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
@@ -50,18 +51,14 @@ public class UserService extends ModelService<User> {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private AppConfig appConfig;
+
     @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
     private String outboundEmailAddress;
 
     @Value("${spring.mail.username:#{null}}")
     private String springMailUsername;
-
-    // This is an environment variable that should be set to the public domain name of the server
-    // By default this uses the localhost setup, on the VM it should be set to the actual public server domain name
-    // For localhost, it uses the react dev server url. If you are not using the react dev server you must override
-    // this value to be http://localhost:8080
-    @Value("${PUBLIC_URL:http://localhost:3000}")
-    private String publicUrl;
 
     /**
      * Gets the Spring Security session object (UserDetails) which includes username (email),
@@ -316,7 +313,7 @@ public class UserService extends ModelService<User> {
         this.sendEmail(
             user.getEmail(),
             "email-change.begin",
-            "\n\n" + this.publicUrl + "/account/update/confirm?token=" + token.getToken()
+            "\n\n" + this.appConfig.publicUrl + "/account/update/confirm?token=" + token.getToken()
         );
     }
 
@@ -328,7 +325,7 @@ public class UserService extends ModelService<User> {
         this.sendEmail(
             user.getEmail(),
             "registration.success",
-            "\n\n" + this.publicUrl + "/signup/confirm?token=" + token.getToken()
+            "\n\n" + this.appConfig.publicUrl + "/signup/confirm?token=" + token.getToken()
         );
     }
 
@@ -340,7 +337,7 @@ public class UserService extends ModelService<User> {
         this.sendEmail(
             user.getEmail(),
             "password-reset.begin",
-            "\n\n" +     this.publicUrl + "/password-reset/confirm?token=" + token.getToken()
+            "\n\n" +     this.appConfig.publicUrl + "/password-reset/confirm?token=" + token.getToken()
         );
     }
 

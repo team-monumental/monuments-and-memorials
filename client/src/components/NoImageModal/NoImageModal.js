@@ -1,7 +1,7 @@
 import React from 'react';
 import './NoImageModal.scss';
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 /**
  * Presentational component for the Modal shown when no Images are uploaded
@@ -16,7 +16,7 @@ export default class NoImageModal extends React.Component {
                 show={showing}
                 onHide={onClose}
             >
-                <Modal.Header closeButton className="no-image-modal">
+                <Modal.Header className="no-image-modal">
                     <Modal.Title>No Images Uploaded</Modal.Title>
                 </Modal.Header>
                 <hr className="no-image-modal"/>

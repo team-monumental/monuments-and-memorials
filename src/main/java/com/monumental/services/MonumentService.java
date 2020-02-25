@@ -1,6 +1,7 @@
 package com.monumental.services;
 
 import com.amazonaws.SdkClientException;
+import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
@@ -64,6 +65,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     GoogleMapsService googleMapsService;
+
+    @Autowired
+    AppConfig appConfig;
 
     /**
      * SRID for coordinates
@@ -129,9 +133,9 @@ public class MonumentService extends ModelService<Monument> {
      * @param orderByDistance If true, results will be ordered by distance ascending
      */
     private Predicate buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude, Double longitude,
-                                        Integer miles, Boolean orderByDistance) {
+                                        Double miles, Boolean orderByDistance) {
         String comparisonPointAsString = "POINT(" + longitude + " " + latitude + ")";
-        Integer feet = miles * 5280;
+        Double feet = miles * 5280;
 
         Expression monumentCoordinates = builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
             builder.literal(feetSrid)
@@ -217,6 +221,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param query - The CriteriaQuery to add the searching logic to
      * @param root - The Root to use with the CriteriaQuery
      * @param searchQuery - The String search query that will get passed into the pg_tgrm similarity function
+     * @param threshold - The threshold (0-1) to limit the results by in the pg_tgrm similary function.
+     *                  You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
@@ -228,8 +234,9 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
-                                  Double latitude, Double longitude, Integer distance, List<String> tags,
-                                  List<String> materials, SortType sortType, Date start, Date end, Integer decade) {
+                                  Double threshold, Double latitude, Double longitude, Double distance,
+                                  List<String> tags, List<String> materials, SortType sortType, Date start, Date end,
+                                  Integer decade) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -252,7 +259,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (!isNullOrEmpty(searchQuery)) {
-            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, 0.1, sortByRelevance));
+            predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, threshold, sortByRelevance));
         }
 
         if (latitude != null && longitude != null && distance != null) {
@@ -268,9 +275,9 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (start != null && end != null) {
-            predicates.add(this.buildDateRangeQuery(builder, query, root, start, end));
+            predicates.add(this.buildDateRangeQuery(builder, root, start, end));
         } else if (decade != null) {
-            predicates.add(this.buildDecadeQuery(builder, query, root, decade));
+            predicates.add(this.buildDecadeQuery(builder, root, decade));
         }
 
         switch (predicates.size()) {
@@ -291,6 +298,8 @@ public class MonumentService extends ModelService<Monument> {
      * @param searchQuery - The string search query that will get passed into the pg_tgrm similarity function
      * @param page - The page number of Monument results to return
      * @param limit - The maximum number of Monument results to return
+     * @param threshold - The threshold (0-1) to limit the results by for th pg_tgrm similarity function
+     *                  You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @param latitude - The latitude of the comparison point
      * @param longitude - The longitude of the comparison point
      * @param distance - The distance from the comparison point to search in, units of miles
@@ -302,16 +311,16 @@ public class MonumentService extends ModelService<Monument> {
      * @param decade - The decade to filter monuments by
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
-    public List<Monument> search(String searchQuery, String page, String limit, Double latitude, Double longitude,
-                                 Integer distance, List<String> tags, List<String> materials, SortType sortType,
-                                 Date start, Date end, Integer decade) {
+    public List<Monument> search(String searchQuery, String page, String limit, Double threshold, Double latitude,
+                                 Double longitude, Double distance, List<String> tags, List<String> materials,
+                                 SortType sortType, Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, sortType,
+            builder, query, root, searchQuery, threshold, latitude, longitude, distance, tags, materials, sortType,
             start, end, decade
         );
 
@@ -327,7 +336,7 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Count the total number of results for a Monument search
      */
-    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Integer distance,
+    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
                                       List<String> tags, List<String> materials, Date start, Date end, Integer decade) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -335,7 +344,7 @@ public class MonumentService extends ModelService<Monument> {
         query.select(builder.countDistinct(root));
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, latitude, longitude, distance, tags, materials, SortType.NONE,
+            builder, query, root, searchQuery, 0.1, latitude, longitude, distance, tags, materials, SortType.NONE,
             start, end, decade
         );
 
@@ -529,7 +538,23 @@ public class MonumentService extends ModelService<Monument> {
 
         List<CsvMonumentConverterResult> results = CsvMonumentConverter.convertCsvRows(csvList, mapping, zipFile);
         for (int i = 0; i < results.size(); i++) {
-            monumentBulkValidationResult.getResults().put(i + 1, results.get(i));
+            CsvMonumentConverterResult result = results.get(i);
+
+            List<Monument> duplicates = this.findDuplicateMonuments(result.getMonument().getTitle(),
+                    result.getMonument().getLat(), result.getMonument().getLon(), result.getMonument().getAddress());
+
+            if (duplicates.size() > 0) {
+                StringBuilder warning = new StringBuilder("Potential duplicate records detected for this row:\n");
+
+                for (Monument duplicate : duplicates) {
+                    String url = this.appConfig.publicUrl + "/monuments/" + duplicate.getId();
+                    warning.append("<a href=").append(url).append(">").append(url).append("</a>\n");
+                }
+
+                result.getWarnings().add(warning.toString());
+            }
+
+            monumentBulkValidationResult.getResults().put(i + 1, result);
         }
 
         if (zipFile != null) {
@@ -635,12 +660,12 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     @SuppressWarnings("unchecked")
-    private Predicate buildDateRangeQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Date start, Date end) {
+    private Predicate buildDateRangeQuery(CriteriaBuilder builder, Root root, Date start, Date end) {
         return builder.between(root.get("date"), start, end);
     }
 
     @SuppressWarnings("unchecked")
-    private Predicate buildDecadeQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Integer decade) {
+    private Predicate buildDecadeQuery(CriteriaBuilder builder, Root root, Integer decade) {
         Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
         Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
         return builder.between(root.get("date"), start, end);
@@ -654,7 +679,7 @@ public class MonumentService extends ModelService<Monument> {
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
-        List<Monument> allMonumentOldestFirst = this.search(null,null, null, null, null, null, null, null,
+        List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
                 SortType.OLDEST, null, null, null);
 
         // Total number of Monuments
@@ -1314,5 +1339,34 @@ public class MonumentService extends ModelService<Monument> {
         if (geometry != null) {
             newMonument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
         }
+    }
+
+    /**
+     * Search for any potential "duplicate" Monuments given a title and coordinates or address
+     * A "duplicate" Monument is defined as one that is within .1 of a mile
+     * AND has a similar name
+     * If no coordinates are specified but an address is, it will be reverse-geocoded into coordinates to compare
+     * against
+     * @param title - Title of the Monument to search against
+     * @param latitude - Latitude of the Monument to search against
+     * @param longitude - Longitude of the Monument to search against
+     * @param address - Address of the Monument to search against
+     * @return List<Monument> - List of potential duplicate Monuments given the specified title and coordinates
+     */
+    public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude, String address) {
+        if (title != null) {
+            if ((latitude == null || longitude == null) && address != null) {
+                com.google.maps.model.Geometry point = this.googleMapsService.getCoordinatesFromAddress(address);
+                latitude = point.location.lat;
+                longitude = point.location.lng;
+            }
+
+            if (latitude != null && longitude != null) {
+                return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
+                        null, null);
+            }
+        }
+
+        return new ArrayList<>();
     }
 }
