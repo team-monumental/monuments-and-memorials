@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -30,14 +32,19 @@ public class TagController {
     public List<Tag> getTags(@RequestParam(required = false) Integer monumentId,
                              @RequestParam(required = false) String name,
                              @RequestParam(required = false) List<String> names) {
+        List<Tag> tags;
+
         if (monumentId != null) {
-            return this.tagRepository.getAllByMonumentId(monumentId);
+            tags = this.tagRepository.getAllByMonumentId(monumentId);
         } else if (name != null) {
-            return this.tagRepository.getAllByName(name);
+            tags = this.tagRepository.getAllByName(name);
         } else if (names != null && names.size() > 0) {
-            return this.tagRepository.getAllByNameIn(names);
+            tags = this.tagRepository.getAllByNameIn(names);
         } else {
-            return this.tagRepository.findAll();
+            tags = this.tagRepository.findAll();
         }
+
+        tags.sort(Comparator.comparing(Tag::getName));
+        return tags;
     }
 }
