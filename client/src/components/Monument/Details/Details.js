@@ -12,7 +12,7 @@ import { Button } from 'react-bootstrap';
 export default class Details extends React.Component {
 
     render() {
-        const { monument, favorite, fetchFavoritePending, onToggleFavorite } = this.props;
+        const { monument, favorite, fetchFavoritePending, onToggleFavorite, showFavorite } = this.props;
 
         let inscription;
         if (monument.inscription) {
@@ -45,20 +45,25 @@ export default class Details extends React.Component {
                         <div className="h1">
                             {monument.title}
                         </div>
-                        <Button disabled={fetchFavoritePending} variant="bare"
-                                onClick={() => onToggleFavorite()}
-                                className={'p-0 text-primary ml-2 mr-0 my-0 favorite-icon' + (favorite ? ' favorited' : '')}>
-                            <i className="material-icons">
-                                {favorite ? 'star' : 'star_border'}
-                            </i>
-                            <i className="material-icons hover">
-                                star
-                            </i>
-                        </Button>
+                       {showFavorite &&
+                           <Button disabled={fetchFavoritePending} variant="bare"
+                                    onClick={() => onToggleFavorite()}
+                                    className={'p-0 text-primary ml-2 mr-0 my-0 favorite-icon' + (favorite ? ' favorited' : '')}>
+                                <i className="material-icons">
+                                    {favorite ? 'star' : 'star_border'}
+                                </i>
+                                <i className="material-icons hover">
+                                    star
+                                </i>
+                            </Button>
+                       }
                     </div>
                     <div>
                         <div className="fields">
-                            <div className="field font-italic"><Address monument={monument}/></div>
+                            <div className={'field font-italic' + (monument.isTemporary ? ' mb-0' : '')}><Address monument={monument}/></div>
+                            {monument.isTemporary &&
+                                <div className="field font-italic">Temporary Monument or Memorial</div>
+                            }
                             <div className="field">{monument.description}</div>
                         </div>
                         <Tags tags={tags}/>

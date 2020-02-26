@@ -30,6 +30,8 @@ public class UpdateMonumentRequest {
 
     private String newDate;
 
+    private boolean newIsTemporary;
+
     private Map<Integer, String> updatedReferencesUrlsById;
 
     private List<String> newReferenceUrls;
@@ -124,6 +126,14 @@ public class UpdateMonumentRequest {
 
     public void setNewDate(String newDate) {
         this.newDate = newDate;
+    }
+
+    public boolean getNewIsTemporary() {
+        return newIsTemporary;
+    }
+
+    public void setNewIsTemporary(boolean temporary) {
+        newIsTemporary = temporary;
     }
 
     public Map<Integer, String> getUpdatedReferencesUrlsById() {

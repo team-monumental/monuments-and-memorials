@@ -28,6 +28,8 @@ public class CreateMonumentRequest {
 
     private String inscription;
 
+    private boolean isTemporary;
+
     private List<String> references;
 
     private List<String> materials;
@@ -118,6 +120,14 @@ public class CreateMonumentRequest {
 
     public void setInscription(String inscription) {
         this.inscription = inscription;
+    }
+
+    public boolean getIsTemporary() {
+        return this.isTemporary;
+    }
+
+    public void setIsTemporary(boolean isTemporary) {
+        this.isTemporary = isTemporary;
     }
 
     public List<String> getReferences() {

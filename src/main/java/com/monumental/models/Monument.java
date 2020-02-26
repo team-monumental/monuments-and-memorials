@@ -50,6 +50,9 @@ public class Monument extends Model implements Serializable {
     @Column(name = "inscription", length = 2048)
     private String inscription;
 
+    @Column(name = "is_temporary")
+    private Boolean isTemporary = false;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument")
     private Set<MonumentTag> monumentTags;
@@ -161,6 +164,14 @@ public class Monument extends Model implements Serializable {
 
     public void setInscription(String inscription) {
         this.inscription = inscription;
+    }
+
+    public Boolean getIsTemporary() {
+        return this.isTemporary;
+    }
+
+    public void setIsTemporary(Boolean isTemporary) {
+        this.isTemporary = isTemporary;
     }
 
     public Set<MonumentTag> getMonumentTags() {

@@ -60,7 +60,6 @@ export default function fetchMonument(id) {
             const monument = await get(`/api/monument/${id}?cascade=true`);
             dispatch(success(actions.single, monument));
 
-            await fetchFavorite(dispatch, monument);
             await fetchNearbyMonuments(dispatch, monument);
             await fetchRelatedMonuments(dispatch, monument);
         } catch (err) {
@@ -117,16 +116,19 @@ async function fetchRelatedMonuments(dispatch, monument) {
     }
 }
 
-async function fetchFavorite(dispatch, monument) {
-    dispatch(pending(actions.favorite.fetch));
-    try {
-        const result = await get(actions.favorite.fetch.uri + '?monumentId=' + monument.id, {returnFullError: true});
-        dispatch(success(actions.favorite.fetch, {result: result}));
-    } catch (err) {
-        if (err.status === 404) {
-            dispatch(success(actions.favorite.fetch, {result: null}));
-        } else {
-            dispatch(error(actions.favorite.fetch, JSON.parse(await err.text())).message);
+export function fetchFavorite(monumentId) {
+    return async dispatch => {
+        dispatch(pending(actions.favorite.fetch));
+        try {
+            const result = await get(actions.favorite.fetch.uri + '?monumentId=' + monumentId, {returnFullError: true});
+            dispatch(success(actions.favorite.fetch, {result: result}));
+        } catch (err) {
+            if (err.status === 404) {
+                dispatch(success(actions.favorite.fetch, {result: null}));
+            } else {
+                const message = JSON.parse(await err.text()).message;
+                dispatch(error(actions.favorite.fetch, message));
+            }
         }
     }
 }
