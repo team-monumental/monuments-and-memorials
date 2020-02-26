@@ -761,7 +761,6 @@ public class MonumentService extends ModelService<Monument> {
 
         Monument createdMonument = new Monument();
 
-        System.out.println("is temporary, " + monumentRequest.getIsTemporary());
         createdMonument.setIsTemporary(monumentRequest.getIsTemporary());
 
         // Set basic String fields
