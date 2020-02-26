@@ -9,6 +9,7 @@ import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
+import com.monumental.security.Authentication;
 import com.monumental.security.Role;
 import com.monumental.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/api/session")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(Authentication.isAuthenticated)
     public User getSession() throws UnauthorizedException {
         return this.userService.getCurrentUser();
     }
@@ -97,7 +98,7 @@ public class UserController {
     }
 
     @PutMapping("/api/user")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize(Authentication.isAuthenticated)
     public Map<String, Boolean> updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws UnauthorizedException, ValidationException {
         User currentUser = this.userService.getCurrentUser();
         if (!user.getId().equals(currentUser.getId()) && !currentUser.getRole().equals(Role.RESEARCHER)) {

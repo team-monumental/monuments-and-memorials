@@ -2,11 +2,13 @@ package com.monumental.controllers;
 
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
+import com.monumental.security.Authentication;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.util.string.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -87,6 +89,7 @@ public class SearchController {
     }
 
     @GetMapping("/api/search/duplicates")
+    @PreAuthorize(Authentication.isAuthenticated)
     public List<Monument> searchDuplicates(@RequestParam(value = "title") String title,
                                            @RequestParam(required = false, value = "lat") Double latitude,
                                            @RequestParam(required = false, value = "lon") Double longitude,
