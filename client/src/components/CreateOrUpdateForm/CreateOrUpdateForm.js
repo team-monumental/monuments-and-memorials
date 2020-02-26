@@ -1,6 +1,6 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
-import { Form, Button, ButtonToolbar, Collapse } from 'react-bootstrap';
+import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
 import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
@@ -83,7 +83,12 @@ export default class CreateOrUpdateForm extends React.Component {
             },
             newMaterials: [],
             tags: [],
-            newTags: []
+            newTags: [],
+            isTemporary: {
+                value: false,
+                isValid: true,
+                message: ''
+            }
         };
 
         this.materialsSelectRef = React.createRef();
@@ -103,7 +108,7 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     clearForm(clearValues) {
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            references } = this.state;
+            references, isTemporary } = this.state;
         let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
 
         title.isValid = true;
@@ -145,6 +150,9 @@ export default class CreateOrUpdateForm extends React.Component {
         materials.isValid = true;
         materials.message = '';
 
+        isTemporary.isValid = true;
+        isTemporary.message = '';
+
         if (clearValues) {
             title.value = '';
             address.value = '';
@@ -166,10 +174,11 @@ export default class CreateOrUpdateForm extends React.Component {
             newTags = [];
             this.tagsSelectRef.current.handleClear();
             this.tagsSelectRef.current.handleSelectedTagsClear();
+            isTemporary.value = false;
         }
 
         this.setState({title, address, latitude, longitude, year, month, artist, description, inscription,
-            datePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags, newTags});
+            datePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags, newTags, isTemporary});
     }
 
     /**
@@ -383,7 +392,7 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
-            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags } = this.state;
+            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags, isTemporary } = this.state;
 
         let createForm = {
             title: title.value,
@@ -399,7 +408,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newMaterials: newMaterials.map(newMaterial => newMaterial.name),
             tags: tags.map(tag => tag.name),
             newTags: newTags.map(newTag => newTag.name),
-            dateSelectValue: dateSelectValue
+            dateSelectValue: dateSelectValue,
+            isTemporary: isTemporary.value
         };
 
         switch (dateSelectValue) {
@@ -425,7 +435,7 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
-            datePickerCurrentDate, references, images, imagesForUpdate, materials, tags } = this.state;
+            datePickerCurrentDate, references, images, imagesForUpdate, materials, tags, isTemporary } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -437,7 +447,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images: images,
-            dateSelectValue: dateSelectValue
+            dateSelectValue: dateSelectValue,
+            newIsTemporary: isTemporary.value
         };
 
         let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
@@ -808,7 +819,7 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate } = this.state;
+            imagesForUpdate, isTemporary } = this.state;
         const { monument } = this.props;
 
         const advancedInformationLink = (
@@ -915,7 +926,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 </div>
             );
         }
-        
+
         const invalidMaterials = (
             <div className="invalid-feedback materials">{materials.message}</div>
         );
@@ -969,6 +980,34 @@ export default class CreateOrUpdateForm extends React.Component {
                             className="text-control"
                         />
                         <Form.Control.Feedback type="invalid">{title.message}</Form.Control.Feedback>
+                    </Form.Group>
+
+                    {/* IsTemporary */}
+                    <Form.Group controlId="create-form-is-temporary">
+                        <Form.Label className="mr-2 is-temporary">
+                            Is Temporary
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={props => (
+                                    <Tooltip {...props}>
+                                        Temporary monuments or memorials are those that are not built from permanent materials
+                                    </Tooltip>
+                                )}>
+                                <i className="material-icons">
+                                    help
+                                </i>
+                            </OverlayTrigger>:
+                        </Form.Label>
+                        <ButtonGroup>
+                            <Button variant={isTemporary.value ? 'primary' : 'outline-primary'} size="sm" active={isTemporary.value}
+                                    onClick={() => this.setState({isTemporary: {...isTemporary, value: true}})}>
+                                Yes
+                            </Button>
+                            <Button variant={!isTemporary.value ? 'primary' : 'outline-primary'} size="sm" active={!isTemporary.value}
+                                    onClick={() => this.setState({isTemporary: {...isTemporary, value: false}})}>
+                                No
+                            </Button>
+                        </ButtonGroup>
                     </Form.Group>
 
                     {/* Materials */}

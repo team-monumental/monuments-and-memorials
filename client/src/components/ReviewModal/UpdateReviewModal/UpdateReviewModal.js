@@ -165,20 +165,23 @@ export default class UpdateReviewModal extends React.Component {
         this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
     }
 
-    renderAttributeChange(attributeLabel, oldAttribute, newAttribute, didChange) {
+    renderAttributeChange(attributeLabel, oldAttribute, newAttribute, didChange, isBoolean=false) {
         return (
             <div className="attribute-update">
                 <span className="attribute-label">{attributeLabel}:&nbsp;</span>
                 {
-                    oldAttribute.length ?
-                        <span className="old-attribute">{oldAttribute}</span> :
-                        <span className="old-attribute none">NONE</span>
+                    isBoolean ? <span className="old-attribute">{oldAttribute ? 'Yes' : 'No'}</span> :
+                        oldAttribute.length ?
+                            <span className="old-attribute">{oldAttribute}</span> :
+                            <span className="old-attribute none">NONE</span>
                 }
+
                 <i className="material-icons">arrow_right_alt</i>
                 {
-                    newAttribute.length ?
-                        <span className="new-attribute">{newAttribute}</span> :
-                        <span className="new-attribute none">NONE</span>
+                    isBoolean ? <span className="new-attribute">{newAttribute ? 'Yes' : 'No'}</span> :
+                        newAttribute.length ?
+                            <span className="new-attribute">{newAttribute}</span> :
+                            <span className="new-attribute none">NONE</span>
                 }
                 {
                     didChange ?
@@ -498,6 +501,13 @@ export default class UpdateReviewModal extends React.Component {
             (oldTitle !== newTitle) ?
                 changedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle, true)) :
                 unchangedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle, false));
+
+            /* IsTemporary */
+            let oldIsTemporary = oldMonument.isTemporary;
+            let newIsTemporary = newMonument.newIsTemporary;
+            (oldIsTemporary !== newIsTemporary) ?
+                changedAttributes.push(this.renderAttributeChange('Is Temporary', oldIsTemporary, newIsTemporary, true, true)) :
+                unchangedAttributes.push(this.renderAttributeChange('Is Temporary', oldIsTemporary, newIsTemporary, false, true));
 
             /* Artist */
             let oldArtist = oldMonument.artist ? oldMonument.artist : '';

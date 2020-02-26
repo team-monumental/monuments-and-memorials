@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
-import fetchMonument, { createFavorite, deleteFavorite } from '../../actions/monument';
+import fetchMonument, { createFavorite, deleteFavorite, fetchFavorite } from '../../actions/monument';
 import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
 
@@ -17,8 +17,16 @@ class MonumentPage extends React.Component {
         return {
             ...state.monumentPage,
             createFavorite: state.createFavorite,
-            deleteFavorite: state.deleteFavorite
+            deleteFavorite: state.deleteFavorite,
+            session: state.session
         };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { dispatch, session, match: { params: { monumentId } } } = this.props;
+        if (prevProps.session.pending && !session.pending && session.user) {
+            dispatch(fetchFavorite(monumentId));
+        }
     }
 
     componentDidMount() {
@@ -58,7 +66,7 @@ class MonumentPage extends React.Component {
         // Change the url to include the slug if it's not present
         this.redirectToSlug();
         const {
-            monument, nearbyMonuments, relatedMonuments, favorite,
+            monument, nearbyMonuments, relatedMonuments, favorite, session,
             fetchMonumentPending, fetchNearbyPending, fetchRelatedPending, fetchFavoritePending
         } = this.props;
         return (
@@ -68,7 +76,7 @@ class MonumentPage extends React.Component {
                 <Monument monument={monument} nearbyMonuments={nearbyMonuments} relatedMonuments={relatedMonuments}
                           fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}
                           fetchFavoritePending={fetchFavoritePending} favorite={favorite}
-                          onToggleFavorite={() => this.handleToggleFavorite()}/>
+                          onToggleFavorite={() => this.handleToggleFavorite()} showFavorite={!!session.user}/>
             </div>
         );
     }

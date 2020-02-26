@@ -761,6 +761,8 @@ public class MonumentService extends ModelService<Monument> {
 
         Monument createdMonument = new Monument();
 
+        createdMonument.setIsTemporary(monumentRequest.getIsTemporary());
+
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentRequest.getTitle(), monumentRequest.getAddress(),
                 monumentRequest.getArtist(), monumentRequest.getDescription(), monumentRequest.getInscription());
@@ -869,6 +871,8 @@ public class MonumentService extends ModelService<Monument> {
 
         Monument currentMonument = optionalMonument.get();
         this.initializeAllLazyLoadedCollections(currentMonument);
+
+        currentMonument.setIsTemporary(newMonument.getNewIsTemporary());
 
         String oldAddress = currentMonument.getAddress();
         Point oldCoordinates = currentMonument.getCoordinates();
@@ -1353,6 +1357,9 @@ public class MonumentService extends ModelService<Monument> {
         if (title != null) {
             if ((latitude == null || longitude == null) && address != null) {
                 com.google.maps.model.Geometry point = this.googleMapsService.getCoordinatesFromAddress(address);
+                if (point == null) {
+                    return new ArrayList<>();
+                }
                 latitude = point.location.lat;
                 longitude = point.location.lng;
             }

@@ -33,10 +33,12 @@ export default class BulkCreateForm extends React.Component {
                 {name: 'artist'}, {name: 'title', label: 'Title/Name'}, {name: 'date', label: 'Date Created'},
                 {name: 'latitude'}, {name: 'longitude'}, {name: 'city'}, {name: 'state'}, {name: 'address'},
                 {name: 'description'}, {name: 'inscription'}, {name: 'tags'}, {name: 'materials'}, {name: 'images'},
-                {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}
+                {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
             ].map(field => {
                 return {
-                    label: field.name.substring(0, 1).toUpperCase() + field.name.substring(1),
+                    label: field.name.split('_').map(word => {
+                        return word.substring(0, 1).toUpperCase() + word.substring(1)
+                    }).join(' '),
                     ...field
                 }
             })

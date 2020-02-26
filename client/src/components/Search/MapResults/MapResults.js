@@ -19,7 +19,7 @@ export default class MapResults extends React.Component {
             south: null,
             west: null
         };
-        for (let monument of monuments) {
+        for (let monument of monuments.filter(monument => monument.lat && monument.lon)) {
 
             if (bounds.north === null || bounds.north > monument.lat) bounds.north = monument.lat;
             if (bounds.east === null || bounds.east < monument.lon) bounds.east = monument.lon;

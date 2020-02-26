@@ -13,7 +13,7 @@ export default class Monument extends React.Component {
     render() {
         let {
             monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending, onToggleFavorite,
-            favorite, fetchFavoritePending
+            favorite, fetchFavoritePending, showFavorite
         } = this.props;
 
         if (nearbyMonuments && nearbyMonuments.length) {
@@ -28,7 +28,7 @@ export default class Monument extends React.Component {
             <div className="page-container">
                 <div className="column main-column">
                     <Details monument={monument} favorite={favorite} fetchFavoritePending={fetchFavoritePending}
-                             onToggleFavorite={() => onToggleFavorite()}/>
+                             onToggleFavorite={() => onToggleFavorite()} showFavorite={showFavorite}/>
                 </div>
                 <div className="column related-monuments-column">
                     <SuggestChanges/>

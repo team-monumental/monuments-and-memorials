@@ -109,6 +109,10 @@ export default class CreateReviewModal extends React.Component {
                             {form.title}
                         </div>
                         <div className="attribute">
+                            <span className="attribute-label">Is Temporary:&nbsp;</span>
+                            {form.isTemporary ? 'Yes' : 'No'}
+                        </div>
+                        <div className="attribute">
                             <span className="attribute-label">Artist:&nbsp;</span>
                             {form.artist ? form.artist : (
                                 <span className="missing-attribute">NONE</span>
