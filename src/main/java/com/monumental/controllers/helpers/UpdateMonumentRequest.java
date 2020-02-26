@@ -129,11 +129,11 @@ public class UpdateMonumentRequest {
     }
 
     public boolean getNewIsTemporary() {
-        return newIsTemporary;
+        return this.newIsTemporary;
     }
 
     public void setNewIsTemporary(boolean temporary) {
-        newIsTemporary = temporary;
+        this.newIsTemporary = temporary;
     }
 
     public Map<Integer, String> getUpdatedReferencesUrlsById() {

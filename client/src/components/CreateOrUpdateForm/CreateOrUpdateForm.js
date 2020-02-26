@@ -1,7 +1,7 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
-import { latitudeRegex, longitudeRegex } from "../../utils/regex-util";
+import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
