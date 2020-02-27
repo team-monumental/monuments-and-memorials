@@ -8,7 +8,9 @@ export default class SuggestChanges extends React.Component {
 
     handleButtonClick() {
         const { onButtonClick } = this.props;
-        onButtonClick();
+        if (onButtonClick) {
+            onButtonClick();
+        }
     }
 
     render() {
