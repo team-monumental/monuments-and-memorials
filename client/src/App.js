@@ -65,7 +65,7 @@ class App extends React.Component {
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <ProtectedRoute exact path="/create" component={CreateMonumentPage}/>
-                            <ProtectedRoute exact path="/bulk-create" component={MonumentBulkCreatePage} oneOf={[Roles.COLLABORATOR]}/>
+                            <ProtectedRoute exact path="/bulk-create" component={MonumentBulkCreatePage}/>
                             <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                             <Route exact path="/about" component={AboutPage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
