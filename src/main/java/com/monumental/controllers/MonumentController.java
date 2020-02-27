@@ -8,6 +8,8 @@ import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.security.Authentication;
+import com.monumental.security.Authorization;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.util.async.AsyncJob;
@@ -15,6 +17,7 @@ import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -42,6 +45,7 @@ public class MonumentController {
      * @return Monument - The created Monument
      */
     @PostMapping("/api/monument")
+    @PreAuthorize(Authentication.isAuthenticated)
     @Transactional
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
         return this.monumentService.createMonument(monumentRequest);
@@ -84,6 +88,7 @@ public class MonumentController {
      * @return Monument - The updated Monument
      */
     @PutMapping("/api/monument/{id}")
+    @PreAuthorize(Authentication.isAuthenticated)
     public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody UpdateMonumentRequest newMonument) {
         return this.monumentService.updateMonument(id, newMonument);
     }
@@ -106,6 +111,7 @@ public class MonumentController {
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
     @PostMapping("/api/monument/bulk/validate")
+    @PreAuthorize(Authorization.isPartnerOrResearcher)
     public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
         try {
             BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
@@ -123,6 +129,7 @@ public class MonumentController {
      * @return AsyncJob - Object containing the Id of the job created and the current value of the Future object
      */
     @PostMapping("/api/monument/bulk/create/start")
+    @PreAuthorize(Authorization.isPartnerOrResearcher)
     public AsyncJob startBulkCreateMonumentJob(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
 
@@ -148,6 +155,7 @@ public class MonumentController {
      * @return AsyncJob - Object containing the Id of the job and the current value of the Future object
      */
     @GetMapping("/api/monument/bulk/create/progress/{id}")
+    @PreAuthorize(Authorization.isPartnerOrResearcher)
     public AsyncJob getBulkCreateMonumentJob(@PathVariable Integer id) {
         return this.asyncJobService.getJob(id);
     }
@@ -161,6 +169,7 @@ public class MonumentController {
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
     @GetMapping("/api/monument/bulk/create/result/{id}")
+    @PreAuthorize(Authorization.isPartnerOrResearcher)
     @SuppressWarnings("unchecked")
     public List<Monument> getBulkCreateMonumentJobResult(@PathVariable Integer id)
             throws ExecutionException, InterruptedException {
