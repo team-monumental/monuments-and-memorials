@@ -21,6 +21,8 @@ export default class MapResults extends React.Component {
         };
         for (let monument of monuments.filter(monument => monument.lat && monument.lon)) {
 
+            if (monument.lon > 0) monument.lon = monument.lon - 360;
+
             if (bounds.north === null || bounds.north > monument.lat) bounds.north = monument.lat;
             if (bounds.east === null || bounds.east < monument.lon) bounds.east = monument.lon;
             if (bounds.south === null || bounds.south < monument.lat) bounds.south = monument.lat;
