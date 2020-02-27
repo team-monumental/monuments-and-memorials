@@ -21,6 +21,12 @@ export default class MapResults extends React.Component {
         };
         for (let monument of monuments.filter(monument => monument.lat && monument.lon)) {
 
+            // For any monuments with a positive longitude, move them 360 degrees west so that they render closer to
+            // the United States. This is an issue in particular with Guam because monuments there would render
+            // all the way across the map to the East, instead of in the Pacific to the West like Hawaii which
+            // made them difficult to view
+            if (monument.lon > 0) monument.lon = monument.lon - 360;
+
             if (bounds.north === null || bounds.north > monument.lat) bounds.north = monument.lat;
             if (bounds.east === null || bounds.east < monument.lon) bounds.east = monument.lon;
             if (bounds.south === null || bounds.south < monument.lat) bounds.south = monument.lat;

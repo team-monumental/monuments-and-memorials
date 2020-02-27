@@ -4,6 +4,7 @@ import MapResults from '../../components/Search/MapResults/MapResults';
 import { connect } from 'react-redux';
 import fetchMonuments from '../../actions/map';
 import { Helmet } from 'react-helmet';
+import Spinner from '../../components/Spinner/Spinner';
 
 class MapPage extends React.Component {
 
@@ -34,10 +35,11 @@ class MapPage extends React.Component {
     }
 
     render() {
-        const { monuments } = this.props;
+        const { monuments, pending } = this.props;
         return (
             <div className="map-page">
                 <Helmet title="Map | Monuments and Memorials"/>
+                <Spinner show={pending}/>
                 <MapResults monuments={monuments} useCircleMarkers zoom={this.state.zoomSize}/>
             </div>
         );
