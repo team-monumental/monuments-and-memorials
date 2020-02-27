@@ -17,6 +17,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class MonumentController {
      * @return Monument - The created Monument
      */
     @PostMapping("/api/monument")
+    @Transactional
     public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
         return this.monumentService.createMonument(monumentRequest);
     }
