@@ -43,12 +43,12 @@ public abstract class Model {
     private Date lastModifiedDate;
 
     @CreatedBy
-    @Column(name = "created_by_user_id")
-    private Integer createdByUserId;
+    @ManyToOne
+    private User createdBy;
 
     @LastModifiedBy
-    @Column(name = "last_modified_by_user_id")
-    private Integer lastModifiedByUserId;
+    @ManyToOne
+    private User lastModifiedBy;
 
     public Integer getId() {
         return this.id;
@@ -62,15 +62,31 @@ public abstract class Model {
         return this.createdDate;
     }
 
+    public void setCreatedDate(Date date) {
+        this.createdDate = date;
+    }
+
     public Date getLastModifiedDate() {
         return this.lastModifiedDate;
     }
 
-    public Integer getCreatedByUserId() {
-        return this.createdByUserId;
+    public void setLastModifiedDate(Date date) {
+        this.lastModifiedDate = date;
     }
 
-    public Integer getLastModifiedByUserId() {
-        return this.lastModifiedByUserId;
+    public User getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(User user) {
+        this.createdBy = user;
+    }
+
+    public User getLastModifiedBy() {
+        return this.lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(User user) {
+        this.lastModifiedBy = user;
     }
 }

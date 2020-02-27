@@ -10,6 +10,7 @@ import com.monumental.models.VerificationToken;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
+import com.monumental.security.UserAwareUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,18 +65,16 @@ public class UserService extends ModelService<User> {
     private String springMailUsername;
 
     /**
-     * Gets the Spring Security session object (UserDetails) which includes username (email),
-     * password (hashed), and authorities (roles). This is really only useful if you don't want to involve
-     * JPA/hibernate for some reason, such as not having a transaction. Otherwise just use getCurrentUser.
-     * @return UserDetails - Spring Security session object
+     * Gets our custom Spring Security session object (UserAwareUserDetails) which includes our User.
+     * @return UserAwareUserDetails - Custom Spring Security session object
      * @throws UnauthorizedException - If the current user is not logged in
      */
-    public UserDetails getSession() throws UnauthorizedException {
+    public UserAwareUserDetails getSession() throws UnauthorizedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof UserDetails)) {
-            throw new UnauthorizedException();
+        if (!(principal instanceof UserAwareUserDetails)) {
+            throw new UnauthorizedException(principal.getClass().getName());
         }
-        return (UserDetails) principal;
+        return (UserAwareUserDetails) principal;
     }
 
     /**
@@ -84,7 +83,9 @@ public class UserService extends ModelService<User> {
      * @throws UnauthorizedException - If the current user is not logged in
      */
     public User getCurrentUser() throws UnauthorizedException {
-        return this.userRepository.getByEmail(this.getSession().getUsername());
+        User user = this.getSession().getUser();
+        if (user == null) throw new UnauthorizedException();
+        return user;
     }
 
     /**
