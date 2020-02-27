@@ -10,13 +10,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
-    private final UserRepository repository;
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    public UserDetailServiceImpl(UserRepository repository) {
-        this.repository = repository;
-    }
+    private UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -24,11 +21,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         if (user == null) throw new UsernameNotFoundException("Invalid email or password.");
 
-        return new org.springframework.security.core.userdetails.User(
-            username, user.getPassword(), user.getIsEnabled(),
-            true, true, true,
-            AuthorityUtils.createAuthorityList(user.getRole().toString())
-        );
+        return new UserAwareUserDetails(user, AuthorityUtils.createAuthorityList(user.getRole().toString()));
     }
 
 }
