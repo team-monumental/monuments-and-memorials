@@ -6,6 +6,11 @@ import { Button, Card } from 'react-bootstrap';
  */
 export default class SuggestChanges extends React.Component {
 
+    handleButtonClick() {
+        const { onButtonClick } = this.props;
+        onButtonClick();
+    }
+
     render() {
         return (
             <Card>
@@ -17,7 +22,7 @@ export default class SuggestChanges extends React.Component {
                 <Card.Body>
                     <p>We pride ourselves on keeping up to date and accurate information.</p>
                     <p>If you think something on this page is incorrect or outdated, please suggest a change. If your change is approved we'll send you an email to let you know, and you will be listed as a contributor on this page!</p>
-                    <Button variant="primary">SUGGEST A CHANGE</Button>
+                    <Button variant="primary" onClick={() => this.handleButtonClick()}>SUGGEST A CHANGE</Button>
                 </Card.Body>
             </Card>
         );

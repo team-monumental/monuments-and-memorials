@@ -62,6 +62,11 @@ class MonumentPage extends React.Component {
         }
     }
 
+    handleSuggestChangesButtonClick() {
+        const { monument, history } = this.props;
+        history.replace(`/update-monument/${monument.id}`)
+    }
+
     render() {
         // Change the url to include the slug if it's not present
         this.redirectToSlug();
@@ -76,7 +81,9 @@ class MonumentPage extends React.Component {
                 <Monument monument={monument} nearbyMonuments={nearbyMonuments} relatedMonuments={relatedMonuments}
                           fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}
                           fetchFavoritePending={fetchFavoritePending} favorite={favorite}
-                          onToggleFavorite={() => this.handleToggleFavorite()} showFavorite={!!session.user}/>
+                          onToggleFavorite={() => this.handleToggleFavorite()} showFavorite={!!session.user}
+                          onSuggestChangesButtonClick={() => this.handleSuggestChangesButtonClick()}
+                />
             </div>
         );
     }

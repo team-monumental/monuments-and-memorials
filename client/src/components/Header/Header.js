@@ -13,7 +13,9 @@ class Header extends React.Component {
     links = [
         {name: 'Home', route: '/', exact: true},
         {name: 'Map', route: '/map'},
-        {name: 'About', route: '/about'}
+        {name: 'About', route: '/about'},
+        {name: 'Create', route: '/create', exact: true, protected: true},
+        {name: 'Bulk Create', route: '/bulk-create', exact: true, protected: true}
     ];
 
     constructor(props) {
@@ -52,9 +54,20 @@ class Header extends React.Component {
 
     render() {
         const { session } = this.props;
-        let headerLinks = this.links.map(link =>
-            <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>
-        );
+        let headerLinks = this.links.map(link => {
+            let navLink = <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>;
+
+            if (link.protected) {
+                if (session.user) {
+                    return navLink;
+                }
+                else {
+                    return <div/>;
+                }
+            }
+
+            return navLink;
+        });
         return (
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
