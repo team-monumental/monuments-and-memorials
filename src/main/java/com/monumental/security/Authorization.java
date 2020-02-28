@@ -12,4 +12,5 @@ public class Authorization {
     public static final String isAdmin = "hasAuthority('ADMIN')";
 
     public static final String isPartnerOrAbove = "hasAnyAuthority('PARTNER', 'RESEARCHER', 'ADMIN')";
+    public static final String isResearcherOrAbove = "hasAnyAuthority('RESEARCHER', 'ADMIN')";
 }
