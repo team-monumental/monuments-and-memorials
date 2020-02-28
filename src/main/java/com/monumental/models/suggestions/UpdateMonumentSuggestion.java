@@ -4,6 +4,8 @@ import com.monumental.models.Monument;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +55,16 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     private List<String> newMaterials;
 
     private List<String> newTags;
+
+    public UpdateMonumentSuggestion() {
+        this.updatedReferencesUrlsById = new HashMap<>();
+        this.newReferenceUrls = new ArrayList<>();
+        this.deletedReferenceIds = new ArrayList<>();
+        this.newImageUrls = new ArrayList<>();
+        this.deletedImageIds = new ArrayList<>();
+        this.newMaterials = new ArrayList<>();
+        this.newTags = new ArrayList<>();
+    }
 
     public Monument getMonument() {
         return this.monument;

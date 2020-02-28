@@ -1,5 +1,10 @@
 package com.monumental.models.suggestions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +45,20 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     private List<String> newTags;
 
     private List<String> images;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "bulk_create_suggestion_id")
+    private BulkCreateMonumentSuggestion bulkCreateSuggestion;
+
+    public CreateMonumentSuggestion() {
+        this.references = new ArrayList<>();
+        this.materials = new ArrayList<>();
+        this.newMaterials = new ArrayList<>();
+        this.tags = new ArrayList<>();
+        this.newTags = new ArrayList<>();
+        this.images = new ArrayList<>();
+    }
 
     public String getTitle() {
         return this.title;

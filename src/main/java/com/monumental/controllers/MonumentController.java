@@ -1,7 +1,6 @@
 package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
-import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
