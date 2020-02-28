@@ -1,7 +1,7 @@
 import React from 'react';
 import './Monument.scss';
 import Details from './Details/Details';
-import SuggestChanges from './SuggestChanges/SuggestChanges';
+import SuggestChanges from '../SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
 import RelatedMonuments from './RelatedMonuments/RelatedMonuments';
 

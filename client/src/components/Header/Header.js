@@ -14,7 +14,6 @@ class Header extends React.Component {
         {name: 'Home', route: '/', exact: true},
         {name: 'Map', route: '/map'},
         {name: 'About', route: '/about'},
-        {name: 'Create', route: '/create', exact: true, protected: true},
         {name: 'Bulk Create', route: '/bulk-create', exact: true, protected: true}
     ];
 
@@ -62,7 +61,7 @@ class Header extends React.Component {
                     return navLink;
                 }
                 else {
-                    return <div/>;
+                    return;
                 }
             }
 
