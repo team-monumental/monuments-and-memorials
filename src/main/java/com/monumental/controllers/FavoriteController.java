@@ -36,7 +36,7 @@ public class FavoriteController {
     public Favorite getFavorite(@RequestParam Integer monumentId, @RequestParam(required = false) Integer userId)
             throws UnauthorizedException, AccessDeniedException, ResourceNotFoundException {
         if (userId != null && !userId.equals(this.userService.getCurrentUser().getId())) {
-            this.userService.requireUserIsInRoles(Role.PARTNER_OR_RESEARCHER);
+            this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
         }
         return this.favoriteService.getFavoriteByMonumentIdAndUserId(monumentId, userId);
     }
@@ -48,7 +48,7 @@ public class FavoriteController {
     }
 
     @GetMapping("/api/favorites/{userId}")
-    @PreAuthorize(Authorization.isPartnerOrResearcher)
+    @PreAuthorize(Authorization.isPartnerOrAbove)
     public List<Favorite> getUserFavorites(@PathVariable(value = "userId", required = false) Integer userId)
             throws ResourceNotFoundException {
         return this.favoriteService.getUserFavorites(userId);

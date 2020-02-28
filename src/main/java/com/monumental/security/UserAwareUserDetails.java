@@ -16,7 +16,7 @@ public class UserAwareUserDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> grantedAuthorities;
 
     public UserAwareUserDetails(User user) {
-        this(user, new ArrayList<GrantedAuthority>());
+        this(user, new ArrayList<>());
     }
 
     public UserAwareUserDetails(User user, Collection<? extends GrantedAuthority> grantedAuthorities) {
