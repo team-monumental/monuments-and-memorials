@@ -1,7 +1,7 @@
 import React from 'react';
 import './Monument.scss';
 import Details from './Details/Details';
-import SuggestChanges from './SuggestChanges/SuggestChanges';
+import SuggestChanges from '../SuggestChanges/SuggestChanges';
 import MapPhotoSphereTabs from './MapPhotoSphereTabs/MapPhotoSphereTabs';
 import RelatedMonuments from './RelatedMonuments/RelatedMonuments';
 
@@ -11,6 +11,8 @@ import RelatedMonuments from './RelatedMonuments/RelatedMonuments';
 export default class Monument extends React.Component {
 
     render() {
+        const { onSuggestChangesButtonClick } = this.props;
+
         let {
             monument, nearbyMonuments, relatedMonuments, fetchNearbyPending, fetchRelatedPending, onToggleFavorite,
             favorite, fetchFavoritePending, showFavorite
@@ -31,7 +33,7 @@ export default class Monument extends React.Component {
                              onToggleFavorite={() => onToggleFavorite()} showFavorite={showFavorite}/>
                 </div>
                 <div className="column related-monuments-column">
-                    <SuggestChanges/>
+                    <SuggestChanges onButtonClick={() => onSuggestChangesButtonClick()}/>
                     <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>
                     <RelatedMonuments title="Related Monuments or Memorials" monuments={relatedMonuments} pending={fetchRelatedPending}/>
                 </div>

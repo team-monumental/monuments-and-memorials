@@ -1,6 +1,6 @@
 import React from 'react';
 import './HomePage.scss';
-import SuggestChanges from '../../components/Monument/SuggestChanges/SuggestChanges';
+import SuggestChanges from '../../components/SuggestChanges/SuggestChanges';
 import { NavLink, withRouter } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
@@ -12,6 +12,11 @@ class HomePage extends React.Component {
         this.state = {
             dismissAlert: false
         }
+    }
+
+    handleSuggestChangesButtonClick() {
+        const { history } = this.props;
+        history.replace('/create/')
     }
 
     render() {
@@ -63,7 +68,7 @@ class HomePage extends React.Component {
                             If you have any questions, please contact the project coordinator, <b>Juilee Decker jdgsh@rit.edu</b>.
                         </p>
                     </div>
-                    <SuggestChanges/>
+                    <SuggestChanges onButtonClick={() => this.handleSuggestChangesButtonClick()}/>
                 </div>
             </>
         );

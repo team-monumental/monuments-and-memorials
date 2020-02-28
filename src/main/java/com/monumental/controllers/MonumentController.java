@@ -13,7 +13,6 @@ import com.monumental.security.Authorization;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.util.async.AsyncJob;
-import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +110,7 @@ public class MonumentController {
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
     @PostMapping("/api/monument/bulk/validate")
-    @PreAuthorize(Authorization.isPartnerOrResearcher)
+    @PreAuthorize(Authentication.isAuthenticated)
     public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
         try {
             BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
@@ -129,7 +128,7 @@ public class MonumentController {
      * @return AsyncJob - Object containing the Id of the job created and the current value of the Future object
      */
     @PostMapping("/api/monument/bulk/create/start")
-    @PreAuthorize(Authorization.isPartnerOrResearcher)
+    @PreAuthorize(Authentication.isAuthenticated)
     public AsyncJob startBulkCreateMonumentJob(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
 
@@ -143,7 +142,7 @@ public class MonumentController {
          */
         AsyncJob job = this.asyncJobService.createJob();
         job.setFuture(this.monumentService.bulkCreateMonumentsAsync(
-                new ArrayList<CsvMonumentConverterResult>(validationResult.getValidResults().values()),
+                new ArrayList<>(validationResult.getValidResults().values()),
                 job
         ));
         return job;
@@ -155,7 +154,7 @@ public class MonumentController {
      * @return AsyncJob - Object containing the Id of the job and the current value of the Future object
      */
     @GetMapping("/api/monument/bulk/create/progress/{id}")
-    @PreAuthorize(Authorization.isPartnerOrResearcher)
+    @PreAuthorize(Authentication.isAuthenticated)
     public AsyncJob getBulkCreateMonumentJob(@PathVariable Integer id) {
         return this.asyncJobService.getJob(id);
     }
@@ -169,7 +168,7 @@ public class MonumentController {
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
     @GetMapping("/api/monument/bulk/create/result/{id}")
-    @PreAuthorize(Authorization.isPartnerOrResearcher)
+    @PreAuthorize(Authentication.isAuthenticated)
     @SuppressWarnings("unchecked")
     public List<Monument> getBulkCreateMonumentJobResult(@PathVariable Integer id)
             throws ExecutionException, InterruptedException {
