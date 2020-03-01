@@ -2,8 +2,11 @@ package com.monumental.models.suggestions;
 
 import com.monumental.models.Monument;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,32 +15,45 @@ import java.util.Map;
 /**
  * Class used to represent a suggestion to update an existing Monument record
  */
+@Entity
 public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     private Monument monument;
 
+    @Column(name = "new_title")
+    @NotNull(groups = {New.class, Existing.class}, message = "New title can not be null")
     private String newTitle;
 
+    @Column(name = "new_address")
     private String newAddress;
 
+    @Column(name = "new_artist")
     private String newArtist;
 
+    @Column(name = "new_description")
     private String newDescription;
 
+    @Column(name = "new_inscription")
     private String newInscription;
 
+    @Column(name = "new_latitude")
     private Double newLatitude;
 
+    @Column(name = "new_longitude")
     private Double newLongitude;
 
+    @Column(name = "new_year")
     private String newYear;
 
+    @Column(name = "new_month")
     private String newMonth;
 
+    @Column(name = "new_date")
     private String newDate;
 
+    @Column(name = "new_is_temporary")
     private boolean newIsTemporary;
 
     private Map<Integer, String> updatedReferencesUrlsById;

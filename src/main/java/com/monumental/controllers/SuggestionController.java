@@ -1,11 +1,13 @@
 package com.monumental.controllers;
 
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.models.Monument;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
+import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class SuggestionController {
 
     @Autowired
     private UpdateSuggestionRepository updateSuggestionRepository;
+
+    @Autowired
+    private MonumentService monumentService;
 
     /**
      * Create a new Suggestion for creating a Monument
@@ -82,41 +87,42 @@ public class SuggestionController {
     /**
      * Approve a CreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the CreateMonumentSuggestion to approve
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return Monument - The newly created Monument based on the attributes of the CreateMonumentSuggestion with the
+     *                  specified ID
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/create/{id}/approve")
     // TODO
     //@PreAuthorize(Authorization.)
     @Transactional
-    public Map<String, Boolean> approveCreateSuggestion(@PathVariable("id") Integer id)
+    public Monument approveCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         CreateMonumentSuggestion createSuggestion = this.findCreateSuggestion(id);
 
         createSuggestion.setIsApproved(true);
-        this.createSuggestionRepository.save(createSuggestion);
+        createSuggestion = this.createSuggestionRepository.save(createSuggestion);
 
-        return Map.of("success", true);
+        return this.monumentService.createMonument(createSuggestion);
     }
 
     /**
      * Approve an UpdateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the UpdateMonumentSuggestion to approve
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return Monument - The updated Monument
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/update/{id}/approve")
     // TODO
     //@PreAuthorize(Authorization.)
     @Transactional
-    public Map<String, Boolean> approveUpdateSuggestion(@PathVariable("id") Integer id)
+    public Monument approveUpdateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
 
         updateSuggestion.setIsApproved(true);
-        this.updateSuggestionRepository.save(updateSuggestion);
+        updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
 
-        return Map.of("success", true);
+        return this.monumentService.updateMonument(updateSuggestion);
     }
 
     /**

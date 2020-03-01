@@ -3,6 +3,7 @@ package com.monumental.models.suggestions;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Class used to represent a suggestion for bulk-creating Monument records
  */
+@Entity
 public class BulkCreateMonumentSuggestion extends MonumentSuggestion {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

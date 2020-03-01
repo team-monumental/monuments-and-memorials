@@ -1,8 +1,8 @@
 package com.monumental.services.integrationtest;
 
-import com.monumental.controllers.helpers.CreateMonumentRequest;
-import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.models.Monument;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.UserRepository;
 import com.monumental.security.UserAwareUserDetails;
 import com.monumental.services.MonumentService;
@@ -57,15 +57,16 @@ public class AuditingIntegrationTests {
     }
 
     private Monument createMonument() {
-        CreateMonumentRequest request = new CreateMonumentRequest();
-        request.setTitle("Title");
-        return this.monumentService.createMonument(request);
+        CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
+        suggestion.setTitle("Title");
+        return this.monumentService.createMonument(suggestion);
     }
 
     private Monument updateMonument(Monument monument) {
-        UpdateMonumentRequest request = new UpdateMonumentRequest();
-        request.setNewTitle("New Title");
-        return this.monumentService.updateMonument(monument.getId(), request);
+        UpdateMonumentSuggestion suggestion = new UpdateMonumentSuggestion();
+        suggestion.setMonument(monument);
+        suggestion.setNewTitle("New Title");
+        return this.monumentService.updateMonument(suggestion);
     }
 
     @Test

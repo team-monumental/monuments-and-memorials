@@ -1,13 +1,12 @@
 package com.monumental.services.integrationtest;
 
-import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
-import com.monumental.controllers.helpers.UpdateMonumentRequest;
-import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.ReferenceRepository;
@@ -1309,14 +1308,14 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_BasicFieldsSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1334,14 +1333,14 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_BasicFieldsSet_SomeNullSomeEmpty() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress(null);
-        monumentRequest.setArtist("");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress(null);
+        createSuggestion.setArtist("");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("");
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertNull(result.getAddress());
@@ -1359,16 +1358,16 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_CoordinatesSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1387,17 +1386,17 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_DateSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setDate("2012-04-23T18:25:43.511Z");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setDate("2012-04-23T18:25:43.511Z");
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1422,17 +1421,17 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_YearSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setYear("2012");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setYear("2012");
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1457,18 +1456,18 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_YearAndMonthSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1493,25 +1492,25 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_ReferencesSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1537,32 +1536,32 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_ImagesSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        monumentRequest.setImages(imageUrls);
+        createSuggestion.setImages(imageUrls);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1588,39 +1587,39 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_MaterialsSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        monumentRequest.setImages(imageUrls);
+        createSuggestion.setImages(imageUrls);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        monumentRequest.setMaterials(materialNames);
+        createSuggestion.setMaterials(materialNames);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1649,46 +1648,46 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_NewMaterialsSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        monumentRequest.setImages(imageUrls);
+        createSuggestion.setImages(imageUrls);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        monumentRequest.setMaterials(materialNames);
+        createSuggestion.setMaterials(materialNames);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        monumentRequest.setNewMaterials(newMaterialNames);
+        createSuggestion.setNewMaterials(newMaterialNames);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1717,53 +1716,53 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_TagsSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        monumentRequest.setImages(imageUrls);
+        createSuggestion.setImages(imageUrls);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        monumentRequest.setMaterials(materialNames);
+        createSuggestion.setMaterials(materialNames);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        monumentRequest.setNewMaterials(newMaterialNames);
+        createSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> tagNames = new ArrayList<>();
         tagNames.add("Tag 1");
         tagNames.add("Tag 2");
         tagNames.add("Tag 3");
 
-        monumentRequest.setTags(tagNames);
+        createSuggestion.setTags(tagNames);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1791,60 +1790,60 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_NewTagsSet() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        monumentRequest.setImages(imageUrls);
+        createSuggestion.setImages(imageUrls);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        monumentRequest.setMaterials(materialNames);
+        createSuggestion.setMaterials(materialNames);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        monumentRequest.setNewMaterials(newMaterialNames);
+        createSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> tagNames = new ArrayList<>();
         tagNames.add("Tag 1");
         tagNames.add("Tag 2");
         tagNames.add("Tag 3");
 
-        monumentRequest.setTags(tagNames);
+        createSuggestion.setTags(tagNames);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
         newTagNames.add("New Tag 2");
         newTagNames.add("New Tag 3");
 
-        monumentRequest.setNewTags(newTagNames);
+        createSuggestion.setNewTags(newTagNames);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         assertEquals("Title", result.getTitle());
         assertEquals("Address", result.getAddress());
@@ -1872,60 +1871,60 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_createMonument_DatabaseValuesCorrect() {
-        CreateMonumentRequest monumentRequest = new CreateMonumentRequest();
-        monumentRequest.setTitle("Title");
-        monumentRequest.setAddress("Address");
-        monumentRequest.setArtist("Artist");
-        monumentRequest.setDescription("Description");
-        monumentRequest.setInscription("Inscription");
-        monumentRequest.setLatitude(90.0);
-        monumentRequest.setLongitude(180.0);
-        monumentRequest.setMonth("03");
-        monumentRequest.setYear("2019");
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        monumentRequest.setReferences(referenceUrls);
+        createSuggestion.setReferences(referenceUrls);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        monumentRequest.setImages(imageUrls);
+        createSuggestion.setImages(imageUrls);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        monumentRequest.setMaterials(materialNames);
+        createSuggestion.setMaterials(materialNames);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        monumentRequest.setNewMaterials(newMaterialNames);
+        createSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> tagNames = new ArrayList<>();
         tagNames.add("Tag 1");
         tagNames.add("Tag 2");
         tagNames.add("Tag 3");
 
-        monumentRequest.setTags(tagNames);
+        createSuggestion.setTags(tagNames);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
         newTagNames.add("New Tag 2");
         newTagNames.add("New Tag 3");
 
-        monumentRequest.setNewTags(newTagNames);
+        createSuggestion.setNewTags(newTagNames);
 
-        Monument result = this.monumentService.createMonument(monumentRequest);
+        Monument result = this.monumentService.createMonument(createSuggestion);
 
         result = this.monumentRepository.getOne(result.getId());
 
@@ -2686,18 +2685,13 @@ public class MonumentServiceIntegrationTests {
     /* updateMonument Tests */
 
     @Test
-    public void testMonumentService_updateMonument_IdNull() {
-        assertNull(this.monumentService.updateMonument(null, new UpdateMonumentRequest()));
+    public void testMonumentService_updateMonument_UpdateMonumentSuggestionNull() {
+        assertNull(this.monumentService.updateMonument(null));
     }
 
     @Test
-    public void testMonumentService_updateMonument_UpdateMonumentRequestNull() {
-        assertNull(this.monumentService.updateMonument(1, null));
-    }
-
-    @Test(expected = ResourceNotFoundException.class)
-    public void testMonumentService_updateMonument_NoMonumentWithId() {
-        this.monumentService.updateMonument(1, new UpdateMonumentRequest());
+    public void testMonumentService_updateMonument_MonumentNull() {
+        assertNull(this.monumentService.updateMonument(new UpdateMonumentSuggestion()));
     }
 
     @Test
@@ -2706,10 +2700,11 @@ public class MonumentServiceIntegrationTests {
         monument.setTitle("Title");
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
     }
@@ -2721,11 +2716,12 @@ public class MonumentServiceIntegrationTests {
         monument.setAddress("Address");
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2739,12 +2735,13 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2760,13 +2757,14 @@ public class MonumentServiceIntegrationTests {
         monument.setDescription("Description");
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2784,14 +2782,15 @@ public class MonumentServiceIntegrationTests {
         monument.setInscription("Inscription");
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2814,16 +2813,17 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2850,17 +2850,18 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewDate("2012-04-23T18:25:43.511Z");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewDate("2012-04-23T18:25:43.511Z");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2895,17 +2896,18 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2940,18 +2942,19 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -2986,25 +2989,26 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("New Reference URL 1");
         newReferenceUrls.add("New Reference URL 2");
         newReferenceUrls.add("New Reference URL 3");
 
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3059,25 +3063,26 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("New Reference URL 1");
         newReferenceUrls.add("New Reference URL 2");
         newReferenceUrls.add("New Reference URL 3");
 
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3132,29 +3137,30 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
 
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference1.getId(), "New Reference URL 1");
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
 
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3222,30 +3228,31 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3310,37 +3317,38 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
 
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3426,37 +3434,38 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
 
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3550,38 +3559,39 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3675,42 +3685,43 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image1.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3804,42 +3815,43 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -3934,49 +3946,50 @@ public class MonumentServiceIntegrationTests {
 
         monument = this.monumentRepository.save(monument);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -4081,40 +4094,41 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Material 1", monuments, true);
         this.tagService.createTag("Material 2", monuments, true);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4123,9 +4137,9 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("Material 1");
         newMaterialNames.add("Material 2");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -4230,40 +4244,41 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Material 1", monuments, true);
         this.tagService.createTag("Material 2", monuments, true);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4271,9 +4286,9 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -4378,40 +4393,41 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Material 1", monuments, true);
         this.tagService.createTag("Material 2", monuments, true);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4419,16 +4435,16 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
         newTagNames.add("New Tag 2");
         newTagNames.add("New Tag 3");
 
-        newMonument.setNewTags(newTagNames);
+        updateSuggestion.setNewTags(newTagNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -4536,40 +4552,41 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Tag 1", monuments, false);
         this.tagService.createTag("Tag 2", monuments, false);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4577,7 +4594,7 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
@@ -4586,9 +4603,9 @@ public class MonumentServiceIntegrationTests {
         newTagNames.add("Tag 1");
         newTagNames.add("Tag 2");
 
-        newMonument.setNewTags(newTagNames);
+        updateSuggestion.setNewTags(newTagNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -4696,40 +4713,41 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Tag 1", monuments, false);
         this.tagService.createTag("Tag 2", monuments, false);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4737,7 +4755,7 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
@@ -4745,9 +4763,9 @@ public class MonumentServiceIntegrationTests {
         newTagNames.add("New Tag 3");
         newTagNames.add("Tag 2");
 
-        newMonument.setNewTags(newTagNames);
+        updateSuggestion.setNewTags(newTagNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
@@ -4855,40 +4873,41 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Tag 1", monuments, false);
         this.tagService.createTag("Tag 2", monuments, false);
 
-        UpdateMonumentRequest newMonument = new UpdateMonumentRequest();
-        newMonument.setNewTitle("New Title");
-        newMonument.setNewAddress("New Address");
-        newMonument.setNewArtist("New Artist");
-        newMonument.setNewDescription("New Description");
-        newMonument.setNewInscription("New Inscription");
-        newMonument.setNewLongitude(95.0);
-        newMonument.setNewLatitude(185.0);
-        newMonument.setNewYear("2012");
-        newMonument.setNewMonth("03");
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        newMonument.setNewReferenceUrls(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        newMonument.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        newMonument.setDeletedReferenceIds(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        newMonument.setNewImageUrls(newImageUrls);
+        updateSuggestion.setNewImageUrls(newImageUrls);
 
-        newMonument.setNewPrimaryImageId(image2.getId());
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        newMonument.setDeletedImageIds(deletedImageIds);
+        updateSuggestion.setDeletedImageIds(deletedImageIds);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4896,7 +4915,7 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        newMonument.setNewMaterials(newMaterialNames);
+        updateSuggestion.setNewMaterials(newMaterialNames);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
@@ -4904,9 +4923,9 @@ public class MonumentServiceIntegrationTests {
         newTagNames.add("New Tag 3");
         newTagNames.add("Tag 2");
 
-        newMonument.setNewTags(newTagNames);
+        updateSuggestion.setNewTags(newTagNames);
 
-        this.monumentService.updateMonument(monument.getId(), newMonument);
+        this.monumentService.updateMonument(updateSuggestion);
 
         Monument updatedMonument = this.monumentRepository.getOne(monument.getId());
 

@@ -3,12 +3,15 @@ package com.monumental.services;
 import com.amazonaws.SdkClientException;
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
-import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
-import com.monumental.exceptions.ResourceNotFoundException;
-import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.*;
 import com.monumental.repositories.*;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
+import com.monumental.repositories.ImageRepository;
+import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.ReferenceRepository;
+import com.monumental.repositories.TagRepository;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
@@ -764,27 +767,26 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Create a new Monument based on the attributes in the specified CreateMonumentRequest object
-     * @param monumentRequest - The CreateMonumentRequest object to use to create the new Monument
-     * @return Monument - The newly created Monument based on the specified CreateMonumentRequest
+     * Create a new Monument based on the attributes in the specified CreateMonumentSuggestion object
+     * @param monumentSuggestion - The CreateMonumentSuggestion object to use to create the new Monument
+     * @return Monument - The newly created Monument based on the specified CreateMonumentSuggestion
      */
-    public Monument createMonument(CreateMonumentRequest monumentRequest) {
-        if (monumentRequest == null) {
+    public Monument createMonument(CreateMonumentSuggestion monumentSuggestion) {
+        if (monumentSuggestion == null) {
             return null;
         }
 
         Monument createdMonument = new Monument();
 
-        createdMonument.setIsTemporary(monumentRequest.getIsTemporary());
         createdMonument.setIsActive(true);
+        createdMonument.setIsTemporary(monumentSuggestion.getIsTemporary());
 
         // Set basic String fields
-        this.setBasicFieldsOnMonument(createdMonument, monumentRequest.getTitle(), monumentRequest.getAddress(),
-                monumentRequest.getArtist(), monumentRequest.getDescription(), monumentRequest.getInscription());
+        this.setBasicFieldsOnMonument(createdMonument, monumentSuggestion.getTitle(), monumentSuggestion.getAddress(),
+                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(), monumentSuggestion.getInscription());
 
         // Set the Coordinates
-        Point point = MonumentService.createMonumentPoint(monumentRequest.getLongitude(),
-                monumentRequest.getLatitude());
+        Point point = MonumentService.createMonumentPoint(monumentSuggestion.getLongitude(), monumentSuggestion.getLatitude());
 
         createdMonument.setCoordinates(point);
 
@@ -794,11 +796,11 @@ public class MonumentService extends ModelService<Monument> {
         // Set the Date
         Date date;
 
-        if (!isNullOrEmpty(monumentRequest.getDate())) {
-            date = MonumentService.createMonumentDateFromJsonDate(monumentRequest.getDate());
+        if (!isNullOrEmpty(monumentSuggestion.getDate())) {
+            date = MonumentService.createMonumentDateFromJsonDate(monumentSuggestion.getDate());
         }
         else {
-            date = MonumentService.createMonumentDate(monumentRequest.getYear(), monumentRequest.getMonth());
+            date = MonumentService.createMonumentDate(monumentSuggestion.getYear(), monumentSuggestion.getMonth());
         }
 
         createdMonument.setDate(date);
@@ -808,15 +810,15 @@ public class MonumentService extends ModelService<Monument> {
 
         /* References Section */
         List<Reference> references = new ArrayList<>();
-        if (monumentRequest.getReferences() != null && monumentRequest.getReferences().size() > 0) {
-            references = this.createMonumentReferences(monumentRequest.getReferences(), createdMonument);
+        if (monumentSuggestion.getReferences() != null && monumentSuggestion.getReferences().size() > 0) {
+            references = this.createMonumentReferences(monumentSuggestion.getReferences(), createdMonument);
         }
         createdMonument.setReferences(references);
 
         /* Images Section */
         List<Image> images = new ArrayList<>();
-        if (monumentRequest.getImages() != null && monumentRequest.getImages().size() > 0) {
-            images = this.createMonumentImages(monumentRequest.getImages(), createdMonument);
+        if (monumentSuggestion.getImages() != null && monumentSuggestion.getImages().size() > 0) {
+            images = this.createMonumentImages(monumentSuggestion.getImages(), createdMonument);
         }
         createdMonument.setImages(images);
 
@@ -825,15 +827,15 @@ public class MonumentService extends ModelService<Monument> {
 
         /* Materials Section */
         List<Tag> materials = new ArrayList<>();
-        if (monumentRequest.getMaterials() != null && monumentRequest.getMaterials().size() > 0) {
-            for (String materialName : monumentRequest.getMaterials()) {
+        if (monumentSuggestion.getMaterials() != null && monumentSuggestion.getMaterials().size() > 0) {
+            for (String materialName : monumentSuggestion.getMaterials()) {
                 materials.add(this.tagService.createTag(materialName, createdMonumentList, true));
             }
         }
 
         /* New Materials Section */
-        if (monumentRequest.getNewMaterials() != null && monumentRequest.getNewMaterials().size() > 0) {
-            for (String newMaterialName : monumentRequest.getNewMaterials()) {
+        if (monumentSuggestion.getNewMaterials() != null && monumentSuggestion.getNewMaterials().size() > 0) {
+            for (String newMaterialName : monumentSuggestion.getNewMaterials()) {
                 materials.add(this.tagService.createTag(newMaterialName, createdMonumentList, true));
             }
         }
@@ -842,15 +844,15 @@ public class MonumentService extends ModelService<Monument> {
 
         /* Tags Section */
         List<Tag> tags = new ArrayList<>();
-        if (monumentRequest.getTags() != null && monumentRequest.getTags().size() > 0) {
-            for (String tagName : monumentRequest.getTags()) {
+        if (monumentSuggestion.getTags() != null && monumentSuggestion.getTags().size() > 0) {
+            for (String tagName : monumentSuggestion.getTags()) {
                 tags.add(this.tagService.createTag(tagName, createdMonumentList, false));
             }
         }
 
         /* New Tags Section */
-        if (monumentRequest.getNewTags() != null && monumentRequest.getNewTags().size() > 0) {
-            for (String newTagName : monumentRequest.getNewTags()) {
+        if (monumentSuggestion.getNewTags() != null && monumentSuggestion.getNewTags().size() > 0) {
+            for (String newTagName : monumentSuggestion.getNewTags()) {
                 tags.add(this.tagService.createTag(newTagName, createdMonumentList, false));
             }
         }
@@ -868,37 +870,34 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Update the Monument with the specified ID to have the specified attributes
-     * @param id - Integer ID of the Monument to update
-     * @param newMonument - UpdateMonumentRequest object containing the new attributes for the Monument
+     * Update a Monument using the attributes specified in the UpdateMonumentSuggestion
+     * @param updateSuggestion - UpdateMonumentSuggestion object containing the new attributes for the Monument
      * @return Monument - The Monument with the updated attributes
      */
-    public Monument updateMonument(Integer id, UpdateMonumentRequest newMonument) {
-        if (id == null || newMonument == null) {
+    public Monument updateMonument(UpdateMonumentSuggestion updateSuggestion) {
+        if (updateSuggestion == null) {
             return null;
         }
 
-        Optional<Monument> optionalMonument = this.monumentRepository.findById(id);
+        Monument currentMonument = updateSuggestion.getMonument();
 
-        if (optionalMonument.isEmpty()) {
-            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        if (currentMonument == null) {
+            return null;
         }
 
-        Monument currentMonument = optionalMonument.get();
         this.initializeAllLazyLoadedCollections(currentMonument);
 
-        currentMonument.setIsTemporary(newMonument.getNewIsTemporary());
+        currentMonument.setIsTemporary(updateSuggestion.getNewIsTemporary());
 
         String oldAddress = currentMonument.getAddress();
         Point oldCoordinates = currentMonument.getCoordinates();
 
         // Update basic String fields
-        this.setBasicFieldsOnMonument(currentMonument, newMonument.getNewTitle(), newMonument.getNewAddress(),
-                newMonument.getNewArtist(), newMonument.getNewDescription(), newMonument.getNewInscription());
+        this.setBasicFieldsOnMonument(currentMonument, updateSuggestion.getNewTitle(), updateSuggestion.getNewAddress(),
+                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription());
 
         // Update the Coordinates
-        Point point = MonumentService.createMonumentPoint(newMonument.getNewLongitude(),
-                newMonument.getNewLatitude());
+        Point point = MonumentService.createMonumentPoint(updateSuggestion.getNewLongitude(), updateSuggestion.getNewLatitude());
         currentMonument.setCoordinates(point);
 
         // In the situation that the address or coordinates were removed or changed, try to populate them with correct data
@@ -907,11 +906,11 @@ public class MonumentService extends ModelService<Monument> {
         // Update the Date
         Date date;
 
-        if (!isNullOrEmpty(newMonument.getNewDate())) {
-            date = MonumentService.createMonumentDateFromJsonDate(newMonument.getNewDate());
+        if (!isNullOrEmpty(updateSuggestion.getNewDate())) {
+            date = MonumentService.createMonumentDateFromJsonDate(updateSuggestion.getNewDate());
         }
         else {
-            date = MonumentService.createMonumentDate(newMonument.getNewYear(), newMonument.getNewMonth());
+            date = MonumentService.createMonumentDate(updateSuggestion.getNewYear(), updateSuggestion.getNewMonth());
         }
 
         currentMonument.setDate(date);
@@ -922,11 +921,11 @@ public class MonumentService extends ModelService<Monument> {
         /* References section */
 
         // Update any current Reference URLs
-        this.updateMonumentReferences(currentMonument, newMonument.getUpdatedReferencesUrlsById());
+        this.updateMonumentReferences(currentMonument, updateSuggestion.getUpdatedReferencesUrlsById());
 
         // Add any newly created References
-        if (newMonument.getNewReferenceUrls() != null && newMonument.getNewReferenceUrls().size() > 0) {
-            List<Reference> newReferences = this.createMonumentReferences(newMonument.getNewReferenceUrls(), currentMonument);
+        if (updateSuggestion.getNewReferenceUrls() != null && updateSuggestion.getNewReferenceUrls().size() > 0) {
+            List<Reference> newReferences = this.createMonumentReferences(updateSuggestion.getNewReferenceUrls(), currentMonument);
 
             // If the Monument has no References, we can just set them
             if (currentMonument.getReferences() == null || currentMonument.getReferences().size() == 0) {
@@ -939,13 +938,13 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Delete any References
-        this.deleteMonumentReferences(currentMonument, newMonument.getDeletedReferenceIds());
+        this.deleteMonumentReferences(currentMonument, updateSuggestion.getDeletedReferenceIds());
 
         /* Images section */
 
         // Add any new Images
-        if (newMonument.getNewImageUrls() != null && newMonument.getNewImageUrls().size() > 0) {
-            List<Image> newImages = this.createMonumentImages(newMonument.getNewImageUrls(), currentMonument);
+        if (updateSuggestion.getNewImageUrls() != null && updateSuggestion.getNewImageUrls().size() > 0) {
+            List<Image> newImages = this.createMonumentImages(updateSuggestion.getNewImageUrls(), currentMonument);
 
             // If the Monument does not have any Images, we can just set them
             if (currentMonument.getImages() == null || currentMonument.getImages().size() == 0) {
@@ -958,10 +957,10 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Update the primary Image
-        this.updateMonumentPrimaryImage(currentMonument, newMonument.getNewPrimaryImageId());
+        this.updateMonumentPrimaryImage(currentMonument, updateSuggestion.getNewPrimaryImageId());
 
         // Delete any Images
-        this.deleteMonumentImages(currentMonument, newMonument.getDeletedImageIds());
+        this.deleteMonumentImages(currentMonument, updateSuggestion.getDeletedImageIds());
 
         // If for some reason the primary Image is deleted, default to the first Image
         this.resetMonumentPrimaryImage(currentMonument);
@@ -974,7 +973,7 @@ public class MonumentService extends ModelService<Monument> {
         currentMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(currentMonument.getId(), true));
 
         // Update the Materials associated with the Monument
-        this.updateMonumentTags(currentMonument, newMonument.getNewMaterials(), true);
+        this.updateMonumentTags(currentMonument, updateSuggestion.getNewMaterials(), true);
 
         /* Tags section */
 
@@ -982,7 +981,7 @@ public class MonumentService extends ModelService<Monument> {
         currentMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(currentMonument.getId(), false));
 
         // Update the Tags associated with the Monument
-        this.updateMonumentTags(currentMonument, newMonument.getNewTags(), false);
+        this.updateMonumentTags(currentMonument, updateSuggestion.getNewTags(), false);
 
         return currentMonument;
     }

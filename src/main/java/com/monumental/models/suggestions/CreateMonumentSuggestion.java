@@ -2,36 +2,52 @@ package com.monumental.models.suggestions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class used to represent a suggestion to create a new Monument record
  */
+@Entity
 public class CreateMonumentSuggestion extends MonumentSuggestion {
 
+    @Column(name = "title")
+    @NotNull(groups = {New.class, Existing.class}, message = "Title can not be null")
     private String title;
 
+    @Column(name = "address")
     private String address;
 
+    @Column(name = "latitude")
     private Double latitude;
 
+    @Column(name = "longitude")
     private Double longitude;
 
+    @Column(name = "year")
     private String year;
 
+    @Column(name = "month")
     private String month;
 
+    @Column(name = "date")
     private String date;
 
+    @Column(name = "artist")
     private String artist;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "inscription")
     private String inscription;
 
+    @Column(name = "is_temporary")
     private boolean isTemporary;
 
     private List<String> references;
