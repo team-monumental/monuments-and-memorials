@@ -4,6 +4,7 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
+import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
@@ -28,6 +29,9 @@ public class SuggestionController {
     @Autowired
     private MonumentService monumentService;
 
+    @Autowired
+    private MonumentRepository monumentRepository;
+
     /**
      * Create a new Suggestion for creating a Monument
      * @param createSuggestion - CreateMonumentSuggestion object representing the new Monument to suggest
@@ -42,15 +46,26 @@ public class SuggestionController {
     }
 
     /**
-     * Create a new Suggestion for updating a Monument
+     * Create a new Suggestion for updating a Monument, if it exists
+     * @param monumentId - Integer ID of the Monument to suggest the update for
      * @param updateSuggestion - UpdateMonumentSuggestion object representing the suggested updates
      * @return Map<String, Boolean> - Map of result String to actual result
+     * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
      */
     @PostMapping("/api/suggestion/update")
     @PreAuthorize(Authentication.isAuthenticated)
     @Transactional
-    public Map<String, Boolean> suggestMonumentUpdate(@RequestBody UpdateMonumentSuggestion updateSuggestion) {
+    public Map<String, Boolean> suggestMonumentUpdate(@RequestParam Integer monumentId,
+                                                      @RequestBody UpdateMonumentSuggestion updateSuggestion) {
+        Optional<Monument> optional = this.monumentRepository.findById(monumentId);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+        Monument monument = optional.get();
+
+        updateSuggestion.setMonument(monument);
         this.updateSuggestionRepository.save(updateSuggestion);
+
         return Map.of("success", true);
     }
 
