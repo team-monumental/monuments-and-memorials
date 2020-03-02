@@ -3,7 +3,8 @@ package com.monumental.security;
 public enum Role {
     COLLABORATOR,
     PARTNER,
-    RESEARCHER;
+    RESEARCHER,
+    ADMIN;
 
-    public static Role[] PARTNER_OR_RESEARCHER = new Role[]{PARTNER, RESEARCHER};
+    public static Role[] PARTNER_OR_ABOVE = new Role[]{PARTNER, RESEARCHER, ADMIN};
 }
