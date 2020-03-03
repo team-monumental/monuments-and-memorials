@@ -2,10 +2,7 @@ package com.monumental.models.suggestions;
 
 import com.monumental.models.Monument;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,20 +53,44 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_is_temporary")
     private boolean newIsTemporary;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_updated_reference_urls_by_id",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id", referencedColumnName = "id"))
+    @MapKeyColumn(name = "reference_id")
+    @Column(name = "updated_reference_url")
     private Map<Integer, String> updatedReferencesUrlsById;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_new_reference_urls",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id"))
     private List<String> newReferenceUrls;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_deleted_reference_ids",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id"))
     private List<Integer> deletedReferenceIds;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_new_image_urls",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id"))
     private List<String> newImageUrls;
 
+    @Column(name = "new_primary_image_id")
     private Integer newPrimaryImageId;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_deleted_images_ids",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id"))
     private List<Integer> deletedImageIds;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_new_materials",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id"))
     private List<String> newMaterials;
 
+    @ElementCollection
+    @CollectionTable(name = "update_monument_suggestion_new_tags",
+            joinColumns = @JoinColumn(name = "update_monument_suggestion_id"))
     private List<String> newTags;
 
     public UpdateMonumentSuggestion() {

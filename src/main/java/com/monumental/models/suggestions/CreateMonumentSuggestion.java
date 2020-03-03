@@ -2,10 +2,7 @@ package com.monumental.models.suggestions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,16 +47,34 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "is_temporary")
     private boolean isTemporary;
 
+    @ElementCollection
+    @CollectionTable(name = "create_monument_suggestion_references",
+            joinColumns = @JoinColumn(name = "create_monument_suggestion_id"))
     private List<String> references;
 
+    @ElementCollection
+    @CollectionTable(name = "create_monument_suggestion_materials",
+            joinColumns = @JoinColumn(name = "create_monument_suggestion_id"))
     private List<String> materials;
 
+    @ElementCollection
+    @CollectionTable(name = "create_monument_suggestion_new_materials",
+            joinColumns = @JoinColumn(name = "create_monument_suggestion_id"))
     private List<String> newMaterials;
 
+    @ElementCollection
+    @CollectionTable(name = "create_monument_suggestion_tags",
+            joinColumns = @JoinColumn(name = "create_monument_suggestion_id"))
     private List<String> tags;
 
+    @ElementCollection
+    @CollectionTable(name = "create_monument_suggestion_new_tags",
+            joinColumns = @JoinColumn(name = "create_monument_suggestion_id"))
     private List<String> newTags;
 
+    @ElementCollection
+    @CollectionTable(name = "create_monument_suggestion_images",
+            joinColumns = @JoinColumn(name = "create_monument_suggestion_id"))
     private List<String> images;
 
     @JsonIgnore
