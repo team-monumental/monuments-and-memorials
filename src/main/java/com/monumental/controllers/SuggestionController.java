@@ -35,15 +35,13 @@ public class SuggestionController {
 
     /**
      * Create a new Suggestion for creating a Monument
-     * @param createSuggestionJson - JSON String representing the new Monument suggestion
+     * @param createSuggestion - CreateMonumentSuggestion object representing the new Monument suggestion
      * @return Map<String, Boolean> - Map of result String to actual result
      */
     @PostMapping("/api/suggestion/create")
     @PreAuthorize(Authentication.isAuthenticated)
     @Transactional
-    public Map<String, Boolean> suggestMonumentCreation(@RequestBody String createSuggestionJson) {
-        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
-        createSuggestion.setJson(createSuggestionJson);
+    public Map<String, Boolean> suggestMonumentCreation(@RequestBody CreateMonumentSuggestion createSuggestion) {
         this.createSuggestionRepository.save(createSuggestion);
         return Map.of("success", true);
     }
@@ -51,7 +49,7 @@ public class SuggestionController {
     /**
      * Create a new Suggestion for updating a Monument, if it exists
      * @param monumentId - Integer ID of the Monument to suggest the update for
-     * @param updateSuggestionJson - JSON String representing the updated Monument
+     * @param updateSuggestion - UpdateMonumentSuggestion object representing the updated Monument
      * @return Map<String, Boolean> - Map of result String to actual result
      * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
      */
@@ -59,15 +57,13 @@ public class SuggestionController {
     @PreAuthorize(Authentication.isAuthenticated)
     @Transactional
     public Map<String, Boolean> suggestMonumentUpdate(@RequestParam Integer monumentId,
-                                                      @RequestBody String updateSuggestionJson) {
+                                                      @RequestBody UpdateMonumentSuggestion updateSuggestion) {
         Optional<Monument> optional = this.monumentRepository.findById(monumentId);
         if (optional.isEmpty()) {
             throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         }
         Monument monument = optional.get();
 
-        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
-        updateSuggestion.setJson(updateSuggestionJson);
         updateSuggestion.setMonument(monument);
         this.updateSuggestionRepository.save(updateSuggestion);
 
