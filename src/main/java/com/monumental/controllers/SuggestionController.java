@@ -8,6 +8,7 @@ import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
+import com.monumental.security.Authorization;
 import com.monumental.services.MonumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -76,8 +77,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/create/{id}")
-    // TODO
-    //@PreAuthorize()
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public CreateMonumentSuggestion getCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
@@ -91,8 +91,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/update/{id}")
-    // TODO
-    //@PreAuthorize()
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public UpdateMonumentSuggestion getUpdateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
@@ -107,8 +106,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/create/{id}/approve")
-    // TODO
-    //@PreAuthorize(Authorization.)
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public Monument approveCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
@@ -127,8 +125,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/update/{id}/approve")
-    // TODO
-    //@PreAuthorize(Authorization.)
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public Monument approveUpdateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
@@ -147,8 +144,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/create/{id}/reject")
-    // TODO
-    //@PreAuthorize()
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public Map<String, Boolean> rejectCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         CreateMonumentSuggestion createSuggestion = this.findCreateSuggestion(id);
@@ -166,8 +162,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/update/{id}/reject")
-    // TODO
-    //@PreAuthorize()
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public Map<String, Boolean> rejectUpdateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
