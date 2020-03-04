@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * Exception class used for failed login attempts (401)
  */
 @ExceptionMapping(statusCode = HttpStatus.UNAUTHORIZED, errorCode = "resource.not_found")
-public class InvalidEmailOrPasswordException extends RuntimeException {
+public class InvalidEmailOrPasswordException extends Exception {
 
     public InvalidEmailOrPasswordException() {
 

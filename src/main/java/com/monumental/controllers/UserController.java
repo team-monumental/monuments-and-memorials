@@ -40,6 +40,7 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
     @PostMapping("/api/signup")
+    @Transactional
     public User signup(@RequestBody CreateUserRequest user) throws InvalidEmailOrPasswordException {
         return this.userService.signup(user);
     }
