@@ -23,9 +23,7 @@ public class JpaAuditConfiguration implements AuditorAware<User> {
     public Optional<User> getCurrentAuditor() {
         if (SecurityContextHolder.getContext().getAuthentication() == null) return Optional.empty();
         try {
-            User user = this.userService.getCurrentUserSafely();
-            if (user == null) return Optional.empty();
-            return Optional.of(user);
+            return Optional.of(this.userService.getCurrentUser());
         } catch (UnauthorizedException e) {
             return Optional.empty();
         }

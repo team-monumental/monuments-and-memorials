@@ -70,33 +70,9 @@ public class UserService extends ModelService<User> {
      * @throws UnauthorizedException - If the current user is not logged in
      */
     public UserAwareUserDetails getSession() throws UnauthorizedException {
-        return this.getSession(false);
-    }
-
-    /**
-     * Modified version of getSession that returns null instead of throwing an exception
-     * This is because throwing an exception will rollback the spring transaction automatically which is
-     * not always desirable
-     * @return UserAwareUserDetails if the user is logged in, or null if they are not
-     */
-    public UserAwareUserDetails getSessionSafely() {
-        return this.getSession(true);
-    }
-
-    /**
-     * Gets our custom Spring Security session object (UserAwareUserDetails) which includes our User.
-     * @param safely - If true, null will be returned if not logged in. If false, UnauthorizedException will be thrown
-     * @return UserAwareUserDetails - Custom Spring Security session object
-     * @throws UnauthorizedException - If the current user is not logged in and safely is false
-     */
-    private UserAwareUserDetails getSession(boolean safely) throws UnauthorizedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserAwareUserDetails)) {
-            if (safely) {
-                return null;
-            } else {
-                throw new UnauthorizedException(principal.getClass().getName());
-            }
+            throw new UnauthorizedException(principal.getClass().getName());
         }
         return (UserAwareUserDetails) principal;
     }
@@ -107,33 +83,8 @@ public class UserService extends ModelService<User> {
      * @throws UnauthorizedException - If the current user is not logged in
      */
     public User getCurrentUser() throws UnauthorizedException {
-        return this.getCurrentUser(false);
-    }
-
-    /**
-     * Modified version of getCurrentUser that returns null instead of throwing an exception
-     * This is because throwing an exception will rollback the spring transaction automatically which is
-     * not always desirable
-     * @return User - The logged in User if logged in, or null if not
-     */
-    public User getCurrentUserSafely() {
-        return this.getCurrentUser(true);
-    }
-
-    /**
-     * Gets our User object for the currently logged in user
-     * @param safely - if true null will be returned if not logged in, otherwise UnauthorizedException will be thrown
-     * @return User - The logged in User
-     * @throws UnauthorizedException - If the current user is not logged in and safely is false
-     */
-    private User getCurrentUser(boolean safely) throws UnauthorizedException {
-        UserAwareUserDetails session = this.getSession(safely);
-        if (session == null) {
-            if (safely) return null;
-            else throw new UnauthorizedException();
-        }
-        User user = session.getUser();
-        if (user == null && !safely) throw new UnauthorizedException();
+        User user = this.getSession().getUser();
+        if (user == null) throw new UnauthorizedException();
         return user;
     }
 

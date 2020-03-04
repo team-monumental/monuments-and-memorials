@@ -43,14 +43,14 @@ public class FavoriteController {
 
     @GetMapping("/api/favorites")
     @PreAuthorize(Authentication.isAuthenticated)
-    public List<Favorite> getUserFavorites() {
+    public List<Favorite> getUserFavorites() throws UnauthorizedException {
         return this.favoriteService.getUserFavorites();
     }
 
     @GetMapping("/api/favorites/{userId}")
     @PreAuthorize(Authorization.isPartnerOrAbove)
     public List<Favorite> getUserFavorites(@PathVariable(value = "userId", required = false) Integer userId)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, UnauthorizedException {
         return this.favoriteService.getUserFavorites(userId);
     }
 
@@ -61,14 +61,14 @@ public class FavoriteController {
 
     @PostMapping("/api/favorite")
     @PreAuthorize(Authentication.isAuthenticated)
-    public Favorite createFavorite(@RequestBody FavoriteRequest request) {
+    public Favorite createFavorite(@RequestBody FavoriteRequest request) throws UnauthorizedException {
         return this.favoriteService.createFavorite(request.monumentId, request.userId);
     }
 
     @DeleteMapping("/api/favorite")
     @PreAuthorize(Authentication.isAuthenticated)
     public Map<String, Boolean> deleteFavorite(@RequestBody FavoriteRequest request)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, UnauthorizedException {
         this.favoriteService.deleteFavorite(request.monumentId, request.userId);
         return Map.of("success", true);
     }
