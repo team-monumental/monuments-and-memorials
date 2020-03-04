@@ -1,7 +1,6 @@
 package com.monumental.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,12 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                         // Prevent redirect attempt after successfully logging in
-                        System.out.println();
                     }
                 })
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
-                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws InvalidEmailOrPasswordException, IOException {
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
                         // Prevent redirect attempt after failing to log in
                         response.setStatus(HttpStatus.FORBIDDEN.value());
                         Map<String, Object> data = new HashMap<>();

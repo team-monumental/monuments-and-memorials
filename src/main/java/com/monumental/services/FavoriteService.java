@@ -1,6 +1,7 @@
 package com.monumental.services;
 
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Favorite;
 import com.monumental.models.User;
 import com.monumental.repositories.FavoriteRepository;
@@ -37,8 +38,10 @@ public class FavoriteService {
      * @return - The Favorite, if it exists, otherwise null
      * @throws ResourceNotFoundException - If there is no existing Favorite for the specified User and Monument, or
      *                                     there is no User for the specified userId
+     * @throws UnauthorizedException - If not logged in
      */
-    public Favorite getFavoriteByMonumentIdAndUserId(Integer monumentId, Integer userId) throws ResourceNotFoundException {
+    public Favorite getFavoriteByMonumentIdAndUserId(Integer monumentId, Integer userId)
+            throws ResourceNotFoundException, UnauthorizedException {
         User currentUser = this.userService.getCurrentUser();
 
         this.userService.requireUserExistsIfNotNull(userId);
@@ -58,8 +61,9 @@ public class FavoriteService {
      * @param userId - An optional override if not getting the favorites of the running user
      * @return - The Favorite, if it exists, otherwise null
      * @throws ResourceNotFoundException - If a userId is specified and no such User exists
+     * @throws UnauthorizedException - If not logged in
      */
-    public List<Favorite> getUserFavorites(Integer userId) throws ResourceNotFoundException {
+    public List<Favorite> getUserFavorites(Integer userId) throws ResourceNotFoundException, UnauthorizedException {
         User currentUser = this.userService.getCurrentUser();
 
         this.userService.requireUserExistsIfNotNull(userId);
@@ -76,7 +80,7 @@ public class FavoriteService {
     /**
      * @see FavoriteService#getUserFavorites(Integer)
      */
-    public List<Favorite> getUserFavorites() throws ResourceNotFoundException {
+    public List<Favorite> getUserFavorites() throws ResourceNotFoundException, UnauthorizedException {
         return this.getUserFavorites(null);
     }
 
@@ -86,8 +90,9 @@ public class FavoriteService {
      * @param monumentId - The Id of the Monument to favorite
      * @param userId - An optional override if not favoriting for the running user
      * @return - The created Favorite
+     * @throws UnauthorizedException - If not logged in
      */
-    public Favorite createFavorite(Integer monumentId, Integer userId) {
+    public Favorite createFavorite(Integer monumentId, Integer userId) throws UnauthorizedException {
         User currentUser = this.userService.getCurrentUser();
 
         Favorite favorite = new Favorite(
@@ -108,9 +113,10 @@ public class FavoriteService {
      * @param userId - An optional override if not deleting a favorite for the running user
      * @throws ResourceNotFoundException - If there is no existing Favorite for the specified User and Monument, or
      *                                     there is no User for the specified userId
+     * @throws UnauthorizedException - If not logged in
      */
     public void deleteFavorite(Integer monumentId, Integer userId)
-            throws ResourceNotFoundException {
+            throws ResourceNotFoundException, UnauthorizedException {
         Favorite favorite = getFavoriteByMonumentIdAndUserId(monumentId, userId);
         this.favoriteRepository.delete(favorite);
     }

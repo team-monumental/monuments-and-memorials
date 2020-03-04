@@ -1,5 +1,6 @@
 package com.monumental.services.integrationtest;
 
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.User;
 import com.monumental.repositories.UserRepository;
 import com.monumental.security.Role;
@@ -75,24 +76,36 @@ public class UserServiceIntegrationTests {
     @Test
     @WithUserDetails(RESEARCHER)
     public void getCurrentUser_researcher() {
-        User user = this.userService.getCurrentUser();
-        assertEquals(RESEARCHER, user.getEmail());
-        assertEquals(Role.RESEARCHER, user.getRole());
+        try {
+            User user = this.userService.getCurrentUser();
+            assertEquals(RESEARCHER, user.getEmail());
+            assertEquals(Role.RESEARCHER, user.getRole());
+        } catch (UnauthorizedException e) {
+            fail("User should be logged in.");
+        }
     }
 
     @Test
     @WithUserDetails(PARTNER)
     public void getCurrentUser_partner() {
-        User user = this.userService.getCurrentUser();
-        assertEquals(PARTNER, user.getEmail());
-        assertEquals(Role.PARTNER, user.getRole());
+        try {
+            User user = this.userService.getCurrentUser();
+            assertEquals(PARTNER, user.getEmail());
+            assertEquals(Role.PARTNER, user.getRole());
+        } catch (UnauthorizedException e) {
+            fail("User should be logged in.");
+        }
     }
 
     @Test
     @WithUserDetails(COLLABORATOR)
     public void getCurrentUser_collaborator() {
-        User user = this.userService.getCurrentUser();
-        assertEquals(COLLABORATOR, user.getEmail());
-        assertEquals(Role.COLLABORATOR, user.getRole());
+        try {
+            User user = this.userService.getCurrentUser();
+            assertEquals(COLLABORATOR, user.getEmail());
+            assertEquals(Role.COLLABORATOR, user.getRole());
+        } catch (UnauthorizedException e) {
+            fail("User should be logged in.");
+        }
     }
 }

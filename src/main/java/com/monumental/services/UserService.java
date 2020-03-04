@@ -128,12 +128,17 @@ public class UserService extends ModelService<User> {
      */
     @Transactional
     public void resetPassword(String email) {
-        User user = this.userRepository.getByEmail(email);
-        // Note: This is a security feature. We don't want the password reset form to tell everyone what email addresses are registered
-        if (user == null) {
-            return;
+        try {
+            User user = this.userRepository.getByEmail(email);
+            // Note: This is a security feature. We don't want the password reset form to tell everyone what email addresses are registered
+            if (user == null) {
+                return;
+            }
+            VerificationToken token = this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET);
+            this.sendPasswordResetEmail(user, token);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        this.sendPasswordResetEmail(user, this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET));
     }
 
     /**
@@ -304,7 +309,7 @@ public class UserService extends ModelService<User> {
         if (this.springMailUsername == null || this.springMailUsername.equals("")) {
             System.out.println("WARNING: You have not provided mail credentials, so the following email will NOT be sent: " + email);
         } else {
-            System.out.println("Sent email " + templateName + " to " + outboundEmailAddress);
+            System.out.println("Sent email " + templateName + " to " + recipientAddress);
             mailSender.send(email);
         }
     }
