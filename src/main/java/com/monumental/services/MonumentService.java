@@ -921,7 +921,7 @@ public class MonumentService extends ModelService<Monument> {
         /* References section */
 
         // Update any current Reference URLs
-        this.updateMonumentReferences(currentMonument, updateSuggestion.getUpdatedReferencesUrlsById());
+        this.updateMonumentReferences(currentMonument, updateSuggestion.getUpdatedReferenceUrlsById());
 
         // Add any newly created References
         if (updateSuggestion.getNewReferenceUrls() != null && updateSuggestion.getNewReferenceUrls().size() > 0) {

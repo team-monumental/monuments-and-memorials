@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Class used to represent a suggestion to create a new Monument record
@@ -48,20 +49,32 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "references_json")
     private String referencesJson;
 
+    private List<String> references;
+
     @Column(name = "materials_json")
     private String materialsJson;
+
+    private List<String> materials;
 
     @Column(name = "new_materials_json")
     private String newMaterialsJson;
 
+    private List<String> newMaterials;
+
     @Column(name = "tags_json")
     private String tagsJson;
+
+    private List<String> tags;
 
     @Column(name = "new_tags_json")
     private String newTagsJson;
 
+    private List<String> newTags;
+
     @Column(name = "images_json")
     private String imagesJson;
+
+    private List<String> images;
 
     @JsonIgnore
     @ManyToOne
@@ -168,12 +181,28 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         this.referencesJson = referencesJson;
     }
 
+    public List<String> getReferences() {
+        if (this.references == null) {
+            this.references = this.deserializeStringList(this.referencesJson);
+        }
+
+        return this.references;
+    }
+
     public String getMaterialsJson() {
         return this.materialsJson;
     }
 
     public void setMaterialsJson(String materialsJson) {
         this.materialsJson = materialsJson;
+    }
+
+    public List<String> getMaterials() {
+        if (this.materials == null) {
+            this.materials = this.deserializeStringList(this.materialsJson);
+        }
+
+        return this.materials;
     }
 
     public String getNewMaterialsJson() {
@@ -184,12 +213,28 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         this.newMaterialsJson = newMaterialsJson;
     }
 
+    public List<String> getNewMaterials() {
+        if (this.newMaterials == null) {
+            this.newMaterials = this.deserializeStringList(this.newMaterialsJson);
+        }
+
+        return this.newMaterials;
+    }
+
     public String getTagsJson() {
         return this.tagsJson;
     }
 
     public void setTagsJson(String tagsJson) {
         this.tagsJson = tagsJson;
+    }
+
+    public List<String> getTags() {
+        if (this.tags == null) {
+            this.tags = this.deserializeStringList(this.tagsJson);
+        }
+
+        return this.tags;
     }
 
     public String getNewTagsJson() {
@@ -200,12 +245,28 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         this.newTagsJson = newTagsJson;
     }
 
+    public List<String> getNewTags() {
+        if (this.newTags == null) {
+            this.newTags = this.deserializeStringList(this.newTagsJson);
+        }
+
+        return this.newTags;
+    }
+
     public String getImagesJson() {
         return this.imagesJson;
     }
 
     public void setImagesJson(String imagesJson) {
         this.imagesJson = imagesJson;
+    }
+
+    public List<String> getImages() {
+        if (this.images == null) {
+            this.images = this.deserializeStringList(this.imagesJson);
+        }
+
+        return this.images;
     }
 
     public BulkCreateMonumentSuggestion getBulkCreateSuggestion() {

@@ -1,6 +1,7 @@
 package com.monumental.models.suggestions;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.monumental.models.Model;
 
 import javax.persistence.Column;
@@ -43,19 +44,27 @@ public abstract class MonumentSuggestion extends Model {
         }
     }
 
-    protected List deserializeList(String json) {
+    List<String> deserializeStringList(String json) {
         if (this.gson == null) {
             this.gson = new Gson();
         }
 
-        return this.gson.fromJson(json, List.class);
+        return this.gson.fromJson(json, new TypeToken<List<String>>(){}.getType());
     }
 
-    protected Map deserializeMap(String json) {
+    List<Integer> deserializeIntegerList(String json) {
         if (this.gson == null) {
             this.gson = new Gson();
         }
 
-        return this.gson.fromJson(json, Map.class);
+        return this.gson.fromJson(json, new TypeToken<List<Integer>>(){}.getType());
+    }
+
+    Map<Integer, String> deserializeMap(String json) {
+        if (this.gson == null) {
+            this.gson = new Gson();
+        }
+
+        return this.gson.fromJson(json, new TypeToken<Map<Integer, String>>(){}.getType());
     }
 }

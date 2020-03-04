@@ -4,6 +4,8 @@ import com.monumental.models.Monument;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class used to represent a suggestion to update an existing Monument record
@@ -52,14 +54,22 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "updated_reference_urls_by_id_json")
     private String updatedReferenceUrlsByIdJson;
 
+    private Map<Integer, String> updatedReferenceUrlsById;
+
     @Column(name = "new_reference_urls_json")
     private String newReferenceUrlsJson;
+
+    private List<String> newReferenceUrls;
 
     @Column(name = "deleted_reference_ids_json")
     private String deletedReferenceIdsJson;
 
+    private List<Integer> deletedReferenceIds;
+
     @Column(name = "new_image_urls_json")
     private String newImageUrlsJson;
+
+    private List<String> newImageUrls;
 
     @Column(name = "new_primary_image_id")
     private Integer newPrimaryImageId;
@@ -67,11 +77,17 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "deleted_image_ids_json")
     private String deletedImageIdsJson;
 
+    private List<Integer> deletedImageIds;
+
     @Column(name = "new_materials_json")
     private String newMaterialsJson;
 
+    private List<String> newMaterials;
+
     @Column(name = "new_tags_json")
     private String newTagsJson;
+
+    private List<String> newTags;
 
     public UpdateMonumentSuggestion() {
 
@@ -181,12 +197,28 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         this.updatedReferenceUrlsByIdJson = updatedReferenceUrlsByIdJson;
     }
 
+    public Map<Integer, String> getUpdatedReferenceUrlsById() {
+        if (this.updatedReferenceUrlsById == null) {
+            this.updatedReferenceUrlsById = this.deserializeMap(this.updatedReferenceUrlsByIdJson);
+        }
+
+        return this.updatedReferenceUrlsById;
+    }
+
     public String getNewReferenceUrlsJson() {
         return this.newReferenceUrlsJson;
     }
 
     public void setNewReferenceUrlsJson(String newReferenceUrlsJson) {
         this.newReferenceUrlsJson = newReferenceUrlsJson;
+    }
+
+    public List<String> getNewReferenceUrls() {
+        if (this.newReferenceUrls == null) {
+            this.newReferenceUrls = this.deserializeStringList(this.newReferenceUrlsJson);
+        }
+
+        return this.newReferenceUrls;
     }
 
     public String getDeletedReferenceIdsJson() {
@@ -197,12 +229,28 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         this.deletedReferenceIdsJson = deletedReferenceIdsJson;
     }
 
+    public List<Integer> getDeletedReferenceIds() {
+        if (this.deletedReferenceIds == null) {
+            this.deletedReferenceIds = this.deserializeIntegerList(this.deletedReferenceIdsJson);
+        }
+
+        return this.deletedReferenceIds;
+    }
+
     public String getNewImageUrlsJson() {
         return this.newImageUrlsJson;
     }
 
     public void setNewImageUrlsJson(String newImageUrlsJson) {
         this.newImageUrlsJson = newImageUrlsJson;
+    }
+
+    public List<String> getNewImageUrls() {
+        if (this.newImageUrls == null) {
+            this.newImageUrls = this.deserializeStringList(this.newImageUrlsJson);
+        }
+
+        return this.newImageUrls;
     }
 
     public Integer getNewPrimaryImageId() {
@@ -221,6 +269,14 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         this.deletedImageIdsJson = deletedImageIdsJson;
     }
 
+    public List<Integer> getDeletedImageIds() {
+        if (this.deletedImageIds == null) {
+            this.deletedImageIds = this.deserializeIntegerList(this.deletedImageIdsJson);
+        }
+
+        return this.deletedImageIds;
+    }
+
     public String getNewMaterialsJson() {
         return this.newMaterialsJson;
     }
@@ -229,11 +285,27 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         this.newMaterialsJson = newMaterialsJson;
     }
 
+    public List<String> getNewMaterials() {
+        if (this.newMaterials == null) {
+            this.newMaterials = this.deserializeStringList(this.newMaterialsJson);
+        }
+
+        return this.newMaterials;
+    }
+
     public String getNewTagsJson() {
         return this.newTagsJson;
     }
 
     public void setNewTagsJson(String newTagsJson) {
         this.newTagsJson = newTagsJson;
+    }
+
+    public List<String> getNewTags() {
+        if (this.newTags == null) {
+            this.newTags = this.deserializeStringList(this.newTagsJson);
+        }
+
+        return this.newTags;
     }
 }

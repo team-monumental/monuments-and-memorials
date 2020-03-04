@@ -1,5 +1,6 @@
 package com.monumental.services.integrationtest;
 
+import com.google.gson.Gson;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.models.Image;
 import com.monumental.models.Monument;
@@ -63,8 +64,15 @@ public class MonumentServiceIntegrationTests {
     @MockBean
     GoogleMapsService googleMapsServiceMock;
 
+    private Gson gson;
+
     @Before
-    public void initializeMocks() {
+    public void initialize() {
+        this.initializeMocks();
+        this.gson = new Gson();
+    }
+
+    private void initializeMocks() {
         Mockito.when(this.googleMapsServiceMock.getAddressFromCoordinates(any(Double.class), any(Double.class))).thenReturn(null);
         Mockito.when(this.googleMapsServiceMock.getCoordinatesFromAddress(any(String.class))).thenReturn(null);
     }
@@ -1508,7 +1516,8 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1552,14 +1561,16 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        createSuggestion.setImages(imageUrls);
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1603,21 +1614,24 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        createSuggestion.setImages(imageUrls);
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        createSuggestion.setMaterials(materialNames);
+        String materialsJson = this.gson.toJson(materialNames);
+        createSuggestion.setMaterialsJson(materialsJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1664,28 +1678,32 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        createSuggestion.setImages(imageUrls);
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        createSuggestion.setMaterials(materialNames);
+        String materialsJson = this.gson.toJson(materialNames);
+        createSuggestion.setMaterialsJson(materialsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        createSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        createSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1732,35 +1750,40 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        createSuggestion.setImages(imageUrls);
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        createSuggestion.setMaterials(materialNames);
+        String materialsJson = this.gson.toJson(materialNames);
+        createSuggestion.setMaterialsJson(materialsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        createSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        createSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> tagNames = new ArrayList<>();
         tagNames.add("Tag 1");
         tagNames.add("Tag 2");
         tagNames.add("Tag 3");
 
-        createSuggestion.setTags(tagNames);
+        String tagsJson = this.gson.toJson(tagNames);
+        createSuggestion.setTagsJson(tagsJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1806,42 +1829,48 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        createSuggestion.setImages(imageUrls);
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        createSuggestion.setMaterials(materialNames);
+        String materialsJson = this.gson.toJson(materialNames);
+        createSuggestion.setMaterialsJson(materialsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        createSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        createSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> tagNames = new ArrayList<>();
         tagNames.add("Tag 1");
         tagNames.add("Tag 2");
         tagNames.add("Tag 3");
 
-        createSuggestion.setTags(tagNames);
+        String tagsJson = this.gson.toJson(tagNames);
+        createSuggestion.setTagsJson(tagsJson);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
         newTagNames.add("New Tag 2");
         newTagNames.add("New Tag 3");
 
-        createSuggestion.setNewTags(newTagNames);
+        String newTagsJson = this.gson.toJson(newTagNames);
+        createSuggestion.setNewTagsJson(newTagsJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1887,42 +1916,48 @@ public class MonumentServiceIntegrationTests {
         referenceUrls.add("URL 2");
         referenceUrls.add("URL 3");
 
-        createSuggestion.setReferences(referenceUrls);
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
 
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("URL 1");
         imageUrls.add("URL 2");
         imageUrls.add("URL 3");
 
-        createSuggestion.setImages(imageUrls);
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
 
         List<String> materialNames = new ArrayList<>();
         materialNames.add("Material 1");
         materialNames.add("Material 2");
         materialNames.add("Material 3");
 
-        createSuggestion.setMaterials(materialNames);
+        String materialsJson = this.gson.toJson(materialNames);
+        createSuggestion.setMaterialsJson(materialsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        createSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        createSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> tagNames = new ArrayList<>();
         tagNames.add("Tag 1");
         tagNames.add("Tag 2");
         tagNames.add("Tag 3");
 
-        createSuggestion.setTags(tagNames);
+        String tagsJson = this.gson.toJson(tagNames);
+        createSuggestion.setTagsJson(tagsJson);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
         newTagNames.add("New Tag 2");
         newTagNames.add("New Tag 3");
 
-        createSuggestion.setNewTags(newTagNames);
+        String newTagsJson = this.gson.toJson(newTagNames);
+        createSuggestion.setNewTagsJson(newTagsJson);
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -3006,7 +3041,8 @@ public class MonumentServiceIntegrationTests {
         newReferenceUrls.add("New Reference URL 2");
         newReferenceUrls.add("New Reference URL 3");
 
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3080,7 +3116,8 @@ public class MonumentServiceIntegrationTests {
         newReferenceUrls.add("New Reference URL 2");
         newReferenceUrls.add("New Reference URL 3");
 
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3152,13 +3189,15 @@ public class MonumentServiceIntegrationTests {
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
 
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference1.getId(), "New Reference URL 1");
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
 
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3242,15 +3281,18 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3331,22 +3373,26 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
 
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3448,22 +3494,26 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
 
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3573,21 +3623,25 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
@@ -3699,27 +3753,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image1.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3829,27 +3888,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -3960,34 +4024,40 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
         newMaterialNames.add("New Material 2");
         newMaterialNames.add("New Material 3");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -4108,27 +4178,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4137,7 +4212,8 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("Material 1");
         newMaterialNames.add("Material 2");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -4258,27 +4334,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4286,7 +4367,8 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -4407,27 +4489,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4435,14 +4522,16 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
         newTagNames.add("New Tag 2");
         newTagNames.add("New Tag 3");
 
-        updateSuggestion.setNewTags(newTagNames);
+        String newTagsJson = this.gson.toJson(newTagNames);
+        updateSuggestion.setNewTagsJson(newTagsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -4566,27 +4655,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4594,7 +4688,8 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
@@ -4603,7 +4698,8 @@ public class MonumentServiceIntegrationTests {
         newTagNames.add("Tag 1");
         newTagNames.add("Tag 2");
 
-        updateSuggestion.setNewTags(newTagNames);
+        String newTagsJson = this.gson.toJson(newTagNames);
+        updateSuggestion.setNewTagsJson(newTagsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -4727,27 +4823,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4755,7 +4856,8 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
@@ -4763,7 +4865,8 @@ public class MonumentServiceIntegrationTests {
         newTagNames.add("New Tag 3");
         newTagNames.add("Tag 2");
 
-        updateSuggestion.setNewTags(newTagNames);
+        String newTagsJson = this.gson.toJson(newTagNames);
+        updateSuggestion.setNewTagsJson(newTagsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
@@ -4887,27 +4990,32 @@ public class MonumentServiceIntegrationTests {
 
         List<String> newReferenceUrls = new ArrayList<>();
         newReferenceUrls.add("Reference URL 3");
-        updateSuggestion.setNewReferenceUrls(newReferenceUrls);
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
 
         Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
         updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
-        updateSuggestion.setUpdatedReferencesUrlsById(updatedReferenceUrlsById);
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
 
         List<Integer> deletedReferenceIds = new ArrayList<>();
         deletedReferenceIds.add(reference1.getId());
-        updateSuggestion.setDeletedReferenceIds(deletedReferenceIds);
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
 
         List<String> newImageUrls = new ArrayList<>();
         newImageUrls.add("New Image URL 1");
         newImageUrls.add("New Image URL 2");
         newImageUrls.add("New Image URL 3");
-        updateSuggestion.setNewImageUrls(newImageUrls);
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
 
         updateSuggestion.setNewPrimaryImageId(image2.getId());
 
         List<Integer> deletedImageIds = new ArrayList<>();
         deletedImageIds.add(image2.getId());
-        updateSuggestion.setDeletedImageIds(deletedImageIds);
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
 
         List<String> newMaterialNames = new ArrayList<>();
         newMaterialNames.add("New Material 1");
@@ -4915,7 +5023,8 @@ public class MonumentServiceIntegrationTests {
         newMaterialNames.add("New Material 3");
         newMaterialNames.add("Material 2");
 
-        updateSuggestion.setNewMaterials(newMaterialNames);
+        String newMaterialsJson = this.gson.toJson(newMaterialNames);
+        updateSuggestion.setNewMaterialsJson(newMaterialsJson);
 
         List<String> newTagNames = new ArrayList<>();
         newTagNames.add("New Tag 1");
@@ -4923,7 +5032,8 @@ public class MonumentServiceIntegrationTests {
         newTagNames.add("New Tag 3");
         newTagNames.add("Tag 2");
 
-        updateSuggestion.setNewTags(newTagNames);
+        String newTagsJson = this.gson.toJson(newTagNames);
+        updateSuggestion.setNewTagsJson(newTagsJson);
 
         this.monumentService.updateMonument(updateSuggestion);
 
