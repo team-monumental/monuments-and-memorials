@@ -29,4 +29,22 @@ public class BulkCreateMonumentSuggestion extends MonumentSuggestion {
     public void setCreateSuggestions(List<CreateMonumentSuggestion> createSuggestions) {
         this.createSuggestions = createSuggestions;
     }
+
+    @Override
+    public void setIsApproved(Boolean isApproved) {
+        for (CreateMonumentSuggestion createSuggestion : this.createSuggestions) {
+            createSuggestion.setIsApproved(isApproved);
+        }
+
+        super.setIsApproved(isApproved);
+    }
+
+    @Override
+    public void setIsRejected(Boolean isRejected) {
+        for (CreateMonumentSuggestion createSuggestion : this.createSuggestions) {
+            createSuggestion.setIsRejected(isRejected);
+        }
+
+        super.setIsRejected(isRejected);
+    }
 }

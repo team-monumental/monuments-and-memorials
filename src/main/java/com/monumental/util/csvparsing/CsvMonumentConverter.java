@@ -1,9 +1,11 @@
 package com.monumental.util.csvparsing;
 
+import com.google.gson.Gson;
 import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.util.zip.ZipFile;
  * Class used to:
  * 1. Convert a CSV row representing a Monument into a CsvMonumentConverterResult object
  * 2. Convert a Monument into a CSV row
+ * 3. Convert a CsvMonumentConverterResult object into a CreateMonumentSuggestion object
  */
 public class CsvMonumentConverter {
 
@@ -343,5 +346,47 @@ public class CsvMonumentConverter {
             return tagName.substring(0, 1).toUpperCase() + tagName.substring(1);
         }
         return null;
+    }
+
+    public static List<CreateMonumentSuggestion> parseCsvMonumentConverterResultsToCreateSuggestions(List<CsvMonumentConverterResult> results) {
+        if (results == null) {
+            return null;
+        }
+
+        List<CreateMonumentSuggestion> suggestions = new ArrayList<>();
+        if (results.size() == 0) {
+            return suggestions;
+        }
+
+        for (CsvMonumentConverterResult result : results) {
+            suggestions.add()
+        }
+    }
+
+    public static CreateMonumentSuggestion parseCsvMonumentConvertResultToCreateSuggestion(CsvMonumentConverterResult result) {
+        if (result == null || result.getMonument() == null) {
+            return null;
+        }
+
+        Gson gson = new Gson();
+
+        CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
+        suggestion.setTitle(result.getMonument().getTitle());
+        suggestion.setAddress(result.getMonument().getAddress());
+        suggestion.setLatitude(result.getMonument().getLat());
+        suggestion.setLongitude(result.getMonument().getLon());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        suggestion.setDate(simpleDateFormat.format(result.getMonument().getDate()));
+
+        suggestion.setArtist(result.getMonument().getArtist());
+        suggestion.setDescription(result.getMonument().getDescription());
+        suggestion.setInscription(result.getMonument().getInscription());
+        suggestion.setIsTemporary(result.getMonument().getIsTemporary());
+
+        suggestion.setReferencesJson(gson.toJson(result.getMonument().getReferences()));
+        suggestion.setMaterialsJson(gson.toJson(result.getMaterialNames()));
+        suggestion.setTagsJson(gson.toJson(result.getTagNames()));
+        suggestion.setImagesJson(gson.toJson(result.get));
     }
 }
