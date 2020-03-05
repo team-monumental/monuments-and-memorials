@@ -112,7 +112,7 @@ public class SuggestionController {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
         MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvContents,
                 parseResult.mapping, parseResult.zipFile);
-        List<CreateMonumentSuggestion> createSuggestions =
+        //List<CreateMonumentSuggestion> createSuggestions =
         return Map.of("success", true);
     }
 
@@ -202,7 +202,7 @@ public class SuggestionController {
      * @param id - ID of the BulkCreateMonumentSuggestion to approve
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
-    @PutMapping("/api/suggestion/bulk-create/{id}/approve")
+    /*@PutMapping("/api/suggestion/bulk-create/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
     public Monument approveBulkCreateSuggestion(@PathVariable("id") Integer id)
@@ -213,7 +213,7 @@ public class SuggestionController {
         bulkCreateSuggestion = this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
 
         return this.monumentService.updateMonument(updateSuggestion);
-    }
+    }*/
 
     /**
      * Reject a CreateMonumentSuggestion with the specified ID, if it exists
