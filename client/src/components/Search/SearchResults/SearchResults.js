@@ -10,7 +10,7 @@ export default class SearchResults extends React.Component {
                 <div>{
                     monuments.filter(result => result).map(
                         (result, index) => (
-                            <SearchResult key={result.id} monument={result} index={index + ((page - 1) * limit)}/>
+                            <SearchResult key={result.id} monument={result} index={index + ((page - 1) * limit)} includeIndexInTitle/>
                         )
                     )
                 }</div>
