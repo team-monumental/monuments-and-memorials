@@ -7,6 +7,7 @@ import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.*;
 import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
@@ -228,13 +229,18 @@ public class MonumentService extends ModelService<Monument> {
      * @param start - The start date to filter monuments by
      * @param end - The end date to filter monuments by
      * @param decade - The decade to filter monuments by
+     * @param onlyActive - If true, only active monuments will be searched. If false, both active and inactive will be searched
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double threshold, Double latitude, Double longitude, Double distance,
                                   List<String> tags, List<String> materials, SortType sortType, Date start, Date end,
-                                  Integer decade) {
+                                  Integer decade, boolean onlyActive) {
 
         List<Predicate> predicates = new ArrayList<>();
+
+        if (onlyActive) {
+            predicates.add(builder.equal(root.get("isActive"), builder.literal(true)));
+        }
 
         boolean sortByRelevance = false;
         boolean sortByDistance = false;
@@ -305,11 +311,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param start - The start date to filter monuments by
      * @param end - The end date to filter monuments by
      * @param decade - The decade to filter monuments by
+     * @param onlyActive - If true, only active monuments will be searched. If false, both active and inactive will be searched
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double threshold, Double latitude,
                                  Double longitude, Double distance, List<String> tags, List<String> materials,
-                                 SortType sortType, Date start, Date end, Integer decade) {
+                                 SortType sortType, Date start, Date end, Integer decade, boolean onlyActive) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
@@ -317,7 +324,7 @@ public class MonumentService extends ModelService<Monument> {
 
         this.buildSearchQuery(
             builder, query, root, searchQuery, threshold, latitude, longitude, distance, tags, materials, sortType,
-            start, end, decade
+            start, end, decade, onlyActive
         );
 
         List<Monument> monuments = limit != null
@@ -333,7 +340,7 @@ public class MonumentService extends ModelService<Monument> {
      * Count the total number of results for a Monument search
      */
     public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
-                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade) {
+                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade, boolean onlyActive) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
@@ -341,7 +348,7 @@ public class MonumentService extends ModelService<Monument> {
 
         this.buildSearchQuery(
             builder, query, root, searchQuery, 0.1, latitude, longitude, distance, tags, materials, SortType.NONE,
-            start, end, decade
+            start, end, decade, onlyActive
         );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
@@ -360,7 +367,7 @@ public class MonumentService extends ModelService<Monument> {
             return null;
         }
 
-        List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit));
+        List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit), true);
         List<Monument> monuments = new ArrayList<>();
         for (Tuple result : results) {
             monuments.add((Monument) result.get(0));
@@ -537,7 +544,7 @@ public class MonumentService extends ModelService<Monument> {
             CsvMonumentConverterResult result = results.get(i);
 
             List<Monument> duplicates = this.findDuplicateMonuments(result.getMonument().getTitle(),
-                    result.getMonument().getLat(), result.getMonument().getLon(), result.getMonument().getAddress());
+                    result.getMonument().getLat(), result.getMonument().getLon(), result.getMonument().getAddress(), false);
 
             if (duplicates.size() > 0) {
                 StringBuilder warning = new StringBuilder("Potential duplicate records detected for this row:\n");
@@ -647,7 +654,8 @@ public class MonumentService extends ModelService<Monument> {
 
             // Report progress
             if (job != null && i != csvResults.size() - 1) {
-                job.setProgress((double) (i + 1) / csvResults.size());
+                // The row number is the index plus 1 for the header row and plus 1 to be 1-based instead of zero-based
+                job.setProgress((double) (i + 2) / csvResults.size());
             }
         }
         this.monumentRepository.saveAll(monuments);
@@ -676,7 +684,7 @@ public class MonumentService extends ModelService<Monument> {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
         List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
-                SortType.OLDEST, null, null, null);
+                SortType.OLDEST, null, null, null, true);
 
         // Total number of Monuments
         statistics.setTotalNumberOfMonuments(allMonumentOldestFirst.size());
@@ -762,6 +770,7 @@ public class MonumentService extends ModelService<Monument> {
         Monument createdMonument = new Monument();
 
         createdMonument.setIsTemporary(monumentRequest.getIsTemporary());
+        createdMonument.setIsActive(monumentRequest.getIsActive());
 
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentRequest.getTitle(), monumentRequest.getAddress(),
@@ -1351,9 +1360,10 @@ public class MonumentService extends ModelService<Monument> {
      * @param latitude - Latitude of the Monument to search against
      * @param longitude - Longitude of the Monument to search against
      * @param address - Address of the Monument to search against
+     * @param onlyActive - If true, only active monuments will be searched. If false, both inactive and active will be searched
      * @return List<Monument> - List of potential duplicate Monuments given the specified title and coordinates
      */
-    public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude, String address) {
+    public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude, String address, Boolean onlyActive) {
         if (title != null) {
             if ((latitude == null || longitude == null) && address != null) {
                 com.google.maps.model.Geometry point = this.googleMapsService.getCoordinatesFromAddress(address);
@@ -1366,7 +1376,7 @@ public class MonumentService extends ModelService<Monument> {
 
             if (latitude != null && longitude != null) {
                 return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
-                        null, null);
+                        null, null, onlyActive);
             }
         }
 

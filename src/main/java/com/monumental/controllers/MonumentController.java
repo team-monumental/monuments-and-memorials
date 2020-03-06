@@ -6,16 +6,20 @@ import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
+import com.monumental.security.Role;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
+import com.monumental.services.UserService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +42,9 @@ public class MonumentController {
     @Autowired
     private MonumentService monumentService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * Create a new Monument based on the specified CreateMonumentRequest
      * @param monumentRequest - CreateMonumentRequest containing the attributes to use to create the Monument
@@ -51,17 +58,29 @@ public class MonumentController {
     }
 
     /**
-     * Get a Monument with the specified ID, if it exists
+     * Get a Monument with the specified ID, if it exists and is active or inactive depending on onlyActive
      * @param id - ID of the Monument to get
      * @param cascade - If true, loads all of the lazy-loaded collections associated with the Monument
+     * @param onlyActive - If true, a 404 will be returned if the specified Monument is inactive. If false, the monument
+     *                 will be returned regardless of whether it's active or inactive.
+     *                 If this is false then the user must be a partner or researcher to view
      * @return Monument - The Monument with the specified ID, if it exists
-     * @throws ResourceNotFoundException - If a Monument with the specified ID does not exist
+     * @throws ResourceNotFoundException - If a Monument with the specified ID does not exist or onlyActive is true and isActive is false
+     * @throws AccessDeniedException - If trying to get an inactive monument without being a partner or researcher
+     * @throws UnauthorizedException - If trying to get an inactive monument and not logged in
      */
     @GetMapping("/api/monument/{id}")
-    public Monument getMonument(@PathVariable("id") Integer id,
-                                @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
-            throws ResourceNotFoundException {
-        Optional<Monument> optional = this.monumentRepository.findById(id);
+    public Monument getActiveMonument(@PathVariable("id") Integer id,
+                                      @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade,
+                                      @RequestParam(defaultValue = "true") Boolean onlyActive)
+            throws ResourceNotFoundException, AccessDeniedException, UnauthorizedException {
+        Optional<Monument> optional;
+        if (onlyActive) {
+            optional = this.monumentRepository.findByIdAndIsActive(id, true);
+        } else {
+            this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
+            optional = Optional.of(this.monumentRepository.getOne(id));
+        }
         if (optional.isEmpty()) throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         Monument monument = optional.get();
 
@@ -72,12 +91,22 @@ public class MonumentController {
     }
 
     /**
-     * Get all of the Monuments
+     * Get all of the Monuments and is active or inactive depending on onlyActive
+     * @param onlyActive - If true, only active monuments will be returned. If false, monuments
+     *                 will be returned regardless of whether they're active or inactive.
+     *                 If this is false then the user must be a partner or researcher to view
      * @return List<Monument> - List of all of the Monuments
+     * @throws AccessDeniedException - If trying to get inactive monuments without being a partner or researcher
+     * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
     @GetMapping("/api/monuments")
-    public List<Monument> getAllMonuments() {
-        return this.monumentRepository.findAll();
+    public List<Monument> getAllMonuments(@RequestParam(defaultValue = "true") Boolean onlyActive) throws UnauthorizedException {
+        if (onlyActive) {
+            return this.monumentRepository.findAllByIsActive(true);
+        } else {
+            this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
+            return this.monumentRepository.findAll();
+        }
     }
 
     /**

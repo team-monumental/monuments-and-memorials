@@ -30,6 +30,8 @@ public class CreateMonumentRequest {
 
     private boolean isTemporary;
 
+    private boolean isActive;
+
     private List<String> references;
 
     private List<String> materials;
@@ -128,6 +130,14 @@ public class CreateMonumentRequest {
 
     public void setIsTemporary(boolean isTemporary) {
         this.isTemporary = isTemporary;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public List<String> getReferences() {

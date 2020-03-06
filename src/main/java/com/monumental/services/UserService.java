@@ -72,7 +72,7 @@ public class UserService extends ModelService<User> {
     public UserAwareUserDetails getSession() throws UnauthorizedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserAwareUserDetails)) {
-            throw new UnauthorizedException(principal.getClass().getName());
+            throw new UnauthorizedException();
         }
         return (UserAwareUserDetails) principal;
     }
