@@ -4,6 +4,7 @@ import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.models.Tag;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class CsvMonumentConverter {
         List<CsvMonumentConverterResult> results = new ArrayList<>();
         for (String[] row : csvRows) {
             List<String> values = Arrays.asList(row);
-            Monument monument = new Monument();
+            CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
             CsvMonumentConverterResult result = new CsvMonumentConverterResult();
             Double latitude = null;
             Double longitude = null;
@@ -46,34 +47,36 @@ public class CsvMonumentConverter {
                 if (field == null || value.equals("")) continue;
                 switch (field) {
                     case "contributions":
-                        Contribution contribution = parseContribution(value);
-                        contribution.setMonument(monument);
-                        monument.getContributions().add(contribution);
+                        result.getContributors().add(value);
                         break;
                     case "artist":
-                        monument.setArtist(value);
+                        suggestion.setArtist(value);
                         break;
                     case "title":
-                        monument.setTitle(value);
+                        suggestion.setTitle(value);
                         break;
                     case "date":
                         try {
-                            monument.setDate(parseDate(value));
+                            parseDate(value);
                         } catch (Exception e) {
                             result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
+                        } finally {
+                            suggestion.setDate(value);
                         }
                         break;
                     case "materials":
-                        result.getMaterialNames().addAll(parseTags(value));
+                        result.getMaterialNames().addAll(parseCsvTags(value));
                         break;
                     case "inscription":
-                        monument.setInscription(value);
+                        suggestion.setInscription(value);
                         break;
                     case "latitude":
                         try {
                             latitude = Double.parseDouble(value);
                         } catch (NumberFormatException e) {
                             result.getWarnings().add("Latitude should be a valid number.");
+                        } finally {
+                            suggestion.setLatitude(latitude);
                         }
                         break;
                     case "longitude":
@@ -81,24 +84,24 @@ public class CsvMonumentConverter {
                             longitude = Double.parseDouble(value);
                         } catch (NumberFormatException e) {
                             result.getWarnings().add("Longitude should be a valid number.");
+                        } finally {
+                            suggestion.setLongitude(longitude);
                         }
                         break;
                     case "city":
-                        monument.setCity(value);
+                        suggestion.setCity(value);
                         break;
                     case "state":
-                        monument.setState(value);
+                        suggestion.setState(value);
                         break;
                     case "address":
-                        monument.setAddress(value);
+                        suggestion.setAddress(value);
                         break;
                     case "tags":
-                        result.getTagNames().addAll(parseTags(value));
+                        result.getTagNames().addAll(parseCsvTags(value));
                         break;
                     case "references":
-                        Reference reference = parseReference(value);
-                        reference.setMonument(monument);
-                        monument.getReferences().add(reference);
+                        result.getReferenceUrls().add(value);
                         break;
                     case "images":
                         if (zipFile != null) {
@@ -119,20 +122,18 @@ public class CsvMonumentConverter {
                 }
             }
 
-            monument.setCoordinates(MonumentService.createMonumentPoint(longitude, latitude));
-
-            result.setMonument(monument);
+            result.setMonumentSuggestion(suggestion);
             result.validate();
             results.add(result);
         }
         return results;
     }
 
-    private static Contribution parseContribution(String value) {
+    private static Contribution parseSuggestionContributor(String contributor) {
         GregorianCalendar calendar = new GregorianCalendar();
         Contribution contribution = new Contribution();
         contribution.setDate(calendar.getTime());
-        contribution.setSubmittedBy(value);
+        contribution.setSubmittedBy(contributor);
         return contribution;
     }
 
@@ -159,7 +160,7 @@ public class CsvMonumentConverter {
         }
     }
 
-    private static List<String> parseTags(String value) {
+    private static List<String> parseCsvTags(String value) {
         // Split on commas in-case there are more than one Tag in the column
         String[] materialArray = value.split(",");
 
@@ -173,9 +174,9 @@ public class CsvMonumentConverter {
         return names;
     }
 
-    private static Reference parseReference(String value) {
+    private static Reference parseSuggestionReference(String url) {
         Reference reference = new Reference();
-        reference.setUrl(value);
+        reference.setUrl(url);
         return reference;
     }
 

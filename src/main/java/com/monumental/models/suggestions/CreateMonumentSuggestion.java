@@ -19,6 +19,12 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "state")
+    private String state;
+
     @Column(name = "latitude")
     private Double latitude;
 
@@ -45,6 +51,11 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
 
     @Column(name = "is_temporary")
     private boolean isTemporary;
+
+    @Column(name = "contributions_json")
+    private String contributionsJson;
+
+    private List<String> contributions;
 
     @Column(name = "references_json")
     private String referencesJson;
@@ -99,6 +110,22 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public Double getLatitude() {
@@ -171,6 +198,22 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
 
     public void setIsTemporary(boolean isTemporary) {
         this.isTemporary = isTemporary;
+    }
+
+    public String getContributionsJson() {
+        return this.contributionsJson;
+    }
+
+    public void setContributionsJson(String contributionsJson) {
+        this.contributionsJson = contributionsJson;
+    }
+
+    public List<String> getContributions() {
+        if (this.contributions == null) {
+            this.contributions = this.deserializeStringList(this.contributionsJson);
+        }
+
+        return this.contributions;
     }
 
     public String getReferencesJson() {

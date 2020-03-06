@@ -547,8 +547,9 @@ public class MonumentService extends ModelService<Monument> {
         for (int i = 0; i < results.size(); i++) {
             CsvMonumentConverterResult result = results.get(i);
 
-            List<Monument> duplicates = this.findDuplicateMonuments(result.getMonument().getTitle(),
-                    result.getMonument().getLat(), result.getMonument().getLon(), result.getMonument().getAddress(), false);
+            List<Monument> duplicates = this.findDuplicateMonuments(result.getMonumentSuggestion().getTitle(),
+                    result.getMonumentSuggestion().getLatitude(), result.getMonumentSuggestion().getLongitude(),
+                    result.getMonumentSuggestion().getAddress());
 
             if (duplicates.size() > 0) {
                 StringBuilder warning = new StringBuilder("Potential duplicate records detected for this row:\n");
