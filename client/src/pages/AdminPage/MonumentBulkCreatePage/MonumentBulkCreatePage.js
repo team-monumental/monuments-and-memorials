@@ -2,10 +2,10 @@ import React from 'react';
 import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import BulkCreateForm from '../../components/BulkCreateForm/BulkCreateForm';
-import { bulkValidateMonuments, bulkCreateMonuments } from '../../actions/bulk';
-import Spinner from '../../components/Spinner/Spinner';
-import ErrorModal from '../../components/Error/ErrorModal/ErrorModal';
+import BulkCreateForm from '../../../components/BulkCreateForm/BulkCreateForm';
+import { bulkValidateMonuments, bulkCreateMonuments } from '../../../actions/bulk';
+import Spinner from '../../../components/Spinner/Spinner';
+import ErrorModal from '../../../components/Error/ErrorModal/ErrorModal';
 import { Modal, ProgressBar } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
@@ -65,7 +65,7 @@ class MonumentBulkCreatePage extends React.Component {
         showValidationResults = !showCreateResults && showValidationResults && !bulkValidateMonumentsPending;
 
         return (
-            <div className="page d-flex justify-content-center">
+            <div className="bulk page d-flex justify-content-center">
                 <Helmet title="Bulk Create | Monuments and Memorials"/>
                 <Spinner show={bulkValidateMonumentsPending}/>
                 <BulkCreateForm

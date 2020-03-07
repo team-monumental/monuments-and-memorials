@@ -6,6 +6,10 @@
     input[type='file'] {
         display: none;
     }
+
+    .card-subtitle i {
+        color: $primary;
+    }
 }
 
 .field-mapping-table {

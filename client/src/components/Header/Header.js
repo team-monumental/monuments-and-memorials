@@ -7,6 +7,7 @@ import CheeseburgerMenu from 'cheeseburger-menu'
 import Logo from '../Logo/Logo';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Role } from '../../utils/authentication-util';
 
 class Header extends React.Component {
 
@@ -14,7 +15,8 @@ class Header extends React.Component {
         {name: 'Home', route: '/', exact: true},
         {name: 'Map', route: '/map'},
         {name: 'About', route: '/about'},
-        {name: 'Bulk Create', route: '/bulk-create', exact: true, protected: true}
+        {name: 'My Account', route: '/account', protected: true},
+        {name: 'Advanced', route: '/panel', protected: true, roles: Role.PARTNER_OR_ABOVE}
     ];
 
     constructor(props) {
@@ -53,20 +55,19 @@ class Header extends React.Component {
 
     render() {
         const { session } = this.props;
-        let headerLinks = this.links.map(link => {
-            let navLink = <NavLink to={link.route} exact={link.exact} className="header-link mr-4" activeClassName="active" key={link.name}>{link.name}</NavLink>;
-
-            if (link.protected) {
-                if (session.user) {
-                    return navLink;
-                }
-                else {
-                    return;
-                }
-            }
-
-            return navLink;
+        const navLinks = this.links.map(link => {
+            return {
+                ...link,
+                element: (
+                    <NavLink to={link.route} exact={link.exact} className="nav-link mr-3" activeClassName="active"
+                             key={link.name}>{link.name}</NavLink>
+                )
+            };
         });
+        const publicLinks = navLinks.filter(link => !link.protected).map(link => link.element);
+        const privateLinks = navLinks.filter(link => link.protected && session.user &&
+            (!link.roles || link.roles.includes(session.user.role)) && (!link.role || link.role === session.user.role))
+            .map(link => link.element);
         return (
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
@@ -75,14 +76,14 @@ class Header extends React.Component {
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
-                            {headerLinks}
+                            {publicLinks}
                         </div>
                     </div>
                 </div>
 
                 <div className="center">
-                    {/* Desktop and Tablet */}
-                    {window.innerWidth >= 576 && <>
+                    {/* Desktop  */}
+                    {window.innerWidth >= 768 && <>
                         <div className="search-bar-container">
                             <SearchBar/>
                         </div>
@@ -108,20 +109,15 @@ class Header extends React.Component {
                     {window.innerWidth >= 992 && <div className="login-signup-buttons">
                         {!session.pending && <>
                             {session.user &&
-                                <div className="d-flex">
-                                    <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary" className="p-0 border-0 header-link">
+                                <div className="d-flex align-items-center links ml-3">
+                                    {privateLinks}
+                                    <Button onClick={() => this.handleLogout()} size="sm" variant="light">
                                         Log out
                                     </Button>
-                                    <div className="mx-2 spacer">
-                                        |
-                                    </div>
-                                    <NavLink to="/account" className="header-link" activeClassName="active">
-                                        My Account
-                                    </NavLink>
                                 </div>
                             }
                             {!session.user && <>
-                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap header-link">Log in</Link>
+                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap nav-link mr-2">Log in</Link>
                                 <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
                             </>}
                         </>}
@@ -143,28 +139,21 @@ class Header extends React.Component {
                         </Button>
                         <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {this.setState({isMenuOpen: false})}}>
                             <ul>
-                                <div className="links d-lg-block">
-                                    {headerLinks.map(link =>
-                                        <li>{link}</li>
-                                    )}
-                                </div>
+                                {publicLinks.concat(privateLinks).map(link =>
+                                    <li>{link}</li>
+                                )}
                                 <hr/>
                                 {session.user && <>
                                     <li>
-                                        <NavLink to="/account" className="header-link" activeClassName="active">
-                                            My Account
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary" className="p-0 header-link">Log out</Button>
+                                        <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary" className="p-0 nav-link">Log out</Button>
                                     </li>
                                 </>}
                                 {!session.user && <>
                                     <li>
-                                        <Link to="/login" className="btn btn-sm btn-link-secondary p-0 header-link">Log in</Link>
+                                        <Link to="/login" className="btn btn-sm btn-link-secondary p-0 nav-link">Log in</Link>
                                     </li>
                                     <li>
-                                        <Link to="/signup" className="btn btn-sm btn-link-secondary p-0 header-link">Sign up</Link>
+                                        <Link to="/signup" className="btn btn-sm btn-link-secondary p-0 nav-link">Sign up</Link>
                                     </li>
                                 </>}
                             </ul>
