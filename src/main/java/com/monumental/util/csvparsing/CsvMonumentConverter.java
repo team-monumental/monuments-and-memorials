@@ -1,14 +1,11 @@
 package com.monumental.util.csvparsing;
 
 import com.monumental.models.Contribution;
-import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -47,7 +44,7 @@ public class CsvMonumentConverter {
                 if (field == null || value.equals("")) continue;
                 switch (field) {
                     case "contributions":
-                        result.getContributors().add(value);
+                        result.getContributorNames().add(value);
                         break;
                     case "artist":
                         suggestion.setArtist(value);
@@ -178,152 +175,6 @@ public class CsvMonumentConverter {
         Reference reference = new Reference();
         reference.setUrl(url);
         return reference;
-    }
-
-    /**
-     * Static method for converting a specified Monument into a CSV row
-     * @param monument - Monument to convert into a CSV row
-     * @return String - CSV row representing the specified Monument
-     */
-    public static String convertMonument(Monument monument) {
-        return String.join(",", new String[]{
-            convertToCsvCell(monument.getId()),
-            convertToCsvCell(monument.getTitle()),
-            convertToCsvCell(monument.getArtist()),
-            convertToCsvCell(monument.getDate()),
-            convertTagsToCsvCell(monument.getMaterials()),
-            convertToCsvCell(monument.getLat()),
-            convertToCsvCell(monument.getLon()),
-            convertToCsvCell(monument.getCity()),
-            convertToCsvCell(monument.getState()),
-            convertToCsvCell(monument.getAddress()),
-            convertToCsvCell(monument.getInscription()),
-            convertToCsvCell(monument.getDescription()),
-            convertTagsToCsvCell(monument.getTags()),
-            convertContributionsToCsvCell(monument.getContributions()),
-            convertReferencesToCsvCell(monument.getReferences())
-        });
-    }
-
-    /**
-     * Static method to add the beginning and ending quotes to a specified String
-     * Does nothing if there are already beginning and ending quotes
-     * @param string - the String to add the quotes to
-     * @return String - the updated String, with beginning and ending quotes
-     */
-    private static String addBeginningAndEndingQuotes(String string) {
-        if (string.startsWith("\"") && string.endsWith("\"")) {
-            return string;
-        }
-
-        return "\"" + string + "\"";
-    }
-
-    /**
-     * Converts a specified Integer value to a CSV formatted cell value
-     * @param value - Integer value to convert
-     * @return String - CSV formatted cell value using the specified Integer
-     */
-    private static String convertToCsvCell(Integer value) {
-        if (value != null) {
-            return Integer.toString(value);
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts a specified String value into a CSV formatted cell value
-     * @param value - String value to convert
-     * @return String - CSV formatted cell value using the specified String
-     */
-    private static String convertToCsvCell(String value) {
-        if (value != null && !value.isEmpty()) {
-            // Remove any double quotes from the value
-            // This is a safeguard to prevent multiple double quotes surrounding outputs
-            value = value.replace("\"", "");
-
-            // Wrap the value in double quotes if it contains a comma
-            if (value.contains(",")) {
-                return addBeginningAndEndingQuotes(value);
-            }
-            else {
-                return value;
-            }
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts a specified Date object into a CSV formatted cell value
-     * Uses "dd-MM-yyyy" format
-     * @param value - Date object to convert
-     * @return String - CSV formatted cell value using the specified Date object
-     */
-    private static String convertToCsvCell(Date value) {
-        if (value != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            return simpleDateFormat.format(value);
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts a specified Double value into a CSV formatted cell value
-     * @param value - Double to convert
-     * @return String - CSV formatted cell value using the specified Double
-     */
-    private static String convertToCsvCell(Double value) {
-        if (value != null) {
-            return Double.toString(value);
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts the specified List of Tags (or Materials) into a CSV formatted cell value
-     * @param tags - List<Tag> to convert
-     * @return String - CSV formatted cell value using the specified List<Tag>
-     */
-    private static String convertTagsToCsvCell(List<Tag> tags) {
-        List<String> tagStrings = new ArrayList<>();
-        for (Tag tag : tags) {
-            tagStrings.add(tag.getName());
-        }
-        return addBeginningAndEndingQuotes(String.join(",", tagStrings));
-    }
-
-    /**
-     * Converts the specified List of Contributions into a CSV formatted cell value
-     * @param contributions - List<Contribution> to convert
-     * @return String - CSV formatted cell value using the specified List<Contribution>
-     */
-    private static String convertContributionsToCsvCell(List<Contribution> contributions) {
-        List<String> contributionStrings = new ArrayList<>();
-        for (Contribution contribution : contributions) {
-            contributionStrings.add(contribution.getSubmittedBy());
-        }
-        return addBeginningAndEndingQuotes(String.join(",", contributionStrings));
-    }
-
-    /**
-     * Converts the specified List of References into a CSV formatted cell value
-     * @param references - List<Reference> to convert
-     * @return String - CSV formatted cell using the specfied List<Reference>
-     */
-    private static String convertReferencesToCsvCell(List<Reference> references) {
-        List<String> referenceStrings = new ArrayList<>();
-        for (Reference reference : references) {
-            referenceStrings.add(reference.getUrl());
-        }
-        return addBeginningAndEndingQuotes(String.join(",", referenceStrings));
     }
 
     /**

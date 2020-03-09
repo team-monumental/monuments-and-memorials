@@ -81,8 +81,8 @@ public class SuggestionController {
     }
 
     /**
-     * Validate which rows in the specified .csv (or .csv within .zip) file are valid
-     * @param request - Contains the field mapping and the file to process
+     * Determine which rows in the specified .csv (or .csv within .zip) file are valid
+     * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
     @PostMapping("/api/suggestion/bulk-create/validate")

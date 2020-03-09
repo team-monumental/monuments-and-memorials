@@ -19,7 +19,7 @@ public class CsvMonumentConverterResult {
 
     private CreateMonumentSuggestion monumentSuggestion;
 
-    private List<String> contributors = new ArrayList<>();
+    private List<String> contributorNames = new ArrayList<>();
 
     private List<String> referenceUrls = new ArrayList<>();
 
@@ -41,12 +41,12 @@ public class CsvMonumentConverterResult {
         this.monumentSuggestion = monumentSuggestion;
     }
 
-    public List<String> getContributors() {
-        return this.contributors;
+    public List<String> getContributorNames() {
+        return this.contributorNames;
     }
 
-    public void setContributors(List<String> contributors) {
-        this.contributors = contributors;
+    public void setContributorNames(List<String> contributorNames) {
+        this.contributorNames = contributorNames;
     }
 
     public List<String> getReferenceUrls() {
