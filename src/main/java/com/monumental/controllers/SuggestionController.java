@@ -101,7 +101,7 @@ public class SuggestionController {
     /**
      * Create a new Suggestion for bulk-creating Monuments
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return BulkCreateMonumentSuggestion - The newly created BulkCreateMonumentSuggestion object
      * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
      */
     @PostMapping("/api/suggestion/bulk-create")
@@ -112,8 +112,7 @@ public class SuggestionController {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
         MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvContents,
                 parseResult.mapping, parseResult.zipFile);
-        //List<CreateMonumentSuggestion> createSuggestions =
-        return Map.of("success", true);
+        return this.monumentService.parseMonumentBulkValidationResult(validationResult);
     }
 
     /**

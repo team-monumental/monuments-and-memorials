@@ -6,6 +6,7 @@ import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.*;
 import com.monumental.repositories.*;
+import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.ImageRepository;
@@ -1387,5 +1388,16 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         return new ArrayList<>();
+    }
+
+    /**
+     * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion and corresponding
+     * CreateMonumentSuggestions
+     * @param result - MonumentBulkValidationResult object to parse
+     * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
+     * MonumentBulkValidationResult
+     */
+    public BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult result) {
+
     }
 }
