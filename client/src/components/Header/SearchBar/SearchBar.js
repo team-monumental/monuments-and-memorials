@@ -43,6 +43,7 @@ class SearchBar extends React.Component {
     }
 
     search() {
+        const { history, onCloseModal, uri } = this.props;
         let { textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter } = this.state;
         search({
             q: textSearchQuery,
@@ -50,9 +51,9 @@ class SearchBar extends React.Component {
             lon: locationLon,
             d: distanceFilter,
             address: locationAddress
-        }, this.props.history);
-        if(typeof this.props.onCloseModal == 'function') {
-            this.props.onCloseModal();
+        }, history, uri);
+        if(typeof onCloseModal == 'function') {
+            onCloseModal();
         }
     }
 

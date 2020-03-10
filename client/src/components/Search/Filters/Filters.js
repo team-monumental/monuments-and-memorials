@@ -44,10 +44,11 @@ class Filters extends React.Component {
     }
 
     handleTagsSearchTagSelect(variant, selectedTags) {
+        const { uri } = this.props;
         const params = {};
 
         params[variant] = selectedTags.map(tag => tag.name);
-        search(params, this.props.history);
+        search(params, this.props.history, uri);
     }
 
     async handleDateFilter(type, value) {

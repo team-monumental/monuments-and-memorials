@@ -9,6 +9,7 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.MonumentTagRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
@@ -23,10 +24,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -70,16 +73,20 @@ public class MonumentController {
      * @throws UnauthorizedException - If trying to get an inactive monument and not logged in
      */
     @GetMapping("/api/monument/{id}")
-    public Monument getActiveMonument(@PathVariable("id") Integer id,
+    public Monument getMonument(@PathVariable("id") Integer id,
                                       @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade,
                                       @RequestParam(defaultValue = "true") Boolean onlyActive)
             throws ResourceNotFoundException, AccessDeniedException, UnauthorizedException {
         Optional<Monument> optional;
-        if (onlyActive) {
-            optional = this.monumentRepository.findByIdAndIsActive(id, true);
-        } else {
-            this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
-            optional = Optional.of(this.monumentRepository.getOne(id));
+        try {
+            if (onlyActive) {
+                optional = this.monumentRepository.findByIdAndIsActive(id, true);
+            } else {
+                this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
+                optional = this.monumentRepository.findById(id);
+            }
+        } catch (EntityNotFoundException e) {
+            optional = Optional.empty();
         }
         if (optional.isEmpty()) throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         Monument monument = optional.get();
@@ -119,6 +126,35 @@ public class MonumentController {
     @PreAuthorize(Authentication.isAuthenticated)
     public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody UpdateMonumentRequest newMonument) {
         return this.monumentService.updateMonument(id, newMonument);
+    }
+
+    private static class ToggleIsActiveRequest {
+        public boolean isActive;
+    }
+
+    /**
+     * Change the value of isActive on a Monument
+     * @param id - ID of the Monument to update
+     * @param request - ToggleIsActiveRequest containing the new value for isActive
+     * @return Monument - The updated Monument
+     */
+    @PutMapping("/api/monument/active/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody ToggleIsActiveRequest request) {
+        Monument monument = this.monumentRepository.getOne(id);
+        monument.setIsActive(request.isActive);
+        return this.monumentRepository.save(monument);
+    }
+
+    /**
+     * Permanently delete a Monument with the specified ID
+     * @param id - ID of the Monument to delete
+     */
+    @DeleteMapping("/api/monument/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Map<String, Boolean> deleteMonument(@PathVariable("id") Integer id) {
+        this.monumentService.deleteMonument(id);
+        return Map.of("success", true);
     }
 
     @GetMapping("/api/monuments/related")

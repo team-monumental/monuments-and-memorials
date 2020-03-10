@@ -5,8 +5,9 @@ import * as QueryString from 'query-string';
  * The page will be redirected to the search results page with the proper query params
  * @param changedParams The query params to override the current (if existent) query params with
  * @param history       The react-router history prop must be passed in here so that we can use `.push`
+ * @param uri           The uri to redirect to with search params
  */
-export default function search(changedParams, history) {
+export default function search(changedParams, history, uri = '/search') {
     const params = {
         ...QueryString.parse(history.location.search),
         ...changedParams
@@ -21,5 +22,5 @@ export default function search(changedParams, history) {
     if (!changedParams.hasOwnProperty('page')) params.page = '1';
 
     const queryString = QueryString.stringify(params, {arrayFormat: 'comma'});
-    history.push(`/search/?${queryString}`);
+    history.push(`${uri}/?${queryString}`);
 }

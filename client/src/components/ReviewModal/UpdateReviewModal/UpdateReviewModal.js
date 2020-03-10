@@ -505,7 +505,7 @@ export default class UpdateReviewModal extends React.Component {
             /* IsTemporary */
             let oldIsTemporary = oldMonument.isTemporary;
             let newIsTemporary = newMonument.newIsTemporary;
-            (oldIsTemporary !== newIsTemporary) ?
+            (!!oldIsTemporary !== !!newIsTemporary) ?
                 changedAttributes.push(this.renderAttributeChange('Is Temporary', oldIsTemporary, newIsTemporary, true, true)) :
                 unchangedAttributes.push(this.renderAttributeChange('Is Temporary', oldIsTemporary, newIsTemporary, false, true));
 

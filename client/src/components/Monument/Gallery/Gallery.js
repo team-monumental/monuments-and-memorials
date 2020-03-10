@@ -85,7 +85,7 @@ export default class Gallery extends React.Component {
         }
         else {
             return (
-                <div className="images">
+                <div className="gallery">
                     {this.renderModal()}
                     {this.renderSelectedImage()}
                     {this.renderCarousel()}
@@ -168,7 +168,7 @@ export default class Gallery extends React.Component {
                         <div className="d-flex justify-content-center">
                             <img src={selectedImage.url} alt="large"/>
                         </div>
-                        <p className="caption">Image description...</p>
+                        {/*<p className="caption">Image description...</p>*/}
                     </Modal.Body>
                 </Modal>
             </div>

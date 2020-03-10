@@ -10,7 +10,7 @@ import Address from "../../Monument/Details/Address/Address";
 export default class SearchResult extends React.Component {
 
     render() {
-        const { monument, index, includeIndexInTitle } = this.props;
+        const { monument, index, includeIndexInTitle, hideImages, searchUri, monumentUri } = this.props;
         const image = monument && monument.images ? monument.images.find(monument => monument.isPrimary) : null;
         const imageUrl = image ? `url("${image.url}")` : null;
         const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
@@ -22,16 +22,18 @@ export default class SearchResult extends React.Component {
 
         return (
             <div className="search-result">
-                <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
+                {!hideImages &&
+                    <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
+                }
                 <Card>
                     <Card.Title>
-                        <a href={'/monuments/' + monument.id}>
+                        <a href={`${monumentUri}/${monument.id}`}>
                             {title}
                         </a>
                     </Card.Title>
                     <Card.Body>
                         <Address monument={monument}/>
-                        <Tags tags={tags}/>
+                        <Tags tags={tags} searchUri={searchUri}/>
                     </Card.Body>
                 </Card>
             </div>

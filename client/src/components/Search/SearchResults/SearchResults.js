@@ -4,13 +4,14 @@ import SearchResult from '../SearchResult/SearchResult';
 export default class SearchResults extends React.Component {
 
     render() {
-        const { monuments, limit, page } = this.props;
+        const { monuments, limit, page, hideImages, monumentUri, searchUri } = this.props;
         if (monuments && monuments.length) {
             return (
                 <div>{
                     monuments.filter(result => result).map(
                         (result, index) => (
-                            <SearchResult key={result.id} monument={result} index={index + ((page - 1) * limit)} includeIndexInTitle/>
+                            <SearchResult key={result.id} monument={result} index={index + ((page - 1) * limit)}
+                                          includeIndexInTitle hideImages={hideImages} monumentUri={monumentUri} searchUri={searchUri}/>
                         )
                     )
                 }</div>

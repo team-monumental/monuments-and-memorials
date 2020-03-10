@@ -7,7 +7,7 @@ export default class Sidebar extends React.Component {
 
     get links() {
         return [
-            {name: 'Home', icon: 'home', route: '/panel'},
+            {name: 'Home', icon: 'home', route: '/panel', exact: true},
             {name: 'Bulk Create', icon: 'cloud_upload', route: '/panel/bulk'},
             {name: 'Manage Monuments', icon: 'account_balance', route: '/panel/manage/monuments', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Manage Users', icon: 'person', route: '/panel/manage/users'}
@@ -19,8 +19,8 @@ export default class Sidebar extends React.Component {
         return (
             <div className="sidebar">
                 {this.links.filter(link => (!link.roles || link.roles.includes(user.role)) && (!link.role || link.role === user.role)).map(link => (
-                    <NavLink to={link.route} exact className="nav-link mr-3 d-flex align-items-center" activeClassName="active" key={link.name}>
-                        <i className="material-icons-outlined mr-4">
+                    <NavLink to={link.route} exact={link.exact} className="nav-link d-flex align-items-center" activeClassName="active" key={link.name}>
+                        <i className="material-icons-outlined mr-3">
                             {link.icon}
                         </i>
                         {link.name}

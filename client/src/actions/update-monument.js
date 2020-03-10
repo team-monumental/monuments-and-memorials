@@ -1,9 +1,10 @@
 import {
     FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, UPDATE_MONUMENT_PENDING,
-    UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
+    UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING, TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
+    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
 } from '../constants';
 import { addError } from './errors';
-import { get, put } from '../utils/api-util';
+import { get, put, del } from '../utils/api-util';
 import { pending, success, error } from '../utils/action-util';
 
 const actions = {
@@ -16,6 +17,16 @@ const actions = {
         pending: UPDATE_MONUMENT_PENDING,
         success: UPDATE_MONUMENT_SUCCESS,
         error: UPDATE_MONUMENT_ERROR
+    },
+    toggleActive: {
+        pending: TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
+        success: TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
+        error: TOGGLE_MONUMENT_IS_ACTIVE_ERROR
+    },
+    delete: {
+        pending: DELETE_MONUMENT_PENDING,
+        success: DELETE_MONUMENT_SUCCESS,
+        error: DELETE_MONUMENT_ERROR
     }
 };
 
@@ -58,4 +69,32 @@ export function updateMonument(id, newMonument) {
             }));
         }
     };
+}
+
+export function toggleMonumentIsActive(id, isActive) {
+    return async dispatch => {
+        dispatch(pending(actions.toggleActive));
+        try {
+            const updatedMonument = await put(`/api/monument/active/${id}`, {isActive});
+            dispatch(success(actions.toggleActive, {payload: updatedMonument}));
+        } catch (err) {
+            dispatch(error(actions.toggleActive, err));
+        }
+    }
+}
+
+export function deleteMonument(id) {
+    return async dispatch => {
+        dispatch(pending(actions.delete));
+        try {
+            const result = await del(`/api/monument/${id}`);
+            if (result.success) {
+                dispatch(success(actions.delete, {success: true}));
+            } else {
+                dispatch(error(actions.delete));
+            }
+        } catch (err) {
+            dispatch(error(actions.delete, err));
+        }
+    }
 }

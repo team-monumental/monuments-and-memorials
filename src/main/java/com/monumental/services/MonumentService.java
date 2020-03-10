@@ -9,10 +9,7 @@ import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.*;
-import com.monumental.repositories.ImageRepository;
-import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.ReferenceRepository;
-import com.monumental.repositories.TagRepository;
+import com.monumental.repositories.*;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
@@ -59,6 +56,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    private MonumentTagRepository monumentTagRepository;
 
     @Autowired
     GoogleMapsService googleMapsService;
@@ -663,6 +663,11 @@ public class MonumentService extends ModelService<Monument> {
         return monuments;
     }
 
+    public void deleteMonument(Integer id) {
+        this.monumentTagRepository.deleteAllByMonumentId(id);
+        this.monumentRepository.deleteById(id);
+    }
+
     @SuppressWarnings("unchecked")
     private Predicate buildDateRangeQuery(CriteriaBuilder builder, Root root, Date start, Date end) {
         return builder.between(root.get("date"), start, end);
@@ -770,7 +775,7 @@ public class MonumentService extends ModelService<Monument> {
         Monument createdMonument = new Monument();
 
         createdMonument.setIsTemporary(monumentRequest.getIsTemporary());
-        createdMonument.setIsActive(monumentRequest.getIsActive());
+        createdMonument.setIsActive(true);
 
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentRequest.getTitle(), monumentRequest.getAddress(),
