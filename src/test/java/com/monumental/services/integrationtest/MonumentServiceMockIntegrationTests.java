@@ -93,11 +93,11 @@ public class MonumentServiceMockIntegrationTests {
     @Before
     public void initializeMocks() {
         Mockito.doReturn(new ArrayList<>()).when(this.monumentServiceMock).findDuplicateMonuments(any(String.class),
-                any(Double.class), any(Double.class), any(String.class));
+                any(Double.class), any(Double.class), any(String.class), true);
         Mockito.doReturn(new ArrayList<>()).when(this.monumentServiceMock).findDuplicateMonuments(any(String.class),
-                isNull(), isNull(), any(String.class));
+                isNull(), isNull(), any(String.class), true);
         Mockito.doReturn(new ArrayList<>()).when(this.monumentServiceMock).findDuplicateMonuments(any(String.class),
-                any(Double.class), any(Double.class), isNull());
+                any(Double.class), any(Double.class), isNull(), true);
     }
 
     /** bulkCreateMonuments Tests **/

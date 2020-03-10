@@ -26,11 +26,10 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
      * @param names - The tag names to match against
      * @param monumentId - The monument to exclude from search results
      * @param pageable - Used to give the search a limit
-     * @param isActive - If true only active monuments will be returned, or vice versa
      * @return Tuples of monuments with their count of matching tags
      */
-    @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id <> :id and m.isActive = :isActive group by m.id order by c desc")
-    List<Tuple> getRelatedMonuments(@Param("names") List<String> names, @Param("id") Integer monumentId, Pageable pageable, boolean isActive);
+    @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id <> :id and m.isActive = true group by m.id order by c desc")
+    List<Tuple> getRelatedMonuments(@Param("names") List<String> names, @Param("id") Integer monumentId, Pageable pageable);
 
     /**
      * Find a monument, only if it is active/inactive

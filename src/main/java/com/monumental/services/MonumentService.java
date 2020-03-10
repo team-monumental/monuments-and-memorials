@@ -367,7 +367,7 @@ public class MonumentService extends ModelService<Monument> {
             return null;
         }
 
-        List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit), true);
+        List<Tuple> results = this.monumentRepository.getRelatedMonuments(tags, monumentId, PageRequest.of(0, limit));
         List<Monument> monuments = new ArrayList<>();
         for (Tuple result : results) {
             monuments.add((Monument) result.get(0));
