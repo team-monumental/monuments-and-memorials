@@ -28,8 +28,8 @@ class UserSearchPage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, location: { search } } = this.props;
-        dispatch(searchUsers(QueryString.parse(search)));
+        const { showSearchResults, dispatch, location: { search } } = this.props;
+        if (showSearchResults) dispatch(searchUsers(QueryString.parse(search)));
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
