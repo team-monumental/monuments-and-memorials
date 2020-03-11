@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import searchMonuments from '../../actions/search';
+import { searchMonuments } from '../../actions/search';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
@@ -18,7 +18,7 @@ class SearchPage extends React.Component {
 
     constructor(props) {
         super(props);
-        const params = QueryString.parse(this.props.history.location.search);
+        const params = QueryString.parse(props.history.location.search);
         this.state = {
             q: params.q,
             page: params.page || 1,

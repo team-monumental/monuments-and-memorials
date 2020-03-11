@@ -5,6 +5,7 @@ import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
+import com.monumental.models.Monument;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
 import com.monumental.repositories.UserRepository;
@@ -23,8 +24,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 @Service
 @Transactional
@@ -355,5 +360,91 @@ public class UserService extends ModelService<User> {
      */
     public void sendPasswordResetCompleteEmail(User user) {
         this.sendEmail(user.getEmail(), "password-reset.success");
+    }
+
+    public List<User> search(String name, String email, String role, String page, String limit) {
+        CriteriaBuilder builder = this.getCriteriaBuilder();
+        CriteriaQuery<User> query = this.createCriteriaQuery(builder, false);
+        Root<User> root = this.createRoot(query);
+        query.select(root);
+
+        this.buildSearchQuery(builder, query, root, name, email, role, true);
+
+        return limit != null
+            ? page != null
+                ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+            : this.getWithCriteriaQuery(query);
+    }
+
+    private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String name, String email,
+                                  String roleName, boolean orderBySimilarity) {
+        List<Predicate> predicates = new ArrayList<>();
+        List<Expression<Number>> expressions = new ArrayList<>();
+
+        if (!isNullOrEmpty(name)) {
+            Expression<Number> firstNameExpression = this.buildSimilarityExpression(builder, root, name, "firstName");
+            Expression<Number> lastNameExpression = this.buildSimilarityExpression(builder, root, name, "lastName");
+            predicates.add(builder.or(
+                    this.buildSimilarityPredicate(builder, firstNameExpression),
+                    this.buildSimilarityPredicate(builder, lastNameExpression)
+            ));
+            expressions.add(firstNameExpression);
+            expressions.add(lastNameExpression);
+        }
+        if (!isNullOrEmpty(email)) {
+            Expression<Number> emailExpression = this.buildSimilarityExpression(builder, root, email, "email");
+            predicates.add(this.buildSimilarityPredicate(builder, emailExpression));
+            expressions.add(emailExpression);
+        }
+        if (orderBySimilarity && expressions.size() > 0) {
+            this.orderResultsBySimilarity(builder, query, expressions);
+        }
+        if (!isNullOrEmpty(roleName)) {
+            Role role = Role.valueOf(roleName.toUpperCase());
+            predicates.add(builder.equal(builder.literal(role), root.get("role")));
+        }
+
+        switch (predicates.size()) {
+            case 0:
+                return;
+            case 1:
+                query.where(predicates.get(0));
+                break;
+            default:
+                Predicate[] predicatesArray = new Predicate[predicates.size()];
+                predicatesArray = predicates.toArray(predicatesArray);
+                query.where(builder.and(predicatesArray));
+        }
+    }
+
+    private void orderResultsBySimilarity(CriteriaBuilder builder, CriteriaQuery query, List<Expression<Number>> expressions) {
+        Expression<Number> sum;
+        if (expressions.size() == 1) sum = expressions.get(0);
+        else {
+            sum = builder.sum(expressions.remove(0), expressions.remove(0));
+            while (expressions.size() > 0) {
+                sum = builder.sum(sum, expressions.remove(0));
+            }
+        }
+        query.orderBy(builder.desc(sum));
+    }
+
+    private Predicate buildSimilarityPredicate(CriteriaBuilder builder, Expression<Number> expression) {
+        return builder.gt(expression, 0.1);
+    }
+
+    private Expression<Number> buildSimilarityExpression(CriteriaBuilder builder, Root root, String searchQuery, String fieldName) {
+        return builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery));
+    }
+
+    public Integer countSearchResults(String name, String email, String role) {
+        CriteriaBuilder builder = this.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<User> root = query.from(User.class);
+        query.select(builder.countDistinct(root));
+        this.buildSearchQuery(builder, query, root, name, email, role, false);
+
+        return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
 }

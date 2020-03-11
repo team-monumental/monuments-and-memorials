@@ -287,6 +287,7 @@ public class MonumentService extends ModelService<Monument> {
                 return;
             case 1:
                 query.where(predicates.get(0));
+                break;
             default:
                 Predicate[] predicatesArray = new Predicate[predicates.size()];
                 predicatesArray = predicates.toArray(predicatesArray);

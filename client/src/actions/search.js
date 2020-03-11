@@ -1,37 +1,62 @@
-import { SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_ERROR, SEARCH_MONUMENTS_SUCCESS } from '../constants';
+import {
+    SEARCH_MONUMENTS_PENDING,
+    SEARCH_MONUMENTS_ERROR,
+    SEARCH_MONUMENTS_SUCCESS,
+    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR
+} from '../constants';
 import * as QueryString from 'query-string';
 import { addError } from './errors';
 import { get } from '../utils/api-util';
 import { pending, success, error } from '../utils/action-util';
 
 const actions = {
-    search: {
-        pending: SEARCH_MONUMENTS_PENDING,
-        success: SEARCH_MONUMENTS_SUCCESS,
-        error: SEARCH_MONUMENTS_ERROR,
-        uri: '/api/search/monuments'
+    monuments: {
+        search: {
+            pending: SEARCH_MONUMENTS_PENDING,
+            success: SEARCH_MONUMENTS_SUCCESS,
+            error: SEARCH_MONUMENTS_ERROR,
+            uri: '/api/search/monuments'
+        },
+        count: {
+            uri: '/api/search/monuments/count'
+        }
     },
-    count: {
-        uri: '/api/search/monuments/count'
+    users: {
+        search: {
+            pending: SEARCH_USERS_PENDING,
+            success: SEARCH_USERS_SUCCESS,
+            error: SEARCH_USERS_ERROR,
+            uri: '/api/search/users'
+        },
+        count: {
+            uri: '/api/search/users/count'
+        }
     }
 };
 
 /**
  * Searches for monuments and gets the total count of results
  */
-export default function searchMonuments(options = {}) {
+export function searchMonuments(options = {}) {
+    return search(options, actions.monuments, 'monuments');
+}
+
+export function searchUsers(options = {}) {
+    return search(options, actions.users, 'users');
+}
+
+function search(options, action, payloadName) {
     return async dispatch => {
         const queryString = QueryString.stringify(options);
-        dispatch(pending(actions.search));
+        dispatch(pending(action.search));
         try {
-            const count = await get(`${actions.count.uri}/?${queryString}`);
+            const count = await get(`${action.count.uri}/?${queryString}`);
+            const payload = {count};
             // We can skip the search query if the count has already come back as 0
-            const monuments = count > 0 ? await get(`${actions.search.uri}/?${queryString}`) : [];
-            dispatch(success(actions.search, {
-                count, monuments
-            }));
+            payload[payloadName] = count > 0 ? await get(`${action.search.uri}/?${queryString}`) : [];
+            dispatch(success(action.search, payload));
         } catch (err) {
-            dispatch(error(actions.search, err));
+            dispatch(error(action.search, err));
             dispatch(addError({
                 message: err.message
             }));
