@@ -2,7 +2,31 @@
     display: flex;
     justify-content: center;
 
+    .sticky-top {
+        background-color: white;
+        z-index: 1;
+    }
+
+    .user-search {
+        max-height: calc(100vh - 250px);
+        overflow-y: auto;
+    }
+
     .user-search-results {
         margin-top: 0.5rem;
+    }
+
+    .pagination-container {
+        position: sticky;
+        bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        z-index: 1;
+        .pagination {
+            background-color: white;
+            .page-link {
+                border: 0 !important;
+            }
+        }
     }
 }
