@@ -64,21 +64,19 @@ homepage-map {
     }
 }
 
-h1 {
-    text-align: center;
-    padding-bottom: 1rem;
-}
-
-.h1, .h2, .h3, .h4, .h5, .h6 {
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
     letter-spacing: -0.4px !important;
     color: #61616D !important;
+    text-decoration: none !important;
 }
 
 .card-title.h5 {
     font-size: 1.5rem;
 }
 
-.h1 {
+h1, .h1 {
+    text-align: center;
+    padding-bottom: 1rem;
     font-size: 2rem !important;
 }
 
@@ -112,7 +110,11 @@ h1 {
 }
 
 .mobile-search-modal {
+    .close {
+        color: $primary !important;
+    }
     .modal-dialog {
+        max-width: none;
         margin: 0;
         .modal-content {
             border-radius: 0;
@@ -126,6 +128,9 @@ h1 {
         .location-search, .text-search, .search-button {
             margin-bottom: 0.5rem;
             width: 100%;
+            input {
+                width: 100%;
+            }
         }
     }
 }
@@ -144,4 +149,25 @@ h1 {
     color: $danger;
     min-width: 100%;
     width: 0;
+}
+
+.nav-link {
+    display: inline-block !important;
+    padding: 0 !important;
+    &.nav-link, &:active, &:focus, &:hover, &:visited {
+        color: #35495e;
+        text-decoration: none;
+    }
+}
+
+.nav-link, .header .btn {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: "Open Sans", sans-serif;
+    transition: color 0.1s ease;
+    line-height: 21px;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: $primary;
 }

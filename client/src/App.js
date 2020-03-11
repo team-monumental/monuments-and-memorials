@@ -12,7 +12,6 @@ import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
 import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
-import MonumentBulkCreatePage from './pages/MonumentBulkCreatePage/MonumentBulkCreatePage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
 import HomePage from "./pages/HomePage/HomePage";
 import AboutPage from './pages/AboutPage/AboutPage';
@@ -20,7 +19,6 @@ import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import SignupPage from './pages/SignupPage/SignupPage';
 import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
-import { Roles } from './utils/authentication-util';
 import { getUserSession, logout } from './actions/authentication';
 import ConfirmSignupPage from './pages/ConfirmSignupPage/ConfirmSignupPage';
 import BeginPasswordResetPage from './pages/BeginPasswordResetPage/BeginPasswordResetPage';
@@ -28,6 +26,7 @@ import FinishPasswordResetPage from './pages/FinishPasswordResetPage/FinishPassw
 import UserPage from './pages/UserPage/UserPage';
 import UpdateUserPage from './pages/UpdateUserPage/UpdateUserPage';
 import ConfirmEmailChangePage from './pages/ConfirmEmailChangePage/ConfirmEmailChangePage';
+import AdminPage from './pages/AdminPage/AdminPage';
 
 class App extends React.Component {
 
@@ -65,7 +64,6 @@ class App extends React.Component {
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
                             <ProtectedRoute exact path="/create" component={CreateMonumentPage}/>
-                            <ProtectedRoute exact path="/bulk-create" component={MonumentBulkCreatePage}/>
                             <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                             <Route exact path="/about" component={AboutPage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
@@ -75,6 +73,7 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/account" component={UserPage}/>
                             <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
                             <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
+                            <ProtectedRoute path="/panel" component={AdminPage}/>
                         </ErrorHandler>
                     </div>
                 </Router>

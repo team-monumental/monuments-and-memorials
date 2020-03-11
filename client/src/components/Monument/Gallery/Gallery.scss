@@ -1,109 +1,117 @@
 @import "../../../theme";
 
-.images {
+.gallery {
     padding-top: 1.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
 
-.image-wrapper {
-    position: relative;
-    width: min-content;
-}
-
-.overlay {
-    background-color: rgb(0,0,0);
-    opacity: 0;
-    transition: opacity 0.05s ease-in;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 0;
-    cursor: pointer;
-    border-radius: 14px;
-
-    &:hover {
-        opacity: 0.7;
+    .image-wrapper {
+        position: relative;
+        width: min-content;
     }
-}
 
-.image {
-    border-radius: 14px;
-    height: 30rem;
-    width: 30rem;
-    max-width: calc(100vw - 2rem);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: black;
-    background-position: center;
-}
+    .overlay {
+        background-color: rgb(0, 0, 0);
+        opacity: 0;
+        transition: opacity 0.05s ease-in;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        cursor: pointer;
+        border-radius: 14px;
 
-.image-selection {
-    display: flex;
-    justify-content: center;
-    padding-top: 1rem;
-    .image-option {
-        margin-right: 1rem;
-        min-width: 12px;
-        min-height: 12px;
-        background-color: #e8e8e8;
-        transition: background-color 0.1s ease-in;
-        border-radius: 100%;
-        &.selected {
-            background-color: $primary;
+        &:hover {
+            opacity: 0.7;
         }
-        &:not(.animating) {
-            cursor: pointer;
-            &:hover {
-                @include media-breakpoint-up(lg) {
-                    background-color: darken(#e8e8e8, 20%);
-                }
-            }
+    }
+
+    .image {
+        border-radius: 14px;
+        height: 30rem;
+        width: 30rem;
+        max-width: calc(100vw - 2rem);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: black;
+        background-position: center;
+    }
+
+    .image-selection {
+        display: flex;
+        justify-content: center;
+        padding-top: 1rem;
+
+        .image-option {
+            margin-right: 1rem;
+            min-width: 12px;
+            min-height: 12px;
+            background-color: #e8e8e8;
+            transition: background-color 0.1s ease-in;
+            border-radius: 100%;
+
             &.selected {
-                @include media-breakpoint-up(lg) {
-                    &:hover {
-                        background-color: darken($primary, 20%);
+                background-color: $primary;
+            }
+
+            &:not(.animating) {
+                cursor: pointer;
+
+                &:hover {
+                    @include media-breakpoint-up(lg) {
+                        background-color: darken(#e8e8e8, 20%);
+                    }
+                }
+
+                &.selected {
+                    @include media-breakpoint-up(lg) {
+                        &:hover {
+                            background-color: darken($primary, 20%);
+                        }
                     }
                 }
             }
         }
     }
-}
 
-.modal-content {
-    background-color: rgba(0,0,0,0);
-    border: 0;
-    .modal-header {
+    .modal-content {
+        background-color: rgba(0, 0, 0, 0);
         border: 0;
-        color: white;
-        button {
+
+        .modal-header {
+            border: 0;
             color: white;
+
+            button {
+                color: white;
+            }
+        }
+
+        .modal-body .caption {
+            padding-top: 2rem;
+            color: white;
+            text-align: center;
         }
     }
-    .modal-body .caption {
-        padding-top: 2rem;
-        color: white;
-        text-align: center;
+
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
     }
-}
 
-.modal {
-    background-color: rgba(0,0,0,0.5);
-}
-
-.animation.image {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    transition: opacity ease-in;
-    top: 0;
-    z-index: 1;
+    .animation.image {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        transition: opacity ease-in;
+        top: 0;
+        z-index: 1;
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.Tuple;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MonumentRepository extends JpaRepository<Monument, Integer> {
@@ -27,6 +28,21 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
      * @param pageable - Used to give the search a limit
      * @return Tuples of monuments with their count of matching tags
      */
-    @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id <> :id group by m.id order by c desc")
+    @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id <> :id and m.isActive = true group by m.id order by c desc")
     List<Tuple> getRelatedMonuments(@Param("names") List<String> names, @Param("id") Integer monumentId, Pageable pageable);
+
+    /**
+     * Find a monument, only if it is active/inactive
+     * @param id Id of the monument to find
+     * @param isActive If true only active monuments will be returned, or vice versa
+     * @return Option containing the found monument or nothing
+     */
+    Optional<Monument> findByIdAndIsActive(Integer id, Boolean isActive);
+
+    /**
+     * Get all monuments that are active or inactive
+     * @param isActive If true only active monuments will be returned, or vice versa
+     * @return The found monuments
+     */
+    List<Monument> findAllByIsActive(Boolean isActive);
 }

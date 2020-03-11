@@ -9,4 +9,6 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface MonumentTagRepository extends JpaRepository<MonumentTag, Integer> {
+
+    void deleteAllByMonumentId(Integer monumentId);
 }

@@ -14,26 +14,31 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-        const { session, oneOf, component: Component, path, history } = this.props;
+        const { session, oneOf, component: Component, path, history, exact, customProps } = this.props;
 
         // Wait until we've finished getting the user session before making any redirects
         if (session.pending) {
             return (<></>);
         }
 
-        const noAccessRedirect = (<Redirect to={{
+        const noAccessRedirect = message => (<Redirect to={{
             pathname: '/',
             state: history.location.state && history.location.state.suppressAuthenticationBanner ? {} : {
-                alert: 'You do not have sufficient privileges to view that page.'
+                alert: message
             }
         }}/>);
 
         let loggedIn = session.user && session.user.role;
-        let render = (props) => (<Component {...props} />);
+        let render = (props) => (<Component {...props} {...customProps} />);
+
+        // If using exact path, match exactly, otherwise do some fuzzy checking
+        // TODO: Verify that this fuzzy checking is good enough
+        const active = exact ? history.location.pathname === path :
+            history.location.pathname.startsWith(path.replace(/\/:[a-zA-Z_-]*/g, ''));
 
         // If you log out while on a restricted page, this will instantly redirect back to the homepage
-        if (!loggedIn && path === history.location.pathname) {
-            return noAccessRedirect;
+        if (!loggedIn && active) {
+            return noAccessRedirect('You must be logged in to view that page.');
         }
 
         // In all other cases, we pass our action to the render function of the route rather than instantly redirect,
@@ -43,8 +48,7 @@ class ProtectedRoute extends React.Component {
         }
         // TODO: This doesn't support role hierarchy, and probably should
         else if (oneOf && !oneOf.includes(session.user.role)) {
-            // TODO: Add alert banner to homepage when this is rebased with homepage PR
-            render = () => noAccessRedirect;
+            render = () => noAccessRedirect('You do not have sufficient privileges to view that page.');
         }
 
         return (

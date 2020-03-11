@@ -18,7 +18,7 @@ export default class Favorites extends React.Component {
                 <Card.Body>
                     {favorites && <>
                         {favorites.map(favorite => (
-                            <SearchResult key={favorite.monument.id} monument={favorite.monument} includeIndexInTitle={false}/>
+                            <SearchResult key={favorite.monument.id} monument={favorite.monument}/>
                         ))}
                     </>}
                     {(!favorites || !favorites.length) && !error && <>

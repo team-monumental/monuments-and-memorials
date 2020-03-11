@@ -1,10 +1,12 @@
 @import "../../../../theme";
 
-i {
-  color: $primary;
-}
+.address-container {
+  i {
+    color: $primary;
+  }
 
-.city-state {
-  position: absolute;
-  padding-top: 0.2rem;
+  .city-state {
+    position: absolute;
+    padding-top: 0.2rem;
+  }
 }

@@ -1,10 +1,13 @@
 @import "../../theme";
 
 .bulk-create-form-container {
-    width: 600px;
 
     input[type='file'] {
         display: none;
+    }
+
+    .card-subtitle i {
+        color: $primary;
     }
 }
 

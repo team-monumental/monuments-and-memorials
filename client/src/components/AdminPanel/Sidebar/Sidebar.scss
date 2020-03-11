@@ -1,0 +1,25 @@
+@import "../../../theme.scss";
+
+.admin .panel .sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100%;
+    box-shadow: rgba(0,0,0,0.1) 2px 10px 10px;
+
+    .nav-link {
+        text-transform: none !important;
+        color: rgb(108, 112, 119);
+        padding: 0.35rem 0.5rem 0.35rem 1.5rem !important;
+        transition: all 0.025s ease-in !important;
+        &.active, &:hover {
+            color: white;
+            background-color: $primary;
+        }
+        i {
+            font-size: 1.25em;
+        }
+    }
+}

@@ -56,7 +56,7 @@ export default class RelatedMonuments extends React.Component {
                         {
                             extraMonuments.map(
                                 (extraMonument) => (
-                                    <SearchResult key={extraMonument.id} monument={extraMonument} includeIndexInTitle={false}/>
+                                    <SearchResult key={extraMonument.id} monument={extraMonument}/>
                                 )
                             )
                         }
@@ -76,7 +76,7 @@ export default class RelatedMonuments extends React.Component {
                         {
                             monumentsToShow.map(
                                 (monument) => (
-                                    <SearchResult key={monument.id} monument={monument} includeIndexInTitle={false}/>
+                                    <SearchResult key={monument.id} monument={monument}/>
                                 )
                             )
                         }

@@ -8,13 +8,13 @@ import Tag from './Tag/Tag';
 export default class Tags extends React.Component {
 
     render() {
-        const { tags, selectable, onSelect, selectedIcon } = this.props;
+        const { tags, selectable, onSelect, selectedIcon, searchUri } = this.props;
         if (!tags) return (<div/>);
         return (
             <div className="tags">
                 {tags.sort((a, b) => (a.name > b.name) ? 1 : -1).map(tag => {
                     return (
-                        <Tag key={tag.id} name={tag.name} isMaterial={tag.isMaterial} selectable={selectable} onSelect={value => onSelect(value, tag)} selectedIcon={selectedIcon} selected={tag.selected}/>
+                        <Tag key={tag.id} name={tag.name} isMaterial={tag.isMaterial} selectable={selectable} onSelect={value => onSelect(value, tag)} selectedIcon={selectedIcon} selected={tag.selected} searchUri={searchUri}/>
                     );
                 })}
             </div>

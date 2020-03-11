@@ -53,10 +53,10 @@ export default class About extends React.Component {
     }
 
     render() {
-        const { monument, contributions, references } = this.props;
+        const { monument, contributions, references, header, showHiddenFields, hideExportToCSV, hideTitle } = this.props;
 
         let title;
-        if (monument.title) {
+        if (!hideTitle && monument.title) {
             title = (
                 <div>
                     <span className="detail-label">Title:&nbsp;</span>
@@ -183,10 +183,20 @@ export default class About extends React.Component {
             )
         }
 
+        let isActive;
+        if (showHiddenFields) {
+            isActive = (
+                <div>
+                    <span className="detail-label">Is Active:&nbsp;</span>
+                    {monument.isActive ? 'Yes' : 'No'}
+                </div>
+            )
+        }
+
         return (
             <Card className="mt-4">
                 <Card.Header>
-                    <Card.Title>About</Card.Title>
+                    <Card.Title>{header || 'About'}</Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <div className="detail-list">
@@ -202,9 +212,15 @@ export default class About extends React.Component {
                         {contributorsList}
                         {referencesList}
                         {lastUpdated}
+                        {isActive}
                     </div>
-                    <ExportToCsvButton className="mt-2" fields={this.csvExportFields} data={this.buildCsvExportData()}
-                                       exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                    <div className="d-flex">
+                        {!hideExportToCSV &&
+                            <ExportToCsvButton className="mt-2" fields={this.csvExportFields}
+                                               data={this.buildCsvExportData()}
+                                               exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                        }
+                    </div>
                 </Card.Body>
             </Card>
         )

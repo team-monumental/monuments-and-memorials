@@ -52,12 +52,12 @@ const actions = {
  * After the Monument is successfully retrieved, queries for the nearby Monuments and the related Monuments
  * This is an async action (redux-thunk)
  */
-export default function fetchMonument(id) {
+export default function fetchMonument(id, onlyActive) {
     return async dispatch => {
         dispatch(pending(actions.single));
 
         try {
-            const monument = await get(`/api/monument/${id}?cascade=true`);
+            const monument = await get(`/api/monument/${id}?cascade=true${onlyActive !== undefined ? `&onlyActive=${onlyActive}` : ''}`);
             dispatch(success(actions.single, monument));
 
             await fetchNearbyMonuments(dispatch, monument);
