@@ -35,6 +35,9 @@ public class AwsS3Service {
     // Constant for the folder where Monument images are stored
     public static final String imageFolderName = "images/";
 
+    // Constant for the folder where temporary Monument images are stored
+    public static final String tempFolderName = "temp/";
+
     private static AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
             .withRegion(bucketRegion)
             .build();
@@ -73,6 +76,30 @@ public class AwsS3Service {
             );
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Move an S3 Object with the specified originalObjectKey to a new location defined by the newObjectKey
+     * The AWS S3 SDK does not have a move Object operation by default, so it's done by first copying the original
+     * Object into the new location and then deleting the original Object
+     * @param originalObjectKey - S3 Object Key for the Object to move
+     * @param newObjectKey - S3 Object Key for where to move the Object to
+     * @return String - The new S3 Object Key for where the Object was moved to. Will be null if the operation is
+     * unsuccessful
+     */
+    public static String moveObject(String originalObjectKey, String newObjectKey) {
+        try {
+            // First, copy the original Object into the new location
+            s3Client.copyObject(bucketName, originalObjectKey, bucketName, newObjectKey);
+            // Then, delete the original Object
+            s3Client.deleteObject(bucketName, originalObjectKey);
+
+            return newObjectKey;
+        } catch (AmazonServiceException e) {
+            System.out.println("Error attempting to move Object: " + originalObjectKey + " to: " + newObjectKey);
+            System.out.println(e.getErrorMessage());
             return null;
         }
     }

@@ -1,5 +1,6 @@
 package com.monumental.util.csvparsing;
 
+import com.google.gson.Gson;
 import com.monumental.models.Contribution;
 import com.monumental.models.Reference;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
@@ -197,5 +198,35 @@ public class CsvMonumentConverter {
             return tagName.substring(0, 1).toUpperCase() + tagName.substring(1);
         }
         return null;
+    }
+
+    /**
+     * Parse a specified CsvMonumentConverterResult into a complete CreateMonumentSuggestion
+     * @param result - CsvMonumentConverterResult class to parse
+     * @return CreateMonumentSuggestion - CreateMonumentSuggestion object created from the specified
+     * CsvMonumentConverterResult
+     */
+    public static CreateMonumentSuggestion parseCsvMonumentConverterResult(CsvMonumentConverterResult result) {
+        if (result.getMonumentSuggestion() == null) {
+            return null;
+        }
+
+        Gson gson = new Gson();
+        CreateMonumentSuggestion suggestion = result.getMonumentSuggestion();
+
+        if (result.getContributorNames() != null && result.getContributorNames().size() > 0) {
+            suggestion.setContributionsJson(gson.toJson(result.getContributorNames()));
+        }
+        if (result.getReferenceUrls() != null && result.getReferenceUrls().size() > 0) {
+            suggestion.setReferencesJson(gson.toJson(result.getReferenceUrls()));
+        }
+        if (result.getTagNames() != null && result.getTagNames().size() > 0) {
+            suggestion.setTagsJson(gson.toJson(result.getTagNames()));
+        }
+        if (result.getMaterialNames() != null && result.getMaterialNames().size() > 0) {
+            suggestion.setMaterialsJson(gson.toJson(result.getMaterialNames()));
+        }
+
+        return suggestion;
     }
 }

@@ -13,6 +13,8 @@ import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
+import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.string.StringHelper;
@@ -68,6 +70,12 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     AppConfig appConfig;
+
+    @Autowired
+    CreateSuggestionRepository createSuggestionRepository;
+
+    @Autowired
+    BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
 
     /**
      * SRID for coordinates
@@ -1391,7 +1399,7 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion and corresponding
+     * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with corresponding
      * CreateMonumentSuggestions
      * @param bulkValidationResult - MonumentBulkValidationResult object to parse
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
@@ -1400,9 +1408,21 @@ public class MonumentService extends ModelService<Monument> {
     public BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult bulkValidationResult) {
         List<CsvMonumentConverterResult> validResults = new ArrayList<>(bulkValidationResult.getValidResults().values());
         List<CreateMonumentSuggestion> createSuggestions = new ArrayList<>();
+        BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
 
         for (CsvMonumentConverterResult validResult : validResults) {
-            CreateMonumentSuggestion createSuggestion =
+            CreateMonumentSuggestion createSuggestion = CsvMonumentConverter.parseCsvMonumentConverterResult(validResult);
+
+            for (File image : validResult.getImageFiles()) {
+                this.s3Service.storeObject()
+            }
+
+            createSuggestion.setBulkCreateSuggestion(bulkCreateSuggestion);
+            createSuggestion = this.createSuggestionRepository.save(createSuggestion);
+            createSuggestions.add(createSuggestion);
         }
+
+        bulkCreateSuggestion.setCreateSuggestions(createSuggestions);
+        return this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
     }
 }
