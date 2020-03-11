@@ -1,14 +1,14 @@
 import * as React from 'react';
 import './ManageUsers.scss';
+import { withRouter } from 'react-router-dom';
 import { Button, Card } from 'react-bootstrap';
 import ManageUser from './ManageUser/ManageUser';
-import UpdateUserPage from '../../../pages/AdminPage/ManageUsersPage/UpdateUserPage/UpdateUserPage';
 import UserSearchPage from '../../../pages/AdminPage/ManageUsersPage/UserSearchPage/UserSearchPage';
 
-export default class ManageUsers extends React.Component {
+class ManageUsers extends React.Component {
 
     render() {
-        const { mode, history } = this.props;
+        const { mode, history, user, contributions, onChangeRole, changeRoleSuccess } = this.props;
         return (
             <div className="manage-users">
                 <Card>
@@ -24,11 +24,9 @@ export default class ManageUsers extends React.Component {
                         {(!mode || mode === 'search') &&
                             <UserSearchPage showSearchResults={mode === 'search'}/>
                         }
-                        {mode === 'user' &&
-                            <ManageUser/>
-                        }
-                        {mode === 'update' &&
-                            <UpdateUserPage/>
+                        {(mode === 'user' && user) &&
+                            <ManageUser user={user} contributions={contributions} onChangeRole={onChangeRole}
+                                        changeRoleSuccess={changeRoleSuccess}/>
                         }
                     </Card.Body>
                 </Card>
@@ -36,3 +34,5 @@ export default class ManageUsers extends React.Component {
         );
     }
 }
+
+export default withRouter(ManageUsers);

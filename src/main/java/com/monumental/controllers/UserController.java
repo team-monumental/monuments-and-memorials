@@ -10,6 +10,7 @@ import com.monumental.models.VerificationToken;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Authentication;
+import com.monumental.security.Authorization;
 import com.monumental.security.Role;
 import com.monumental.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @Transactional
@@ -102,26 +104,33 @@ public class UserController {
     @PreAuthorize(Authentication.isAuthenticated)
     public Map<String, Boolean> updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws UnauthorizedException, ValidationException {
         User currentUser = this.userService.getCurrentUser();
-        if (!user.getId().equals(currentUser.getId()) && !currentUser.getRole().equals(Role.RESEARCHER)) {
+        Optional<User> option = this.userRepository.findById(user.getId());
+        if (option.isEmpty()) throw new ResourceNotFoundException("The requested User does not exist");
+        User existingUser = option.get();
+        boolean selfUpdate = user.getId().equals(currentUser.getId());
+        if (!selfUpdate && !currentUser.getRole().equals(Role.ADMIN)) {
             throw new UnauthorizedException("You do not have permission to update that user.");
         }
 
         boolean needsConfirmation = false;
-        if (!user.getEmail().equals(currentUser.getEmail())) {
-            currentUser.setIsEmailVerified(false);
+        if (!user.getEmail().equals(existingUser.getEmail())) {
+            existingUser.setIsEmailVerified(false);
             this.userService.sendEmailChangeVerificationEmail(
                 user,
                 this.userService.generateVerificationToken(user, VerificationToken.Type.EMAIL)
             );
             needsConfirmation = true;
-            this.userService.invalidateSession(request, response);
+            if (selfUpdate) {
+                this.userService.invalidateSession(request, response);
+            }
         }
 
-        currentUser.setEmail(user.getEmail());
-        currentUser.setFirstName(user.getFirstName());
-        currentUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setRole(user.getRole());
 
-        this.userRepository.save(currentUser);
+        this.userRepository.save(existingUser);
 
         return Map.of("success", true, "needsConfirmation", needsConfirmation);
     }
@@ -130,5 +139,18 @@ public class UserController {
     public Map<String, Boolean> confirmChangeEmail(@RequestParam String token) throws ResourceNotFoundException {
         this.userService.verifyToken(token);
         return Map.of("success", true);
+    }
+
+    /**
+     * Get a User record. This is NOT the same as getting the logged in user. For that,
+     * @see UserController#getSession()
+     * @param id - The id of the User to get
+     * @return - The matching User
+     * @throws ResourceNotFoundException - When there is no User with a matching id
+     */
+    @GetMapping("/api/user/{id}")
+    @PreAuthorize(Authorization.isAdmin)
+    public Map<String, Object> getUser(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+        return this.userService.getUser(id);
     }
 }

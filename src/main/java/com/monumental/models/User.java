@@ -1,11 +1,13 @@
 package com.monumental.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.monumental.security.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * For now, this class simply serves as the User entity for Model's createdBy and lastModifiedBy
@@ -49,6 +51,10 @@ public class User extends Model {
     @Column(name = "is_email_verified")
     @NotNull
     private boolean isEmailVerified = false;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "submittedByUser", cascade = CascadeType.ALL)
+    private List<Contribution> contributions;
 
     public String getFirstName() {
         return this.firstName;
@@ -104,5 +110,13 @@ public class User extends Model {
 
     public void setIsEmailVerified(boolean isEmailVerified) {
         this.isEmailVerified = isEmailVerified;
+    }
+
+    public List<Contribution> getContributions() {
+        return this.contributions;
+    }
+
+    public void setContributions(List<Contribution> contributions) {
+        this.contributions = contributions;
     }
 }

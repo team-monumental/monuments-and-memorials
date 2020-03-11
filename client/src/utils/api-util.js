@@ -118,7 +118,7 @@ async function sendRequest(url, {methodType='GET', data=undefined, file=undefine
             })
             .then(res => res.json())
             .catch(err => error = err);
-        if (error || res.error) throw(error || res.error);
+        if (error || (res && res.error)) throw(error || (res && res.error));
         else return res;
     }
 }

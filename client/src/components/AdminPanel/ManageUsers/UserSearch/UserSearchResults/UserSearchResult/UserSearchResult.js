@@ -2,6 +2,7 @@ import * as React from 'react';
 import './UserSearchResult.scss';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { capitalize } from '../../../../../../utils/string-util';
 
 export default class UserSearchResult extends React.Component {
 
@@ -12,16 +13,16 @@ export default class UserSearchResult extends React.Component {
             <div className="user-search-result">
                 <Card>
                     <Card.Title>
-                        <Link to={`/panel/manage/users/${user.id}`}>
+                        <Link to={`/panel/manage/users/user/${user.id}`}>
                             {index + 1}. {user.firstName} {user.lastName}
                         </Link>
                     </Card.Title>
                     <Card.Body>
                         <div>
-                            Role: {user.role.substring(0, 1) + user.role.substring(1).toLowerCase()}
+                            Role: {capitalize(user.role)}
                         </div>
                         <div>
-                            Email Address: {user.email}
+                            Email Address: <a href={`mailto:${user.email}`}>{user.email}</a>
                         </div>
                     </Card.Body>
                 </Card>

@@ -5,9 +5,11 @@ import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
+import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
+import com.monumental.repositories.ContributionRepository;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
@@ -33,10 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -49,6 +48,9 @@ public class UserService extends ModelService<User> {
 
     @Autowired
     VerificationTokenRepository tokenRepository;
+
+    @Autowired
+    ContributionRepository contributionRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -446,5 +448,12 @@ public class UserService extends ModelService<User> {
         this.buildSearchQuery(builder, query, root, name, email, role, false);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
+    }
+
+    public Map<String, Object> getUser(Integer id) {
+        Optional<User> optional = this.userRepository.findById(id);
+        if (optional.isEmpty()) throw new ResourceNotFoundException("The requested User does not exist");
+        List<Contribution> contributions = this.contributionRepository.getAllBySubmittedByUserId(id);
+        return Map.of("user", optional.get(), "contributions", contributions);
     }
 }

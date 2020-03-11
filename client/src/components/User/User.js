@@ -3,6 +3,7 @@ import './User.scss';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Favorites from './Favorites/Favorites';
+import { capitalize } from '../../utils/string-util';
 
 export default class User extends React.Component {
 
@@ -21,7 +22,7 @@ export default class User extends React.Component {
                             </div>
                             {user.role &&
                             <div className="mb-2">
-                                Role: {user.role.substring(0, 1) + user.role.substring(1).toLowerCase()}
+                                Role: {capitalize(user.role)}
                             </div>
                             }
                             <div className="mb-2">
