@@ -1393,11 +1393,16 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion and corresponding
      * CreateMonumentSuggestions
-     * @param result - MonumentBulkValidationResult object to parse
+     * @param bulkValidationResult - MonumentBulkValidationResult object to parse
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
      * MonumentBulkValidationResult
      */
-    public BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult result) {
+    public BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult bulkValidationResult) {
+        List<CsvMonumentConverterResult> validResults = new ArrayList<>(bulkValidationResult.getValidResults().values());
+        List<CreateMonumentSuggestion> createSuggestions = new ArrayList<>();
 
+        for (CsvMonumentConverterResult validResult : validResults) {
+            CreateMonumentSuggestion createSuggestion =
+        }
     }
 }
