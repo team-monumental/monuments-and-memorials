@@ -66,10 +66,10 @@ public class MonumentController {
      * @param cascade - If true, loads all of the lazy-loaded collections associated with the Monument
      * @param onlyActive - If true, a 404 will be returned if the specified Monument is inactive. If false, the monument
      *                 will be returned regardless of whether it's active or inactive.
-     *                 If this is false then the user must be a partner or researcher to view
+     *                 If this is false then the user must be a partner or above to view
      * @return Monument - The Monument with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a Monument with the specified ID does not exist or onlyActive is true and isActive is false
-     * @throws AccessDeniedException - If trying to get an inactive monument without being a partner or researcher
+     * @throws AccessDeniedException - If trying to get an inactive monument without being a partner or above
      * @throws UnauthorizedException - If trying to get an inactive monument and not logged in
      */
     @GetMapping("/api/monument/{id}")
@@ -101,9 +101,9 @@ public class MonumentController {
      * Get all of the Monuments and is active or inactive depending on onlyActive
      * @param onlyActive - If true, only active monuments will be returned. If false, monuments
      *                 will be returned regardless of whether they're active or inactive.
-     *                 If this is false then the user must be a partner or researcher to view
+     *                 If this is false then the user must be a partner or above to view
      * @return List<Monument> - List of all of the Monuments
-     * @throws AccessDeniedException - If trying to get inactive monuments without being a partner or researcher
+     * @throws AccessDeniedException - If trying to get inactive monuments without being a partner or above
      * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
     @GetMapping("/api/monuments")
@@ -140,7 +140,7 @@ public class MonumentController {
      */
     @PutMapping("/api/monument/active/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody ToggleIsActiveRequest request) {
+    public Monument updateMonumentIsActive(@PathVariable("id") Integer id, @RequestBody ToggleIsActiveRequest request) {
         Monument monument = this.monumentRepository.getOne(id);
         monument.setIsActive(request.isActive);
         return this.monumentRepository.save(monument);

@@ -53,7 +53,7 @@ export default class ManageMonument extends React.Component {
                         {monument.images.map(image => (
                             <div key={image.id} className="image" style={{backgroundImage: `url(${image.url})`}}/>
                         ))}
-                    </div> : <></>
+                    </div> : null
                 }
                 {!monument.isActive &&
                 <Alert variant="info">

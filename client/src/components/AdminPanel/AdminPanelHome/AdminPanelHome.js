@@ -15,7 +15,7 @@ export default class AdminPanelHome extends React.Component {
                         </Card.Title>
                     </Card.Header>
                     <Card.Body>
-                        You can perform advanced actions such as bulk creating monuments or memorials from this page. Please see the sidebar to the left for advanced actions.
+                        You can perform advanced actions such as bulk creating monuments and memorials from this page. Please see the sidebar to the left for advanced actions.
                     </Card.Body>
                 </Card>
             </div>

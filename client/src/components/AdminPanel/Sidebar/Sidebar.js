@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './Sidebar.scss';
-import {Role} from '../../../utils/authentication-util';
-import {NavLink} from 'react-router-dom';
+import { Role } from '../../../utils/authentication-util';
+import { NavLink } from 'react-router-dom';
 
 export default class Sidebar extends React.Component {
 
@@ -10,7 +10,7 @@ export default class Sidebar extends React.Component {
             {name: 'Home', icon: 'home', route: '/panel', exact: true},
             {name: 'Bulk Create', icon: 'cloud_upload', route: '/panel/bulk'},
             {name: 'Manage Monuments', icon: 'account_balance', route: '/panel/manage/monuments', roles: Role.RESEARCHER_OR_ABOVE},
-            {name: 'Manage Users', icon: 'person', route: '/panel/manage/users'}
+            {name: 'Manage Users', icon: 'person', route: '/panel/manage/users', roles: Role.ADMIN}
         ]
     }
 

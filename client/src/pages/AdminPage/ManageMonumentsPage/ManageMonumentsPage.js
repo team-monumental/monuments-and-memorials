@@ -49,7 +49,6 @@ class ManageMonumentsPage extends React.Component {
 
     render() {
         const { mode, monument, deleteMonument } = this.props;
-        console.log(deleteMonument);
         return (
             <ManageMonuments mode={mode} monument={monument} onToggleActive={active => this.handleToggleActive(active)}
                              onDeleteMonument={() => this.handleDeleteMonument()} deleted={!deleteMonument.pending && deleteMonument.success}/>
