@@ -203,15 +203,15 @@ public class CsvMonumentConverter {
     /**
      * Parse a specified CsvMonumentConverterResult into a complete CreateMonumentSuggestion
      * @param result - CsvMonumentConverterResult class to parse
+     * @param gson - Gson object used to convert object to JSON
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object created from the specified
      * CsvMonumentConverterResult
      */
-    public static CreateMonumentSuggestion parseCsvMonumentConverterResult(CsvMonumentConverterResult result) {
+    public static CreateMonumentSuggestion parseCsvMonumentConverterResult(CsvMonumentConverterResult result, Gson gson) {
         if (result.getMonumentSuggestion() == null) {
             return null;
         }
 
-        Gson gson = new Gson();
         CreateMonumentSuggestion suggestion = result.getMonumentSuggestion();
 
         if (result.getContributorNames() != null && result.getContributorNames().size() > 0) {

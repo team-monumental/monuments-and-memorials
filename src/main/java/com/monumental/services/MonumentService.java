@@ -1,6 +1,7 @@
 package com.monumental.services;
 
 import com.amazonaws.SdkClientException;
+import com.google.gson.Gson;
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
@@ -1409,12 +1410,18 @@ public class MonumentService extends ModelService<Monument> {
         List<CsvMonumentConverterResult> validResults = new ArrayList<>(bulkValidationResult.getValidResults().values());
         List<CreateMonumentSuggestion> createSuggestions = new ArrayList<>();
         BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
+        Gson gson = new Gson();
 
         for (CsvMonumentConverterResult validResult : validResults) {
-            CreateMonumentSuggestion createSuggestion = CsvMonumentConverter.parseCsvMonumentConverterResult(validResult);
+            CreateMonumentSuggestion createSuggestion = CsvMonumentConverter.parseCsvMonumentConverterResult(validResult, gson);
 
-            for (File image : validResult.getImageFiles()) {
-                this.s3Service.storeObject()
+            if (validResult.getImageFiles().size() > 0) {
+                for (File image : validResult.getImageFiles()) {
+                    String imageObjectUrl = this.s3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
+                    createSuggestion.getImages().add(imageObjectUrl);
+                }
+
+                createSuggestion.setImagesJson(gson.toJson(createSuggestion.getImages()));
             }
 
             createSuggestion.setBulkCreateSuggestion(bulkCreateSuggestion);

@@ -107,7 +107,7 @@ public class SuggestionController {
     @PostMapping("/api/suggestion/bulk-create")
     @PreAuthorize(Authentication.isAuthenticated)
     @Transactional
-    public Map<String, Boolean> suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
+    public BulkCreateMonumentSuggestion suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
             throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
         MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvContents,
