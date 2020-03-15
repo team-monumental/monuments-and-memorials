@@ -1,6 +1,5 @@
 package com.monumental.services;
 
-import com.amazonaws.SdkClientException;
 import com.google.gson.Gson;
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
@@ -47,9 +46,6 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     TagService tagService;
-
-    @Autowired
-    AwsS3Service s3Service;
 
     @Autowired
     TagRepository tagRepository;
@@ -620,6 +616,8 @@ public class MonumentService extends ModelService<Monument> {
 
         for (int i = 0; i < createSuggestions.size(); i++) {
             CreateMonumentSuggestion createSuggestion = createSuggestions.get(i);
+
+            // Create Monument
             Monument createdMonument = this.createMonument(createSuggestion);
             monuments.add(createdMonument);
 
@@ -800,6 +798,12 @@ public class MonumentService extends ModelService<Monument> {
             images = this.createMonumentImages(monumentSuggestion.getImages(), createdMonument);
         }
         createdMonument.setImages(images);
+
+        // Move S3 images to permanent folder
+        for (Image image : createdMonument.getImages()) {
+            AwsS3Service.moveObject(AwsS3Service.getObjectKey(image.getUrl(), true),
+                    AwsS3Service.generateUniqueKey(AwsS3Service.getObjectKey(image.getUrl(), false)));
+        }
 
         List<Monument> createdMonumentList = new ArrayList<>();
         createdMonumentList.add(createdMonument);
@@ -1420,7 +1424,7 @@ public class MonumentService extends ModelService<Monument> {
 
             if (validResult.getImageFiles().size() > 0) {
                 for (File image : validResult.getImageFiles()) {
-                    String imageObjectUrl = this.s3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
+                    String imageObjectUrl = AwsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
                     createSuggestion.getImages().add(imageObjectUrl);
                 }
 

@@ -51,7 +51,7 @@ public class AwsS3Service {
      * @param file - The File to store in the Bucket
      * @return String - The full Object URL for the stored/already existing Object, Empty if unsuccessful
      */
-    public String storeObject(String objectKey, File file) throws SdkClientException {
+    public static String storeObject(String objectKey, File file) throws SdkClientException {
         objectKey = generateUniqueKey(objectKey);
         try {
             s3Client.putObject(bucketName, objectKey, file);
@@ -78,6 +78,18 @@ public class AwsS3Service {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Get the S3 Object Key given an S3 Object URL
+     * @param objectUrl - The S3 Object URL to use to get the S3 Object Key
+     * @param isTemporaryFolder - True to generate the Object Key using the temporary image folder, False otherwise
+     * @return String - S3 Object Key created using the specified S3 Object URL
+     */
+    public static String getObjectKey(String objectUrl, boolean isTemporaryFolder) {
+        String[] objectUrlArray = objectUrl.split("/");
+        String folderName = isTemporaryFolder ? tempFolderName : imageFolderName;
+        return folderName + objectUrlArray[objectUrlArray.length - 1];
     }
 
     /**

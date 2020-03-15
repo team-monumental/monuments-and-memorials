@@ -127,14 +127,6 @@ public class CsvMonumentConverter {
         return results;
     }
 
-    private static Contribution parseSuggestionContributor(String contributor) {
-        GregorianCalendar calendar = new GregorianCalendar();
-        Contribution contribution = new Contribution();
-        contribution.setDate(calendar.getTime());
-        contribution.setSubmittedBy(contributor);
-        return contribution;
-    }
-
     private static Date parseDate(String value) {
         // 1. Dates must be in the following format: dd-MM-yyyy
         // 2. If the day and month are unknown, the cell must contain: yyyy
@@ -170,12 +162,6 @@ public class CsvMonumentConverter {
             names.add(name);
         }
         return names;
-    }
-
-    private static Reference parseSuggestionReference(String url) {
-        Reference reference = new Reference();
-        reference.setUrl(url);
-        return reference;
     }
 
     /**
