@@ -166,32 +166,6 @@ public class MonumentController {
     }
 
     /**
-     * Start the job to create monuments from csv or zip
-     * @param request - Contains the field mapping and the file to process
-     * @return AsyncJob - Object containing the Id of the job created and the current value of the Future object
-     */
-    @PostMapping("/api/monument/bulk/create/start")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public AsyncJob startBulkCreateMonumentJob(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
-        BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-
-        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(
-                parseResult.csvContents, parseResult.mapping, parseResult.zipFile
-        );
-
-        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
-         * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the CompletableFuture
-         * must be passed to the AsyncJob, making it difficult to do so dynamically
-         */
-        AsyncJob job = this.asyncJobService.createJob();
-        job.setFuture(this.monumentService.bulkCreateMonumentsAsync(
-                new ArrayList<>(validationResult.getValidResults().values()),
-                job
-        ));
-        return job;
-    }
-
-    /**
      * Check the progress of a create bulk monuments job
      * @param id - Id of the job to check
      * @return AsyncJob - Object containing the Id of the job and the current value of the Future object

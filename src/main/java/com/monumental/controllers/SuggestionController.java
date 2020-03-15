@@ -13,7 +13,9 @@ import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
+import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
+import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,6 +43,9 @@ public class SuggestionController {
 
     @Autowired
     private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+
+    @Autowired
+    private AsyncJobService asyncJobService;
 
     /**
      * Create a new Suggestion for creating a Monument
@@ -198,21 +202,29 @@ public class SuggestionController {
 
     /**
      * Approve a BulkCreateMonumentSuggestion with the specified ID, if it exists
+     * Starts the job to create Monuments asynchronously
      * @param id - ID of the BulkCreateMonumentSuggestion to approve
+     * @return AsyncJob - Object containing the ID of the job created and the current value of the Future object
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
-    /*@PutMapping("/api/suggestion/bulk-create/{id}/approve")
+    @PutMapping("/api/suggestion/bulk-create/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     @Transactional
-    public Monument approveBulkCreateSuggestion(@PathVariable("id") Integer id)
-            throws ResourceNotFoundException {
+    public AsyncJob approveBulkCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);
 
         bulkCreateSuggestion.setIsApproved(true);
         bulkCreateSuggestion = this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
 
-        return this.monumentService.updateMonument(updateSuggestion);
-    }*/
+        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
+        *  it away currently because the AsyncJob must be passed to the CompletableFuture method and the CompletableFuture
+        * must be passed to the AsyncJob, making it difficult to do so dynamically
+        */
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setFuture(this.monumentService.bulkCreateMonumentsAsync(bulkCreateSuggestion, job));
+
+        return job;
+    }
 
     /**
      * Reject a CreateMonumentSuggestion with the specified ID, if it exists

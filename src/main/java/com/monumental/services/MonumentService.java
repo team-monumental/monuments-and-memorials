@@ -10,10 +10,7 @@ import com.monumental.repositories.*;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
-import com.monumental.repositories.ImageRepository;
-import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.ReferenceRepository;
-import com.monumental.repositories.TagRepository;
+import com.monumental.repositories.*;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
@@ -77,6 +74,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+
+    @Autowired
+    ContributionRepository contributionRepository;
 
     /**
      * SRID for coordinates
@@ -587,92 +587,49 @@ public class MonumentService extends ModelService<Monument> {
      * a significant amount of time to process and hold up the thread or HTTP request.
      * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk create behavior
      * can be tested synchronously
-     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param bulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion to use to bulk create Monuments
      * @return - List of inserted monuments
      */
-    public List<Monument> bulkCreateMonumentsSync(List<CsvMonumentConverterResult> csvResults) {
-        return this.bulkCreateMonuments(csvResults, null);
+    public List<Monument> bulkCreateMonumentsSync(BulkCreateMonumentSuggestion bulkCreateMonumentSuggestion) {
+        return this.bulkCreateMonuments(bulkCreateMonumentSuggestion, null);
     }
 
     /**
      * ASYNCHRONOUSLY bulk create monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
-     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param bulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion to use to bulk create Monuments
      * @param job - The AsyncJob to report progress to
      * @return - CompletableFuture of List of inserted monuments
      */
     @Async
-    public CompletableFuture<List<Monument>> bulkCreateMonumentsAsync(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
-        return CompletableFuture.completedFuture(this.bulkCreateMonuments(csvResults, job));
+    public CompletableFuture<List<Monument>> bulkCreateMonumentsAsync(BulkCreateMonumentSuggestion bulkCreateMonumentSuggestion,
+                                                                      AsyncJob job) {
+        return CompletableFuture.completedFuture(this.bulkCreateMonuments(bulkCreateMonumentSuggestion, job));
     }
 
     /**
      * Bulk create monuments from CSV. If job is not null, progress will be reported as the monuments are created.
      * This method should only be called through MonumentService.bulkCreateMonumentsSync or
      * AsyncMonumentService.bulkCreateMonumentsAsync
-     * @param csvResults - The validated CSV rows, converted into monuments
+     * @param bulkCreateSuggestion - BulkCreateMonumentSuggestion to use to bulk create Monuments
      * @param job - The AsyncJob to report progress to
      * @return - List of inserted monuments
      */
-    private List<Monument> bulkCreateMonuments(List<CsvMonumentConverterResult> csvResults, AsyncJob job) {
+    private List<Monument> bulkCreateMonuments(BulkCreateMonumentSuggestion bulkCreateSuggestion, AsyncJob job) {
         List<Monument> monuments = new ArrayList<>();
-        for (int i = 0; i < csvResults.size(); i++) {
-            CsvMonumentConverterResult result = csvResults.get(i);
-            // In the situation where only the address OR coordinates were specified, populate the missing field
-            this.populateNewMonumentLocation(result.getMonument());
-            // Insert the Monument
-            Monument insertedMonument = monumentRepository.saveAndFlush(result.getMonument());
-            monuments.add(insertedMonument);
-            // Insert all of the Tags associated with the Monument
-            Set<String> tagNames = result.getTagNames();
-            if (tagNames != null && tagNames.size() > 0) {
-                for (String tagName : tagNames) {
-                    this.tagService.createTag(tagName, Collections.singletonList(insertedMonument), false);
-                }
-            }
+        List<CreateMonumentSuggestion> createSuggestions = bulkCreateSuggestion.getCreateSuggestions();
 
-            // Insert all of the Materials associated with the Monument
-            Set<String> materialNames = result.getMaterialNames();
-            if (materialNames != null && materialNames.size() > 0) {
-                for (String materialName : materialNames) {
-                    this.tagService.createTag(materialName, Collections.singletonList(insertedMonument), true);
-                }
-            }
-
-            List<File> imageFiles = result.getImageFiles();
-            if (imageFiles != null && imageFiles.size() > 0) {
-                String tempDirectoryPath = System.getProperty("java.io.tmpdir");
-                boolean encounteredS3Exception = false;
-                for (int j = 0; j < imageFiles.size(); j++) {
-                    File imageFile = imageFiles.get(j);
-                    // Upload the File to S3
-                    try {
-                        String name = imageFile.getName().replace(tempDirectoryPath + "/", "");
-                        String objectUrl = this.s3Service.storeObject(
-                                AwsS3Service.imageFolderName + name,
-                                imageFile
-                        );
-                        Image image = new Image();
-                        image.setUrl(objectUrl);
-                        image.setMonument(insertedMonument);
-                        image.setIsPrimary(j == 0);
-                        insertedMonument.getImages().add(image);
-                    } catch (SdkClientException e) {
-                        encounteredS3Exception = true;
-                    }
-                    // Delete the temp File created
-                    imageFile.delete();
-                }
-                if (encounteredS3Exception) {
-                    result.getErrors().add("An error occurred while uploading image(s). Try uploading the images again later.");
-                }
-            }
+        for (int i = 0; i < createSuggestions.size(); i++) {
+            CreateMonumentSuggestion createSuggestion = createSuggestions.get(i);
+            Monument createdMonument = this.createMonument(createSuggestion);
+            monuments.add(createdMonument);
 
             // Report progress
-            if (job != null && i != csvResults.size() - 1) {
+            if (job != null && i != createSuggestions.size() - 1) {
                 // The row number is the index plus 1 for the header row and plus 1 to be 1-based instead of zero-based
-                job.setProgress((double) (i + 2) / csvResults.size());
+                job.setProgress((double) (i + 2) / createSuggestions.size());
             }
         }
+
         this.monumentRepository.saveAll(monuments);
         if (job != null) job.setProgress(1.0);
         return monuments;
@@ -789,12 +746,16 @@ public class MonumentService extends ModelService<Monument> {
 
         Monument createdMonument = new Monument();
 
+        // Is Active
         createdMonument.setIsActive(true);
+
+        // Is Temporary
         createdMonument.setIsTemporary(monumentSuggestion.getIsTemporary());
 
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentSuggestion.getTitle(), monumentSuggestion.getAddress(),
-                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(), monumentSuggestion.getInscription());
+                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(), monumentSuggestion.getInscription(),
+                monumentSuggestion.getCity(), monumentSuggestion.getState());
 
         // Set the Coordinates
         Point point = MonumentService.createMonumentPoint(monumentSuggestion.getLongitude(), monumentSuggestion.getLatitude());
@@ -818,6 +779,13 @@ public class MonumentService extends ModelService<Monument> {
 
         // Save the initial Monument
         createdMonument = this.monumentRepository.save(createdMonument);
+
+        /* Contributions Section */
+        List<Contribution> contributions = new ArrayList<>();
+        if (monumentSuggestion.getContributions() != null && monumentSuggestion.getContributions().size() > 0) {
+            contributions = this.createMonumentContributions(monumentSuggestion.getContributions(), createdMonument);
+        }
+        createdMonument.setContributions(contributions);
 
         /* References Section */
         List<Reference> references = new ArrayList<>();
@@ -905,7 +873,8 @@ public class MonumentService extends ModelService<Monument> {
 
         // Update basic String fields
         this.setBasicFieldsOnMonument(currentMonument, updateSuggestion.getNewTitle(), updateSuggestion.getNewAddress(),
-                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription());
+                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription(),
+                updateSuggestion.getMonument().getCity(), updateSuggestion.getMonument().getState());
 
         // Update the Coordinates
         Point point = MonumentService.createMonumentPoint(updateSuggestion.getNewLongitude(), updateSuggestion.getNewLatitude());
@@ -998,6 +967,36 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
+     * Create Contributions using the specified contributors and associate them with the specified Monument
+     * @param contributors - List of Strings for the names of the contributors to use for the Contributions
+     * @param monument - Monument to associate the new Contributions with
+     * @return List<Contribution> - List of new Contributions with the specified contributors and associated with the
+     * specified Monument
+     */
+    public List<Contribution> createMonumentContributions(List<String> contributors, Monument monument) {
+        if (contributors == null || monument == null) {
+            return null;
+        }
+
+        List<Contribution> contributions = new ArrayList<>();
+
+        for (String contributor : contributors) {
+            if (!isNullOrEmpty(contributor)) {
+                Contribution contribution = new Contribution();
+                contribution.setSubmittedBy(contributor);
+                contribution.setDate(new Date());
+                contribution.setMonument(monument);
+
+                contribution = this.contributionRepository.save(contribution);
+
+                contributions.add(contribution);
+            }
+        }
+
+        return contributions;
+    }
+
+    /**
      * Create References using the specified referenceUrls and associate them with the specified Monument
      * @param referenceUrls - List of Strings for the URLs to use for the References
      * @param monument - Monument to associate the new References with
@@ -1071,10 +1070,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param artist - String for the artist of the Monument
      * @param description - String for the description of the Monument
      * @param inscription - String for the inscription of the Monument
+     * @param city - String for the city of the Monument
+     * @param state - String for the state of the Monument
      * @throws IllegalArgumentException - If the specified title is null or empty
      */
     public void setBasicFieldsOnMonument(Monument monument, String title, String address, String artist,
-                                         String description, String inscription) {
+                                         String description, String inscription, String city, String state) {
         if (monument != null) {
             if (isNullOrEmpty(title)) {
                 throw new IllegalArgumentException("Monument can not have a null or empty title");
@@ -1085,6 +1086,8 @@ public class MonumentService extends ModelService<Monument> {
             monument.setArtist(artist);
             monument.setDescription(description);
             monument.setInscription(inscription);
+            monument.setCity(city);
+            monument.setState(state);
         }
     }
 
