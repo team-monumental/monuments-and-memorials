@@ -118,6 +118,19 @@ public class AwsS3Service {
         }
     }
 
+    /**
+     * Delete an S3 Object with the specified Object Key
+     * @param objectKey - S3 Object Key to delete
+     */
+    public static void deleteObject(String objectKey) {
+        try {
+            s3Client.deleteObject(bucketName, objectKey);
+        } catch (AmazonServiceException e) {
+            System.out.println("Error attempting to delete Object: " + objectKey);
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
     public static boolean isUniqueKey(String objectKey) {
         try {
             return !s3Client.doesObjectExist(bucketName, objectKey);

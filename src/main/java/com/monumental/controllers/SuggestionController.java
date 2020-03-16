@@ -14,6 +14,7 @@ import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.services.AsyncJobService;
+import com.monumental.services.AwsS3Service;
 import com.monumental.services.MonumentService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -276,7 +278,15 @@ public class SuggestionController {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);
 
         bulkCreateSuggestion.setIsRejected(true);
+        this.createSuggestionRepository.saveAll(bulkCreateSuggestion.getCreateSuggestions());
         this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
+
+        // Remove images from temporary S3 folder
+        for (CreateMonumentSuggestion createSuggestion : bulkCreateSuggestion.getCreateSuggestions()) {
+            for (String imageUrl : createSuggestion.getImages()) {
+                AwsS3Service.deleteObject(AwsS3Service.getObjectKey(imageUrl, true));
+            }
+        }
 
         return Map.of("success", true);
     }
