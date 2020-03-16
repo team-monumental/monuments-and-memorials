@@ -611,6 +611,10 @@ public class MonumentService extends ModelService<Monument> {
      * @return - List of inserted monuments
      */
     private List<Monument> bulkCreateMonuments(BulkCreateMonumentSuggestion bulkCreateSuggestion, AsyncJob job) {
+        if (bulkCreateSuggestion == null || bulkCreateSuggestion.getCreateSuggestions() == null) {
+            return null;
+        }
+
         List<Monument> monuments = new ArrayList<>();
         List<CreateMonumentSuggestion> createSuggestions = bulkCreateSuggestion.getCreateSuggestions();
 

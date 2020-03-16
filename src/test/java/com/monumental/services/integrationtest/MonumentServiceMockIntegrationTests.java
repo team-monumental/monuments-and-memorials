@@ -1,6 +1,7 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
+import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.services.MonumentService;
@@ -103,10 +104,23 @@ public class MonumentServiceMockIntegrationTests {
     /** bulkCreateMonuments Tests **/
 
     @Test
-    public void testMonumentService_bulkCreateMonuments_EmptyCsvList() {
-        List<CsvMonumentConverterResult> csvResults = new ArrayList<>();
+    public void testMonumentService_bulkCreateMonuments_NullBulkCreateMonumentSuggestion() {
+        assertNull(this.monumentServiceMock.bulkCreateMonumentsSync(null));
+    }
 
-        List<Monument> results = this.monumentServiceMock.bulkCreateMonumentsSync(csvResults);
+    @Test
+    public void testMonumentService_bulkCreateMonuments_NullListOfCreateMonumentSuggestions() {
+        BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
+        bulkCreateSuggestion.setCreateSuggestions(null);
+
+        assertNull(this.monumentServiceMock.bulkCreateMonumentsSync(bulkCreateSuggestion));
+    }
+
+    @Test
+    public void testMonumentService_bulkCreateMonuments_EmptyListOfCreateMonumentSuggestions() {
+        BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
+
+        List<Monument> results = this.monumentServiceMock.bulkCreateMonumentsSync(bulkCreateSuggestion);
 
         assertEquals(0, results.size());
     }
