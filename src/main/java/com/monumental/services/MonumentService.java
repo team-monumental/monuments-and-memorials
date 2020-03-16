@@ -543,7 +543,7 @@ public class MonumentService extends ModelService<Monument> {
      */
     public MonumentBulkValidationResult validateMonumentCSV(List<String[]> csvList, Map<String, String> mapping,
                                                             ZipFile zipFile) throws IOException {
-        if (csvList == null) {
+        if (csvList == null || mapping == null) {
             return null;
         }
 
