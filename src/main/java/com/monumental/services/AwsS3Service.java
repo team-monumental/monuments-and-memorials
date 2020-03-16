@@ -102,6 +102,8 @@ public class AwsS3Service {
      * unsuccessful
      */
     public static String moveObject(String originalObjectKey, String newObjectKey) {
+        newObjectKey = generateUniqueKey(newObjectKey);
+
         try {
             // First, copy the original Object into the new location
             s3Client.copyObject(bucketName, originalObjectKey, bucketName, newObjectKey);

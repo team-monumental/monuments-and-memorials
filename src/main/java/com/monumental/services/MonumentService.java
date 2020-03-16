@@ -799,12 +799,6 @@ public class MonumentService extends ModelService<Monument> {
         }
         createdMonument.setImages(images);
 
-        // Move S3 images to permanent folder
-        for (Image image : createdMonument.getImages()) {
-            AwsS3Service.moveObject(AwsS3Service.getObjectKey(image.getUrl(), true),
-                    AwsS3Service.generateUniqueKey(AwsS3Service.getObjectKey(image.getUrl(), false)));
-        }
-
         List<Monument> createdMonumentList = new ArrayList<>();
         createdMonumentList.add(createdMonument);
 
@@ -1030,6 +1024,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create Images using the specified imageUrls and associate them with the specified Monument
+     * Also moves the S3 images with the specified imageUrls into the permanent S3 image folder
      * @param imageUrls - List of Strings for the URLs to use for the Images
      * @param monument - Monument to associate the new Images with
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
@@ -1042,6 +1037,7 @@ public class MonumentService extends ModelService<Monument> {
         List<Image> images = new ArrayList<>();
         int imagesCount = 0;
 
+        // Find primary Image
         if (monument.getImages() != null && monument.getImages().size() > 0) {
             for (Image image : monument.getImages()) {
                 if (image.getIsPrimary()) {
@@ -1053,10 +1049,14 @@ public class MonumentService extends ModelService<Monument> {
 
         for (String imageUrl : imageUrls) {
             if (!isNullOrEmpty(imageUrl)) {
+                // Move image to permanent folder
+                String permanentImageUrl = AwsS3Service.getObjectKey(imageUrl, false);
+                AwsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
+
                 imagesCount++;
                 boolean isPrimary = imagesCount == 1;
 
-                Image image = new Image(imageUrl, isPrimary);
+                Image image = new Image(permanentImageUrl, isPrimary);
                 image.setMonument(monument);
                 image = this.imageRepository.save(image);
                 images.add(image);
@@ -1422,6 +1422,7 @@ public class MonumentService extends ModelService<Monument> {
         for (CsvMonumentConverterResult validResult : validResults) {
             CreateMonumentSuggestion createSuggestion = CsvMonumentConverter.parseCsvMonumentConverterResult(validResult, gson);
 
+            // Upload images to temporary S3 folder
             if (validResult.getImageFiles().size() > 0) {
                 for (File image : validResult.getImageFiles()) {
                     String imageObjectUrl = AwsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
