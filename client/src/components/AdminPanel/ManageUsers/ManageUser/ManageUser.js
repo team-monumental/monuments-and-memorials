@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { capitalize, prettyPrintDate } from '../../../../utils/string-util';
+import { capitalize, getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
 import { Link } from 'react-router-dom';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { Role } from '../../../../utils/authentication-util';
@@ -49,7 +49,7 @@ export default class ManageUser extends React.Component {
         return (
             <div className="manage-user">
                 <div className="mb-2">
-                    Name: {user.firstName} {user.lastName}
+                    Name: {getUserFullName(user)}
                 </div>
                 <div className="mb-2 d-flex align-items-center">
                     Role: {editingRole ?
@@ -67,16 +67,16 @@ export default class ManageUser extends React.Component {
                     Email Address: <a href={`mailto:${user.email}`}>{user.email}</a>
                 </div>
                 <div className="mb-2">
-                    Name: {user.firstName} {user.lastName}
+                    Name: {getUserFullName(user)}
                 </div>
                 {(contributions && contributions.length > 0) ?
                     <div className="my-3">
                         <h5>Contributions</h5>
                         <ul>
-                            {contributions.map(contribution => (
+                            {contributions.map(({contribution, monument}) => (
                                 <li key={contribution.id}>
-                                    <Link to={`/monuments/${contribution.monument.id}`}>
-                                        {contribution.monument.title}
+                                    <Link to={`/monuments/${monument.id}`}>
+                                        {monument.title}
                                     </Link>
                                     <span> on {prettyPrintDate(contribution.date)}</span>
                                 </li>
@@ -112,7 +112,7 @@ export default class ManageUser extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <p>
-                            Are you sure you want to change {user.firstName} {user.lastName}'s role from <strong>{capitalize(user.role)}</strong> to <strong>Admin</strong>?
+                            Are you sure you want to change {getUserFullName(user)}'s role from <strong>{capitalize(user.role)}</strong> to <strong>Admin</strong>?
                         </p>
                         <p>
                             If you make this change, they will be able to <strong>change your role</strong>.

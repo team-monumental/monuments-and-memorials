@@ -28,6 +28,7 @@ public class Contribution extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     @NotNull(groups = {New.class, Existing.class}, message = "Must have an associated Monument")

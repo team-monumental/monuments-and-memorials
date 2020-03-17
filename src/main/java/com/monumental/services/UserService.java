@@ -2,6 +2,7 @@ package com.monumental.services;
 
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.CreateUserRequest;
+import com.monumental.controllers.responses.UserResponse;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -450,10 +451,11 @@ public class UserService extends ModelService<User> {
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
 
-    public Map<String, Object> getUser(Integer id) {
+    public User getUser(Integer id) throws ResourceNotFoundException {
         Optional<User> optional = this.userRepository.findById(id);
         if (optional.isEmpty()) throw new ResourceNotFoundException("The requested User does not exist");
-        List<Contribution> contributions = this.contributionRepository.getAllBySubmittedByUserId(id);
-        return Map.of("user", optional.get(), "contributions", contributions);
+        User user = optional.get();
+        this.initializeAllLazyLoadedCollections(user);
+        return user;
     }
 }

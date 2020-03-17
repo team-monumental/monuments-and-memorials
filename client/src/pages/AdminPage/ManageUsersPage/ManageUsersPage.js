@@ -4,6 +4,7 @@ import ManageUsers from '../../../components/AdminPanel/ManageUsers/ManageUsers'
 import { fetchUser, updateUser } from '../../../actions/user';
 import Spinner from '../../../components/Spinner/Spinner';
 import { addToast } from '../../../actions/toasts';
+import { getUserFullName } from '../../../utils/string-util';
 
 class ManageUsersPage extends React.Component {
 
@@ -32,7 +33,7 @@ class ManageUsersPage extends React.Component {
             const user = fetchUser.result.user;
             dispatch(addToast({
                 title: 'Success!',
-                message: `You have successfully changed ${user.firstName} ${user.lastName}'s role`,
+                message: `You have successfully changed ${getUserFullName(user)}'s role`,
                 variant: 'success'
             }));
             this.setState({changeRoleSuccess: true});

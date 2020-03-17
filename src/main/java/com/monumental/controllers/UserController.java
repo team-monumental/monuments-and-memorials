@@ -2,6 +2,7 @@ package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.controllers.helpers.PasswordResetRequest;
+import com.monumental.controllers.responses.UserResponse;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -150,7 +151,7 @@ public class UserController {
      */
     @GetMapping("/api/user/{id}")
     @PreAuthorize(Authorization.isAdmin)
-    public Map<String, Object> getUser(@PathVariable("id") Integer id) throws ResourceNotFoundException {
-        return this.userService.getUser(id);
+    public UserResponse getUser(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+        return new UserResponse(this.userService.getUser(id));
     }
 }

@@ -28,3 +28,7 @@ export function capitalize(string) {
         .map(word => word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
         .join(' ');
 }
+
+export function getUserFullName(user) {
+    return [user.firstName, user.lastName].join(' ');
+}

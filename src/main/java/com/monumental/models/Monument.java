@@ -68,7 +68,7 @@ public class Monument extends Model implements Serializable {
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Reference> references;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Contribution> contributions;
 

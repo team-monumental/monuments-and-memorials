@@ -2,7 +2,7 @@ import * as React from 'react';
 import './UserSearchResult.scss';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { capitalize } from '../../../../../../utils/string-util';
+import { capitalize, getUserFullName } from '../../../../../../utils/string-util';
 
 export default class UserSearchResult extends React.Component {
 
@@ -14,7 +14,7 @@ export default class UserSearchResult extends React.Component {
                 <Card>
                     <Card.Title>
                         <Link to={`/panel/manage/users/user/${user.id}`}>
-                            {index + 1}. {user.firstName} {user.lastName}
+                            {index + 1}. {getUserFullName(user)}
                         </Link>
                     </Card.Title>
                     <Card.Body>

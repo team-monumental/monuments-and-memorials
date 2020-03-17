@@ -3,7 +3,7 @@ import './User.scss';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Favorites from './Favorites/Favorites';
-import { capitalize } from '../../utils/string-util';
+import { capitalize, getUserFullName } from '../../utils/string-util';
 
 export default class User extends React.Component {
 
@@ -18,7 +18,7 @@ export default class User extends React.Component {
                         </Card.Header>
                         <Card.Body>
                             <div className="mb-2">
-                                Name: {user.firstName} {user.lastName}
+                                Name: {getUserFullName(user)}
                             </div>
                             {user.role &&
                             <div className="mb-2">
