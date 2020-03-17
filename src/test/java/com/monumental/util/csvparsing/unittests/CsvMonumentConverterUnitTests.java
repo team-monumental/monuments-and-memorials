@@ -186,7 +186,7 @@ public class CsvMonumentConverterUnitTests {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
-        Monument monumentResult = result.getMonument();
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
@@ -196,24 +196,23 @@ public class CsvMonumentConverterUnitTests {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String expectedDateString = simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, monumentResult.getContributions().size());
-        assertEquals(1, monumentResult.getReferences().size());
-        assertEquals(0, monumentResult.getImages().size());
+        assertEquals(1, suggestionResult.getContributions().size());
+        assertEquals(1, suggestionResult.getReferences().size());
+        assertEquals(0, suggestionResult.getImages().size());
 
-        assertEquals("Test Artist", monumentResult.getArtist());
-        assertEquals("Test Title", monumentResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(monumentResult.getDate()));
-        assertEquals("Test Inscription", monumentResult.getInscription());
-        assertEquals("Test City", monumentResult.getCity());
-        assertEquals("Test State", monumentResult.getState());
-        assertEquals("Test Address", monumentResult.getAddress());
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
 
         assertEquals(2, materialNameResults.size());
         assertEquals(0, tagNameResults.size());
 
-        assertNull(monumentResult.getLat());
-        assertNull(monumentResult.getLon());
-        assertNull(monumentResult.getCoordinates());
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
     }
 
     @Test
@@ -222,7 +221,7 @@ public class CsvMonumentConverterUnitTests {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
-        Monument monumentResult = result.getMonument();
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
@@ -232,24 +231,23 @@ public class CsvMonumentConverterUnitTests {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String expectedDateString = simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, monumentResult.getContributions().size());
-        assertEquals(1, monumentResult.getReferences().size());
-        assertEquals(0, monumentResult.getImages().size());
+        assertEquals(1, suggestionResult.getContributions().size());
+        assertEquals(1, suggestionResult.getReferences().size());
+        assertEquals(0, suggestionResult.getImages().size());
 
-        assertEquals("Test Artist", monumentResult.getArtist());
-        assertEquals("Test Title", monumentResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(monumentResult.getDate()));
-        assertEquals("Test Inscription", monumentResult.getInscription());
-        assertEquals("Test City", monumentResult.getCity());
-        assertEquals("Test State", monumentResult.getState());
-        assertEquals("Test Address", monumentResult.getAddress());
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
 
         assertEquals(0, materialNameResults.size());
         assertEquals(3, tagNameResults.size());
 
-        assertNull(monumentResult.getLat());
-        assertNull(monumentResult.getLon());
-        assertNull(monumentResult.getCoordinates());
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
     }
 
     @Test
@@ -258,7 +256,7 @@ public class CsvMonumentConverterUnitTests {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
-        Monument monumentResult = result.getMonument();
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
@@ -268,24 +266,23 @@ public class CsvMonumentConverterUnitTests {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String expectedDateString = simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, monumentResult.getContributions().size());
-        assertEquals(1, monumentResult.getReferences().size());
-        assertEquals(0, monumentResult.getImages().size());
+        assertEquals(1, suggestionResult.getContributions().size());
+        assertEquals(1, suggestionResult.getReferences().size());
+        assertEquals(0, suggestionResult.getImages().size());
 
-        assertEquals("Test Artist", monumentResult.getArtist());
-        assertEquals("Test Title", monumentResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(monumentResult.getDate()));
-        assertEquals("Test Inscription", monumentResult.getInscription());
-        assertEquals("Test City", monumentResult.getCity());
-        assertEquals("Test State", monumentResult.getState());
-        assertEquals("Test Address", monumentResult.getAddress());
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
 
         assertEquals(2, materialNameResults.size());
         assertEquals(3, tagNameResults.size());
 
-        assertNull(monumentResult.getLat());
-        assertNull(monumentResult.getLon());
-        assertNull(monumentResult.getCoordinates());
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
     }
 
     @Test
@@ -294,7 +291,7 @@ public class CsvMonumentConverterUnitTests {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
-        Monument monumentResult = result.getMonument();
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
@@ -304,20 +301,19 @@ public class CsvMonumentConverterUnitTests {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String expectedDateString = simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, monumentResult.getContributions().size());
-        assertEquals(1, monumentResult.getReferences().size());
-        assertEquals(0, monumentResult.getImages().size());
+        assertEquals(1, suggestionResult.getContributions().size());
+        assertEquals(1, suggestionResult.getReferences().size());
+        assertEquals(0, suggestionResult.getImages().size());
 
-        assertEquals("Test Artist", monumentResult.getArtist());
-        assertEquals("Test Title", monumentResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(monumentResult.getDate()));
-        assertEquals("Test Inscription", monumentResult.getInscription());
-        assertEquals(90.000, monumentResult.getLat(), 0.0);
-        assertEquals(180.000, monumentResult.getLon(), 0.0);
-        assertNotNull(monumentResult.getCoordinates());
-        assertEquals("Test City", monumentResult.getCity());
-        assertEquals("Test State", monumentResult.getState());
-        assertEquals("Test Address", monumentResult.getAddress());
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals(90.000, suggestionResult.getLatitude(), 0.0);
+        assertEquals(180.000, suggestionResult.getLongitude(), 0.0);
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
 
         assertEquals(2, materialNameResults.size());
         assertEquals(3, tagNameResults.size());
@@ -329,24 +325,23 @@ public class CsvMonumentConverterUnitTests {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
-        Monument monumentResult = result.getMonument();
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(1, monumentResult.getContributions().size());
-        assertEquals(1, monumentResult.getReferences().size());
+        assertEquals(1, suggestionResult.getContributions().size());
+        assertEquals(1, suggestionResult.getReferences().size());
 
-        assertEquals("Test Artist", monumentResult.getArtist());
-        assertEquals("Test Title", monumentResult.getTitle());
-        assertEquals("Test Inscription", monumentResult.getInscription());
-        assertEquals("Test City", monumentResult.getCity());
-        assertEquals("Test State", monumentResult.getState());
-        assertEquals("Test Address", monumentResult.getAddress());
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
 
-        assertNull(monumentResult.getDate());
-        assertNull(monumentResult.getLat());
-        assertNull(monumentResult.getLon());
-        assertNull(monumentResult.getCoordinates());
+        assertNull(suggestionResult.getDate());
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
 
         assertEquals(0, materialNameResults.size());
         assertEquals(0, tagNameResults.size());
@@ -358,24 +353,23 @@ public class CsvMonumentConverterUnitTests {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
-        Monument monumentResult = result.getMonument();
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(1, monumentResult.getContributions().size());
-        assertEquals(1, monumentResult.getReferences().size());
+        assertEquals(1, suggestionResult.getContributions().size());
+        assertEquals(1, suggestionResult.getReferences().size());
 
-        assertEquals("Test Artist", monumentResult.getArtist());
-        assertEquals("Test Title", monumentResult.getTitle());
-        assertEquals("Test Inscription", monumentResult.getInscription());
-        assertEquals("Test City", monumentResult.getCity());
-        assertEquals("Test State", monumentResult.getState());
-        assertEquals("Test Address", monumentResult.getAddress());
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
 
-        assertNull(monumentResult.getDate());
-        assertNull(monumentResult.getLat());
-        assertNull(monumentResult.getLon());
-        assertNull(monumentResult.getCoordinates());
+        assertNull(suggestionResult.getDate());
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
 
         assertEquals(0, materialNameResults.size());
         assertEquals(0, tagNameResults.size());
