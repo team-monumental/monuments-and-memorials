@@ -87,6 +87,10 @@ public class AwsS3Service {
      * @return String - S3 Object Key created using the specified S3 Object URL
      */
     public static String getObjectKey(String objectUrl, boolean isTemporaryFolder) {
+        if (objectUrl == null) {
+            return null;
+        }
+
         String[] objectUrlArray = objectUrl.split("/");
         String folderName = isTemporaryFolder ? tempFolderName : imageFolderName;
         return folderName + objectUrlArray[objectUrlArray.length - 1];

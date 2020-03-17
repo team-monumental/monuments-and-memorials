@@ -10,8 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Test class for unit testing AwsS3Service
@@ -44,5 +43,22 @@ public class AwsS3ServiceTest {
         } catch (UnsupportedEncodingException e) {
             fail(e.getMessage());
         }
+    }
+
+    /** getObjectKey Tests **/
+
+    @Test
+    public void testAwsS3Service_getObjectKey_NullObjectUrl() {
+        assertNull(AwsS3Service.getObjectKey(null, false));
+    }
+
+    @Test
+    public void testAwsS3Service_getObjectKey_FullUrl_TemporaryFolder() {
+        assertEquals("temp/test_object", AwsS3Service.getObjectKey("http://www.test.com/bucket/folder/test_object", true));
+    }
+
+    @Test
+    public void testAwsS3Service_getObjectKey_FullUrl_PermanentFolder() {
+        assertEquals("images/test_object", AwsS3Service.getObjectKey("http://www.test.com/bucket/folder/test_object", false));
     }
 }
