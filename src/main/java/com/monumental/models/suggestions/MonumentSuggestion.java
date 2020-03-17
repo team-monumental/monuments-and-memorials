@@ -50,6 +50,10 @@ public abstract class MonumentSuggestion extends Model {
     }
 
     List<String> deserializeStringList(String json) {
+        if (json == null) {
+            return null;
+        }
+
         if (this.gson == null) {
             this.gson = new Gson();
         }
@@ -58,6 +62,10 @@ public abstract class MonumentSuggestion extends Model {
     }
 
     List<Integer> deserializeIntegerList(String json) {
+        if (json == null) {
+            return null;
+        }
+
         if (this.gson == null) {
             this.gson = new Gson();
         }
@@ -66,6 +74,10 @@ public abstract class MonumentSuggestion extends Model {
     }
 
     Map<Integer, String> deserializeMap(String json) {
+        if (json == null) {
+            return null;
+        }
+
         if (this.gson == null) {
             this.gson = new Gson();
         }
