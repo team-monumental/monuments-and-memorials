@@ -365,6 +365,16 @@ public class UserService extends ModelService<User> {
         this.sendEmail(user.getEmail(), "password-reset.success");
     }
 
+    /**
+     * Generates a search for Users based on matching the specified parameters
+     * May make use of the pg_trgm similarity function
+     * @param name - The string to search names against, using pg_trgm similarity
+     * @param email - The string to search email addresses against, using pg_trgm similarity
+     * @param role - The role to filter by exactly (can be null if not filtering by role)
+     * @param page - The page number of User results to return
+     * @param limit - The maximum number of User results to return
+     * @return List<User> - List of User results based on the specified search parameters
+     */
     public List<User> search(String name, String email, String role, String page, String limit) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<User> query = this.createCriteriaQuery(builder, false);
@@ -380,6 +390,17 @@ public class UserService extends ModelService<User> {
             : this.getWithCriteriaQuery(query);
     }
 
+    /**
+     * Creates a search query on various fields of the User and adds it to the specified CriteriaQuery
+     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query - The CriteriaQuery to add the searching logic to
+     * @param root - The Root to use with the CriteriaQuery
+     * @param name - The string to search names against, using pg_trgm similarity
+     * @param email - The string to search email addresses against, using pg_trgm similarity
+     * @param roleName - The role to filter by exactly (can be null if not filtering by role)
+     * @param orderBySimilarity - If true, the results will be ordered by their similarity scores for any similarity
+     *                          queries that were used
+     */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String name, String email,
                                   String roleName, boolean orderBySimilarity) {
         List<Predicate> predicates = new ArrayList<>();
@@ -421,10 +442,17 @@ public class UserService extends ModelService<User> {
         }
     }
 
+    /**
+     * Order search results by the sum of similarity scores used to search for them
+     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query - The CriteriaQuery to add the searching logic to
+     * @param expressions - The similarity queries that were used for the search
+     */
     private void orderResultsBySimilarity(CriteriaBuilder builder, CriteriaQuery query, List<Expression<Number>> expressions) {
         Expression<Number> sum;
         if (expressions.size() == 1) sum = expressions.get(0);
         else {
+            // Dynamically sum up all the expressions
             sum = builder.sum(expressions.remove(0), expressions.remove(0));
             while (expressions.size() > 0) {
                 sum = builder.sum(sum, expressions.remove(0));
@@ -433,14 +461,27 @@ public class UserService extends ModelService<User> {
         query.orderBy(builder.desc(sum));
     }
 
+    /**
+     * Shorthand way to get the similarity predicate used for User searches
+     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param expression - The similarity expression
+     * @return Predicate - The comparison of the similarity to the pre-set threshold
+     */
     private Predicate buildSimilarityPredicate(CriteriaBuilder builder, Expression<Number> expression) {
         return builder.gt(expression, 0.1);
     }
 
+    /**
+     * Build a similarity expression for the given search string and field name
+     */
     private Expression<Number> buildSimilarityExpression(CriteriaBuilder builder, Root root, String searchQuery, String fieldName) {
         return builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery));
     }
 
+    /**
+     * Count the total number of results for a User search
+     * @see UserService#search(String, String, String, String, String)
+     */
     public Integer countSearchResults(String name, String email, String role) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -451,6 +492,12 @@ public class UserService extends ModelService<User> {
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }
 
+    /**
+     * Get a User by id and initialize all of its lazy loaded collections
+     * @param id - The id of the User to get
+     * @return User - The matching User, if one exists
+     * @throws ResourceNotFoundException - If there is no User with that id
+     */
     public User getUser(Integer id) throws ResourceNotFoundException {
         Optional<User> optional = this.userRepository.findById(id);
         if (optional.isEmpty()) throw new ResourceNotFoundException("The requested User does not exist");
