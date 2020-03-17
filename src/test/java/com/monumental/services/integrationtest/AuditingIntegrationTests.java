@@ -1,6 +1,7 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
+import com.monumental.models.User;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.UserRepository;
@@ -27,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static com.monumental.services.integrationtest.UserServiceIntegrationTests.*;
@@ -96,6 +98,7 @@ public class AuditingIntegrationTests {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 new UserAwareUserDetails(partner), password
         ));
+        List<User> users = this.userRepository.findAll();
         monument = updateMonument(monument);
         assertNotNull(monument.getLastModifiedDate());
         assertTrue(monument.getLastModifiedDate().getTime() > monument.getCreatedDate().getTime());
