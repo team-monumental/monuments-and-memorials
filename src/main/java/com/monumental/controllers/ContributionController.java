@@ -13,7 +13,7 @@ import java.util.List;
 public class ContributionController {
 
     @Autowired
-    ContributionService contributionService;
+    private ContributionService contributionService;
 
     @GetMapping("/api/contributors")
     public List<String> getAllContributors() {

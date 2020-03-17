@@ -54,21 +54,25 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "updated_reference_urls_by_id_json")
     private String updatedReferenceUrlsByIdJson;
 
+    @Transient
     private Map<Integer, String> updatedReferenceUrlsById;
 
     @Column(name = "new_reference_urls_json")
     private String newReferenceUrlsJson;
 
+    @Transient
     private List<String> newReferenceUrls;
 
     @Column(name = "deleted_reference_ids_json")
     private String deletedReferenceIdsJson;
 
+    @Transient
     private List<Integer> deletedReferenceIds;
 
     @Column(name = "new_image_urls_json")
     private String newImageUrlsJson;
 
+    @Transient
     private List<String> newImageUrls;
 
     @Column(name = "new_primary_image_id")
@@ -77,16 +81,19 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "deleted_image_ids_json")
     private String deletedImageIdsJson;
 
+    @Transient
     private List<Integer> deletedImageIds;
 
     @Column(name = "new_materials_json")
     private String newMaterialsJson;
 
+    @Transient
     private List<String> newMaterials;
 
     @Column(name = "new_tags_json")
     private String newTagsJson;
 
+    @Transient
     private List<String> newTags;
 
     public UpdateMonumentSuggestion() {

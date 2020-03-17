@@ -14,7 +14,7 @@ import java.util.Set;
 public class ContributionService {
 
     @Autowired
-    ContributionRepository contributionRepository;
+    private ContributionRepository contributionRepository;
 
     /**
      * Get all of the unique Contributors (right now just a name as a String)

@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -48,6 +47,9 @@ public class SuggestionController {
 
     @Autowired
     private AsyncJobService asyncJobService;
+
+    @Autowired
+    private AwsS3Service awsS3Service;
 
     /**
      * Create a new Suggestion for creating a Monument
@@ -284,7 +286,7 @@ public class SuggestionController {
         // Remove images from temporary S3 folder
         for (CreateMonumentSuggestion createSuggestion : bulkCreateSuggestion.getCreateSuggestions()) {
             for (String imageUrl : createSuggestion.getImages()) {
-                AwsS3Service.deleteObject(AwsS3Service.getObjectKey(imageUrl, true));
+                this.awsS3Service.deleteObject(AwsS3Service.getObjectKey(imageUrl, true));
             }
         }
 

@@ -55,36 +55,43 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "contributions_json")
     private String contributionsJson;
 
+    @Transient
     private List<String> contributions;
 
     @Column(name = "references_json")
     private String referencesJson;
 
+    @Transient
     private List<String> references;
 
     @Column(name = "materials_json")
     private String materialsJson;
 
+    @Transient
     private List<String> materials;
 
     @Column(name = "new_materials_json")
     private String newMaterialsJson;
 
+    @Transient
     private List<String> newMaterials;
 
     @Column(name = "tags_json")
     private String tagsJson;
 
+    @Transient
     private List<String> tags;
 
     @Column(name = "new_tags_json")
     private String newTagsJson;
 
+    @Transient
     private List<String> newTags;
 
     @Column(name = "images_json")
     private String imagesJson;
 
+    @Transient
     private List<String> images;
 
     @JsonIgnore

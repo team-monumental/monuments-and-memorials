@@ -58,6 +58,9 @@ public class UserServiceIntegrationTests {
     }
 
     public static void createUsers(UserRepository userRepository) {
+        // Clear any users that may be left over from other tests
+        userRepository.deleteAll();
+        
         researcher.setEmail(RESEARCHER);
         researcher.setRole(Role.RESEARCHER);
 

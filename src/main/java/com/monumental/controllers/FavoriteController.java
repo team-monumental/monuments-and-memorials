@@ -3,7 +3,6 @@ package com.monumental.controllers;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Favorite;
-import com.monumental.repositories.FavoriteRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
@@ -23,13 +22,10 @@ import java.util.Map;
 public class FavoriteController {
 
     @Autowired
-    FavoriteRepository favoriteRepository;
+    private FavoriteService favoriteService;
 
     @Autowired
-    FavoriteService favoriteService;
-
-    @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/api/favorite")
     @PreAuthorize(Authentication.isAuthenticated)

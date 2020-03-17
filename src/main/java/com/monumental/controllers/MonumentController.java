@@ -1,6 +1,5 @@
 package com.monumental.controllers;
 
-import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -13,7 +12,6 @@ import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import com.monumental.util.async.AsyncJob;
-import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;

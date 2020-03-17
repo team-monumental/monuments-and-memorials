@@ -104,11 +104,6 @@ public class MonumentServiceMockIntegrationTests {
     /** validateMonumentCSV and bulkCreateMonuments Tests **/
 
     @Test
-    public void testMonumentService_validateMonumentCSV_NullCsvList() {
-        assertNull(this.validateCSV(null));
-    }
-
-    @Test
     public void testMonumentService_bulkCreateMonuments_NullBulkCreateMonumentSuggestion() {
         assertNull(this.monumentServiceMock.bulkCreateMonumentsSync(null));
     }

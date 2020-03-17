@@ -1,6 +1,5 @@
 package com.monumental.util.csvparsing.unittests;
 
-import com.monumental.models.Monument;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.integrationtest.MonumentServiceMockIntegrationTests;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
@@ -25,6 +24,8 @@ public class CsvMonumentConverterUnitTests {
     /** convertCsvRow Tests **/
     private Map<String, String> mapping = MonumentServiceMockIntegrationTests.mapping;
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
     @Test
     public void testCsvMonumentConverter_convertCsvRow_AllEmptyValues() {
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(",,,,,,,,,,,,,");
@@ -34,9 +35,9 @@ public class CsvMonumentConverterUnitTests {
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(0, suggestionResult.getContributions().size());
-        assertEquals(0, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(0, result.getContributorNames().size());
+        assertEquals(0, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertNull(suggestionResult.getArtist());
         assertNull(suggestionResult.getTitle());
@@ -62,9 +63,9 @@ public class CsvMonumentConverterUnitTests {
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -91,19 +92,13 @@ public class CsvMonumentConverterUnitTests {
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.set(1997, Calendar.JANUARY, 1);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String expectedDateString = simpleDateFormat.format(calendar.getTime());
-
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals("1997", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -129,16 +124,15 @@ public class CsvMonumentConverterUnitTests {
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String expectedDateString = simpleDateFormat.format(calendar.getTime());
+        String expectedDateString = this.simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals(expectedDateString, suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -161,18 +155,18 @@ public class CsvMonumentConverterUnitTests {
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("03-1997", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
         assertEquals("Test Address", suggestionResult.getAddress());
 
-        assertNull(suggestionResult.getDate());
         assertNull(suggestionResult.getLatitude());
         assertNull(suggestionResult.getLongitude());
 
@@ -193,16 +187,15 @@ public class CsvMonumentConverterUnitTests {
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String expectedDateString = simpleDateFormat.format(calendar.getTime());
+        String expectedDateString = this.simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals(expectedDateString, suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -228,16 +221,15 @@ public class CsvMonumentConverterUnitTests {
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String expectedDateString = simpleDateFormat.format(calendar.getTime());
+        String expectedDateString = this.simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals(expectedDateString, suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -263,16 +255,15 @@ public class CsvMonumentConverterUnitTests {
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String expectedDateString = simpleDateFormat.format(calendar.getTime());
+        String expectedDateString = this.simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals(expectedDateString, suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -298,16 +289,15 @@ public class CsvMonumentConverterUnitTests {
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(1997, Calendar.MARCH, 12);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String expectedDateString = simpleDateFormat.format(calendar.getTime());
+        String expectedDateString = this.simpleDateFormat.format(calendar.getTime());
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
-        assertEquals(0, suggestionResult.getImages().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals(expectedDateString, simpleDateFormat.format(suggestionResult.getDate()));
+        assertEquals(expectedDateString, suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals(90.000, suggestionResult.getLatitude(), 0.0);
         assertEquals(180.000, suggestionResult.getLongitude(), 0.0);
@@ -329,8 +319,9 @@ public class CsvMonumentConverterUnitTests {
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -357,8 +348,9 @@ public class CsvMonumentConverterUnitTests {
         Set<String> materialNameResults = result.getMaterialNames();
         Set<String> tagNameResults = result.getTagNames();
 
-        assertEquals(1, suggestionResult.getContributions().size());
-        assertEquals(1, suggestionResult.getReferences().size());
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());

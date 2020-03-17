@@ -1,11 +1,13 @@
 package com.monumental.models.suggestions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monumental.models.Model;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,8 @@ public abstract class MonumentSuggestion extends Model {
     @Column(name = "is_rejected")
     private Boolean isRejected = false;
 
+    @JsonIgnore
+    @Transient
     private Gson gson;
 
     public Boolean getIsApproved() {

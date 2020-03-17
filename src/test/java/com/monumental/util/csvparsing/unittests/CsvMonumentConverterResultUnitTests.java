@@ -12,10 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -302,7 +299,9 @@ public class CsvMonumentConverterResultUnitTests {
 
         suggestion.setDate(simpleDateFormat.format(calendar.getTime()));
 
-        suggestion.getReferences().add("Test");
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("Test");
+        result.setReferenceUrls(referenceUrls);
 
         result.setMonumentSuggestion(suggestion);
         result.validate();
@@ -332,18 +331,11 @@ public class CsvMonumentConverterResultUnitTests {
 
         suggestion.setDate(simpleDateFormat.format(calendar.getTime()));
 
-        Reference reference1 = new Reference();
-        reference1.setUrl("Test");
-
-        Reference reference2 = new Reference();
-        reference2.setUrl("http://test.com");
-
-        Reference reference3 = new Reference();
-        reference3.setUrl("Test 2");
-
-        suggestion.getReferences().add("Test");
-        suggestion.getReferences().add("http://test.com");
-        suggestion.getReferences().add("Test 2");
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("Test");
+        referenceUrls.add("http://test.com");
+        referenceUrls.add("Test 2");
+        result.setReferenceUrls(referenceUrls);
 
         result.setMonumentSuggestion(suggestion);
         result.validate();
@@ -373,14 +365,10 @@ public class CsvMonumentConverterResultUnitTests {
 
         suggestion.setDate(simpleDateFormat.format(calendar.getTime()));
 
-        Reference reference1 = new Reference();
-        reference1.setUrl("https://test.org");
-
-        Reference reference2 = new Reference();
-        reference2.setUrl("http://test.com");
-
-        suggestion.getReferences().add("https://test.org");
-        suggestion.getReferences().add("http://test.com");
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("https://test.org");
+        referenceUrls.add("http://test.com");
+        result.setReferenceUrls(referenceUrls);
 
         result.setMonumentSuggestion(suggestion);
         result.validate();

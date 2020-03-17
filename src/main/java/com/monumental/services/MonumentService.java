@@ -9,7 +9,6 @@ import com.monumental.repositories.*;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
-import com.monumental.repositories.*;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
@@ -42,37 +41,40 @@ import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 public class MonumentService extends ModelService<Monument> {
 
     @Autowired
-    MonumentRepository monumentRepository;
+    private MonumentRepository monumentRepository;
 
     @Autowired
-    TagService tagService;
+    private TagService tagService;
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     @Autowired
-    ReferenceRepository referenceRepository;
+    private ReferenceRepository referenceRepository;
 
     @Autowired
-    ImageRepository imageRepository;
+    private ImageRepository imageRepository;
 
     @Autowired
     private MonumentTagRepository monumentTagRepository;
 
     @Autowired
-    GoogleMapsService googleMapsService;
+    private GoogleMapsService googleMapsService;
 
     @Autowired
-    AppConfig appConfig;
+    private AppConfig appConfig;
 
     @Autowired
-    CreateSuggestionRepository createSuggestionRepository;
+    private CreateSuggestionRepository createSuggestionRepository;
 
     @Autowired
-    BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+    private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
 
     @Autowired
-    ContributionRepository contributionRepository;
+    private ContributionRepository contributionRepository;
+
+    @Autowired
+    private AwsS3Service awsS3Service;
 
     /**
      * SRID for coordinates
@@ -1055,7 +1057,7 @@ public class MonumentService extends ModelService<Monument> {
             if (!isNullOrEmpty(imageUrl)) {
                 // Move image to permanent folder
                 String permanentImageUrl = AwsS3Service.getObjectKey(imageUrl, false);
-                AwsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
+                this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
 
                 imagesCount++;
                 boolean isPrimary = imagesCount == 1;
@@ -1429,7 +1431,7 @@ public class MonumentService extends ModelService<Monument> {
             // Upload images to temporary S3 folder
             if (validResult.getImageFiles().size() > 0) {
                 for (File image : validResult.getImageFiles()) {
-                    String imageObjectUrl = AwsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
+                    String imageObjectUrl = this.awsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
                     createSuggestion.getImages().add(imageObjectUrl);
                 }
 

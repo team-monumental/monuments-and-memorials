@@ -16,19 +16,19 @@ import java.util.List;
 public class FavoriteService {
 
     @Autowired
-    FavoriteRepository favoriteRepository;
+    private FavoriteRepository favoriteRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    MonumentRepository monumentRepository;
+    private MonumentRepository monumentRepository;
 
     @Autowired
-    MonumentService monumentService;
+    private MonumentService monumentService;
 
     /**
      * Check if a User has favorited a specific Monument. By default, this uses the running user's Id. If userId is

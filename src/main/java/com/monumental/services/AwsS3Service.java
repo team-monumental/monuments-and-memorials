@@ -51,7 +51,7 @@ public class AwsS3Service {
      * @param file - The File to store in the Bucket
      * @return String - The full Object URL for the stored/already existing Object, Empty if unsuccessful
      */
-    public static String storeObject(String objectKey, File file) throws SdkClientException {
+    public String storeObject(String objectKey, File file) throws SdkClientException {
         objectKey = generateUniqueKey(objectKey);
         try {
             s3Client.putObject(bucketName, objectKey, file);
@@ -101,7 +101,7 @@ public class AwsS3Service {
      * @return String - The new S3 Object Key for where the Object was moved to. Will be null if the operation is
      * unsuccessful
      */
-    public static String moveObject(String originalObjectKey, String newObjectKey) {
+    public String moveObject(String originalObjectKey, String newObjectKey) {
         newObjectKey = generateUniqueKey(newObjectKey);
 
         try {
@@ -122,7 +122,7 @@ public class AwsS3Service {
      * Delete an S3 Object with the specified Object Key
      * @param objectKey - S3 Object Key to delete
      */
-    public static void deleteObject(String objectKey) {
+    public void deleteObject(String objectKey) {
         try {
             s3Client.deleteObject(bucketName, objectKey);
         } catch (AmazonServiceException e) {

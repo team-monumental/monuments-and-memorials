@@ -147,7 +147,7 @@ public class CsvMonumentConverterResult {
         if (this.monumentSuggestion.getDate() != null) {
             try {
                 Date currentDate = new Date();
-                Date suggestionDate = new SimpleDateFormat("dd/MM/yyyy").parse(this.monumentSuggestion.getDate());
+                Date suggestionDate = new SimpleDateFormat("dd-MM-yyyy").parse(this.monumentSuggestion.getDate());
                 if (suggestionDate.after(currentDate)) {
                     this.getWarnings().add("Date should not be in the future.");
                 }

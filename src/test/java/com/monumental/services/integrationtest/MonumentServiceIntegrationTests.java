@@ -12,6 +12,7 @@ import com.monumental.repositories.ImageRepository;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
+import com.monumental.services.AwsS3Service;
 import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
@@ -27,6 +28,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -64,6 +66,9 @@ public class MonumentServiceIntegrationTests {
     @MockBean
     GoogleMapsService googleMapsServiceMock;
 
+    @MockBean
+    AwsS3Service awsS3ServiceMock;
+
     private Gson gson;
 
     @Before
@@ -75,6 +80,8 @@ public class MonumentServiceIntegrationTests {
     private void initializeMocks() {
         Mockito.when(this.googleMapsServiceMock.getAddressFromCoordinates(any(Double.class), any(Double.class))).thenReturn(null);
         Mockito.when(this.googleMapsServiceMock.getCoordinatesFromAddress(any(String.class))).thenReturn(null);
+        Mockito.when(this.awsS3ServiceMock.moveObject(any(String.class), any(String.class))).thenReturn("newObjectKey");
+        Mockito.when(this.awsS3ServiceMock.storeObject(any(String.class), any(File.class))).thenReturn("newObjectKey");
     }
 
     /* getRelatedMonumentsByTags Tests */
@@ -2187,7 +2194,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.size());
 
         Image image = result.get(0);
-        assertEquals("test", image.getUrl());
+        assertEquals("images/test", image.getUrl());
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
     }
@@ -2211,7 +2218,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.size());
 
         Image image = result.get(0);
-        assertEquals("test1", image.getUrl());
+        assertEquals("images/test1", image.getUrl());
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
     }
@@ -2235,7 +2242,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.size());
 
         Image image = result.get(0);
-        assertEquals("test1", image.getUrl());
+        assertEquals("images/test1", image.getUrl());
         assertFalse(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
     }
@@ -2258,17 +2265,17 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, result.size());
 
         Image image1 = result.get(0);
-        assertEquals("test1", image1.getUrl());
+        assertEquals("images/test1", image1.getUrl());
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
 
         Image image2 = result.get(1);
-        assertEquals("test2", image2.getUrl());
+        assertEquals("images/test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
 
         Image image3 = result.get(2);
-        assertEquals("test3", image3.getUrl());
+        assertEquals("images/test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
     }
@@ -2296,17 +2303,17 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, result.size());
 
         Image image1 = result.get(0);
-        assertEquals("test1", image1.getUrl());
+        assertEquals("images/test1", image1.getUrl());
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
 
         Image image2 = result.get(1);
-        assertEquals("test2", image2.getUrl());
+        assertEquals("images/test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
 
         Image image3 = result.get(2);
-        assertEquals("test3", image3.getUrl());
+        assertEquals("images/test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
     }
@@ -2334,17 +2341,17 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, result.size());
 
         Image image1 = result.get(0);
-        assertEquals("test1", image1.getUrl());
+        assertEquals("images/test1", image1.getUrl());
         assertFalse(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
 
         Image image2 = result.get(1);
-        assertEquals("test2", image2.getUrl());
+        assertEquals("images/test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
 
         Image image3 = result.get(2);
-        assertEquals("test3", image3.getUrl());
+        assertEquals("images/test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
     }
