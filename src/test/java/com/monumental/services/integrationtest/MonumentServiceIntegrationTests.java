@@ -1317,18 +1317,29 @@ public class MonumentServiceIntegrationTests {
     /* createMonument Tests */
 
     @Test
-    public void testMonumentService_createMonument_NullCreateMonumentRequest() {
+    public void testMonumentService_createMonument_NullCreateMonumentSuggestion() {
         assertNull(this.monumentService.createMonument(null));
+    }
+
+    @Test
+    public void testMonumentService_createMonument_UnapprovedCreateMonumentSuggestion() {
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(false);
+
+        assertNull(this.monumentService.createMonument(createSuggestion));
     }
 
     @Test
     public void testMonumentService_createMonument_BasicFieldsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1337,6 +1348,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
 
         assertNull(result.getCoordinates());
         assertNull(result.getDate());
@@ -1349,11 +1362,14 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_BasicFieldsSet_SomeNullSomeEmpty() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress(null);
         createSuggestion.setArtist("");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
 
         Monument result = this.monumentService.createMonument(createSuggestion);
 
@@ -1362,6 +1378,40 @@ public class MonumentServiceIntegrationTests {
         assertEquals("", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+
+        assertNull(result.getCoordinates());
+        assertNull(result.getDate());
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_IsTemporarySet() {
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
+        createSuggestion.setIsTemporary(true);
+
+        Monument result = this.monumentService.createMonument(createSuggestion);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertTrue(result.getIsTemporary());
 
         assertNull(result.getCoordinates());
         assertNull(result.getDate());
@@ -1374,11 +1424,14 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_CoordinatesSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
 
@@ -1389,6 +1442,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1402,11 +1458,14 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_DateSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setDate("2012-04-23T18:25:43.511Z");
@@ -1418,6 +1477,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1437,11 +1499,14 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_YearSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setYear("2012");
@@ -1453,6 +1518,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1472,11 +1540,14 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_YearAndMonthSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
@@ -1489,6 +1560,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1506,17 +1580,80 @@ public class MonumentServiceIntegrationTests {
     }
 
     @Test
-    public void testMonumentService_createMonument_ReferencesSet() {
+    public void testMonumentService_createMonument_ContributionsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
+
+        Monument result = this.monumentService.createMonument(createSuggestion);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getContributions().size());
+
+        assertEquals(0, result.getReferences().size());
+        assertEquals(0, result.getImages().size());
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
+    public void testMonumentService_createMonument_ReferencesSet() {
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1533,6 +1670,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1543,6 +1683,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, result.getContributions().size());
         assertEquals(3, result.getReferences().size());
 
         assertEquals(0, result.getImages().size());
@@ -1553,15 +1694,26 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_ImagesSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1586,6 +1738,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1596,6 +1751,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, result.getContributions().size());
         assertEquals(3, result.getReferences().size());
         assertEquals(3, result.getImages().size());
 
@@ -1606,15 +1762,26 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_MaterialsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1647,6 +1814,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1657,28 +1827,38 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, result.getContributions().size());
         assertEquals(3, result.getReferences().size());
         assertEquals(3, result.getImages().size());
 
         assertEquals(3, result.getMonumentTags().size());
-
         assertEquals(3, result.getMaterials().size());
-
         assertEquals(0, result.getTags().size());
     }
 
     @Test
     public void testMonumentService_createMonument_NewMaterialsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1719,6 +1899,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1729,28 +1912,38 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, result.getContributions().size());
         assertEquals(3, result.getReferences().size());
         assertEquals(3, result.getImages().size());
 
         assertEquals(6, result.getMonumentTags().size());
-
         assertEquals(6, result.getMaterials().size());
-
         assertEquals(0, result.getTags().size());
     }
 
     @Test
     public void testMonumentService_createMonument_TagsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1799,6 +1992,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1809,11 +2005,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, result.getContributions().size());
         assertEquals(3, result.getReferences().size());
         assertEquals(3, result.getImages().size());
 
         assertEquals(9, result.getMonumentTags().size());
-
         assertEquals(6, result.getMaterials().size());
         assertEquals(3, result.getTags().size());
     }
@@ -1821,15 +2017,26 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_NewTagsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1886,6 +2093,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1896,11 +2106,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, result.getContributions().size());
         assertEquals(3, result.getReferences().size());
         assertEquals(3, result.getImages().size());
 
         assertEquals(12, result.getMonumentTags().size());
-
         assertEquals(6, result.getMaterials().size());
         assertEquals(6, result.getTags().size());
     }
@@ -1908,15 +2118,26 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonument_DatabaseValuesCorrect() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
         createSuggestion.setDescription("Description");
         createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
         createSuggestion.setLatitude(90.0);
         createSuggestion.setLongitude(180.0);
         createSuggestion.setMonth("03");
         createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
 
         List<String> referenceUrls = new ArrayList<>();
         referenceUrls.add("URL 1");
@@ -1975,6 +2196,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Artist", result.getArtist());
         assertEquals("Description", result.getDescription());
         assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
         assertEquals(90.0, result.getLat(), 0.0);
         assertEquals(180.0, result.getLon(), 0.0);
 
@@ -1985,6 +2209,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
+        assertEquals(3, this.contributionRepository.getAllByMonumentId(result.getId()).size());
         assertEquals(3, this.referenceRepository.getAllByMonumentId(result.getId()).size());
         assertEquals(3, this.imageRepository.getAllByMonumentId(result.getId()).size());
         assertEquals(6, this.tagRepository.getAllByIsMaterial(true).size());
