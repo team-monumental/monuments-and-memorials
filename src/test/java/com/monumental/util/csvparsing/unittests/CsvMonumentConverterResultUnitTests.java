@@ -1,11 +1,7 @@
 package com.monumental.util.csvparsing.unittests;
 
-import com.monumental.models.Monument;
-import com.monumental.models.Reference;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
-import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
-import com.vividsolutions.jts.geom.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -165,90 +161,6 @@ public class CsvMonumentConverterResultUnitTests {
         assertEquals(2, result.getErrors().size());
         assertTrue(result.getErrors().contains("Latitude must be valid"));
         assertTrue(result.getErrors().contains("Longitude must be valid"));
-    }
-
-    @Test
-    public void testCsvMonumentConverterResult_validate_InvalidDate_FutureYear() {
-        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
-        CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
-        suggestion.setTitle("Title");
-
-        Set<String> materialNames = new HashSet<>();
-        materialNames.add("Material");
-        result.setMaterialNames(materialNames);
-
-        suggestion.setAddress("Address");
-
-        GregorianCalendar calendar = new GregorianCalendar();
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        calendar.set(currentYear + 1, currentMonth, currentDay);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-        suggestion.setDate(simpleDateFormat.format(calendar.getTime()));
-
-        result.setMonumentSuggestion(suggestion);
-        result.validate();
-
-        assertEquals(1, result.getWarnings().size());
-        assertTrue(result.getWarnings().contains("Date should not be in the future."));
-    }
-
-    @Test
-    public void testCsvMonumentConverterResult_validate_InvalidDate_FutureMonth() {
-        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
-        CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
-        suggestion.setTitle("Title");
-
-        Set<String> materialNames = new HashSet<>();
-        materialNames.add("Material");
-        result.setMaterialNames(materialNames);
-
-        suggestion.setAddress("Address");
-
-        GregorianCalendar calendar = new GregorianCalendar();
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        calendar.set(currentYear, currentMonth + 1, currentDay);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-        suggestion.setDate(simpleDateFormat.format(calendar.getTime()));
-
-        result.setMonumentSuggestion(suggestion);
-        result.validate();
-
-        assertEquals(1, result.getWarnings().size());
-        assertTrue(result.getWarnings().contains("Date should not be in the future."));
-    }
-
-    @Test
-    public void testCsvMonumentConverterResult_validate_InvalidDate_FutureDay() {
-        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
-        CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
-        suggestion.setTitle("Title");
-
-        Set<String> materialNames = new HashSet<>();
-        materialNames.add("Material");
-        result.setMaterialNames(materialNames);
-
-        suggestion.setAddress("Address");
-
-        GregorianCalendar calendar = new GregorianCalendar();
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        calendar.set(currentYear, currentMonth, currentDay + 1);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-        suggestion.setDate(simpleDateFormat.format(calendar.getTime()));
-
-        result.setMonumentSuggestion(suggestion);
-        result.validate();
-
-        assertEquals(1, result.getWarnings().size());
-        assertTrue(result.getWarnings().contains("Date should not be in the future."));
     }
 
     @Test
