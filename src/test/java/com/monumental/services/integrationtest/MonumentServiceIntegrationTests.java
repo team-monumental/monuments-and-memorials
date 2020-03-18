@@ -2,16 +2,10 @@ package com.monumental.services.integrationtest;
 
 import com.google.gson.Gson;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
-import com.monumental.models.Image;
-import com.monumental.models.Monument;
-import com.monumental.models.Reference;
-import com.monumental.models.Tag;
+import com.monumental.models.*;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
-import com.monumental.repositories.ImageRepository;
-import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.ReferenceRepository;
-import com.monumental.repositories.TagRepository;
+import com.monumental.repositories.*;
 import com.monumental.services.AwsS3Service;
 import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
@@ -46,28 +40,31 @@ import static org.mockito.ArgumentMatchers.any;
 public class MonumentServiceIntegrationTests {
 
     @Autowired
-    MonumentService monumentService;
+    private MonumentService monumentService;
 
     @Autowired
-    MonumentRepository monumentRepository;
+    private MonumentRepository monumentRepository;
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     @Autowired
-    TagService tagService;
+    private TagService tagService;
 
     @Autowired
-    ReferenceRepository referenceRepository;
+    private ReferenceRepository referenceRepository;
 
     @Autowired
-    ImageRepository imageRepository;
+    private ImageRepository imageRepository;
 
     @MockBean
-    GoogleMapsService googleMapsServiceMock;
+    private GoogleMapsService googleMapsServiceMock;
 
     @MockBean
-    AwsS3Service awsS3ServiceMock;
+    private AwsS3Service awsS3ServiceMock;
+
+    @Autowired
+    private ContributionRepository contributionRepository;
 
     private Gson gson;
 
@@ -5092,5 +5089,45 @@ public class MonumentServiceIntegrationTests {
 
         assertEquals(4, this.tagRepository.getAllByMonumentIdAndIsMaterial(updatedMonument.getId(), false).size());
         assertEquals(4, this.tagRepository.getAllByMonumentIdAndIsMaterial(updatedMonument.getId(), true).size());
+    }
+
+    /** createMonumentContributions Tests **/
+
+    @Test
+    public void testMonumentService_createMonumentContributions_NullContributors() {
+        assertNull(this.monumentService.createMonumentContributions(null, new Monument()));
+    }
+
+    @Test
+    public void testMonumentService_createMonumentContributions_NullMonument() {
+        assertNull(this.monumentService.createMonumentContributions(new ArrayList<>(), null));
+    }
+
+    @Test
+    public void testMonumentService_createMonumentContributions_EmptyContributors() {
+        Monument monument = this.monumentRepository.save(new Monument());
+
+        List<Contribution> result = this.monumentService.createMonumentContributions(new ArrayList<>(), monument);
+
+        assertEquals(0, result.size());
+        assertEquals(0, this.contributionRepository.findAll().size());
+        assertEquals(0, this.contributionRepository.getAllByMonumentId(monument.getId()).size());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentContributions_VariousContributors() {
+        Monument monument = this.monumentRepository.save(new Monument());
+
+        List<String> contributors = new ArrayList<>();
+        contributors.add("Contributor 1");
+        contributors.add("");
+        contributors.add(null);
+        contributors.add("Contributor 3");
+
+        List<Contribution> result = this.monumentService.createMonumentContributions(contributors, monument);
+
+        assertEquals(2, result.size());
+        assertEquals(2, this.contributionRepository.findAll().size());
+        assertEquals(2, this.contributionRepository.getAllByMonumentId(monument.getId()).size());
     }
 }

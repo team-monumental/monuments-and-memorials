@@ -30,13 +30,13 @@ import static org.junit.Assert.assertTrue;
 public class ContributionServiceIntegrationTests {
 
     @Autowired
-    ContributionService contributionService;
+    private ContributionService contributionService;
 
     @Autowired
-    ContributionRepository contributionRepository;
+    private ContributionRepository contributionRepository;
 
     @Autowired
-    MonumentRepository monumentRepository;
+    private MonumentRepository monumentRepository;
 
     /** getAllContributors Tests **/
 

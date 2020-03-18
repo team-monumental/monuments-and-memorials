@@ -42,13 +42,13 @@ import static org.mockito.ArgumentMatchers.isNull;
 public class MonumentServiceMockIntegrationTests {
 
     @SpyBean
-    MonumentService monumentServiceMock;
+    private MonumentService monumentServiceMock;
 
     @Autowired
-    MonumentRepository monumentRepository;
+    private MonumentRepository monumentRepository;
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     private static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
 
