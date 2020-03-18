@@ -1,5 +1,6 @@
 package com.monumental.util.csvparsing.unittests;
 
+import com.google.gson.Gson;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.integrationtest.MonumentServiceMockIntegrationTests;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
@@ -471,5 +472,63 @@ public class CsvMonumentConverterUnitTests {
         String result = CsvMonumentConverter.cleanTagName("  test  \n\r");
 
         assertEquals("Test", result);
+    }
+
+    /** parseCsvMonumentConverterResult Tests **/
+
+    @Test
+    public void testCsvMonumentConverter_parseCsvMonumentConverterResult_NullCsvMonumentConverterResult() {
+        assertNull(CsvMonumentConverter.parseCsvMonumentConverterResult(null, new Gson()));
+    }
+
+    @Test
+    public void testCsvMonumentConverter_parseCsvMonumentConverterResult_NullMonumentSuggestion() {
+        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
+        result.setMonumentSuggestion(null);
+
+        assertNull(CsvMonumentConverter.parseCsvMonumentConverterResult(result, new Gson()));
+    }
+
+    @Test
+    public void testCsvMonumentConverter_parseCsvMonumentConverterResult_NullGson() {
+        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
+        result.setMonumentSuggestion(new CreateMonumentSuggestion());
+
+        assertNull(CsvMonumentConverter.parseCsvMonumentConverterResult(result, null));
+    }
+
+    @Test
+    public void testCsvMonumentConverter_parseCsvMonumentConverterResult_VariousValues() {
+        CsvMonumentConverterResult result = new CsvMonumentConverterResult();
+        result.setMonumentSuggestion(new CreateMonumentSuggestion());
+
+        List<String> contributorNames = new ArrayList<>();
+        contributorNames.add("Contributor 1");
+        contributorNames.add("Contributor 2");
+        contributorNames.add("Contributor 3");
+        result.setContributorNames(contributorNames);
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("Reference URL 1");
+        referenceUrls.add("Reference URL 2");
+        result.setReferenceUrls(referenceUrls);
+
+        Set<String> tagNames = new HashSet<>();
+        tagNames.add("Tag 1");
+        result.setTagNames(tagNames);
+
+        Set<String> materialNames = new HashSet<>();
+        materialNames.add("Material 1");
+        materialNames.add("Material 2");
+        materialNames.add("Material 3");
+        materialNames.add("Material 4");
+        result.setMaterialNames(materialNames);
+
+        CreateMonumentSuggestion suggestionResult = CsvMonumentConverter.parseCsvMonumentConverterResult(result, new Gson());
+
+        assertEquals("[\"Contributor 1\",\"Contributor 2\",\"Contributor 3\"]", suggestionResult.getContributionsJson());
+        assertEquals("[\"Reference URL 1\",\"Reference URL 2\"]", suggestionResult.getReferencesJson());
+        assertEquals("[\"Tag 1\"]", suggestionResult.getTagsJson());
+        assertEquals("[\"Material 1\",\"Material 2\",\"Material 3\",\"Material 4\"]", suggestionResult.getMaterialsJson());
     }
 }

@@ -239,7 +239,7 @@ public class CsvMonumentConverter {
      * CsvMonumentConverterResult
      */
     public static CreateMonumentSuggestion parseCsvMonumentConverterResult(CsvMonumentConverterResult result, Gson gson) {
-        if (result.getMonumentSuggestion() == null) {
+        if (result == null || result.getMonumentSuggestion() == null || gson == null) {
             return null;
         }
 
