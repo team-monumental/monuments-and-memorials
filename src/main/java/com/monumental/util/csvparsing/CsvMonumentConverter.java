@@ -7,6 +7,9 @@ import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -54,13 +57,16 @@ public class CsvMonumentConverter {
                         suggestion.setTitle(value);
                         break;
                     case "date":
-                        try {
-                            parseDate(value);
-                        } catch (Exception e) {
-                            result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
-                        } finally {
-                            suggestion.setDate(value);
+                        if (canParseDate(value)) {
+                            Date parsedDate = parseDate(value);
+                            if (isDateInFuture(parsedDate)) {
+                                result.getWarnings().add("Date should not be in the future.");
+                            }
                         }
+                        else {
+                            result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
+                        }
+                        suggestion.setDate(value);
                         break;
                     case "materials":
                         result.getMaterialNames().addAll(parseCsvTags(value));
@@ -127,10 +133,35 @@ public class CsvMonumentConverter {
         return results;
     }
 
-    private static Date parseDate(String value) {
-        // 1. Dates must be in the following format: dd-MM-yyyy
-        // 2. If the day and month are unknown, the cell must contain: yyyy
-        // 3. In the case described in 2, the day and month are set to 01-01
+    /**
+     * Determine if the specified value can be parsed into a valid Date
+     * Dates must be in the following format: dd-MM-yyyy
+     * If the day and month are unknown, then the date can also be in yyyy format
+     * Any other format is considered invalid
+     * @param value - String to determine if it can be parsed into a valid Date
+     * @return - True if the specified value can be parsed into a valid Date, False otherwise
+     */
+    private static boolean canParseDate(String value) {
+        // "dd-MM-yyyy" format
+        if (value.contains("-")) {
+            String[] dateArray = value.split("-");
+            return dateArray.length == 3;
+        }
+
+        // "yyyy" format
+        return value.length() == 4 && value.matches("[0-9]+");
+    }
+
+    /**
+     * Actually parse the specified value into a Date
+     * Dates must be in the following format: dd-MM-yyyy
+     * If the day and month are unknown, then the date can also be in yyyy format
+     * Any other format is considered invalid
+     * @param value - String to parse into a Date
+     * @return Date - Date object created from parsing the specified value
+     * @throws DateTimeParseException - If the specified value can not be parsed into a Date
+     */
+    private static Date parseDate(String value) throws DateTimeParseException {
         String[] dateArray = value.split("-");
 
         // Parsing format "yyyy"
@@ -146,8 +177,22 @@ public class CsvMonumentConverter {
             return MonumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
                     dateArray[0]);
         } else {
-            return null;
+            throw new DateTimeParseException("Invalid date format", value, 0);
         }
+    }
+
+    /**
+     * Determine if the specified date is in the future
+     * @param date - Date object to determine if it is in the future
+     * @return - True if the specified date is in the future, False otherwise
+     */
+    private static boolean isDateInFuture(Date date) {
+        if (date != null) {
+            Date currentDate = new Date();
+            return date.after(currentDate);
+        }
+
+        return false;
     }
 
     private static List<String> parseCsvTags(String value) {

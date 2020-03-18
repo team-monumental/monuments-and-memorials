@@ -142,21 +142,6 @@ public class CsvMonumentConverterResult {
             }
         }
 
-        /* Date Validation */
-        /* Check that date is not in the future */
-        if (this.monumentSuggestion.getDate() != null) {
-            try {
-                Date currentDate = new Date();
-                Date suggestionDate = new SimpleDateFormat("dd-MM-yyyy").parse(this.monumentSuggestion.getDate());
-                if (suggestionDate.after(currentDate)) {
-                    this.getWarnings().add("Date should not be in the future.");
-                }
-            }
-            catch (ParseException e) {
-                this.getWarnings().add("Unable to parse Date.");
-            }
-        }
-
         /* References Validation */
         /* Check that the references are valid URLs */
         if (this.referenceUrls != null) {
