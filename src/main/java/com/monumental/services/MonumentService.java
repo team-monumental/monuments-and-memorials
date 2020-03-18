@@ -613,7 +613,8 @@ public class MonumentService extends ModelService<Monument> {
      * @return - List of inserted monuments
      */
     private List<Monument> bulkCreateMonuments(BulkCreateMonumentSuggestion bulkCreateSuggestion, AsyncJob job) {
-        if (bulkCreateSuggestion == null || bulkCreateSuggestion.getCreateSuggestions() == null) {
+        if (bulkCreateSuggestion == null || bulkCreateSuggestion.getCreateSuggestions() == null ||
+                !bulkCreateSuggestion.getIsApproved()) {
             return null;
         }
 
@@ -744,7 +745,7 @@ public class MonumentService extends ModelService<Monument> {
      * @return Monument - The newly created Monument based on the specified CreateMonumentSuggestion
      */
     public Monument createMonument(CreateMonumentSuggestion monumentSuggestion) {
-        if (monumentSuggestion == null) {
+        if (monumentSuggestion == null || !monumentSuggestion.getIsApproved()) {
             return null;
         }
 
@@ -1420,7 +1421,15 @@ public class MonumentService extends ModelService<Monument> {
      * MonumentBulkValidationResult
      */
     public BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult bulkValidationResult) {
+        if (bulkValidationResult == null || bulkValidationResult.getValidResults() == null) {
+            return null;
+        }
+
         List<CsvMonumentConverterResult> validResults = new ArrayList<>(bulkValidationResult.getValidResults().values());
+        if (validResults.size() == 0) {
+            return null;
+        }
+
         List<CreateMonumentSuggestion> createSuggestions = new ArrayList<>();
         BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
         Gson gson = new Gson();

@@ -75,10 +75,13 @@ public class MonumentServiceIntegrationTests {
     }
 
     private void initializeMocks() {
+        // googleMapsServiceMock
         Mockito.when(this.googleMapsServiceMock.getAddressFromCoordinates(any(Double.class), any(Double.class))).thenReturn(null);
         Mockito.when(this.googleMapsServiceMock.getCoordinatesFromAddress(any(String.class))).thenReturn(null);
-        Mockito.when(this.awsS3ServiceMock.moveObject(any(String.class), any(String.class))).thenReturn("newObjectKey");
-        Mockito.when(this.awsS3ServiceMock.storeObject(any(String.class), any(File.class))).thenReturn("newObjectKey");
+
+        // awsS3ServiceMock
+        Mockito.when(this.awsS3ServiceMock.moveObject(any(String.class), any(String.class))).thenReturn("Test URL");
+        Mockito.when(this.awsS3ServiceMock.storeObject(any(String.class), any(File.class))).thenReturn("Test URL");
     }
 
     /* getRelatedMonumentsByTags Tests */
