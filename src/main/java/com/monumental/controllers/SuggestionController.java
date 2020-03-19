@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@Transactional
 public class SuggestionController {
 
     @Autowired
@@ -54,14 +55,12 @@ public class SuggestionController {
     /**
      * Create a new Suggestion for creating a Monument
      * @param createSuggestion - CreateMonumentSuggestion object representing the new Monument suggestion
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return CreateMonumentSuggestion - CreateMonumentSuggestion object just saved
      */
     @PostMapping("/api/suggestion/create")
     @PreAuthorize(Authentication.isAuthenticated)
-    @Transactional
-    public Map<String, Boolean> suggestMonumentCreation(@RequestBody CreateMonumentSuggestion createSuggestion) {
-        this.createSuggestionRepository.save(createSuggestion);
-        return Map.of("success", true);
+    public CreateMonumentSuggestion suggestMonumentCreation(@RequestBody CreateMonumentSuggestion createSuggestion) {
+        return this.createSuggestionRepository.save(createSuggestion);
     }
 
     /**
@@ -73,7 +72,6 @@ public class SuggestionController {
      */
     @PostMapping("/api/suggestion/update")
     @PreAuthorize(Authentication.isAuthenticated)
-    @Transactional
     public Map<String, Boolean> suggestMonumentUpdate(@RequestParam Integer monumentId,
                                                       @RequestBody UpdateMonumentSuggestion updateSuggestion) {
         Optional<Monument> optional = this.monumentRepository.findById(monumentId);
@@ -114,7 +112,6 @@ public class SuggestionController {
      */
     @PostMapping("/api/suggestion/bulk-create")
     @PreAuthorize(Authentication.isAuthenticated)
-    @Transactional
     public BulkCreateMonumentSuggestion suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
             throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
@@ -131,7 +128,6 @@ public class SuggestionController {
      */
     @GetMapping("/api/suggestion/create/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public CreateMonumentSuggestion getCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findCreateSuggestion(id);
@@ -145,7 +141,6 @@ public class SuggestionController {
      */
     @GetMapping("/api/suggestion/update/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public UpdateMonumentSuggestion getUpdateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findUpdateSuggestion(id);
@@ -159,7 +154,6 @@ public class SuggestionController {
      */
     @GetMapping("/api/suggestion/bulk-create/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findBulkCreateSuggestion(id);
@@ -174,7 +168,6 @@ public class SuggestionController {
      */
     @PutMapping("/api/suggestion/create/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public Monument approveCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         CreateMonumentSuggestion createSuggestion = this.findCreateSuggestion(id);
@@ -193,7 +186,6 @@ public class SuggestionController {
      */
     @PutMapping("/api/suggestion/update/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public Monument approveUpdateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
@@ -213,7 +205,6 @@ public class SuggestionController {
      */
     @PutMapping("/api/suggestion/bulk-create/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public AsyncJob approveBulkCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);
 
@@ -233,19 +224,15 @@ public class SuggestionController {
     /**
      * Reject a CreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the CreateMonumentSuggestion to reject
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return CreateMonumentSuggestion - CreateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/create/{id}/reject")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
-    public Map<String, Boolean> rejectCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public CreateMonumentSuggestion rejectCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         CreateMonumentSuggestion createSuggestion = this.findCreateSuggestion(id);
-
         createSuggestion.setIsRejected(true);
-        this.createSuggestionRepository.save(createSuggestion);
-
-        return Map.of("success", true);
+        return this.createSuggestionRepository.save(createSuggestion);
     }
 
     /**
@@ -256,7 +243,6 @@ public class SuggestionController {
      */
     @PutMapping("/api/suggestion/update/{id}/reject")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public Map<String, Boolean> rejectUpdateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
 
@@ -274,7 +260,6 @@ public class SuggestionController {
      */
     @PutMapping("/api/suggestion/bulk-create/{id}/reject")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    @Transactional
     public Map<String, Boolean> rejectBulkCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);

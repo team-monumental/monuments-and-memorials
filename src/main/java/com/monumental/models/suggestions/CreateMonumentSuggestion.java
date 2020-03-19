@@ -50,7 +50,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     private String inscription;
 
     @Column(name = "is_temporary")
-    private boolean isTemporary;
+    private Boolean isTemporary;
 
     @Column(name = "contributions_json")
     private String contributionsJson;
