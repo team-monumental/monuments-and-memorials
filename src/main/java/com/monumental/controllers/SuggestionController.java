@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -132,7 +131,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/bulk-create/{id}")
-    //@PreAuthorize(Authorization.isResearcherOrAbove)
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findBulkCreateSuggestion(id);
@@ -235,7 +234,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/bulk-create/{id}/reject")
-    //@PreAuthorize(Authorization.isResearcherOrAbove)
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     public BulkCreateMonumentSuggestion rejectBulkCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);

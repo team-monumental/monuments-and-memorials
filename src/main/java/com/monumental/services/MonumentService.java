@@ -557,7 +557,7 @@ public class MonumentService extends ModelService<Monument> {
 
             List<Monument> duplicates = this.findDuplicateMonuments(result.getMonumentSuggestion().getTitle(),
                     result.getMonumentSuggestion().getLatitude(), result.getMonumentSuggestion().getLongitude(),
-                    result.getMonumentSuggestion().getAddress());
+                    result.getMonumentSuggestion().getAddress(), false);
 
             if (duplicates.size() > 0) {
                 StringBuilder warning = new StringBuilder("Potential duplicate records detected for this row:\n");

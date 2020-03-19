@@ -22,9 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -45,18 +42,6 @@ public class MonumentController {
 
     @Autowired
     private UserService userService;
-
-    /**
-     * Create a new Monument based on the specified CreateMonumentRequest
-     * @param monumentRequest - CreateMonumentRequest containing the attributes to use to create the Monument
-     * @return Monument - The created Monument
-     */
-    @PostMapping("/api/monument")
-    @PreAuthorize(Authentication.isAuthenticated)
-    @Transactional
-    public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
-        return this.monumentService.createMonument(monumentRequest);
-    }
 
     /**
      * Get a Monument with the specified ID, if it exists and is active or inactive depending on onlyActive
@@ -112,18 +97,6 @@ public class MonumentController {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
             return this.monumentRepository.findAll();
         }
-    }
-
-    /**
-     * Update an existing Monument with the specified ID to have the specified attributes
-     * @param id - ID of the Monument to update
-     * @param newMonument - UpdateMonumentRequest containing the new attributes for the Monument
-     * @return Monument - The updated Monument
-     */
-    @PutMapping("/api/monument/{id}")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody UpdateMonumentRequest newMonument) {
-        return this.monumentService.updateMonument(id, newMonument);
     }
 
     private static class ToggleIsActiveRequest {
