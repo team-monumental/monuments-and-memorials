@@ -2957,6 +2957,14 @@ public class MonumentServiceIntegrationTests {
     }
 
     @Test
+    public void testMonumentService_updateMonument_UnapprovedUpdateMonumentSuggestion() {
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(false);
+
+        assertNull(this.monumentService.updateMonument(updateSuggestion));
+    }
+
+    @Test
     public void testMonumentService_updateMonument_MonumentNull() {
         assertNull(this.monumentService.updateMonument(new UpdateMonumentSuggestion()));
     }
@@ -2968,6 +2976,7 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
 
@@ -2984,6 +2993,7 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3003,6 +3013,7 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3025,6 +3036,7 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3050,6 +3062,7 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3067,6 +3080,73 @@ public class MonumentServiceIntegrationTests {
     }
 
     @Test
+    public void testMonumentService_updateMonument_UnchangedCityAndState() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+
+        this.monumentService.updateMonument(updateSuggestion);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_UpdateIsTemporary() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
+
+        this.monumentService.updateMonument(updateSuggestion);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
+    }
+
+    @Test
     public void testMonumentService_updateMonument_UpdateCoordinates() {
         Monument monument = new Monument();
         monument.setTitle("Title");
@@ -3074,6 +3154,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3081,12 +3164,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
 
@@ -3097,6 +3182,10 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
+
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
     }
@@ -3109,6 +3198,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3118,12 +3210,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewDate("2012-04-23T18:25:43.511Z");
@@ -3135,6 +3229,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3155,6 +3252,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3164,12 +3264,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3181,6 +3283,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3201,6 +3306,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3210,12 +3318,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3228,6 +3338,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3248,6 +3361,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3257,12 +3373,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3283,6 +3401,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3305,6 +3426,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3332,12 +3456,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3358,6 +3484,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3380,6 +3509,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3407,12 +3539,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3438,6 +3572,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3473,6 +3610,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3500,12 +3640,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3533,6 +3675,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3565,6 +3710,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3592,12 +3740,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3633,6 +3783,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3668,6 +3821,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3713,12 +3869,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3754,6 +3912,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3797,6 +3958,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3842,12 +4006,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -3884,6 +4050,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -3927,6 +4096,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -3972,12 +4144,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4019,6 +4193,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4062,6 +4239,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -4107,12 +4287,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4154,6 +4336,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4198,6 +4383,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -4243,12 +4431,14 @@ public class MonumentServiceIntegrationTests {
         monument = this.monumentRepository.save(monument);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4298,6 +4488,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4346,6 +4539,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -4397,12 +4593,14 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Material 2", monuments, true);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4454,6 +4652,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4502,6 +4703,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -4553,12 +4757,14 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Material 2", monuments, true);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4609,6 +4815,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4657,6 +4866,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -4708,12 +4920,14 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Material 2", monuments, true);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4772,6 +4986,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4820,6 +5037,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -4874,12 +5094,14 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Tag 2", monuments, false);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -4940,6 +5162,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -4988,6 +5213,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -5042,12 +5270,14 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Tag 2", monuments, false);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -5107,6 +5337,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
@@ -5155,6 +5388,9 @@ public class MonumentServiceIntegrationTests {
         monument.setArtist("Artist");
         monument.setDescription("Description");
         monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
 
         Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
         monument.setCoordinates(coordinates);
@@ -5209,12 +5445,14 @@ public class MonumentServiceIntegrationTests {
         this.tagService.createTag("Tag 2", monuments, false);
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
         updateSuggestion.setNewLongitude(95.0);
         updateSuggestion.setNewLatitude(185.0);
         updateSuggestion.setNewYear("2012");
@@ -5276,6 +5514,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", updatedMonument.getArtist());
         assertEquals("New Description", updatedMonument.getDescription());
         assertEquals("New Inscription", updatedMonument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, updatedMonument.getLon(), 0.0);
         assertEquals(185.0, updatedMonument.getLat(), 0.0);

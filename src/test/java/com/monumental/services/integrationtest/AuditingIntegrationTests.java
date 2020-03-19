@@ -62,12 +62,14 @@ public class AuditingIntegrationTests {
 
     private Monument createMonument() {
         CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
+        suggestion.setIsApproved(true);
         suggestion.setTitle("Title");
         return this.monumentService.createMonument(suggestion);
     }
 
     private Monument updateMonument(Monument monument) {
         UpdateMonumentSuggestion suggestion = new UpdateMonumentSuggestion();
+        suggestion.setIsApproved(true);
         suggestion.setMonument(monument);
         suggestion.setNewTitle("New Title");
         return this.monumentService.updateMonument(suggestion);

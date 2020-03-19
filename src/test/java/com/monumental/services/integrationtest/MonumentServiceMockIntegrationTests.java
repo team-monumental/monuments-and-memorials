@@ -157,6 +157,7 @@ public class MonumentServiceMockIntegrationTests {
     @Test
     public void testMonumentService_bulkCreateMonuments_EmptyListOfCreateMonumentSuggestions() {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
+        bulkCreateSuggestion.setIsApproved(true);
 
         List<Monument> results = this.monumentServiceMock.bulkCreateMonumentsSync(bulkCreateSuggestion);
 

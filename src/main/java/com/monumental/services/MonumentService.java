@@ -859,7 +859,7 @@ public class MonumentService extends ModelService<Monument> {
      * @return Monument - The Monument with the updated attributes
      */
     public Monument updateMonument(UpdateMonumentSuggestion updateSuggestion) {
-        if (updateSuggestion == null) {
+        if (updateSuggestion == null || !updateSuggestion.getIsApproved()) {
             return null;
         }
 
@@ -871,6 +871,7 @@ public class MonumentService extends ModelService<Monument> {
 
         this.initializeAllLazyLoadedCollections(currentMonument);
 
+        // Update isTemporary
         currentMonument.setIsTemporary(updateSuggestion.getNewIsTemporary());
 
         String oldAddress = currentMonument.getAddress();
