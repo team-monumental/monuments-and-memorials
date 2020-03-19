@@ -1,6 +1,8 @@
 package com.monumental.controllers;
 
+import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
+import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
@@ -12,6 +14,7 @@ import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import com.monumental.util.async.AsyncJob;
+import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +25,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -161,6 +165,24 @@ public class MonumentController {
             Hibernate.initialize(monument.getMonumentTags());
         }
         return monuments;
+    }
+
+    /**
+     * Determine which rows in the specified .csv (or .csv within .zip) file are valid
+     * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
+     * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
+     */
+    @PostMapping("/api/monument/bulk/validate")
+    @PreAuthorize(Authentication.isAuthenticated)
+    public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
+        try {
+            BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+        } catch (InvalidZipException | IOException e) {
+            MonumentBulkValidationResult result = new MonumentBulkValidationResult();
+            result.setError(e.getMessage());
+            return result;
+        }
     }
 
     /**

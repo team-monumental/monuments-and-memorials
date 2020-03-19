@@ -188,12 +188,12 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         this.newDate = newDate;
     }
 
-    public boolean getNewIsTemporary() {
+    public Boolean getNewIsTemporary() {
         return this.newIsTemporary;
     }
 
-    public void setNewIsTemporary(boolean temporary) {
-        this.newIsTemporary = temporary;
+    public void setNewIsTemporary(Boolean newIsTemporary) {
+        this.newIsTemporary = newIsTemporary;
     }
 
     public String getUpdatedReferenceUrlsByIdJson() {

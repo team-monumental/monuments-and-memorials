@@ -1,7 +1,6 @@
 package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
-import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
@@ -85,24 +84,6 @@ public class SuggestionController {
     }
 
     /**
-     * Determine which rows in the specified .csv (or .csv within .zip) file are valid
-     * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
-     * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
-     */
-    @PostMapping("/api/suggestion/bulk-create/validate")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
-        try {
-            BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
-        } catch (InvalidZipException | IOException e) {
-            MonumentBulkValidationResult result = new MonumentBulkValidationResult();
-            result.setError(e.getMessage());
-            return result;
-        }
-    }
-
-    /**
      * Create a new Suggestion for bulk-creating Monuments
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return BulkCreateMonumentSuggestion - The newly created BulkCreateMonumentSuggestion object
@@ -151,7 +132,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/bulk-create/{id}")
-    @PreAuthorize(Authorization.isResearcherOrAbove)
+    //@PreAuthorize(Authorization.isResearcherOrAbove)
     public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findBulkCreateSuggestion(id);
@@ -250,27 +231,29 @@ public class SuggestionController {
     /**
      * Reject a BulkCreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the BulkCreateMonumentSuggestion to reject
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/bulk-create/{id}/reject")
-    @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Map<String, Boolean> rejectBulkCreateSuggestion(@PathVariable("id") Integer id)
+    //@PreAuthorize(Authorization.isResearcherOrAbove)
+    public BulkCreateMonumentSuggestion rejectBulkCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);
 
         bulkCreateSuggestion.setIsRejected(true);
         this.createSuggestionRepository.saveAll(bulkCreateSuggestion.getCreateSuggestions());
-        this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
+        bulkCreateSuggestion = this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
 
         // Remove images from temporary S3 folder
         for (CreateMonumentSuggestion createSuggestion : bulkCreateSuggestion.getCreateSuggestions()) {
-            for (String imageUrl : createSuggestion.getImages()) {
-                this.awsS3Service.deleteObject(AwsS3Service.getObjectKey(imageUrl, true));
+            if (createSuggestion.getImages() != null) {
+                for (String imageUrl : createSuggestion.getImages()) {
+                    this.awsS3Service.deleteObject(AwsS3Service.getObjectKey(imageUrl, true));
+                }
             }
         }
 
-        return Map.of("success", true);
+        return bulkCreateSuggestion;
     }
 
     /**
@@ -312,6 +295,9 @@ public class SuggestionController {
         if (optional.isEmpty()) {
             throw new ResourceNotFoundException("The requested Suggestion does not exist");
         }
-        return optional.get();
+        BulkCreateMonumentSuggestion bulkCreateSuggestion = optional.get();
+
+        bulkCreateSuggestion.setCreateSuggestions(this.createSuggestionRepository.getAllByBulkCreateSuggestionId(bulkCreateSuggestion.getId()));
+        return bulkCreateSuggestion;
     }
 }

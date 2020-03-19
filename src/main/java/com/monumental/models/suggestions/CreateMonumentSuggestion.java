@@ -199,11 +199,11 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         this.inscription = inscription;
     }
 
-    public boolean getIsTemporary() {
+    public Boolean getIsTemporary() {
         return this.isTemporary;
     }
 
-    public void setIsTemporary(boolean isTemporary) {
+    public void setIsTemporary(Boolean isTemporary) {
         this.isTemporary = isTemporary;
     }
 
