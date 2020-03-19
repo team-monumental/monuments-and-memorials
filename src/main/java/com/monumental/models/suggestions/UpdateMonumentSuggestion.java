@@ -49,7 +49,7 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     private String newDate;
 
     @Column(name = "new_is_temporary")
-    private boolean newIsTemporary;
+    private Boolean newIsTemporary;
 
     @Column(name = "updated_reference_urls_by_id_json")
     private String updatedReferenceUrlsByIdJson;

@@ -67,12 +67,12 @@ public class SuggestionController {
      * Create a new Suggestion for updating a Monument, if it exists
      * @param monumentId - Integer ID of the Monument to suggest the update for
      * @param updateSuggestion - UpdateMonumentSuggestion object representing the updated Monument
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object just saved
      * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
      */
     @PostMapping("/api/suggestion/update")
     @PreAuthorize(Authentication.isAuthenticated)
-    public Map<String, Boolean> suggestMonumentUpdate(@RequestParam Integer monumentId,
+    public UpdateMonumentSuggestion suggestMonumentUpdate(@RequestParam Integer monumentId,
                                                       @RequestBody UpdateMonumentSuggestion updateSuggestion) {
         Optional<Monument> optional = this.monumentRepository.findById(monumentId);
         if (optional.isEmpty()) {
@@ -81,9 +81,7 @@ public class SuggestionController {
         Monument monument = optional.get();
 
         updateSuggestion.setMonument(monument);
-        this.updateSuggestionRepository.save(updateSuggestion);
-
-        return Map.of("success", true);
+        return this.updateSuggestionRepository.save(updateSuggestion);
     }
 
     /**
@@ -238,18 +236,15 @@ public class SuggestionController {
     /**
      * Reject an UpdateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the UpdateMonumentSuggestion to reject
-     * @return Map<String, Boolean> - Map of result String to actual result
+     * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/update/{id}/reject")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Map<String, Boolean> rejectUpdateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public UpdateMonumentSuggestion rejectUpdateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
-
         updateSuggestion.setIsRejected(true);
-        this.updateSuggestionRepository.save(updateSuggestion);
-
-        return Map.of("success", true);
+        return this.updateSuggestionRepository.save(updateSuggestion);
     }
 
     /**
