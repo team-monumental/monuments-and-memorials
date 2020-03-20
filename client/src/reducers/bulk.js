@@ -1,11 +1,11 @@
 import {
-    BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR,
-    BULK_VALIDATE_MONUMENTS_PENDING, BULK_VALIDATE_MONUMENTS_SUCCESS, BULK_VALIDATE_MONUMENTS_ERROR
+    BULK_SUGGESTION_CREATE_PENDING, BULK_SUGGESTION_CREATE_SUCCESS, BULK_SUGGESTION_CREATE_ERROR,
+    BULK_SUGGESTION_VALIDATE_PENDING, BULK_SUGGESTION_VALIDATE_SUCCESS, BULK_SUGGESTION_VALIDATE_ERROR
 } from '../constants';
 
 const initialState = {
-    bulkCreateMonumentsPending: false,
-    bulkValidateMonumentsPending: false,
+    bulkSuggestionCreatePending: false,
+    bulkSuggestionValidatePending: false,
     result: {},
     error: null
 };
@@ -13,39 +13,39 @@ const initialState = {
 // Tracks the progress for bulk creating Monuments via CSV or .zip upload for the MonumentBulkCreatePage
 export default function bulkCreatePage(state = initialState, action) {
     switch (action.type) {
-        case BULK_CREATE_MONUMENTS_PENDING:
+        case BULK_SUGGESTION_CREATE_PENDING:
             return {
                 ...state,
-                bulkCreateMonumentsPending: true,
+                bulkSuggestionCreatePending: true,
                 createProgress: action.progress
             };
-        case BULK_CREATE_MONUMENTS_SUCCESS:
+        case BULK_SUGGESTION_CREATE_SUCCESS:
             return {
                 ...state,
-                bulkCreateMonumentsPending: false,
+                bulkSuggestionCreatePending: false,
                 createResult: action.payload
             };
-        case BULK_CREATE_MONUMENTS_ERROR:
+        case BULK_SUGGESTION_CREATE_ERROR:
             return {
                 ...state,
-                bulkCreateMonumentsPending: false,
+                bulkSuggestionCreatePending: false,
                 createError: action.error
             };
-        case BULK_VALIDATE_MONUMENTS_PENDING:
+        case BULK_SUGGESTION_VALIDATE_PENDING:
             return {
                 ...state,
-                bulkValidateMonumentsPending: true
+                bulkSuggestionValidatePending: true
             };
-        case BULK_VALIDATE_MONUMENTS_SUCCESS:
+        case BULK_SUGGESTION_VALIDATE_SUCCESS:
             return {
                 ...state,
-                bulkValidateMonumentsPending: false,
+                bulkSuggestionValidatePending: false,
                 validationResult: action.payload
             };
-        case BULK_VALIDATE_MONUMENTS_ERROR:
+        case BULK_SUGGESTION_VALIDATE_ERROR:
             return {
                 ...state,
-                bulkValidateMonumentsPending: false,
+                bulkSuggestionValidatePending: false,
                 validationError: action.error
             };
         default:

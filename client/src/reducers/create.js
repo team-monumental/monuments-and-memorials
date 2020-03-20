@@ -1,29 +1,29 @@
-import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
+import { CREATE_SUGGESTION_PENDING, CREATE_SUGGESTION_SUCCESS, CREATE_SUGGESTION_ERROR } from '../constants';
 
 const initialState = {
-    createMonumentPending : false,
-    monument: {},
+    createSuggestionPending : false,
+    suggestion: {},
     createError: null
 };
 
 // Tracks the progress for creating a new Monument for the CreatePage
 export default function createPage(state = initialState, action) {
     switch (action.type) {
-        case CREATE_MONUMENT_PENDING:
+        case CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
-                createMonumentPending: true
+                createSuggestionPending: true
             };
-        case CREATE_MONUMENT_SUCCESS:
+        case CREATE_SUGGESTION_SUCCESS:
             return {
                 ...state,
-                createMonumentPending: false,
-                monument: action.payload
+                createSuggestionPending: false,
+                suggestion: action.payload
             };
-        case CREATE_MONUMENT_ERROR:
+        case CREATE_SUGGESTION_ERROR:
             return {
                 ...state,
-                createMonumentPending: false,
+                createSuggestionPending: false,
                 createError: action.error
             };
         default:

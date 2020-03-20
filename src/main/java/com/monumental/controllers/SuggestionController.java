@@ -1,6 +1,7 @@
 package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
+import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
@@ -83,12 +84,30 @@ public class SuggestionController {
     }
 
     /**
+     * Determine which rows in the specified .csv (or .csv within .zip) file are valid
+     * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
+     * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
+     */
+    @PostMapping("/api/suggestion/bulk/validate")
+    @PreAuthorize(Authentication.isAuthenticated)
+    public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
+        try {
+            BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+        } catch (InvalidZipException | IOException e) {
+            MonumentBulkValidationResult result = new MonumentBulkValidationResult();
+            result.setError(e.getMessage());
+            return result;
+        }
+    }
+
+    /**
      * Create a new Suggestion for bulk-creating Monuments
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return BulkCreateMonumentSuggestion - The newly created BulkCreateMonumentSuggestion object
      * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
      */
-    @PostMapping("/api/suggestion/bulk-create")
+    @PostMapping("/api/suggestion/bulk")
     @PreAuthorize(Authentication.isAuthenticated)
     public BulkCreateMonumentSuggestion suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
             throws IOException {

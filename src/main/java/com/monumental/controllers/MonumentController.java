@@ -141,24 +141,6 @@ public class MonumentController {
     }
 
     /**
-     * Determine which rows in the specified .csv (or .csv within .zip) file are valid
-     * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
-     * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
-     */
-    @PostMapping("/api/monument/bulk/validate")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
-        try {
-            BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
-        } catch (InvalidZipException | IOException e) {
-            MonumentBulkValidationResult result = new MonumentBulkValidationResult();
-            result.setError(e.getMessage());
-            return result;
-        }
-    }
-
-    /**
      * Check the progress of a create bulk monuments job
      * @param id - Id of the job to check
      * @return AsyncJob - Object containing the Id of the job and the current value of the Future object
