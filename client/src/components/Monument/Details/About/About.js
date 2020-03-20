@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import { prettyPrintDate } from '../../../../utils/string-util';
+import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
 import moment from 'moment';
 import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButton';
 
@@ -165,7 +165,12 @@ export default class About extends React.Component {
                 <div>
                     <span className="detail-label">Contributors:&nbsp;</span>
                     <ul>
-                        {contributions.map(contribution => <li key={contribution.id}>{contribution.submittedBy}</li>)}
+                        {contributions.map(contribution => {
+                            if (contribution.submittedByUser) {
+                                contribution.submittedBy = getUserFullName(contribution.submittedByUser);
+                            }
+                            return (<li key={contribution.id}>{contribution.submittedBy}</li>);
+                        })}
                     </ul>
                 </div>
             )

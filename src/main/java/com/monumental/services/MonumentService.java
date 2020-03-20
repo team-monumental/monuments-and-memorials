@@ -287,6 +287,7 @@ public class MonumentService extends ModelService<Monument> {
                 return;
             case 1:
                 query.where(predicates.get(0));
+                break;
             default:
                 Predicate[] predicatesArray = new Predicate[predicates.size()];
                 predicatesArray = predicates.toArray(predicatesArray);
@@ -296,7 +297,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Generates a search for Monuments based on matching the specified parameters
-     * May make use of the pg_trgm similarity or ST_DWithin functions
+     * May make use of the pg_trgm similarity or postgis ST_DWithin functions
      * @param searchQuery - The string search query that will get passed into the pg_tgrm similarity function
      * @param page - The page number of Monument results to return
      * @param limit - The maximum number of Monument results to return
@@ -338,6 +339,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Count the total number of results for a Monument search
+     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, List, List, SortType, Date, Date, Integer, boolean)
      */
     public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
                                       List<String> tags, List<String> materials, Date start, Date end, Integer decade, boolean onlyActive) {

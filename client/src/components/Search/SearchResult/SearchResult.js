@@ -2,7 +2,8 @@ import React from 'react';
 import './SearchResult.scss';
 import { Card } from 'react-bootstrap';
 import Tags from '../../Tags/Tags';
-import Address from "../../Monument/Details/Address/Address";
+import Address from '../../Monument/Details/Address/Address';
+import { Link } from 'react-router-dom';
 
 /**
  * A condensed Monument info card for use in search results
@@ -27,9 +28,9 @@ export default class SearchResult extends React.Component {
                 }
                 <Card>
                     <Card.Title>
-                        <a href={`${monumentUri}/${monument.id}`}>
+                        <Link to={`${monumentUri}/${monument.id}`}>
                             {title}
-                        </a>
+                        </Link>
                     </Card.Title>
                     <Card.Body>
                         <Address monument={monument}/>

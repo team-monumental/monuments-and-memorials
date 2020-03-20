@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ManageMonuments from '../../../components/AdminPanel/ManageMonuments/ManageMonuments';
 import fetchMonument from '../../../actions/monument';
 import { deleteMonument, toggleMonumentIsActive } from '../../../actions/update-monument';
+import { Helmet } from 'react-helmet';
 
 class ManageMonumentsPage extends React.Component {
 
@@ -49,10 +50,11 @@ class ManageMonumentsPage extends React.Component {
 
     render() {
         const { mode, monument, deleteMonument } = this.props;
-        return (
+        return (<>
+            <Helmet title={`Manage | Monuments and Memorials`}/>
             <ManageMonuments mode={mode} monument={monument} onToggleActive={active => this.handleToggleActive(active)}
                              onDeleteMonument={() => this.handleDeleteMonument()} deleted={!deleteMonument.pending && deleteMonument.success}/>
-        );
+        </>);
     }
 }
 

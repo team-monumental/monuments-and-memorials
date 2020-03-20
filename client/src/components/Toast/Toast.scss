@@ -1,12 +1,19 @@
 @import "../../theme.scss";
 
-.toast.danger {
-    .toast-header {
-        background-color: $danger;
-        color: white;
-        button.close {
+.toast {
+    &.success, &.primary, &.danger {
+        .toast-header {
             color: white;
-            opacity: 1;
+            button.close {
+                color: white;
+                opacity: 1;
+            }
         }
+    }
+    &.danger .toast-header {
+        background-color: $danger;
+    }
+    &.success .toast-header, &.primary .toast-header {
+        background-color: $primary;
     }
 }

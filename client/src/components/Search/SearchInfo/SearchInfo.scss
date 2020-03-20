@@ -1,0 +1,28 @@
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../node_modules/bootstrap/scss/mixins";
+
+.search-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    div {
+        margin-top: 3%;
+        @include media-breakpoint-up(md) {
+            margin-top: 0%;
+        }
+    }
+
+    & > * {
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+    }
+
+    select, input {
+        padding: 0.25rem 0.4rem;
+        height: min-content;
+    }
+}

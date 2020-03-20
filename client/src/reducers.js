@@ -1,7 +1,7 @@
 import toasts from './reducers/toasts';
 import errors from './reducers/errors';
 import { monumentPage, createFavorite, deleteFavorite } from './reducers/monument';
-import searchPage from './reducers/search';
+import { searchPage, userSearchPage } from './reducers/search';
 import mapPage from './reducers/map';
 import { tagsSearch, tagsLoad, materialsLoad, materialsSearch } from './reducers/tagsSearch';
 import createPage from './reducers/create'
@@ -10,7 +10,7 @@ import tagDirectoryPage from './reducers/tagDirectory';
 import aboutPage from './reducers/about-page';
 import { signup, login, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset } from './reducers/authentication';
 import { updateMonumentPage, toggleMonumentIsActive, deleteMonument } from './reducers/update-monument';
-import { updateUser, confirmEmailChange, fetchFavorites } from './reducers/user';
+import { updateUser, confirmEmailChange, fetchFavorites, fetchUser } from './reducers/user';
 import duplicateMonuments from './reducers/duplicates';
 
 // These reducers are loaded into redux in index.js
@@ -20,7 +20,7 @@ const Reducers = {
     materialsLoad, createPage, bulkCreatePage, tagDirectoryPage, aboutPage, updateMonumentPage,
     login, signup, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset,
     updateUser, confirmEmailChange, createFavorite, deleteFavorite, fetchFavorites, duplicateMonuments,
-    toggleMonumentIsActive, deleteMonument
+    toggleMonumentIsActive, deleteMonument, userSearchPage, fetchUser
 };
 
 export default Reducers;

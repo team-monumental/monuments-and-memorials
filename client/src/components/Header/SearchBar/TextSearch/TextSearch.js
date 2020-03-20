@@ -10,9 +10,9 @@ export default class TextSearch extends React.Component {
         super(props);
         this.state = {
             searchQuery: props.value,
-            searchPlaceholder: ''
+            searchPlaceholder: props.placeholder || ''
         };
-        this.animateSearchPlaceholder();
+        if (!props.disableAnimation) this.animateSearchPlaceholder();
     }
 
     handleChange(event) {

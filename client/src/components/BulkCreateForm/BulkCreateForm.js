@@ -7,6 +7,7 @@ import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
 import moment from 'moment';
 import ExportToCsvButton from '../Export/ExportToCsvButton/ExportToCsvButton';
+import { capitalize } from '../../utils/string-util';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating Monuments
@@ -36,9 +37,7 @@ export default class BulkCreateForm extends React.Component {
                 {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
             ].map(field => {
                 return {
-                    label: field.name.split('_').map(word => {
-                        return word.substring(0, 1).toUpperCase() + word.substring(1)
-                    }).join(' '),
+                    label: capitalize(field.name.replace(/_/g, ' ')),
                     ...field
                 }
             })

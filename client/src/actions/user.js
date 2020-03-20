@@ -1,6 +1,7 @@
 import {
-    UPDATE_USER_ERROR, UPDATE_USER_PENDING, UPDATE_USER_SUCCESS, UPDATE_USER_RESET,
-    UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PENDING, UPDATE_EMAIL_SUCCESS, FETCH_FAVORITES_PENDING, FETCH_FAVORITES_SUCCESS, FETCH_FAVORITES_ERROR
+    UPDATE_USER_ERROR, UPDATE_USER_PENDING, UPDATE_USER_SUCCESS, UPDATE_USER_RESET, UPDATE_EMAIL_ERROR,
+    UPDATE_EMAIL_PENDING, UPDATE_EMAIL_SUCCESS, FETCH_FAVORITES_PENDING, FETCH_FAVORITES_SUCCESS,
+    FETCH_FAVORITES_ERROR, FETCH_USER_PENDING, FETCH_USER_SUCCESS, FETCH_USER_ERROR
 } from '../constants';
 import { reset, error, pending, success } from '../utils/action-util';
 import { get, post, put } from '../utils/api-util';
@@ -25,6 +26,12 @@ const actions = {
         success: FETCH_FAVORITES_SUCCESS,
         error: FETCH_FAVORITES_ERROR,
         uri: '/api/favorites'
+    },
+    fetch: {
+        pending: FETCH_USER_PENDING,
+        success: FETCH_USER_SUCCESS,
+        error: FETCH_USER_ERROR,
+        uri: '/api/user'
     }
 };
 
@@ -75,9 +82,25 @@ export function fetchFavorites() {
         dispatch(pending(actions.favorites));
         try {
             const result = await get(actions.favorites.uri);
-            dispatch(success(actions.favorites, {result: result}));
+            dispatch(success(actions.favorites, {result}));
         } catch (err) {
             dispatch(error(actions.favorites, err));
         }
     };
+}
+
+/**
+ * Fetch a user record. This is different than getting the logged in user - see authentication.getUserSession for that
+ * This is used in the admin panel to get other users
+ */
+export function fetchUser(id) {
+    return async dispatch => {
+        dispatch(pending(actions.fetch));
+        try {
+            const result = await get(`${actions.fetch.uri}/${id}`);
+            dispatch(success(actions.fetch, {result}));
+        } catch (err) {
+            dispatch(error(actions.fetch, err));
+        }
+    }
 }
