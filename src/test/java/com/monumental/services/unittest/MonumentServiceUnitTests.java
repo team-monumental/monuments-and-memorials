@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNull;
 public class MonumentServiceUnitTests {
 
     @Autowired
-    MonumentService monumentService;
+    private MonumentService monumentService;
 
     /* createMonumentPoint Tests */
 
