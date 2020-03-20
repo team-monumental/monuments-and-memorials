@@ -22,7 +22,7 @@ class MonumentBulkCreatePage extends React.Component {
             showingErrorModal: false,
             showValidationResults: false,
             showCreateResults: false,
-            term: Role.RESEARCHER_OR_ABOVE.includes(props.role) ? 'Create' : 'Suggest'
+            term: Role.RESEARCHER_OR_ABOVE.includes(props.role.toUpperCase()) ? 'Create' : 'Suggest'
         };
     }
 
@@ -68,7 +68,7 @@ class MonumentBulkCreatePage extends React.Component {
 
         return (
             <div className="bulk page d-flex justify-content-center">
-                <Helmet title="Bulk Create | Monuments and Memorials"/>
+                <Helmet title={`Bulk ${term} | Monuments and Memorials`}/>
                 <Spinner show={bulkSuggestionValidatePending}/>
                 <BulkCreateForm
                     onValidationSubmit={(form) => this.handleValidationSubmit(form)}
