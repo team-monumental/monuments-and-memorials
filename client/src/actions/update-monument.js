@@ -34,7 +34,7 @@ const actions = {
 /**
  * Queries for a Monument and all related records to be displayed on the Update Monument Page
  */
-export default function fetchMonumentForUpdate(id) {
+export function fetchMonumentForUpdate(id) {
     return async dispatch => {
         dispatch(pending(actions.fetch));
 
