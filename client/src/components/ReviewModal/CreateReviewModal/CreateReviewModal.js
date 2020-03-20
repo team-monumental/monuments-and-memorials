@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { prettyPrintDate } from '../../../utils/string-util';
 
 /**
- * Presentational component for the Modal shown before a Monument Creation is completed
+ * Presentational component for the Modal shown before a Monument Create Suggestion is completed
  */
 export default class CreateReviewModal extends React.Component {
 

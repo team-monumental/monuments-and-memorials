@@ -963,7 +963,7 @@ export default class CreateOrUpdateForm extends React.Component {
         return (
             <div className="create-form-container">
                 {monument
-                    ? <div className="h5 update">Update an existing Monument or Memorial</div>
+                    ? <div className="h5 update">Suggest an update to an existing Monument or Memorial</div>
                     : <div className="h5 create">Suggest a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>

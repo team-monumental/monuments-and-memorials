@@ -34,6 +34,13 @@ export default class AboutInformation extends React.Component {
             }} to="/map" key="map">click here</NavLink>
         );
 
+        let loginLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace('/login');
+            }} to="/login" key="login">click here</NavLink>
+        );
+
         const readMoreContributorsLink = (
             <div className="more-contributors-link"
                  onClick={() => this.handleMoreContributorsClick()}>
@@ -53,15 +60,14 @@ export default class AboutInformation extends React.Component {
                 <h1>
                     About Monuments + Memorials
                 </h1>
-                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
                     <span className="font-italic">Monuments + Memorials</span> is a crowd-sourced initiative developed at
                     the Rochester Institute of Technology under the direction of Dr. Juilee Decker. Students in her spring
                     2019 history course <span className="font-italic">Monuments & Memory</span> began data collection by
                     examining 26 states or territories in the US. The following fall, software engineering students in the
                     Golisano College of Computer and Information Sciences built this web application to house data and to
-                    generate further interest and data collection. To view monuments and memorials, {mapNavLink}. To enter
-                    data, click here.
+                    generate further interest and data collection. To view monuments and memorials, {mapNavLink}. To suggest
+                    data, {loginLink}.
                 </p>
                 <h3 className="font-italic">
                     Background:
@@ -86,9 +92,8 @@ export default class AboutInformation extends React.Component {
                 <h3 className="font-italic">
                     Contributors:
                 </h3>
-                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
-                    We invite contributions from anyone. If you are interested in contributing, please click here. Your
+                    We invite contributions from anyone. If you are interested in contributing, please {loginLink}. Your
                     submissions will be recognized in our list of contributors:
                 </p>
 

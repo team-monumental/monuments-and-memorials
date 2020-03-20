@@ -18,7 +18,7 @@ export default class AdminPanel extends React.Component {
                 </div>
                 <div className="viewport">
                     <ProtectedRoute exact path="/panel" component={AdminPanelHome} customProps={{role}}/>
-                    <ProtectedRoute exact path="/panel/bulk" component={MonumentBulkCreatePage}/>
+                    <ProtectedRoute exact path="/panel/bulk" component={MonumentBulkCreatePage} customProps={{role}}/>
                     <ProtectedRoute exact path="/panel/manage/monuments" component={ManageMonumentsPage}/>
                     <ProtectedRoute exact path="/panel/manage/monuments/search" component={ManageMonumentsPage} customProps={{mode: 'search'}}/>
                     <ProtectedRoute exact path="/panel/manage/monuments/monument/:monumentId" component={ManageMonumentsPage} customProps={{mode: 'monument'}}/>

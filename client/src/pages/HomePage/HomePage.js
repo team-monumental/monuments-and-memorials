@@ -30,6 +30,13 @@ class HomePage extends React.Component {
             }} to='/map' key='map'>click here</NavLink>
         );
 
+        let loginLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace('/login');
+            }} to="/login" key="login">click here</NavLink>
+        );
+
         return (
             <>
                 <Helmet title="Monuments and Memorials"/>
@@ -51,7 +58,7 @@ class HomePage extends React.Component {
                             Thank you for visiting <span className='font-italic'>Monuments + Memorials</span>, a crowd-sourced initiative developed at Rochester Institute of Technology.
                             Begun in the spring 2019 with data collection and launched as a site in fall 2019, <span className='font-italic'>Monuments + Memorials</span> is a long-term
                             look at monuments, memorials, and memory in the US. To view monuments and memorials, {mapNavLink}. To enter
-                            data, click here.
+                            data, {loginLink}.
                             <br/>
                             <br/>
                             Our goal is to map every monument or memorial in the United States and its inhabited territories (American Samoa, Guam,
