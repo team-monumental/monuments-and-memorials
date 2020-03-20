@@ -47,7 +47,7 @@ public class SearchController {
      * @param distance - The distance from the comparison point to search in, units of miles
      * @param sortType - The way in which to sort the results by
      * @param onlyActive - If true, only active monuments will be searched. If false, both inactive and active will be searched
-     * @return            Matching Monuments based on the search criteria
+     * @return List<Monument> - Matching Monuments based on the search criteria
      * @throws AccessDeniedException - If trying to search for inactive monuments without being a partner or above
      * @throws UnauthorizedException - If trying to search for inactive monuments and not logged in
      */
@@ -134,7 +134,7 @@ public class SearchController {
      * @param role - The user role to filter by
      * @param page - The User results page number
      * @param limit - The maximum number of User results
-     * @return            Matching Users based on the search criteria
+     * @return List<User> - Matching Users based on the search criteria
      */
     @GetMapping("/api/search/users")
     @PreAuthorize(Authorization.isAdmin)

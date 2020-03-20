@@ -2,15 +2,11 @@ package com.monumental.services;
 
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.CreateUserRequest;
-import com.monumental.controllers.responses.UserResponse;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
-import com.monumental.models.Contribution;
-import com.monumental.models.Monument;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
-import com.monumental.repositories.ContributionRepository;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
@@ -27,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.*;
@@ -49,9 +44,6 @@ public class UserService extends ModelService<User> {
 
     @Autowired
     VerificationTokenRepository tokenRepository;
-
-    @Autowired
-    ContributionRepository contributionRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

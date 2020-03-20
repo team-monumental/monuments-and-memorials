@@ -6,6 +6,7 @@ import SearchBar from '../../Header/SearchBar/SearchBar';
 import SearchPage from '../../../pages/SearchPage/SearchPage';
 import ManageMonument from './ManageMonument/ManageMonument';
 import UpdateMonumentPage from '../../../pages/UpdateMonumentPage/UpdateMonumentPage';
+import { Helmet } from 'react-helmet';
 
 class ManageMonuments extends React.Component {
 
@@ -31,6 +32,7 @@ class ManageMonuments extends React.Component {
                                         hideMap/>
                         </>}
                         {mode === 'monument' && <>
+                            <Helmet title={`Manage ${monument.title} | Monuments and Memorials`}/>
                             <ManageMonument monument={monument} onToggleActive={onToggleActive} onDeleteMonument={onDeleteMonument}
                                             deleted={deleted}/>
                         </>}

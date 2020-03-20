@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import UserSearch from '../../../../components/AdminPanel/ManageUsers/UserSearch/UserSearch';
-import { Helmet } from 'react-helmet/es/Helmet';
+import { Helmet } from 'react-helmet';
 import Spinner from '../../../../components/Spinner/Spinner';
 import { searchUsers } from '../../../../actions/search';
 import search from '../../../../utils/search';

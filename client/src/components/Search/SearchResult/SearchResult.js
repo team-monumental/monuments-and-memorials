@@ -2,7 +2,7 @@ import React from 'react';
 import './SearchResult.scss';
 import { Card } from 'react-bootstrap';
 import Tags from '../../Tags/Tags';
-import Address from "../../Monument/Details/Address/Address";
+import Address from '../../Monument/Details/Address/Address';
 import { Link } from 'react-router-dom';
 
 /**

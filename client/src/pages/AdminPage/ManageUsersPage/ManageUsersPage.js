@@ -15,7 +15,6 @@ class ManageUsersPage extends React.Component {
         };
     }
 
-
     static mapStateToProps(state) {
         return {
             fetchUser: state.fetchUser,

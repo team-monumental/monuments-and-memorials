@@ -3,6 +3,7 @@ import { capitalize, getUserFullName, prettyPrintDate } from '../../../../utils/
 import { Link } from 'react-router-dom';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { Role } from '../../../../utils/authentication-util';
+import { Helmet } from 'react-helmet';
 
 export default class ManageUser extends React.Component {
 
@@ -31,7 +32,7 @@ export default class ManageUser extends React.Component {
             if (confirm) {
                 this.setState({confirmAdminModalOpen: false});
             }
-            onChangeRole(role)
+            onChangeRole(role);
         }
     }
 
@@ -48,6 +49,7 @@ export default class ManageUser extends React.Component {
 
         return (
             <div className="manage-user">
+                <Helmet title={`Manage ${getUserFullName(user)} | Monuments and Memorials`}/>
                 <div className="mb-2">
                     Name: {getUserFullName(user)}
                 </div>
