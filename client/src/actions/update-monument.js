@@ -1,7 +1,8 @@
 import {
-    FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, UPDATE_SUGGESTION_PENDING,
-    UPDATE_SUGGESTION_SUCCESS, UPDATE_SUGGESTION_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING, TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
-    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
+    FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, CREATE_UPDATE_SUGGESTION_PENDING,
+    CREATE_UPDATE_SUGGESTION_SUCCESS, CREATE_UPDATE_SUGGESTION_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
+    TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS, TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS,
+    DELETE_MONUMENT_ERROR
 } from '../constants';
 import { addError } from './errors';
 import { get, post, put, del } from '../utils/api-util';
@@ -13,10 +14,10 @@ const actions = {
         success: FETCH_MONUMENT_UPDATE_SUCCESS,
         error: FETCH_MONUMENT_UPDATE_ERROR
     },
-    update: {
-        pending: UPDATE_SUGGESTION_PENDING,
-        success: UPDATE_SUGGESTION_SUCCESS,
-        error: UPDATE_SUGGESTION_ERROR
+    createUpdateSuggestion: {
+        pending: CREATE_UPDATE_SUGGESTION_PENDING,
+        success: CREATE_UPDATE_SUGGESTION_SUCCESS,
+        error: CREATE_UPDATE_SUGGESTION_ERROR
     },
     toggleActive: {
         pending: TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
@@ -50,18 +51,18 @@ export default function fetchMonumentForUpdate(id) {
 }
 
 /**
- * Send a request to the server to create an UpdateMonumentSuggestion for the Monument with the specified ID to have
- * the attributes contained in suggestion
+ * Send a request to the server to create an UpdateMonumentSuggestion for the Monument with the specified monumentId to
+ * have the attributes contained in updateSuggestion
  */
-export function updateSuggestion(id, suggestion) {
+export function createUpdateSuggestion(monumentId, updateSuggestion) {
     return async dispatch => {
-        dispatch(pending(actions.update));
+        dispatch(pending(actions.createUpdateSuggestion));
 
         try {
-            const updateSuggestion = await post(`/api/suggestion/update/${id}`, suggestion);
-            dispatch(success(actions.update, updateSuggestion));
+            const createdUpdateSuggestion = await post(`/api/suggestion/update/${monumentId}`, updateSuggestion);
+            dispatch(success(actions.createUpdateSuggestion, createdUpdateSuggestion));
         } catch (err) {
-            dispatch(error(actions.update, err));
+            dispatch(error(actions.createUpdateSuggestion, err));
             dispatch(addError({
                 message: err.message
             }));

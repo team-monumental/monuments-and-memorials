@@ -149,7 +149,7 @@ public class SuggestionController {
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
-    @GetMapping("/api/suggestion/bulk-create/{id}")
+    @GetMapping("/api/suggestion/bulk/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
@@ -200,7 +200,7 @@ public class SuggestionController {
      * @return AsyncJob - Object containing the ID of the job created and the current value of the Future object
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
-    @PutMapping("/api/suggestion/bulk-create/{id}/approve")
+    @PutMapping("/api/suggestion/bulk/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public AsyncJob approveBulkCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);
@@ -252,7 +252,7 @@ public class SuggestionController {
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
-    @PutMapping("/api/suggestion/bulk-create/{id}/reject")
+    @PutMapping("/api/suggestion/bulk/{id}/reject")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public BulkCreateMonumentSuggestion rejectBulkCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {

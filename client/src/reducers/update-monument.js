@@ -2,9 +2,9 @@ import {
     FETCH_MONUMENT_UPDATE_PENDING,
     FETCH_MONUMENT_UPDATE_SUCCESS,
     FETCH_MONUMENT_UPDATE_ERROR,
-    UPDATE_SUGGESTION_PENDING,
-    UPDATE_SUGGESTION_SUCCESS,
-    UPDATE_SUGGESTION_ERROR,
+    CREATE_UPDATE_SUGGESTION_PENDING,
+    CREATE_UPDATE_SUGGESTION_SUCCESS,
+    CREATE_UPDATE_SUGGESTION_ERROR,
     TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
     TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
     TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
@@ -13,7 +13,7 @@ import basicReducer from '../utils/basic-reducer';
 
 const initialState = {
     fetchMonumentForUpdatePending: false,
-    updateSuggestionPending: false,
+    createUpdateSuggestionPending: false,
     monument: {},
     updateSuggestion: {},
     error: null
@@ -38,21 +38,21 @@ export function updateMonumentPage(state = initialState, action) {
                 fetchMonumentForUpdatePending: false,
                 error: action.error
             };
-        case UPDATE_SUGGESTION_PENDING:
+        case CREATE_UPDATE_SUGGESTION_PENDING:
             return {
                 ...state,
-                updateSuggestionPending: true,
+                createUpdateSuggestionPending: true,
             };
-        case UPDATE_SUGGESTION_SUCCESS:
+        case CREATE_UPDATE_SUGGESTION_SUCCESS:
             return {
                 ...state,
-                updateSuggestionPending: false,
+                createUpdateSuggestionPending: false,
                 updateSuggestion: action.payload
             };
-        case UPDATE_SUGGESTION_ERROR:
+        case CREATE_UPDATE_SUGGESTION_ERROR:
             return {
                 ...state,
-                updateSuggestionPending: false,
+                createUpdateSuggestionPending: false,
                 error: action.error
             };
         default:

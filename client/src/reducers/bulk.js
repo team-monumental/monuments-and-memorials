@@ -1,6 +1,6 @@
 import {
-    BULK_SUGGESTION_CREATE_PENDING, BULK_SUGGESTION_CREATE_SUCCESS, BULK_SUGGESTION_CREATE_ERROR,
-    BULK_SUGGESTION_VALIDATE_PENDING, BULK_SUGGESTION_VALIDATE_SUCCESS, BULK_SUGGESTION_VALIDATE_ERROR
+    CREATE_BULK_SUGGESTION_PENDING, CREATE_BULK_SUGGESTION_SUCCESS, CREATE_BULK_SUGGESTION_ERROR,
+    VALIDATE_BULK_SUGGESTION_PENDING, VALIDATE_BULK_SUGGESTION_SUCCESS, VALIDATE_BULK_SUGGESTION_ERROR
 } from '../constants';
 
 const initialState = {
@@ -10,39 +10,39 @@ const initialState = {
     error: null
 };
 
-// Tracks the progress for bulk creating Monuments via CSV or .zip upload for the MonumentBulkCreatePage
+// Tracks the progress for creating a BulkCreateMonumentSuggestion for the MonumentBulkCreatePage
 export default function bulkCreatePage(state = initialState, action) {
     switch (action.type) {
-        case BULK_SUGGESTION_CREATE_PENDING:
+        case CREATE_BULK_SUGGESTION_PENDING:
             return {
                 ...state,
                 bulkSuggestionCreatePending: true,
                 createProgress: action.progress
             };
-        case BULK_SUGGESTION_CREATE_SUCCESS:
+        case CREATE_BULK_SUGGESTION_SUCCESS:
             return {
                 ...state,
                 bulkSuggestionCreatePending: false,
                 createResult: action.payload
             };
-        case BULK_SUGGESTION_CREATE_ERROR:
+        case CREATE_BULK_SUGGESTION_ERROR:
             return {
                 ...state,
                 bulkSuggestionCreatePending: false,
                 createError: action.error
             };
-        case BULK_SUGGESTION_VALIDATE_PENDING:
+        case VALIDATE_BULK_SUGGESTION_PENDING:
             return {
                 ...state,
                 bulkSuggestionValidatePending: true
             };
-        case BULK_SUGGESTION_VALIDATE_SUCCESS:
+        case VALIDATE_BULK_SUGGESTION_SUCCESS:
             return {
                 ...state,
                 bulkSuggestionValidatePending: false,
                 validationResult: action.payload
             };
-        case BULK_SUGGESTION_VALIDATE_ERROR:
+        case VALIDATE_BULK_SUGGESTION_ERROR:
             return {
                 ...state,
                 bulkSuggestionValidatePending: false,
