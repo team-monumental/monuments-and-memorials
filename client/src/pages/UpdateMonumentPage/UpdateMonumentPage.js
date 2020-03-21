@@ -54,8 +54,9 @@ class UpdateMonumentPage extends React.Component {
         const { dispatch } = this.props;
         const { form, monument } = this.state;
 
-        // First, upload the new images to S3 and save the URLs in the form
-        form.newImageUrls = await uploadImagesToS3(form.images);
+        // First, upload the new images to the temporary S3 folder and save the URLs in the form
+        const newImageObjectUrls = await uploadImagesToS3(form.images, true);
+        form.newImageUrlsJson = JSON.stringify(newImageObjectUrls);
 
         // Then, delete the deleted images from S3
         await deleteImagesFromS3(form.deletedImageUrls);

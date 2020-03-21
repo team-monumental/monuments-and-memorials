@@ -69,9 +69,9 @@ public class SuggestionController {
      * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object just saved
      * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
      */
-    @PostMapping("/api/suggestion/update")
+    @PostMapping("/api/suggestion/update/{id}")
     @PreAuthorize(Authentication.isAuthenticated)
-    public UpdateMonumentSuggestion suggestMonumentUpdate(@RequestParam Integer monumentId,
+    public UpdateMonumentSuggestion suggestMonumentUpdate(@PathVariable("id") Integer monumentId,
                                                       @RequestBody UpdateMonumentSuggestion updateSuggestion) {
         Optional<Monument> optional = this.monumentRepository.findById(monumentId);
         if (optional.isEmpty()) {

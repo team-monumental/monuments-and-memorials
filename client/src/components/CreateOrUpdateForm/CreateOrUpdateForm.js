@@ -427,6 +427,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
         }
 
+        // JSON fields
         createForm.referencesJson = JSON.stringify(createForm.references);
         createForm.materialsJson = JSON.stringify(createForm.materials);
         createForm.newMaterialsJson = JSON.stringify(createForm.newMaterials);
@@ -512,15 +513,15 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
-        return updateForm;
-    }
+        // JSON fields
+        updateForm.updatedReferenceUrlsByIdJson = JSON.stringify(updateForm.updatedReferencesUrlsById);
+        updateForm.newReferenceUrlsJson = JSON.stringify(updateForm.newReferenceUrls);
+        updateForm.deletedReferenceIdsJson = JSON.stringify(updateForm.deletedReferenceIds);
+        updateForm.deletedImageIdsJson = JSON.stringify(updateForm.deletedImageIds);
+        updateForm.newMaterialsJson = JSON.stringify(updateForm.newMaterials);
+        updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 
-    /**
-     * Send the form for updating a Monument to the onSubmit handler
-     */
-    submitUpdateForm(id) {
-        const { onSubmit } = this.props;
-        onSubmit(id, this.buildUpdateForm());
+        return updateForm;
     }
 
     handleInputChange(event) {

@@ -533,7 +533,7 @@ export default class UpdateReviewModal extends React.Component {
                         unchangedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, false));
                     break;
                 case 'month-year':
-                    if (oldMonumentYear !== newMonument.newYear &&
+                    if (oldMonumentYear !== newMonument.newYear ||
                         oldMonumentMonth !== newMonument.newMonth) {
                         changedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth, true));
                     }
