@@ -388,7 +388,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     /**
-     * Build the form object for creating a new Monument
+     * Build the form object for creating a new CreateMonumentSuggestion
      */
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
@@ -427,11 +427,17 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
         }
 
+        createForm.referencesJson = JSON.stringify(createForm.references);
+        createForm.materialsJson = JSON.stringify(createForm.materials);
+        createForm.newMaterialsJson = JSON.stringify(createForm.newMaterials);
+        createForm.tagsJson = JSON.stringify(createForm.tags);
+        createForm.newTagsJson = JSON.stringify(createForm.newTags);
+
         return createForm;
     }
 
     /**
-     * Build the form object for updating a Monument
+     * Build the form object for creating an UpdateMonumentSuggestion
      */
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,

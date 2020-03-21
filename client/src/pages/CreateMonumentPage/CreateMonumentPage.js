@@ -66,8 +66,9 @@ class CreateMonumentPage extends React.Component {
         const { dispatch } = this.props;
         const { form } = this.state;
 
-        // First, upload the images to S3 and save the URLs in the form
-        form.images = await uploadImagesToS3(form.images);
+        // First, upload the images to the temporary S3 folder and save the URLs in the form
+        const imageObjectUrls = await uploadImagesToS3(form.images, true);
+        form.imagesJson = JSON.stringify(imageObjectUrls);
 
         // Then, create the CreateMonumentSuggestion
         dispatch(createCreateSuggestion(form));
