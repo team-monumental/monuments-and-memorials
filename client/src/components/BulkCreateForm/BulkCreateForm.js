@@ -472,7 +472,7 @@ export default class BulkCreateForm extends React.Component {
                 </div>
                 {warningCount > 0 && errorCount === 0 &&
                     <div>
-                        If you choose to continue with warnings, the affected rows will still be
+                        If you choose to continue with warnings, the affected rows will still be&nbsp;
                         {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
                         updates later.
                     </div>

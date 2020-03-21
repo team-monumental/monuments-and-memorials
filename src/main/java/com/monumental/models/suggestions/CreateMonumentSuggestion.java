@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,7 +108,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     private BulkCreateMonumentSuggestion bulkCreateSuggestion;
 
     public CreateMonumentSuggestion() {
-
+        this.images = new ArrayList<>();
     }
 
     public String getTitle() {
