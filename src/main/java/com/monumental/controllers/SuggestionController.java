@@ -89,7 +89,7 @@ public class SuggestionController {
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
     @PostMapping("/api/suggestion/bulk/validate")
-    @PreAuthorize(Authentication.isAuthenticated)
+    @PreAuthorize(Authorization.isPartnerOrAbove)
     public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
         try {
             BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
@@ -108,7 +108,7 @@ public class SuggestionController {
      * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
      */
     @PostMapping("/api/suggestion/bulk")
-    @PreAuthorize(Authentication.isAuthenticated)
+    @PreAuthorize(Authorization.isPartnerOrAbove)
     public BulkCreateMonumentSuggestion suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
             throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
@@ -124,7 +124,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/create/{id}")
-    @PreAuthorize(Authorization.isResearcherOrAbove)
+    @PreAuthorize(Authentication.isAuthenticated)
     public CreateMonumentSuggestion getCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findCreateSuggestion(id);
@@ -137,7 +137,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/update/{id}")
-    @PreAuthorize(Authorization.isResearcherOrAbove)
+    @PreAuthorize(Authentication.isAuthenticated)
     public UpdateMonumentSuggestion getUpdateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findUpdateSuggestion(id);
@@ -150,7 +150,7 @@ public class SuggestionController {
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
      */
     @GetMapping("/api/suggestion/bulk/{id}")
-    @PreAuthorize(Authorization.isResearcherOrAbove)
+    @PreAuthorize(Authorization.isPartnerOrAbove)
     public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findBulkCreateSuggestion(id);

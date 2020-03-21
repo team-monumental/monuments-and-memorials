@@ -1,8 +1,6 @@
 package com.monumental.controllers;
 
-import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
-import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
@@ -14,7 +12,6 @@ import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import com.monumental.util.async.AsyncJob;
-import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -145,11 +141,12 @@ public class MonumentController {
      * @param id - Id of the job to check
      * @return AsyncJob - Object containing the Id of the job and the current value of the Future object
      */
-    @GetMapping("/api/monument/bulk/create/progress/{id}")
+    // TODO: Refactor logic for Suggestions
+    /*@GetMapping("/api/monument/bulk/create/progress/{id}")
     @PreAuthorize(Authentication.isAuthenticated)
     public AsyncJob getBulkCreateMonumentJob(@PathVariable Integer id) {
         return this.asyncJobService.getJob(id);
-    }
+    }*/
 
     /**
      * Get the final result of a create bulk monuments job. If the job is not completed yet this will wait for it to
@@ -159,13 +156,14 @@ public class MonumentController {
      * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
-    @GetMapping("/api/monument/bulk/create/result/{id}")
+    // TODO: Refactor logic for Suggestions
+    /*@GetMapping("/api/monument/bulk/create/result/{id}")
     @PreAuthorize(Authentication.isAuthenticated)
     @SuppressWarnings("unchecked")
     public List<Monument> getBulkCreateMonumentJobResult(@PathVariable Integer id)
             throws ExecutionException, InterruptedException {
         return (List<Monument>) this.asyncJobService.getJob(id).getFuture().get();
-    }
+    }*/
 
     /**
      * Get the statistics related to Monuments for the About Page
