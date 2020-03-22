@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
 import AdminPanel from '../../components/AdminPanel/AdminPanel';
+import { capitalize } from '../../utils/string-util';
 
 class AdminPage extends React.Component {
 
@@ -20,7 +21,7 @@ class AdminPage extends React.Component {
                 <Helmet title="Advanced | Monuments and Memorials"/>
                 <Spinner show={session.pending}/>
                 {session.user &&
-                    <AdminPanel user={session.user} role={session.user.role.substring(0, 1).toUpperCase() + session.user.role.substring(1).toLowerCase()}/>
+                    <AdminPanel user={session.user} role={capitalize(session.user.role)}/>
                 }
             </div>
         );

@@ -1,5 +1,6 @@
 package com.monumental.repositories.suggestions;
 
+import com.monumental.models.User;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,11 @@ public interface CreateSuggestionRepository extends JpaRepository<CreateMonument
      */
     @Query("select cms from CreateMonumentSuggestion cms where bulk_create_suggestion_id = :id")
     List<CreateMonumentSuggestion> getAllByBulkCreateSuggestionId(@Param("id") Integer id);
+
+    /**
+     * Get all CreateMonumentSuggestions created by the specified createdBy
+     * @param createdBy - User object to get all of the CreateMonumentSuggestions that were created by it
+     * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the specified createdBy
+     */
+    List<CreateMonumentSuggestion> getAllByCreatedBy(User createdBy);
 }

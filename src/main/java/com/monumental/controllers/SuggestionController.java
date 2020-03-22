@@ -3,6 +3,7 @@ package com.monumental.controllers;
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
@@ -16,6 +17,9 @@ import com.monumental.security.Authorization;
 import com.monumental.services.AsyncJobService;
 import com.monumental.services.AwsS3Service;
 import com.monumental.services.MonumentService;
+import com.monumental.services.suggestions.BulkCreateSuggestionService;
+import com.monumental.services.suggestions.CreateSuggestionService;
+import com.monumental.services.suggestions.UpdateSuggestionService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -50,6 +55,15 @@ public class SuggestionController {
 
     @Autowired
     private AwsS3Service awsS3Service;
+
+    @Autowired
+    private CreateSuggestionService createSuggestionService;
+
+    @Autowired
+    private UpdateSuggestionService updateSuggestionService;
+
+    @Autowired
+    private BulkCreateSuggestionService bulkCreateSuggestionService;
 
     /**
      * Create a new Suggestion for creating a Monument
@@ -131,6 +145,18 @@ public class SuggestionController {
     }
 
     /**
+     * Get all CreateMonumentSuggestions created by the currently logged in User
+     * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the currently logged in
+     * User
+     * @throws UnauthorizedException - If no User is currently logged in
+     */
+    @GetMapping("/api/suggestions/create")
+    @PreAuthorize(Authentication.isAuthenticated)
+    public List<CreateMonumentSuggestion> getCreateMonumentSuggestions() throws UnauthorizedException {
+        return this.createSuggestionService.getCreateMonumentSuggestions();
+    }
+
+    /**
      * Get an UpdateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the UpdateMonumentSuggestion to get
      * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object with the specified ID, if it exists
@@ -144,6 +170,18 @@ public class SuggestionController {
     }
 
     /**
+     * Get all UpdateMonumentSuggestions created by the currently logged in User
+     * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestions created by the currently logged in
+     * User
+     * @throws UnauthorizedException - If no User is currently logged in
+     */
+    @GetMapping("/api/suggestions/update")
+    @PreAuthorize(Authentication.isAuthenticated)
+    public List<UpdateMonumentSuggestion> getUpdateMonumentSuggestions() throws UnauthorizedException {
+        return this.updateSuggestionService.getUpdateMonumentSuggestions();
+    }
+
+    /**
      * Get a BulkCreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the BulkCreateMonumentSuggestion to get
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object with the specified ID, if it exists
@@ -154,6 +192,18 @@ public class SuggestionController {
     public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         return this.findBulkCreateSuggestion(id);
+    }
+
+    /**
+     * Get all BulkCreateMonumentSuggestions created by the currently logged in User
+     * @return List<BulkCreateMonumentSuggestion> - List of BulkCreateMonumentSuggestions created by the currently
+     * logged in User
+     * @throws UnauthorizedException - If no User is currently logged in
+     */
+    @GetMapping("/api/suggestions/bulk")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public List<BulkCreateMonumentSuggestion> getBulkCreateMonumentSuggestions() throws UnauthorizedException {
+        return this.bulkCreateSuggestionService.getBulkCreateMonumentSuggestions();
     }
 
     /**
