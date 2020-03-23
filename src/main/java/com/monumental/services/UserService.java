@@ -40,10 +40,10 @@ import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 public class UserService extends ModelService<User> {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    VerificationTokenRepository tokenRepository;
+    private VerificationTokenRepository tokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

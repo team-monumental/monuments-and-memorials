@@ -1,12 +1,13 @@
 package com.monumental.util.csvparsing;
 
-import com.monumental.models.Monument;
-import com.monumental.models.Reference;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.util.string.StringHelper;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
@@ -16,7 +17,11 @@ import static com.monumental.util.string.StringHelper.isNullOrEmpty;
  */
 public class CsvMonumentConverterResult {
 
-    private Monument monument;
+    private CreateMonumentSuggestion monumentSuggestion;
+
+    private List<String> contributorNames = new ArrayList<>();
+
+    private List<String> referenceUrls = new ArrayList<>();
 
     private Set<String> tagNames = new HashSet<>();
 
@@ -28,12 +33,28 @@ public class CsvMonumentConverterResult {
 
     private List<String> warnings = new ArrayList<>();
 
-    public Monument getMonument() {
-        return this.monument;
+    public CreateMonumentSuggestion getMonumentSuggestion() {
+        return this.monumentSuggestion;
     }
 
-    public void setMonument(Monument monument) {
-        this.monument = monument;
+    public void setMonumentSuggestion(CreateMonumentSuggestion monumentSuggestion) {
+        this.monumentSuggestion = monumentSuggestion;
+    }
+
+    public List<String> getContributorNames() {
+        return this.contributorNames;
+    }
+
+    public void setContributorNames(List<String> contributorNames) {
+        this.contributorNames = contributorNames;
+    }
+
+    public List<String> getReferenceUrls() {
+        return this.referenceUrls;
+    }
+
+    public void setReferenceUrls(List<String> referenceUrls) {
+        this.referenceUrls = referenceUrls;
     }
 
     public Set<String> getTagNames() {
@@ -80,13 +101,13 @@ public class CsvMonumentConverterResult {
      * Validates this CsvMonumentConverterResult, populating errors and warnings
      */
     public void validate() {
-        if (this.monument == null) {
-            this.getErrors().add("Monument can not be null");
+        if (this.monumentSuggestion == null) {
+            this.getErrors().add("Monument Suggestion can not be null");
         }
 
         /* Title Validation */
         /* Title is a required field */
-        if (isNullOrEmpty(this.monument.getTitle())) {
+        if (isNullOrEmpty(this.monumentSuggestion.getTitle())) {
             this.getErrors().add("Title is required");
         }
 
@@ -98,14 +119,15 @@ public class CsvMonumentConverterResult {
 
         /* Address or Coordinates Validation */
         /* An Address OR Coordinates must be specified */
-        if (isNullOrEmpty(this.monument.getAddress()) && this.monument.getCoordinates() == null) {
+        if (isNullOrEmpty(this.monumentSuggestion.getAddress()) &&
+                (this.monumentSuggestion.getLatitude() == null || this.monumentSuggestion.getLongitude() == null)) {
             this.getErrors().add("Address OR Coordinates are required");
         }
 
         /* Latitude Validation */
         /* Check that the latitude is within a valid range and formatted correctly */
-        if (isNullOrEmpty(this.monument.getAddress()) && this.monument.getCoordinates() != null) {
-            String latitudeString = this.monument.getLat().toString();
+        if (isNullOrEmpty(this.monumentSuggestion.getAddress()) && this.monumentSuggestion.getLatitude() != null) {
+            String latitudeString = this.monumentSuggestion.getLatitude().toString();
             if (!latitudeString.matches(StringHelper.latitudeRegex)) {
                 this.getErrors().add("Latitude must be valid");
             }
@@ -113,28 +135,19 @@ public class CsvMonumentConverterResult {
 
         /* Longitude Validation */
         /* Check that the longitude is within a valid range and formatted correctly */
-        if (isNullOrEmpty(this.monument.getAddress()) && this.monument.getCoordinates() != null) {
-            String longitudeString = this.monument.getLon().toString();
+        if (isNullOrEmpty(this.monumentSuggestion.getAddress()) && this.monumentSuggestion.getLongitude() != null) {
+            String longitudeString = this.monumentSuggestion.getLongitude().toString();
             if (!longitudeString.matches(StringHelper.longitudeRegex)) {
                 this.getErrors().add("Longitude must be valid");
             }
         }
 
-        /* Date Validation */
-        /* Check that date is not in the future */
-        if (this.monument.getDate() != null) {
-            Date currentDate = new Date();
-            if (this.monument.getDate().after(currentDate)) {
-                this.getWarnings().add("Date should not be in the future.");
-            }
-        }
-
         /* References Validation */
         /* Check that the references are valid URLs */
-        if (this.monument.getReferences() != null) {
-            for (Reference reference : this.monument.getReferences())   {
+        if (this.referenceUrls != null) {
+            for (String referenceUrl : this.referenceUrls) {
                 try {
-                    URL url = new URL(reference.getUrl());
+                    URL url = new URL(referenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All References must be valid URLs")) {
                         this.getErrors().add("All References must be valid URLs");
