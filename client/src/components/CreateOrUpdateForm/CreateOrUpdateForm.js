@@ -24,6 +24,11 @@ export default class CreateOrUpdateForm extends React.Component {
         };
 
         this.state = {
+            locationType: {
+                value: '',
+                isValid: true,
+                message: ''
+            },
             showingAdvancedInformation: false,
             dateSelectValue: 'year',
             datePickerCurrentDate: new Date(),
@@ -187,7 +192,7 @@ export default class CreateOrUpdateForm extends React.Component {
     setFormFieldValuesForUpdate() {
         const { monument } = this.props;
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            materials } = this.state;
+            materials, locationType } = this.state;
         let { datePickerCurrentDate, references, tags, imagesForUpdate, images, imageUploaderKey } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
@@ -213,6 +218,9 @@ export default class CreateOrUpdateForm extends React.Component {
         year.value = monumentYear ? monumentYear : '';
         month.value = monumentMonth ? monumentMonth : '';
         datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+
+        if (address.value) locationType.value = 'address';
+        else if (latitude.value && longitude.value) locationType.value = 'coordinates';
 
         if (monument.references && monument.references.length) {
             let monumentReferences = [];
@@ -274,7 +282,7 @@ export default class CreateOrUpdateForm extends React.Component {
         imageUploaderKey++;
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey});
+            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey, locationType});
     }
 
     /**
@@ -283,7 +291,7 @@ export default class CreateOrUpdateForm extends React.Component {
      * @returns {boolean} - True if the Form is valid, False otherwise
      */
     validateForm() {
-        const { title, address, latitude, longitude, year, month, references, materials, newMaterials } = this.state;
+        const { title, address, latitude, longitude, year, month, references, materials, newMaterials, locationType } = this.state;
         const currentDate = new Date();
         let formIsValid = true;
 
@@ -307,38 +315,35 @@ export default class CreateOrUpdateForm extends React.Component {
 
         /* Address or Coordinates Validation */
         /* An Address OR Coordinates must be specified */
-        if (validator.isEmpty(address.value) &&
-            (validator.isEmpty(latitude.value) || validator.isEmpty(longitude.value))) {
-            address.isValid = false;
-            address.message = 'Address OR Coordinates are required';
-
-            latitude.isValid = false;
-            latitude.message = 'Address OR Coordinates are required';
-
-            longitude.isValid = false;
-            longitude.message = 'Address OR Coordinates are required';
-
-            formIsValid = false;
-        }
-
-        /* Latitude Validation */
-        /* Check that the Latitude is within a valid range and formatted correctly */
-        if (validator.isEmpty(address.value) && !validator.isEmpty(latitude.value)) {
-            if (!validator.matches(latitude.value, latitudeRegex)) {
+        if (locationType.value === 'address') {
+            if (validator.isEmpty(address.value)) {
+                address.isValid = false;
+                address.message = 'Address must not be blank';
+                formIsValid = false;
+            }
+        } else if (locationType.value === 'coordinates') {
+            if (validator.isEmpty(latitude.value)) {
+                latitude.isValid = false;
+                latitude.message = 'Latitude must not be blank';
+                formIsValid = false;
+            } else if (!validator.matches(latitude.value, latitudeRegex)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
                 formIsValid = false;
             }
-        }
-
-        /* Longitude Validation */
-        /* Check that the Longitude is within a valid range and formatted correctly */
-        if (validator.isEmpty(address.value) && !validator.isEmpty(longitude.value)) {
-            if (!validator.matches(longitude.value, longitudeRegex)) {
+            if (validator.isEmpty(longitude.value)) {
+                longitude.isValid = false;
+                longitude.message = 'Longitude must not be blank';
+                formIsValid = false;
+            } else if (!validator.matches(longitude.value, longitudeRegex)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
             }
+        } else {
+            locationType.isValid = false;
+            locationType.message = 'You must provide either a street address or geographic coordinates';
+            formIsValid = false;
         }
 
         /* Date Validation */
@@ -819,7 +824,7 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate, isTemporary } = this.state;
+            imagesForUpdate, isTemporary, locationType } = this.state;
         const { monument } = this.props;
 
         const advancedInformationLink = (
@@ -1025,49 +1030,66 @@ export default class CreateOrUpdateForm extends React.Component {
                     </Form.Group>
 
                     <div className="address-coordinates-container">
-                        <span className="font-weight-bold">Please specify one of the following:</span>
-
-                        {/* Address */}
-                        <Form.Group controlId="create-form-address">
-                            <Form.Label>Address:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="address"
-                                placeholder="Address"
-                                value={address.value}
-                                onChange={(event) => this.handleInputChange(event)}
-                                isInvalid={!address.isValid}
-                                className="text-control"
-                            />
-                            <Form.Control.Feedback type="invalid">{address.message}</Form.Control.Feedback>
+                        <span className="font-weight-bold">Location Type:</span>
+                        <Form.Group>
+                            <Form.Control as="select"
+                                          value={locationType.value}
+                                          isInvalid={!locationType.isValid}
+                                          onChange={event => this.setState({locationType: {isValid: true, message: '', value: event.target.value}})}>
+                                <option value="">Select a Location Type</option>
+                                <option value="address">Street Address</option>
+                                <option value="coordinates">Geographic Coordinates</option>
+                            </Form.Control>
+                            <Form.Control.Feedback type="invalid">{locationType.message}</Form.Control.Feedback>
                         </Form.Group>
 
-                        {/* Coordinates */}
-                        <Form.Group controlId="create-form-coordinates">
-                            <Form.Label>Coordinates:</Form.Label>
-                            <Form.Row>
+                        {locationType.value === 'address' &&
+                            <Form.Group controlId="create-form-address" className="mt-3">
+                                <Form.Label>Address:</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="latitude"
-                                    placeholder="Latitude"
-                                    value={latitude.value}
+                                    name="address"
+                                    placeholder="Address"
+                                    value={address.value}
                                     onChange={(event) => this.handleInputChange(event)}
-                                    isInvalid={!latitude.isValid}
-                                    className="text-control-small mr-2"
+                                    isInvalid={!address.isValid}
+                                    className="text-control w-100"
                                 />
-                                <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
-                                <Form.Control
-                                    type="text"
-                                    name="longitude"
-                                    placeholder="Longitude"
-                                    value={longitude.value}
-                                    onChange={(event) => this.handleInputChange(event)}
-                                    isInvalid={!longitude.isValid}
-                                    className="text-control-small"
-                                />
-                                <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
-                            </Form.Row>
-                        </Form.Group>
+                                <Form.Control.Feedback type="invalid">{address.message}</Form.Control.Feedback>
+                            </Form.Group>
+                        }
+
+                        {locationType.value === 'coordinates' &&
+                            <Form.Group controlId="create-form-coordinates" className="mt-3">
+                                <Form.Label>Coordinates:</Form.Label>
+                                <div className="coordinates-group">
+                                    <div className="coordinate-field">
+                                        <Form.Control
+                                            type="text"
+                                            name="latitude"
+                                            placeholder="Latitude"
+                                            value={latitude.value}
+                                            onChange={(event) => this.handleInputChange(event)}
+                                            isInvalid={!latitude.isValid}
+                                            className="text-control-small"
+                                        />
+                                        <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
+                                    </div>
+                                    <div className="coordinate-field">
+                                        <Form.Control
+                                            type="text"
+                                            name="longitude"
+                                            placeholder="Longitude"
+                                            value={longitude.value}
+                                            onChange={(event) => this.handleInputChange(event)}
+                                            isInvalid={!longitude.isValid}
+                                            className="text-control-small"
+                                        />
+                                        <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
+                                    </div>
+                                </div>
+                            </Form.Group>
+                        }
                     </div>
 
                     {/* Images */}
