@@ -35,26 +35,6 @@
           font-size: 36px;
         }
 
-        .attribute-update {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          word-break: break-word;
-
-          .old-attribute {
-            padding-right: 0.25rem;
-          }
-
-          .new-attribute {
-            padding-left: 0.25rem;
-          }
-
-          .none {
-            color: red;
-            font-weight: bold;
-          }
-        }
-
         .changed-references {
           .changed-references-list {
             .reference-change {

@@ -4,6 +4,9 @@ import { Card, Collapse } from 'react-bootstrap';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Gallery from '../../../Monument/Gallery/Gallery';
 
+/**
+ * Presentational component for displaying a CreateMonumentSuggestion
+ */
 export default class CreateMonumentSuggestion extends React.Component {
 
     constructor(props) {

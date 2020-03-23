@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { prettyPrintDate, prettyPrintMonth } from '../../../utils/string-util';
 import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
 import Collapse from 'react-bootstrap/Collapse';
+import AttributeChange from '../../Monument/Update/AttributeChange/AttributeChange';
 
 /**
  * Presentational component for the Modal shown before an UpdateMonumentSuggestion is created
@@ -163,33 +164,6 @@ export default class UpdateReviewModal extends React.Component {
     handleShowUnchangedAttributesClick() {
         const { showingUnchangedAttributes } = this.state;
         this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
-    }
-
-    renderAttributeChange(attributeLabel, oldAttribute, newAttribute, didChange, isBoolean=false) {
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">{attributeLabel}:&nbsp;</span>
-                {
-                    isBoolean ? <span className="old-attribute">{oldAttribute ? 'Yes' : 'No'}</span> :
-                        oldAttribute.length ?
-                            <span className="old-attribute">{oldAttribute}</span> :
-                            <span className="old-attribute none">NONE</span>
-                }
-
-                <i className="material-icons">arrow_right_alt</i>
-                {
-                    isBoolean ? <span className="new-attribute">{newAttribute ? 'Yes' : 'No'}</span> :
-                        newAttribute.length ?
-                            <span className="new-attribute">{newAttribute}</span> :
-                            <span className="new-attribute none">NONE</span>
-                }
-                {
-                    didChange ?
-                        <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO CHANGES)</span>
-                }
-            </div>
-        );
     }
 
     renderYearChange(oldYear, newYear, didChange) {
@@ -499,22 +473,22 @@ export default class UpdateReviewModal extends React.Component {
             let oldTitle = oldMonument.title ? oldMonument.title : '';
             let newTitle = newMonument.newTitle ? newMonument.newTitle : '';
             (oldTitle !== newTitle) ?
-                changedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Title', oldTitle, newTitle, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldTitle} newAttribute={newTitle} didChange={true}/>) :
+                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldTitle} newAttribute={newTitle} didChange={false}/>);
 
             /* IsTemporary */
             let oldIsTemporary = oldMonument.isTemporary;
             let newIsTemporary = newMonument.newIsTemporary;
             (!!oldIsTemporary !== !!newIsTemporary) ?
-                changedAttributes.push(this.renderAttributeChange('Is Temporary', oldIsTemporary, newIsTemporary, true, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Is Temporary', oldIsTemporary, newIsTemporary, false, true));
+                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldIsTemporary} newAttribute={newIsTemporary} didChange={true} isBoolean={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldIsTemporary} newAttribute={newIsTemporary} didChange={false} isBoolean={true}/>);
 
             /* Artist */
             let oldArtist = oldMonument.artist ? oldMonument.artist : '';
             let newArtist = newMonument.newArtist ? newMonument.newArtist : '';
             (oldArtist !== newArtist) ?
-                changedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Artist', oldArtist, newArtist, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldArtist} newAttribute={newArtist} didChange={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldArtist} newAttribute={newArtist} didChange={false}/>);
 
             /* Date */
             let oldMonumentYear, oldMonumentMonth;
@@ -554,36 +528,36 @@ export default class UpdateReviewModal extends React.Component {
             let oldAddress = oldMonument.address ? oldMonument.address : '';
             let newAddress = newMonument.newAddress ? newMonument.newAddress : '';
             (oldAddress !== newAddress) ?
-                changedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Address', oldAddress, newAddress, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldAddress} newAttribute={newAddress} didChange={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldAddress} newAttribute={newAddress} didChange={false}/>);
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             let newLatitude = newMonument.newLatitude ? newMonument.newLatitude : '';
             (oldLatitude !== newLatitude) ?
-                changedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Latitude', oldLatitude, newLatitude, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newLatitude} didChange={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newLatitude} didChange={false}/>);
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
             let newLongitude = newMonument.newLongitude ? newMonument.newLongitude : '';
             (oldLongitude !== newLongitude) ?
-                changedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Longitude', oldLongitude, newLongitude, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newLongitude} didChange={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newLongitude} didChange={false}/>);
 
             /* Description */
             let oldDescription = oldMonument.description ? oldMonument.description : '';
             let newDescription = newMonument.newDescription ? newMonument.newDescription : '';
             (oldDescription !== newDescription) ?
-                changedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Description', oldDescription, newDescription, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldDescription} newAttribute={newDescription} didChange={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldDescription} newAttribute={newDescription} didChange={false}/>);
 
             /* Inscription */
             let oldInscription = oldMonument.inscription ? oldMonument.inscription : '';
             let newInscription = newMonument.newInscription ? newMonument.newInscription : '';
             (oldInscription !== newInscription) ?
-                changedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription, true)) :
-                unchangedAttributes.push(this.renderAttributeChange('Inscription', oldInscription, newInscription, false));
+                changedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldInscription} newAttribute={newInscription} didChange={true}/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldInscription} newAttribute={newInscription} didChange={false}/>);
 
             /* Materials and Tags */
             const tagChanges = this.collectTagChanges();
