@@ -1,13 +1,15 @@
 package com.monumental.util.csvparsing;
 
+import com.google.gson.Gson;
 import com.monumental.models.Contribution;
-import com.monumental.models.Monument;
 import com.monumental.models.Reference;
-import com.monumental.models.Tag;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -16,6 +18,7 @@ import java.util.zip.ZipFile;
  * Class used to:
  * 1. Convert a CSV row representing a Monument into a CsvMonumentConverterResult object
  * 2. Convert a Monument into a CSV row
+ * 3. Convert a CsvMonumentConverterResult object into a CreateMonumentSuggestion object
  */
 public class CsvMonumentConverter {
 
@@ -35,7 +38,7 @@ public class CsvMonumentConverter {
         List<CsvMonumentConverterResult> results = new ArrayList<>();
         for (String[] row : csvRows) {
             List<String> values = Arrays.asList(row);
-            Monument monument = new Monument();
+            CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
             CsvMonumentConverterResult result = new CsvMonumentConverterResult();
             Double latitude = null;
             Double longitude = null;
@@ -45,34 +48,39 @@ public class CsvMonumentConverter {
                 if (field == null || value.equals("")) continue;
                 switch (field) {
                     case "contributions":
-                        Contribution contribution = parseContribution(value);
-                        contribution.setMonument(monument);
-                        monument.getContributions().add(contribution);
+                        result.getContributorNames().add(value);
                         break;
                     case "artist":
-                        monument.setArtist(value);
+                        suggestion.setArtist(value);
                         break;
                     case "title":
-                        monument.setTitle(value);
+                        suggestion.setTitle(value);
                         break;
                     case "date":
-                        try {
-                            monument.setDate(parseDate(value));
-                        } catch (Exception e) {
+                        if (canParseDate(value)) {
+                            Date parsedDate = parseDate(value);
+                            if (isDateInFuture(parsedDate)) {
+                                result.getWarnings().add("Date should not be in the future.");
+                            }
+                        }
+                        else {
                             result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
+                        suggestion.setDate(value);
                         break;
                     case "materials":
-                        result.getMaterialNames().addAll(parseTags(value));
+                        result.getMaterialNames().addAll(parseCsvTags(value));
                         break;
                     case "inscription":
-                        monument.setInscription(value);
+                        suggestion.setInscription(value);
                         break;
                     case "latitude":
                         try {
                             latitude = Double.parseDouble(value);
                         } catch (NumberFormatException e) {
                             result.getWarnings().add("Latitude should be a valid number.");
+                        } finally {
+                            suggestion.setLatitude(latitude);
                         }
                         break;
                     case "longitude":
@@ -80,24 +88,24 @@ public class CsvMonumentConverter {
                             longitude = Double.parseDouble(value);
                         } catch (NumberFormatException e) {
                             result.getWarnings().add("Longitude should be a valid number.");
+                        } finally {
+                            suggestion.setLongitude(longitude);
                         }
                         break;
                     case "city":
-                        monument.setCity(value);
+                        suggestion.setCity(value);
                         break;
                     case "state":
-                        monument.setState(value);
+                        suggestion.setState(value);
                         break;
                     case "address":
-                        monument.setAddress(value);
+                        suggestion.setAddress(value);
                         break;
                     case "tags":
-                        result.getTagNames().addAll(parseTags(value));
+                        result.getTagNames().addAll(parseCsvTags(value));
                         break;
                     case "references":
-                        Reference reference = parseReference(value);
-                        reference.setMonument(monument);
-                        monument.getReferences().add(reference);
+                        result.getReferenceUrls().add(value);
                         break;
                     case "images":
                         if (zipFile != null) {
@@ -118,27 +126,42 @@ public class CsvMonumentConverter {
                 }
             }
 
-            monument.setCoordinates(MonumentService.createMonumentPoint(longitude, latitude));
-
-            result.setMonument(monument);
+            result.setMonumentSuggestion(suggestion);
             result.validate();
             results.add(result);
         }
         return results;
     }
 
-    private static Contribution parseContribution(String value) {
-        GregorianCalendar calendar = new GregorianCalendar();
-        Contribution contribution = new Contribution();
-        contribution.setDate(calendar.getTime());
-        contribution.setSubmittedBy(value);
-        return contribution;
+    /**
+     * Determine if the specified value can be parsed into a valid Date
+     * Dates must be in the following format: dd-MM-yyyy
+     * If the day and month are unknown, then the date can also be in yyyy format
+     * Any other format is considered invalid
+     * @param value - String to determine if it can be parsed into a valid Date
+     * @return - True if the specified value can be parsed into a valid Date, False otherwise
+     */
+    private static boolean canParseDate(String value) {
+        // "dd-MM-yyyy" format
+        if (value.contains("-")) {
+            String[] dateArray = value.split("-");
+            return dateArray.length == 3;
+        }
+
+        // "yyyy" format
+        return value.length() == 4 && value.matches("[0-9]+");
     }
 
-    private static Date parseDate(String value) {
-        // 1. Dates must be in the following format: dd-MM-yyyy
-        // 2. If the day and month are unknown, the cell must contain: yyyy
-        // 3. In the case described in 2, the day and month are set to 01-01
+    /**
+     * Actually parse the specified value into a Date
+     * Dates must be in the following format: dd-MM-yyyy
+     * If the day and month are unknown, then the date can also be in yyyy format
+     * Any other format is considered invalid
+     * @param value - String to parse into a Date
+     * @return Date - Date object created from parsing the specified value
+     * @throws DateTimeParseException - If the specified value can not be parsed into a Date
+     */
+    private static Date parseDate(String value) throws DateTimeParseException {
         String[] dateArray = value.split("-");
 
         // Parsing format "yyyy"
@@ -154,11 +177,25 @@ public class CsvMonumentConverter {
             return MonumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
                     dateArray[0]);
         } else {
-            return null;
+            throw new DateTimeParseException("Invalid date format", value, 0);
         }
     }
 
-    private static List<String> parseTags(String value) {
+    /**
+     * Determine if the specified date is in the future
+     * @param date - Date object to determine if it is in the future
+     * @return - True if the specified date is in the future, False otherwise
+     */
+    private static boolean isDateInFuture(Date date) {
+        if (date != null) {
+            Date currentDate = new Date();
+            return date.after(currentDate);
+        }
+
+        return false;
+    }
+
+    private static List<String> parseCsvTags(String value) {
         // Split on commas in-case there are more than one Tag in the column
         String[] materialArray = value.split(",");
 
@@ -172,157 +209,6 @@ public class CsvMonumentConverter {
         return names;
     }
 
-    private static Reference parseReference(String value) {
-        Reference reference = new Reference();
-        reference.setUrl(value);
-        return reference;
-    }
-
-    /**
-     * Static method for converting a specified Monument into a CSV row
-     * @param monument - Monument to convert into a CSV row
-     * @return String - CSV row representing the specified Monument
-     */
-    public static String convertMonument(Monument monument) {
-        return String.join(",", new String[]{
-            convertToCsvCell(monument.getId()),
-            convertToCsvCell(monument.getTitle()),
-            convertToCsvCell(monument.getArtist()),
-            convertToCsvCell(monument.getDate()),
-            convertTagsToCsvCell(monument.getMaterials()),
-            convertToCsvCell(monument.getLat()),
-            convertToCsvCell(monument.getLon()),
-            convertToCsvCell(monument.getCity()),
-            convertToCsvCell(monument.getState()),
-            convertToCsvCell(monument.getAddress()),
-            convertToCsvCell(monument.getInscription()),
-            convertToCsvCell(monument.getDescription()),
-            convertTagsToCsvCell(monument.getTags()),
-            convertContributionsToCsvCell(monument.getContributions()),
-            convertReferencesToCsvCell(monument.getReferences())
-        });
-    }
-
-    /**
-     * Static method to add the beginning and ending quotes to a specified String
-     * Does nothing if there are already beginning and ending quotes
-     * @param string - the String to add the quotes to
-     * @return String - the updated String, with beginning and ending quotes
-     */
-    private static String addBeginningAndEndingQuotes(String string) {
-        if (string.startsWith("\"") && string.endsWith("\"")) {
-            return string;
-        }
-
-        return "\"" + string + "\"";
-    }
-
-    /**
-     * Converts a specified Integer value to a CSV formatted cell value
-     * @param value - Integer value to convert
-     * @return String - CSV formatted cell value using the specified Integer
-     */
-    private static String convertToCsvCell(Integer value) {
-        if (value != null) {
-            return Integer.toString(value);
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts a specified String value into a CSV formatted cell value
-     * @param value - String value to convert
-     * @return String - CSV formatted cell value using the specified String
-     */
-    private static String convertToCsvCell(String value) {
-        if (value != null && !value.isEmpty()) {
-            // Remove any double quotes from the value
-            // This is a safeguard to prevent multiple double quotes surrounding outputs
-            value = value.replace("\"", "");
-
-            // Wrap the value in double quotes if it contains a comma
-            if (value.contains(",")) {
-                return addBeginningAndEndingQuotes(value);
-            }
-            else {
-                return value;
-            }
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts a specified Date object into a CSV formatted cell value
-     * Uses "dd-MM-yyyy" format
-     * @param value - Date object to convert
-     * @return String - CSV formatted cell value using the specified Date object
-     */
-    private static String convertToCsvCell(Date value) {
-        if (value != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            return simpleDateFormat.format(value);
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts a specified Double value into a CSV formatted cell value
-     * @param value - Double to convert
-     * @return String - CSV formatted cell value using the specified Double
-     */
-    private static String convertToCsvCell(Double value) {
-        if (value != null) {
-            return Double.toString(value);
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * Converts the specified List of Tags (or Materials) into a CSV formatted cell value
-     * @param tags - List<Tag> to convert
-     * @return String - CSV formatted cell value using the specified List<Tag>
-     */
-    private static String convertTagsToCsvCell(List<Tag> tags) {
-        List<String> tagStrings = new ArrayList<>();
-        for (Tag tag : tags) {
-            tagStrings.add(tag.getName());
-        }
-        return addBeginningAndEndingQuotes(String.join(",", tagStrings));
-    }
-
-    /**
-     * Converts the specified List of Contributions into a CSV formatted cell value
-     * @param contributions - List<Contribution> to convert
-     * @return String - CSV formatted cell value using the specified List<Contribution>
-     */
-    private static String convertContributionsToCsvCell(List<Contribution> contributions) {
-        List<String> contributionStrings = new ArrayList<>();
-        for (Contribution contribution : contributions) {
-            contributionStrings.add(contribution.getSubmittedBy());
-        }
-        return addBeginningAndEndingQuotes(String.join(",", contributionStrings));
-    }
-
-    /**
-     * Converts the specified List of References into a CSV formatted cell value
-     * @param references - List<Reference> to convert
-     * @return String - CSV formatted cell using the specfied List<Reference>
-     */
-    private static String convertReferencesToCsvCell(List<Reference> references) {
-        List<String> referenceStrings = new ArrayList<>();
-        for (Reference reference : references) {
-            referenceStrings.add(reference.getUrl());
-        }
-        return addBeginningAndEndingQuotes(String.join(",", referenceStrings));
-    }
     /**
      * Cleans a CSV Tag name
      * Removes any whitespace and capitalizes the first letter to attempt to avoid duplicates
@@ -343,5 +229,35 @@ public class CsvMonumentConverter {
             return tagName.substring(0, 1).toUpperCase() + tagName.substring(1);
         }
         return null;
+    }
+
+    /**
+     * Parse a specified CsvMonumentConverterResult into a complete CreateMonumentSuggestion
+     * @param result - CsvMonumentConverterResult class to parse
+     * @param gson - Gson object used to convert object to JSON
+     * @return CreateMonumentSuggestion - CreateMonumentSuggestion object created from the specified
+     * CsvMonumentConverterResult
+     */
+    public static CreateMonumentSuggestion parseCsvMonumentConverterResult(CsvMonumentConverterResult result, Gson gson) {
+        if (result == null || result.getMonumentSuggestion() == null || gson == null) {
+            return null;
+        }
+
+        CreateMonumentSuggestion suggestion = result.getMonumentSuggestion();
+
+        if (result.getContributorNames() != null && result.getContributorNames().size() > 0) {
+            suggestion.setContributionsJson(gson.toJson(result.getContributorNames()));
+        }
+        if (result.getReferenceUrls() != null && result.getReferenceUrls().size() > 0) {
+            suggestion.setReferencesJson(gson.toJson(result.getReferenceUrls()));
+        }
+        if (result.getTagNames() != null && result.getTagNames().size() > 0) {
+            suggestion.setTagsJson(gson.toJson(result.getTagNames()));
+        }
+        if (result.getMaterialNames() != null && result.getMaterialNames().size() > 0) {
+            suggestion.setMaterialsJson(gson.toJson(result.getMaterialNames()));
+        }
+
+        return suggestion;
     }
 }

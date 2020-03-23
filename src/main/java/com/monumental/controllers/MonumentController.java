@@ -1,15 +1,12 @@
 package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
-import com.monumental.controllers.helpers.CreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
-import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.repositories.MonumentTagRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
@@ -25,9 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,18 +42,6 @@ public class MonumentController {
 
     @Autowired
     private UserService userService;
-
-    /**
-     * Create a new Monument based on the specified CreateMonumentRequest
-     * @param monumentRequest - CreateMonumentRequest containing the attributes to use to create the Monument
-     * @return Monument - The created Monument
-     */
-    @PostMapping("/api/monument")
-    @PreAuthorize(Authentication.isAuthenticated)
-    @Transactional
-    public Monument createMonument(@RequestBody CreateMonumentRequest monumentRequest) {
-        return this.monumentService.createMonument(monumentRequest);
-    }
 
     /**
      * Get a Monument with the specified ID, if it exists and is active or inactive depending on onlyActive
@@ -116,18 +99,6 @@ public class MonumentController {
         }
     }
 
-    /**
-     * Update an existing Monument with the specified ID to have the specified attributes
-     * @param id - ID of the Monument to update
-     * @param newMonument - UpdateMonumentRequest containing the new attributes for the Monument
-     * @return Monument - The updated Monument
-     */
-    @PutMapping("/api/monument/{id}")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public Monument updateMonument(@PathVariable("id") Integer id, @RequestBody UpdateMonumentRequest newMonument) {
-        return this.monumentService.updateMonument(id, newMonument);
-    }
-
     private static class ToggleIsActiveRequest {
         public boolean isActive;
     }
@@ -170,8 +141,8 @@ public class MonumentController {
     }
 
     /**
-     * Validate which rows in the specified .csv (or .csv within .zip) file are valid
-     * @param request - Contains the field mapping and the file to process
+     * Determine which rows in the specified .csv (or .csv within .zip) file are valid
+     * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
     @PostMapping("/api/monument/bulk/validate")
@@ -185,32 +156,6 @@ public class MonumentController {
             result.setError(e.getMessage());
             return result;
         }
-    }
-
-    /**
-     * Start the job to create monuments from csv or zip
-     * @param request - Contains the field mapping and the file to process
-     * @return AsyncJob - Object containing the Id of the job created and the current value of the Future object
-     */
-    @PostMapping("/api/monument/bulk/create/start")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public AsyncJob startBulkCreateMonumentJob(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
-        BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-
-        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(
-                parseResult.csvContents, parseResult.mapping, parseResult.zipFile
-        );
-
-        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
-         * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the CompletableFuture
-         * must be passed to the AsyncJob, making it difficult to do so dynamically
-         */
-        AsyncJob job = this.asyncJobService.createJob();
-        job.setFuture(this.monumentService.bulkCreateMonumentsAsync(
-                new ArrayList<>(validationResult.getValidResults().values()),
-                job
-        ));
-        return job;
     }
 
     /**

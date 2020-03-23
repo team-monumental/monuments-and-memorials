@@ -28,10 +28,6 @@ public class CsvFileHelper {
         return fileExtension.equals("csv");
     }
 
-    public static List<String> parseCSVRow(String row) {
-        return Arrays.asList(row.split(csvRegex, -1));
-    }
-
     public static Map<Integer, String> getFieldPositions(String[] headers, Map<String, String> mapping) {
         Map<Integer, String> map = new HashMap<>();
         for (int i = 0; i < headers.length; i++) {

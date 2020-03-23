@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ContextConfiguration
 @TestExecutionListeners(listeners={ServletTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
@@ -43,9 +45,9 @@ public class UserServiceIntegrationTests {
     public static final String RESEARCHER = "researcher@monuments.us.org";
     public static final String PARTNER = "partner@monuments.us.org";
     public static final String COLLABORATOR = "collaborator@monuments.us.org";
-    public static final User researcher = new User();
-    public static final User partner = new User();
-    public static final User collaborator = new User();
+    public static User researcher = new User();
+    public static User partner = new User();
+    public static User collaborator = new User();
     public static final String password = "password";
 
     // This uses @PostConstruct instead of @Before so that it runs before the @WithUserDetails annotations do
@@ -56,6 +58,13 @@ public class UserServiceIntegrationTests {
     }
 
     public static void createUsers(UserRepository userRepository) {
+        // Clear any users that may be left over from other tests
+        userRepository.deleteAll();
+
+        researcher = new User();
+        partner = new User();
+        collaborator = new User();
+
         researcher.setEmail(RESEARCHER);
         researcher.setRole(Role.RESEARCHER);
 

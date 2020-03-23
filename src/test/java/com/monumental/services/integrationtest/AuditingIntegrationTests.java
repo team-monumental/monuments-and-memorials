@@ -1,8 +1,9 @@
 package com.monumental.services.integrationtest;
 
-import com.monumental.controllers.helpers.CreateMonumentRequest;
-import com.monumental.controllers.helpers.UpdateMonumentRequest;
 import com.monumental.models.Monument;
+import com.monumental.models.User;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.UserRepository;
 import com.monumental.security.UserAwareUserDetails;
 import com.monumental.services.MonumentService;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static com.monumental.services.integrationtest.UserServiceIntegrationTests.*;
@@ -35,6 +38,7 @@ import static com.monumental.services.integrationtest.UserServiceIntegrationTest
  * implementation of ModelService in order to test the auditing features of Model
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ContextConfiguration
 @TestExecutionListeners(listeners={ServletTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
@@ -57,15 +61,18 @@ public class AuditingIntegrationTests {
     }
 
     private Monument createMonument() {
-        CreateMonumentRequest request = new CreateMonumentRequest();
-        request.setTitle("Title");
-        return this.monumentService.createMonument(request);
+        CreateMonumentSuggestion suggestion = new CreateMonumentSuggestion();
+        suggestion.setIsApproved(true);
+        suggestion.setTitle("Title");
+        return this.monumentService.createMonument(suggestion);
     }
 
     private Monument updateMonument(Monument monument) {
-        UpdateMonumentRequest request = new UpdateMonumentRequest();
-        request.setNewTitle("New Title");
-        return this.monumentService.updateMonument(monument.getId(), request);
+        UpdateMonumentSuggestion suggestion = new UpdateMonumentSuggestion();
+        suggestion.setIsApproved(true);
+        suggestion.setMonument(monument);
+        suggestion.setNewTitle("New Title");
+        return this.monumentService.updateMonument(suggestion);
     }
 
     @Test
@@ -93,6 +100,7 @@ public class AuditingIntegrationTests {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 new UserAwareUserDetails(partner), password
         ));
+        List<User> users = this.userRepository.findAll();
         monument = updateMonument(monument);
         assertNotNull(monument.getLastModifiedDate());
         assertTrue(monument.getLastModifiedDate().getTime() > monument.getCreatedDate().getTime());

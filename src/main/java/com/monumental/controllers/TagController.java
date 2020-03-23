@@ -14,7 +14,7 @@ import java.util.List;
 public class TagController {
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     /**
      * Endpoint for getting Tags in the database
