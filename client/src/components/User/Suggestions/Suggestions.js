@@ -42,7 +42,7 @@ export default class Suggestions extends React.Component {
                     {createSuggestions && createSuggestions.length && <>
                         <CreateMonumentSuggestions suggestions={createSuggestions}/>
                     </>}
-                    <h6 className="mt-2">Update Monument or Memorial Suggestions</h6>
+                    <h6 className="mt-4">Update Monument or Memorial Suggestions</h6>
                     {(!updateSuggestions || !updateSuggestions.length) && !error && <>
                         You don't have any update monument or memorial suggestions yet. You can suggest an update to an
                         existing monument or memorial by clicking
@@ -50,7 +50,7 @@ export default class Suggestions extends React.Component {
                         monument or memorial page you want to update.
                     </>}
                     {role.toUpperCase() === Role.PARTNER && <>
-                        <h6 className="mt-2">Bulk New Monument or Memorial Suggestions</h6>
+                        <h6 className="mt-4">Bulk New Monument or Memorial Suggestions</h6>
                         {(!bulkCreateSuggestions || !bulkCreateSuggestions.length) && !error && <>
                             You don't have any bulk new monument or memorial suggestions yet. You can suggest bulk
                             new monuments or memorials by {bulkCreatePageNavLink}.

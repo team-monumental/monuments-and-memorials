@@ -14,6 +14,18 @@ export default class CreateMonumentSuggestion extends React.Component {
         };
     }
 
+    combineJsonListStrings(string1, string2) {
+        if (!string1.replace('[', '').replace(']', '').length) {
+            return string2;
+        }
+
+        if (!string2.replace('[', '').replace(']','').length) {
+            return string1;
+        }
+
+        return string1.replace(']', ',') + string2.replace('[', '');
+    }
+
     handleCollapseLinkClick() {
         const { expanded } = this.state;
         this.setState({expanded: !expanded});
@@ -25,15 +37,31 @@ export default class CreateMonumentSuggestion extends React.Component {
             stringList = JSON.parse(json);
         }
 
+        stringList = stringList.filter(string => string.length);
+
         if (stringList.length) {
             return (
-                <ul>
+                <ul className="mb-0">
                     {stringList.map(string => <li key={string}>{string}</li>)}
                 </ul>
             );
         }
 
         return 'None';
+    }
+
+    renderTags(areMaterials) {
+        const { suggestion } = this.props;
+
+        let combinedJsonString;
+        if (areMaterials) {
+            combinedJsonString = this.combineJsonListStrings(suggestion.materialsJson, suggestion.newMaterialsJson);
+        }
+        else {
+            combinedJsonString = this.combineJsonListStrings(suggestion.tagsJson, suggestion.newTagsJson);
+        }
+
+        return this.renderJsonStringList(combinedJsonString);
     }
 
     renderSuggestionDetails() {
@@ -78,25 +106,23 @@ export default class CreateMonumentSuggestion extends React.Component {
         );
 
         return (<>
-            <span><strong>Artist:</strong> {artist}</span>&nbsp;
-            <span><strong>Date:</strong> {date}</span>&nbsp;
-            <span><strong>Address:</strong> {address}</span>&nbsp;
-            <span><strong>City:</strong> {city}</span>&nbsp;
-            <span><strong>State:</strong> {state}</span>&nbsp;
-            <span><strong>Latitude:</strong> {latitude}</span>&nbsp;
-            <span><strong>Longitude:</strong> {longitude}</span>&nbsp;
-            <span><strong>Description:</strong> {description}</span>&nbsp;
-            <span><strong>Inscription:</strong> {inscription}</span>&nbsp;
+            <div><strong>Artist:</strong> {artist}</div>
+            <div><strong>Date:</strong> {date}</div>
+            <div><strong>Address:</strong> {address}</div>
             <Collapse in={expanded}>
                 <div>
+                    <div><strong>City:</strong> {city}</div>
+                    <div><strong>State:</strong> {state}</div>
+                    <div><strong>Latitude:</strong> {latitude}</div>
+                    <div><strong>Longitude:</strong> {longitude}</div>
+                    <div><strong>Description:</strong> {description}</div>
+                    <div><strong>Inscription:</strong> {inscription}</div>
                     <div className="font-weight-bold">Contributors: </div> {this.renderJsonStringList(suggestion.contributionsJson)}
                     <div className="font-weight-bold">References: </div> {this.renderJsonStringList(suggestion.referencesJson)}
-                    <div className="font-weight-bold">Materials: </div> {this.renderJsonStringList(suggestion.materialsJson)}
-                    {this.renderJsonStringList(suggestion.newMaterialsJson)}
-                    <div className="font-weight-bold">Tags: </div> {this.renderJsonStringList(suggestion.tagsJson)}
-                    {this.renderJsonStringList(suggestion.newTagsJson)}
+                    <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}
+                    <div className="font-weight-bold">Tags: </div> {this.renderTags(false)}
                     <div className="font-weight-bold">Images: </div>
-                    {imageUrls.length && <>
+                    {imageUrls.length > 0 && <>
                         <Gallery images={imageUrls.map(imageUrl => {return {url: imageUrl}})}/>
                     </>}
                     {!imageUrls.length && <>
@@ -115,10 +141,10 @@ export default class CreateMonumentSuggestion extends React.Component {
 
         return (
             <Card className="create-suggestion">
-                <Card.Header>
+                <Card.Header className="pt-0">
                     <Card.Title>{`${index}. ${suggestion.title}`}</Card.Title>
                 </Card.Header>
-                <Card.Body>
+                <Card.Body className="pt-1 pb-1">
                     {this.renderSuggestionDetails()}
                 </Card.Body>
             </Card>

@@ -1,16 +1,19 @@
 @import "../../../../theme";
 
-.create-suggestion {
-  .card.card {
-    border: 1px solid rgba(0, 0, 0, 0.125);
-  }
+.create-suggestion.card.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
 
-  .collapse-link {
-    cursor: pointer;
-    color: $primary;
-    text-decoration: underline;
-    font-size: small;
-    font-weight: bold;
-    text-align: center;
-  }
+.collapse-link {
+  cursor: pointer;
+  color: $primary;
+  text-decoration: underline;
+  font-size: small;
+  font-weight: bold;
+  text-align: center;
+}
+
+.gallery {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
