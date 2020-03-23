@@ -24,16 +24,21 @@ class UserPage extends React.Component {
         return {
             session: state.session,
             favorites: state.fetchFavorites,
-            suggestions: {
-                createSuggestions: state.fetchCreateSuggestions,
-                updateSuggestions: state.fetchUpdateSuggestions,
-                bulkCreateSuggestions: state.fetchBulkCreateSuggestions
-            }
+            createSuggestions: state.fetchCreateSuggestions,
+            updateSuggestions: state.fetchUpdateSuggestions,
+            bulkCreateSuggestions: state.bulkCreateSuggestions
         };
     }
 
     render() {
-        const { session, favorites, suggestions } = this.props;
+        const { session, favorites, createSuggestions, updateSuggestions, bulkCreateSuggestions } = this.props;
+
+        const suggestions = {
+            createSuggestions: createSuggestions ? createSuggestions.result : undefined,
+            updateSuggestions: updateSuggestions ? updateSuggestions.result : undefined,
+            bulkCreateSuggestions: bulkCreateSuggestions ? bulkCreateSuggestions.result : undefined
+        };
+
         return (
             <div className="account page">
                 <Helmet title="Account | Monuments and Memorials"/>

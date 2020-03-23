@@ -23,13 +23,14 @@ public class CreateSuggestionService extends ModelService<CreateMonumentSuggesti
     private CreateSuggestionRepository createSuggestionRepository;
 
     /**
-     * Get all CreateMonumentSuggestions created by the currently logged in User
+     * Get all CreateMonumentSuggestions created by the currently logged in User that are not part of a
+     * BulkCreateMonumentSuggestion
      * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the currently logged in
-     * User
+     * User that are not part of a BulkCreateMonumentSuggestion
      * @throws UnauthorizedException - If no User is currently logged in
      */
     public List<CreateMonumentSuggestion> getCreateMonumentSuggestions() throws UnauthorizedException {
         User currentUser = this.userService.getCurrentUser();
-        return this.createSuggestionRepository.getAllByCreatedBy(currentUser);
+        return this.createSuggestionRepository.getAllByCreatedByAndBulkCreateSuggestionIsNull(currentUser);
     }
 }

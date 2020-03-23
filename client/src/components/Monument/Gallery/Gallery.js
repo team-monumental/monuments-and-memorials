@@ -9,6 +9,7 @@ export default class Gallery extends React.Component {
         let selectedImageIndex = props.selectedImageIndex || 0;
         if (props.images && props.images.length) {
             selectedImageIndex = props.images.findIndex(image => image.isPrimary) || selectedImageIndex;
+            if (selectedImageIndex < 0) selectedImageIndex = 0;
         }
         const imageRotationAnimationLength = props.imageRotationAnimationLength || 1000;
         const imageRotationInterval = (props.imageRotationInterval || 10000) - imageRotationAnimationLength;

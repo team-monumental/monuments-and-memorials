@@ -32,7 +32,7 @@ function fetchSuggestions(action) {
         dispatch(pending(action));
 
         try {
-            const suggestions = await get(action);
+            const suggestions = await get(action.uri);
             dispatch(success(action, suggestions));
         } catch (err) {
             dispatch(error(action, err.message));

@@ -145,9 +145,10 @@ public class SuggestionController {
     }
 
     /**
-     * Get all CreateMonumentSuggestions created by the currently logged in User
+     * Get all CreateMonumentSuggestions created by the currently logged in User that are not part of a
+     * BulkCreateMonumentSuggestion
      * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the currently logged in
-     * User
+     * User that are not part of a BulkCreateMonumentSuggestion
      * @throws UnauthorizedException - If no User is currently logged in
      */
     @GetMapping("/api/suggestions/create")

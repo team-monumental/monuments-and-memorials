@@ -3,6 +3,7 @@ import Spinner from '../../Spinner/Spinner';
 import { Card } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { Role } from'../../../utils/authentication-util';
+import CreateMonumentSuggestions from '../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 
 /**
  * Presentational component for displaying a list of Suggestions on the User page
@@ -37,6 +38,9 @@ export default class Suggestions extends React.Component {
                     {(!createSuggestions || !createSuggestions.length) && !error && <>
                         You don't have any new monument or memorial suggestions yet. You can suggest a new monument or
                         memorial by {createPageNavLink}.
+                    </>}
+                    {createSuggestions && createSuggestions.length && <>
+                        <CreateMonumentSuggestions suggestions={createSuggestions}/>
                     </>}
                     <h6 className="mt-2">Update Monument or Memorial Suggestions</h6>
                     {(!updateSuggestions || !updateSuggestions.length) && !error && <>

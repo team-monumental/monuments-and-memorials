@@ -22,9 +22,11 @@ public interface CreateSuggestionRepository extends JpaRepository<CreateMonument
     List<CreateMonumentSuggestion> getAllByBulkCreateSuggestionId(@Param("id") Integer id);
 
     /**
-     * Get all CreateMonumentSuggestions created by the specified createdBy
+     * Get all CreateMonumentSuggestions created by the specified createdBy that are not part of a
+     * BulkCreateMonumentSuggestion
      * @param createdBy - User object to get all of the CreateMonumentSuggestions that were created by it
      * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the specified createdBy
+     * that are not part of a BulkCreateMonumentSuggestion
      */
-    List<CreateMonumentSuggestion> getAllByCreatedBy(User createdBy);
+    List<CreateMonumentSuggestion> getAllByCreatedByAndBulkCreateSuggestionIsNull(User createdBy);
 }
