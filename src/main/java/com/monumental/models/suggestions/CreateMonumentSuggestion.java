@@ -320,7 +320,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     }
 
     public List<String> getImages() {
-        if (this.images == null) {
+        if (this.images == null || (this.images.isEmpty() && !this.imagesJson.isEmpty())) {
             this.images = this.deserializeStringList(this.imagesJson);
         }
 
