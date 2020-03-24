@@ -7,7 +7,7 @@ import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
 import Collapse from 'react-bootstrap/Collapse';
 
 /**
- * Presentational component for the Modal shown before a Monument Update Suggestion is completed
+ * Presentational component for the Modal shown before an UpdateMonumentSuggestion is created
  */
 export default class UpdateReviewModal extends React.Component {
 
