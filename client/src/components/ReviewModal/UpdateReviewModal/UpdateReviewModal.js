@@ -6,6 +6,7 @@ import { prettyPrintDate, prettyPrintMonth } from '../../../utils/string-util';
 import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
 import Collapse from 'react-bootstrap/Collapse';
 import AttributeChange from '../../Monument/Update/AttributeChange/AttributeChange';
+import DateChange from '../../Monument/Update/DateChange/DateChange';
 
 /**
  * Presentational component for the Modal shown before an UpdateMonumentSuggestion is created
@@ -164,87 +165,6 @@ export default class UpdateReviewModal extends React.Component {
     handleShowUnchangedAttributesClick() {
         const { showingUnchangedAttributes } = this.state;
         this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
-    }
-
-    renderYearChange(oldYear, newYear, didChange) {
-        let oldYearDisplay = <span className="old-attribute none">NONE</span>;
-        let newYearDisplay = <span className="new-attribute none">NONE</span>;
-
-        if (oldYear) {
-            oldYearDisplay = <span className="old-attribute">{oldYear}</span>;
-        }
-
-        if (newYear && newYear.length) {
-            newYearDisplay = <span className="new-attribute">{newYear}</span>;
-        }
-
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
-                {oldYearDisplay}
-                <i className="material-icons">arrow_right_alt</i>
-                {newYearDisplay}
-                {
-                    didChange ?
-                        <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                }
-            </div>
-        );
-    }
-
-    renderMonthYearChange(oldYear, oldMonth, newYear, newMonth, didChange) {
-        let oldMonthYearDisplay = <span className="old-attribute none">NONE</span>;
-        let newMonthYearDisplay = <span className="new-attribute none">NONE</span>;
-
-        if (oldMonth) {
-            oldMonthYearDisplay = <span className="old-attribute">{`${prettyPrintMonth(oldMonth)}, ${oldYear}`}</span>;
-        }
-
-        if (newMonth && newYear && newYear.length) {
-            newMonthYearDisplay = <span className="new-attribute">{`${prettyPrintMonth(newMonth)}, ${newYear}`}</span>
-        }
-
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
-                {oldMonthYearDisplay}
-                <i className="material-icons">arrow_right_alt</i>
-                {newMonthYearDisplay}
-                {
-                    didChange ?
-                        <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                }
-            </div>
-        );
-    }
-
-    renderExactDateChange(oldDate, newDate, didChange) {
-        let oldDateDisplay = <span className="old-attribute none">NONE</span>;
-        let newDateDisplay = <span className="new-attribute none">NONE</span>;
-
-        if (oldDate) {
-            oldDateDisplay = <span className="old-attribute">{prettyPrintDate(oldDate)}</span>;
-        }
-
-        if (newDate) {
-            newDateDisplay = <span className="old-attribute">{prettyPrintDate(newDate)}</span>;
-        }
-
-        return (
-            <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
-                {oldDateDisplay}
-                <i className="material-icons">arrow_right_alt</i>
-                {newDateDisplay}
-                {
-                    didChange ?
-                        <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                }
-            </div>
-        );
     }
 
     renderUnchangedTags(unchangedTags, areMaterials) {
@@ -503,22 +423,22 @@ export default class UpdateReviewModal extends React.Component {
             switch(newMonument.dateSelectValue) {
                 case 'year':
                     (oldMonumentYear !== newMonument.newYear) ?
-                        changedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, true)) :
-                        unchangedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, false));
+                        changedAttributes.push(<DateChange type="year" oldYear={oldMonumentYear} newYear={newMonument.newYear} didChange={true}/>) :
+                        unchangedAttributes.push(<DateChange type="year" oldYear={oldMonumentYear} newYear={newMonument.newYear} didChange={false}/>);
                     break;
                 case 'month-year':
                     if (oldMonumentYear !== newMonument.newYear ||
                         oldMonumentMonth !== newMonument.newMonth) {
-                        changedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth, true));
+                        changedAttributes.push(<DateChange type="month-year" oldYear={oldMonumentYear} oldMonth={oldMonumentMonth} newYear={newMonument.newYear} newMonth={newMonument.newMonth} didChange={true}/>);
                     }
                     else {
-                        unchangedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth, false));
+                        unchangedAttributes.push(<DateChange type="month-year" oldYear={oldMonumentYear} oldMonth={oldMonumentMonth} newYear={newMonument.newYear} newMonth={newMonument.newMonth} didChange={false}/>);
                     }
                     break;
                 case 'exact-date':
                     (prettyPrintDate(oldMonument.date) !== prettyPrintDate(newMonument.newDate)) ?
-                        changedAttributes.push(this.renderExactDateChange(oldMonument.date, newMonument.newDate, true)) :
-                        unchangedAttributes.push(this.renderExactDateChange(oldMonument.date, newMonument.newDate, false));
+                        changedAttributes.push(<DateChange type="exact-date" oldDate={oldMonument.date} newDate={newMonument.newDate} didChange={true}/>) :
+                        unchangedAttributes.push(<DateChange type="exact-date" oldDate={oldMonument.date} newDate={newMonument.newDate} didChange={false}/>);
                     break;
                 default:
                     break;
