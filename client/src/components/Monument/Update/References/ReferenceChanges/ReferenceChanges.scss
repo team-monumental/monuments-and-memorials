@@ -1,0 +1,16 @@
+.reference-change {
+  display: flex;
+  align-items: center;
+
+  .old-attribute {
+    padding-right: 0.25rem;
+  }
+
+  .new-attribute {
+    padding-left: 0.25rem;
+  }
+
+  i {
+    font-size: 36px;
+  }
+}

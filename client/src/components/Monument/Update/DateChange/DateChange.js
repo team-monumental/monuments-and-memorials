@@ -61,14 +61,14 @@ export default class DateChange extends React.Component {
     renderChange(oldDisplay, newDisplay, didChange) {
         return (
             <div className="attribute-update">
-                <span className="attribute-label">Date:&nbsp;</span>
+                <span className="font-weight-bold">Date:&nbsp;</span>
                 {oldDisplay}
                 <i className="material-icons">arrow_right_alt</i>
                 {newDisplay}
                 {
                     didChange ?
                         <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO CHANGES)</span>
+                        <span className="font-weight-bold">&nbsp;(NO CHANGES)</span>
                 }
             </div>
         );

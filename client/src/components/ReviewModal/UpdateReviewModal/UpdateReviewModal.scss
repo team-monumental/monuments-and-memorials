@@ -34,19 +34,6 @@
         i {
           font-size: 36px;
         }
-
-        .changed-references {
-          .changed-references-list {
-            .reference-change {
-              display: flex;
-              align-items: center;
-            }
-          }
-        }
-      }
-
-      .attribute-label {
-        font-weight: bold;
       }
     }
 
@@ -71,16 +58,6 @@
     width: 100%;
     border-top: 2px dotted rgb(0, 0, 0);
     margin-bottom: 0.5rem;
-  }
-
-  .added {
-    color: green;
-    font-weight: bold;
-  }
-
-  .removed {
-    color: red;
-    font-weight: bold;
   }
 
   .show-unchanged-changes-link {

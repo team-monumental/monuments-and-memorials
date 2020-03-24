@@ -11,7 +11,7 @@ export default class AttributeChange extends React.Component {
 
         return (
             <div className="attribute-update">
-                <span className="attribute-label">{attributeLabel}:&nbsp;</span>
+                <span className="font-weight-bold">{attributeLabel}:&nbsp;</span>
                 {
                     isBoolean ? <span className="old-attribute">{oldAttribute ? 'Yes' : 'No'}</span> :
                         oldAttribute.length ?
@@ -28,7 +28,7 @@ export default class AttributeChange extends React.Component {
                 {
                     didChange ?
                         <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO CHANGES)</span>
+                        <span className="font-weight-bold">&nbsp;(NO CHANGES)</span>
                 }
             </div>
         );

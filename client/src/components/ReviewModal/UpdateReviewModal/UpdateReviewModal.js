@@ -1,12 +1,17 @@
 import React from 'react';
 import './UpdateReviewModal.scss';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import { prettyPrintDate, prettyPrintMonth } from '../../../utils/string-util';
-import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
-import Collapse from 'react-bootstrap/Collapse';
+import { Modal, Button, Collapse } from 'react-bootstrap';
+import { prettyPrintDate } from '../../../utils/string-util';
 import AttributeChange from '../../Monument/Update/AttributeChange/AttributeChange';
 import DateChange from '../../Monument/Update/DateChange/DateChange';
+import UnchangedTags from '../../Monument/Update/TagChanges/UnchangedTags/UnchangedTags';
+import AddedTags from '../../Monument/Update/TagChanges/AddedTags/AddedTags';
+import RemovedTags from '../../Monument/Update/TagChanges/RemovedTags/RemovedTags';
+import ReferenceChanges from '../../Monument/Update/References/ReferenceChanges/ReferenceChanges';
+import AddedReferences from '../../Monument/Update/References/AddedReferences/AddedReferences';
+import DeletedReferences from '../../Monument/Update/References/DeletedReferences/DeletedReferences';
+import AddedImages from '../../Monument/Update/Images/AddedImages/AddedImages';
+import DeletedImages from '../../Monument/Update/Images/DeletedImages/DeletedImages';
 
 /**
  * Presentational component for the Modal shown before an UpdateMonumentSuggestion is created
@@ -167,206 +172,6 @@ export default class UpdateReviewModal extends React.Component {
         this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
     }
 
-    renderUnchangedTags(unchangedTags, areMaterials) {
-        let unchangedTagsDisplay = <span className="font-weight-bold">NONE</span>;
-
-        if (unchangedTags && unchangedTags.length) {
-            unchangedTagsDisplay = (
-                <ul className={areMaterials ? 'unchanged-materials-list' : 'unchanged-tags-list'}>
-                    {unchangedTags.map(unchangedTag => <li key={unchangedTag}>{unchangedTag}</li>)}
-                </ul>
-            );
-        }
-
-        return (
-            <div className={areMaterials ? 'unchanged-materials' : 'unchanged-tags'}>
-                <span className="attribute-label">{areMaterials ? 'Unchanged Materials:' : 'Unchanged Tags:'}&nbsp;</span>
-                {unchangedTagsDisplay}
-            </div>
-        );
-    }
-
-    renderAddedTags(addedTags, areMaterials) {
-        let addedTagsDisplay = <span className="font-weight-bold">NONE</span>;
-
-        if (addedTags && addedTags.length) {
-            addedTagsDisplay = (
-                <ul className={areMaterials ? 'added-materials-list' : 'added-tags-list'}>
-                    {addedTags.map(addedTag => <li className="added" key={addedTag}>{addedTag}</li>)}
-                </ul>
-            );
-        }
-
-        return (
-            <div className={areMaterials ? 'added-materials' : 'added-tags'}>
-                <span className="attribute-label">{areMaterials ? 'Added Materials:' : 'Added Tags:'}&nbsp;</span>
-                {addedTagsDisplay}
-            </div>
-        );
-    }
-
-    renderRemovedTags(removedTags, areMaterials) {
-        let removedTagsDisplay = <span className="font-weight-bold">NONE</span>;
-
-        if (removedTags && removedTags.length) {
-            removedTagsDisplay = (
-                <ul className={areMaterials ? 'removed-materials-list' : 'removed-tags-list'}>
-                    {removedTags.map(removedTag => <li className="removed" key={removedTag}>{removedTag}</li>)}
-                </ul>
-            );
-        }
-
-        return (
-            <div className={areMaterials ? 'removed-materials' : 'removed-tags'}>
-                <span className="attribute-label">{areMaterials ? 'Removed Materials:' : 'Removed Tags:'}&nbsp;</span>
-                {removedTagsDisplay}
-            </div>
-        );
-    }
-
-    renderUnchangedReferences(unchangedReferences) {
-        let unchangedReferenceDisplays = [];
-
-        for (const unchangedReference of unchangedReferences) {
-            unchangedReferenceDisplays.push(this.renderReferenceChange(unchangedReference, unchangedReference, false));
-        }
-
-        return (
-            <div className="changed-references">
-                <span className="attribute-label">Unchanged References:&nbsp;</span>
-                    <ul className="changed-references-list">{unchangedReferenceDisplays}</ul>
-            </div>
-        );
-    }
-
-    renderChangedReferences(changedReferences) {
-        let changedReferenceDisplays = [];
-
-        for (const changedReference of changedReferences) {
-            changedReferenceDisplays.push(this.renderReferenceChange(changedReference.oldReferenceValue, changedReference.newReferenceValue, true));
-        }
-
-        return (
-            <div className="changed-references">
-                <span className="attribute-label">Changed References:&nbsp;</span>
-                    <ul className="changed-references-list">{changedReferenceDisplays}</ul>
-            </div>
-        );
-    }
-
-    renderReferenceChange(oldReferenceValue, newReferenceValue, didChange) {
-        return (
-            <li key={newReferenceValue} className="reference-change">
-                <span className="old-attribute">{oldReferenceValue}</span>
-                <i className="material-icons">arrow_right_alt</i>
-                <span className="new-attribute">{newReferenceValue}</span>
-                {
-                    didChange ?
-                        <div/> :
-                        <span className="no-attribute-change font-weight-bold">&nbsp;(NO  CHANGES)</span>
-                }
-            </li>
-        );
-    }
-
-    renderAddedReferences(addedReferences) {
-        let addedReferenceDisplay = [];
-
-        for (const addedReference of addedReferences) {
-            addedReferenceDisplay.push(this.renderAddedReference(addedReference));
-        }
-
-        return (
-            <div className="added-references">
-                <span className="attribute-label">Added References:&nbsp;</span>
-                {
-                    addedReferenceDisplay.length ?
-                        <ul className="added-references-list">{addedReferenceDisplay}</ul> :
-                        <span className="font-weight-bold">NONE</span>
-                }
-            </div>
-        );
-    }
-
-    renderAddedReference(addedReferenceUrl) {
-        return (
-            <li key={addedReferenceUrl} className="reference added">{addedReferenceUrl}</li>
-        );
-    }
-
-    renderDeletedReferences(deletedReferences) {
-        let deletedReferenceDisplays = [];
-
-        for (const deletedReference of deletedReferences) {
-            deletedReferenceDisplays.push(this.renderDeletedReference(deletedReference));
-        }
-
-        return (
-            <div className="deleted-references">
-                <span className="attribute-label">Deleted References:&nbsp;</span>
-                {
-                    deletedReferenceDisplays.length ?
-                        <ul className="deleted-references-list">{deletedReferenceDisplays}</ul> :
-                        <span className="font-weight-bold">NONE</span>
-                }
-            </div>
-        );
-    }
-
-    renderDeletedReference(deletedReferenceUrl) {
-        return (
-            <li key={deletedReferenceUrl} className="reference removed">{deletedReferenceUrl}</li>
-        );
-    }
-
-    renderAddedImages() {
-        const { addedImages } = this.props;
-
-        let addedImagesDisplay = <span className="font-weight-bold">NONE</span>;
-
-        if (addedImages && addedImages.length) {
-            let addedImagesList = [];
-
-            for (const addedImage of addedImages) {
-                addedImagesList.push(<li className="added" key={addedImage.name}>{addedImage.name}</li>);
-            }
-
-            addedImagesDisplay = <ul className="added-images-list">{addedImagesList}</ul>;
-        }
-
-        return (
-            <div className="added-images">
-                <span className="attribute-label">Added Images:&nbsp;</span>
-                {addedImagesDisplay}
-            </div>
-        );
-    }
-
-    renderDeletedImages() {
-        const { newMonument } = this.props;
-
-        let deletedImagesDisplay = <span className="font-weight-bold">NONE</span>;
-
-        if (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) {
-            let deletedImagesList = [];
-
-            for (const deletedImageUrl of newMonument.deletedImageUrls) {
-                deletedImagesList.push(
-                    <li className="removed" key={deletedImageUrl}>{getS3ImageNameFromObjectUrl(deletedImageUrl)}</li>
-                );
-            }
-
-            deletedImagesDisplay = <ul className="deleted-images-list">{deletedImagesList}</ul>;
-        }
-
-        return (
-            <div className="deleted-images">
-                <span className="attribute-label">Deleted Images:&nbsp;</span>
-                {deletedImagesDisplay}
-            </div>
-        );
-    }
-
     renderAttributeUpdates() {
         const { showingUnchangedAttributes } = this.state;
         const { oldMonument, newMonument, addedImages } = this.props;
@@ -482,53 +287,53 @@ export default class UpdateReviewModal extends React.Component {
             /* Materials and Tags */
             const tagChanges = this.collectTagChanges();
 
-            unchangedAttributes.push(this.renderUnchangedTags(tagChanges.unchangedMaterials, true));
+            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedMaterials} areMaterials={true}/>);
 
             tagChanges.addedMaterials.length ?
-                changedAttributes.push(this.renderAddedTags(tagChanges.addedMaterials, true)) :
-                unchangedAttributes.push(this.renderAddedTags(tagChanges.addedMaterials, true));
+                changedAttributes.push(<AddedTags tags={tagChanges.addedMaterials} areMaterials={true}/>) :
+                unchangedAttributes.push(<AddedTags tags={tagChanges.addedMaterials} areMaterials={true}/>);
 
             tagChanges.removedMaterials.length ?
-                changedAttributes.push(this.renderRemovedTags(tagChanges.removedMaterials, true)) :
-                unchangedAttributes.push(this.renderRemovedTags(tagChanges.removedMaterials, true));
+                changedAttributes.push(<RemovedTags tags={tagChanges.removedMaterials} areMaterials={true}/>) :
+                unchangedAttributes.push(<RemovedTags tags={tagChanges.removedMaterials} areMaterials={true}/>);
 
-            unchangedAttributes.push(this.renderUnchangedTags(tagChanges.unchangedTags, false));
+            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedTags} areMaterials={false}/>);
 
             tagChanges.addedTags.length ?
-                changedAttributes.push(this.renderAddedTags(tagChanges.addedTags, false)) :
-                unchangedAttributes.push(this.renderAddedTags(tagChanges.addedTags, false));
+                changedAttributes.push(<AddedTags tags={tagChanges.addedTags} areMaterials={false}/>) :
+                unchangedAttributes.push(<AddedTags tags={tagChanges.addedTags} areMaterials={false}/>);
 
             tagChanges.removedTags.length ?
-                changedAttributes.push(this.renderRemovedTags(tagChanges.removedTags, false)) :
-                unchangedAttributes.push(this.renderRemovedTags(tagChanges.removedTags, false));
+                changedAttributes.push(<RemovedTags tags={tagChanges.removedTags} areMaterials={false}/>) :
+                unchangedAttributes.push(<RemovedTags tags={tagChanges.removedTags} areMaterials={false}/>);
 
             /* References */
             const referenceChanges = this.collectReferenceChanges();
 
             if (referenceChanges.unchangedReferences.length) {
-                unchangedAttributes.push(this.renderUnchangedReferences(referenceChanges.unchangedReferences));
+                unchangedAttributes.push(<ReferenceChanges unchangedReferences={referenceChanges.unchangedReferences} didChange={false}/>);
             }
 
             if (referenceChanges.changedReferences.length) {
-                changedAttributes.push(this.renderChangedReferences(referenceChanges.changedReferences));
+                changedAttributes.push(<ReferenceChanges changedReferences={referenceChanges.changedReferences} didChange={true}/>);
             }
 
             referenceChanges.addedReferences.length ?
-                changedAttributes.push(this.renderAddedReferences(referenceChanges.addedReferences)) :
-                unchangedAttributes.push(this.renderAddedReferences(referenceChanges.addedReferences));
+                changedAttributes.push(<AddedReferences references={referenceChanges.addedReferences}/>) :
+                unchangedAttributes.push(<AddedReferences references={referenceChanges.addedReferences}/>);
 
             referenceChanges.deletedReferences.length ?
-                changedAttributes.push(this.renderDeletedReferences(referenceChanges.deletedReferences)) :
-                unchangedAttributes.push(this.renderDeletedReferences(referenceChanges.deletedReferences));
+                changedAttributes.push(<DeletedReferences references={referenceChanges.deletedReferences}/>) :
+                unchangedAttributes.push(<DeletedReferences references={referenceChanges.deletedReferences}/>);
 
             /* Images */
             (addedImages && addedImages.length) ?
-                changedAttributes.push(this.renderAddedImages()) :
-                unchangedAttributes.push(this.renderAddedImages());
+                changedAttributes.push(<AddedImages images={this.props.addedImages}/>) :
+                unchangedAttributes.push(<AddedImages images={this.props.addedImages}/>);
 
             (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) ?
-                changedAttributes.push(this.renderDeletedImages()) :
-                unchangedAttributes.push(this.renderDeletedImages());
+                changedAttributes.push(<DeletedImages newMonument={this.props.newMonument}/>) :
+                unchangedAttributes.push(<DeletedImages newMonument={this.props.newMonument}/>);
         }
 
         if (!changedAttributes.length) {
