@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 
 import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 import MonumentPage from './pages/MonumentPage/MonumentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
@@ -14,8 +15,9 @@ import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
-import HomePage from './pages/HomePage/HomePage';
+import HomePage from "./pages/HomePage/HomePage";
 import AboutPage from './pages/AboutPage/AboutPage';
+import ResourcePage from './pages/ResourcePage/ResourcePage';
 import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import SignupPage from './pages/SignupPage/SignupPage';
@@ -59,7 +61,7 @@ class App extends React.Component {
                 <Toaster/>
                 <ConnectedRouter history={history}>
                     <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
-                    <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
+                    <div>
                         <ErrorHandler>
                             <Route exact path="/map" component={MapPage}/>
                             <Route exact path="/" component={HomePage}/>
@@ -70,6 +72,7 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/create" component={CreateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                             <Route exact path="/about" component={AboutPage}/>
+                            <Route exact path="/resources" component={ResourcePage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                             <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
@@ -81,6 +84,7 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/suggestion-created" component={SuggestionCreatedPage}/>
                         </ErrorHandler>
                     </div>
+                    <Footer headerHeight={`${headerHeight}px`}/>
                 </ConnectedRouter>
             </div>
         );

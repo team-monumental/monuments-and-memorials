@@ -1,0 +1,22 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
+
+.footer
+{
+    display: flex;
+    position:relative;
+    margin-top: 5vh;
+    border-top: 1px groove black;
+    line-height: normal;
+    width: 100%;
+}
+
+.footer-content {
+    display: flex;
+    list-style-type: none;
+    flex-wrap: wrap;
+    vertical-align: top;
+}
+

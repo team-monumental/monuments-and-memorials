@@ -1,0 +1,35 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+#resource-page-body {
+  display: block;
+
+  p {
+    text-align: left;
+    text-indent: each-line;
+  }
+
+  b {
+    text-align: center;
+    text-indent: each-line;
+  }
+
+  .card.card {
+    text-align: center;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: 80%;
+    }
+  }
+}
+
+#resource-page-title {
+  text-align: center;
+  font-size: 1.35em;
+
+  @include media-breakpoint-up(md) {
+    font-size: 2em;
+  }
+}
