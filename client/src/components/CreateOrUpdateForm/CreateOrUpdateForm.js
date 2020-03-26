@@ -458,7 +458,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newInscription: inscription.value === '' ? undefined : inscription.value,
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
-            images: images,
+            images: images.concat(imagesForUpdate),
             dateSelectValue: dateSelectValue,
             newIsTemporary: isTemporary.value
         };

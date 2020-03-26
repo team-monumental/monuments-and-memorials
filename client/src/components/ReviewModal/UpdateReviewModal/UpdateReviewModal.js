@@ -198,22 +198,22 @@ export default class UpdateReviewModal extends React.Component {
             let oldTitle = oldMonument.title ? oldMonument.title : '';
             let newTitle = newMonument.newTitle ? newMonument.newTitle : '';
             (oldTitle !== newTitle) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldTitle} newAttribute={newTitle} didChange={true}/>) :
-                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldTitle} newAttribute={newTitle} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldTitle} newAttribute={newTitle} didChange={true} key="title"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldTitle} newAttribute={newTitle} didChange={false} key="title"/>);
 
             /* IsTemporary */
             let oldIsTemporary = oldMonument.isTemporary;
             let newIsTemporary = newMonument.newIsTemporary;
             (!!oldIsTemporary !== !!newIsTemporary) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldIsTemporary} newAttribute={newIsTemporary} didChange={true} isBoolean={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldIsTemporary} newAttribute={newIsTemporary} didChange={false} isBoolean={true}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldIsTemporary} newAttribute={newIsTemporary} didChange={true} isBoolean={true} key="isTemporary"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldIsTemporary} newAttribute={newIsTemporary} didChange={false} isBoolean={true} key="isTemporary"/>);
 
             /* Artist */
             let oldArtist = oldMonument.artist ? oldMonument.artist : '';
             let newArtist = newMonument.newArtist ? newMonument.newArtist : '';
             (oldArtist !== newArtist) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldArtist} newAttribute={newArtist} didChange={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldArtist} newAttribute={newArtist} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldArtist} newAttribute={newArtist} didChange={true} key="artist"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldArtist} newAttribute={newArtist} didChange={false} key="artist"/>);
 
             /* Date */
             let oldMonumentYear, oldMonumentMonth;
@@ -228,22 +228,22 @@ export default class UpdateReviewModal extends React.Component {
             switch(newMonument.dateSelectValue) {
                 case 'year':
                     (oldMonumentYear !== newMonument.newYear) ?
-                        changedAttributes.push(<DateChange type="year" oldYear={oldMonumentYear} newYear={newMonument.newYear} didChange={true}/>) :
-                        unchangedAttributes.push(<DateChange type="year" oldYear={oldMonumentYear} newYear={newMonument.newYear} didChange={false}/>);
+                        changedAttributes.push(<DateChange type="year" oldYear={oldMonumentYear} newYear={newMonument.newYear} didChange={true} key="date"/>) :
+                        unchangedAttributes.push(<DateChange type="year" oldYear={oldMonumentYear} newYear={newMonument.newYear} didChange={false} key="date"/>);
                     break;
                 case 'month-year':
                     if (oldMonumentYear !== newMonument.newYear ||
                         oldMonumentMonth !== newMonument.newMonth) {
-                        changedAttributes.push(<DateChange type="month-year" oldYear={oldMonumentYear} oldMonth={oldMonumentMonth} newYear={newMonument.newYear} newMonth={newMonument.newMonth} didChange={true}/>);
+                        changedAttributes.push(<DateChange type="month-year" oldYear={oldMonumentYear} oldMonth={oldMonumentMonth} newYear={newMonument.newYear} newMonth={newMonument.newMonth} didChange={true} key="date"/>);
                     }
                     else {
-                        unchangedAttributes.push(<DateChange type="month-year" oldYear={oldMonumentYear} oldMonth={oldMonumentMonth} newYear={newMonument.newYear} newMonth={newMonument.newMonth} didChange={false}/>);
+                        unchangedAttributes.push(<DateChange type="month-year" oldYear={oldMonumentYear} oldMonth={oldMonumentMonth} newYear={newMonument.newYear} newMonth={newMonument.newMonth} didChange={false} key="date"/>);
                     }
                     break;
                 case 'exact-date':
                     (prettyPrintDate(oldMonument.date) !== prettyPrintDate(newMonument.newDate)) ?
-                        changedAttributes.push(<DateChange type="exact-date" oldDate={oldMonument.date} newDate={newMonument.newDate} didChange={true}/>) :
-                        unchangedAttributes.push(<DateChange type="exact-date" oldDate={oldMonument.date} newDate={newMonument.newDate} didChange={false}/>);
+                        changedAttributes.push(<DateChange type="exact-date" oldDate={oldMonument.date} newDate={newMonument.newDate} didChange={true} key="date"/>) :
+                        unchangedAttributes.push(<DateChange type="exact-date" oldDate={oldMonument.date} newDate={newMonument.newDate} didChange={false} key="date"/>);
                     break;
                 default:
                     break;
@@ -253,87 +253,87 @@ export default class UpdateReviewModal extends React.Component {
             let oldAddress = oldMonument.address ? oldMonument.address : '';
             let newAddress = newMonument.newAddress ? newMonument.newAddress : '';
             (oldAddress !== newAddress) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldAddress} newAttribute={newAddress} didChange={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldAddress} newAttribute={newAddress} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldAddress} newAttribute={newAddress} didChange={true} key="address"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldAddress} newAttribute={newAddress} didChange={false} key="address"/>);
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             let newLatitude = newMonument.newLatitude ? newMonument.newLatitude : '';
             (oldLatitude !== newLatitude) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newLatitude} didChange={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newLatitude} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newLatitude} didChange={true} key="latitude"/> ) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newLatitude} didChange={false} key="latitude"/>);
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
             let newLongitude = newMonument.newLongitude ? newMonument.newLongitude : '';
             (oldLongitude !== newLongitude) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newLongitude} didChange={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newLongitude} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newLongitude} didChange={true} key="longitude"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newLongitude} didChange={false} key="longitude"/>);
 
             /* Description */
             let oldDescription = oldMonument.description ? oldMonument.description : '';
             let newDescription = newMonument.newDescription ? newMonument.newDescription : '';
             (oldDescription !== newDescription) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldDescription} newAttribute={newDescription} didChange={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldDescription} newAttribute={newDescription} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldDescription} newAttribute={newDescription} didChange={true} key="description"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldDescription} newAttribute={newDescription} didChange={false} key="description"/>);
 
             /* Inscription */
             let oldInscription = oldMonument.inscription ? oldMonument.inscription : '';
             let newInscription = newMonument.newInscription ? newMonument.newInscription : '';
             (oldInscription !== newInscription) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldInscription} newAttribute={newInscription} didChange={true}/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldInscription} newAttribute={newInscription} didChange={false}/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldInscription} newAttribute={newInscription} didChange={true} key="inscription"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldInscription} newAttribute={newInscription} didChange={false} key="inscription"/>);
 
             /* Materials and Tags */
             const tagChanges = this.collectTagChanges();
 
-            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedMaterials} areMaterials={true}/>);
+            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedMaterials} areMaterials={true} key="unchangedMaterials"/>);
 
             tagChanges.addedMaterials.length ?
-                changedAttributes.push(<AddedTags tags={tagChanges.addedMaterials} areMaterials={true}/>) :
-                unchangedAttributes.push(<AddedTags tags={tagChanges.addedMaterials} areMaterials={true}/>);
+                changedAttributes.push(<AddedTags tags={tagChanges.addedMaterials} areMaterials={true} key="addedMaterials"/>) :
+                unchangedAttributes.push(<AddedTags tags={tagChanges.addedMaterials} areMaterials={true} key="addedMaterials"/>);
 
             tagChanges.removedMaterials.length ?
-                changedAttributes.push(<RemovedTags tags={tagChanges.removedMaterials} areMaterials={true}/>) :
-                unchangedAttributes.push(<RemovedTags tags={tagChanges.removedMaterials} areMaterials={true}/>);
+                changedAttributes.push(<RemovedTags tags={tagChanges.removedMaterials} areMaterials={true} key="removedMaterials"/>) :
+                unchangedAttributes.push(<RemovedTags tags={tagChanges.removedMaterials} areMaterials={true} key="removedMaterials"/>);
 
-            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedTags} areMaterials={false}/>);
+            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedTags} areMaterials={false} key="unchangedTags"/>);
 
             tagChanges.addedTags.length ?
-                changedAttributes.push(<AddedTags tags={tagChanges.addedTags} areMaterials={false}/>) :
-                unchangedAttributes.push(<AddedTags tags={tagChanges.addedTags} areMaterials={false}/>);
+                changedAttributes.push(<AddedTags tags={tagChanges.addedTags} areMaterials={false} key="addedTags"/>) :
+                unchangedAttributes.push(<AddedTags tags={tagChanges.addedTags} areMaterials={false} key="addedTags"/>);
 
             tagChanges.removedTags.length ?
-                changedAttributes.push(<RemovedTags tags={tagChanges.removedTags} areMaterials={false}/>) :
-                unchangedAttributes.push(<RemovedTags tags={tagChanges.removedTags} areMaterials={false}/>);
+                changedAttributes.push(<RemovedTags tags={tagChanges.removedTags} areMaterials={false} key="removedTags"/>) :
+                unchangedAttributes.push(<RemovedTags tags={tagChanges.removedTags} areMaterials={false} key="removedTags"/>);
 
             /* References */
             const referenceChanges = this.collectReferenceChanges();
 
             if (referenceChanges.unchangedReferences.length) {
-                unchangedAttributes.push(<ReferenceChanges unchangedReferences={referenceChanges.unchangedReferences} didChange={false}/>);
+                unchangedAttributes.push(<ReferenceChanges unchangedReferences={referenceChanges.unchangedReferences} didChange={false} key="unchangedReferences"/>);
             }
 
             if (referenceChanges.changedReferences.length) {
-                changedAttributes.push(<ReferenceChanges changedReferences={referenceChanges.changedReferences} didChange={true}/>);
+                changedAttributes.push(<ReferenceChanges changedReferences={referenceChanges.changedReferences} didChange={true} key="changedReferences"/>);
             }
 
             referenceChanges.addedReferences.length ?
-                changedAttributes.push(<AddedReferences references={referenceChanges.addedReferences}/>) :
-                unchangedAttributes.push(<AddedReferences references={referenceChanges.addedReferences}/>);
+                changedAttributes.push(<AddedReferences references={referenceChanges.addedReferences} key="addedReferences"/>) :
+                unchangedAttributes.push(<AddedReferences references={referenceChanges.addedReferences} key="addedReferences"/>);
 
             referenceChanges.deletedReferences.length ?
-                changedAttributes.push(<DeletedReferences references={referenceChanges.deletedReferences}/>) :
-                unchangedAttributes.push(<DeletedReferences references={referenceChanges.deletedReferences}/>);
+                changedAttributes.push(<DeletedReferences references={referenceChanges.deletedReferences} key="deletedReferences"/>) :
+                unchangedAttributes.push(<DeletedReferences references={referenceChanges.deletedReferences} key="deletedReferences"/>);
 
             /* Images */
             (addedImages && addedImages.length) ?
-                changedAttributes.push(<AddedImages images={this.props.addedImages}/>) :
-                unchangedAttributes.push(<AddedImages images={this.props.addedImages}/>);
+                changedAttributes.push(<AddedImages images={this.props.addedImages} key="addedImages"/>) :
+                unchangedAttributes.push(<AddedImages images={this.props.addedImages} key="addedImages"/>);
 
             (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) ?
-                changedAttributes.push(<DeletedImages newMonument={this.props.newMonument}/>) :
-                unchangedAttributes.push(<DeletedImages newMonument={this.props.newMonument}/>);
+                changedAttributes.push(<DeletedImages newMonument={this.props.newMonument} key="deletedImages"/>) :
+                unchangedAttributes.push(<DeletedImages newMonument={this.props.newMonument} key="deletedImages"/>);
         }
 
         if (!changedAttributes.length) {
@@ -384,7 +384,6 @@ export default class UpdateReviewModal extends React.Component {
                         Review Update
                     </Modal.Title>
                 </Modal.Header>
-                <hr className="update-review-modal"/>
                 <Modal.Body className="update-review-modal">
                     <p>Please review the updates you have made for correctness and completeness!</p>
                     <div className="attributes-update-container">
