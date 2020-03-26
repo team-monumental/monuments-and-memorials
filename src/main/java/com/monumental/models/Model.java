@@ -50,7 +50,7 @@ public abstract class Model {
     @LastModifiedBy
     @ManyToOne
     @JsonIgnore
-    private User lastModifiedBy;
+    User lastModifiedBy;
 
     public Integer getId() {
         return this.id;

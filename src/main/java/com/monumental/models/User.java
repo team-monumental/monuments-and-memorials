@@ -119,4 +119,11 @@ public class User extends Model {
     public void setContributions(List<Contribution> contributions) {
         this.contributions = contributions;
     }
+
+    @Override
+    public void setLastModifiedBy(User user) {
+        if (!user.getId().equals(this.getId())) {
+            this.lastModifiedBy = user;
+        }
+    }
 }
