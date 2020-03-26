@@ -7,7 +7,11 @@ import './AttributeChange.scss';
 export default class AttributeChange extends React.Component {
 
     render() {
-        const { attributeLabel, oldAttribute, newAttribute, didChange, isBoolean=false } = this.props;
+        const { attributeLabel, didChange=true, isBoolean=false } = this.props;
+        let { oldAttribute, newAttribute } = this.props;
+
+        oldAttribute = oldAttribute ? oldAttribute : '';
+        newAttribute = newAttribute ? newAttribute : '';
 
         return (
             <div className="attribute-update">

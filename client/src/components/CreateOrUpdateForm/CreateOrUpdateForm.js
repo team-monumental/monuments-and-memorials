@@ -458,18 +458,11 @@ export default class CreateOrUpdateForm extends React.Component {
             newInscription: inscription.value === '' ? undefined : inscription.value,
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
-            images: images.concat(imagesForUpdate),
-            dateSelectValue: dateSelectValue,
-            newIsTemporary: isTemporary.value
+            images: images,
+            newIsTemporary: isTemporary.value,
+            dateType: dateSelectValue,
+            imagesForUpdate: imagesForUpdate
         };
-
-        let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
-        let createdMaterialNames = newMaterials.map(newMaterial => newMaterial.name);
-        updateForm.newMaterials = newlyAssociatedMaterialNames.concat(createdMaterialNames);
-
-        let newlyAssociatedTagNames = tags.map(tag => tag.name);
-        let createdTagNames = newTags.map(newTag => newTag.name);
-        updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
 
         switch (dateSelectValue) {
             case 'year':
@@ -485,6 +478,14 @@ export default class CreateOrUpdateForm extends React.Component {
             default:
                 break;
         }
+
+        let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
+        let createdMaterialNames = newMaterials.map(newMaterial => newMaterial.name);
+        updateForm.newMaterials = newlyAssociatedMaterialNames.concat(createdMaterialNames);
+
+        let newlyAssociatedTagNames = tags.map(tag => tag.name);
+        let createdTagNames = newTags.map(newTag => newTag.name);
+        updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
 
         updateForm.updatedReferencesUrlsById = {};
         updateForm.newReferenceUrls = [];

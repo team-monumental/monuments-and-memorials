@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Card } from 'react-bootstrap';
+import AttributeChange from '../../../Monument/Update/AttributeChange/AttributeChange';
+import { didAttributeChange } from '../../../../utils/update-util';
 
 export default class UpdateMonumentSuggestion extends React.Component {
 
@@ -20,7 +22,19 @@ export default class UpdateMonumentSuggestion extends React.Component {
         const { suggestion, oldMonument } = this.props;
         const { expanded } = this.state;
 
+        if (suggestion && oldMonument) {
+            let changedAttributes = [];
 
+            if (didAttributeChange(oldMonument.title, suggestion.newTitle)) {
+                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={suggestion.newTitle}/>);
+            }
+            if (didAttributeChange(oldMonument.artist, suggestion.newArtist)) {
+                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={suggestion.newArtist}/>);
+            }
+            if (didAttributeChange(oldMonument.artist, suggestion.newArtist)) {
+                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={suggestion.newArtist}/>);
+            }
+        }
     }
 
     render() {
@@ -31,8 +45,6 @@ export default class UpdateMonumentSuggestion extends React.Component {
                 <Card.Header className="pt-0">
                     <Card.Title>
                         {`${index}. ${oldMonument.title}`}
-                        <i className="material-icons">arrow_right_alt</i>
-                        {suggestion.newTitle}
                     </Card.Title>
                 </Card.Header>
                 <Card.Body className="pt-1 pb-1">

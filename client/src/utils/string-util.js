@@ -1,8 +1,30 @@
 import * as moment from 'moment';
 
+/**
+ * Format the specified date into a user-friendly string
+ * @param date - Date to format into a user-friendly string
+ */
 export function prettyPrintDate(date) {
     if (!date) return;
     date = moment(new Date(date));
+    // Wednesday, October 16th, 2019 format
+    return date.format('dddd, MMMM Do, YYYY');
+}
+
+/**
+ * Parse the specified dateString into a consistent, user-friendly format
+ * @param dateString - String to parse into a consistent, user-friendly format
+ */
+export function prettyPrintDateString(dateString) {
+    if (!dateString) return;
+
+    const dateArray = dateString.split("-");
+    const year = dateArray[0];
+    const month = parseInt(dateArray[1], 10) - 1;
+    const day = dateArray[2];
+
+    const date = moment(new Date(year, month, day));
+
     // Wednesday, October 16th, 2019 format
     return date.format('dddd, MMMM Do, YYYY');
 }

@@ -48,25 +48,4 @@
       }
     }
   }
-
-  hr.unchanged-attributes-divider {
-    width: 100%;
-    border-top: 2px dotted rgb(0, 0, 0);
-    margin-bottom: 0.5rem;
-  }
-
-  .show-unchanged-changes-link {
-    cursor: pointer;
-    color: $primary;
-    text-decoration: underline;
-    font-size: medium;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .no-attributes-changed-message {
-    font-weight: bold;
-    text-align: center;
-    font-size: large;
-  }
 }

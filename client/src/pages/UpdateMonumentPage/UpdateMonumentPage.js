@@ -44,7 +44,7 @@ class UpdateMonumentPage extends React.Component {
 
         let formHasImages = false;
         if (form) {
-            formHasImages = form.images && form.images.length;
+            formHasImages = (form.images && form.images.length) || (form.imagesForUpdate && form.imagesForUpdate.length);
         }
 
         return imagesWereAdded || formHasImages;

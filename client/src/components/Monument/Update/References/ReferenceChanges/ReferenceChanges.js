@@ -56,7 +56,7 @@ export default class ReferenceChanges extends React.Component {
     }
 
     render() {
-        const { didChange } = this.props;
+        const { didChange=true } = this.props;
 
         return didChange ? this.renderChangedReferences() : this.renderUnchangedReferences();
     }
