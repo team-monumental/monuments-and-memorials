@@ -460,7 +460,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images: images,
             newIsTemporary: isTemporary.value,
-            dateType: dateSelectValue,
+            dateSelectValue: dateSelectValue,
             imagesForUpdate: imagesForUpdate
         };
 
@@ -487,7 +487,7 @@ export default class CreateOrUpdateForm extends React.Component {
         let createdTagNames = newTags.map(newTag => newTag.name);
         updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
 
-        updateForm.updatedReferencesUrlsById = {};
+        updateForm.updatedReferenceUrlsById = {};
         updateForm.newReferenceUrls = [];
         updateForm.deletedReferenceIds = [];
 
@@ -497,7 +497,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     updateForm.deletedReferenceIds.push(reference.id);
                 }
                 else {
-                    updateForm.updatedReferencesUrlsById[reference.id] = reference.value;
+                    updateForm.updatedReferenceUrlsById[reference.id] = reference.value;
                 }
             }
             else {
@@ -520,7 +520,7 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         // JSON fields
-        updateForm.updatedReferenceUrlsByIdJson = JSON.stringify(updateForm.updatedReferencesUrlsById);
+        updateForm.updatedReferenceUrlsByIdJson = JSON.stringify(updateForm.updatedReferenceUrlsById);
         updateForm.newReferenceUrlsJson = JSON.stringify(updateForm.newReferenceUrls);
         updateForm.deletedReferenceIdsJson = JSON.stringify(updateForm.deletedReferenceIds);
         updateForm.deletedImageIdsJson = JSON.stringify(updateForm.deletedImageIds);

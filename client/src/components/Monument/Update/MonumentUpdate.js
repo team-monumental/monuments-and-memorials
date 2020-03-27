@@ -49,22 +49,22 @@ export default class MonumentUpdate extends React.Component {
     }
 
     determineNewDate() {
-        const { newMonument } = this.props;
+        const { update } = this.props;
 
-        switch (newMonument.dateType) {
+        switch (update.date.type) {
             case 'year':
-                if (newMonument.newYear) {
-                    return prettyPrintDateString(`${newMonument.newYear}-01-01`);
+                if (update.date.newYear) {
+                    return prettyPrintDateString(`${update.date.newYear}-01-01`);
                 }
                 return undefined;
             case 'month-year':
-                if (newMonument.newYear) {
-                    const month = (parseInt(newMonument.newMonth) + 1).toString();
-                    return prettyPrintDateString(`${newMonument.newYear}-${month}-01`);
+                if (update.date.newYear) {
+                    const month = (parseInt(update.date.newMonth) + 1).toString();
+                    return prettyPrintDateString(`${update.date.newYear}-${month}-01`);
                 }
                 return undefined;
             case 'exact-date':
-                return prettyPrintDate(newMonument.newDate);
+                return prettyPrintDate(update.date.newDate);
             default:
                 return undefined;
         }
@@ -72,13 +72,13 @@ export default class MonumentUpdate extends React.Component {
 
     /**
      * Iterates through the oldMonument's Materials and Tags
-     * as well as the newMonument's Materials and Tags to
+     * as well as the update's Materials and Tags to
      * determine the unchanged, added and removed Materials and Tags
      * Done once in this method so we don't have to loop multiple times
      * Stores the changes in an object to return
      */
     collectTagChanges() {
-        const { oldMonument, newMonument } = this.props;
+        const { oldMonument, update } = this.props;
 
         const unchangedMaterials = [];
         const addedMaterials = [];
@@ -87,7 +87,7 @@ export default class MonumentUpdate extends React.Component {
         const addedTags = [];
         const removedTags = [];
 
-        if (oldMonument && oldMonument.monumentTags && newMonument) {
+        if (oldMonument && oldMonument.monumentTags && update) {
             const oldMonumentMaterialNames = [];
             const oldMonumentTagNames = [];
 
@@ -104,8 +104,8 @@ export default class MonumentUpdate extends React.Component {
             }
 
             // Find the added and unchanged Materials
-            if (newMonument.newMaterials && newMonument.newMaterials.length) {
-                for (const newMaterialName of newMonument.newMaterials) {
+            if (update.newMaterials && update.newMaterials.length) {
+                for (const newMaterialName of update.newMaterials) {
                     if (!oldMonumentMaterialNames.includes(newMaterialName)) {
                         addedMaterials.push(newMaterialName);
                     }
@@ -116,15 +116,15 @@ export default class MonumentUpdate extends React.Component {
 
                 // Find the removed Materials
                 for (const oldMaterialName of oldMonumentMaterialNames) {
-                    if (!newMonument.newMaterials.includes(oldMaterialName)) {
+                    if (!update.newMaterials.includes(oldMaterialName)) {
                         removedMaterials.push(oldMaterialName);
                     }
                 }
             }
 
             // Find the added and unchanged Tags
-            if (newMonument.newTags && newMonument.newTags.length) {
-                for (const newTagName of newMonument.newTags) {
+            if (update.newTags && update.newTags.length) {
+                for (const newTagName of update.newTags) {
                     if (!oldMonumentTagNames.includes(newTagName)) {
                         addedTags.push(newTagName);
                     }
@@ -135,7 +135,7 @@ export default class MonumentUpdate extends React.Component {
 
                 // Find the removed Tags
                 for (const oldTagName of oldMonumentTagNames) {
-                    if (!newMonument.newTags.includes(oldTagName)) {
+                    if (!update.newTags.includes(oldTagName)) {
                         removedTags.push(oldTagName);
                     }
                 }
@@ -154,13 +154,13 @@ export default class MonumentUpdate extends React.Component {
 
     /**
      * Iterates through the oldMonument's References
-     * as well as the newMonument's References to
+     * as well as the update's References to
      * determine the unchanged, added and removed References
      * Done once in this method so we don't have to loop multiple times
      * Stores the changes in an object to return
      */
     collectReferenceChanges() {
-        const { oldMonument, newMonument } = this.props;
+        const { oldMonument, update } = this.props;
 
         let deletedReferences = [];
         let changedReferences = [];
@@ -171,11 +171,11 @@ export default class MonumentUpdate extends React.Component {
         if (oldMonument.references && oldMonument.references.length) {
             for (const reference of oldMonument.references) {
                 // Deleted
-                if (newMonument.deletedReferenceIds.includes(reference.id)) {
+                if (update.deletedReferenceIds.includes(reference.id)) {
                     deletedReferences.push(reference.url);
                 }
                 else {
-                    const newReferenceValue = newMonument.updatedReferencesUrlsById[reference.id];
+                    const newReferenceValue = update.updatedReferenceUrlsById[reference.id];
 
                     // Changed
                     if (reference.url !== newReferenceValue) {
@@ -195,8 +195,8 @@ export default class MonumentUpdate extends React.Component {
         }
 
         // Gather added References
-        if (newMonument.newReferenceUrls && newMonument.newReferenceUrls) {
-            for (const newReferenceUrl of newMonument.newReferenceUrls) {
+        if (update.newReferenceUrls && update.newReferenceUrls.length) {
+            for (const newReferenceUrl of update.newReferenceUrls) {
                 if (newReferenceUrl !== '') {
                     addedReferences.push(newReferenceUrl);
                 }
@@ -234,61 +234,60 @@ export default class MonumentUpdate extends React.Component {
 
     render() {
         const { expanded } = this.state;
-        const { oldMonument, newMonument, addedImages } = this.props;
+        const { oldMonument, update } = this.props;
 
         let changedAttributes = [];
         let unchangedAttributes = [];
 
-        if (oldMonument && newMonument) {
+        if (oldMonument && update) {
             /* Title */
-            (this.didAttributeChange(oldMonument.title, newMonument.newTitle)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={newMonument.newTitle} key="title"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={newMonument.newTitle} didChange={false} key="title"/>);
+            (this.didAttributeChange(oldMonument.title, update.newTitle)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={update.newTitle} key="title"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={update.newTitle} didChange={false} key="title"/>);
 
             /* IsTemporary */
-            (this.didBooleanChange(oldMonument.isTemporary, newMonument.newIsTemporary)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldMonument.isTemporary} newAttribute={newMonument.newIsTemporary} isBoolean={true} key="isTemporary"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldMonument.isTemporary} newAttribute={newMonument.newIsTemporary} didChange={false} isBoolean={true} key="isTemporary"/>);
+            (this.didBooleanChange(oldMonument.isTemporary, update.newIsTemporary)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldMonument.isTemporary} newAttribute={update.newIsTemporary} isBoolean={true} key="isTemporary"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldMonument.isTemporary} newAttribute={update.newIsTemporary} didChange={false} isBoolean={true} key="isTemporary"/>);
 
             /* Artist */
-            (this.didAttributeChange(oldMonument.artist, newMonument.newArtist)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={newMonument.newArtist} key="artist"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={newMonument.newArtist} didChange={false} key="artist"/>);
+            (this.didAttributeChange(oldMonument.artist, update.newArtist)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={update.newArtist} key="artist"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={update.newArtist} didChange={false} key="artist"/>);
 
             /* Date */
             const oldDate = prettyPrintDateString(oldMonument.date);
             const newDate = this.determineNewDate();
-            console.log(newDate);
             (this.didAttributeChange(oldDate, newDate)) ?
                 changedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} key="date"/>) :
                 unchangedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} didChange={false} key="date"/>);
 
             /* Address */
-            (this.didAttributeChange(oldMonument.address, newMonument.newAddress)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={newMonument.newAddress} key="address"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={newMonument.newAddress} didChange={false} key="address"/>);
+            (this.didAttributeChange(oldMonument.address, update.newAddress)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} key="address"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} didChange={false} key="address"/>);
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
-            (this.didAttributeChange(oldLatitude, newMonument.newLatitude)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newMonument.newLatitude} key="latitude"/> ) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={newMonument.newLatitude} didChange={false} key="latitude"/>);
+            (this.didAttributeChange(oldLatitude, update.newLatitude)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={update.newLatitude} key="latitude"/> ) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={update.newLatitude} didChange={false} key="latitude"/>);
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
-            (this.didAttributeChange(oldLongitude, newMonument.newLongitude)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newMonument.newLongitude} key="longitude"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={newMonument.newLongitude} didChange={false} key="longitude"/>);
+            (this.didAttributeChange(oldLongitude, update.newLongitude)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={update.newLongitude} key="longitude"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={update.newLongitude} didChange={false} key="longitude"/>);
 
             /* Description */
-            (this.didAttributeChange(oldMonument.description, newMonument.newDescription)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldMonument.description} newAttribute={newMonument.newDescription} key="description"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldMonument.description} newAttribute={newMonument.newDescription} didChange={false} key="description"/>);
+            (this.didAttributeChange(oldMonument.description, update.newDescription)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldMonument.description} newAttribute={update.newDescription} key="description"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldMonument.description} newAttribute={update.newDescription} didChange={false} key="description"/>);
 
             /* Inscription */
-            (this.didAttributeChange(oldMonument.inscription, newMonument.newInscription)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldMonument.inscription} newAttribute={newMonument.newInscription} key="inscription"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldMonument.inscription} newAttribute={newMonument.newInscription} didChange={false} key="inscription"/>);
+            (this.didAttributeChange(oldMonument.inscription, update.newInscription)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldMonument.inscription} newAttribute={update.newInscription} key="inscription"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldMonument.inscription} newAttribute={update.newInscription} didChange={false} key="inscription"/>);
 
             /* Materials and Tags */
             const tagChanges = this.collectTagChanges();
@@ -339,13 +338,13 @@ export default class MonumentUpdate extends React.Component {
                 unchangedAttributes.push(deletedReferencesDisplay);
 
             /* Images */
-            let addedImagesDisplay = <AddedImages images={this.props.addedImages} key="addedImages"/>;
-            (addedImages && addedImages.length) ?
+            let addedImagesDisplay = <AddedImages images={update.addedImages} key="addedImages"/>;
+            (update.addedImages && update.addedImages.length) ?
                 changedAttributes.push(addedImagesDisplay) :
                 unchangedAttributes.push(addedImagesDisplay);
 
-            let deletedImagesDisplay = <DeletedImages newMonument={this.props.newMonument} key="deletedImages"/>;
-            (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) ?
+            let deletedImagesDisplay = <DeletedImages deletedImageUrls={update.deletedImageUrls} key="deletedImages"/>;
+            (update.deletedImageUrls && update.deletedImageUrls.length) ?
                 changedAttributes.push(deletedImagesDisplay) :
                 unchangedAttributes.push(deletedImagesDisplay);
         }

@@ -108,6 +108,10 @@ class UpdateMonumentPage extends React.Component {
     renderReviewModal() {
         const { showingReviewModal, monument, form, addedImages } = this.state;
 
+        if (form) {
+            form.addedImages = addedImages;
+        }
+
         return (
             <UpdateReviewModal
                 showing={showingReviewModal}
@@ -115,7 +119,6 @@ class UpdateMonumentPage extends React.Component {
                 onConfirm={() => this.submitUpdateForm()}
                 oldMonument={monument}
                 newMonument={form}
-                addedImages={addedImages}
             />
         );
     }

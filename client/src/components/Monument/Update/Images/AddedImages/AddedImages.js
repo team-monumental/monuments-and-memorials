@@ -26,6 +26,6 @@ export default class AddedImages extends React.Component {
                 <span className="font-weight-bold">Added Images:&nbsp;</span>
                 {addedImagesDisplay}
             </div>
-        )
+        );
     }
 }

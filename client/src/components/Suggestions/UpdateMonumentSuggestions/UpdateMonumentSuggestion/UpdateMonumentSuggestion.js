@@ -1,44 +1,46 @@
 import * as React from 'react';
 import { Card } from 'react-bootstrap';
-import AttributeChange from '../../../Monument/Update/AttributeChange/AttributeChange';
-import { didAttributeChange } from '../../../../utils/update-util';
+import MonumentUpdate from '../../../Monument/Update/MonumentUpdate';
 
 export default class UpdateMonumentSuggestion extends React.Component {
 
-    constructor(props) {
-        super(props);
+    determineDateTypeForUpdate() {
+        const { suggestion } = this.props;
 
-        this.state = {
-            expanded: false
+        if (suggestion.newDate) {
+            return 'exact-date';
+        }
+
+        if (suggestion.newMonth) {
+            return 'month-year';
+        }
+
+        return 'year';
+    }
+
+    buildUpdate() {
+        const { suggestion } = this.props;
+
+        return {
+            ...suggestion,
+            date: {
+                type: this.determineDateTypeForUpdate(),
+                newYear: suggestion.newYear,
+                newMonth: suggestion.newMonth,
+                newDate: suggestion.newDate
+            },
+            newMaterials: JSON.parse(suggestion.newMaterialsJson),
+            newTags : JSON.parse(suggestion.newTagsJson),
+            deletedReferenceIds: JSON.parse(suggestion.deletedReferenceIdsJson),
+            updatedReferenceUrlsById: JSON.parse(suggestion.updatedReferenceUrlsByIdJson),
+            newReferenceUrls: JSON.parse(suggestion.newReferenceUrlsJson),
+            addedImages: JSON.parse(suggestion.newImageUrlsJson),
+            deletedImageIds: JSON.parse(suggestion.deletedImageIds)
         };
     }
 
-    handleCollapseLinkClick() {
-        const { expanded } = this.state;
-        this.setState({expanded: !expanded});
-    }
-
-    renderSuggestionDetails() {
-        const { suggestion, oldMonument } = this.props;
-        const { expanded } = this.state;
-
-        if (suggestion && oldMonument) {
-            let changedAttributes = [];
-
-            if (didAttributeChange(oldMonument.title, suggestion.newTitle)) {
-                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={suggestion.newTitle}/>);
-            }
-            if (didAttributeChange(oldMonument.artist, suggestion.newArtist)) {
-                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={suggestion.newArtist}/>);
-            }
-            if (didAttributeChange(oldMonument.artist, suggestion.newArtist)) {
-                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={suggestion.newArtist}/>);
-            }
-        }
-    }
-
     render() {
-        const { suggestion, oldMonument, index } = this.props;
+        const { oldMonument, index } = this.props;
 
         return (
             <Card className="update-suggestion">
@@ -48,7 +50,7 @@ export default class UpdateMonumentSuggestion extends React.Component {
                     </Card.Title>
                 </Card.Header>
                 <Card.Body className="pt-1 pb-1">
-                    {this.renderSuggestionDetails()}
+                    <MonumentUpdate oldMonument={oldMonument} update={this.buildUpdate()}/>
                 </Card.Body>
             </Card>
         );

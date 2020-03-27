@@ -17,35 +17,20 @@ export default class CreateMonumentSuggestion extends React.Component {
         };
     }
 
-    combineJsonListStrings(string1, string2) {
-        if (!string1.replace('[', '').replace(']', '').length) {
-            return string2;
-        }
-
-        if (!string2.replace('[', '').replace(']','').length) {
-            return string1;
-        }
-
-        return string1.replace(']', ',') + string2.replace('[', '');
-    }
-
     handleCollapseLinkClick() {
         const { expanded } = this.state;
         this.setState({expanded: !expanded});
     }
 
-    renderJsonStringList(json) {
-        let stringList = [];
-        if (json) {
-            stringList = JSON.parse(json);
+    renderStringArray(array) {
+        if (array) {
+            array = array.filter(string => string.length);
         }
 
-        stringList = stringList.filter(string => string.length);
-
-        if (stringList.length) {
+        if (array.length) {
             return (
                 <ul className="mb-0">
-                    {stringList.map(string => <li key={string}>{string}</li>)}
+                    {array.map(string => <li key={string}>{string}</li>)}
                 </ul>
             );
         }
@@ -56,15 +41,19 @@ export default class CreateMonumentSuggestion extends React.Component {
     renderTags(areMaterials) {
         const { suggestion } = this.props;
 
-        let combinedJsonString;
+        let tagArray;
         if (areMaterials) {
-            combinedJsonString = this.combineJsonListStrings(suggestion.materialsJson, suggestion.newMaterialsJson);
+            const materials = JSON.parse(suggestion.materialsJson);
+            const newMaterials = JSON.parse(suggestion.newMaterialsJson);
+            tagArray = materials.concat(newMaterials);
         }
         else {
-            combinedJsonString = this.combineJsonListStrings(suggestion.tagsJson, suggestion.newTagsJson);
+            const tags = JSON.parse(suggestion.tagsJson);
+            const newTags = JSON.parse(suggestion.newTagsJson);
+            tagArray = tags.concat(newTags);
         }
 
-        return this.renderJsonStringList(combinedJsonString);
+        return this.renderStringArray(tagArray);
     }
 
     renderSuggestionDetails() {

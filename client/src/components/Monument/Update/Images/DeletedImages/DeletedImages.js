@@ -8,14 +8,14 @@ import { getS3ImageNameFromObjectUrl } from '../../../../../utils/api-util';
 export default class DeletedImages extends React.Component {
 
     render() {
-        const { newMonument } = this.props;
+        const { deletedImageUrls } = this.props;
 
         let deletedImagesDisplay = <span className="font-weight-bold">NONE</span>;
 
-        if (newMonument.deletedImageUrls && newMonument.deletedImageUrls.length) {
+        if (deletedImageUrls && deletedImageUrls.length) {
             let deletedImagesList = [];
 
-            for (const deletedImageUrl of newMonument.deletedImageUrls) {
+            for (const deletedImageUrl of deletedImageUrls) {
                 deletedImagesList.push(<li className="removed" key={deletedImageUrl}>{getS3ImageNameFromObjectUrl(deletedImageUrl)}</li>);
             }
 

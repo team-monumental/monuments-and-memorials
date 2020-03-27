@@ -8,8 +8,26 @@ import MonumentUpdate from '../../Monument/Update/MonumentUpdate';
  */
 export default class UpdateReviewModal extends React.Component {
 
+    buildUpdate() {
+        const { newMonument } = this.props;
+
+        if (!newMonument) {
+            return {};
+        }
+
+        return {
+            ...newMonument,
+            date: {
+                type: newMonument.dateSelectValue,
+                newYear: newMonument.newYear,
+                newMonth: newMonument.newMonth,
+                newDate: newMonument.newDate
+            }
+        };
+    }
+
     render() {
-        const { showing, onCancel, onConfirm, oldMonument, newMonument, addedImages } = this.props;
+        const { showing, onCancel, onConfirm, oldMonument  } = this.props;
 
         return (
             <Modal
@@ -25,7 +43,7 @@ export default class UpdateReviewModal extends React.Component {
                 <Modal.Body className="update-review-modal">
                     <p>Please review the updates you have made for correctness and completeness!</p>
                     <div className="attributes-update-container">
-                        <MonumentUpdate oldMonument={oldMonument} newMonument={newMonument} addedImages={addedImages}/>
+                        <MonumentUpdate oldMonument={oldMonument} update={this.buildUpdate()}/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="update-review-modal">
