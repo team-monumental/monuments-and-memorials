@@ -4,6 +4,7 @@ import { Card } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { Role } from'../../../utils/authentication-util';
 import CreateMonumentSuggestions from '../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
+import UpdateMonumentSuggestions from '../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
 
 /**
  * Presentational component for displaying a list of Suggestions on the User page
@@ -48,6 +49,9 @@ export default class Suggestions extends React.Component {
                         existing monument or memorial by clicking
                         the "<span className="font-weight-bold">SUGGEST A CHANGE</span>" button while viewing the
                         monument or memorial page you want to update.
+                    </>}
+                    {updateSuggestions && updateSuggestions.length && <>
+                        <UpdateMonumentSuggestions suggestions={updateSuggestions}/>
                     </>}
                     {role.toUpperCase() === Role.PARTNER && <>
                         <h6 className="mt-4">Bulk New Monument or Memorial Suggestions</h6>

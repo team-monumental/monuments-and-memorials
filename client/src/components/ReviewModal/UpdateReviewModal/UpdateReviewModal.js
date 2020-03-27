@@ -22,7 +22,8 @@ export default class UpdateReviewModal extends React.Component {
                 newYear: newMonument.newYear,
                 newMonth: newMonument.newMonth,
                 newDate: newMonument.newDate
-            }
+            },
+            displayDeletedImageNames: true
         };
     }
 

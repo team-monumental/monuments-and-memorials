@@ -2,7 +2,7 @@ import * as React from 'react';
 import './CreateMonumentSuggestion.scss';
 import { Card, Collapse } from 'react-bootstrap';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
-import Gallery from '../../../Monument/Gallery/Gallery';
+import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
 
 /**
  * Presentational component for displaying a CreateMonumentSuggestion
@@ -23,9 +23,11 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     renderStringArray(array) {
-        if (array) {
-            array = array.filter(string => string.length);
+        if (!array) {
+            return 'None';
         }
+
+        array = array.filter(string => string.length);
 
         if (array.length) {
             return (
@@ -34,8 +36,9 @@ export default class CreateMonumentSuggestion extends React.Component {
                 </ul>
             );
         }
-
-        return 'None';
+        else {
+            return 'None';
+        }
     }
 
     renderTags(areMaterials) {
@@ -109,13 +112,13 @@ export default class CreateMonumentSuggestion extends React.Component {
                     <div><strong>Longitude:</strong> {longitude}</div>
                     <div><strong>Description:</strong> {description}</div>
                     <div><strong>Inscription:</strong> {inscription}</div>
-                    <div className="font-weight-bold">Contributors: </div> {this.renderJsonStringList(suggestion.contributionsJson)}
-                    <div className="font-weight-bold">References: </div> {this.renderJsonStringList(suggestion.referencesJson)}
+                    <div className="font-weight-bold">Contributors: </div> {this.renderStringArray(JSON.parse(suggestion.contributionsJson))}
+                    <div className="font-weight-bold">References: </div> {this.renderStringArray(JSON.parse(suggestion.referencesJson))}
                     <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}
                     <div className="font-weight-bold">Tags: </div> {this.renderTags(false)}
                     <div className="font-weight-bold">Images: </div>
                     {imageUrls.length > 0 && <>
-                        <Gallery images={imageUrls.map(imageUrl => {return {url: imageUrl}})}/>
+                        <Thumbnails imageUrls={imageUrls}/>
                     </>}
                     {!imageUrls.length && <>
                         None

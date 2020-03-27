@@ -90,6 +90,13 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<Integer> deletedImageIds;
 
+    @Column(name = "deleted_image_urls_json", length = 1024)
+    private String deletedImageUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> deletedImageUrls;
+
     @Column(name = "new_materials_json", length = 1024)
     private String newMaterialsJson;
 
@@ -290,6 +297,22 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.deletedImageIds;
+    }
+
+    public String getDeletedImageUrlsJson() {
+        return this.deletedImageUrlsJson;
+    }
+
+    public void setDeletedImageUrlsJson(String deletedImageUrlsJson) {
+        this.deletedImageUrlsJson = deletedImageUrlsJson;
+    }
+
+    public List<String> getDeletedImageUrls() {
+        if (this.deletedImageUrls == null) {
+            this.deletedImageUrls = this.deserializeStringList(this.deletedImageUrlsJson);
+        }
+
+        return this.deletedImageUrls;
     }
 
     public String getNewMaterialsJson() {

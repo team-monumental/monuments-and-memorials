@@ -1,7 +1,7 @@
 import React from 'react';
 import './Details.scss';
 import Tags from '../../Tags/Tags';
-import Gallery from '../Gallery/Gallery';
+import Gallery from '../Images/Gallery/Gallery';
 import About from './About/About';
 import Address from './Address/Address';
 import { Button } from 'react-bootstrap';

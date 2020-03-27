@@ -13,7 +13,9 @@
   text-align: center;
 }
 
-.gallery {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+.monument-thumbnail {
+  $size: 124px;
+  min-width: $size;
+  width: $size;
+  height: $size;
 }

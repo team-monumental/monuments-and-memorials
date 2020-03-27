@@ -21,7 +21,8 @@ export default class MonumentUpdate extends React.Component {
         super(props);
 
         this.state = {
-            expanded: false
+            showingAllChangedAttributes: false,
+            showingUnchangedAttributes: false
         };
     }
 
@@ -211,30 +212,51 @@ export default class MonumentUpdate extends React.Component {
         };
     }
 
-    handleExpandLinkClick() {
-        const { expanded } = this.state;
-        this.setState({expanded: !expanded});
+    handleShowUnchangedAttributesLinkClick() {
+        const { showingUnchangedAttributes } = this.state;
+        this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
     }
 
-    renderExpandLink() {
+    handleShowAllChangedAttributesLinkClick() {
+        const { showingAllChangedAttributes } = this.state;
+        this.setState({showingAllChangedAttributes: !showingAllChangedAttributes});
+    }
+
+    renderShowUnchangedAttributesLink() {
         return (
-            <div className="collapse-link" onClick={() => this.handleExpandLinkClick()}>
+            <div className="collapse-link" onClick={() => this.handleShowUnchangedAttributesLinkClick()}>
                 Show Unchanged Attributes
             </div>
         );
     }
 
-    renderHideLink() {
+    renderHideUnchangedAttributesLink() {
         return (
-            <div className="collapse-link" onClick={() => this.handleExpandLinkClick()}>
+            <div className="collapse-link" onClick={() => this.handleShowUnchangedAttributesLinkClick()}>
                 Hide Unchanged Attributes
             </div>
         );
     }
 
+    renderShowAllChangedAttributesLink() {
+        return (
+            <div className="collapse-link" onClick={() => this.handleShowAllChangedAttributesLinkClick()}>
+                Show More
+            </div>
+        );
+    }
+
+    renderHideAllChangedAttributesLink() {
+        return (
+            <div className="collapse-link" onClick={() => this.handleShowAllChangedAttributesLinkClick()}>
+                Show Less
+            </div>
+        );
+    }
+
     render() {
-        const { expanded } = this.state;
-        const { oldMonument, update } = this.props;
+        const { showingAllChangedAttributes, showingUnchangedAttributes } = this.state;
+        const { oldMonument, update, showUnchangedAttributes=true, showAllChangedAttributes=true } = this.props;
 
         let changedAttributes = [];
         let unchangedAttributes = [];
@@ -338,12 +360,13 @@ export default class MonumentUpdate extends React.Component {
                 unchangedAttributes.push(deletedReferencesDisplay);
 
             /* Images */
+            const addedImages = update.addedImages.filter(image => (image.name && image.name.length) || (image.url && image.url.length));
             let addedImagesDisplay = <AddedImages images={update.addedImages} key="addedImages"/>;
-            (update.addedImages && update.addedImages.length) ?
+            (addedImages && addedImages.length) ?
                 changedAttributes.push(addedImagesDisplay) :
                 unchangedAttributes.push(addedImagesDisplay);
 
-            let deletedImagesDisplay = <DeletedImages deletedImageUrls={update.deletedImageUrls} key="deletedImages"/>;
+            let deletedImagesDisplay = <DeletedImages deletedImageUrls={update.deletedImageUrls} displayImageNames={update.displayDeletedImageNames} key="deletedImages"/>;
             (update.deletedImageUrls && update.deletedImageUrls.length) ?
                 changedAttributes.push(deletedImagesDisplay) :
                 unchangedAttributes.push(deletedImagesDisplay);
@@ -365,20 +388,41 @@ export default class MonumentUpdate extends React.Component {
             )
         }
 
+        let changedAttributesToDisplay = changedAttributes;
+        let hiddenAttributes;
+        if (!showAllChangedAttributes) {
+            if (changedAttributes.length > 3) {
+                changedAttributesToDisplay = changedAttributes.slice(0, 3);
+                hiddenAttributes = changedAttributes.slice(3);
+            }
+        }
+
         return (
             <div className="attribute-update-container">
                 <div>
-                    {changedAttributes}
-                </div>
-                <Collapse in={expanded}>
-                    <div>
-                        <hr className="unchanged-attributes-divider"/>
-                        {unchangedAttributes}
-                    </div>
-                </Collapse>
+                    {changedAttributesToDisplay}
+                    {!showAllChangedAttributes && !showUnchangedAttributes && hiddenAttributes && <>
+                        <Collapse in={showingAllChangedAttributes}>
+                            <div>
+                                {hiddenAttributes}
+                            </div>
+                        </Collapse>
 
-                {!expanded && this.renderExpandLink()}
-                {expanded && this.renderHideLink()}
+                        {!showingAllChangedAttributes && this.renderShowAllChangedAttributesLink()}
+                        {showingAllChangedAttributes && this.renderHideAllChangedAttributesLink()}
+                    </>}
+                </div>
+                {showUnchangedAttributes && <>
+                    <Collapse in={showingUnchangedAttributes}>
+                        <div>
+                            <hr className="unchanged-attributes-divider"/>
+                            {unchangedAttributes}
+                        </div>
+                    </Collapse>
+
+                    {!showingUnchangedAttributes && this.renderShowUnchangedAttributesLink()}
+                    {showingUnchangedAttributes && this.renderHideUnchangedAttributesLink()}
+                </>}
             </div>
         );
     }

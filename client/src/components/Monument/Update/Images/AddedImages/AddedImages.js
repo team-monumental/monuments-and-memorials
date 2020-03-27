@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './AddedImages.scss';
+import Thumbnails from '../../../Images/Thumbnails/Thumbnails';
 
 /**
  * Presentational component for displaying newly added image URLs for a Monument
@@ -7,18 +8,26 @@ import './AddedImages.scss';
 export default class AddedImages extends React.Component {
 
     render() {
-        const { images } = this.props;
+        let { images } = this.props;
 
         let addedImagesDisplay = <span className="font-weight-bold">NONE</span>;
 
-        if (images && images.length) {
-            let addedImagesList = [];
+        if (images) {
+            const imagesWithNames = images.filter(image => image.name && image.name.length);
+            const imagesWithUrls = images.filter(image => image.url && image.url.length);
 
-            for (const image of images) {
-                addedImagesList.push(<li className="added" key={image.name}>{image.name}</li>);
+            if (imagesWithNames.length) {
+                let addedImagesList = [];
+
+                for (const image of images) {
+                    addedImagesList.push(<li className="added" key={image.name}>{image.name}</li>);
+                }
+
+                addedImagesDisplay = <ul>{addedImagesList}</ul>;
             }
-
-            addedImagesDisplay = <ul>{addedImagesList}</ul>;
+            else if (imagesWithUrls.length) {
+                addedImagesDisplay = <Thumbnails imageUrls={imagesWithUrls.map(image => image.url)}/>
+            }
         }
 
         return (

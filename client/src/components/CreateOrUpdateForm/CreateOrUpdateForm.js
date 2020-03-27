@@ -524,6 +524,7 @@ export default class CreateOrUpdateForm extends React.Component {
         updateForm.newReferenceUrlsJson = JSON.stringify(updateForm.newReferenceUrls);
         updateForm.deletedReferenceIdsJson = JSON.stringify(updateForm.deletedReferenceIds);
         updateForm.deletedImageIdsJson = JSON.stringify(updateForm.deletedImageIds);
+        updateForm.deletedImageUrlsJson = JSON.stringify(updateForm.deletedImageUrls);
         updateForm.newMaterialsJson = JSON.stringify(updateForm.newMaterials);
         updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 
