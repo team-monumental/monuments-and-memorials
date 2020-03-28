@@ -3,6 +3,7 @@ import './CreateMonumentSuggestion.scss';
 import { Card, Collapse } from 'react-bootstrap';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
+import ManagementButtonToolbar from '../../ManagementButtonToolbar/ManagementButtonToolbar';
 
 /**
  * Presentational component for displaying a CreateMonumentSuggestion
@@ -60,7 +61,7 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     renderSuggestionDetails() {
-        const { suggestion } = this.props;
+        const { suggestion, allowManagement, onApproveClick, onRejectClick } = this.props;
         const { expanded } = this.state;
 
         const artist = (suggestion.artist && suggestion.artist.length) ? suggestion.artist : 'None';
@@ -128,6 +129,8 @@ export default class CreateMonumentSuggestion extends React.Component {
 
             {!expanded && expandLink}
             {expanded && hideLink}
+
+            {allowManagement && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
         </>);
     }
 

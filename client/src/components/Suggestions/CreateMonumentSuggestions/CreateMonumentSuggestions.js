@@ -35,7 +35,7 @@ export default class CreateMonumentSuggestions extends React.Component {
     }
 
     render() {
-        const { suggestions, hideMoreThan } = this.props;
+        const { suggestions, hideMoreThan, allowManagement } = this.props;
         const { expanded } = this.state;
 
         let showingSuggestions = suggestions;
@@ -50,7 +50,7 @@ export default class CreateMonumentSuggestions extends React.Component {
         return (<>
             {suggestions && <div className="create-suggestions">
                 {showingSuggestions.map((suggestion, index) => (
-                    <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}/>
+                    <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1} allowManagement={allowManagement}/>
                 ))}
                 {hiddenSuggestions && hiddenSuggestions.length > 0 && <>
                     <Collapse in={expanded}>
@@ -58,7 +58,7 @@ export default class CreateMonumentSuggestions extends React.Component {
                             {hiddenSuggestions.map((suggestion) => {
                                 hiddenSuggestionsStartIndex++;
                                 return (
-                                    <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={hiddenSuggestionsStartIndex + 1}/>
+                                    <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={hiddenSuggestionsStartIndex + 1} allowManagement={allowManagement}/>
                                 );
                             })}
                         </div>

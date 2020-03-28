@@ -1,0 +1,11 @@
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .btn {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: "Open Sans", sans-serif;
+  }
+}
