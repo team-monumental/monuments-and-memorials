@@ -1,17 +1,72 @@
 import * as React from 'react';
 import './CreateMonumentSuggestions.scss';
 import CreateMonumentSuggestion from './CreateMonumentSuggestion/CreateMonumentSuggestion';
+import { Collapse } from 'react-bootstrap';
 
 export default class CreateMonumentSuggestions extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            expanded: false
+        }
+    }
+
+    handleCollapseLinkClick() {
+        const { expanded } = this.state;
+        this.setState({expanded: !expanded});
+    }
+
+    renderExpandLink() {
+        return (
+            <div className="collapse-link pt-3" onClick={() => this.handleCollapseLinkClick()}>
+                Show All Suggestions
+            </div>
+        );
+    }
+
+    renderHideLink() {
+        return (
+            <div className="collapse-link pt-3" onClick={() => this.handleCollapseLinkClick()}>
+                Hide All Suggestions
+            </div>
+        );
+    }
+
     render() {
-        const { suggestions } = this.props;
+        const { suggestions, hideMoreThan } = this.props;
+        const { expanded } = this.state;
+
+        let showingSuggestions = suggestions;
+        let hiddenSuggestions;
+        let hiddenSuggestionsStartIndex;
+        if (hideMoreThan && suggestions.length > hideMoreThan) {
+            showingSuggestions = suggestions.slice(0, hideMoreThan);
+            hiddenSuggestions = suggestions.slice(hideMoreThan);
+            hiddenSuggestionsStartIndex = showingSuggestions.length - 1;
+        }
 
         return (<>
             {suggestions && <div className="create-suggestions">
-                {suggestions.map((suggestion, index) => (
+                {showingSuggestions.map((suggestion, index) => (
                     <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}/>
                 ))}
+                {hiddenSuggestions && hiddenSuggestions.length > 0 && <>
+                    <Collapse in={expanded}>
+                        <div className="hidden-create-suggestions">
+                            {hiddenSuggestions.map((suggestion) => {
+                                hiddenSuggestionsStartIndex++;
+                                return (
+                                    <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={hiddenSuggestionsStartIndex + 1}/>
+                                );
+                            })}
+                        </div>
+                    </Collapse>
+
+                    {!expanded && this.renderExpandLink()}
+                    {expanded && this.renderHideLink()}
+                </>}
             </div>}
         </>);
     }

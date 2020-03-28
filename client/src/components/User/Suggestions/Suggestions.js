@@ -1,10 +1,12 @@
 import * as React from 'react';
+import './Suggestions.scss';
 import Spinner from '../../Spinner/Spinner';
 import { Card } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { Role } from'../../../utils/authentication-util';
 import CreateMonumentSuggestions from '../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 import UpdateMonumentSuggestions from '../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
+import BulkCreateMonumentSuggestions from '../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
 
 /**
  * Presentational component for displaying a list of Suggestions on the User page
@@ -58,6 +60,9 @@ export default class Suggestions extends React.Component {
                         {(!bulkCreateSuggestions || !bulkCreateSuggestions.length) && !error && <>
                             You don't have any bulk new monument or memorial suggestions yet. You can suggest bulk
                             new monuments or memorials by {bulkCreatePageNavLink}.
+                        </>}
+                        {bulkCreateSuggestions && bulkCreateSuggestions.length && <>
+                            <BulkCreateMonumentSuggestions suggestions={bulkCreateSuggestions}/>
                         </>}
                     </>}
                     {error && <>

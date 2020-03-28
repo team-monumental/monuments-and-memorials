@@ -1,0 +1,5 @@
+.bulk-create-suggestions {
+  .bulk-create-suggestion:not(:first-child) {
+    margin-top: 1rem;
+  }
+}

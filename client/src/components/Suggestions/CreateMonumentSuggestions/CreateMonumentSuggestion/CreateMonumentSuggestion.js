@@ -27,7 +27,7 @@ export default class CreateMonumentSuggestion extends React.Component {
             return 'None';
         }
 
-        array = array.filter(string => string.length);
+        array = array.filter(string => string && string.length);
 
         if (array.length) {
             return (

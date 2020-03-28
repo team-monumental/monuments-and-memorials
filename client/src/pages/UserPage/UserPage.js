@@ -26,7 +26,7 @@ class UserPage extends React.Component {
             favorites: state.fetchFavorites,
             createSuggestions: state.fetchCreateSuggestions,
             updateSuggestions: state.fetchUpdateSuggestions,
-            bulkCreateSuggestions: state.bulkCreateSuggestions
+            bulkCreateSuggestions: state.fetchBulkCreateSuggestions
         };
     }
 
