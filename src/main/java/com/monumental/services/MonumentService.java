@@ -538,13 +538,14 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create Monument records from the specified List of CSV Strings
+     * @param csvFileName - String for the filename of the CSV file
      * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
      * @param mapping - Map of the CSV file's fields to our fields
      * @param zipFile - ZipFile containing the image files to use for image pre-processing
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
-    public MonumentBulkValidationResult validateMonumentCSV(List<String[]> csvList, Map<String, String> mapping,
-                                                            ZipFile zipFile) throws IOException {
+    public MonumentBulkValidationResult validateMonumentCSV(String csvFileName, List<String[]> csvList,
+                                                            Map<String, String> mapping, ZipFile zipFile) throws IOException {
         if (csvList == null || mapping == null) {
             return null;
         }
@@ -576,6 +577,8 @@ public class MonumentService extends ModelService<Monument> {
         if (zipFile != null) {
             zipFile.close();
         }
+
+        monumentBulkValidationResult.setFileName(csvFileName);
 
         return monumentBulkValidationResult;
     }
@@ -1468,6 +1471,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         bulkCreateSuggestion.setCreateSuggestions(createSuggestions);
+        bulkCreateSuggestion.setFileName(bulkValidationResult.getFileName());
         return this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
     }
 }

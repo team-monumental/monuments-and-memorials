@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './ManageButtonToolbar.scss';
+import './ManagementButtonToolbar.scss';
 import { Button } from 'react-bootstrap';
 
 /**

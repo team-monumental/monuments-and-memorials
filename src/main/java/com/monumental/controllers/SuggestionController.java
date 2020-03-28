@@ -107,7 +107,8 @@ public class SuggestionController {
     public MonumentBulkValidationResult validateMonumentCSV(@ModelAttribute BulkCreateMonumentRequest request) {
         try {
             BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-            return this.monumentService.validateMonumentCSV(parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+            return this.monumentService.validateMonumentCSV(parseResult.csvFileName, parseResult.csvContents,
+                    parseResult.mapping, parseResult.zipFile);
         } catch (InvalidZipException | IOException e) {
             MonumentBulkValidationResult result = new MonumentBulkValidationResult();
             result.setError(e.getMessage());
@@ -126,8 +127,8 @@ public class SuggestionController {
     public BulkCreateMonumentSuggestion suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
             throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvContents,
-                parseResult.mapping, parseResult.zipFile);
+        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvFileName,
+                parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
         return this.monumentService.parseMonumentBulkValidationResult(validationResult);
     }
 
