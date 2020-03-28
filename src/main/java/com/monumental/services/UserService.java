@@ -7,6 +7,9 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
+import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
@@ -294,10 +297,10 @@ public class UserService extends ModelService<User> {
      * Sends an email to the specified address using the stored email template name
      * TODO: Replace with HTML email templates with proper templating where user data can be filled in automatically
      * @param recipientAddress - The email address to send to
-     * @param name - The email template name
+     * @param templateName - The email template name
      */
-    private void sendEmail(String recipientAddress, String name) {
-        this.sendEmail(recipientAddress, name, "");
+    private void sendEmail(String recipientAddress, String templateName) {
+        this.sendEmail(recipientAddress, templateName, "");
     }
 
     /**
@@ -319,7 +322,7 @@ public class UserService extends ModelService<User> {
             System.out.println("WARNING: You have not provided mail credentials, so the following email will NOT be sent: " + email);
         } else {
             System.out.println("Sent email " + templateName + " to " + recipientAddress);
-            mailSender.send(email);
+            this.mailSender.send(email);
         }
     }
 
@@ -364,6 +367,48 @@ public class UserService extends ModelService<User> {
      */
     public void sendPasswordResetCompleteEmail(User user) {
         this.sendEmail(user.getEmail(), "password-reset.success");
+    }
+
+    /**
+     * Sent when a user has one of their CreateMonumentSuggestions approved
+     */
+    public void sendCreateSuggestionApprovalEmail(CreateMonumentSuggestion suggestion) {
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "create-suggestion.approval", suggestion.getTitle());
+    }
+
+    /**
+     * Sent when a user has one of their CreateMonumentSuggestions rejected
+     */
+    public void sendCreateSuggestionRejectionEmail(CreateMonumentSuggestion suggestion) {
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "create-suggestion.rejection", suggestion.getTitle());
+    }
+
+    /**
+     * Sent when a user has one of their UpdateMonumentSuggestions approved
+     */
+    public void sendUpdateSuggestionApprovalEmail(UpdateMonumentSuggestion suggestion) {
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "update-suggestion.approval", suggestion.getMonument().getTitle());
+    }
+
+    /**
+     * Sent when a user has one of their UpdateMonumentSuggestions rejected
+     */
+    public void sendUpdateSuggestionRejectionEmail(UpdateMonumentSuggestion suggestion) {
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "update-suggestion.rejection", suggestion.getMonument().getTitle());
+    }
+
+    /**
+     * Sent when a user has one of their BulkCreateMonumentSuggestions approved
+     */
+    public void sendBulkCreateSuggestionApprovalEmail(BulkCreateMonumentSuggestion suggestion) {
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.approval", suggestion.getFileName());
+    }
+
+    /**
+     * Sent when a user has one of their BulkCreateMonumentSuggestions rejected
+     */
+    public void sendBulkCreateSuggestionRejectionEmail(BulkCreateMonumentSuggestion suggestion) {
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.rejection", suggestion.getFileName());
     }
 
     /**
