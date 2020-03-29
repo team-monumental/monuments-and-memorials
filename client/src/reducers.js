@@ -12,7 +12,8 @@ import { signup, login, session, confirmSignup, resendConfirmation, beginPasswor
 import { updateMonumentPage, toggleMonumentIsActive, deleteMonument } from './reducers/update-monument';
 import { updateUser, confirmEmailChange, fetchFavorites, fetchUser } from './reducers/user';
 import duplicateMonuments from './reducers/duplicates';
-import { fetchBulkCreateSuggestions, fetchCreateSuggestions, fetchUpdateSuggestions } from './reducers/suggestions';
+import { fetchBulkCreateSuggestions, fetchCreateSuggestions, fetchUpdateSuggestions,
+    fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion } from './reducers/suggestions';
 
 // These reducers are loaded into redux in index.js
 // New reducers must always be added here or they won't do anything
@@ -22,7 +23,7 @@ const Reducers = {
     login, signup, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset,
     updateUser, confirmEmailChange, createFavorite, deleteFavorite, fetchFavorites, duplicateMonuments,
     toggleMonumentIsActive, deleteMonument, userSearchPage, fetchUser, fetchBulkCreateSuggestions, fetchCreateSuggestions,
-    fetchUpdateSuggestions
+    fetchUpdateSuggestions, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion
 };
 
 export default Reducers;

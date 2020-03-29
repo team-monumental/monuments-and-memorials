@@ -7,6 +7,7 @@ import AdminPanelHome from './AdminPanelHome/AdminPanelHome';
 import ManageMonumentsPage from '../../pages/AdminPage/ManageMonumentsPage/ManageMonumentsPage';
 import ManageUsersPage from '../../pages/AdminPage/ManageUsersPage/ManageUsersPage';
 import { Role } from '../../utils/authentication-util';
+import ManageSuggestionsPage from '../../pages/AdminPage/ManageSuggestionsPage/ManageSuggestionsPage';
 
 export default class AdminPanel extends React.Component {
 
@@ -27,6 +28,9 @@ export default class AdminPanel extends React.Component {
                     <ProtectedRoute exact path="/panel/manage/users" component={ManageUsersPage} oneOf={[Role.ADMIN]}/>
                     <ProtectedRoute exact path="/panel/manage/users/search" component={ManageUsersPage} customProps={{mode: 'search'}} oneOf={[Role.ADMIN]}/>
                     <ProtectedRoute exact path="/panel/manage/users/user/:userId" component={ManageUsersPage} customProps={{mode: 'user'}} oneOf={[Role.ADMIN]}/>
+                    <ProtectedRoute exact path="/panel/manage/suggestions" component={ManageSuggestionsPage} oneOf={Role.RESEARCHER_OR_ABOVE}/>
+                    <ProtectedRoute exact path="/panel/manage/suggestions/search" component={ManageSuggestionsPage} customProps={{mode: 'search'}} oneOf={Role.RESEARCHER_OR_ABOVE}/>
+                    <ProtectedRoute exact path="/panel/manage/suggestions/suggestion/:suggestionId" component={ManageSuggestionsPage} customProps={{mode: 'suggestion'}} oneOf={Role.RESEARCHER_OR_ABOVE}/>
                 </div>
                 <div className="right"/>
             </div>
