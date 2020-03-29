@@ -31,12 +31,12 @@ class UserPage extends React.Component {
     }
 
     render() {
-        const { session, favorites, createSuggestions, updateSuggestions, bulkCreateSuggestions } = this.props;
+        const { createSuggestions, updateSuggestions, bulkCreateSuggestions, session, favorites } = this.props;
 
         const suggestions = {
-            createSuggestions: createSuggestions ? createSuggestions.result : undefined,
-            updateSuggestions: updateSuggestions ? updateSuggestions.result : undefined,
-            bulkCreateSuggestions: bulkCreateSuggestions ? bulkCreateSuggestions.result : undefined
+            createSuggestions: createSuggestions.result,
+            updateSuggestions: updateSuggestions.result,
+            bulkCreateSuggestions: bulkCreateSuggestions.result
         };
 
         return (

@@ -54,10 +54,7 @@ export default class User extends React.Component {
                         </Card.Body>
                     </Card>
                     <Favorites favorites={favorites.result} pending={favorites.pending} error={favorites.error}/>
-                    <Suggestions createSuggestions={suggestions.createSuggestions} updateSuggestions={suggestions.updateSuggestions}
-                                 bulkCreateSuggestions={suggestions.bulkCreateSuggestions} pending={suggestions.pending}
-                                 error={suggestions.error} role={role}
-                     />
+                    <Suggestions suggestions={suggestions} pending={suggestions.pending} error={suggestions.error} role={role}/>
                 </div>
             </div>
         );
