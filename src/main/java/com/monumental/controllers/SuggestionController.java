@@ -14,10 +14,7 @@ import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
-import com.monumental.services.AsyncJobService;
-import com.monumental.services.AwsS3Service;
-import com.monumental.services.MonumentService;
-import com.monumental.services.UserService;
+import com.monumental.services.*;
 import com.monumental.services.suggestions.BulkCreateSuggestionService;
 import com.monumental.services.suggestions.CreateSuggestionService;
 import com.monumental.services.suggestions.UpdateSuggestionService;
@@ -67,7 +64,7 @@ public class SuggestionController {
     private BulkCreateSuggestionService bulkCreateSuggestionService;
 
     @Autowired
-    private UserService userService;
+    private EmailService emailService;
 
     /**
      * Create a new Suggestion for creating a Monument
@@ -228,7 +225,7 @@ public class SuggestionController {
         createSuggestion.setIsApproved(true);
         createSuggestion = this.createSuggestionRepository.save(createSuggestion);
 
-        this.userService.sendCreateSuggestionApprovalEmail(createSuggestion);
+        this.emailService.sendCreateSuggestionApprovalEmail(createSuggestion);
 
         return this.monumentService.createMonument(createSuggestion);
     }
@@ -248,7 +245,7 @@ public class SuggestionController {
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
 
-        this.userService.sendUpdateSuggestionApprovalEmail(updateSuggestion);
+        this.emailService.sendUpdateSuggestionApprovalEmail(updateSuggestion);
 
         return this.monumentService.updateMonument(updateSuggestion);
     }
@@ -268,7 +265,7 @@ public class SuggestionController {
         bulkCreateSuggestion.setIsApproved(true);
         bulkCreateSuggestion = this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
 
-        this.userService.sendBulkCreateSuggestionApprovalEmail(bulkCreateSuggestion);
+        this.emailService.sendBulkCreateSuggestionApprovalEmail(bulkCreateSuggestion);
 
         /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
         *  it away currently because the AsyncJob must be passed to the CompletableFuture method and the CompletableFuture
@@ -291,7 +288,7 @@ public class SuggestionController {
     public CreateMonumentSuggestion rejectCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         CreateMonumentSuggestion createSuggestion = this.findCreateSuggestion(id);
         createSuggestion.setIsRejected(true);
-        this.userService.sendCreateSuggestionRejectionEmail(createSuggestion);
+        this.emailService.sendCreateSuggestionRejectionEmail(createSuggestion);
         return this.createSuggestionRepository.save(createSuggestion);
     }
 
@@ -306,7 +303,7 @@ public class SuggestionController {
     public UpdateMonumentSuggestion rejectUpdateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
         updateSuggestion.setIsRejected(true);
-        this.userService.sendUpdateSuggestionRejectionEmail(updateSuggestion);
+        this.emailService.sendUpdateSuggestionRejectionEmail(updateSuggestion);
         return this.updateSuggestionRepository.save(updateSuggestion);
     }
 
@@ -335,7 +332,7 @@ public class SuggestionController {
             }
         }
 
-        this.userService.sendBulkCreateSuggestionRejectionEmail(bulkCreateSuggestion);
+        this.emailService.sendBulkCreateSuggestionRejectionEmail(bulkCreateSuggestion);
 
         return bulkCreateSuggestion;
     }

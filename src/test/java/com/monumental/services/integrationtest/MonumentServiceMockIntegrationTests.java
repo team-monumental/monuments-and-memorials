@@ -97,7 +97,7 @@ public class MonumentServiceMockIntegrationTests {
     private MonumentBulkValidationResult validateCSV(String csvRows) {
         try {
             List<String[]> csvList = parseCSVString(csvRows);
-            return this.monumentServiceMock.validateMonumentCSV(csvList, mapping, null);
+            return this.monumentServiceMock.validateMonumentCSV("Test", csvList, mapping, null);
         } catch (IOException e) {
             e.printStackTrace();
             fail("An IOException occurred");
@@ -171,6 +171,7 @@ public class MonumentServiceMockIntegrationTests {
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
 
+        assertEquals("Test", validationResult.getFileName());
         assertEquals(0, validationResult.getValidResults().size());
         assertEquals(1, validationResult.getInvalidResults().size());
 
@@ -202,12 +203,14 @@ public class MonumentServiceMockIntegrationTests {
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
 
+        assertEquals("Test", validationResult.getFileName());
         assertEquals(1, validationResult.getValidResults().size());
         assertEquals(0, validationResult.getInvalidResults().size());
 
         // parseMonumentBulkValidationResult
         BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
 
+        assertEquals("Test", bulkCreateSuggestionResult.getFileName());
         assertEquals(1, bulkCreateSuggestionResult.getCreateSuggestions().size());
         assertEquals(1, this.createSuggestionRepository.findAll().size());
         assertEquals(1, this.bulkCreateSuggestionRepository.findAll().size());
@@ -233,6 +236,7 @@ public class MonumentServiceMockIntegrationTests {
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
 
+        assertEquals("Test", validationResult.getFileName());
         assertEquals(0, validationResult.getValidResults().size());
         assertEquals(2, validationResult.getInvalidResults().size());
 
@@ -268,12 +272,14 @@ public class MonumentServiceMockIntegrationTests {
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
 
+        assertEquals("Test", validationResult.getFileName());
         assertEquals(2, validationResult.getValidResults().size());
         assertEquals(0, validationResult.getInvalidResults().size());
 
         // parseMonumentBulkValidationResult
         BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
 
+        assertEquals("Test", bulkCreateSuggestionResult.getFileName());
         assertEquals(2, bulkCreateSuggestionResult.getCreateSuggestions().size());
         assertEquals(2, this.createSuggestionRepository.findAll().size());
         assertEquals(1, this.bulkCreateSuggestionRepository.findAll().size());
@@ -301,6 +307,7 @@ public class MonumentServiceMockIntegrationTests {
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRows);
 
+        assertEquals("Test", validationResult.getFileName());
         assertEquals(2, validationResult.getValidResults().size());
         assertEquals(2, validationResult.getInvalidResults().size());
 
@@ -317,6 +324,7 @@ public class MonumentServiceMockIntegrationTests {
         // parseMonumentBulkValidationResult
         BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
 
+        assertEquals("Test", bulkCreateSuggestionResult.getFileName());
         assertEquals(2, bulkCreateSuggestionResult.getCreateSuggestions().size());
         assertEquals(2, this.createSuggestionRepository.findAll().size());
         assertEquals(1, this.bulkCreateSuggestionRepository.findAll().size());

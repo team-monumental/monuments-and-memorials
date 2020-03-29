@@ -13,6 +13,7 @@ import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
+import com.monumental.services.EmailService;
 import com.monumental.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,6 +43,9 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping("/api/signup")
     @Transactional
     public User signup(@RequestBody CreateUserRequest user) throws InvalidEmailOrPasswordException {
@@ -65,9 +69,9 @@ public class UserController {
         User connectedUser = this.userRepository.getOne(user.getId());
         VerificationToken token = this.userService.generateVerificationToken(connectedUser, VerificationToken.Type.EMAIL);
         if (signup) {
-            this.userService.sendSignupVerificationEmail(connectedUser, token);
+            this.emailService.sendSignupVerificationEmail(connectedUser, token);
         } else {
-            this.userService.sendEmailChangeVerificationEmail(connectedUser, token);
+            this.emailService.sendEmailChangeVerificationEmail(connectedUser, token);
         }
         return Map.of("success", true);
     }
@@ -96,7 +100,7 @@ public class UserController {
         this.userRepository.save(user);
         this.tokenRepository.delete(verificationToken);
 
-        this.userService.sendPasswordResetCompleteEmail(user);
+        this.emailService.sendPasswordResetCompleteEmail(user);
 
         return Map.of("success", true, "email", user.getEmail());
     }
@@ -116,7 +120,7 @@ public class UserController {
         boolean needsConfirmation = false;
         if (!user.getEmail().equals(existingUser.getEmail())) {
             existingUser.setIsEmailVerified(false);
-            this.userService.sendEmailChangeVerificationEmail(
+            this.emailService.sendEmailChangeVerificationEmail(
                 user,
                 this.userService.generateVerificationToken(user, VerificationToken.Type.EMAIL)
             );
