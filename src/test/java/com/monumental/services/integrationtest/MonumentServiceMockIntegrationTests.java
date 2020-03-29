@@ -1,8 +1,11 @@
 package com.monumental.services.integrationtest;
 
+import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
+import com.monumental.repositories.ContributionRepository;
 import com.monumental.repositories.MonumentRepository;
+import com.monumental.repositories.ReferenceRepository;
 import com.monumental.repositories.TagRepository;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
@@ -63,6 +66,12 @@ public class MonumentServiceMockIntegrationTests {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private ReferenceRepository referenceRepository;
+
+    @Autowired
+    private ContributionRepository contributionRepository;
 
     private static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
 
@@ -194,6 +203,8 @@ public class MonumentServiceMockIntegrationTests {
         assertNull(creationResults);
         assertEquals(0, this.monumentRepository.findAll().size());
         assertEquals(0, this.tagRepository.findAll().size());
+        assertEquals(0, this.referenceRepository.findAll().size());
+        assertEquals(0, this.contributionRepository.findAll().size());
     }
 
     @Test
@@ -226,6 +237,8 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(1, this.monumentRepository.findAll().size());
         assertEquals(3, this.tagRepository.getAllByIsMaterial(false).size());
         assertEquals(2, this.tagRepository.getAllByIsMaterial(true).size());
+        assertEquals(1, this.referenceRepository.findAll().size());
+        assertEquals(1, this.contributionRepository.findAll().size());
     }
 
     @Test
@@ -262,6 +275,8 @@ public class MonumentServiceMockIntegrationTests {
         assertNull(creationResults);
         assertEquals(0, this.monumentRepository.findAll().size());
         assertEquals(0, this.tagRepository.findAll().size());
+        assertEquals(0, this.referenceRepository.findAll().size());
+        assertEquals(0, this.contributionRepository.findAll().size());
     }
 
     @Test
@@ -295,6 +310,8 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, this.monumentRepository.findAll().size());
         assertEquals(3, this.tagRepository.getAllByIsMaterial(false).size());
         assertEquals(2, this.tagRepository.getAllByIsMaterial(true).size());
+        assertEquals(2, this.referenceRepository.findAll().size());
+        assertEquals(2, this.contributionRepository.findAll().size());
     }
 
     @Test
@@ -340,5 +357,7 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, this.monumentRepository.findAll().size());
         assertEquals(3, this.tagRepository.getAllByIsMaterial(false).size());
         assertEquals(2, this.tagRepository.getAllByIsMaterial(true).size());
+        assertEquals(2, this.referenceRepository.findAll().size());
+        assertEquals(2, this.contributionRepository.findAll().size());
     }
 }

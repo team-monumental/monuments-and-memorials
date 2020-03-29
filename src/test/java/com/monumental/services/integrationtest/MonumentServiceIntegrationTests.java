@@ -6,6 +6,7 @@ import com.monumental.models.*;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.*;
+import com.monumental.security.Role;
 import com.monumental.services.AwsS3Service;
 import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
@@ -66,12 +67,34 @@ public class MonumentServiceIntegrationTests {
     @Autowired
     private ContributionRepository contributionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Gson gson;
+
+    private User testUser;
 
     @Before
     public void initialize() {
         this.initializeMocks();
-        this.gson = new Gson();
+
+        if (this.gson == null) {
+            this.gson = new Gson();
+        }
+
+        if (this.testUser == null) {
+            User testUser = new User();
+
+            testUser.setEmail("test@gmail.com");
+            testUser.setFirstName("Test");
+            testUser.setLastName("User");
+            testUser.setPassword("test");
+            testUser.setIsEnabled(true);
+            testUser.setRole(Role.RESEARCHER);
+
+            testUser = this.userRepository.save(testUser);
+            this.testUser = testUser;
+        }
     }
 
     private void initializeMocks() {
@@ -1340,6 +1363,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_BasicFieldsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1364,12 +1388,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_BasicFieldsSet_SomeNullSomeEmpty() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress(null);
         createSuggestion.setArtist("");
@@ -1394,12 +1424,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_IsTemporarySet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1426,12 +1462,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_CoordinatesSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1460,12 +1502,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_DateSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1501,12 +1549,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_YearSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1542,12 +1596,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_YearAndMonthSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1584,12 +1644,18 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getImages().size());
         assertEquals(0, result.getMaterials().size());
         assertEquals(0, result.getTags().size());
+
+        assertEquals(1, result.getContributions().size());
+
+        Contribution contribution = result.getContributions().get(0);
+        assertEquals(this.testUser.getEmail(), contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
     public void testMonumentService_createMonument_ContributionsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1642,6 +1708,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_ReferencesSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1702,6 +1769,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_ImagesSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1770,6 +1838,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_MaterialsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1847,6 +1916,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_NewMaterialsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -1932,6 +2002,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_TagsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -2025,6 +2096,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_NewTagsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -2126,6 +2198,7 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonument_DatabaseValuesCorrect() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
         createSuggestion.setTitle("Title");
         createSuggestion.setAddress("Address");
         createSuggestion.setArtist("Artist");
@@ -2984,12 +3057,18 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
 
         this.monumentService.updateMonument(updateSuggestion);
 
         assertEquals("New Title", monument.getTitle());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3001,6 +3080,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3009,6 +3089,11 @@ public class MonumentServiceIntegrationTests {
 
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3021,6 +3106,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3031,6 +3117,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Title", monument.getTitle());
         assertEquals("New Address", monument.getAddress());
         assertEquals("New Artist", monument.getArtist());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3044,6 +3135,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3056,6 +3148,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Address", monument.getAddress());
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3070,6 +3167,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3084,6 +3182,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3100,6 +3203,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3116,6 +3220,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Inscription", monument.getInscription());
         assertEquals("City", monument.getCity());
         assertEquals("State", monument.getState());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3133,6 +3242,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3151,6 +3261,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals("City", monument.getCity());
         assertEquals("State", monument.getState());
         assertTrue(monument.getIsTemporary());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3172,6 +3287,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3195,6 +3311,11 @@ public class MonumentServiceIntegrationTests {
 
         assertEquals(95.0, monument.getLon(), 0.0);
         assertEquals(185.0, monument.getLat(), 0.0);
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3218,6 +3339,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3249,6 +3371,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(2012, calendar.get(Calendar.YEAR));
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(23, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3272,6 +3399,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3303,6 +3431,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(2012, calendar.get(Calendar.YEAR));
         assertEquals(0, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3326,6 +3459,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3358,6 +3492,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(2012, calendar.get(Calendar.YEAR));
         assertEquals(3, calendar.get(Calendar.MONTH));
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3381,6 +3520,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3423,6 +3563,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
         assertEquals(3, monument.getReferences().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3464,6 +3609,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3506,6 +3652,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
         assertEquals(5, monument.getReferences().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3547,6 +3698,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3607,6 +3759,11 @@ public class MonumentServiceIntegrationTests {
         assertFalse(referenceUrls.contains("Reference URL 2"));
 
         assertTrue(referenceUrls.contains("Reference URL 3"));
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3648,6 +3805,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3707,6 +3865,11 @@ public class MonumentServiceIntegrationTests {
         assertFalse(referenceUrls.contains("Reference URL 2"));
 
         assertTrue(referenceUrls.contains("Reference URL 3"));
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3748,6 +3911,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3818,6 +3982,11 @@ public class MonumentServiceIntegrationTests {
 
         assertEquals(3, monument.getImages().size());
         assertTrue(monument.getImages().get(0).getIsPrimary());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -3877,6 +4046,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -3955,6 +4125,11 @@ public class MonumentServiceIntegrationTests {
                 assertFalse(image.getIsPrimary());
             }
         }
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4014,6 +4189,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -4093,6 +4269,11 @@ public class MonumentServiceIntegrationTests {
                 assertFalse(image.getIsPrimary());
             }
         }
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4152,6 +4333,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -4236,6 +4418,11 @@ public class MonumentServiceIntegrationTests {
                 assertFalse(image.getIsPrimary());
             }
         }
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4295,6 +4482,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -4380,6 +4568,11 @@ public class MonumentServiceIntegrationTests {
         }
 
         assertTrue(primaryImageFound);
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4439,6 +4632,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -4536,6 +4730,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, monument.getMonumentTags().size());
         assertEquals(3, monument.getMaterials().size());
         assertEquals(0, monument.getTags().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4601,6 +4800,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -4700,6 +4900,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(5, monument.getMonumentTags().size());
         assertEquals(5, monument.getMaterials().size());
         assertEquals(0, monument.getTags().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4765,6 +4970,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -4863,6 +5069,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(4, monument.getMonumentTags().size());
         assertEquals(4, monument.getMaterials().size());
         assertEquals(0, monument.getTags().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -4928,6 +5139,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -5034,6 +5246,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(7, monument.getMonumentTags().size());
         assertEquals(4, monument.getMaterials().size());
         assertEquals(3, monument.getTags().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -5102,6 +5319,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -5210,6 +5428,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(9, monument.getMonumentTags().size());
         assertEquals(4, monument.getMaterials().size());
         assertEquals(5, monument.getTags().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -5278,6 +5501,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -5385,6 +5609,11 @@ public class MonumentServiceIntegrationTests {
         assertEquals(8, monument.getMonumentTags().size());
         assertEquals(4, monument.getMaterials().size());
         assertEquals(4, monument.getTags().size());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
     }
 
     @Test
@@ -5453,6 +5682,7 @@ public class MonumentServiceIntegrationTests {
 
         UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
         updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
@@ -5565,6 +5795,8 @@ public class MonumentServiceIntegrationTests {
 
         assertEquals(4, this.tagRepository.getAllByMonumentIdAndIsMaterial(updatedMonument.getId(), false).size());
         assertEquals(4, this.tagRepository.getAllByMonumentIdAndIsMaterial(updatedMonument.getId(), true).size());
+
+        assertEquals(1, this.contributionRepository.getAllByMonumentId(updatedMonument.getId()).size());
     }
 
     /** createMonumentContributions Tests **/

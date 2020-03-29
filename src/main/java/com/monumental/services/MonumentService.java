@@ -804,8 +804,21 @@ public class MonumentService extends ModelService<Monument> {
 
         /* Contributions Section */
         List<Contribution> contributions = new ArrayList<>();
+        // If the monumentSuggestion has contributions, it means it came from a CSV
+        // We always prefer the CSV column for the contributors over the User who created the monumentSuggestion
         if (monumentSuggestion.getContributions() != null && monumentSuggestion.getContributions().size() > 0) {
             contributions = this.createMonumentContributions(monumentSuggestion.getContributions(), createdMonument);
+        }
+        // If the monumentSuggestion has no contributions, default to the User who created it
+        else {
+            Contribution contribution = new Contribution();
+
+            contribution.setMonument(createdMonument);
+            contribution.setDate(new Date());
+            contribution.setSubmittedByUser(monumentSuggestion.getCreatedBy());
+
+            contribution = this.contributionRepository.save(contribution);
+            contributions.add(contribution);
         }
         createdMonument.setContributions(contributions);
 
@@ -920,6 +933,18 @@ public class MonumentService extends ModelService<Monument> {
 
         // Save the current updates
         currentMonument = this.monumentRepository.save(currentMonument);
+
+        /* Contributions section */
+
+        // Add the creator of the updateSuggestion as a contributor for the currentMonument
+        Contribution newContribution = new Contribution();
+
+        newContribution.setMonument(currentMonument);
+        newContribution.setDate(new Date());
+        newContribution.setSubmittedByUser(updateSuggestion.getCreatedBy());
+
+        newContribution = this.contributionRepository.save(newContribution);
+        currentMonument.getContributions().add(newContribution);
 
         /* References section */
 
