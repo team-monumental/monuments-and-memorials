@@ -1,7 +1,8 @@
 import toasts from './reducers/toasts';
 import errors from './reducers/errors';
 import { monumentPage, createFavorite, deleteFavorite } from './reducers/monument';
-import { searchPage, userSearchPage } from './reducers/search';
+import { searchPage, userSearchPage, createSuggestionSearchPage, updateSuggestionSearchPage,
+    bulkCreateSuggestionSearchPage } from './reducers/search';
 import mapPage from './reducers/map';
 import { tagsSearch, tagsLoad, materialsLoad, materialsSearch } from './reducers/tagsSearch';
 import createPage from './reducers/create'
@@ -23,7 +24,8 @@ const Reducers = {
     login, signup, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset,
     updateUser, confirmEmailChange, createFavorite, deleteFavorite, fetchFavorites, duplicateMonuments,
     toggleMonumentIsActive, deleteMonument, userSearchPage, fetchUser, fetchBulkCreateSuggestions, fetchCreateSuggestions,
-    fetchUpdateSuggestions, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion
+    fetchUpdateSuggestions, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
+    createSuggestionSearchPage, updateSuggestionSearchPage, bulkCreateSuggestionSearchPage
 };
 
 export default Reducers;

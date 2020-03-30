@@ -2,7 +2,10 @@ import {
     SEARCH_MONUMENTS_PENDING,
     SEARCH_MONUMENTS_SUCCESS,
     SEARCH_MONUMENTS_ERROR,
-    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR
+    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR,
+    SEARCH_CREATE_SUGGESTIONS_PENDING, SEARCH_CREATE_SUGGESTIONS_SUCCESS, SEARCH_CREATE_SUGGESTIONS_ERROR,
+    SEARCH_UPDATE_SUGGESTIONS_PENDING, SEARCH_UPDATE_SUGGESTIONS_SUCCESS, SEARCH_UPDATE_SUGGESTIONS_ERROR,
+    SEARCH_BULK_CREATE_SUGGESTIONS_PENDING, SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS, SEARCH_BULK_CREATE_SUGGESTIONS_ERROR
 } from '../constants';
 import basicReducer from '../utils/basic-reducer';
 
@@ -35,4 +38,49 @@ export function userSearchPage(state = userInitialState, action) {
         success: SEARCH_USERS_SUCCESS,
         error: SEARCH_USERS_ERROR
     }, false);
+}
+
+const createSuggestionInitialState = {
+    pending: false,
+    createSuggestions: [],
+    createSuggestionCount: 0,
+    error: null
+};
+
+export function createSuggestionSearchPage(state = createSuggestionInitialState, action) {
+    return basicReducer(state, action, {
+        pending: SEARCH_CREATE_SUGGESTIONS_PENDING,
+        success: SEARCH_CREATE_SUGGESTIONS_SUCCESS,
+        error: SEARCH_CREATE_SUGGESTIONS_ERROR
+    });
+}
+
+const updateSuggestionInitialState = {
+    pending: false,
+    updateSuggestions: [],
+    updateSuggestionCount: 0,
+    error: null
+};
+
+export function updateSuggestionSearchPage(state = updateSuggestionInitialState, action) {
+    return basicReducer(state, action, {
+        pending: SEARCH_UPDATE_SUGGESTIONS_PENDING,
+        success: SEARCH_UPDATE_SUGGESTIONS_SUCCESS,
+        error: SEARCH_UPDATE_SUGGESTIONS_ERROR
+    });
+}
+
+const bulkCreateSuggestionInitialState = {
+    pending: false,
+    bulkCreateSuggestions: [],
+    bulkCreateSuggestionCount: 0,
+    error: null
+};
+
+export function bulkCreateSuggestionSearchPage(state = bulkCreateSuggestionInitialState, action) {
+    return basicReducer(state, action, {
+        pending: SEARCH_BULK_CREATE_SUGGESTIONS_PENDING,
+        success: SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS,
+        error: SEARCH_BULK_CREATE_SUGGESTIONS_ERROR
+    });
 }

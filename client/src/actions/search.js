@@ -36,15 +36,39 @@ const actions = {
         }
     },
     suggestions: {
-        search: {
-            pending: SEARCH_SUGGESTIONS_PENDING,
-            success: SEARCH_SUGGESTIONS_SUCCESS,
-            error: SEARCH_SUGGESTIONS_ERROR,
-            uri: 'api/search/suggestions'
+        create: {
+            search: {
+                pending: SEARCH_CREATE_SUGGESTIONS_PENDING,
+                success: SEARCH_CREATE_SUGGESTIONS_SUCCESS,
+                error: SEARCH_CREATE_SUGGESTIONS_ERROR,
+                uri: 'api/search/suggestions/create'
+            },
+            count: {
+                uri: 'api/search/suggestions/create/count'
+            }
         },
-        count: {
-            uri: '/api/search/suggestions/count'
-        }
+        update: {
+            search: {
+                pending: SEARCH_UPDATE_SUGGESTIONS_PENDING,
+                success: SEARCH_UPDATE_SUGGESTIONS_SUCCESS,
+                error: SEARCH_UPDATE_SUGGESTIONS_ERROR,
+                uri: 'api/search/suggestions/update'
+            },
+            count: {
+                uri: 'api/search/suggestions/update/count'
+            }
+        },
+        bulk: {
+            search: {
+                pending: SEARCH_BULK_CREATE_SUGGESTIONS_PENDING,
+                success: SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS,
+                error: SEARCH_BULK_CREATE_SUGGESTIONS_ERROR,
+                uri: 'api/search/suggestions/bulk'
+            },
+            count: {
+                uri: 'api/search/suggestions/bulk/count'
+            }
+        },
     }
 };
 
@@ -57,6 +81,18 @@ export function searchMonuments(options = {}) {
 
 export function searchUsers(options = {}) {
     return search(options, actions.users, 'users');
+}
+
+export function searchCreateSuggestions(options = {}) {
+    return search(options, actions.suggestions.create, 'createSuggestions');
+}
+
+export function searchUpdateSuggestions(options = {}) {
+    return search(options, actions.suggestions.update, 'updateSuggestions');
+}
+
+export function searchBulkCreateSuggestions(options = {}) {
+    return search(options, actions.suggestions.bulk, 'bulkCreateSuggestions');
 }
 
 function search(options, action, payloadName) {

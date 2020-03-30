@@ -104,5 +104,15 @@ public class CreateSuggestionService extends ModelService<CreateMonumentSuggesti
             predicates.add(SearchHelper.buildSimilarityPredicate(builder, artistExpression, 0.1));
             expressions.add(artistExpression);
         }
+        // TODO: ST_DWithin Query
+        if (isApproved) {
+            predicates.add(builder.equal(root.get("isApproved"), builder.literal(true)));
+        }
+        if (isRejected) {
+            predicates.add(builder.equal(root.get("isRejected"), builder.literal(true)));
+        }
+        if (!isNullOrEmpty(createdByEmail)) {
+            predicates.add(SearchHelper.buildCreatedByEmailQuery(builder, query, root, createdByEmail));
+        }
     }
 }
