@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Card } from 'react-bootstrap';
+import SuggestionSearchPage from '../../../pages/AdminPage/ManageSuggestionsPage/SuggestionSearchPage/SuggestionSearchPage';
 
 class ManageSuggestions extends React.Component {
 

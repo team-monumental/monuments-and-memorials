@@ -4,12 +4,14 @@ import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.models.User;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.services.UserService;
+import com.monumental.services.suggestions.CreateSuggestionService;
 import com.monumental.util.string.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,9 @@ public class SearchController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CreateSuggestionService createSuggestionService;
 
     /**
      * This function lets you search Monuments via a few different request parameters
@@ -155,5 +160,52 @@ public class SearchController {
                                     @RequestParam(required = false) String email,
                                     @RequestParam(required = false) String role) {
         return this.userService.countSearchResults(name, email, role);
+    }
+
+    /**
+     * Search CreateMonumentSuggestions via various request parameters
+     * @param title - The title search query string
+     * @param artist - The artist search query String
+     * @param latitude - The latitude of the comparison point
+     * @param longitude - The longitude of the comparison point
+     * @param distance - The distance from the comparison point to search in, units of miles
+     * @param isApproved - True to filter the CreateMonumentSuggestions to only approved ones, False otherwise
+     * @param isRejected - True to filter the CreateMonumentSuggestions to only rejected ones, False otherwise
+     * @param createdByEmail - The created by email search query string
+     * @param page - The CreateMonumentSuggestions results page number
+     * @param limit - The maximum number of CreateMonumentSuggestion results
+     * @return List<CreateMonumentSuggestion> - Matching CreateMonumentSuggestions based on the search criteria
+     */
+    @GetMapping("/api/search/suggestions/create")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public List<CreateMonumentSuggestion> searchCreateSuggestions(@RequestParam(required = false) String title,
+                                                                  @RequestParam(required = false) String artist,
+                                                                  @RequestParam(required = false, value = "lat") Double latitude,
+                                                                  @RequestParam(required = false, value = "lon") Double longitude,
+                                                                  @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
+                                                                  @RequestParam(required = false, value  = "isApproved") Boolean isApproved,
+                                                                  @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+                                                                  @RequestParam(required = false, value = "email") String createdByEmail,
+                                                                  @RequestParam(required = false, defaultValue = "1") String page,
+                                                                  @RequestParam(required = false, defaultValue = "25") String limit) {
+        return this.createSuggestionService.search(title, artist, latitude, longitude, distance, isApproved, isRejected,
+                createdByEmail, page, limit);
+    }
+
+    /**
+     * @return - Total number of results for a CreateMonumentSuggestion search
+     */
+    @GetMapping("/api/search/suggestions/create")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Integer countCreateSuggestionsSearch(@RequestParam(required = false) String title,
+                                                @RequestParam(required = false) String artist,
+                                                @RequestParam(required = false, value = "lat") Double latitude,
+                                                @RequestParam(required = false, value = "lon") Double longitude,
+                                                @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
+                                                @RequestParam(required = false, value = "isApproved") Boolean isApproved,
+                                                @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+                                                @RequestParam(required = false, value = "email") String createdByEmail) {
+        return this.createSuggestionService.countSearchResults(title, artist, latitude, longitude, distance, isApproved,
+                isRejected, createdByEmail);
     }
 }

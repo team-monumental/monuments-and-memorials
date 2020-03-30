@@ -2,7 +2,10 @@ import {
     SEARCH_MONUMENTS_PENDING,
     SEARCH_MONUMENTS_ERROR,
     SEARCH_MONUMENTS_SUCCESS,
-    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR
+    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR,
+    SEARCH_CREATE_SUGGESTIONS_PENDING, SEARCH_CREATE_SUGGESTIONS_SUCCESS, SEARCH_CREATE_SUGGESTIONS_ERROR,
+    SEARCH_UPDATE_SUGGESTIONS_PENDING, SEARCH_UPDATE_SUGGESTIONS_SUCCESS, SEARCH_UPDATE_SUGGESTIONS_ERROR,
+    SEARCH_BULK_CREATE_SUGGESTIONS_PENDING, SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS, SEARCH_BULK_CREATE_SUGGESTIONS_ERROR
 } from '../constants';
 import * as QueryString from 'query-string';
 import { addError } from './errors';
@@ -30,6 +33,17 @@ const actions = {
         },
         count: {
             uri: '/api/search/users/count'
+        }
+    },
+    suggestions: {
+        search: {
+            pending: SEARCH_SUGGESTIONS_PENDING,
+            success: SEARCH_SUGGESTIONS_SUCCESS,
+            error: SEARCH_SUGGESTIONS_ERROR,
+            uri: 'api/search/suggestions'
+        },
+        count: {
+            uri: '/api/search/suggestions/count'
         }
     }
 };
