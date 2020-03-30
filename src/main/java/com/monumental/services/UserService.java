@@ -10,6 +10,7 @@ import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
 import com.monumental.security.UserAwareUserDetails;
+import com.monumental.util.search.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
@@ -313,18 +314,18 @@ public class UserService extends ModelService<User> {
         List<Expression<Number>> expressions = new ArrayList<>();
 
         if (!isNullOrEmpty(name)) {
-            Expression<Number> firstNameExpression = this.buildSimilarityExpression(builder, root, name, "firstName");
-            Expression<Number> lastNameExpression = this.buildSimilarityExpression(builder, root, name, "lastName");
+            Expression<Number> firstNameExpression = SearchHelper.buildSimilarityExpression(builder, root, name, "firstName");
+            Expression<Number> lastNameExpression = SearchHelper.buildSimilarityExpression(builder, root, name, "lastName");
             predicates.add(builder.or(
-                    this.buildSimilarityPredicate(builder, firstNameExpression),
-                    this.buildSimilarityPredicate(builder, lastNameExpression)
+                    SearchHelper.buildSimilarityPredicate(builder, firstNameExpression, 0.1),
+                    SearchHelper.buildSimilarityPredicate(builder, lastNameExpression, 0.1)
             ));
             expressions.add(firstNameExpression);
             expressions.add(lastNameExpression);
         }
         if (!isNullOrEmpty(email)) {
-            Expression<Number> emailExpression = this.buildSimilarityExpression(builder, root, email, "email");
-            predicates.add(this.buildSimilarityPredicate(builder, emailExpression));
+            Expression<Number> emailExpression = SearchHelper.buildSimilarityExpression(builder, root, email, "email");
+            predicates.add(SearchHelper.buildSimilarityPredicate(builder, emailExpression, 0.1));
             expressions.add(emailExpression);
         }
         if (orderBySimilarity && expressions.size() > 0) {
@@ -365,23 +366,6 @@ public class UserService extends ModelService<User> {
             }
         }
         query.orderBy(builder.desc(sum));
-    }
-
-    /**
-     * Shorthand way to get the similarity predicate used for User searches
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param expression - The similarity expression
-     * @return Predicate - The comparison of the similarity to the pre-set threshold
-     */
-    private Predicate buildSimilarityPredicate(CriteriaBuilder builder, Expression<Number> expression) {
-        return builder.gt(expression, 0.1);
-    }
-
-    /**
-     * Build a similarity expression for the given search string and field name
-     */
-    private Expression<Number> buildSimilarityExpression(CriteriaBuilder builder, Root root, String searchQuery, String fieldName) {
-        return builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery));
     }
 
     /**

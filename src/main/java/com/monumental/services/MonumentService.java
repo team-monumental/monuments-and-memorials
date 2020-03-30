@@ -13,6 +13,7 @@ import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
+import com.monumental.util.search.SearchHelper;
 import com.monumental.util.string.StringHelper;
 import com.opencsv.CSVReader;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -113,19 +114,19 @@ public class MonumentService extends ModelService<Monument> {
                 builder.desc(
                     builder.sum(
                         builder.sum(
-                            builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)),
-                            builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery))
+                            SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"),
+                            SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist")
                         ),
-                        builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery))
+                        SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description")
                     )
                 )
             );
         }
 
         return builder.or(
-            builder.gt(builder.function("similarity", Number.class, root.get("title"), builder.literal(searchQuery)), threshold),
-            builder.gt(builder.function("similarity", Number.class, root.get("artist"), builder.literal(searchQuery)), threshold),
-            builder.gt(builder.function("similarity", Number.class, root.get("description"), builder.literal(searchQuery)), threshold)
+            SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), threshold),
+            SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist"), threshold),
+            SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description"), threshold)
         );
     }
 

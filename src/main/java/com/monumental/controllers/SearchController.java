@@ -4,14 +4,18 @@ import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.models.User;
+import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
 import com.monumental.services.UserService;
+import com.monumental.services.suggestions.BulkCreateSuggestionService;
 import com.monumental.services.suggestions.CreateSuggestionService;
+import com.monumental.services.suggestions.UpdateSuggestionService;
 import com.monumental.util.string.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +43,12 @@ public class SearchController {
 
     @Autowired
     private CreateSuggestionService createSuggestionService;
+
+    @Autowired
+    private UpdateSuggestionService updateSuggestionService;
+
+    @Autowired
+    private BulkCreateSuggestionService bulkCreateSuggestionService;
 
     /**
      * This function lets you search Monuments via a few different request parameters
@@ -195,7 +205,7 @@ public class SearchController {
     /**
      * @return - Total number of results for a CreateMonumentSuggestion search
      */
-    @GetMapping("/api/search/suggestions/create")
+    @GetMapping("/api/search/suggestions/create/count")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Integer countCreateSuggestionsSearch(@RequestParam(required = false) String title,
                                                 @RequestParam(required = false) String artist,
@@ -207,5 +217,85 @@ public class SearchController {
                                                 @RequestParam(required = false, value = "email") String createdByEmail) {
         return this.createSuggestionService.countSearchResults(title, artist, latitude, longitude, distance, isApproved,
                 isRejected, createdByEmail);
+    }
+
+    /**
+     * Search UpdateMonumentSuggestions via various request parameters
+     * @param title - The title search query string
+     * @param artist - The artist search query String
+     * @param latitude - The latitude of the comparison point
+     * @param longitude - The longitude of the comparison point
+     * @param distance - The distance from the comparison point to search in, units of miles
+     * @param isApproved - True to filter the UpdateMonumentSuggestions to only approved ones, False otherwise
+     * @param isRejected - True to filter the UpdateMonumentSuggestions to only rejected ones, False otherwise
+     * @param createdByEmail - The created by email search query string
+     * @param page - The UpdateMonumentSuggestion results page number
+     * @param limit - The maximum number of UpdateMonumentSuggestion results
+     * @return List<UpdateMonumentSuggestion> - Matching UpdateMonumentSuggestions based on the search criteria
+     */
+    @GetMapping("/api/search/suggestions/update")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public List<UpdateMonumentSuggestion> searchUpdateSuggestions(@RequestParam(required = false) String title,
+                                                                  @RequestParam(required = false) String artist,
+                                                                  @RequestParam(required = false, value = "lat") Double latitude,
+                                                                  @RequestParam(required = false, value = "lon") Double longitude,
+                                                                  @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
+                                                                  @RequestParam(required = false, value  = "isApproved") Boolean isApproved,
+                                                                  @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+                                                                  @RequestParam(required = false, value = "email") String createdByEmail,
+                                                                  @RequestParam(required = false, defaultValue = "1") String page,
+                                                                  @RequestParam(required = false, defaultValue = "25") String limit) {
+        return this.updateSuggestionService.search(title, artist, latitude, longitude, distance, isApproved, isRejected,
+                createdByEmail, page, limit);
+    }
+
+    /**
+     * @return - Total number of results for a UpdateMonumentSuggestion search
+     */
+    @GetMapping("/api/search/suggestions/update/count")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Integer countUpdateSuggestionsSearch(@RequestParam(required = false) String title,
+                                                @RequestParam(required = false) String artist,
+                                                @RequestParam(required = false, value = "lat") Double latitude,
+                                                @RequestParam(required = false, value = "lon") Double longitude,
+                                                @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
+                                                @RequestParam(required = false, value = "isApproved") Boolean isApproved,
+                                                @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+                                                @RequestParam(required = false, value = "email") String createdByEmail) {
+        return this.updateSuggestionService.countSearchResults(title, artist, latitude, longitude, distance, isApproved,
+                isRejected, createdByEmail);
+    }
+
+    /**
+     * Search BulkCreateMonumentSuggestions via various request parameters
+     * @param fileName - The file name query string
+     * @param isApproved - True to filter the BulkCreateMonumentSuggestions to only approved ones, False otherwise
+     * @param isRejected - True to filter the BulkCreateMonumentSuggestions to only rejected ones, False otherwise
+     * @param createdByEmail - The created by email search query string
+     * @param page - The BulkCreateMonumentSuggestions results page number
+     * @param limit - The maximum number of BulkCreateMonumentSuggestion results
+     * @return List<BulkCreateMonumentSuggestion> - Matching BulkCreateMonumentSuggestions based on the search criteria
+     */
+    @GetMapping("/api/search/suggestions/bulk")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public List<BulkCreateMonumentSuggestion> searchBulkCreateSuggestions(@RequestParam(required = false) String fileName,
+                                                                          @RequestParam(required = false, value  = "isApproved") Boolean isApproved,
+                                                                          @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+                                                                          @RequestParam(required = false, value = "email") String createdByEmail,
+                                                                          @RequestParam(required = false, defaultValue = "1") String page,
+                                                                          @RequestParam(required = false, defaultValue = "25") String limit) {
+        return this.bulkCreateSuggestionService.search(fileName, isApproved, isRejected, createdByEmail, page, limit);
+    }
+
+    /**
+     * @return - Total number of results for a BulkCreateMonumentSuggestion search
+     */
+    @GetMapping("/api/search/suggestions/bulk/count")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Integer countBulkCreateSuggestionsSearch(@RequestParam(required = false) String fileName,
+                                                    @RequestParam(required = false, value = "isApproved") Boolean isApproved,
+                                                    @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+                                                    @RequestParam(required = false, value = "email") String createdByEmail) {
+        return this.bulkCreateSuggestionService.countSearchResults(fileName, isApproved, isRejected, createdByEmail);
     }
 }
