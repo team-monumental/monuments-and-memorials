@@ -112,7 +112,7 @@ public class CreateSuggestionService extends ModelService<CreateMonumentSuggesti
             predicates.add(builder.equal(root.get("isRejected"), builder.literal(true)));
         }
         if (!isNullOrEmpty(createdByEmail)) {
-            predicates.add(SearchHelper.buildCreatedByEmailQuery(builder, query, root, createdByEmail));
+            //predicates.add(SearchHelper.buildCreatedByEmailQuery(builder, query, root, createdByEmail));
         }
     }
 }

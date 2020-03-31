@@ -2,7 +2,6 @@ import React from 'react';
 import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
-import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import createCreateSuggestion from '../../actions/create';
 import { uploadImagesToS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
@@ -154,17 +153,13 @@ class CreateMonumentPage extends React.Component {
         const { createCreateSuggestionPending, createSuggestion, createError, fetchDuplicatesPending } = this.props;
 
         if (createError === null && createSuggestion.id !== undefined) {
-            // TODO: Fix
-            //this.props.history.push(`/monuments/${createSuggestion.id}`);
+            this.props.history.push('/suggestion-completed');
         }
 
         return (
             <div className="create-page-container">
                 <Helmet title="Create | Monuments and Memorials"/>
                 <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending}/>
-                <div className="column thank-you-column">
-                    <ContributionAppreciation/>
-                </div>
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}

@@ -158,7 +158,7 @@ public class SearchHelper {
      * i.e. if you want to filter on the Monument class, the tableName would be "monument"
      * @return Predicate - Predicate built using the specified email for a filter on User's email field
      */
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     private Predicate buildCreatedByEmailQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String email,
                                                String tableName) {
         // Create a Sub-query for the Join
@@ -169,5 +169,5 @@ public class SearchHelper {
         Join<User, CreateMonumentSuggestion> join = userRoot.join("create_monument_suggestion");
 
         // Select the Users whose email is similar to the specified email
-    }
+    }*/
 }

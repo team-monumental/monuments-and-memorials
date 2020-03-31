@@ -24,7 +24,8 @@ class ManageSuggestions extends React.Component {
                             <SuggestionSearchPage showSearchResults={mode === 'search'}/>
                         }
                         {(mode === 'suggestion' && suggestion) &&
-                            <ManageSuggestion suggestion={suggestion}/>
+                            <></>
+                            //<ManageSuggestion suggestion={suggestion}/>
                         }
                     </Card.Body>
                 </Card>

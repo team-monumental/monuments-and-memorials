@@ -29,6 +29,7 @@ import UpdateUserPage from './pages/UpdateUserPage/UpdateUserPage';
 import ConfirmEmailChangePage from './pages/ConfirmEmailChangePage/ConfirmEmailChangePage';
 import AdminPage from './pages/AdminPage/AdminPage';
 import { Role } from './utils/authentication-util';
+import SuggestionCreatedPage from './pages/SuggestionCreatedPage/SuggestionCreatedPage';
 
 class App extends React.Component {
 
@@ -77,6 +78,7 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
                             <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
                             <ProtectedRoute path="/panel" component={AdminPage} oneOf={Role.PARTNER_OR_ABOVE}/>
+                            <Route exact path="/suggestion-created" component={SuggestionCreatedPage}/>
                         </ErrorHandler>
                     </div>
                 </ConnectedRouter>

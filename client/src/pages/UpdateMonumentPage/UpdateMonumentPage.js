@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { fetchMonumentForUpdate, createUpdateSuggestion } from '../../actions/update-monument';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
-import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
@@ -135,9 +134,6 @@ class UpdateMonumentPage extends React.Component {
             <div className="update-monument-page-container">
                 {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
                 <Spinner show={fetchMonumentForUpdatePending || createUpdateSuggestionPending}/>
-                <div className="column thank-you-column">
-                    <ContributionAppreciation/>
-                </div>
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         monument={monument}
