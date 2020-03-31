@@ -84,7 +84,16 @@ export function searchUsers(options = {}) {
 }
 
 export function searchSuggestions(options = {}) {
-
+    switch (options.type) {
+        case 'create':
+            return searchCreateSuggestions(options);
+        case 'update':
+            return searchUpdateSuggestions(options);
+        case 'bulk':
+            return searchBulkCreateSuggestions(options);
+        default:
+            return {};
+    }
 }
 
 function searchCreateSuggestions(options = {}) {
