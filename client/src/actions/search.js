@@ -83,15 +83,19 @@ export function searchUsers(options = {}) {
     return search(options, actions.users, 'users');
 }
 
-export function searchCreateSuggestions(options = {}) {
+export function searchSuggestions(options = {}) {
+
+}
+
+function searchCreateSuggestions(options = {}) {
     return search(options, actions.suggestions.create, 'createSuggestions');
 }
 
-export function searchUpdateSuggestions(options = {}) {
+function searchUpdateSuggestions(options = {}) {
     return search(options, actions.suggestions.update, 'updateSuggestions');
 }
 
-export function searchBulkCreateSuggestions(options = {}) {
+function searchBulkCreateSuggestions(options = {}) {
     return search(options, actions.suggestions.bulk, 'bulkCreateSuggestions');
 }
 

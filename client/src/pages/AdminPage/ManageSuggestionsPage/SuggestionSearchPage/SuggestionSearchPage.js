@@ -44,6 +44,11 @@ class SuggestionSearchPage extends React.Component {
 
         return result;
     }
+
+    componentDidMount() {
+        const { showSearchResults, dispatch, location: { search } } = this.props;
+        if (showSearchResults) dispatch()
+    }
 }
 
 export default withRouter(connect(SuggestionSearchPage.mapStateToProps)(SuggestionSearchPage));
