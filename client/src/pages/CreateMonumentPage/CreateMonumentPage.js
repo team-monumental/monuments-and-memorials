@@ -3,7 +3,7 @@ import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
-import createMonument from '../../actions/create';
+import createCreateSuggestion from '../../actions/create';
 import { uploadImagesToS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
@@ -14,7 +14,7 @@ import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
 
 /**
- * Root container for the page to create a new Monument
+ * Root container for the page to create a new CreateMonumentSuggestion
  */
 class CreateMonumentPage extends React.Component {
 
@@ -66,11 +66,12 @@ class CreateMonumentPage extends React.Component {
         const { dispatch } = this.props;
         const { form } = this.state;
 
-        // First, upload the images to S3 and save the URLs in the form
-        form.images = await uploadImagesToS3(form.images);
+        // First, upload the images to the temporary S3 folder and save the URLs in the form
+        const imageObjectUrls = await uploadImagesToS3(form.images, true);
+        form.imagesJson = JSON.stringify(imageObjectUrls);
 
-        // Then, create the Monument
-        dispatch(createMonument(form));
+        // Then, create the CreateMonumentSuggestion
+        dispatch(createCreateSuggestion(form));
     }
 
     handleCreateFormCancelButtonClick() {
@@ -150,16 +151,17 @@ class CreateMonumentPage extends React.Component {
     }
 
     render() {
-        const { createMonumentPending, monument, createError, fetchDuplicatesPending } = this.props;
+        const { createCreateSuggestionPending, createSuggestion, createError, fetchDuplicatesPending } = this.props;
 
-        if (createError === null && monument.id !== undefined) {
-            this.props.history.push(`/monuments/${monument.id}`);
+        if (createError === null && createSuggestion.id !== undefined) {
+            // TODO: Fix
+            //this.props.history.push(`/monuments/${createSuggestion.id}`);
         }
 
         return (
             <div className="create-page-container">
                 <Helmet title="Create | Monuments and Memorials"/>
-                <Spinner show={createMonumentPending || fetchDuplicatesPending}/>
+                <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending}/>
                 <div className="column thank-you-column">
                     <ContributionAppreciation/>
                 </div>

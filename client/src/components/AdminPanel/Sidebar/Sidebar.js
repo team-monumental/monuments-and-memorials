@@ -8,7 +8,8 @@ export default class Sidebar extends React.Component {
     get links() {
         return [
             {name: 'Home', icon: 'home', route: '/panel', exact: true},
-            {name: 'Bulk Create', icon: 'cloud_upload', route: '/panel/bulk'},
+            {name: 'Bulk Suggest', icon: 'cloud_upload', route: '/panel/bulk', roles: Role.PARTNER},
+            {name: 'Bulk Create', icon: 'cloud_upload', route: '/panel/bulk', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Manage Monuments', icon: 'account_balance', route: '/panel/manage/monuments', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Manage Users', icon: 'person', route: '/panel/manage/users', roles: Role.ADMIN}
         ]

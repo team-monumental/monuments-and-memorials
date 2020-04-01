@@ -7,7 +7,7 @@ import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
 import Collapse from 'react-bootstrap/Collapse';
 
 /**
- * Presentational component for the Modal shown before a Monument Update is completed
+ * Presentational component for the Modal shown before an UpdateMonumentSuggestion is created
  */
 export default class UpdateReviewModal extends React.Component {
 
@@ -533,7 +533,7 @@ export default class UpdateReviewModal extends React.Component {
                         unchangedAttributes.push(this.renderYearChange(oldMonumentYear, newMonument.newYear, false));
                     break;
                 case 'month-year':
-                    if (oldMonumentYear !== newMonument.newYear &&
+                    if (oldMonumentYear !== newMonument.newYear ||
                         oldMonumentMonth !== newMonument.newMonth) {
                         changedAttributes.push(this.renderMonthYearChange(oldMonumentYear, oldMonumentMonth, newMonument.newYear, newMonument.newMonth, true));
                     }

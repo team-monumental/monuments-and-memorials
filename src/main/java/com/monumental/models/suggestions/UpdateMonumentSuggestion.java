@@ -1,5 +1,6 @@
 package com.monumental.models.suggestions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.monumental.models.Monument;
 
 import javax.persistence.*;
@@ -27,10 +28,10 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_artist")
     private String newArtist;
 
-    @Column(name = "new_description")
+    @Column(name = "new_description", length = 2048)
     private String newDescription;
 
-    @Column(name = "new_inscription")
+    @Column(name = "new_inscription", length = 2048)
     private String newInscription;
 
     @Column(name = "new_latitude")
@@ -51,49 +52,56 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_is_temporary")
     private Boolean newIsTemporary = false;
 
-    @Column(name = "updated_reference_urls_by_id_json")
+    @Column(name = "updated_reference_urls_by_id_json", length = 1024)
     private String updatedReferenceUrlsByIdJson;
 
     @Transient
+    @JsonIgnore
     private Map<Integer, String> updatedReferenceUrlsById;
 
-    @Column(name = "new_reference_urls_json")
+    @Column(name = "new_reference_urls_json", length = 1024)
     private String newReferenceUrlsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> newReferenceUrls;
 
-    @Column(name = "deleted_reference_ids_json")
+    @Column(name = "deleted_reference_ids_json", length = 1024)
     private String deletedReferenceIdsJson;
 
     @Transient
+    @JsonIgnore
     private List<Integer> deletedReferenceIds;
 
-    @Column(name = "new_image_urls_json")
+    @Column(name = "new_image_urls_json", length = 1024)
     private String newImageUrlsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> newImageUrls;
 
     @Column(name = "new_primary_image_id")
     private Integer newPrimaryImageId;
 
-    @Column(name = "deleted_image_ids_json")
+    @Column(name = "deleted_image_ids_json", length = 1024)
     private String deletedImageIdsJson;
 
     @Transient
+    @JsonIgnore
     private List<Integer> deletedImageIds;
 
-    @Column(name = "new_materials_json")
+    @Column(name = "new_materials_json", length = 1024)
     private String newMaterialsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> newMaterials;
 
-    @Column(name = "new_tags_json")
+    @Column(name = "new_tags_json", length = 1024)
     private String newTagsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> newTags;
 
     public UpdateMonumentSuggestion() {

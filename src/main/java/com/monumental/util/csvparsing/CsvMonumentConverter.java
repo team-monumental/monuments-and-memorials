@@ -1,14 +1,10 @@
 package com.monumental.util.csvparsing;
 
 import com.google.gson.Gson;
-import com.monumental.models.Contribution;
-import com.monumental.models.Reference;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;

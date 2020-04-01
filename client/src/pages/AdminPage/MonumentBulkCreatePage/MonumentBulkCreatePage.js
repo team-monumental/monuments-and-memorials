@@ -3,14 +3,15 @@ import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import BulkCreateForm from '../../../components/BulkCreateForm/BulkCreateForm';
-import { bulkValidateMonuments, bulkCreateMonuments } from '../../../actions/bulk';
+import { bulkValidateSuggestions, bulkCreateSuggestions } from '../../../actions/bulk';
 import Spinner from '../../../components/Spinner/Spinner';
 import ErrorModal from '../../../components/Error/ErrorModal/ErrorModal';
 import { Modal, ProgressBar } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
+import { Role } from '../../../utils/authentication-util'
 
 /**
- * Root container for the page to bulk create Monuments
+ * Root container for the page to bulk suggest Monument creations
  */
 class MonumentBulkCreatePage extends React.Component {
 
@@ -20,7 +21,8 @@ class MonumentBulkCreatePage extends React.Component {
         this.state = {
             showingErrorModal: false,
             showValidationResults: false,
-            showCreateResults: false
+            showCreateResults: false,
+            term: Role.RESEARCHER_OR_ABOVE.includes(props.role.toUpperCase()) ? 'Create' : 'Suggest'
         };
     }
 
@@ -38,7 +40,7 @@ class MonumentBulkCreatePage extends React.Component {
         const { dispatch } = this.props;
 
         // Send the .zip or .csv file and the mapping to the server to be processed
-        dispatch(bulkValidateMonuments(form));
+        dispatch(bulkValidateSuggestions(form));
         this.setState({showValidationResults: true});
     }
 
@@ -46,7 +48,7 @@ class MonumentBulkCreatePage extends React.Component {
         const { dispatch } = this.props;
 
         // Send the .zip or .csv file and the mapping to the server to be processed
-        dispatch(bulkCreateMonuments(form));
+        dispatch(bulkCreateSuggestions(form));
         this.setState({showValidationResults: false, showCreateResults: true});
     }
 
@@ -55,34 +57,35 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        let { showingErrorModal, showValidationResults } = this.state;
+        let { showingErrorModal, showValidationResults, term } = this.state;
         const {
-            bulkCreateMonumentsPending, bulkValidateMonumentsPending, validationResult, validationError,
+            bulkSuggestionCreatePending, bulkSuggestionValidatePending, validationResult, validationError,
             createResult, createError, createProgress
         } = this.props;
 
-        const showCreateResults = createResult && !bulkCreateMonumentsPending;
-        showValidationResults = !showCreateResults && showValidationResults && !bulkValidateMonumentsPending;
+        const showCreateResults = createResult && !bulkSuggestionCreatePending;
+        showValidationResults = !showCreateResults && showValidationResults && !bulkSuggestionValidatePending;
 
         return (
             <div className="bulk page d-flex justify-content-center">
-                <Helmet title="Bulk Create | Monuments and Memorials"/>
-                <Spinner show={bulkValidateMonumentsPending}/>
+                <Helmet title={`Bulk ${term} | Monuments and Memorials`}/>
+                <Spinner show={bulkSuggestionValidatePending}/>
                 <BulkCreateForm
                     onValidationSubmit={(form) => this.handleValidationSubmit(form)}
                     onCreateSubmit={(form) => this.handleCreateSubmit(form)}
                     onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
+                    term={term} pastTenseTerm={this.getTermPastTense()} actionHappeningTerm={this.getTermActionHappening()}
                     {...{validationResult, createResult, showValidationResults, showCreateResults}}
                 />
-                <Modal show={bulkCreateMonumentsPending}>
+                <Modal show={bulkSuggestionCreatePending}>
                     <Modal.Header className="pb-0">
                         <Modal.Title>
-                            Bulk Creating Monuments or Memorials
+                            Bulk {this.getTermActionHappening()} Monuments or Memorials
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="mb-2">
-                            Please wait while your monuments or memorials are created...
+                            Please wait while your monuments or memorials are {this.getTermPastTense().toLowerCase()}...
                         </div>
                         <ProgressBar now={createProgress * 100}/>
                     </Modal.Body>
@@ -94,6 +97,16 @@ class MonumentBulkCreatePage extends React.Component {
                 />
             </div>
         );
+    }
+
+    getTermPastTense() {
+        const { term } = this.state;
+        return term === 'Suggest' ? term + 'ed' : term + 'd';
+    }
+
+    getTermActionHappening() {
+        const { term } = this.state;
+        return term === 'Suggest' ? term + 'ing' : 'Creating';
     }
 }
 

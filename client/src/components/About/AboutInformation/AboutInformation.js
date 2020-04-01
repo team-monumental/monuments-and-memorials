@@ -44,6 +44,20 @@ export default class AboutInformation extends React.Component {
             );
         }
 
+        let loginLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace('/login');
+            }} to="/login" key="login">click here</NavLink>
+        );
+
+        let signupLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace('/signup');
+            }} to="/signup" key="signup">click here to create an account</NavLink>
+        );
+
         const readMoreContributorsLink = (
             <div className="more-contributors-link"
                  onClick={() => this.handleMoreContributorsClick()}>
@@ -73,11 +87,10 @@ export default class AboutInformation extends React.Component {
                     data by contributing 900 additional monuments + memorials, so that all states are represented, as
                     are two territories (Guam and Puerto Rico).
                 </p>
-                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
                     Our goal is to document all temporary and permanent monuments + memorials throughout the United
                     States and territories. We are looking for contributors to add information, please join us by
-                    creating an account (sign-in link here) or by contacting the organizers&nbsp;
+                    creating an account ({signupLink}) or by contacting the organizers&nbsp;
                     <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>. To view monuments
                     and memorials, {mapNavLink}.
                 </p>
@@ -106,9 +119,8 @@ export default class AboutInformation extends React.Component {
                 <h3 className="font-italic">
                     Contributors:
                 </h3>
-                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
-                    We invite contributions from anyone. If you are interested in contributing, please click here. Your
+                    We invite contributions from anyone. If you are interested in contributing, please {loginLink}. Your
                     submissions will be recognized in our list of contributors:
                 </p>
 

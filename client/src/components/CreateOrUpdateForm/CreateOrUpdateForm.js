@@ -393,7 +393,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     /**
-     * Build the form object for creating a new Monument
+     * Build the form object for creating a new CreateMonumentSuggestion
      */
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
@@ -432,11 +432,18 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
         }
 
+        // JSON fields
+        createForm.referencesJson = JSON.stringify(createForm.references);
+        createForm.materialsJson = JSON.stringify(createForm.materials);
+        createForm.newMaterialsJson = JSON.stringify(createForm.newMaterials);
+        createForm.tagsJson = JSON.stringify(createForm.tags);
+        createForm.newTagsJson = JSON.stringify(createForm.newTags);
+
         return createForm;
     }
 
     /**
-     * Build the form object for updating a Monument
+     * Build the form object for creating an UpdateMonumentSuggestion
      */
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
@@ -511,15 +518,15 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
-        return updateForm;
-    }
+        // JSON fields
+        updateForm.updatedReferenceUrlsByIdJson = JSON.stringify(updateForm.updatedReferencesUrlsById);
+        updateForm.newReferenceUrlsJson = JSON.stringify(updateForm.newReferenceUrls);
+        updateForm.deletedReferenceIdsJson = JSON.stringify(updateForm.deletedReferenceIds);
+        updateForm.deletedImageIdsJson = JSON.stringify(updateForm.deletedImageIds);
+        updateForm.newMaterialsJson = JSON.stringify(updateForm.newMaterials);
+        updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 
-    /**
-     * Send the form for updating a Monument to the onSubmit handler
-     */
-    submitUpdateForm(id) {
-        const { onSubmit } = this.props;
-        onSubmit(id, this.buildUpdateForm());
+        return updateForm;
     }
 
     handleInputChange(event) {
@@ -968,7 +975,7 @@ export default class CreateOrUpdateForm extends React.Component {
         return (
             <div className="create-form-container">
                 {monument
-                    ? <div className="h5 update">Update an existing Monument or Memorial</div>
+                    ? <div className="h5 update">Suggest an update to an existing Monument or Memorial</div>
                     : <div className="h5 create">Suggest a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>

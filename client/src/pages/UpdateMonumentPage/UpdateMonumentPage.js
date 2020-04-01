@@ -2,7 +2,7 @@ import React from 'react';
 import './UpdateMonumentPage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import fetchMonumentForUpdate, { updateMonument } from '../../actions/update-monument';
+import { fetchMonumentForUpdate, createUpdateSuggestion } from '../../actions/update-monument';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
 import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
@@ -12,7 +12,7 @@ import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/Up
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
 
 /**
- * Root container for the page to update an existing Monument
+ * Root container for the page to suggest an update to an existing Monument
  */
 class UpdateMonumentPage extends React.Component {
 
@@ -54,14 +54,15 @@ class UpdateMonumentPage extends React.Component {
         const { dispatch } = this.props;
         const { form, monument } = this.state;
 
-        // First, upload the new images to S3 and save the URLs in the form
-        form.newImageUrls = await uploadImagesToS3(form.images);
+        // First, upload the new images to the temporary S3 folder and save the URLs in the form
+        const newImageObjectUrls = await uploadImagesToS3(form.images, true);
+        form.newImageUrlsJson = JSON.stringify(newImageObjectUrls);
 
         // Then, delete the deleted images from S3
         await deleteImagesFromS3(form.deletedImageUrls);
 
-        // Finally, update the Monument
-        dispatch(updateMonument(monument.id, form));
+        // Finally, create the UpdateMonumentSuggestion
+        dispatch(createUpdateSuggestion(monument.id, form));
     }
 
     handleUpdateFormCancelButtonClick() {
@@ -120,16 +121,17 @@ class UpdateMonumentPage extends React.Component {
     }
 
     render() {
-        const { fetchMonumentForUpdatePending, updateMonumentPending, monument, updatedMonument, error } = this.props;
+        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, updateSuggestion, error } = this.props;
 
-        if (error === null && updatedMonument.id !== undefined) {
-            this.props.history.push(`/monuments/${updatedMonument.id}`);
+        if (error === null && updateSuggestion.id !== undefined) {
+            // TODO: Fix
+            //this.props.history.push(`/monuments/${updateSuggestion.id}`);
         }
 
         return (
             <div className="update-monument-page-container">
                 {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
-                <Spinner show={fetchMonumentForUpdatePending || updateMonumentPending}/>
+                <Spinner show={fetchMonumentForUpdatePending || createUpdateSuggestionPending}/>
                 <div className="column thank-you-column">
                     <ContributionAppreciation/>
                 </div>

@@ -1,32 +1,33 @@
-import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from '../constants';
+import { CREATE_CREATE_SUGGESTION_PENDING, CREATE_CREATE_SUGGESTION_SUCCESS,
+    CREATE_CREATE_SUGGESTION_ERROR } from '../constants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
-    createMonumentPending : false,
-    monument: {},
+    createCreateSuggestionPending : false,
+    createSuggestion: {},
     createError: null
 };
 
-// Tracks the progress for creating a new Monument for the CreatePage
+// Tracks the progress for creating a new CreateMonumentSuggestion for the CreatePage
 export default function createPage(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
             return initialState;
-        case CREATE_MONUMENT_PENDING:
+        case CREATE_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
-                createMonumentPending: true
+                createCreateSuggestionPending: true
             };
-        case CREATE_MONUMENT_SUCCESS:
+        case CREATE_CREATE_SUGGESTION_SUCCESS:
             return {
                 ...state,
-                createMonumentPending: false,
-                monument: action.payload
+                createCreateSuggestionPending: false,
+                createSuggestion: action.payload
             };
-        case CREATE_MONUMENT_ERROR:
+        case CREATE_CREATE_SUGGESTION_ERROR:
             return {
                 ...state,
-                createMonumentPending: false,
+                createCreateSuggestionPending: false,
                 createError: action.error
             };
         default:

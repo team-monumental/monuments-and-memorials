@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,55 +44,62 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "artist")
     private String artist;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 2048)
     private String description;
 
-    @Column(name = "inscription")
+    @Column(name = "inscription", length = 2048)
     private String inscription;
 
     @Column(name = "is_temporary")
     private Boolean isTemporary = false;
 
-    @Column(name = "contributions_json")
+    @Column(name = "contributions_json", length = 1024)
     private String contributionsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> contributions;
 
-    @Column(name = "references_json")
+    @Column(name = "references_json", length = 1024)
     private String referencesJson;
 
     @Transient
+    @JsonIgnore
     private List<String> references;
 
-    @Column(name = "materials_json")
+    @Column(name = "materials_json", length = 1024)
     private String materialsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> materials;
 
-    @Column(name = "new_materials_json")
+    @Column(name = "new_materials_json", length = 1024)
     private String newMaterialsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> newMaterials;
 
-    @Column(name = "tags_json")
+    @Column(name = "tags_json", length = 1024)
     private String tagsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> tags;
 
-    @Column(name = "new_tags_json")
+    @Column(name = "new_tags_json", length = 1024)
     private String newTagsJson;
 
     @Transient
+    @JsonIgnore
     private List<String> newTags;
 
-    @Column(name = "images_json")
+    @Column(name = "images_json", length = 1024)
     private String imagesJson;
 
     @Transient
+    @JsonIgnore
     private List<String> images;
 
     @JsonIgnore
@@ -100,7 +108,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     private BulkCreateMonumentSuggestion bulkCreateSuggestion;
 
     public CreateMonumentSuggestion() {
-
+        this.images = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -312,7 +320,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     }
 
     public List<String> getImages() {
-        if (this.images == null) {
+        if (this.images == null || (this.imagesJson != null && this.images.isEmpty() && !this.imagesJson.isEmpty())) {
             this.images = this.deserializeStringList(this.imagesJson);
         }
 

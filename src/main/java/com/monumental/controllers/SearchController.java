@@ -150,6 +150,7 @@ public class SearchController {
      * @return Total number of results for a User search
      */
     @GetMapping("/api/search/users/count")
+    @PreAuthorize(Authorization.isAdmin)
     public Integer countUsersSearch(@RequestParam(required = false) String name,
                                     @RequestParam(required = false) String email,
                                     @RequestParam(required = false) String role) {

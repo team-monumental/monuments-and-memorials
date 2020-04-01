@@ -22,7 +22,7 @@ export default class NoImageModal extends React.Component {
                 <hr className="no-image-modal"/>
                 <Modal.Body className="no-image-modal">
                     <p>We try our best to provide the most informative data on all of our records.</p>
-                    <p>As part of this effort, we would really appreciate if you could upload an image of the record you're creating!</p>
+                    <p>As part of this effort, we would really appreciate if you could upload an image of the record you're suggesting!</p>
                     <p>If you are unable to do so, no worries! It is not required.</p>
                 </Modal.Body>
                 <Modal.Footer className="no-image-modal">
