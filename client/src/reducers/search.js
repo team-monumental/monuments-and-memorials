@@ -15,7 +15,7 @@ const initialState = {
 
 // Tracks the progress of getting search results and total result count on the search page
 export function searchPage(state = initialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialState, action, {
         pending: SEARCH_MONUMENTS_PENDING,
         success: SEARCH_MONUMENTS_SUCCESS,
         error: SEARCH_MONUMENTS_ERROR
@@ -30,9 +30,9 @@ const userInitialState = {
 };
 
 export function userSearchPage(state = userInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, userInitialState, action, {
         pending: SEARCH_USERS_PENDING,
         success: SEARCH_USERS_SUCCESS,
         error: SEARCH_USERS_ERROR
-    });
+    }, false);
 }

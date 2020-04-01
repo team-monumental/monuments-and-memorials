@@ -12,7 +12,7 @@ const initialState = {
 };
 
 export function updateUser(state = initialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialState, action, {
         pending: UPDATE_USER_PENDING,
         success: UPDATE_USER_SUCCESS,
         error: UPDATE_USER_ERROR,
@@ -21,7 +21,7 @@ export function updateUser(state = initialState, action) {
 }
 
 export function confirmEmailChange(state = initialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialState, action, {
         pending: UPDATE_EMAIL_PENDING,
         success: UPDATE_EMAIL_SUCCESS,
         error: UPDATE_EMAIL_ERROR,
@@ -29,7 +29,7 @@ export function confirmEmailChange(state = initialState, action) {
 }
 
 export function fetchFavorites(state = initialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialState, action, {
         pending: FETCH_FAVORITES_PENDING,
         success: FETCH_FAVORITES_SUCCESS,
         error: FETCH_FAVORITES_ERROR
@@ -37,7 +37,7 @@ export function fetchFavorites(state = initialState, action) {
 }
 
 export function fetchUser(state = initialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialState, action, {
         pending: FETCH_USER_PENDING,
         success: FETCH_USER_SUCCESS,
         error: FETCH_USER_ERROR

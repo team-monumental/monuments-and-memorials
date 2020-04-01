@@ -1,4 +1,5 @@
 import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
+import { LOCATION_CHANGE } from "connected-react-router";
 
 const initialState = {
     createMonumentPending : false,
@@ -9,6 +10,8 @@ const initialState = {
 // Tracks the progress for creating a new Monument for the CreatePage
 export default function createPage(state = initialState, action) {
     switch (action.type) {
+        case LOCATION_CHANGE:
+            return initialState;
         case CREATE_MONUMENT_PENDING:
             return {
                 ...state,

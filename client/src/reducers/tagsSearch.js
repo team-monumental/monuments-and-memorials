@@ -14,7 +14,7 @@ const searchInitialState = {
 
 // Tracks the progress of searching for tags by name for the tags search on the monument search page
 export function tagsSearch(state = searchInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, searchInitialState, action, {
         pending: TAGS_SEARCH_PENDING,
         success: TAGS_SEARCH_SUCCESS,
         error: TAGS_SEARCH_ERROR
@@ -22,7 +22,7 @@ export function tagsSearch(state = searchInitialState, action) {
 }
 
 export function materialsSearch(state = searchInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, searchInitialState, action, {
         pending: MATERIALS_SEARCH_PENDING,
         success: MATERIALS_SEARCH_SUCCESS,
         error: MATERIALS_SEARCH_ERROR
@@ -37,7 +37,7 @@ const loadInitialState = {
 
 // Tracks the progress of loading in the selected tags on page load for the tags search on the monument search page
 export function tagsLoad(state = loadInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, loadInitialState, action, {
         pending: TAGS_LOAD_PENDING,
         success: TAGS_LOAD_SUCCESS,
         error: TAGS_LOAD_ERROR
@@ -45,7 +45,7 @@ export function tagsLoad(state = loadInitialState, action) {
 }
 
 export function materialsLoad(state = loadInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, loadInitialState, action, {
         pending: MATERIALS_LOAD_PENDING,
         success: MATERIALS_LOAD_SUCCESS,
         error: MATERIALS_LOAD_ERROR

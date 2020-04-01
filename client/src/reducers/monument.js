@@ -106,7 +106,7 @@ const initialCreateFavoriteState = {
 };
 
 export function createFavorite(state = initialCreateFavoriteState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialCreateFavoriteState, action, {
         pending: CREATE_FAVORITE_PENDING,
         success: CREATE_FAVORITE_SUCCESS,
         error: CREATE_FAVORITE_ERROR
@@ -120,7 +120,7 @@ const initialDeleteFavoriteState = {
 };
 
 export function deleteFavorite(state = initialDeleteFavoriteState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialDeleteFavoriteState, action, {
         pending: DELETE_FAVORITE_PENDING,
         success: DELETE_FAVORITE_SUCCESS,
         error: DELETE_FAVORITE_ERROR

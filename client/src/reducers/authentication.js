@@ -16,7 +16,7 @@ const signupInitialState = {
 };
 
 export function signup(state = signupInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, signupInitialState, action, {
         pending: SIGNUP_PENDING,
         success: SIGNUP_SUCCESS,
         error: SIGNUP_ERROR
@@ -30,7 +30,7 @@ const loginInitialState = {
 };
 
 export function login(state = loginInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, loginInitialState, action, {
         pending: LOGIN_PENDING,
         success: LOGIN_SUCCESS,
         error: LOGIN_ERROR
@@ -66,7 +66,7 @@ const confirmInitialState = {
 };
 
 export function confirmSignup(state = confirmInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, confirmInitialState, action, {
         pending: CONFIRM_SIGNUP_PENDING,
         success: CONFIRM_SIGNUP_SUCCESS,
         error: CONFIRM_SIGNUP_ERROR
@@ -80,7 +80,7 @@ const resendInitialState = {
 };
 
 export function resendConfirmation(state = resendInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, resendInitialState, action, {
         pending: RESEND_CONFIRMATION_PENDING,
         success: RESEND_CONFIRMATION_SUCCESS,
         error: RESEND_CONFIRMATION_ERROR
@@ -94,7 +94,7 @@ const resetPasswordInitialState = {
 };
 
 export function beginPasswordReset(state = resetPasswordInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, resetPasswordInitialState, action, {
         pending: BEGIN_PASSWORD_RESET_PENDING,
         success: BEGIN_PASSWORD_RESET_SUCCESS,
         error: BEGIN_PASSWORD_RESET_ERROR
@@ -102,7 +102,7 @@ export function beginPasswordReset(state = resetPasswordInitialState, action) {
 }
 
 export function finishPasswordReset(state = resetPasswordInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, resetPasswordInitialState, action, {
         pending: FINISH_PASSWORD_RESET_PENDING,
         success: FINISH_PASSWORD_RESET_SUCCESS,
         error: FINISH_PASSWORD_RESET_ERROR

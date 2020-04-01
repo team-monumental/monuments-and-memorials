@@ -133,6 +133,8 @@ public class UserController {
 
         this.userRepository.save(existingUser);
 
+        if (selfUpdate) this.userService.updateSessionUser(existingUser);
+
         return Map.of("success", true, "needsConfirmation", needsConfirmation);
     }
 

@@ -398,7 +398,7 @@ export default class BulkCreateForm extends React.Component {
         // const { error } = validationResult;
 
         let results = [];
-        for (let index in validationResult.results) {
+        if (validationResult) for (let index in validationResult.results) {
             if (!validationResult.results.hasOwnProperty(index)) continue;
             let row = validationResult.results[index];
             if (row === null) continue;
