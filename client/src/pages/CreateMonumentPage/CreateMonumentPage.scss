@@ -21,6 +21,10 @@
       flex-basis: 35%;
       padding: 0 1rem;
 
+      &.left {
+        flex-basis: 20%;
+      }
+
       &.form-column {
         flex-basis: 80%;
       }

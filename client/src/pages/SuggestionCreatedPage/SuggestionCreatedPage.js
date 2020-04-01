@@ -18,7 +18,7 @@ class SuggestionCreatedPage extends React.Component {
         );
 
         return (
-            <div className="suggestion-completed-page-container">
+            <div className="suggestion-created-page-container">
                 <Helmet title="Suggestion Created | Monuments and Memorials"/>
                 <Card>
                     <Card.Header>

@@ -153,13 +153,14 @@ class CreateMonumentPage extends React.Component {
         const { createCreateSuggestionPending, createSuggestion, createError, fetchDuplicatesPending } = this.props;
 
         if (createError === null && createSuggestion.id !== undefined) {
-            this.props.history.push('/suggestion-completed');
+            this.props.history.push('/suggestion-created');
         }
 
         return (
             <div className="create-page-container">
                 <Helmet title="Create | Monuments and Memorials"/>
                 <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending}/>
+                <div className="column left"/>
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
