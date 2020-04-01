@@ -28,6 +28,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @Transactional
@@ -118,19 +119,54 @@ public class SuggestionController {
     }
 
     /**
-     * Create a new Suggestion for bulk-creating Monuments
+     * Start the job to create a new Suggestion for bulk-creating Monuments
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
-     * @return BulkCreateMonumentSuggestion - The newly created BulkCreateMonumentSuggestion object
+     * @return AsyncJob - Object containing the id of the job created and the current value of the Future object
      * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
      */
     @PostMapping("/api/suggestion/bulk")
     @PreAuthorize(Authorization.isPartnerOrAbove)
-    public BulkCreateMonumentSuggestion suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
+    public AsyncJob suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
             throws IOException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
         MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvFileName,
                 parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
-        return this.monumentService.parseMonumentBulkValidationResult(validationResult);
+
+        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
+         * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the
+         * CompletableFuture must be passed to the AsyncJob, making it difficult to do so dynamically
+         */
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setFuture(this.monumentService.parseMonumentBulkValidationResultAsync(validationResult, job));
+
+        return job;
+    }
+
+    /**
+     * Check the progress of a create BulkCreateMonumentSuggestion job
+     * @param id - Id of the job to check
+     * @return AsyncJob - Object containing the id of the job and the current value of the Future object
+     */
+    @GetMapping("/api/suggestion/bulk/progress/{id}")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public AsyncJob getBulkCreateMonumentSuggestionJob(@PathVariable Integer id) {
+        return this.asyncJobService.getJob(id);
+    }
+
+    /**
+     * Get the final result of a create BulkCreateMonumentSuggestion job. If the job is not completed yet this will wait
+     * for it to complete, so be sure to call getBulkCreateMonumentSuggestionJob and check the status before calling
+     * this
+     * @param id - Id of the job to get the result of
+     * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created by the job
+     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
+     * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
+     */
+    @GetMapping("/api/suggestion/bulk/result/{id}")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public BulkCreateMonumentSuggestion getBulkCreateMonumentSuggestionJobResult(@PathVariable Integer id)
+            throws ExecutionException, InterruptedException {
+        return (BulkCreateMonumentSuggestion) this.asyncJobService.getJob(id).getFuture().get();
     }
 
     /**

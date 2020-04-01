@@ -247,7 +247,6 @@ export default class BulkCreateForm extends React.Component {
                 </>}
                 {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
                 {showValidationResults && this.renderValidationResults()}
-                {showCreateResults && this.renderCreateResults()}
             </Card>
         );
     }
@@ -505,18 +504,5 @@ export default class BulkCreateForm extends React.Component {
                 </Button>
             </Card.Footer>
         </>);
-    }
-
-    renderCreateResults() {
-        const { createResult, pastTenseTerm } = this.props;
-        return (
-            <Card.Body>
-                <h5>Success!</h5>
-                <div>
-                    {createResult.length} monuments or memorials have been {pastTenseTerm.toLowerCase()}. I would list
-                    them out here, but pretty soon they're just going to be suggestions anyway!
-                </div>
-            </Card.Body>
-        );
     }
 }

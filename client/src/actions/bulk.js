@@ -34,7 +34,7 @@ function buildFormData(form) {
     return formData;
 }
 
-function doAction(action, form) {
+function doAction(action, form, isAsyncJob=false) {
     return async dispatch => {
         dispatch(pending(action));
         try {
@@ -43,8 +43,7 @@ function doAction(action, form) {
                 body: buildFormData(form)
             })).json();
 
-            // TODO: Use this logic when approving a BulkCreateMonumentSuggestion
-            /*if (isAsyncJob) {
+            if (isAsyncJob) {
                 const jobId = result.id;
 
                 let interval;
@@ -59,7 +58,7 @@ function doAction(action, form) {
                 window.clearInterval(interval);
 
                 result = await (await fetch(`${action.uri}/result/${jobId}`)).json();
-            }*/
+            }
 
             dispatch(success(action, result));
         } catch (err) {
@@ -73,5 +72,5 @@ export function bulkValidateSuggestions(form) {
 }
 
 export function bulkCreateSuggestions(form) {
-    return doAction(actions.create, form);
+    return doAction(actions.create, form, true);
 }

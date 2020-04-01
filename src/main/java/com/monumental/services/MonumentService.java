@@ -1458,13 +1458,48 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with corresponding
-     * CreateMonumentSuggestions
+     * SYNCHRONOUSLY parse the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with
+     * corresponding CreateMonumentSuggestions
+     * Since this method is synchronous, large MonumentBulkValidationResults could take a significant amount of time to
+     * process and hold up the thread or HTTP request
+     * This method is intended mainly for using with MonumentServiceMockIntegrationTests so that this behavior can be
+     * tested synchronously
      * @param bulkValidationResult - MonumentBulkValidationResult object to parse
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
      * MonumentBulkValidationResult
      */
-    public BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult bulkValidationResult) {
+    public BulkCreateMonumentSuggestion parseMonumentBulkValidationResultSync(MonumentBulkValidationResult bulkValidationResult) {
+        return this.parseMonumentBulkValidationResult(bulkValidationResult, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY parse the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with
+     * corresponding CreateMonumentSuggestions
+     * This is meant to be wrapped by the AsyncJob in the job param
+     * @param bulkValidationResult - MonumentBulkValidationResult object to parse
+     * @param job - AsyncJob to report progress to
+     * @return - CompletableFuture of BulkCreateMonumentSuggestion created using the specified
+     * MonumentBulkValidationResult
+     */
+    @Async
+    public CompletableFuture<BulkCreateMonumentSuggestion> parseMonumentBulkValidationResultAsync(MonumentBulkValidationResult bulkValidationResult,
+                                                                                                  AsyncJob job) {
+        return CompletableFuture.completedFuture(this.parseMonumentBulkValidationResult(bulkValidationResult, job));
+    }
+
+    /**
+     * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with corresponding
+     * CreateMonumentSuggestions
+     * If job is not null, progress will be reported as CreateMonumentSuggestions are created
+     * This method should only be called through MonumentService.parseMonumentBulkValidationResultSync or
+     * MonumentService.parseMonumentBulkValidationResultAsync
+     * @param bulkValidationResult - MonumentBulkValidationResult object to parse
+     * @param job - AsyncJob to report progress to
+     * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
+     * MonumentBulkValidationResult
+     */
+    private BulkCreateMonumentSuggestion parseMonumentBulkValidationResult(MonumentBulkValidationResult bulkValidationResult,
+                                                                           AsyncJob job) {
         if (bulkValidationResult == null || bulkValidationResult.getValidResults() == null) {
             return null;
         }
@@ -1475,10 +1510,11 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         List<CreateMonumentSuggestion> createSuggestions = new ArrayList<>();
-        BulkCreateMonumentSuggestion bulkCreateSuggestion = new BulkCreateMonumentSuggestion();
+        BulkCreateMonumentSuggestion bulkCreateSuggestion = this.bulkCreateSuggestionRepository.save(new BulkCreateMonumentSuggestion());
         Gson gson = new Gson();
 
-        for (CsvMonumentConverterResult validResult : validResults) {
+        for (int i = 0; i < validResults.size(); i++) {
+            CsvMonumentConverterResult validResult = validResults.get(i);
             CreateMonumentSuggestion createSuggestion = CsvMonumentConverter.parseCsvMonumentConverterResult(validResult, gson);
 
             // Upload images to temporary S3 folder
@@ -1494,10 +1530,16 @@ public class MonumentService extends ModelService<Monument> {
             createSuggestion.setBulkCreateSuggestion(bulkCreateSuggestion);
             createSuggestion = this.createSuggestionRepository.save(createSuggestion);
             createSuggestions.add(createSuggestion);
+
+            // Report progress
+            if (job != null && i != validResults.size() - 1) {
+                job.setProgress((double) i / createSuggestions.size());
+            }
         }
 
         bulkCreateSuggestion.setCreateSuggestions(createSuggestions);
         bulkCreateSuggestion.setFileName(bulkValidationResult.getFileName());
+        if (job != null) job.setProgress(1.0);
         return this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
     }
 }

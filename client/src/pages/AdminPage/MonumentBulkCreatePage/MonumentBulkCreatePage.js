@@ -64,6 +64,11 @@ class MonumentBulkCreatePage extends React.Component {
         } = this.props;
 
         const showCreateResults = createResult && !bulkSuggestionCreatePending;
+
+        if (showCreateResults) {
+            this.props.history.push('/suggestion-created');
+        }
+
         showValidationResults = !showCreateResults && showValidationResults && !bulkSuggestionValidatePending;
 
         return (

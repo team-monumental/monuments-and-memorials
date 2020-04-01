@@ -138,7 +138,7 @@ public class MonumentServiceMockIntegrationTests {
 
     @Test
     public void testMonumentService_parseMonumentBulkValidationResult_NullMonumentBulkValidationResult() {
-        assertNull(this.monumentServiceMock.parseMonumentBulkValidationResult(null));
+        assertNull(this.monumentServiceMock.parseMonumentBulkValidationResultSync(null));
     }
 
     @Test
@@ -191,7 +191,7 @@ public class MonumentServiceMockIntegrationTests {
         assertTrue(validationErrors.getErrors().contains("All References must be valid URLs"));
 
         // parseMonumentBulkValidationResult
-        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
+        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);
 
         assertNull(bulkCreateSuggestionResult);
         assertEquals(0, this.createSuggestionRepository.findAll().size());
@@ -219,7 +219,7 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(0, validationResult.getInvalidResults().size());
 
         // parseMonumentBulkValidationResult
-        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
+        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);
 
         assertEquals("Test", bulkCreateSuggestionResult.getFileName());
         assertEquals(1, bulkCreateSuggestionResult.getCreateSuggestions().size());
@@ -263,7 +263,7 @@ public class MonumentServiceMockIntegrationTests {
         assertTrue(validationErrorsRow2.getErrors().contains("At least one Material is required"));
 
         // parseMonumentBulkValidationResult
-        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
+        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);
 
         assertNull(bulkCreateSuggestionResult);
         assertEquals(0, this.createSuggestionRepository.findAll().size());
@@ -292,7 +292,7 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(0, validationResult.getInvalidResults().size());
 
         // parseMonumentBulkValidationResult
-        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
+        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);
 
         assertEquals("Test", bulkCreateSuggestionResult.getFileName());
         assertEquals(2, bulkCreateSuggestionResult.getCreateSuggestions().size());
@@ -339,7 +339,7 @@ public class MonumentServiceMockIntegrationTests {
         assertTrue(validationErrorsRow4.getErrors().contains("At least one Material is required"));
 
         // parseMonumentBulkValidationResult
-        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResult(validationResult);
+        BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);
 
         assertEquals("Test", bulkCreateSuggestionResult.getFileName());
         assertEquals(2, bulkCreateSuggestionResult.getCreateSuggestions().size());

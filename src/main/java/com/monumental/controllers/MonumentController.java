@@ -137,35 +137,6 @@ public class MonumentController {
     }
 
     /**
-     * Check the progress of a create bulk monuments job
-     * @param id - Id of the job to check
-     * @return AsyncJob - Object containing the Id of the job and the current value of the Future object
-     */
-    // TODO: Refactor logic for Suggestions
-    /*@GetMapping("/api/monument/bulk/create/progress/{id}")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public AsyncJob getBulkCreateMonumentJob(@PathVariable Integer id) {
-        return this.asyncJobService.getJob(id);
-    }*/
-
-    /**
-     * Get the final result of a create bulk monuments job. If the job is not completed yet this will wait for it to
-     * complete, so be sure to call getBulkCreateMonumentJob and check the status before calling this
-     * @param id - Id of the job to get the result of
-     * @return List<Monument> - The monuments created
-     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
-     * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
-     */
-    // TODO: Refactor logic for Suggestions
-    /*@GetMapping("/api/monument/bulk/create/result/{id}")
-    @PreAuthorize(Authentication.isAuthenticated)
-    @SuppressWarnings("unchecked")
-    public List<Monument> getBulkCreateMonumentJobResult(@PathVariable Integer id)
-            throws ExecutionException, InterruptedException {
-        return (List<Monument>) this.asyncJobService.getJob(id).getFuture().get();
-    }*/
-
-    /**
      * Get the statistics related to Monuments for the About Page
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
      * About Page
