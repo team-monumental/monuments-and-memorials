@@ -126,14 +126,14 @@ class UpdateMonumentPage extends React.Component {
         const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, updateSuggestion, error } = this.props;
 
         if (error === null && updateSuggestion.id !== undefined) {
-            // TODO: Fix
-            //this.props.history.push(`/monuments/${updateSuggestion.id}`);
+            this.props.history.push('/suggestion-created');
         }
 
         return (
             <div className="update-monument-page-container">
                 {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
                 <Spinner show={fetchMonumentForUpdatePending || createUpdateSuggestionPending}/>
+                <div className="column left"/>
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         monument={monument}
