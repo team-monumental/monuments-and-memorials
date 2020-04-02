@@ -133,12 +133,12 @@ export default class Suggestions extends React.Component {
                     <Card.Title>Your Suggestions</Card.Title>
                 </Card.Header>
                 <Card.Body>
-                    <Tabs defaultActiveKey="pending" id="suggestions-tabs">
-                        <Tab title="Pending" eventKey="pending">
-                            {this.renderSuggestions(this.filterPendingSuggestions(), 'pending')}
-                        </Tab>
+                    <Tabs defaultActiveKey="approved" id="suggestions-tabs">
                         <Tab title="Approved" eventKey="approved">
                             {this.renderSuggestions(this.filterApprovedSuggestions(), 'approved')}
+                        </Tab>
+                        <Tab title="Pending" eventKey="pending">
+                            {this.renderSuggestions(this.filterPendingSuggestions(), 'pending')}
                         </Tab>
                         <Tab title="Rejected" eventKey="rejected">
                             {this.renderSuggestions(this.filterRejectedSuggestions(), 'rejected')}
