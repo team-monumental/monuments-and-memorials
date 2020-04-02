@@ -232,7 +232,7 @@ export default class BulkCreateForm extends React.Component {
 
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults, showCreateResults, term } = this.props;
+        const { showValidationResults, term } = this.props;
 
         return (
             <Card className="bulk-create-form-container">
@@ -245,7 +245,7 @@ export default class BulkCreateForm extends React.Component {
                     {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
-                {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
+                {showFieldMapping && !showValidationResults && this.renderFieldMapping()}
                 {showValidationResults && this.renderValidationResults()}
             </Card>
         );

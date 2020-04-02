@@ -53,7 +53,7 @@ function doAction(action, form, isAsyncJob=false) {
                         dispatch(pending(action, result.progress));
 
                         if (result.future && result.future.done) resolve();
-                    }, 200);
+                    }, 100);
                 });
                 window.clearInterval(interval);
 

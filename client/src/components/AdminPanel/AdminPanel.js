@@ -8,6 +8,7 @@ import ManageMonumentsPage from '../../pages/AdminPage/ManageMonumentsPage/Manag
 import ManageUsersPage from '../../pages/AdminPage/ManageUsersPage/ManageUsersPage';
 import { Role } from '../../utils/authentication-util';
 import ManageSuggestionsPage from '../../pages/AdminPage/ManageSuggestionsPage/ManageSuggestionsPage';
+import SuggestionCreatedPage from '../../pages/SuggestionCreatedPage/SuggestionCreatedPage';
 
 export default class AdminPanel extends React.Component {
 
@@ -21,6 +22,7 @@ export default class AdminPanel extends React.Component {
                 <div className="viewport">
                     <ProtectedRoute exact path="/panel" component={AdminPanelHome} customProps={{role}}/>
                     <ProtectedRoute exact path="/panel/bulk" component={MonumentBulkCreatePage} customProps={{role}}/>
+                    <ProtectedRoute exact path="/panel/suggestion-created" component={SuggestionCreatedPage}/>
                     <ProtectedRoute exact path="/panel/manage/monuments" component={ManageMonumentsPage} oneOf={Role.RESEARCHER_OR_ABOVE}/>
                     <ProtectedRoute exact path="/panel/manage/monuments/search" component={ManageMonumentsPage} customProps={{mode: 'search'}} oneOf={Role.RESEARCHER_OR_ABOVE}/>
                     <ProtectedRoute exact path="/panel/manage/monuments/monument/:monumentId" component={ManageMonumentsPage} customProps={{mode: 'monument'}} oneOf={Role.RESEARCHER_OR_ABOVE}/>

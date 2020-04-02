@@ -63,10 +63,12 @@ class MonumentBulkCreatePage extends React.Component {
             createResult, createError, createProgress
         } = this.props;
 
+        console.log(createProgress);
+
         const showCreateResults = createResult && !bulkSuggestionCreatePending;
 
         if (showCreateResults) {
-            this.props.history.push('/suggestion-created');
+            this.props.history.push('/panel/suggestion-created');
         }
 
         showValidationResults = !showCreateResults && showValidationResults && !bulkSuggestionValidatePending;
@@ -80,7 +82,7 @@ class MonumentBulkCreatePage extends React.Component {
                     onCreateSubmit={(form) => this.handleCreateSubmit(form)}
                     onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
                     term={term} pastTenseTerm={this.getTermPastTense()} actionHappeningTerm={this.getTermActionHappening()}
-                    {...{validationResult, createResult, showValidationResults, showCreateResults}}
+                    {...{validationResult, createResult, showValidationResults}}
                 />
                 <Modal show={bulkSuggestionCreatePending}>
                     <Modal.Header className="pb-0">
