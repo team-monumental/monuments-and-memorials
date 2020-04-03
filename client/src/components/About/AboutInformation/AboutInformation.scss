@@ -18,6 +18,11 @@
     padding-left: 16rem;
   }
 
+  .email-link {
+    text-decoration: underline;
+    color: $primary;
+  }
+
   .contributors-list-container {
     background-color: lightgray;
     font-weight: bold;
