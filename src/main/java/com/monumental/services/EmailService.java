@@ -19,6 +19,12 @@ import java.util.Locale;
 @Service
 public class EmailService {
 
+    private final String suggestionApprovedEmailThankYou = "Thank you so much for your valuable work toward " +
+            "documenting our nation's monuments + memorials!";
+
+    private final String suggestionRejectedContact = "Please contact the Monuments + Memorial administrator if you " +
+            "have any questions: contact@monuments.us.org.";
+
     @Autowired
     @Qualifier("resourceBundleMessageSource")
     private MessageSource messages;
@@ -115,41 +121,47 @@ public class EmailService {
      * Sent when a user has one of their CreateMonumentSuggestions approved
      */
     public void sendCreateSuggestionApprovalEmail(CreateMonumentSuggestion suggestion) {
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "create-suggestion.approval", suggestion.getTitle());
+        String extraMessage = suggestion.getTitle() + ". " + this.suggestionApprovedEmailThankYou;
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "create-suggestion.approval", extraMessage);
     }
 
     /**
      * Sent when a user has one of their CreateMonumentSuggestions rejected
      */
     public void sendCreateSuggestionRejectionEmail(CreateMonumentSuggestion suggestion) {
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "create-suggestion.rejection", suggestion.getTitle());
+        String extraMessage = suggestion.getTitle() + ". " + this.suggestionRejectedContact;
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "create-suggestion.rejection", extraMessage);
     }
 
     /**
      * Sent when a user has one of their UpdateMonumentSuggestions approved
      */
     public void sendUpdateSuggestionApprovalEmail(UpdateMonumentSuggestion suggestion) {
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "update-suggestion.approval", suggestion.getMonument().getTitle());
+        String extraMessage = suggestion.getMonument().getTitle() + ". " + this.suggestionApprovedEmailThankYou;
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "update-suggestion.approval", extraMessage);
     }
 
     /**
      * Sent when a user has one of their UpdateMonumentSuggestions rejected
      */
     public void sendUpdateSuggestionRejectionEmail(UpdateMonumentSuggestion suggestion) {
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "update-suggestion.rejection", suggestion.getMonument().getTitle());
+        String extraMessage = suggestion.getMonument().getTitle() + ". " + this.suggestionRejectedContact;
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "update-suggestion.rejection", extraMessage);
     }
 
     /**
      * Sent when a user has one of their BulkCreateMonumentSuggestions approved
      */
     public void sendBulkCreateSuggestionApprovalEmail(BulkCreateMonumentSuggestion suggestion) {
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.approval", suggestion.getFileName());
+        String extraMessage = suggestion.getFileName() + ". " + this.suggestionApprovedEmailThankYou;
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.approval", extraMessage);
     }
 
     /**
      * Sent when a user has one of their BulkCreateMonumentSuggestions rejected
      */
     public void sendBulkCreateSuggestionRejectionEmail(BulkCreateMonumentSuggestion suggestion) {
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.rejection", suggestion.getFileName());
+        String extraMessage = suggestion.getFileName() + ". " + this.suggestionRejectedContact;
+        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.rejection", extraMessage);
     }
 }
