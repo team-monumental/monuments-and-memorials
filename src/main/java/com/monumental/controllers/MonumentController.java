@@ -4,6 +4,8 @@ import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
@@ -144,5 +146,38 @@ public class MonumentController {
     @GetMapping("/api/monument/statistics")
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
         return this.monumentService.getMonumentAboutPageStatistics(true);
+    }
+
+    /**
+     * Create a Monument using the specified createSuggestion
+     * @param createSuggestion - CreateMonumentSuggestion to use to create the new Monument
+     * @return Monument - The created Monument based on the specified createSuggestion
+     */
+    @PostMapping("/api/monument/create")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Monument createMonument(@RequestBody CreateMonumentSuggestion createSuggestion) {
+        return this.monumentService.createMonument(createSuggestion);
+    }
+
+    /**
+     * Update the Monument with the specified monumentId to have the new attributes defined by the specified
+     * updateSuggestion
+     * @param monumentId - Integer ID of the Monument to update
+     * @param updateSuggestion - UpdateMonumentSuggestion defining the new attributes for the Monument
+     * @return Monument - The updated Monument with the specified monumentId based on the attributes defined in the
+     * specified updateSuggestion
+     */
+    @PutMapping("/api/monument/update/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Monument updateMonument(@PathVariable("id") Integer monumentId,
+                                   @RequestBody UpdateMonumentSuggestion updateSuggestion) {
+        Optional<Monument> optional = this.monumentRepository.findById(monumentId);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+        Monument monument = optional.get();
+
+        updateSuggestion.setMonument(monument);
+        return this.monumentService.updateMonument(updateSuggestion);
     }
 }

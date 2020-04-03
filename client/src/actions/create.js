@@ -1,4 +1,7 @@
-import { CREATE_CREATE_SUGGESTION_PENDING, CREATE_CREATE_SUGGESTION_SUCCESS, CREATE_CREATE_SUGGESTION_ERROR } from '../constants';
+import {
+    CREATE_CREATE_SUGGESTION_PENDING, CREATE_CREATE_SUGGESTION_SUCCESS, CREATE_CREATE_SUGGESTION_ERROR,
+    CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR
+} from '../constants';
 import { post } from '../utils/api-util';
 import { addError } from './errors';
 import { pending, success, error } from '../utils/action-util';
@@ -9,17 +12,32 @@ const actions = {
         success: CREATE_CREATE_SUGGESTION_SUCCESS,
         error: CREATE_CREATE_SUGGESTION_ERROR,
         uri: '/api/suggestion/create'
+    },
+    createMonument: {
+        pending: CREATE_MONUMENT_PENDING,
+        success: CREATE_MONUMENT_SUCCESS,
+        error: CREATE_MONUMENT_ERROR,
+        uri: '/api/monument/create'
     }
 };
 
-export default function createCreateSuggestion(createSuggestion) {
+export function createCreateSuggestion(createSuggestion) {
+    return doAction(actions.createCreateSuggestion, createSuggestion);
+}
+
+export function createMonument(createSuggestion) {
+    return doAction(actions.createMonument, createSuggestion);
+}
+
+function doAction(action, parameter) {
     return async dispatch => {
-        dispatch(pending(actions.createCreateSuggestion));
+        dispatch(pending(action));
+
         try {
-            const createdCreateSuggestion = await post(actions.createCreateSuggestion.uri, createSuggestion);
-            dispatch(success(actions.createCreateSuggestion, createdCreateSuggestion));
+            const result = await post(action, parameter);
+            dispatch(success(action, result));
         } catch (err) {
-            dispatch(error(actions.createCreateSuggestion, err));
+            dispatch(error(action, err));
             dispatch(addError({
                 message: err.message
             }));

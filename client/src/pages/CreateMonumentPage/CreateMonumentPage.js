@@ -2,7 +2,7 @@ import React from 'react';
 import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
-import createCreateSuggestion from '../../actions/create';
+import { createCreateSuggestion, createMonument } from '../../actions/create';
 import { uploadImagesToS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
@@ -11,6 +11,7 @@ import fetchDuplicates from '../../actions/duplicates';
 import DuplicateMonuments from '../../components/Monument/DuplicateMonuments/DuplicateMonuments';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
+import { Role } from '../../utils/authentication-util';
 
 /**
  * Root container for the page to create a new CreateMonumentSuggestion
@@ -30,7 +31,9 @@ class CreateMonumentPage extends React.Component {
 
     static mapStateToProps(state) {
         return {
-            ...state.createPage,
+            ...state.session,
+            ...state.createCreateSuggestion,
+            ...state.createMonument,
             ...state.duplicateMonuments
         };
     }
@@ -150,16 +153,24 @@ class CreateMonumentPage extends React.Component {
     }
 
     render() {
-        const { createCreateSuggestionPending, createSuggestion, createError, fetchDuplicatesPending } = this.props;
+        const { createCreateSuggestionPending, createSuggestion, createError, fetchDuplicatesPending,
+            pending, user, createMonumentPending, monument, createMonumentError } = this.props;
 
-        if (createError === null && createSuggestion.id !== undefined) {
-            this.props.history.push('/suggestion-created');
+        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            if (createMonumentError === null && monument.id !== undefined) {
+                this.props.history.push(`/monuments/${monument.id}`);
+            }
+        }
+        else {
+            if (createError === null && createSuggestion.id !== undefined) {
+                this.props.history.push('/suggestion-created');
+            }
         }
 
         return (
             <div className="create-page-container">
                 <Helmet title="Create | Monuments and Memorials"/>
-                <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending}/>
+                <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
                 <div className="column left"/>
                 <div className="column form-column">
                     <CreateOrUpdateForm
