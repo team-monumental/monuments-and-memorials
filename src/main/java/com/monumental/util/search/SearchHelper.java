@@ -1,7 +1,13 @@
 package com.monumental.util.search;
 
+import com.monumental.models.User;
+import com.monumental.models.suggestions.CreateMonumentSuggestion;
+
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 /**
  * Class containing static methods useful for building JPA Criteria API queries
@@ -91,5 +97,71 @@ public class SearchHelper {
                 predicatesArray = predicates.toArray(predicatesArray);
                 query.where(builder.and(predicatesArray));
         }
+    }
+
+    /**
+     * Creates a search query on various fields of MonumentSuggestion and adds it to the specified CriteriaQuery
+     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query - The CriteriaQuery to add the searching logic to
+     * @param root - The Root to use with the CriteriaQuery
+     * @param userJoin - The Join between the target Suggestion table and the User table to utilize for searching
+     * @param searchQuery - The search query String that will be used to search against Users names and emails using
+     * pg_tgrm
+     * @param isApproved - True to filter to only approved MonumentSuggestions, False otherwise
+     * @param isRejected - True to filter to only rejected MonumentSuggestions, False otherwise
+     * @param orderBySimilarity - True to order the results based on the pg_tgrm similarity score, False otherwise
+     */
+    public static void buildSuggestionSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Join userJoin,
+                                                  String searchQuery, boolean isApproved, boolean isRejected,
+                                                  boolean orderBySimilarity) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (!isNullOrEmpty(searchQuery)) {
+            predicates.add(buildSuggestionUserSearchQuery(builder, query, userJoin, searchQuery, orderBySimilarity));
+        }
+        if (isApproved) {
+            predicates.add(builder.equal(root.get("isApproved"), builder.literal(true)));
+        }
+        if (isRejected) {
+            predicates.add(builder.equal(root.get("isRejected"), builder.literal(true)));
+        }
+
+        executeQueryWithPredicates(builder, query, predicates);
+    }
+
+    /**
+     * Uses the specified Join to the User table to create a filter on MonumentSuggestions so that only those with a
+     * created by User that has a similar first name, last name or email to the specified searchQuery are returned
+     * @param builder - The CriteriaBuilder to use to help build the query
+     * @param query - The CriteriaQuery to add the searching logic to
+     * @param userJoin - The Join from the target Suggestion table to the User table to use for searching created by
+     * Users names and emails
+     * @param searchQuery - The search query String to filter Users names and emails by
+     * @param orderBySimilarity - True to order the results by the pg_tgrm similarity score, False otherwise
+     * @return Predicate - Predicate for the user search filter using the specified builder, query, root and searchQuery
+     */
+    @SuppressWarnings("unchecked")
+    private static Predicate buildSuggestionUserSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Join userJoin,
+                                                            String searchQuery, boolean orderBySimilarity) {
+        // Build the similarity expressions for first name, last name and email
+        List<Expression<Number>> expressions = new ArrayList<>();
+        Expression<Number> firstNameExpression = SearchHelper.buildSimilarityExpression(builder, userJoin, searchQuery, "firstName");
+        Expression<Number> lastNameExpression = SearchHelper.buildSimilarityExpression(builder, userJoin, searchQuery, "lastName");
+        Expression<Number> emailExpression = SearchHelper.buildSimilarityExpression(builder, userJoin, searchQuery, "email");
+        expressions.add(firstNameExpression);
+        expressions.add(lastNameExpression);
+        expressions.add(emailExpression);
+
+        if (orderBySimilarity) {
+            orderSimilarityResults(builder, query, expressions);
+        }
+
+        // Select the MonumentSuggestions where the User's first name, last name or email are similar to the specified
+        // searchQuery
+        return builder.or(
+            buildSimilarityPredicate(builder, firstNameExpression, 0.1),
+            buildSimilarityPredicate(builder, lastNameExpression, 0.1),
+            buildSimilarityPredicate(builder, emailExpression, 0.1)
+        );
     }
 }
