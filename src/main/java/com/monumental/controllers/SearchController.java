@@ -226,9 +226,9 @@ public class SearchController {
      */
     @GetMapping("/api/search/suggestions/update/count")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Integer countUpdateSuggestionsSearch(@RequestParam(required = false, value ="q") String searchQuery,
-                                                @RequestParam(required = false, value = "isApproved") Boolean isApproved,
-                                                @RequestParam(required = false, value = "isRejected") Boolean isRejected) {
+    public Integer countUpdateSuggestionsSearch(@RequestParam(required = false, value = "q") String searchQuery,
+                                                @RequestParam(required = false, value = "isApproved") boolean isApproved,
+                                                @RequestParam(required = false, value = "isRejected") boolean isRejected) {
         return this.updateSuggestionService.countSearchResults(searchQuery, isApproved, isRejected);
     }
 
@@ -243,9 +243,9 @@ public class SearchController {
      */
     @GetMapping("/api/search/suggestions/bulk")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public List<BulkCreateMonumentSuggestion> searchBulkCreateSuggestions(@RequestParam(required = false) String searchQuery,
-                                                                          @RequestParam(required = false, value  = "isApproved") Boolean isApproved,
-                                                                          @RequestParam(required = false, value = "isRejected") Boolean isRejected,
+    public List<BulkCreateMonumentSuggestion> searchBulkCreateSuggestions(@RequestParam(required = false, value = "q") String searchQuery,
+                                                                          @RequestParam(required = false, value  = "isApproved") boolean isApproved,
+                                                                          @RequestParam(required = false, value = "isRejected") boolean isRejected,
                                                                           @RequestParam(required = false, defaultValue = "1") String page,
                                                                           @RequestParam(required = false, defaultValue = "25") String limit) {
         return this.bulkCreateSuggestionService.search(searchQuery, isApproved, isRejected, page, limit);
@@ -256,9 +256,9 @@ public class SearchController {
      */
     @GetMapping("/api/search/suggestions/bulk/count")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Integer countBulkCreateSuggestionsSearch(@RequestParam(required = false) String searchQuery,
-                                                    @RequestParam(required = false, value = "isApproved") Boolean isApproved,
-                                                    @RequestParam(required = false, value = "isRejected") Boolean isRejected) {
+    public Integer countBulkCreateSuggestionsSearch(@RequestParam(required = false, value = "q") String searchQuery,
+                                                    @RequestParam(required = false, value = "isApproved") boolean isApproved,
+                                                    @RequestParam(required = false, value = "isRejected") boolean isRejected) {
         return this.bulkCreateSuggestionService.countSearchResults(searchQuery, isApproved, isRejected);
     }
 }
