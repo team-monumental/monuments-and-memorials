@@ -67,19 +67,21 @@ export default class AboutInformation extends React.Component {
                     examining 26 states or territories of the US. The following fall, software engineering students in the
                     Golisano College of Computer and Information Sciences built this web application to house data and to
                     generate further interest and data collection. The spring 2020 history course added to the existing
-                    data by contributing 900 additional monuments and memorials, so that all states are represented, as
+                    data by contributing 900 additional monuments + memorials, so that all states are represented, as
                     are two territories (Guam and Puerto Rico).
                 </p>
                 {/* TODO: Replace click here with link to sign-in page */}
                 <p>
-                    Our goal is to document monuments + memorials throughout the United States and territories. We are
-                    looking for contributors to add information, please join us by creating an account (sign-in link here)
-                    or by contacting the organizers <span className="email-link">contact@monuments.us.org</span>. To
-                    view monuments and memorials, {mapNavLink}.
+                    Our goal is to document all temporary and permanent monuments + memorials throughout the United
+                    States and territories. We are looking for contributors to add information, please join us by
+                    creating an account (sign-in link here) or by contacting the organizers
+                    &nbsp;<span className="email-link">contact@monuments.us.org</span>. To view monuments and memorials,
+                    &nbsp;{mapNavLink}.
                 </p>
                 <h3 className="font-italic">
                     Background:
                 </h3>
+                {/* TODO: Add link to Vietnam Veterans Memorial */}
                 <p>
                     Monuments and memorials offer insight into a community's values. They offer tribute to a person,
                     idea, or event and/or honor an individual or group who have passed away or have been, in the case
@@ -94,8 +96,8 @@ export default class AboutInformation extends React.Component {
                 <p>
                     Our goal is to map every monument or memorial in the United States and its inhabited territories
                     (American Samoa, Guam, Puerto Rico, the North Mariana Islands, and U.S. Virgin Islands). We invite
-                    anyone to contribute information and an image of monuments and memorials in these areas. If you have
-                    any questions, please contact the project coordinator, Juilee Decker&nbsp;
+                    anyone to contribute information and an image of temporary and permanent monuments and memorials in
+                    these areas. If you have any questions, please contact the project coordinator, Juilee Decker&nbsp;
                     <span className="email-link">contact@monuments.us.org</span>.
                 </p>
                 <h3 className="font-italic">

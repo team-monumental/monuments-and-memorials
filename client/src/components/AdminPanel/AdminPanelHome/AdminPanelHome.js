@@ -64,6 +64,9 @@ export default class AdminPanelHome extends React.Component {
                     </p>
                     {thankYouParagraphDisplay}
                 </>);
+                break;
+            default:
+                cardBodyDisplay = <div/>;
         }
 
         return (
