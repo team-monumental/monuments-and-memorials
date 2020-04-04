@@ -2,7 +2,7 @@ import {
     FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, CREATE_UPDATE_SUGGESTION_PENDING,
     CREATE_UPDATE_SUGGESTION_SUCCESS, CREATE_UPDATE_SUGGESTION_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
     TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS, TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS,
-    DELETE_MONUMENT_ERROR
+    DELETE_MONUMENT_ERROR, UPDATE_MONUMENT_PENDING, UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
 } from '../constants';
 import { addError } from './errors';
 import { get, post, put, del } from '../utils/api-util';
@@ -28,6 +28,11 @@ const actions = {
         pending: DELETE_MONUMENT_PENDING,
         success: DELETE_MONUMENT_SUCCESS,
         error: DELETE_MONUMENT_ERROR
+    },
+    update: {
+        pending: UPDATE_MONUMENT_PENDING,
+        success: UPDATE_MONUMENT_SUCCESS,
+        error: UPDATE_MONUMENT_ERROR
     }
 };
 
@@ -63,6 +68,26 @@ export function createUpdateSuggestion(monumentId, updateSuggestion) {
             dispatch(success(actions.createUpdateSuggestion, createdUpdateSuggestion));
         } catch (err) {
             dispatch(error(actions.createUpdateSuggestion, err));
+            dispatch(addError({
+                message: err.message
+            }));
+        }
+    };
+}
+
+/**
+ * Send a request to the server to update the Monument with the specified monumentId to have the attributes contained
+ * in updateSuggestion
+ */
+export function updateMonument(monumentId, updateSuggestion) {
+    return async dispatch => {
+        dispatch(pending(actions.update));
+
+        try {
+            const updatedMonument = await put(`/api/monument/update/${monumentId}`, updateSuggestion);
+            dispatch(success(actions.update, updatedMonument));
+        } catch (err) {
+            dispatch(error(actions.update, err));
             dispatch(addError({
                 message: err.message
             }));

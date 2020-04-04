@@ -65,15 +65,22 @@ class CreateMonumentPage extends React.Component {
     }
 
     async submitCreateForm() {
-        const { dispatch } = this.props;
+        const { dispatch, user } = this.props;
         const { form } = this.state;
 
         // First, upload the images to the temporary S3 folder and save the URLs in the form
         const imageObjectUrls = await uploadImagesToS3(form.images, true);
         form.imagesJson = JSON.stringify(imageObjectUrls);
 
-        // Then, create the CreateMonumentSuggestion
-        dispatch(createCreateSuggestion(form));
+        // Then, make the appropriate API call
+        // Researchers and Admins bypass Suggestions and can directly add new Monuments
+        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            dispatch(createMonument(form));
+        }
+        // Any other role has to create a Suggestion
+        else {
+            dispatch(createCreateSuggestion(form));
+        }
     }
 
     handleCreateFormCancelButtonClick() {

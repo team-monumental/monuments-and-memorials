@@ -7,7 +7,8 @@ import {
     CREATE_UPDATE_SUGGESTION_ERROR,
     TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
     TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
-    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
+    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR,
+    UPDATE_MONUMENT_PENDING, UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
 } from '../constants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import basicReducer from '../utils/basic-reducer';
@@ -88,5 +89,19 @@ export function deleteMonument(state = initialDeleteState, action) {
         pending: DELETE_MONUMENT_PENDING,
         success: DELETE_MONUMENT_SUCCESS,
         error: DELETE_MONUMENT_ERROR
+    });
+}
+
+const initialUpdateState = {
+    updatePending: false,
+    updatedMonument: {},
+    updateError: null
+};
+
+export function updateMonument(state = initialUpdateState, action) {
+    return basicReducer(state, action, {
+        pending: UPDATE_MONUMENT_PENDING,
+        success: UPDATE_MONUMENT_SUCCESS,
+        error: UPDATE_MONUMENT_ERROR
     });
 }

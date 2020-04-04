@@ -2,13 +2,14 @@ import React from 'react';
 import './UpdateMonumentPage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { fetchMonumentForUpdate, createUpdateSuggestion } from '../../actions/update-monument';
+import { fetchMonumentForUpdate, createUpdateSuggestion, updateMonument } from '../../actions/update-monument';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
+import {isEmptyObject} from "../../utils/object-util";
 
 /**
  * Root container for the page to suggest an update to an existing Monument
@@ -28,7 +29,11 @@ class UpdateMonumentPage extends React.Component {
     }
 
     static mapStateToProps(state) {
-        return state.updateMonumentPage;
+        return {
+            ...state.session,
+            ...state.updateMonumentPage,
+            ...state.updateMonument
+        };
     }
 
     componentDidMount() {
@@ -50,7 +55,7 @@ class UpdateMonumentPage extends React.Component {
     }
 
     async submitUpdateForm() {
-        const { dispatch } = this.props;
+        const { dispatch, user } = this.props;
         const { form, monument } = this.state;
 
         // First, upload the new images to the temporary S3 folder and save the URLs in the form
@@ -60,8 +65,15 @@ class UpdateMonumentPage extends React.Component {
         // Then, delete the deleted images from S3
         await deleteImagesFromS3(form.deletedImageUrls);
 
-        // Finally, create the UpdateMonumentSuggestion
-        dispatch(createUpdateSuggestion(monument.id, form));
+        // Finally, make the appropriate API call
+        // Researchers and Admins bypass Suggestions and can directly update Monuments
+        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            dispatch(updateMonument(monument.id, form));
+        }
+        // Any other role has to create a Suggestion
+        else {
+            dispatch(createUpdateSuggestion(monument.id, form));
+        }
     }
 
     handleUpdateFormCancelButtonClick() {
@@ -123,10 +135,18 @@ class UpdateMonumentPage extends React.Component {
     }
 
     render() {
-        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, updateSuggestion, error } = this.props;
+        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, updateSuggestion, error,
+            user, updateError, updatedMonument } = this.props;
 
-        if (error === null && updateSuggestion.id !== undefined) {
-            this.props.history.push('/suggestion-created');
+        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            if (updateError === null && !isEmptyObject(updatedMonument)) {
+                this.props.history.push(`/monuments/${updatedMonument.id}`);
+            }
+        }
+        else {
+            if (error === null && updateSuggestion.id !== undefined) {
+                this.props.history.push('/suggestion-created');
+            }
         }
 
         return (

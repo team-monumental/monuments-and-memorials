@@ -10,7 +10,7 @@ import bulkCreatePage from './reducers/bulk';
 import tagDirectoryPage from './reducers/tagDirectory';
 import aboutPage from './reducers/about-page';
 import { signup, login, session, confirmSignup, resendConfirmation, beginPasswordReset, finishPasswordReset } from './reducers/authentication';
-import { updateMonumentPage, toggleMonumentIsActive, deleteMonument } from './reducers/update-monument';
+import { updateMonumentPage, toggleMonumentIsActive, deleteMonument, updateMonument } from './reducers/update-monument';
 import { updateUser, confirmEmailChange, fetchFavorites, fetchUser } from './reducers/user';
 import duplicateMonuments from './reducers/duplicates';
 import { fetchBulkCreateSuggestions, fetchCreateSuggestions, fetchUpdateSuggestions,
@@ -25,7 +25,7 @@ const Reducers = {
     updateUser, confirmEmailChange, createFavorite, deleteFavorite, fetchFavorites, duplicateMonuments,
     toggleMonumentIsActive, deleteMonument, userSearchPage, fetchUser, fetchBulkCreateSuggestions, fetchCreateSuggestions,
     fetchUpdateSuggestions, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
-    createSuggestionSearchPage, updateSuggestionSearchPage, bulkCreateSuggestionSearchPage
+    createSuggestionSearchPage, updateSuggestionSearchPage, bulkCreateSuggestionSearchPage, updateMonument
 };
 
 export default Reducers;

@@ -1,5 +1,6 @@
 package com.monumental.controllers;
 
+import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -14,6 +15,7 @@ import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import com.monumental.util.async.AsyncJob;
+import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -166,11 +169,13 @@ public class MonumentController {
      * @param updateSuggestion - UpdateMonumentSuggestion defining the new attributes for the Monument
      * @return Monument - The updated Monument with the specified monumentId based on the attributes defined in the
      * specified updateSuggestion
+     * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
      */
     @PutMapping("/api/monument/update/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Monument updateMonument(@PathVariable("id") Integer monumentId,
-                                   @RequestBody UpdateMonumentSuggestion updateSuggestion) {
+                                   @RequestBody UpdateMonumentSuggestion updateSuggestion)
+            throws ResourceNotFoundException {
         Optional<Monument> optional = this.monumentRepository.findById(monumentId);
         if (optional.isEmpty()) {
             throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
@@ -179,5 +184,20 @@ public class MonumentController {
 
         updateSuggestion.setMonument(monument);
         return this.monumentService.updateMonument(updateSuggestion);
+    }
+
+    @PostMapping("/api/monument/bulk")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public AsyncJob bulkCreateMonuments(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
+        BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvFileName,
+                parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+
+        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
+         * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the
+         * CompletableFuture must be passed to the AsyncJob, making it difficult to do so dynamically
+         */
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setFuture();
     }
 }
