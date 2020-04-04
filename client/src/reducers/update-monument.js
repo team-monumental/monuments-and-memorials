@@ -99,9 +99,25 @@ const initialUpdateState = {
 };
 
 export function updateMonument(state = initialUpdateState, action) {
-    return basicReducer(state, action, {
-        pending: UPDATE_MONUMENT_PENDING,
-        success: UPDATE_MONUMENT_SUCCESS,
-        error: UPDATE_MONUMENT_ERROR
-    });
+    switch (action.type) {
+        case UPDATE_MONUMENT_PENDING:
+            return {
+                ...state,
+                updatePending: true,
+            };
+        case UPDATE_MONUMENT_SUCCESS:
+            return {
+                ...state,
+                updatePending: false,
+                updatedMonument: action.payload
+            };
+        case UPDATE_MONUMENT_ERROR:
+            return {
+                ...state,
+                updatePending: false,
+                updateError: action.error
+            };
+        default:
+            return state;
+    }
 }

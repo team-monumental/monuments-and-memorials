@@ -34,7 +34,7 @@ function doAction(action, parameter) {
         dispatch(pending(action));
 
         try {
-            const result = await post(action, parameter);
+            const result = await post(action.uri, parameter);
             dispatch(success(action, result));
         } catch (err) {
             dispatch(error(action, err));

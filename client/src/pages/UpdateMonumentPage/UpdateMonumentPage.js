@@ -42,6 +42,19 @@ class UpdateMonumentPage extends React.Component {
         dispatch(fetchMonumentForUpdate(monumentId));
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (Role.RESEARCHER_OR_ABOVE.includes(this.props.user.role.toUpperCase())) {
+            if (this.props.updateError === null && !isEmptyObject(this.props.updatedMonument)) {
+                this.props.history.push(`/monuments/${this.props.updatedMonument.id}`);
+            }
+        }
+        else {
+            if (this.props.error === null && this.props.updateSuggestion.id !== undefined) {
+                this.props.history.push('/suggestion-created');
+            }
+        }
+    }
+
     validateImages() {
         const { form, addedImages } = this.state;
 
@@ -136,18 +149,11 @@ class UpdateMonumentPage extends React.Component {
     }
 
     render() {
-        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, updateSuggestion, error,
-            user, updateError, updatedMonument } = this.props;
+        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, user } = this.props;
 
-        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
-            if (updateError === null && !isEmptyObject(updatedMonument)) {
-                this.props.history.push(`/monuments/${updatedMonument.id}`);
-            }
-        }
-        else {
-            if (error === null && updateSuggestion.id !== undefined) {
-                this.props.history.push('/suggestion-created');
-            }
+        let action = 'Suggest an update to ';
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            action = 'Update ';
         }
 
         return (
@@ -160,6 +166,7 @@ class UpdateMonumentPage extends React.Component {
                         monument={monument}
                         onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
                         onSubmit={(id, form, addedImages) => this.handleUpdateFormSubmit(id, form, addedImages)}
+                        action={action}
                     />
                 </div>
 

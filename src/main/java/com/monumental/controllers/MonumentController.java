@@ -159,6 +159,7 @@ public class MonumentController {
     @PostMapping("/api/monument/create")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Monument createMonument(@RequestBody CreateMonumentSuggestion createSuggestion) {
+        createSuggestion.setIsApproved(true);
         return this.monumentService.createMonument(createSuggestion);
     }
 
@@ -183,6 +184,7 @@ public class MonumentController {
         Monument monument = optional.get();
 
         updateSuggestion.setMonument(monument);
+        updateSuggestion.setIsApproved(true);
         return this.monumentService.updateMonument(updateSuggestion);
     }
 

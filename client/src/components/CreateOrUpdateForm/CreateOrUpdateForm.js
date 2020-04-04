@@ -834,7 +834,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
             imagesForUpdate, isTemporary, locationType } = this.state;
-        const { monument } = this.props;
+        const { monument, action } = this.props;
 
         const advancedInformationLink = (
             <div className="advanced-information-link more-link" onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
@@ -977,8 +977,8 @@ export default class CreateOrUpdateForm extends React.Component {
         return (
             <div className="create-form-container">
                 {monument
-                    ? <div className="h5 update">Suggest an update to an existing Monument or Memorial</div>
-                    : <div className="h5 create">Suggest a new Monument or Memorial</div>}
+                    ? <div className="h5 update">{action}an existing Monument or Memorial</div>
+                    : <div className="h5 create">{action} a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}

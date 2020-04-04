@@ -39,6 +39,7 @@ class CreateMonumentPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        // Duplicates
         if (!prevProps.duplicates && this.props.duplicates) {
             if (this.props.duplicates.length) {
                 this.setState({showingDuplicateMonuments: true});
@@ -50,6 +51,17 @@ class CreateMonumentPage extends React.Component {
                 else {
                     this.setState({showingReviewModal: true});
                 }
+            }
+        }
+        // Redirects
+        if (this.props.user && Role.RESEARCHER_OR_ABOVE.includes(this.props.user.role.toUpperCase())) {
+            if (this.props.createMonumentError === null && this.props.monument.id !== undefined) {
+                this.props.history.push(`/monuments/${this.props.monument.id}`);
+            }
+        }
+        else {
+            if (this.props.createError === null && this.props.createSuggestion.id !== undefined) {
+                this.props.history.push('/suggestion-created');
             }
         }
     }
@@ -74,7 +86,7 @@ class CreateMonumentPage extends React.Component {
 
         // Then, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly add new Monuments
-        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
             dispatch(createMonument(form));
         }
         // Any other role has to create a Suggestion
@@ -160,18 +172,12 @@ class CreateMonumentPage extends React.Component {
     }
 
     render() {
-        const { createCreateSuggestionPending, createSuggestion, createError, fetchDuplicatesPending,
-            pending, user, createMonumentPending, monument, createMonumentError } = this.props;
+        const { createCreateSuggestionPending, fetchDuplicatesPending, pending, createMonumentPending,
+            user } = this.props;
 
-        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
-            if (createMonumentError === null && monument.id !== undefined) {
-                this.props.history.push(`/monuments/${monument.id}`);
-            }
-        }
-        else {
-            if (createError === null && createSuggestion.id !== undefined) {
-                this.props.history.push('/suggestion-created');
-            }
+        let action = 'Suggest';
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            action = 'Create';
         }
 
         return (
@@ -183,6 +189,7 @@ class CreateMonumentPage extends React.Component {
                     <CreateOrUpdateForm
                         onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
                         onSubmit={(form) => this.handleCreateFormSubmit(form)}
+                        action={action}
                     />
                 </div>
 
