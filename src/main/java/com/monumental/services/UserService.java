@@ -329,43 +329,14 @@ public class UserService extends ModelService<User> {
             expressions.add(emailExpression);
         }
         if (orderBySimilarity && expressions.size() > 0) {
-            this.orderResultsBySimilarity(builder, query, expressions);
+            SearchHelper.orderSimilarityResults(builder, query, expressions);
         }
         if (!isNullOrEmpty(roleName)) {
             Role role = Role.valueOf(roleName.toUpperCase());
             predicates.add(builder.equal(builder.literal(role), root.get("role")));
         }
 
-        switch (predicates.size()) {
-            case 0:
-                return;
-            case 1:
-                query.where(predicates.get(0));
-                break;
-            default:
-                Predicate[] predicatesArray = new Predicate[predicates.size()];
-                predicatesArray = predicates.toArray(predicatesArray);
-                query.where(builder.and(predicatesArray));
-        }
-    }
-
-    /**
-     * Order search results by the sum of similarity scores used to search for them
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param expressions - The similarity queries that were used for the search
-     */
-    private void orderResultsBySimilarity(CriteriaBuilder builder, CriteriaQuery query, List<Expression<Number>> expressions) {
-        Expression<Number> sum;
-        if (expressions.size() == 1) sum = expressions.get(0);
-        else {
-            // Dynamically sum up all the expressions
-            sum = builder.sum(expressions.remove(0), expressions.remove(0));
-            while (expressions.size() > 0) {
-                sum = builder.sum(sum, expressions.remove(0));
-            }
-        }
-        query.orderBy(builder.desc(sum));
+        SearchHelper.executeQueryWithPredicates(builder, query, predicates);
     }
 
     /**
