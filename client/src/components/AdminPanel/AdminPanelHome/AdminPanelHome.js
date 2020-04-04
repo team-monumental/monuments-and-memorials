@@ -13,6 +13,7 @@ export default class AdminPanelHome extends React.Component {
             <span className="email-link">contact@monuments.us.org</span>.
         </>);
 
+        {/* TODO: Add link to Resources Page once it is merged */}
         const partnerAndResearcherCommonTextDisplay = (<>
             &nbsp;Please see the sidebar to the left for advanced actions. If you have any questions
             about records and terms, please consult the Resources Page.
@@ -39,7 +40,6 @@ export default class AdminPanelHome extends React.Component {
                         researchers or the public, and who commit to contributing multiple records that reflect
                         particular geographic regions or subject areas.
                     </p>
-                    {/* TODO: Add link to Resources Page once it is merged */}
                     <p>
                         In addition to serving as data stewards, Partners may serve as community curators, and may wish
                         to curate content from the database. Partners may perform actions such as bulk creation of

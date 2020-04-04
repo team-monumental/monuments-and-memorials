@@ -74,13 +74,13 @@ class HomePage extends React.Component {
                             Jr., and other subjects). We are looking for Partners across the United States.
                             <br/>
                             <br/>
-                            If you would like to join our team as a Monuments + Memorial <strong>Researcher</strong> and
+                            If you would like to join our team as a Monuments + Memorials <strong>Researcher</strong> and
                             serve as a key connection to research about monuments + memorials, please let us know.
                             Researchers are vital to the ongoing efforts of data collection and may contribute to data
                             refinement and interpretation. We are looking for Researchers across the United States.
                             <br/>
                             <br/>
-                            If you would like to join our team as a Monuments + Memorial <strong>Contributor</strong>
+                            If you would like to join our team as a Monuments + Memorials <strong>Contributor</strong>
                             &nbsp;and serve as a key connection to research about monuments + memorials, please sign up
                             for an account and begin entering data.
                             <br/>
