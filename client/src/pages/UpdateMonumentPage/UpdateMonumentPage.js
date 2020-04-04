@@ -9,7 +9,8 @@ import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
-import {isEmptyObject} from "../../utils/object-util";
+import { isEmptyObject } from '../../utils/object-util';
+import { Role } from '../../utils/authentication-util';
 
 /**
  * Root container for the page to suggest an update to an existing Monument

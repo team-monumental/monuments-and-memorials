@@ -28,7 +28,7 @@ class SuggestionCreatedPage extends React.Component {
                     </Card.Header>
                     <Card.Body>
                         <p>
-                            Thank you for taking the time to contribute to Monuments and Memorials. Your Suggestion has been
+                            Thank you for taking the time to contribute to our database! Your Suggestion has been
                             created and is pending administrator review. You will be notified when your Suggestion is
                             approved or rejected via email. You can view all of your Suggestions by {accountPageLink} and
                             scrolling down to the <strong>Your Suggestions</strong> section.

@@ -78,7 +78,7 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
                             <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
                             <ProtectedRoute path="/panel" component={AdminPage} oneOf={Role.PARTNER_OR_ABOVE}/>
-                            <Route exact path="/suggestion-created" component={SuggestionCreatedPage}/>
+                            <ProtectedRoute exact path="/suggestion-created" component={SuggestionCreatedPage}/>
                         </ErrorHandler>
                     </div>
                 </ConnectedRouter>
