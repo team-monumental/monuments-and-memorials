@@ -1,0 +1,32 @@
+.admin .panel .manage-suggestions {
+    display: flex;
+    justify-content: center;
+
+    .sticky-top {
+        background-color: white;
+        z-index: 1;
+    }
+
+    .suggestion-search {
+        max-height: calc(100vh - 250px);
+        overflow-y: auto;
+    }
+
+    .pagination-container {
+        position: sticky;
+        bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        z-index: 1;
+        margin-top: 0.5rem;
+
+        .pagination {
+            background-color: white;
+            margin-bottom: 0;
+
+            .page-link {
+                border: 0 !important;
+            }
+        }
+    }
+}

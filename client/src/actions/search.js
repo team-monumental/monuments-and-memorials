@@ -68,7 +68,7 @@ const actions = {
             count: {
                 uri: 'api/search/suggestions/bulk/count'
             }
-        },
+        }
     }
 };
 
@@ -113,6 +113,9 @@ function searchBulkCreateSuggestions(options = {}) {
 }
 
 function search(options, action, payloadName) {
+    console.log(pending(action.search));
+    console.log(success(action.search));
+    console.log(error(action.search));
     return async dispatch => {
         const queryString = QueryString.stringify(options);
         dispatch(pending(action.search));
