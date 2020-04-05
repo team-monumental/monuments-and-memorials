@@ -12,13 +12,21 @@
         overflow-y: auto;
     }
 
+    .suggestion-search-results {
+        margin-top: 1.5rem;
+
+        h5 {
+            text-decoration: underline !important;
+        }
+    }
+
     .pagination-container {
         position: sticky;
         bottom: 1rem;
         display: flex;
         justify-content: center;
         z-index: 1;
-        margin-top: 0.5rem;
+        margin-top: 2.5rem;
 
         .pagination {
             background-color: white;

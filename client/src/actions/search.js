@@ -92,13 +92,7 @@ export function searchSuggestions(options = {}) {
         case 'bulk':
             return searchBulkCreateSuggestions(options);
         default:
-            return searchCreateSuggestions(options);
-            // TODO: Fix
-            /*return {
-                ...searchCreateSuggestions(options),
-                ...searchUpdateSuggestions(options),
-                ...searchBulkCreateSuggestions(options)
-            };*/
+            return searchAllSuggestions(options);
     }
 }
 
@@ -112,6 +106,14 @@ function searchUpdateSuggestions(options = {}) {
 
 function searchBulkCreateSuggestions(options = {}) {
     return search(options, actions.suggestions.bulk, 'bulkCreateSuggestions');
+}
+
+function searchAllSuggestions(options = {}) {
+    return dispatch => {
+        dispatch(searchCreateSuggestions(options));
+        dispatch(searchUpdateSuggestions(options));
+        dispatch(searchBulkCreateSuggestions(options));
+    };
 }
 
 function search(options, action, payloadName) {

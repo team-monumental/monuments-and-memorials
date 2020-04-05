@@ -1,6 +1,8 @@
 import * as React from 'react';
 import SuggestionSearchBar from './SuggestionSearchBar/SuggestionSearchBar';
 import SearchInfo from '../../../Search/SearchInfo/SearchInfo';
+import SuggestionSearchResults from './SuggestionSearchResults/SuggestionSearchResults';
+import Pagination from '../../../Pagination/Pagination';
 
 export default class SuggestionSearch extends React.Component {
 
@@ -19,7 +21,12 @@ export default class SuggestionSearch extends React.Component {
                     }
                 </div>
                 {showSearchResults && <>
-                    {/* TODO: Render Suggestion search results */}
+                    <SuggestionSearchResults suggestions={suggestions}/>
+                    <div className="pagination-container">
+                        <Pagination count={pageCount}
+                                    page={page - 1}
+                                    onPage={page => onPageChange(page + 1)}/>
+                    </div>
                 </>}
             </div>
         );

@@ -16,7 +16,8 @@ class SuggestionSearchPage extends React.Component {
         const params = QueryString.parse(props.history.location.search);
         this.state = {
             page: params.page || 1,
-            limit: params.limit || 25
+            limit: params.limit || 25,
+            type: params.type || ''
         };
     }
 
@@ -66,6 +67,11 @@ class SuggestionSearchPage extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { dispatch, location: { search } } = this.props;
+        const params = QueryString.parse(search);
+
+        if (params.type !== this.state.type) {
+            this.setState({type: params.type});
+        }
         if (prevProps.location.search !== search) {
             dispatch(searchSuggestions(QueryString.parse(search)));
         }
@@ -93,14 +99,39 @@ class SuggestionSearchPage extends React.Component {
 
     render() {
         const { showSearchResults, createSuggestions, updateSuggestions, bulkCreateSuggestions } = this.props;
+        const { type } = this.state;
 
         const pending = createSuggestions.pending || updateSuggestions.pending || bulkCreateSuggestions.pending;
-        const suggestions = {
-            createSuggestions: createSuggestions.results,
-            updateSuggestions: updateSuggestions.results,
-            bulkCreateSuggestions: bulkCreateSuggestions.results
-        };
-        const count = createSuggestions.count + updateSuggestions.count + bulkCreateSuggestions.count;
+
+        let count, suggestions;
+        switch (type) {
+            case 'create':
+                count = createSuggestions.count;
+                suggestions = {
+                    createSuggestions: createSuggestions.results
+                };
+                break;
+            case 'update':
+                count = updateSuggestions.count;
+                suggestions = {
+                    updateSuggestions: updateSuggestions.results
+                };
+                break;
+            case 'bulk':
+                count = bulkCreateSuggestions.count;
+                suggestions = {
+                    bulkCreateSuggestions: bulkCreateSuggestions.results
+                };
+                break;
+            default:
+                count = createSuggestions.count + updateSuggestions.count + bulkCreateSuggestions.count;
+                suggestions = {
+                    createSuggestions: createSuggestions.results,
+                    updateSuggestions: updateSuggestions.results,
+                    bulkCreateSuggestions: bulkCreateSuggestions.results
+                };
+                break;
+        }
 
         return (
             <div className="suggestions-search">

@@ -72,10 +72,6 @@ class SuggestionSearchBar extends React.Component {
     render() {
         const { searchQuery, statusFilter, typeFilter } = this.state;
 
-        console.log(searchQuery);
-        console.log(statusFilter);
-        console.log(typeFilter);
-
         return (
             <div className="suggestion-search-bar">
                 <div className="d-flex">
