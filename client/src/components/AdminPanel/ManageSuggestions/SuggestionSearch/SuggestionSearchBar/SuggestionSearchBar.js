@@ -12,9 +12,21 @@ class SuggestionSearchBar extends React.Component {
         super(props);
 
         const params = QueryString.parse(this.props.history.location.search);
+
+        let statusFilter;
+        if (params.isApproved) {
+            statusFilter = 'approved';
+        }
+        else if (params.isRejected) {
+            statusFilter = 'rejected';
+        }
+        else if (params.isPending) {
+            statusFilter = 'pending';
+        }
+
         this.state = {
             searchQuery: params.q || '',
-            statusFilter: params.status || '',
+            statusFilter: statusFilter || '',
             typeFilter: params.type || ''
         };
     }
@@ -27,6 +39,7 @@ class SuggestionSearchBar extends React.Component {
             q: searchQuery,
             isApproved: statusFilter === 'approved',
             isRejected: statusFilter === 'rejected',
+            isPending: statusFilter === 'pending',
             type: typeFilter
         }, history, '/panel/manage/suggestions/search');
     }
@@ -58,6 +71,10 @@ class SuggestionSearchBar extends React.Component {
 
     render() {
         const { searchQuery, statusFilter, typeFilter } = this.state;
+
+        console.log(searchQuery);
+        console.log(statusFilter);
+        console.log(typeFilter);
 
         return (
             <div className="suggestion-search-bar">

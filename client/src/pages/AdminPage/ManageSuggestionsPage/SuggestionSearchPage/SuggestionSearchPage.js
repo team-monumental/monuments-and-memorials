@@ -24,26 +24,35 @@ class SuggestionSearchPage extends React.Component {
         const result = {};
 
         if (state.createSuggestionSearchPage) {
-            const { createSuggestions, createSuggestionCount, pending } = state.createSuggestionSearchPage;
-            if (!createSuggestions.error && !createSuggestionCount.error && !createSuggestions.errors &&
-                !createSuggestionCount.errors) {
-                result['createSuggestions'] = {createSuggestions, createSuggestionCount, pending};
+            const { createSuggestions, count, pending, error } = state.createSuggestionSearchPage;
+            if (!error) {
+                result['createSuggestions'] = {
+                    results: createSuggestions,
+                    count,
+                    pending
+                };
             }
         }
 
         if (state.updateSuggestionSearchPage) {
-            const { updateSuggestions, updateSuggestionCount, pending } = state.updateSuggestionSearchPage;
-            if (!updateSuggestions.error && !updateSuggestionCount.error && !updateSuggestions.errors &&
-                !updateSuggestionCount.errors) {
-                result['updateSuggestions'] = {updateSuggestions, updateSuggestionCount, pending};
+            const { updateSuggestions, count, pending, error } = state.updateSuggestionSearchPage;
+            if (!error) {
+                result['updateSuggestions'] = {
+                    results: updateSuggestions,
+                    count,
+                    pending
+                };
             }
         }
 
         if (state.bulkCreateSuggestionSearchPage) {
-            const { bulkCreateSuggestions, bulkCreateSuggestionCount, pending } = state.bulkCreateSuggestionSearchPage;
-            if (!bulkCreateSuggestions.error && !bulkCreateSuggestionCount.error && !bulkCreateSuggestions.errors &&
-                !bulkCreateSuggestionCount.errors) {
-                result['bulkCreateSuggestions'] = {bulkCreateSuggestions, bulkCreateSuggestionCount, pending};
+            const { bulkCreateSuggestions, count, pending, error } = state.bulkCreateSuggestionSearchPage;
+            if (!error) {
+                result['bulkCreateSuggestions'] = {
+                    results: bulkCreateSuggestions,
+                    count,
+                    pending
+                };
             }
         }
 
@@ -83,8 +92,15 @@ class SuggestionSearchPage extends React.Component {
     }
 
     render() {
-        // TODO: Determine how the props from redux will be formatted
-        const { showSearchResults, suggestions, pending, count } = this.props;
+        const { showSearchResults, createSuggestions, updateSuggestions, bulkCreateSuggestions } = this.props;
+
+        const pending = createSuggestions.pending || updateSuggestions.pending || bulkCreateSuggestions.pending;
+        const suggestions = {
+            createSuggestions: createSuggestions.results,
+            updateSuggestions: updateSuggestions.results,
+            bulkCreateSuggestions: bulkCreateSuggestions.results
+        };
+        const count = createSuggestions.count + updateSuggestions.count + bulkCreateSuggestions.count;
 
         return (
             <div className="suggestions-search">

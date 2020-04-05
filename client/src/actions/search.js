@@ -41,10 +41,10 @@ const actions = {
                 pending: SEARCH_CREATE_SUGGESTIONS_PENDING,
                 success: SEARCH_CREATE_SUGGESTIONS_SUCCESS,
                 error: SEARCH_CREATE_SUGGESTIONS_ERROR,
-                uri: 'api/search/suggestions/create'
+                uri: '/api/search/suggestions/create'
             },
             count: {
-                uri: 'api/search/suggestions/create/count'
+                uri: '/api/search/suggestions/create/count'
             }
         },
         update: {
@@ -52,10 +52,10 @@ const actions = {
                 pending: SEARCH_UPDATE_SUGGESTIONS_PENDING,
                 success: SEARCH_UPDATE_SUGGESTIONS_SUCCESS,
                 error: SEARCH_UPDATE_SUGGESTIONS_ERROR,
-                uri: 'api/search/suggestions/update'
+                uri: '/api/search/suggestions/update'
             },
             count: {
-                uri: 'api/search/suggestions/update/count'
+                uri: '/api/search/suggestions/update/count'
             }
         },
         bulk: {
@@ -63,10 +63,10 @@ const actions = {
                 pending: SEARCH_BULK_CREATE_SUGGESTIONS_PENDING,
                 success: SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS,
                 error: SEARCH_BULK_CREATE_SUGGESTIONS_ERROR,
-                uri: 'api/search/suggestions/bulk'
+                uri: '/api/search/suggestions/bulk'
             },
             count: {
-                uri: 'api/search/suggestions/bulk/count'
+                uri: '/api/search/suggestions/bulk/count'
             }
         }
     }
@@ -92,11 +92,13 @@ export function searchSuggestions(options = {}) {
         case 'bulk':
             return searchBulkCreateSuggestions(options);
         default:
-            return {
+            return searchCreateSuggestions(options);
+            // TODO: Fix
+            /*return {
                 ...searchCreateSuggestions(options),
                 ...searchUpdateSuggestions(options),
                 ...searchBulkCreateSuggestions(options)
-            };
+            };*/
     }
 }
 
@@ -113,9 +115,6 @@ function searchBulkCreateSuggestions(options = {}) {
 }
 
 function search(options, action, payloadName) {
-    console.log(pending(action.search));
-    console.log(success(action.search));
-    console.log(error(action.search));
     return async dispatch => {
         const queryString = QueryString.stringify(options);
         dispatch(pending(action.search));

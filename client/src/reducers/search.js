@@ -43,7 +43,7 @@ export function userSearchPage(state = userInitialState, action) {
 const createSuggestionInitialState = {
     pending: false,
     createSuggestions: [],
-    createSuggestionCount: 0,
+    count: 0,
     error: null
 };
 
@@ -58,7 +58,7 @@ export function createSuggestionSearchPage(state = createSuggestionInitialState,
 const updateSuggestionInitialState = {
     pending: false,
     updateSuggestions: [],
-    updateSuggestionCount: 0,
+    count: 0,
     error: null
 };
 
@@ -73,7 +73,7 @@ export function updateSuggestionSearchPage(state = updateSuggestionInitialState,
 const bulkCreateSuggestionInitialState = {
     pending: false,
     bulkCreateSuggestions: [],
-    bulkCreateSuggestionCount: 0,
+    count: 0,
     error: null
 };
 
