@@ -92,7 +92,11 @@ export function searchSuggestions(options = {}) {
         case 'bulk':
             return searchBulkCreateSuggestions(options);
         default:
-            return {};
+            return {
+                ...searchCreateSuggestions(options),
+                ...searchUpdateSuggestions(options),
+                ...searchBulkCreateSuggestions(options)
+            };
     }
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './UserSearchbar.scss';
+import './UserSearchBar.scss';
 import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from '../../../../Header/SearchBar/TextSearch/TextSearch';
