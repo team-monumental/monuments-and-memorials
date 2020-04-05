@@ -1,6 +1,11 @@
 import {
-    VALIDATE_BULK_SUGGESTION_PENDING, VALIDATE_BULK_SUGGESTION_SUCCESS, VALIDATE_BULK_SUGGESTION_ERROR,
-    CREATE_BULK_SUGGESTION_PENDING, CREATE_BULK_SUGGESTION_SUCCESS, CREATE_BULK_SUGGESTION_ERROR
+    VALIDATE_BULK_SUGGESTION_PENDING,
+    VALIDATE_BULK_SUGGESTION_SUCCESS,
+    VALIDATE_BULK_SUGGESTION_ERROR,
+    CREATE_BULK_SUGGESTION_PENDING,
+    CREATE_BULK_SUGGESTION_SUCCESS,
+    CREATE_BULK_SUGGESTION_ERROR,
+    BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR
 } from '../constants';
 import { pending, success, error } from '../utils/action-util';
 
@@ -11,11 +16,17 @@ const actions = {
         error: VALIDATE_BULK_SUGGESTION_ERROR,
         uri: '/api/suggestion/bulk/validate'
     },
-    create: {
+    createSuggestion: {
         pending: CREATE_BULK_SUGGESTION_PENDING,
         success: CREATE_BULK_SUGGESTION_SUCCESS,
         error: CREATE_BULK_SUGGESTION_ERROR,
         uri: '/api/suggestion/bulk'
+    },
+    create: {
+        pending: BULK_CREATE_MONUMENTS_PENDING,
+        success: BULK_CREATE_MONUMENTS_SUCCESS,
+        error: BULK_CREATE_MONUMENTS_ERROR,
+        uri: '/api/monument/bulk'
     }
 };
 
@@ -72,5 +83,5 @@ export function bulkValidateSuggestions(form) {
 }
 
 export function bulkCreateSuggestions(form) {
-    return doAction(actions.create, form, true);
+    return doAction(actions.createSuggestion, form, true);
 }

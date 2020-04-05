@@ -30,6 +30,9 @@ class MonumentBulkCreatePage extends React.Component {
         if (this.props.error && !prevState.showingErrorModal) {
             this.setState({showingErrorModal: true});
         }
+        else if (this.props.createResult && !this.props.bulkSuggestionCreatePending) {
+            this.props.history.push('/panel/suggestion-created');
+        }
     }
 
     static mapStateToProps(state) {
@@ -63,15 +66,7 @@ class MonumentBulkCreatePage extends React.Component {
             createResult, createError, createProgress
         } = this.props;
 
-        console.log(createProgress);
-
-        const showCreateResults = createResult && !bulkSuggestionCreatePending;
-
-        if (showCreateResults) {
-            this.props.history.push('/panel/suggestion-created');
-        }
-
-        showValidationResults = !showCreateResults && showValidationResults && !bulkSuggestionValidatePending;
+        showValidationResults = showValidationResults && !bulkSuggestionValidatePending;
 
         return (
             <div className="bulk page d-flex justify-content-center">

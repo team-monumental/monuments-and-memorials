@@ -187,19 +187,4 @@ public class MonumentController {
         updateSuggestion.setIsApproved(true);
         return this.monumentService.updateMonument(updateSuggestion);
     }
-
-    /*@PostMapping("/api/monument/bulk")
-    @PreAuthorize(Authorization.isResearcherOrAbove)
-    public AsyncJob bulkCreateMonuments(@ModelAttribute BulkCreateMonumentRequest request) throws IOException {
-        BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
-        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvFileName,
-                parseResult.csvContents, parseResult.mapping, parseResult.zipFile);*/
-
-        /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
-         * it away currently because the AsyncJob must be passed to the CompletableFuture method, and the
-         * CompletableFuture must be passed to the AsyncJob, making it difficult to do so dynamically
-         */
-        /*AsyncJob job = this.asyncJobService.createJob();
-        job.setFuture();
-    }*/
 }
