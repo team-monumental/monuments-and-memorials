@@ -2,15 +2,27 @@ import * as React from 'react';
 import './Sidebar.scss';
 import { Role } from '../../../utils/authentication-util';
 import { NavLink } from 'react-router-dom';
+import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export default class Sidebar extends React.Component {
 
     get links() {
+        const { pendingSuggestionCount } = this.props;
+
+        const manageSuggestionsExtraDisplay = (<>
+            <OverlayTrigger placement="top"
+                            overlay={props => (
+                                <Tooltip {...props}>There are currently {pendingSuggestionCount} pending Suggestions</Tooltip>
+                            )}>
+                <Badge variant="primary" pill className="ml-4">{pendingSuggestionCount}</Badge>
+            </OverlayTrigger>
+        </>);
+
         return [
             {name: 'Home', icon: 'home', route: '/panel', exact: true},
             {name: 'Bulk Suggest', icon: 'cloud_upload', route: '/panel/bulk', roles: Role.PARTNER},
             {name: 'Bulk Create', icon: 'cloud_upload', route: '/panel/bulk', roles: Role.RESEARCHER_OR_ABOVE},
-            {name: 'Manage Suggestions', icon: 'description', route: '/panel/manage/suggestions', roles: Role.RESEARCHER_OR_ABOVE},
+            {name: 'Manage Suggestions', icon: 'description', route: '/panel/manage/suggestions', roles: Role.RESEARCHER_OR_ABOVE, extraDisplay: manageSuggestionsExtraDisplay},
             {name: 'Manage Monuments', icon: 'account_balance', route: '/panel/manage/monuments', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Manage Users', icon: 'person', route: '/panel/manage/users', roles: Role.ADMIN},
         ]
@@ -26,6 +38,7 @@ export default class Sidebar extends React.Component {
                             {link.icon}
                         </i>
                         {link.name}
+                        {link.extraDisplay}
                     </NavLink>
                 ))}
             </div>

@@ -261,4 +261,16 @@ public class SearchController {
                                                     @RequestParam(required = false, value = "isRejected") boolean isRejected) {
         return this.bulkCreateSuggestionService.countSearchResults(searchQuery, isApproved, isRejected);
     }
+
+    /**
+     * Get the total number of pending MonumentSuggestions
+     * @return Integer for the total number of pending MonumentSuggestions
+     */
+    @GetMapping("/api/search/suggestions/pending")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Integer countPendingSuggestions() {
+        return this.createSuggestionService.countSearchResults(null, false, false) +
+                this.updateSuggestionService.countSearchResults(null, false, false) +
+                this.bulkCreateSuggestionService.countSearchResults(null, false, false);
+    }
 }

@@ -13,11 +13,11 @@ import SuggestionCreatedPage from '../../pages/SuggestionCreatedPage/SuggestionC
 export default class AdminPanel extends React.Component {
 
     render() {
-        const { user, role } = this.props;
+        const { user, role, pendingSuggestionCount } = this.props;
         return (
             <div className="panel">
                 <div className="left">
-                    <Sidebar user={user}/>
+                    <Sidebar user={user} pendingSuggestionCount={pendingSuggestionCount}/>
                 </div>
                 <div className="viewport">
                     <ProtectedRoute exact path="/panel" component={AdminPanelHome} customProps={{role}}/>
