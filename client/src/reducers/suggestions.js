@@ -5,7 +5,8 @@ import {
     FETCH_CREATE_SUGGESTION_PENDING, FETCH_CREATE_SUGGESTION_SUCCESS, FETCH_CREATE_SUGGESTION_ERROR,
     FETCH_UPDATE_SUGGESTION_PENDING, FETCH_UPDATE_SUGGESTION_SUCCESS, FETCH_UPDATE_SUGGESTION_ERROR,
     FETCH_BULK_CREATE_SUGGESTION_PENDING, FETCH_BULK_CREATE_SUGGESTION_SUCCESS, FETCH_BULK_CREATE_SUGGESTION_ERROR,
-    APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR
+    APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR,
+    REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR
 } from '../constants';
 
 const fetchCreatesInitialState = {
@@ -45,6 +46,12 @@ const fetchBulkCreateInitialState = {
 };
 
 const approveCreateInitialState = {
+    pending: false,
+    result: null,
+    error: null
+};
+
+const rejectCreateInitialState = {
     pending: false,
     result: null,
     error: null
@@ -208,6 +215,30 @@ export function approveCreateSuggestion(state = approveCreateInitialState, actio
                 result: action.payload
             };
         case APPROVE_CREATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function rejectCreateSuggestion(state = rejectCreateInitialState, action) {
+    switch (action.type) {
+        case REJECT_CREATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                pending: true
+            };
+        case REJECT_CREATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                result: action.payload
+            };
+        case REJECT_CREATE_SUGGESTION_ERROR:
             return {
                 ...state,
                 pending: false,

@@ -5,7 +5,8 @@ import {
     FETCH_CREATE_SUGGESTION_PENDING, FETCH_CREATE_SUGGESTION_SUCCESS, FETCH_CREATE_SUGGESTION_ERROR,
     FETCH_UPDATE_SUGGESTION_PENDING, FETCH_UPDATE_SUGGESTION_SUCCESS, FETCH_UPDATE_SUGGESTION_ERROR,
     FETCH_BULK_CREATE_SUGGESTION_PENDING, FETCH_BULK_CREATE_SUGGESTION_SUCCESS, FETCH_BULK_CREATE_SUGGESTION_ERROR,
-    APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR
+    APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR,
+    REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR
 } from '../constants';
 import { pending, success, error } from '../utils/action-util';
 import { get, put } from '../utils/api-util';
@@ -51,6 +52,12 @@ const actions = {
         pending: APPROVE_CREATE_SUGGESTION_PENDING,
         success: APPROVE_CREATE_SUGGESTION_SUCCESS,
         error: APPROVE_CREATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/create'
+    },
+    rejectCreate: {
+        pending: REJECT_CREATE_SUGGESTION_PENDING,
+        success: REJECT_CREATE_SUGGESTION_SUCCESS,
+        error: REJECT_CREATE_SUGGESTION_ERROR,
         uri: '/api/suggestion/create'
     }
 };
@@ -120,4 +127,21 @@ function approveSuggestion(action, id) {
 
 export function approveCreateSuggestion(id) {
     return approveSuggestion(actions.approveCreate, id);
+}
+
+function rejectSuggestion(action, id) {
+    return async dispatch => {
+        dispatch(pending(action));
+
+        try {
+            const rejectedSuggestion = await put(`${action.uri}/${id}/reject`);
+            dispatch(success(action, rejectedSuggestion));
+        } catch (err) {
+            dispatch(error(action, err.message));
+        }
+    };
+}
+
+export function rejectCreateSuggestion(id) {
+    return rejectSuggestion(actions.rejectCreate, id);
 }
