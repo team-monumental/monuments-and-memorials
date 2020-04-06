@@ -10,10 +10,10 @@ export default class AdminPanelHome extends React.Component {
 
         const commonTextDisplay = (<>
             &nbsp;If you encounter any problems, please cancel your action and contact the site administrator,&nbsp;
-            <span className="email-link">contact@monuments.us.org</span>.
+            <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>.
         </>);
 
-        {/* TODO: Add link to Resources Page once it is merged */}
+        /* TODO: Add link to Resources Page once it is merged */
         const partnerAndResearcherCommonTextDisplay = (<>
             &nbsp;Please see the sidebar to the left for advanced actions. If you have any questions
             about records and terms, please consult the Resources Page.

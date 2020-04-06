@@ -1,7 +1,6 @@
 @import "../../../node_modules/bootstrap/scss/functions";
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
-@import "../../theme";
 
 #welcome-page-body {
   display: flex;
@@ -23,11 +22,6 @@
     @include media-breakpoint-up(sm) {
       width: 80%;
     }
-  }
-
-  .email-link {
-    text-decoration: underline;
-    color: $primary;
   }
 }
 

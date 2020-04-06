@@ -74,9 +74,9 @@ export default class AboutInformation extends React.Component {
                 <p>
                     Our goal is to document all temporary and permanent monuments + memorials throughout the United
                     States and territories. We are looking for contributors to add information, please join us by
-                    creating an account (sign-in link here) or by contacting the organizers
-                    &nbsp;<span className="email-link">contact@monuments.us.org</span>. To view monuments and memorials,
-                    &nbsp;{mapNavLink}.
+                    creating an account (sign-in link here) or by contacting the organizers&nbsp;
+                    <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>. To view monuments
+                    and memorials, {mapNavLink}.
                 </p>
                 <h3 className="font-italic">
                     Background:
@@ -98,7 +98,7 @@ export default class AboutInformation extends React.Component {
                     (American Samoa, Guam, Puerto Rico, the North Mariana Islands, and U.S. Virgin Islands). We invite
                     anyone to contribute information and an image of temporary and permanent monuments and memorials in
                     these areas. If you have any questions, please contact the project coordinator, Juilee Decker&nbsp;
-                    <span className="email-link">contact@monuments.us.org</span>.
+                    <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>.
                 </p>
                 <h3 className="font-italic">
                     Contributors:

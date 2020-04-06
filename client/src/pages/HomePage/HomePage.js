@@ -87,7 +87,7 @@ class HomePage extends React.Component {
                             <br/>
                             Thank you for your efforts to help us document monuments + memorials.<br/>
                             If you have any questions, please contact the project coordinator, Juilee Decker&nbsp;
-                            <span className="email-link">jdgsh@rit.edu</span>.
+                            <a href="mailto:jdgsh@rit.edu">jdgsh@rit.edu</a>.
                         </p>
                     </div>
                     <SuggestChanges onButtonClick={() => this.handleSuggestChangesButtonClick()}/>
