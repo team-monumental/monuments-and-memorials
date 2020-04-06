@@ -1,3 +1,5 @@
+@import "../../../../theme";
+
 .manage-suggestion {
     .create-suggestion.card {
         border: none;
@@ -6,5 +8,15 @@
         .card-title {
             font-size: 17px;
         }
+    }
+
+    .approved {
+        border: 2px solid $primary;
+        color: $primary;
+    }
+
+    .rejected {
+        border: 2px solid red;
+        color: red;
     }
 }

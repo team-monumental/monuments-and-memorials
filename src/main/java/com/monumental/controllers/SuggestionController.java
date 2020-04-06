@@ -248,13 +248,12 @@ public class SuggestionController {
     /**
      * Approve a CreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the CreateMonumentSuggestion to approve
-     * @return Monument - The newly created Monument based on the attributes of the CreateMonumentSuggestion with the
-     *                  specified ID
+     * @return CreateMonumentSuggestion - The approved CreateMonumentSuggestion
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/create/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Monument approveCreateSuggestion(@PathVariable("id") Integer id)
+    public CreateMonumentSuggestion approveCreateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         CreateMonumentSuggestion createSuggestion = this.findCreateSuggestion(id);
 
@@ -262,8 +261,9 @@ public class SuggestionController {
         createSuggestion = this.createSuggestionRepository.save(createSuggestion);
 
         this.emailService.sendCreateSuggestionApprovalEmail(createSuggestion);
+        this.monumentService.createMonument(createSuggestion);
 
-        return this.monumentService.createMonument(createSuggestion);
+        return createSuggestion;
     }
 
     /**

@@ -4,7 +4,8 @@ import {
     FETCH_BULK_CREATE_SUGGESTIONS_PENDING, FETCH_BULK_CREATE_SUGGESTIONS_SUCCESS, FETCH_BULK_CREATE_SUGGESTIONS_ERROR,
     FETCH_CREATE_SUGGESTION_PENDING, FETCH_CREATE_SUGGESTION_SUCCESS, FETCH_CREATE_SUGGESTION_ERROR,
     FETCH_UPDATE_SUGGESTION_PENDING, FETCH_UPDATE_SUGGESTION_SUCCESS, FETCH_UPDATE_SUGGESTION_ERROR,
-    FETCH_BULK_CREATE_SUGGESTION_PENDING, FETCH_BULK_CREATE_SUGGESTION_SUCCESS, FETCH_BULK_CREATE_SUGGESTION_ERROR
+    FETCH_BULK_CREATE_SUGGESTION_PENDING, FETCH_BULK_CREATE_SUGGESTION_SUCCESS, FETCH_BULK_CREATE_SUGGESTION_ERROR,
+    APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR
 } from '../constants';
 
 const fetchCreatesInitialState = {
@@ -38,6 +39,12 @@ const fetchUpdateInitialState = {
 };
 
 const fetchBulkCreateInitialState = {
+    pending: false,
+    result: null,
+    error: null
+};
+
+const approveCreateInitialState = {
     pending: false,
     result: null,
     error: null
@@ -177,6 +184,30 @@ export function fetchBulkCreateSuggestion(state = fetchBulkCreateInitialState, a
                 result: action.payload
             };
         case FETCH_BULK_CREATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function approveCreateSuggestion(state = approveCreateInitialState, action) {
+    switch (action.type) {
+        case APPROVE_CREATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                pending: true
+            };
+        case APPROVE_CREATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                result: action.payload
+            };
+        case APPROVE_CREATE_SUGGESTION_ERROR:
             return {
                 ...state,
                 pending: false,

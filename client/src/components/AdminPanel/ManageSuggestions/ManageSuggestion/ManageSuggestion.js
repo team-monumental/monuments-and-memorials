@@ -6,17 +6,32 @@ import ManagementButtonToolbar from '../../../Suggestions/ManagementButtonToolba
 
 export default class ManageSuggestion extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            reviewing: true
+        };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.statusChangeSuccess && this.props.statusChangeSuccess !== prevProps.statusChangeSuccess) {
+            this.setState({reviewing: false});
+        }
+    }
+
     renderManageCreateSuggestion() {
         const { suggestion, onApproveClick, onRejectClick } = this.props;
-
-        const isPending = !suggestion.isApproved && !suggestion.isRejected;
+        const { reviewing } = this.state;
 
         return (
             <div className="manage-suggestion">
                 <Helmet title={`Manage ${suggestion.title} | Monuments and Memorials`}/>
                 <CreateMonumentSuggestion suggestion={suggestion} showIndex={false} showTitleAsLink={false}
                                           expandedByDefault={true} showCollapse={true} showCollapseLinks={false}/>
-                {isPending && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
+                {reviewing && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
+                {suggestion.isApproved && <div className="approved">Approved</div>}
+                {suggestion.isRejected && <div className="rejected">Rejected</div>}
             </div>
         );
     }
