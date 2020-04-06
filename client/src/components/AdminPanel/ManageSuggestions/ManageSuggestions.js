@@ -3,6 +3,7 @@ import './ManageSuggestions.scss';
 import { withRouter } from 'react-router-dom';
 import { Button, Card } from 'react-bootstrap';
 import SuggestionSearchPage from '../../../pages/AdminPage/ManageSuggestionsPage/SuggestionSearchPage/SuggestionSearchPage';
+import ManageSuggestion from './ManageSuggestion/ManageSuggestion';
 
 class ManageSuggestions extends React.Component {
 
@@ -24,10 +25,9 @@ class ManageSuggestions extends React.Component {
                         {(!mode || mode === 'search') &&
                             <SuggestionSearchPage showSearchResults={mode === 'search'}/>
                         }
-                        {(mode === 'suggestion' && suggestion) &&
-                            <></>
-                            //<ManageSuggestion suggestion={suggestion}/>
-                        }
+                        {(mode === 'suggestion' && suggestion) && <>
+                            <ManageSuggestion type="create" suggestion={suggestion}/>
+                        </>}
                     </Card.Body>
                 </Card>
             </div>

@@ -86,14 +86,14 @@ function fetchSuggestion(action, id) {
     };
 }
 
-export function fetchCreateSuggestion() {
-    return fetchSuggestion(actions.fetchCreate);
+export function fetchCreateSuggestion(id) {
+    return fetchSuggestion(actions.fetchCreate, id);
 }
 
-export function fetchUpdateSuggestion() {
-    return fetchSuggestion(actions.fetchUpdate);
+export function fetchUpdateSuggestion(id) {
+    return fetchSuggestion(actions.fetchUpdate, id);
 }
 
-export function fetchBulkCreateSuggestion() {
-    return fetchSuggestion(actions.fetchBulkCreate);
+export function fetchBulkCreateSuggestion(id) {
+    return fetchSuggestion(actions.fetchBulkCreate, id);
 }

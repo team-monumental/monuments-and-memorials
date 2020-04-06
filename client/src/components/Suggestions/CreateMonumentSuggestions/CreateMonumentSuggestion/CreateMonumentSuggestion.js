@@ -3,7 +3,6 @@ import './CreateMonumentSuggestion.scss';
 import { Card, Collapse } from 'react-bootstrap';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
-import ManagementButtonToolbar from '../../ManagementButtonToolbar/ManagementButtonToolbar';
 import { Link } from 'react-router-dom';
 
 /**
@@ -15,7 +14,7 @@ export default class CreateMonumentSuggestion extends React.Component {
         super(props);
 
         this.state = {
-            expanded: false
+            expanded: props.expandedByDefault || false
         };
     }
 
@@ -62,7 +61,7 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     renderSuggestionDetails() {
-        const { suggestion, allowManagement, onApproveClick, onRejectClick, showCollapse=true } = this.props;
+        const { suggestion, showCollapse=true, showCollapseLinks=true } = this.props;
         const { expanded } = this.state;
 
         const artist = (suggestion.artist && suggestion.artist.length) ? suggestion.artist : 'None';
@@ -129,18 +128,18 @@ export default class CreateMonumentSuggestion extends React.Component {
                     </div>
                 </Collapse>
 
-                {!expanded && expandLink}
-                {expanded && hideLink}
+                {!expanded && showCollapseLinks && expandLink}
+                {expanded && showCollapseLinks && hideLink}
             </>}
-
-            {allowManagement && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
         </>);
     }
 
     render() {
-        const { suggestion, index, showTitleAsLink } = this.props;
+        const { suggestion, index, showTitleAsLink, showIndex=true } = this.props;
 
-        const titleText = `${index}. ${suggestion.title}`;
+        const titleText = showIndex ?
+            `${index}. ${suggestion.title}` :
+            suggestion.title;
 
         return (
             <Card className="create-suggestion">
@@ -148,7 +147,7 @@ export default class CreateMonumentSuggestion extends React.Component {
                     <Card.Title>
                         {
                             showTitleAsLink ?
-                                <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}`}>{titleText}</Link> :
+                                <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=create`}>{titleText}</Link> :
                                 titleText
                         }
                     </Card.Title>

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { fetchBulkCreateSuggestion, fetchCreateSuggestion, fetchUpdateSuggestion } from '../../../actions/suggestions';
 import Spinner from '../../../components/Spinner/Spinner';
 import ManageSuggestions from '../../../components/AdminPanel/ManageSuggestions/ManageSuggestions';
+import { withRouter } from 'react-router-dom';
+import * as QueryString from 'query-string';
 
 class ManageSuggestionsPage extends React.Component {
 
@@ -19,7 +21,9 @@ class ManageSuggestionsPage extends React.Component {
     }
 
     fetchSuggestionIfIdAndTypeExists() {
-        const { dispatch, match: { params: { suggestionId, type } } } = this.props;
+        const { dispatch, match: { params: { suggestionId } }, location: { search } } = this.props;
+
+        const type = QueryString.parse(search).type;
 
         if (suggestionId && type) {
             try {
@@ -54,4 +58,4 @@ class ManageSuggestionsPage extends React.Component {
     }
 }
 
-export default connect(ManageSuggestionsPage.mapStateToProps)(ManageSuggestionsPage);
+export default withRouter(connect(ManageSuggestionsPage.mapStateToProps)(ManageSuggestionsPage));
