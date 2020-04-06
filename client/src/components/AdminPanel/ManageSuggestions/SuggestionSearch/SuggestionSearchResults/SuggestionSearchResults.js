@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './SuggestionSearchResults.scss';
 import CreateMonumentSuggestions from '../../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 import UpdateMonumentSuggestions from '../../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
 import BulkCreateMonumentSuggestions from '../../../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
@@ -13,7 +14,9 @@ export default class SuggestionSearchResults extends React.Component {
                 <div className="suggestion-search-results">
                     {suggestions.createSuggestions && suggestions.createSuggestions.length > 0 && <>
                         <h5>New Monument or Memorial Suggestion Results</h5>
-                        <CreateMonumentSuggestions suggestions={suggestions.createSuggestions} hideMoreThan={3}/>
+                        <CreateMonumentSuggestions suggestions={suggestions.createSuggestions} hideMoreThan={3}
+                                                   showSuggestionCollapse={false}
+                                                   showTitlesAsLinks={true}/>
                     </>}
                     {suggestions.updateSuggestions && suggestions.updateSuggestions.length > 0 && <>
                         <h5 className="mt-4">Update Monument or Memorial Suggestion Results</h5>

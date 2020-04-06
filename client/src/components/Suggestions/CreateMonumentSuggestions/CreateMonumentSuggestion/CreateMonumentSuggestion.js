@@ -4,6 +4,7 @@ import { Card, Collapse } from 'react-bootstrap';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
 import ManagementButtonToolbar from '../../ManagementButtonToolbar/ManagementButtonToolbar';
+import { Link } from 'react-router-dom';
 
 /**
  * Presentational component for displaying a CreateMonumentSuggestion
@@ -61,7 +62,7 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     renderSuggestionDetails() {
-        const { suggestion, allowManagement, onApproveClick, onRejectClick } = this.props;
+        const { suggestion, allowManagement, onApproveClick, onRejectClick, showCollapse=true } = this.props;
         const { expanded } = this.state;
 
         const artist = (suggestion.artist && suggestion.artist.length) ? suggestion.artist : 'None';
@@ -105,44 +106,54 @@ export default class CreateMonumentSuggestion extends React.Component {
             <div><strong>Artist:</strong> {artist}</div>
             <div><strong>Date:</strong> {date}</div>
             <div><strong>Address:</strong> {address}</div>
-            <Collapse in={expanded}>
-                <div>
-                    <div><strong>City:</strong> {city}</div>
-                    <div><strong>State:</strong> {state}</div>
-                    <div><strong>Latitude:</strong> {latitude}</div>
-                    <div><strong>Longitude:</strong> {longitude}</div>
-                    <div><strong>Description:</strong> {description}</div>
-                    <div><strong>Inscription:</strong> {inscription}</div>
-                    <div className="font-weight-bold">Contributors: </div> {this.renderStringArray(JSON.parse(suggestion.contributionsJson))}
-                    <div className="font-weight-bold">References: </div> {this.renderStringArray(JSON.parse(suggestion.referencesJson))}
-                    <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}
-                    <div className="font-weight-bold">Tags: </div> {this.renderTags(false)}
-                    <div className="font-weight-bold">Images: </div>
-                    {imageUrls.length > 0 && <>
-                        <Thumbnails imageUrls={imageUrls}/>
-                    </>}
-                    {!imageUrls.length && <>
-                        None
-                    </>}
-                </div>
-            </Collapse>
+            {showCollapse && <>
+                <Collapse in={expanded}>
+                    <div>
+                        <div><strong>City:</strong> {city}</div>
+                        <div><strong>State:</strong> {state}</div>
+                        <div><strong>Latitude:</strong> {latitude}</div>
+                        <div><strong>Longitude:</strong> {longitude}</div>
+                        <div><strong>Description:</strong> {description}</div>
+                        <div><strong>Inscription:</strong> {inscription}</div>
+                        <div className="font-weight-bold">Contributors: </div> {this.renderStringArray(JSON.parse(suggestion.contributionsJson))}
+                        <div className="font-weight-bold">References: </div> {this.renderStringArray(JSON.parse(suggestion.referencesJson))}
+                        <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}
+                        <div className="font-weight-bold">Tags: </div> {this.renderTags(false)}
+                        <div className="font-weight-bold">Images: </div>
+                        {imageUrls.length > 0 && <>
+                            <Thumbnails imageUrls={imageUrls}/>
+                        </>}
+                        {!imageUrls.length && <>
+                            None
+                        </>}
+                    </div>
+                </Collapse>
 
-            {!expanded && expandLink}
-            {expanded && hideLink}
+                {!expanded && expandLink}
+                {expanded && hideLink}
+            </>}
 
             {allowManagement && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
         </>);
     }
 
     render() {
-        const { suggestion, index } = this.props;
+        const { suggestion, index, showTitleAsLink } = this.props;
+
+        const titleText = `${index}. ${suggestion.title}`;
 
         return (
             <Card className="create-suggestion">
                 <Card.Header className="pt-0">
-                    <Card.Title>{`${index}. ${suggestion.title}`}</Card.Title>
+                    <Card.Title>
+                        {
+                            showTitleAsLink ?
+                                <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}`}>{titleText}</Link> :
+                                titleText
+                        }
+                    </Card.Title>
                 </Card.Header>
-                <Card.Body className="pt-1 pb-1">
+                <Card.Body className="pt-1 pb-2">
                     {this.renderSuggestionDetails()}
                 </Card.Body>
             </Card>

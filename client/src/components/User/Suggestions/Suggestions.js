@@ -95,7 +95,7 @@ export default class Suggestions extends React.Component {
                 memorial by {createPageNavLink}.
             </>}
             {create && create.length > 0 && <>
-                <CreateMonumentSuggestions suggestions={create} allowManagement={Role.RESEARCHER_OR_ABOVE.includes(role.toUpperCase())}/>
+                <CreateMonumentSuggestions suggestions={create}/>
             </>}
             <h6 className="mt-4">Update Monument or Memorial Suggestions</h6>
             {(!update || update.length === 0) && !error && <>
