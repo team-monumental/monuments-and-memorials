@@ -314,6 +314,33 @@ public class SuggestionController {
     }
 
     /**
+     * Check the progress of an approve BulkCreateMonumentSuggestion job
+     * @param id - Id of the job to check
+     * @return AsyncJob - Object containing the id of the job and the current value of the Future object
+     */
+    @GetMapping("/api/suggestion/bulk/approve/progress/{id}")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public AsyncJob getApproveBulkCreateMonumentSuggestionJob(@PathVariable Integer id) {
+        return this.asyncJobService.getJob(id);
+    }
+
+    /**
+     * Get the final result of an approve BulkCreateMonumentSuggestion job. If the job is not completed yet this will
+     * wait for it to complete, so be sure to call getApproveBulkCreateMonumentSuggestionJob and check the status before
+     * calling this
+     * @param id - Id of the job to get the result of
+     * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created by the job
+     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
+     * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
+     */
+    @GetMapping("/api/suggestion/bulk/approve/result/{id}")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public BulkCreateMonumentSuggestion getApproveBulkCreateMonumentSuggestionJobResult(@PathVariable Integer id)
+            throws ExecutionException, InterruptedException {
+        return (BulkCreateMonumentSuggestion) this.asyncJobService.getJob(id).getFuture().get();
+    }
+
+    /**
      * Reject a CreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the CreateMonumentSuggestion to reject
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object that was rejected

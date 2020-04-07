@@ -26,7 +26,8 @@ const actions = {
         pending: BULK_CREATE_MONUMENTS_PENDING,
         success: BULK_CREATE_MONUMENTS_SUCCESS,
         error: BULK_CREATE_MONUMENTS_ERROR,
-        uri: '/api/monument/bulk'
+        suggestUri: '/api/suggestion/bulk',
+        approveUri: '/api/suggestion/bulk'
     }
 };
 
@@ -84,4 +85,58 @@ export function bulkValidateSuggestions(form) {
 
 export function bulkCreateSuggestions(form) {
     return doAction(actions.createSuggestion, form, true);
+}
+
+export function bulkCreateMonuments(form) {
+    return async dispatch => {
+        dispatch(pending(actions.create));
+
+        try {
+            // Create the BulkCreateMonumentSuggestion
+            let suggestResult = await (await fetch(actions.create.suggestUri, {
+                method: 'post',
+                body: buildFormData(form)
+            })).json();
+
+            const suggestJobId = suggestResult.id;
+
+            let interval;
+            await new Promise(resolve => {
+                interval = window.setInterval(async () => {
+                    suggestResult = await (await fetch(`${actions.create.suggestUri}/progress/${suggestJobId}`)).json();
+                    // Divide the suggestion progress by 2 so it ranges from 0.0 to 0.50
+                    dispatch(pending(actions.create, (suggestResult.progress / 2)));
+
+                    if (suggestResult.future && suggestResult.future.done) resolve();
+                }, 100);
+            });
+            window.clearInterval(interval);
+
+            suggestResult = await (await fetch(`${actions.create.suggestUri}/result/${suggestJobId}`)).json();
+
+            // Approve the BulkCreateMonumentSuggestion
+            let approveResult = await (await fetch(`${actions.create.approveUri}/${suggestResult.id}/approve`, {
+                method: 'put',
+                body: buildFormData(form)
+            })).json();
+
+            const approveJobId = approveResult.id;
+
+            await new Promise(resolve => {
+                interval = window.setInterval(async () => {
+                    approveResult = await (await fetch(`${actions.create.approveUri}/approve/progress/${approveJobId}`));
+                    // Divide the approve progress by 2 then add 0.50 so it ranges from 0.50 to 1.00
+                    dispatch(pending(actions.create, ((approveResult.progress / 2) + 0.50)));
+
+                    if (approveResult.future && approveResult.future.done) resolve();
+                }, 100);
+            });
+            window.clearInterval(interval);
+
+            approveResult = await (await fetch(`${actions.create.approveUri}/approve/result/${approveJobId}`)).json();
+            dispatch(success(actions.create), approveResult);
+        } catch (err) {
+            dispatch(error(actions.create, err));
+        }
+    }
 }

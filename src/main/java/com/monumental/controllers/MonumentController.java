@@ -1,6 +1,5 @@
 package com.monumental.controllers;
 
-import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -8,14 +7,12 @@ import com.monumental.models.Monument;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
-import com.monumental.security.Authentication;
+import com.monumental.repositories.suggestions.CreateSuggestionRepository;
+import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
-import com.monumental.services.AsyncJobService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
-import com.monumental.util.async.AsyncJob;
-import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,11 +20,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 public class MonumentController {
@@ -36,13 +31,16 @@ public class MonumentController {
     private MonumentRepository monumentRepository;
 
     @Autowired
-    private AsyncJobService asyncJobService;
-
-    @Autowired
     private MonumentService monumentService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CreateSuggestionRepository createSuggestionRepository;
+
+    @Autowired
+    private UpdateSuggestionRepository updateSuggestionRepository;
 
     /**
      * Get a Monument with the specified ID, if it exists and is active or inactive depending on onlyActive
@@ -160,6 +158,7 @@ public class MonumentController {
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Monument createMonument(@RequestBody CreateMonumentSuggestion createSuggestion) {
         createSuggestion.setIsApproved(true);
+        createSuggestion = this.createSuggestionRepository.save(createSuggestion);
         return this.monumentService.createMonument(createSuggestion);
     }
 
@@ -185,6 +184,7 @@ public class MonumentController {
 
         updateSuggestion.setMonument(monument);
         updateSuggestion.setIsApproved(true);
+        updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
         return this.monumentService.updateMonument(updateSuggestion);
     }
 }

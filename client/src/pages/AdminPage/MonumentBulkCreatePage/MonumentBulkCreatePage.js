@@ -3,7 +3,7 @@ import './MonumentBulkCreatePage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import BulkCreateForm from '../../../components/BulkCreateForm/BulkCreateForm';
-import { bulkValidateSuggestions, bulkCreateSuggestions } from '../../../actions/bulk';
+import { bulkValidateSuggestions, bulkCreateSuggestions, bulkCreateMonuments } from '../../../actions/bulk';
 import Spinner from '../../../components/Spinner/Spinner';
 import ErrorModal from '../../../components/Error/ErrorModal/ErrorModal';
 import { Modal, ProgressBar } from 'react-bootstrap';
@@ -30,13 +30,16 @@ class MonumentBulkCreatePage extends React.Component {
         if (this.props.error && !prevState.showingErrorModal) {
             this.setState({showingErrorModal: true});
         }
-        else if (this.props.createResult && !this.props.bulkSuggestionCreatePending) {
+        else if (this.props.createSuggestionResult && !this.props.bulkSuggestionCreatePending) {
             this.props.history.push('/panel/suggestion-created');
         }
     }
 
     static mapStateToProps(state) {
-        return state.bulkCreatePage;
+        return {
+            ...state.session,
+            ...state.bulkCreatePage
+        };
     }
 
     handleValidationSubmit(form) {
@@ -48,10 +51,18 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     handleCreateSubmit(form) {
-        const { dispatch } = this.props;
+        const { dispatch, user } = this.props;
 
-        // Send the .zip or .csv file and the mapping to the server to be processed
-        dispatch(bulkCreateSuggestions(form));
+        // Make the appropriate API call
+        // Researchers and Admins bypass Suggestions and can directly bulk-create new Monuments
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            dispatch(bulkCreateMonuments(form));
+        }
+        // Any other role has to create a Suggestion
+        else {
+            dispatch(bulkCreateSuggestions(form));
+        }
+
         this.setState({showValidationResults: false, showCreateResults: true});
     }
 
@@ -61,12 +72,18 @@ class MonumentBulkCreatePage extends React.Component {
 
     render() {
         let { showingErrorModal, showValidationResults, term } = this.state;
-        const {
-            bulkSuggestionCreatePending, bulkSuggestionValidatePending, validationResult, validationError,
-            createResult, createError, createProgress
-        } = this.props;
+        const { bulkSuggestionCreatePending, bulkSuggestionValidatePending, bulkCreatePending, validationResult,
+            validationError, createSuggestionResult, createSuggestionError, createSuggestionProgress,
+            createProgress, createResult } = this.props;
 
         showValidationResults = showValidationResults && !bulkSuggestionValidatePending;
+
+        console.log(bulkSuggestionCreatePending);
+        console.log(bulkCreatePending);
+        console.log(createSuggestionProgress);
+        console.log(createProgress);
+
+        console.log(createResult);
 
         return (
             <div className="bulk page d-flex justify-content-center">
@@ -77,9 +94,9 @@ class MonumentBulkCreatePage extends React.Component {
                     onCreateSubmit={(form) => this.handleCreateSubmit(form)}
                     onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
                     term={term} pastTenseTerm={this.getTermPastTense()} actionHappeningTerm={this.getTermActionHappening()}
-                    {...{validationResult, createResult, showValidationResults}}
+                    {...{validationResult, createSuggestionResult, showValidationResults}}
                 />
-                <Modal show={bulkSuggestionCreatePending}>
+                <Modal show={bulkSuggestionCreatePending || bulkCreatePending}>
                     <Modal.Header className="pb-0">
                         <Modal.Title>
                             Bulk {this.getTermActionHappening()} Monuments or Memorials
@@ -89,12 +106,12 @@ class MonumentBulkCreatePage extends React.Component {
                         <div className="mb-2">
                             Please wait while your monuments or memorials are {this.getTermPastTense().toLowerCase()}...
                         </div>
-                        <ProgressBar now={createProgress * 100}/>
+                        <ProgressBar now={(createSuggestionProgress || createProgress) * 100}/>
                     </Modal.Body>
                 </Modal>
                 <ErrorModal
                     showing={showingErrorModal}
-                    errorMessage={(validationError || createError || {}).message || ''}
+                    errorMessage={(validationError || createSuggestionError || {}).message || ''}
                     onClose={() => this.handleErrorModalClose()}
                 />
             </div>
