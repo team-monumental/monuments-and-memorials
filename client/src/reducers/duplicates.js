@@ -1,5 +1,5 @@
 import { FETCH_DUPLICATES_PENDING, FETCH_DUPLICATES_SUCCESS, FETCH_DUPLICATES_ERROR } from '../constants';
-import { LOCATION_CHANGE } from "connected-react-router";
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
     fetchDuplicatesPending: false,

@@ -1,8 +1,8 @@
 import React from 'react';
 import "./RelatedMonuments.scss";
-import Spinner from "../../Spinner/Spinner";
-import SearchResult from "../../Search/SearchResult/SearchResult";
-import Collapse from "react-bootstrap/Collapse";
+import Spinner from '../../Spinner/Spinner';
+import SearchResult from '../../Search/SearchResult/SearchResult';
+import Collapse from 'react-bootstrap/Collapse';
 
 /**
  * Presentational Component for Related/Nearby Monuments

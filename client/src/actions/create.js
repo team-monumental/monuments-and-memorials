@@ -1,5 +1,5 @@
-import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
-import { post } from "../utils/api-util";
+import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from '../constants';
+import { post } from '../utils/api-util';
 import { addError } from './errors';
 import { pending, success, error } from '../utils/action-util';
 

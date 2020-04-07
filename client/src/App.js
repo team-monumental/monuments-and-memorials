@@ -14,7 +14,7 @@ import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
-import HomePage from "./pages/HomePage/HomePage";
+import HomePage from './pages/HomePage/HomePage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';

@@ -2,7 +2,7 @@ import {
     BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR,
     BULK_VALIDATE_MONUMENTS_PENDING, BULK_VALIDATE_MONUMENTS_SUCCESS, BULK_VALIDATE_MONUMENTS_ERROR
 } from '../constants';
-import { LOCATION_CHANGE } from "connected-react-router";
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
     bulkCreateMonumentsPending: false,

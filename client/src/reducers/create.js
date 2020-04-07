@@ -1,5 +1,5 @@
-import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from "../constants";
-import { LOCATION_CHANGE } from "connected-react-router";
+import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from '../constants';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
     createMonumentPending : false,

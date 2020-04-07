@@ -3,7 +3,7 @@ import './Filters.scss';
 import { withRouter } from 'react-router-dom';
 import { Collapse, Form } from 'react-bootstrap';
 import TagsSearch from '../TagsSearch/TagsSearch';
-import search from "../../../utils/search";
+import search from '../../../utils/search';
 import DatePicker from 'react-datepicker';
 import * as moment from 'moment';
 
