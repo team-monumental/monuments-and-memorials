@@ -520,7 +520,7 @@ export default class BulkCreateForm extends React.Component {
                     <ul className="mt-1">
                         {createResult.map(result => (
                             <li key={result.id}>
-                                <Link to={`/monuments/${result.id}`}>{`/monuments/${result.id}`}</Link>
+                                <Link to={`/monuments/${result.id}`}>{result.title}</Link>
                             </li>
                         ))}
                     </ul>
