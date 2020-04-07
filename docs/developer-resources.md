@@ -287,6 +287,14 @@ This is used to give pages dynamic titles and should be used as often as necessa
 
 As mentioned in the [components](#components) section above, these are used for global state management, such as when we make API calls. See the [components](#components) section for useful links for learning these packages. They are critical to being able to work in the React app.
 
+##### React Router
+
+[React Router](https://reacttraining.com/react-router/web/guides/quick-start) is responsible for creating routes within the React app, allowing us to have virtual "pages" within a single-page app. *Usually* our routing is done in `App.js`. There is one exception, which is the routing done within `AdminPanel` because its pages need to render inside the container provided.
+
+We have a custom component `ProtectedRoute` that wraps the behavior of React Router's `Route` component, allowing us to only allow access to the route if the user is logged in and, optionally, has one of the specified Roles required to view the page (using the `oneOf` prop. If this prop is not used then the user just needs to be logged in).
+
+It's important to note that this component does some fuzzy matching to see if the current route matches the `path` prop, which so far works for all of our use cases but is not an exact match (or even a very good approximation) of the React Router `Route` component's functionality when matching the `path` prop.
+
 ### Third Party APIs
 
 #### Server-Side
