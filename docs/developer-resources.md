@@ -285,7 +285,7 @@ This is used to give pages dynamic titles and should be used as often as necessa
 
 ##### Redux and Redux Thunk
 
-As mentioned in the **components** section above, these are used for global state management, such as when we make API calls. See the **components** section for useful links for learning these packages. They are critical to being able to work in the React app.
+As mentioned in the [components](#components) section above, these are used for global state management, such as when we make API calls. See the [components](#components) section for useful links for learning these packages. They are critical to being able to work in the React app.
 
 ### Third Party APIs
 
@@ -317,7 +317,7 @@ On the client-side, we use the Google Maps API to:
 
 ##### Leaflet
 
-See **Leaflet** in the **NPM Packages** section above. Using Leaflet does make some external API calls to get the map images but this is handled for us automatically.
+See **Leaflet** in the [NPM Packages](#NPM Packages) section above. Using Leaflet does make some external API calls to get the map images but this is handled for us automatically.
 
 **Amazon AWS**
 
