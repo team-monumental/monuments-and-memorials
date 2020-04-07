@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -329,15 +330,16 @@ public class SuggestionController {
      * wait for it to complete, so be sure to call getApproveBulkCreateMonumentSuggestionJob and check the status before
      * calling this
      * @param id - Id of the job to get the result of
-     * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created by the job
+     * @return List<Monument> - The Monuments created from the approve BulkCreateMonumentSuggestion job
      * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
     @GetMapping("/api/suggestion/bulk/approve/result/{id}")
     @PreAuthorize(Authorization.isPartnerOrAbove)
-    public BulkCreateMonumentSuggestion getApproveBulkCreateMonumentSuggestionJobResult(@PathVariable Integer id)
+    @SuppressWarnings("unchecked")
+    public List<Monument> getApproveBulkCreateMonumentSuggestionJobResult(@PathVariable Integer id)
             throws ExecutionException, InterruptedException {
-        return (BulkCreateMonumentSuggestion) this.asyncJobService.getJob(id).getFuture().get();
+        return (ArrayList<Monument>) this.asyncJobService.getJob(id).getFuture().get();
     }
 
     /**

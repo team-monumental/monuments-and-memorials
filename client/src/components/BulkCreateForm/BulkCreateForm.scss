@@ -43,3 +43,11 @@
         }
     }
 }
+
+.create-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 260px;
+    overflow: auto;
+}

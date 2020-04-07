@@ -1530,6 +1530,6 @@ public class MonumentService extends ModelService<Monument> {
         bulkCreateSuggestion.setCreateSuggestions(createSuggestions);
         bulkCreateSuggestion.setFileName(bulkValidationResult.getFileName());
         if (job != null) job.setProgress(1.0);
-        return this.bulkCreateSuggestionRepository.save(bulkCreateSuggestion);
+        return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
     }
 }

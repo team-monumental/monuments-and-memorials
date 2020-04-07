@@ -65,7 +65,7 @@ function doAction(action, form, isAsyncJob=false) {
                         dispatch(pending(action, result.progress));
 
                         if (result.future && result.future.done) resolve();
-                    }, 100);
+                    }, 200);
                 });
                 window.clearInterval(interval);
 
@@ -108,7 +108,7 @@ export function bulkCreateMonuments(form) {
                     dispatch(pending(actions.create, (suggestResult.progress / 2)));
 
                     if (suggestResult.future && suggestResult.future.done) resolve();
-                }, 100);
+                }, 200);
             });
             window.clearInterval(interval);
 
@@ -124,17 +124,17 @@ export function bulkCreateMonuments(form) {
 
             await new Promise(resolve => {
                 interval = window.setInterval(async () => {
-                    approveResult = await (await fetch(`${actions.create.approveUri}/approve/progress/${approveJobId}`));
+                    approveResult = await (await fetch(`${actions.create.approveUri}/approve/progress/${approveJobId}`)).json();
                     // Divide the approve progress by 2 then add 0.50 so it ranges from 0.50 to 1.00
                     dispatch(pending(actions.create, ((approveResult.progress / 2) + 0.50)));
 
                     if (approveResult.future && approveResult.future.done) resolve();
-                }, 100);
+                }, 200);
             });
             window.clearInterval(interval);
 
             approveResult = await (await fetch(`${actions.create.approveUri}/approve/result/${approveJobId}`)).json();
-            dispatch(success(actions.create), approveResult);
+            dispatch(success(actions.create, approveResult));
         } catch (err) {
             dispatch(error(actions.create, err));
         }

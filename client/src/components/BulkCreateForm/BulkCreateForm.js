@@ -8,6 +8,7 @@ import * as CSVParser from 'csvtojson';
 import moment from 'moment';
 import ExportToCsvButton from '../Export/ExportToCsvButton/ExportToCsvButton';
 import { capitalize } from '../../utils/string-util';
+import { Link } from 'react-router-dom';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating/suggesting Monuments
@@ -232,7 +233,7 @@ export default class BulkCreateForm extends React.Component {
 
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults, term } = this.props;
+        const { showValidationResults, term, showCreateResults } = this.props;
 
         return (
             <Card className="bulk-create-form-container">
@@ -245,8 +246,9 @@ export default class BulkCreateForm extends React.Component {
                     {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
-                {showFieldMapping && !showValidationResults && this.renderFieldMapping()}
+                {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
                 {showValidationResults && this.renderValidationResults()}
+                {showCreateResults && this.renderCreateResults()}
             </Card>
         );
     }
@@ -504,5 +506,26 @@ export default class BulkCreateForm extends React.Component {
                 </Button>
             </Card.Footer>
         </>);
+    }
+
+    renderCreateResults() {
+        const { createResult } = this.props;
+
+        return (
+            <Card.Body>
+                <h5>Success!</h5>
+                <div className="create-results">
+                    {createResult.length} monuments or memorials have been created!<br/>
+                    You can view each by following the links below:
+                    <ul className="mt-1">
+                        {createResult.map(result => (
+                            <li key={result.id}>
+                                <Link to={`/monuments/${result.id}`}>{`/monuments/${result.id}`}</Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </Card.Body>
+        );
     }
 }

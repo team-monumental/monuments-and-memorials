@@ -153,15 +153,19 @@ public class EmailService {
      * Sent when a user has one of their BulkCreateMonumentSuggestions approved
      */
     public void sendBulkCreateSuggestionApprovalEmail(BulkCreateMonumentSuggestion suggestion) {
-        String extraMessage = suggestion.getFileName() + ". " + this.suggestionApprovedEmailThankYou;
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.approval", extraMessage);
+        if (suggestion.getCreatedBy() != null) {
+            String extraMessage = suggestion.getFileName() + ". " + this.suggestionApprovedEmailThankYou;
+            this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.approval", extraMessage);
+        }
     }
 
     /**
      * Sent when a user has one of their BulkCreateMonumentSuggestions rejected
      */
     public void sendBulkCreateSuggestionRejectionEmail(BulkCreateMonumentSuggestion suggestion) {
-        String extraMessage = suggestion.getFileName() + ". " + this.suggestionRejectedContact;
-        this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.rejection", extraMessage);
+        if (suggestion.getCreatedBy() != null) {
+            String extraMessage = suggestion.getFileName() + ". " + this.suggestionRejectedContact;
+            this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.rejection", extraMessage);
+        }
     }
 }

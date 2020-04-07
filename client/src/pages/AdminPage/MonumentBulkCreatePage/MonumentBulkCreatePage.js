@@ -33,6 +33,9 @@ class MonumentBulkCreatePage extends React.Component {
         else if (this.props.createSuggestionResult && !this.props.bulkSuggestionCreatePending) {
             this.props.history.push('/panel/suggestion-created');
         }
+        else if (this.props.createResult && !this.props.bulkCreatePending && !prevProps.createResult) {
+            this.setState({showCreateResults: true})
+        }
     }
 
     static mapStateToProps(state) {
@@ -63,7 +66,7 @@ class MonumentBulkCreatePage extends React.Component {
             dispatch(bulkCreateSuggestions(form));
         }
 
-        this.setState({showValidationResults: false, showCreateResults: true});
+        this.setState({showValidationResults: false});
     }
 
     handleErrorModalClose() {
@@ -71,19 +74,12 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        let { showingErrorModal, showValidationResults, term } = this.state;
+        let { showingErrorModal, showValidationResults, term, showCreateResults } = this.state;
         const { bulkSuggestionCreatePending, bulkSuggestionValidatePending, bulkCreatePending, validationResult,
             validationError, createSuggestionResult, createSuggestionError, createSuggestionProgress,
-            createProgress, createResult } = this.props;
+            createProgress, createResult, createError } = this.props;
 
-        showValidationResults = showValidationResults && !bulkSuggestionValidatePending;
-
-        console.log(bulkSuggestionCreatePending);
-        console.log(bulkCreatePending);
-        console.log(createSuggestionProgress);
-        console.log(createProgress);
-
-        console.log(createResult);
+        showValidationResults = showValidationResults && !bulkSuggestionValidatePending && !showCreateResults;
 
         return (
             <div className="bulk page d-flex justify-content-center">
@@ -94,7 +90,7 @@ class MonumentBulkCreatePage extends React.Component {
                     onCreateSubmit={(form) => this.handleCreateSubmit(form)}
                     onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
                     term={term} pastTenseTerm={this.getTermPastTense()} actionHappeningTerm={this.getTermActionHappening()}
-                    {...{validationResult, createSuggestionResult, showValidationResults}}
+                    {...{validationResult, createSuggestionResult, showValidationResults, showCreateResults, createResult}}
                 />
                 <Modal show={bulkSuggestionCreatePending || bulkCreatePending}>
                     <Modal.Header className="pb-0">
@@ -111,7 +107,7 @@ class MonumentBulkCreatePage extends React.Component {
                 </Modal>
                 <ErrorModal
                     showing={showingErrorModal}
-                    errorMessage={(validationError || createSuggestionError || {}).message || ''}
+                    errorMessage={(validationError || createSuggestionError || createError || {}).message || ''}
                     onClose={() => this.handleErrorModalClose()}
                 />
             </div>
