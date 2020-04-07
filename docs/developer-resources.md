@@ -241,7 +241,7 @@ These are just like pages except, well, they're not pages. This folder isn't use
 
 ##### components
 
-These are the bulk of the components, they are **non-stateful** and **presentational**. What that means is that they don't do things like consumer Redux reducers or dispatch Redux actions. They may have state if it's related to the presentation, i.e. if you need to track whether or not a modal is showing but they shouldn't have state from Redux.
+These are the bulk of the components, they are **non-stateful** and **presentational**. What that means is that they don't do things like consume Redux reducers or dispatch Redux actions. They may have state if it's related to the presentation, i.e. if you need to track whether or not a modal is showing but they shouldn't have state from Redux.
 
 ##### actions
 
