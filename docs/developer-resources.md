@@ -17,13 +17,13 @@ This document contains as many helpful instructions for future software engineer
    3. Create your own SSH key if you don't already have one
 
       ```bash
-      $ ssh-keygen
+      ssh-keygen
       ```
 
    4. Because the ubuntu user does not allow password authentication, you cannot use `ssh-copy-id`. One way to add your public key is to connect with the provided private key and then add your public key to `~/.ssh/authorized_keys`. You can do this quickly through SSH, for example:
 
       ```bash
-      $ cat ~/.ssh/id_rsa.pub | ssh ubuntu@monuments.us.org -i monuments.pem "cat >> ~/.ssh/authorized_keys"
+      cat ~/.ssh/id_rsa.pub | ssh ubuntu@monuments.us.org -i monuments.pem "cat >> ~/.ssh/authorized_keys"
       ```
 
    5. You can now delete `monuments.pem` from your local system. I recommend every user have their own private/public key to make access management easier. If you want to revoke access to a user you should create a new public/private key to take the place of `monuments.pem`, remove the first public key from `~/.ssh/authorized_keys` and replace it with the new key you've created. Then remove the individual users' public keys from `~/.ssh/authorized_keys`. This is obviously not ideal, so you could go about setting up individual admin users for each user and deleting them as necessary.
@@ -73,8 +73,8 @@ This document contains as many helpful instructions for future software engineer
       4. Open `package.json` and run the install when IntelliJ asks. If it doesn't ask you may need to run it manually
 
          ```bash
-         $ cd client
-         $ npm install
+         cd client
+         npm install
          ```
 
          Then, run the `start` script and in a few seconds a tab should open in your browser automatically at `localhost:3000`
@@ -82,27 +82,27 @@ This document contains as many helpful instructions for future software engineer
    2. Otherwise, clone the repo as normal and set it up in your editor
 
       ```bash
-      $ git clone https://github.com/team-monumental/monuments-and-memorials.git
+      git clone https://github.com/team-monumental/monuments-and-memorials.git
       ```
 
       1. Run the Gradle build. This should download all the dependencies.
 
          ```bash
-         $ ./gradlew build
+         ./gradlew build
          ```
 
       2. Start the server
 
          ```bash
-         $ java -jar build/libs/monuments-and-memorials-0.0.1-SNAPSHOT.jar
+         java -jar build/libs/monuments-and-memorials-0.0.1-SNAPSHOT.jar
          ```
 
       3. Run the npm install and start the React server.
 
          ```bash
-         $ cd client
-         $ npm install
-         $ npm start
+         cd client
+         npm install
+         npm start
          ```
 
       4. Go to http://localhost:3000 if a browser tab does not open automatically
@@ -114,7 +114,7 @@ This document contains as many helpful instructions for future software engineer
    2. Click the sign up button and try to sign up. It should succeed. Now, connect to postgres and make yourself an admin user.
 
       ```bash
-      $ psql postgres postgres
+      psql postgres postgres
       ```
 
       ```plsql
