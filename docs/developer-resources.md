@@ -325,7 +325,7 @@ On the client-side, we use the Google Maps API to:
 
 ##### Leaflet
 
-See **Leaflet** in the [NPM Packages](#NPM Packages) section above. Using Leaflet does make some external API calls to get the map images but this is handled for us automatically.
+See **Leaflet** in the [NPM Packages](#npm-packages) section above. Using Leaflet does make some external API calls to get the map images but this is handled for us automatically.
 
 **Amazon AWS**
 
