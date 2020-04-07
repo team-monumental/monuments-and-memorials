@@ -53,7 +53,7 @@ This document contains as many helpful instructions for future software engineer
       Then connect again
 
       ```bash
-      $ psql postgres postgres
+      psql postgres postgres
       ```
 
       You should be prompted for a password, and you should enter `password`. At this point if you're at the SQL prompt, you've done everything correctly.
