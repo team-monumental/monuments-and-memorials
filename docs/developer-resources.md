@@ -4,7 +4,7 @@ This document contains as many helpful instructions for future software engineer
 
 1. Unix (Linux/MacOS) operating system. I am 100% aware that there will be future users on Windows, but it wasn't feasible to write everything twice so you will need to adjust accordingly. The main reason this is written with Unix in mind is because the VM runs on Ubuntu. If you use Windows 10 you can look into [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) although keep in mind that this is not a simple process at all and has a few drawbacks as there's essentially two operating systems that may end up fighting each other at times. I do use it on my desktop though and would definitely recommend it over command prompt.
 2. IntelliJ IDEA. This isn't necessary but it has a lot of useful features that we have come to appreciate in this project. As an RIT student you are able to get the professional edition for [free](https://www.jetbrains.com/community/education/) by providing your .edu email address which I recommend because it has a few features that help for this project.
-3. Most importantly, this is not an exhaustive list and it assumes some basic knowledge. If you're truly struggling you can reach out to [me](benvogler1@gmail.com).
+3. Most importantly, this is not an exhaustive list and it assumes some basic knowledge. If you're truly struggling you can reach out to [me](mailto:benvogler1@gmail.com).
 
 ## Local Setup
 
