@@ -1,4 +1,4 @@
-package com.monumental.config;
+package com.monumental.security;
 
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.User;

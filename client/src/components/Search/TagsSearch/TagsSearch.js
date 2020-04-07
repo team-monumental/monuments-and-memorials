@@ -97,7 +97,8 @@ class TagsSearch extends React.Component {
                            onChange={(event) => this.handleSearchChange(event.target.value)}
                            placeholder={variant.charAt(0).toUpperCase() + variant.slice(1) + '...'}
                            className="form-control"
-                           onKeyDown={(event) => this.handleKeyDown(event)}/>
+                           onKeyDown={(event) => this.handleKeyDown(event)}
+                           autoComplete="off"/>
                     {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
                 </div>
                 <div className="search-results">

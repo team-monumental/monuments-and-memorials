@@ -12,7 +12,7 @@ import java.util.Collection;
  */
 public class UserAwareUserDetails implements UserDetails {
 
-    private final User user;
+    private User user;
     private final Collection<? extends GrantedAuthority> grantedAuthorities;
 
     public UserAwareUserDetails(User user) {
@@ -61,5 +61,9 @@ public class UserAwareUserDetails implements UserDetails {
 
     public User getUser() {
         return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

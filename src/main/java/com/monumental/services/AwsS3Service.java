@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -87,18 +88,22 @@ public class AwsS3Service {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static String generateUniqueKey(String objectKey) {
 
-        Integer number = null;
+        int number = 0;
 
         while (!isUniqueKey(objectKey)) {
-            String checkRegex = "/\\([0-9]*\\)/$";
-            String captureRegex = "/\\(([0-9]*)\\)/$";
+            String checkRegex = ".*\\([0-9]+\\)$";
+            String captureRegex = "\\(([0-9]+)\\)$";
             // If the key already ends with "(1)", for example
-            if (objectKey.contains(checkRegex)) {
-                if (number == null) number = Integer.parseInt(Pattern.compile(captureRegex).matcher(objectKey).group(0));
+            if (objectKey.matches(checkRegex)) {
+                Matcher matcher = Pattern.compile(captureRegex).matcher(objectKey);
+                matcher.find();
+                // The first group will be "(1)", the second group will be "1". Java's regex matching is stupid.
+                number = Integer.parseInt(matcher.group(1));
                 number++;
-                objectKey = objectKey.replaceAll(checkRegex, "(" + number + ")");
+                objectKey = objectKey.replaceAll(captureRegex, "(" + number + ")");
             } else {
                 objectKey += " (1)";
             }

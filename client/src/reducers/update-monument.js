@@ -9,6 +9,7 @@ import {
     TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
     TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
 } from '../constants';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import basicReducer from '../utils/basic-reducer';
 
 const initialState = {
@@ -21,6 +22,8 @@ const initialState = {
 
 export function updateMonumentPage(state = initialState, action) {
     switch (action.type) {
+        case LOCATION_CHANGE:
+            return initialState;
         case FETCH_MONUMENT_UPDATE_PENDING:
             return {
                 ...state,
@@ -67,7 +70,7 @@ const initialToggleActiveState = {
 };
 
 export function toggleMonumentIsActive(state = initialToggleActiveState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialToggleActiveState, action, {
         pending: TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
         success: TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
         error: TOGGLE_MONUMENT_IS_ACTIVE_ERROR
@@ -81,7 +84,7 @@ const initialDeleteState = {
 };
 
 export function deleteMonument(state = initialDeleteState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, initialDeleteState, action, {
         pending: DELETE_MONUMENT_PENDING,
         success: DELETE_MONUMENT_SUCCESS,
         error: DELETE_MONUMENT_ERROR

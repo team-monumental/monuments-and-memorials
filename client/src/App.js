@@ -4,6 +4,7 @@ import './theme.scss';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
 
 import Header from './components/Header/Header';
 import MonumentPage from './pages/MonumentPage/MonumentPage';
@@ -13,7 +14,7 @@ import Toaster from './containers/Toaster/Toaster';
 import MapPage from './pages/MapPage/MapPage';
 import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
-import HomePage from "./pages/HomePage/HomePage";
+import HomePage from './pages/HomePage/HomePage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -48,12 +49,13 @@ class App extends React.Component {
     }
 
     render() {
+        const { history } = this.props;
         const { headerHeight } = this.state;
         return (
             <div className="App">
                 <Helmet title="Monuments and Memorials"/>
                 <Toaster/>
-                <Router>
+                <ConnectedRouter history={history}>
                     <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
@@ -76,7 +78,7 @@ class App extends React.Component {
                             <ProtectedRoute path="/panel" component={AdminPage}/>
                         </ErrorHandler>
                     </div>
-                </Router>
+                </ConnectedRouter>
             </div>
         );
     }

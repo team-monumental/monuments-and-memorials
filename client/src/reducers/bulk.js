@@ -2,6 +2,7 @@ import {
     BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR,
     BULK_VALIDATE_MONUMENTS_PENDING, BULK_VALIDATE_MONUMENTS_SUCCESS, BULK_VALIDATE_MONUMENTS_ERROR
 } from '../constants';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
     bulkCreateMonumentsPending: false,
@@ -13,6 +14,8 @@ const initialState = {
 // Tracks the progress for bulk creating Monuments via CSV or .zip upload for the MonumentBulkCreatePage
 export default function bulkCreatePage(state = initialState, action) {
     switch (action.type) {
+        case LOCATION_CHANGE:
+            return initialState;
         case BULK_CREATE_MONUMENTS_PENDING:
             return {
                 ...state,

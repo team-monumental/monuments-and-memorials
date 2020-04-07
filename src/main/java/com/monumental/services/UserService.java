@@ -89,6 +89,15 @@ public class UserService extends ModelService<User> {
     }
 
     /**
+     * Force the session to use an updated version of the user record
+     * @param user - The updated user record
+     * @throws UnauthorizedException - If the current user is not logged in
+     */
+    public void updateSessionUser(User user) throws UnauthorizedException {
+        this.getSession().setUser(user);
+    }
+
+    /**
      * Begins the signup process by creating the User with the submitted information. The User will receive
      * an email with a verification link so that we know the user owns the provided email address,
      * @param userRequest - The form data from the user including name, email, and password

@@ -1,4 +1,5 @@
 import { FETCH_DUPLICATES_PENDING, FETCH_DUPLICATES_SUCCESS, FETCH_DUPLICATES_ERROR } from '../constants';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 const initialState = {
     fetchDuplicatesPending: false,
@@ -9,6 +10,8 @@ const initialState = {
 // Tracks the progress for fetching duplicate Monuments
 export default function duplicateMonuments(state = initialState, action) {
     switch (action.type) {
+        case LOCATION_CHANGE:
+            return initialState;
         case FETCH_DUPLICATES_PENDING:
             return {
                 ...state,
