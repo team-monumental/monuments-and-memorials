@@ -2,8 +2,8 @@
 
 This document contains as many helpful instructions for future software engineering senior project teams as I could think of. All of the instructions are written with two assumptions:
 
-1. Unix (Linux/MacOS) operating system. I am 100% aware that there will be future users on Windows, but it wasn't feasible to write everything twice so you will need to adjust accordingly. The main reason this is written with Unix in mind is because the VM runs on Ubuntu. If you use Windows 10 you can look into [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) although keep in mind that this is not a simple process at all and has a few drawbacks as there's essentially two operating systems that may end up fighting each other at times. I do use it on my desktop though and would definitely recommend it over command prompt.
-2. IntelliJ IDEA. This isn't necessary but it has a lot of useful features that we have come to appreciate in this project. As an RIT student you are able to get the professional edition for [free](https://www.jetbrains.com/community/education/) by providing your .edu email address which I recommend because it has a few features that help for this project.
+1. Unix (Linux/MacOS) operating system. I am 100% aware that there will be future users on Windows, but it wasn't feasible to write everything twice so you will need to adjust accordingly. The main reason this is written with Unix in mind is because the server is hosted on an Ubuntu VM. If you use Windows 10 you can look into [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) although keep in mind that this is not a simple process at all and has a few drawbacks as there's essentially two operating systems that may end up fighting each other at times. I do use it on my desktop though and would definitely recommend it over command prompt.
+2. IntelliJ IDEA. This isn't necessary but it has a lot of useful features that we have come to appreciate in this project. As an RIT student you are able to get the professional edition for [free](https://www.jetbrains.com/community/education/) by providing your .edu email address.
 3. Most importantly, this is not an exhaustive list and it assumes some basic knowledge. If you're truly struggling you can reach out to [me](mailto:benvogler1@gmail.com).
 
 ## Local Setup
@@ -20,7 +20,7 @@ This document contains as many helpful instructions for future software engineer
       ssh-keygen
       ```
 
-   4. Because the ubuntu user does not allow password authentication, you cannot use `ssh-copy-id`. One way to add your public key is to connect with the provided private key and then add your public key to `~/.ssh/authorized_keys`. You can do this quickly through SSH, for example:
+   4. Because the `ubuntu` user does not allow password authentication, you cannot use `ssh-copy-id`. One way to add your public key is to connect with the provided private key and then add your public key to `~/.ssh/authorized_keys`. You can do this quickly through SSH, for example:
 
       ```bash
       cat ~/.ssh/id_rsa.pub | ssh ubuntu@monuments.us.org -i monuments.pem "cat >> ~/.ssh/authorized_keys"
@@ -32,7 +32,7 @@ This document contains as many helpful instructions for future software engineer
 
    1. Once installed, you need to do some configuration. You will first need to connect to the default postgres user. This can be tricky depending on operating system because some Unix installs expect you to make an actual `postgres` system user and connect using that. You can change this behavior by following [this guide](https://www.liquidweb.com/kb/change-postgresql-authentication-method-from-ident-to-md5/).
 
-   2. Once connected, change the password to password. Yep, really, password. Our hibernate config is shared by everyone, so it needs to be something basic like password.
+   2. Once connected, change the password to `password`. Yep, really, `password`. Our hibernate config is shared by everyone, so it needs to be something basic like password.
 
       ```plsql
       \passwd
@@ -68,7 +68,7 @@ This document contains as many helpful instructions for future software engineer
 
       2. Open `Application.java` and you should be able to run the file. Do so and make sure the server starts without error. You may see some exceptions in the startup log, including one related to sending emails. You can ignore that exception as that's intended, as you don't want to accidentally be sending emails.
 
-      3. Create a file in `/client` called `.env`. In this file, you can configure your API keys provided in the [#setup](https://app.slack.com/client/TMU604V63/C011H12GV7F) slack channel.
+      3. Create a file in `/client` called `.env`. In this file, you can configure your API keys provided in the [#setup](https://app.slack.com/client/TMU604V63/C011H12GV7F) slack channel. This is intentionally not included in this repository because it's a public repository and this file is full of secrets!
 
       4. Open `package.json` and run the install when IntelliJ asks. If it doesn't ask you may need to run it manually
 
@@ -171,7 +171,7 @@ Database. Pretty straightforward.
 
 ##### pgtrgm
 
-PostgreSQL extension responsible for word matching, which is what you see in the first search box on the site.
+PostgreSQL extension responsible for word matching, which is what you see in the first search box on the site where we do fuzzy searches against title, artist, and description, returning a score value that we can sort by.
 
 ##### postgis
 
@@ -191,7 +191,7 @@ For example, we use `JpaRepository` classes to do our CRUD operations. This is a
 
 ##### com.monumental.models
 
-These classes define our database tables. `Model` is not a Hibernate/JPA word, it's our word for Hibernate `Entity` classes because they all extend from the abstract `Model` class which provides some common functionality to all the `Model` classes.
+These classes define our database tables. `Model` is not a Hibernate/JPA word, it's our word for Hibernate `Entity` classes because they all extend from the abstract `Model` class which provides some common functionality to all of its children classes.
 
 ##### com.monumental.repositories
 
@@ -233,7 +233,7 @@ We categorize our React components by three criteria:
 
 ##### pages
 
-This folder contains the components that server as page entry points. These components are **stateful** and **non-presentational**. They render components from the `components` and `containers` folders. These components should generally only be rendered by `<Route>`s in `App.js` but there are a couple key exceptions, such as on the admin panel where we render the `SearchPage` within the `AdminPage`.
+This folder contains the components that serve as page entry points. These components are **stateful** and **non-presentational**. They render components from the `components` and `containers` folders. These components should generally only be rendered by `<Route>`s in `App.js` but there are a couple key exceptions, such as on the admin panel where we render the `SearchPage` within the `AdminPage`.
 
 ##### containers
 
@@ -301,7 +301,7 @@ It's important to note that this component does some fuzzy matching to see if th
 
 ##### Google Maps API
 
-On the server-side, we use the Google Maps API to:
+On the server-side, we use the Google Maps API for:
 
 1. Geocoding (turn street addresses into coordinates)
 2. Reverse Geocoding (turn coordinates into approximate street addresses)
