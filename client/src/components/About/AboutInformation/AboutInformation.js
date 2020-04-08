@@ -34,12 +34,15 @@ export default class AboutInformation extends React.Component {
             }} to="/map" key="map">click here</NavLink>
         );
 
-        const nineElevenMemorialLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace('/monuments/2732');
-            }} to="/monuments/2732" key="911-memorial">9/11 Memorial</NavLink>
-        );
+        let nineElevenMemorialLink = "9/11 Memorial";
+        if (monumentStatistics && monumentStatistics.nineElevenMemorialId) {
+            nineElevenMemorialLink = (
+                <NavLink onClick={e => {
+                    e.preventDefault();
+                    window.location.replace(`/monuments/${monumentStatistics.nineElevenMemorialId}`);
+                }} to={`/monuments/${monumentStatistics.nineElevenMemorialId}`} key="911-memorial">9/11 Memorial</NavLink>
+            );
+        }
 
         const readMoreContributorsLink = (
             <div className="more-contributors-link"

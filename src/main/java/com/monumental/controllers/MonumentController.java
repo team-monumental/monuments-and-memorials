@@ -247,6 +247,6 @@ public class MonumentController {
      */
     @GetMapping("/api/monument/statistics")
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
-        return this.monumentService.getMonumentAboutPageStatistics();
+        return this.monumentService.getMonumentAboutPageStatistics(true);
     }
 }

@@ -21,10 +21,8 @@ class AboutPage extends React.Component {
     }
 
     render() {
-        const {
-            fetchContributorsPending, fetchMonumentStatisticsPending, contributors, monumentStatistics,
-            contributorsError, monumentStatisticsError
-        } = this.props;
+        const { fetchContributorsPending, fetchMonumentStatisticsPending, contributors, monumentStatistics,
+            contributorsError, monumentStatisticsError } = this.props;
 
         return (
             <div className="about-page-container">
