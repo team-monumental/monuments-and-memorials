@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { capitalize, getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
 import { Link } from 'react-router-dom';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { Role } from '../../../../utils/authentication-util';
 import { Helmet } from 'react-helmet';
 
@@ -12,7 +12,8 @@ export default class ManageUser extends React.Component {
         this.state = {
             editingRole: false,
             role: props.user.role,
-            confirmAdminModalOpen: false
+            confirmAdminModalOpen: false,
+            dismissAlert: false
         };
     }
 
@@ -44,12 +45,23 @@ export default class ManageUser extends React.Component {
     }
 
     renderManageUser() {
-        const { user, contributions } = this.props;
-        const { editingRole, role } = this.state;
+        const { user, contributions, session } = this.props;
+        const { editingRole, role, dismissAlert } = this.state;
+
+        const isEditingSelf = user.id === session.user.id;
 
         return (
             <div className="manage-user">
                 <Helmet title={`Manage ${getUserFullName(user)} | Monuments and Memorials`}/>
+                {isEditingSelf && !dismissAlert &&
+                    <Alert variant="info"
+                        onClose={() => this.setState({dismissAlert: true})}
+                        dismissible
+                        className="d-flex align-items-center">
+                        <i className="material-icons mr-3">info</i>
+                        <span>You are viewing your own User record. For security purposes, you are not able to change your own role.</span>
+                    </Alert>
+                }
                 <div className="mb-2">
                     Name: {getUserFullName(user)}
                 </div>
@@ -87,7 +99,7 @@ export default class ManageUser extends React.Component {
                     </div>
                     : null}
                 <div>
-                    {!editingRole &&
+                    {!editingRole && !isEditingSelf &&
                     <Button variant="light" onClick={() => this.setState({editingRole: true})}>
                         Change Role
                     </Button>

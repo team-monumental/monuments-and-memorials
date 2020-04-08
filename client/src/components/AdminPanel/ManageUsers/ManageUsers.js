@@ -8,7 +8,7 @@ import UserSearchPage from '../../../pages/AdminPage/ManageUsersPage/UserSearchP
 class ManageUsers extends React.Component {
 
     render() {
-        const { mode, history, user, contributions, onChangeRole, changeRoleSuccess } = this.props;
+        const { mode, history, user, contributions, onChangeRole, changeRoleSuccess, session } = this.props;
         return (
             <div className="manage-users">
                 <Card>
@@ -26,7 +26,7 @@ class ManageUsers extends React.Component {
                         }
                         {(mode === 'user' && user) &&
                             <ManageUser user={user} contributions={contributions} onChangeRole={onChangeRole}
-                                        changeRoleSuccess={changeRoleSuccess}/>
+                                        changeRoleSuccess={changeRoleSuccess} session={session}/>
                         }
                     </Card.Body>
                 </Card>
