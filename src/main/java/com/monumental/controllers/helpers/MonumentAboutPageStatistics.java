@@ -25,6 +25,8 @@ public class MonumentAboutPageStatistics {
 
     private HashMap<String, Integer> numberOfMonumentsByState;
 
+    private Integer nineElevenMemorialId;
+
     public int getTotalNumberOfMonuments() {
         return this.totalNumberOfMonuments;
     }
@@ -87,5 +89,13 @@ public class MonumentAboutPageStatistics {
 
     public void setNumberOfMonumentsByState(HashMap<String, Integer> numberOfMonumentsByState) {
         this.numberOfMonumentsByState = numberOfMonumentsByState;
+    }
+
+    public Integer getNineElevenMemorialId() {
+        return this.nineElevenMemorialId;
+    }
+
+    public void setNineElevenMemorialId(Integer nineElevenMemorialId) {
+        this.nineElevenMemorialId = nineElevenMemorialId;
     }
 }

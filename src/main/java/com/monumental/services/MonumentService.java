@@ -684,10 +684,13 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Gathers the various statistics related to Monuments for the About Page
+     * @param searchForSpecificMonuments - True to also include searching for the specific Monuments we display links
+     * to on the About Page, such as the 9/11 Memorial, False otherwise. This flag exists mainly to overcome a
+     * limitation with H2 (pg_tgrm functions do not work in H2)
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
      * About Page
      */
-    public MonumentAboutPageStatistics getMonumentAboutPageStatistics() {
+    public MonumentAboutPageStatistics getMonumentAboutPageStatistics(boolean searchForSpecificMonuments) {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
         List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
@@ -758,6 +761,17 @@ public class MonumentService extends ModelService<Monument> {
 
                 statistics.setRandomTagName(randomTag.getName());
                 statistics.setNumberOfMonumentsWithRandomTag(this.monumentRepository.getAllByTagId(randomTag.getId()).size());
+            }
+        }
+
+        if (searchForSpecificMonuments) {
+            // Search for the 9/11 Memorial so we can link to it
+            List<Monument> nineElevenMemorialSearchResults = this.search("9/11 Memorial", null, null, 0.75, 40.4242,
+                    -74.049, 0.5, null, null, SortType.DISTANCE, null, null, null, true);
+
+            // Only take the first result, if there are any results
+            if (nineElevenMemorialSearchResults.size() > 0) {
+                statistics.setNineElevenMemorialId(nineElevenMemorialSearchResults.get(0).getId());
             }
         }
 

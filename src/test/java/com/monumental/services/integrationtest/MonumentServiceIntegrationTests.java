@@ -402,7 +402,7 @@ public class MonumentServiceIntegrationTests {
 
     @Test
     public void testMonumentService_getMonumentAboutPageStatistics_NoMonuments() {
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(0, result.getTotalNumberOfMonuments());
         assertNull(result.getOldestMonument());
@@ -412,6 +412,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getNumberOfMonumentsInRandomState());
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+        assertNull(result.getNineElevenMemorialId());
     }
 
     @Test
@@ -419,7 +420,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         this.monumentRepository.save(monument);
 
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(1, result.getTotalNumberOfMonuments());
         assertNull(result.getOldestMonument());
@@ -429,6 +430,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getNumberOfMonumentsInRandomState());
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+        assertNull(result.getNineElevenMemorialId());
     }
 
     @Test
@@ -438,7 +440,7 @@ public class MonumentServiceIntegrationTests {
         monument.setDate(new Date());
         this.monumentRepository.save(monument);
 
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(1, result.getTotalNumberOfMonuments());
         assertEquals("Monument", result.getOldestMonument().getTitle());
@@ -448,6 +450,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(0, result.getNumberOfMonumentsInRandomState());
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+        assertNull(result.getNineElevenMemorialId());
     }
 
     @Test
@@ -457,7 +460,7 @@ public class MonumentServiceIntegrationTests {
         monument.setState("New York");
         this.monumentRepository.save(monument);
 
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(1, result.getTotalNumberOfMonuments());
         assertNull(result.getOldestMonument());
@@ -468,6 +471,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.getNumberOfMonumentsInRandomState());
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+        assertNull(result.getNineElevenMemorialId());
     }
 
     @Test
@@ -478,7 +482,7 @@ public class MonumentServiceIntegrationTests {
         monument.setState("New York");
         this.monumentRepository.save(monument);
 
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(1, result.getTotalNumberOfMonuments());
         assertEquals("Monument", result.getOldestMonument().getTitle());
@@ -489,6 +493,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.getNumberOfMonumentsInRandomState());
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
+        assertNull(result.getNineElevenMemorialId());
     }
 
     @Test
@@ -504,7 +509,7 @@ public class MonumentServiceIntegrationTests {
         tag.addMonument(monument);
         this.tagRepository.save(tag);
 
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(1, result.getTotalNumberOfMonuments());
         assertEquals("Monument", result.getOldestMonument().getTitle());
@@ -515,6 +520,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.getNumberOfMonumentsInRandomState());
         assertEquals("Tag", result.getRandomTagName());
         assertEquals(1, result.getNumberOfMonumentsWithRandomTag());
+        assertNull(result.getNineElevenMemorialId());
     }
 
     @Test
@@ -555,7 +561,7 @@ public class MonumentServiceIntegrationTests {
         usedTagNames.add("Tag 1");
         usedTagNames.add("Tag 2");
 
-        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics();
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
 
         assertEquals(3, result.getTotalNumberOfMonuments());
         assertEquals("Monument 3", result.getOldestMonument().getTitle());
@@ -565,6 +571,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(Integer.valueOf(2), result.getNumberOfMonumentsByState().get("Rhode Island"));
         assertTrue(usedStates.contains(result.getRandomState()));
         assertTrue(usedTagNames.contains(result.getRandomTagName()));
+        assertNull(result.getNineElevenMemorialId());
     }
 
     /* updateMonumentReferences Tests **/
