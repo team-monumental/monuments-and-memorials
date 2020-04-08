@@ -187,6 +187,8 @@ Hibernate is the ORM we use to interact with Postgres from within Spring Boot. Y
 
 For example, we use `JpaRepository` classes to do our CRUD operations. This is an interface provided by JPA that connects to Postgres using Hibernate. Hibernate is responsible for turning Java into SQL and vice versa, while JPA is responsible for giving us the useful tools to interact with Hibernate such as `JpaRepository`.
 
+The Hibernate configuration file can be found in `src/main/resources/hibernate.cfg.xml`.
+
 #### Packages
 
 ##### com.monumental.models
@@ -218,6 +220,50 @@ This is a special package with a few key classes that configure Spring Boot Secu
 ##### com.monumental.util
 
 This is kind of the garbage dump of everything that doesn't fit in one of the above packages. It has some useful utils for basic Java things as well as some more complex things, such as `AsyncJob`s for handling long running requests in a separate thread (such as for bulk operations).
+
+#### Testing
+
+All of our tests are located in `src/test`.
+
+We have 2 different kinds of tests: unit tests and integration tests. The definitions we used for these are pretty standard. A general rule of thumb is that unit tests do not make any
+database calls and integration tests do.
+
+Our integration tests make use of an in-memory database called GeoDB. GeoDB is built on top of H2 and adds support for the PostGIS searching functionality we use for location searching.
+A downside of GeoDB is that it does NOT support pg_tgrm functions that we use for doing fuzzy string searching.
+
+By utilizing this in-memory database, we're able to control exactly what's in the database for each test method run and clear it before the next one runs.
+
+The configurations for GeoDB can be found in `src/test/resources/application.properties` and `src/test/resources/hibernate.cfg.xml`, although you shouldn't need to touch them much.
+
+##### Packages
+
+##### com.monumental.models.unittest
+
+This package contains all of the unit testing for any classes that inherit from `Model`.
+
+##### com.monumental.repositories.integrationtest
+
+This has all of our integration tests for any classes that inherit from `JpaRepository`. We typically don't integration test the methods that `JpaRepository` implements for us, just the
+ones we write ourselves using the `@Query` annotation.
+
+##### com.monumental.services.integrationtest
+
+This package has all of our integration testing for any of our `@Service` classes. This is where a majority of our tests live. One special note about this package is that it has
+two similar files: `MonumentServiceIntegrationTests` and `MonumentServiceMockIntegrationTests`. The difference between these two is that the latter has `MonumentService` mocked using
+[Mockito](https://site.mockito.org/) so we can have more control over some of its method return values. We use this particularly for methods that consume third-party APIs that we do not want to call each time
+we run the test method.
+
+##### com.monumental.services.unittest
+
+This package has all of our unit testing for any of our `@Service` classes.
+
+##### com.monumental.util.csvparsing.unittest
+
+This is where all of our unit testing for the `src/main/java/com/monumental/util/csvparsing` package lives.
+
+##### com.monumental.util.string.unittest
+
+This is where all of our unit testing for the `src/main/java/com/monumental/util/string` package lives.
 
 ### Client Tier
 
