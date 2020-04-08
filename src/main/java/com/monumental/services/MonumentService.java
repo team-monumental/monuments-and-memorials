@@ -685,7 +685,8 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Gathers the various statistics related to Monuments for the About Page
      * @param searchForSpecificMonuments - True to also include searching for the specific Monuments we display links
-     * to on the About Page, such as the 9/11 Memorial, False otherwise
+     * to on the About Page, such as the 9/11 Memorial, False otherwise. This flag exists mainly to overcome a
+     * limitation with H2 (pg_tgrm functions do not work in H2)
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
      * About Page
      */
