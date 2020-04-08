@@ -42,14 +42,14 @@ export default class Details extends React.Component {
             <div className="details">
                 <div>
                     <div className="d-flex">
-                        <div className="h1">
+                        <div className="h1 mb-0 pb-2">
                             {monument.title}
                         </div>
                        {showFavorite &&
                            <OverlayTrigger
                                placement="top"
                                overlay={props => (
-                                   <Tooltip {...props} className={'favorite-tooltip'}>
+                                   <Tooltip {...props} show={props.show ? 'show' : ''} className={'favorite-tooltip'}>
                                        {favorite ? 'Unfavorite' : 'Favorite'}
                                    </Tooltip>
                                )}>

@@ -994,7 +994,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             <OverlayTrigger
                                 placement="top"
                                 overlay={props => (
-                                    <Tooltip {...props}>
+                                    <Tooltip {...props} show={props.show ? 'show' : ''}>
                                         Temporary monuments or memorials are those that are not built from permanent materials
                                     </Tooltip>
                                 )}>
