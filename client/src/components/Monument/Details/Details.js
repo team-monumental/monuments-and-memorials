@@ -4,7 +4,7 @@ import Tags from '../../Tags/Tags';
 import Gallery from '../Gallery/Gallery';
 import About from './About/About';
 import Address from './Address/Address';
-import { Button } from 'react-bootstrap';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 /**
  * Displays all the main info about a Monument, for the Monument's record page
@@ -46,16 +46,24 @@ export default class Details extends React.Component {
                             {monument.title}
                         </div>
                        {showFavorite &&
-                           <Button disabled={fetchFavoritePending} variant="bare"
-                                    onClick={() => onToggleFavorite()}
-                                    className={'p-0 text-primary ml-2 mr-0 my-0 favorite-icon' + (favorite ? ' favorited' : '')}>
-                                <i className="material-icons">
-                                    {favorite ? 'star' : 'star_border'}
-                                </i>
-                                <i className="material-icons hover">
-                                    star
-                                </i>
-                            </Button>
+                           <OverlayTrigger
+                               placement="top"
+                               overlay={props => (
+                                   <Tooltip {...props} className={'favorite-tooltip'}>
+                                       {favorite ? 'Unfavorite' : 'Favorite'}
+                                   </Tooltip>
+                               )}>
+                               <Button disabled={fetchFavoritePending} variant="bare"
+                                        onClick={() => onToggleFavorite()}
+                                        className={'p-0 text-primary ml-2 mr-0 my-0 favorite-icon' + (favorite ? ' favorited' : '')}>
+                                    <i className="material-icons">
+                                        {favorite ? 'star' : 'star_border'}
+                                    </i>
+                                    <i className="material-icons hover">
+                                        star
+                                    </i>
+                                </Button>
+                       </OverlayTrigger>
                        }
                     </div>
                     <div>
