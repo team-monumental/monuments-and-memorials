@@ -14,6 +14,8 @@ import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
+
 @Service
 @Transactional
 public class CreateSuggestionService extends ModelService<CreateMonumentSuggestion> {
@@ -54,9 +56,14 @@ public class CreateSuggestionService extends ModelService<CreateMonumentSuggesti
         Root<CreateMonumentSuggestion> root = this.createRoot(query);
         query.select(root);
 
-        Join<CreateMonumentSuggestion, User> userJoin = root.join("createdBy");
+        // Only perform the join to User if we need to
+        Join<CreateMonumentSuggestion, User> userJoin = null;
+        if (!isNullOrEmpty(searchQuery)) {
+            userJoin = root.join("createdBy");
+        }
 
-        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected, true);
+        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected,
+                true, true);
 
         return limit != null
             ? page != null
@@ -73,11 +80,16 @@ public class CreateSuggestionService extends ModelService<CreateMonumentSuggesti
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<CreateMonumentSuggestion> root = query.from(CreateMonumentSuggestion.class);
-        query.select(builder.countDistinct(root));
+        query.select(builder.count(root));
 
-        Join<CreateMonumentSuggestion, User> userJoin = root.join("createdBy");
+        // Only perform the join to User if we need to
+        Join<CreateMonumentSuggestion, User> userJoin = null;
+        if (!isNullOrEmpty(searchQuery)) {
+            userJoin = root.join("createdBy");
+        }
 
-        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected, false);
+        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected,
+                false, true);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }

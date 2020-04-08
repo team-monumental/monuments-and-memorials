@@ -18,6 +18,8 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
+
 @Service
 @Transactional
 public class BulkCreateSuggestionService extends ModelService<BulkCreateMonumentSuggestion> {
@@ -69,9 +71,14 @@ public class BulkCreateSuggestionService extends ModelService<BulkCreateMonument
         Root<BulkCreateMonumentSuggestion> root = this.createRoot(query);
         query.select(root);
 
-        Join<BulkCreateMonumentSuggestion, User> userJoin = root.join("createdBy");
+        // Only perform the join to User if we need to
+        Join<BulkCreateMonumentSuggestion, User> userJoin = null;
+        if (!isNullOrEmpty(searchQuery)) {
+            userJoin = root.join("createdBy");
+        }
 
-        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected, true);
+        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected,
+                true, false);
 
         return limit != null
                 ? page != null
@@ -88,11 +95,16 @@ public class BulkCreateSuggestionService extends ModelService<BulkCreateMonument
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<BulkCreateMonumentSuggestion> root = query.from(BulkCreateMonumentSuggestion.class);
-        query.select(builder.countDistinct(root));
+        query.select(builder.count(root));
 
-        Join<BulkCreateMonumentSuggestion, User> userJoin = root.join("createdBy");
+        // Only perform the join to User if we need to
+        Join<BulkCreateMonumentSuggestion, User> userJoin = null;
+        if (!isNullOrEmpty(searchQuery)) {
+            userJoin = root.join("createdBy");
+        }
 
-        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected, false);
+        SearchHelper.buildSuggestionSearchQuery(builder, query, root, userJoin, searchQuery, isApproved, isRejected,
+                false, false);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
     }

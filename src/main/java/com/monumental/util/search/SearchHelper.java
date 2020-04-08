@@ -110,20 +110,24 @@ public class SearchHelper {
      * @param isApproved - True to filter to only approved MonumentSuggestions, False otherwise
      * @param isRejected - True to filter to only rejected MonumentSuggestions, False otherwise
      * @param orderBySimilarity - True to order the results based on the pg_tgrm similarity score, False otherwise
+     * @param isCreateSuggestion - True if the MonumentSuggestion search query that is being built is for
+     * CreateMonumentSuggestions, False otherwise
      */
     public static void buildSuggestionSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Join userJoin,
                                                   String searchQuery, boolean isApproved, boolean isRejected,
-                                                  boolean orderBySimilarity) {
+                                                  boolean orderBySimilarity, boolean isCreateSuggestion) {
         List<Predicate> predicates = new ArrayList<>();
 
-        if (!isNullOrEmpty(searchQuery)) {
+        if (!isNullOrEmpty(searchQuery) && userJoin != null) {
             predicates.add(buildSuggestionUserSearchQuery(builder, query, userJoin, searchQuery, orderBySimilarity));
         }
-        if (isApproved) {
-            predicates.add(builder.equal(root.get("isApproved"), builder.literal(true)));
-        }
-        if (isRejected) {
-            predicates.add(builder.equal(root.get("isRejected"), builder.literal(true)));
+
+        predicates.add(builder.equal(root.get("isApproved"), builder.literal(isApproved)));
+        predicates.add(builder.equal(root.get("isRejected"), builder.literal(isRejected)));
+
+        // Special case for CreateMonumentSuggestions: Only search the ones that are NOT part of a BulkCreateMonumentSuggestion
+        if (isCreateSuggestion) {
+            predicates.add(builder.isNull(root.get("bulkCreateSuggestion")));
         }
 
         executeQueryWithPredicates(builder, query, predicates);

@@ -269,6 +269,14 @@ public class SearchController {
     @GetMapping("/api/search/suggestions/pending")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Integer countPendingSuggestions() {
+        Integer createCount = this.createSuggestionService.countSearchResults(null, false, false);
+        Integer updateCount = this.updateSuggestionService.countSearchResults(null, false, false);
+        Integer bulkCount = this.bulkCreateSuggestionService.countSearchResults(null, false, false);
+
+        System.out.println("Create: " + createCount);
+        System.out.println("Update: " + updateCount);
+        System.out.println("Bulk: " + bulkCount);
+
         return this.createSuggestionService.countSearchResults(null, false, false) +
                 this.updateSuggestionService.countSearchResults(null, false, false) +
                 this.bulkCreateSuggestionService.countSearchResults(null, false, false);
