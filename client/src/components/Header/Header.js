@@ -140,7 +140,7 @@ class Header extends React.Component {
                         <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {this.setState({isMenuOpen: false})}}>
                             <ul>
                                 {publicLinks.concat(privateLinks).map(link =>
-                                    <li>{link}</li>
+                                    <li key={link.key}>{link}</li>
                                 )}
                                 <hr/>
                                 {session.user && <>
