@@ -68,6 +68,9 @@ public class SuggestionController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * Create a new Suggestion for creating a Monument
      * @param createSuggestion - CreateMonumentSuggestion object representing the new Monument suggestion
@@ -124,11 +127,12 @@ public class SuggestionController {
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return AsyncJob - Object containing the id of the job created and the current value of the Future object
      * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
+     * @throws UnauthorizedException - If there is no current User logged in
      */
     @PostMapping("/api/suggestion/bulk")
     @PreAuthorize(Authorization.isPartnerOrAbove)
     public AsyncJob suggestBulkMonumentCreation(@ModelAttribute BulkCreateMonumentRequest request)
-            throws IOException {
+            throws IOException, UnauthorizedException {
         BulkCreateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
         MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvFileName,
                 parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
@@ -138,6 +142,7 @@ public class SuggestionController {
          * CompletableFuture must be passed to the AsyncJob, making it difficult to do so dynamically
          */
         AsyncJob job = this.asyncJobService.createJob();
+        job.setUser(this.userService.getCurrentUser());
         job.setFuture(this.monumentService.parseMonumentBulkValidationResultAsync(validationResult, job));
 
         return job;
@@ -293,10 +298,12 @@ public class SuggestionController {
      * @param id - ID of the BulkCreateMonumentSuggestion to approve
      * @return AsyncJob - Object containing the ID of the job created and the current value of the Future object
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
+     * @throws UnauthorizedException - If there is no current User logged in
      */
     @PutMapping("/api/suggestion/bulk/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public AsyncJob approveBulkCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public AsyncJob approveBulkCreateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException,
+            UnauthorizedException {
         BulkCreateMonumentSuggestion bulkCreateSuggestion = this.findBulkCreateSuggestion(id);
 
         bulkCreateSuggestion.setIsApproved(true);
@@ -309,6 +316,7 @@ public class SuggestionController {
         * must be passed to the AsyncJob, making it difficult to do so dynamically
         */
         AsyncJob job = this.asyncJobService.createJob();
+        job.setUser(this.userService.getCurrentUser());
         job.setFuture(this.monumentService.bulkCreateMonumentsAsync(bulkCreateSuggestion, job));
 
         return job;

@@ -620,6 +620,7 @@ public class MonumentService extends ModelService<Monument> {
 
             // Create Monument
             Monument createdMonument = this.createMonument(createSuggestion);
+            if (job != null) createdMonument.setCreatedBy(job.getUser());
             monuments.add(createdMonument);
 
             // Report progress
@@ -1517,6 +1518,7 @@ public class MonumentService extends ModelService<Monument> {
                 createSuggestion.setImagesJson(gson.toJson(createSuggestion.getImages()));
             }
 
+            if (job != null) createSuggestion.setCreatedBy(job.getUser());
             createSuggestion.setBulkCreateSuggestion(bulkCreateSuggestion);
             createSuggestion = this.createSuggestionRepository.save(createSuggestion);
             createSuggestions.add(createSuggestion);
@@ -1529,7 +1531,10 @@ public class MonumentService extends ModelService<Monument> {
 
         bulkCreateSuggestion.setCreateSuggestions(createSuggestions);
         bulkCreateSuggestion.setFileName(bulkValidationResult.getFileName());
-        if (job != null) job.setProgress(1.0);
+        if (job != null) {
+            job.setProgress(1.0);
+            bulkCreateSuggestion.setCreatedBy(job.getUser());
+        }
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
     }
 }
