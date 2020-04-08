@@ -16,7 +16,7 @@ class Header extends React.Component {
         {name: 'Map', route: '/map'},
         {name: 'About', route: '/about'},
         {name: 'My Account', route: '/account', protected: true},
-        {name: 'Advanced', route: '/panel', protected: true, roles: Role.PARTNER_OR_ABOVE}
+        {name: 'Control Panel', route: '/panel', protected: true, roles: Role.PARTNER_OR_ABOVE}
     ];
 
     constructor(props) {
