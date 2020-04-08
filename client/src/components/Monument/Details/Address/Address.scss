@@ -1,12 +1,19 @@
 @import "../../../../theme";
 
-.address-container {
-  i {
-    color: $primary;
-  }
+.leaflet-popup-content {
+  min-width: 61px;
 
-  .city-state {
-    position: absolute;
-    padding-top: 0.2rem;
+  .address-container {
+    display: flex;
+    width: max-content;
+
+    i {
+      color: $primary;
+    }
+
+    .address {
+      padding-top: 0.2rem;
+      white-space: normal;
+    }
   }
 }
