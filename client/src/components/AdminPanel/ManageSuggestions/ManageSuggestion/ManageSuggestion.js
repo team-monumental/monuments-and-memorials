@@ -4,8 +4,17 @@ import { Helmet } from 'react-helmet';
 import CreateMonumentSuggestion from '../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestion/CreateMonumentSuggestion';
 import ManagementButtonToolbar from '../../../Suggestions/ManagementButtonToolbar/ManagementButtonToolbar';
 import UpdateMonumentSuggestion from '../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestion/UpdateMonumentSuggestion';
+import { Alert } from 'react-bootstrap';
 
 export default class ManageSuggestion extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            alertDismissed: false
+        };
+    }
 
     renderSuggestionStatus() {
         const { suggestion, onApproveClick, onRejectClick } = this.props;
@@ -18,11 +27,48 @@ export default class ManageSuggestion extends React.Component {
             isPending = !suggestion.isApproved && !suggestion.isRejected;
         }
 
+        let isApproved;
+        if (suggestion.suggestion) {
+            isApproved = suggestion.suggestion.isApproved;
+        }
+        else {
+            isApproved = suggestion.isApproved;
+        }
+
+        let isRejected;
+        if (suggestion.suggestion) {
+            isRejected = suggestion.suggestion.isRejected;
+        }
+        else {
+            isRejected = suggestion.isRejected;
+        }
+
         return (<>
             {isPending && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
-            {(suggestion.suggestion.isApproved || suggestion.isApproved) && <div className="status approved">Approved</div>}
-            {(suggestion.suggestion.isRejected || suggestion.isRejected) && <div className="status rejected">Rejected</div>}
+            {isApproved && <div className="status approved">Approved</div>}
+            {isRejected && <div className="status rejected">Rejected</div>}
         </>);
+    }
+
+    renderUpdateNotice() {
+        const { suggestion } = this.props;
+        const { alertDismissed } = this.state;
+
+        return (
+            <>
+                {suggestion && suggestion.suggestion && suggestion.suggestion.monument &&
+                suggestion.suggestion.monument.lastModifiedDate > suggestion.suggestion.createdDate &&
+                !alertDismissed &&
+                    <Alert variant="danger" onClose={() => this.setState({alertDismissed: true})} dismissible>
+                        <i className="material-icons mr-2">warning</i>
+                        <span>
+                            This record has been updated since this suggestion was created. Approving this suggestion
+                            may overwrite those changes.
+                        </span>
+                    </Alert>
+                }
+            </>
+        );
     }
 
     renderManageCreateSuggestion() {
@@ -52,6 +98,7 @@ export default class ManageSuggestion extends React.Component {
         return (
             <div className="manage-suggestion">
                 <Helmet title={`Manage ${title} | Monuments and Memorials`}/>
+                {this.renderUpdateNotice()}
                 <UpdateMonumentSuggestion suggestion={suggestion.suggestion || suggestion} showIndex={false}
                                           showTitleAsLink={false} expandedByDefault={true}
                                           showCollapseLinks={false}/>
