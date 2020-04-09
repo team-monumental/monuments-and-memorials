@@ -10,12 +10,18 @@ export default class ManageSuggestion extends React.Component {
     renderSuggestionStatus() {
         const { suggestion, onApproveClick, onRejectClick } = this.props;
 
-        const isPending = !suggestion.isApproved && !suggestion.isRejected;
+        let isPending;
+        if (suggestion.suggestion) {
+            isPending = !suggestion.suggestion.isApproved && !suggestion.suggestion.isRejected;
+        }
+        else {
+            isPending = !suggestion.isApproved && !suggestion.isRejected;
+        }
 
         return (<>
             {isPending && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
-            {suggestion.isApproved && <div className="status approved">Approved</div>}
-            {suggestion.isRejected && <div className="status rejected">Rejected</div>}
+            {(suggestion.suggestion.isApproved || suggestion.isApproved) && <div className="status approved">Approved</div>}
+            {(suggestion.suggestion.isRejected || suggestion.isRejected) && <div className="status rejected">Rejected</div>}
         </>);
     }
 
@@ -34,8 +40,6 @@ export default class ManageSuggestion extends React.Component {
 
     renderManageUpdateSuggestion() {
         const { suggestion } = this.props;
-
-        console.log(suggestion);
 
         let title;
         if (suggestion.suggestion && suggestion.suggestion.monument && suggestion.suggestion.monument.title) {

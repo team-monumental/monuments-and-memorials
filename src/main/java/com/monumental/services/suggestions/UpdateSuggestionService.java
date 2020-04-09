@@ -110,6 +110,8 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
         List<Predicate> predicates = new ArrayList<>();
 
         predicates.add(builder.equal(root.get("monument"), builder.literal(monumentId)));
+        predicates.add(builder.equal(root.get("isApproved"), builder.literal(false)));
+        predicates.add(builder.equal(root.get("isRejected"), builder.literal(false)));
 
         SearchHelper.executeQueryWithPredicates(builder, query, predicates);
 
