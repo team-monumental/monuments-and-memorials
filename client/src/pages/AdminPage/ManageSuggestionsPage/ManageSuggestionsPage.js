@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { approveCreateSuggestion, fetchBulkCreateSuggestion, fetchCreateSuggestion,
-    fetchUpdateSuggestion, rejectCreateSuggestion } from '../../../actions/suggestions';
+import { approveCreateSuggestion, approveUpdateSuggestion, fetchBulkCreateSuggestion, fetchCreateSuggestion,
+    fetchUpdateSuggestion, rejectCreateSuggestion, rejectUpdateSuggestion } from '../../../actions/suggestions';
 import Spinner from '../../../components/Spinner/Spinner';
 import ManageSuggestions from '../../../components/AdminPanel/ManageSuggestions/ManageSuggestions';
 import { withRouter } from 'react-router-dom';
@@ -15,7 +15,9 @@ class ManageSuggestionsPage extends React.Component {
             fetchUpdateSuggestion: state.fetchUpdateSuggestion,
             fetchBulkCreateSuggestion: state.fetchBulkCreateSuggestion,
             approveCreateSuggestion: state.approveCreateSuggestion,
-            rejectCreateSuggestion: state.rejectCreateSuggestion
+            rejectCreateSuggestion: state.rejectCreateSuggestion,
+            approveUpdateSuggestion: state.approveUpdateSuggestion,
+            rejectUpdateSuggestion: state.rejectUpdateSuggestion
         };
     }
 
@@ -59,6 +61,9 @@ class ManageSuggestionsPage extends React.Component {
                         case 'create':
                             dispatch(approveCreateSuggestion(suggestionId));
                             break;
+                        case 'update':
+                            dispatch(approveUpdateSuggestion(suggestionId));
+                            break;
                     }
                 }
             } catch (err) {}
@@ -76,6 +81,9 @@ class ManageSuggestionsPage extends React.Component {
                         case 'create':
                             dispatch(rejectCreateSuggestion(suggestionId));
                             break;
+                        case 'update':
+                            dispatch(rejectUpdateSuggestion(suggestionId));
+                            break;
                     }
                 }
             } catch (err) {}
@@ -84,14 +92,17 @@ class ManageSuggestionsPage extends React.Component {
 
     render() {
         const { mode, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
-            approveCreateSuggestion, rejectCreateSuggestion, location: { search } } = this.props;
+            approveCreateSuggestion, rejectCreateSuggestion, approveUpdateSuggestion, rejectUpdateSuggestion,
+            location: { search } } = this.props;
         const type = QueryString.parse(search).type;
 
         const suggestion = approveCreateSuggestion.result || rejectCreateSuggestion.result ||
-            fetchCreateSuggestion.result || fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
+            approveUpdateSuggestion.result || rejectUpdateSuggestion.result || fetchCreateSuggestion.result ||
+            fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
 
         const pending = approveCreateSuggestion.pending || rejectCreateSuggestion.pending ||
-            fetchCreateSuggestion.pending || fetchUpdateSuggestion.pending || fetchBulkCreateSuggestion.pending;
+            approveUpdateSuggestion.pending || rejectUpdateSuggestion.pending || fetchCreateSuggestion.pending ||
+            fetchUpdateSuggestion.pending || fetchBulkCreateSuggestion.pending;
 
         return (<>
             <Spinner show={pending}/>

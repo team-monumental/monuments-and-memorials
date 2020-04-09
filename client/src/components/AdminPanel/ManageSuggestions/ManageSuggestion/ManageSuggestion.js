@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import CreateMonumentSuggestion from '../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestion/CreateMonumentSuggestion';
 import ManagementButtonToolbar from '../../../Suggestions/ManagementButtonToolbar/ManagementButtonToolbar';
 import UpdateMonumentSuggestion from '../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestion/UpdateMonumentSuggestion';
-import UpdateMonumentSuggestions from "../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions";
 
 export default class ManageSuggestion extends React.Component {
 
@@ -36,27 +35,23 @@ export default class ManageSuggestion extends React.Component {
     renderManageUpdateSuggestion() {
         const { suggestion } = this.props;
 
+        console.log(suggestion);
+
         let title;
-        if (suggestion && suggestion.monument && suggestion.monument.title) {
+        if (suggestion.suggestion && suggestion.suggestion.monument && suggestion.suggestion.monument.title) {
+            title = suggestion.suggestion.monument.title;
+        }
+        else if (suggestion && suggestion.monument && suggestion.monument.title) {
             title = suggestion.monument.title;
         }
 
-        const otherPendingForMonument = suggestion.allPendingForMonument.filter(pending => pending.id !== suggestion.suggestion.id);
-
         return (
-            <div className="manage-suggestion update">
+            <div className="manage-suggestion">
                 <Helmet title={`Manage ${title} | Monuments and Memorials`}/>
-                <div>
-                    <UpdateMonumentSuggestion suggestion={suggestion.suggestion} showIndex={false}
-                                              showTitleAsLink={false} expandedByDefault={true}
-                                              showCollapseLinks={false}/>
-                    {this.renderSuggestionStatus()}
-                </div>
-                <div>
-                    {otherPendingForMonument && otherPendingForMonument.length > 0 && <>
-                        <UpdateMonumentSuggestions suggestions={otherPendingForMonument}/>
-                    </>}
-                </div>
+                <UpdateMonumentSuggestion suggestion={suggestion.suggestion || suggestion} showIndex={false}
+                                          showTitleAsLink={false} expandedByDefault={true}
+                                          showCollapseLinks={false}/>
+                {this.renderSuggestionStatus()}
             </div>
         );
     }

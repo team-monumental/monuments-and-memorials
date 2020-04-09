@@ -6,7 +6,9 @@ import {
     FETCH_UPDATE_SUGGESTION_PENDING, FETCH_UPDATE_SUGGESTION_SUCCESS, FETCH_UPDATE_SUGGESTION_ERROR,
     FETCH_BULK_CREATE_SUGGESTION_PENDING, FETCH_BULK_CREATE_SUGGESTION_SUCCESS, FETCH_BULK_CREATE_SUGGESTION_ERROR,
     APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR,
-    REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR
+    REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR,
+    APPROVE_UPDATE_SUGGESTION_PENDING, APPROVE_UPDATE_SUGGESTION_SUCCESS, APPROVE_UPDATE_SUGGESTION_ERROR,
+    REJECT_UPDATE_SUGGESTION_PENDING, REJECT_UPDATE_SUGGESTION_SUCCESS, REJECT_UPDATE_SUGGESTION_ERROR
 } from '../constants';
 import { pending, success, error } from '../utils/action-util';
 import { get, put } from '../utils/api-util';
@@ -59,7 +61,19 @@ const actions = {
         success: REJECT_CREATE_SUGGESTION_SUCCESS,
         error: REJECT_CREATE_SUGGESTION_ERROR,
         uri: '/api/suggestion/create'
-    }
+    },
+    approveUpdate: {
+        pending: APPROVE_UPDATE_SUGGESTION_PENDING,
+        success: APPROVE_UPDATE_SUGGESTION_SUCCESS,
+        error: APPROVE_UPDATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/update'
+    },
+    rejectUpdate: {
+        pending: REJECT_UPDATE_SUGGESTION_PENDING,
+        success: REJECT_UPDATE_SUGGESTION_SUCCESS,
+        error: REJECT_UPDATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/update'
+    },
 };
 
 function fetchSuggestions(action) {
@@ -142,6 +156,10 @@ export function approveCreateSuggestion(id) {
     return approveSuggestion(actions.approveCreate, id);
 }
 
+export function approveUpdateSuggestion(id) {
+    return approveSuggestion(actions.approveUpdate, id);
+}
+
 function rejectSuggestion(action, id) {
     return async dispatch => {
         dispatch(pending(action));
@@ -157,4 +175,8 @@ function rejectSuggestion(action, id) {
 
 export function rejectCreateSuggestion(id) {
     return rejectSuggestion(actions.rejectCreate, id);
+}
+
+export function rejectUpdateSuggestion(id) {
+    return rejectSuggestion(actions.rejectUpdate, id);
 }

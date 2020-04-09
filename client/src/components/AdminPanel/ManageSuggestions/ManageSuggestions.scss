@@ -38,3 +38,22 @@
         }
     }
 }
+
+.manage-suggestions-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .other-pending-update-suggestions-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 3rem;
+        max-height: 635px;
+        overflow-y: auto;
+
+        h5 {
+            text-decoration: underline !important;
+        }
+    }
+}

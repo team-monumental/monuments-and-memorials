@@ -15,7 +15,8 @@ import { updateUser, confirmEmailChange, fetchFavorites, fetchUser } from './red
 import duplicateMonuments from './reducers/duplicates';
 import { fetchBulkCreateSuggestions, fetchCreateSuggestions, fetchUpdateSuggestions,
     fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
-    approveCreateSuggestion, rejectCreateSuggestion } from './reducers/suggestions';
+    approveCreateSuggestion, rejectCreateSuggestion, approveUpdateSuggestion,
+    rejectUpdateSuggestion } from './reducers/suggestions';
 
 // These reducers are loaded into redux in index.js
 // New reducers must always be added here or they won't do anything
@@ -27,7 +28,8 @@ const Reducers = {
     toggleMonumentIsActive, deleteMonument, userSearchPage, fetchUser, fetchBulkCreateSuggestions, fetchCreateSuggestions,
     fetchUpdateSuggestions, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
     createSuggestionSearchPage, updateSuggestionSearchPage, bulkCreateSuggestionSearchPage, createMonument,
-    updateMonument, pendingSuggestions, approveCreateSuggestion, rejectCreateSuggestion
+    updateMonument, pendingSuggestions, approveCreateSuggestion, rejectCreateSuggestion, approveUpdateSuggestion,
+    rejectUpdateSuggestion
 };
 
 export default Reducers;

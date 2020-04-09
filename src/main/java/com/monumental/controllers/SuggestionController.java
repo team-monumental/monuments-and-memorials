@@ -275,12 +275,12 @@ public class SuggestionController {
     /**
      * Approve an UpdateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the UpdateMonumentSuggestion to approve
-     * @return Monument - The updated Monument
+     * @return UpdateMonumentSuggestion - The approved UpdateMonumentSuggestion
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
      */
     @PutMapping("/api/suggestion/update/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Monument approveUpdateSuggestion(@PathVariable("id") Integer id)
+    public UpdateMonumentSuggestion approveUpdateSuggestion(@PathVariable("id") Integer id)
             throws ResourceNotFoundException {
         UpdateMonumentSuggestion updateSuggestion = this.findUpdateSuggestion(id);
 
@@ -288,8 +288,9 @@ public class SuggestionController {
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
 
         this.emailService.sendUpdateSuggestionApprovalEmail(updateSuggestion);
+        this.monumentService.updateMonument(updateSuggestion);
 
-        return this.monumentService.updateMonument(updateSuggestion);
+        return updateSuggestion;
     }
 
     /**

@@ -6,7 +6,9 @@ import {
     FETCH_UPDATE_SUGGESTION_PENDING, FETCH_UPDATE_SUGGESTION_SUCCESS, FETCH_UPDATE_SUGGESTION_ERROR,
     FETCH_BULK_CREATE_SUGGESTION_PENDING, FETCH_BULK_CREATE_SUGGESTION_SUCCESS, FETCH_BULK_CREATE_SUGGESTION_ERROR,
     APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR,
-    REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR
+    REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR,
+    APPROVE_UPDATE_SUGGESTION_PENDING, APPROVE_UPDATE_SUGGESTION_SUCCESS, APPROVE_UPDATE_SUGGESTION_ERROR,
+    REJECT_UPDATE_SUGGESTION_PENDING, REJECT_UPDATE_SUGGESTION_SUCCESS, REJECT_UPDATE_SUGGESTION_ERROR
 } from '../constants';
 
 const fetchCreatesInitialState = {
@@ -45,13 +47,13 @@ const fetchBulkCreateInitialState = {
     error: null
 };
 
-const approveCreateInitialState = {
+const approveInitialState = {
     pending: false,
     result: null,
     error: null
 };
 
-const rejectCreateInitialState = {
+const rejectInitialState = {
     pending: false,
     result: null,
     error: null
@@ -201,7 +203,7 @@ export function fetchBulkCreateSuggestion(state = fetchBulkCreateInitialState, a
     }
 }
 
-export function approveCreateSuggestion(state = approveCreateInitialState, action) {
+export function approveCreateSuggestion(state = approveInitialState, action) {
     switch (action.type) {
         case APPROVE_CREATE_SUGGESTION_PENDING:
             return {
@@ -225,7 +227,7 @@ export function approveCreateSuggestion(state = approveCreateInitialState, actio
     }
 }
 
-export function rejectCreateSuggestion(state = rejectCreateInitialState, action) {
+export function rejectCreateSuggestion(state = rejectInitialState, action) {
     switch (action.type) {
         case REJECT_CREATE_SUGGESTION_PENDING:
             return {
@@ -239,6 +241,54 @@ export function rejectCreateSuggestion(state = rejectCreateInitialState, action)
                 result: action.payload
             };
         case REJECT_CREATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function approveUpdateSuggestion(state = approveInitialState, action) {
+    switch (action.type) {
+        case APPROVE_UPDATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                pending: true
+            };
+        case APPROVE_UPDATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                result: action.payload
+            };
+        case APPROVE_UPDATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function rejectUpdateSuggestion(state = rejectInitialState, action) {
+    switch (action.type) {
+        case REJECT_UPDATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                pending: true
+            };
+        case REJECT_UPDATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                result: action.payload
+            };
+        case REJECT_UPDATE_SUGGESTION_ERROR:
             return {
                 ...state,
                 pending: false,
