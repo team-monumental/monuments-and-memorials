@@ -21,7 +21,7 @@ export default class MonumentUpdate extends React.Component {
         super(props);
 
         this.state = {
-            showingAllChangedAttributes: false,
+            showingAllChangedAttributes: props.expandedByDefault || false,
             showingUnchangedAttributes: false
         };
     }
@@ -256,7 +256,8 @@ export default class MonumentUpdate extends React.Component {
 
     render() {
         const { showingAllChangedAttributes, showingUnchangedAttributes } = this.state;
-        const { oldMonument, update, showUnchangedAttributes=true, showAllChangedAttributes=true } = this.props;
+        const { oldMonument, update, showUnchangedAttributes=true, showAllChangedAttributes=true,
+            showCollapseLinks=true } = this.props;
 
         let changedAttributes = [];
         let unchangedAttributes = [];
@@ -408,8 +409,8 @@ export default class MonumentUpdate extends React.Component {
                             </div>
                         </Collapse>
 
-                        {!showingAllChangedAttributes && this.renderShowAllChangedAttributesLink()}
-                        {showingAllChangedAttributes && this.renderHideAllChangedAttributesLink()}
+                        {!showingAllChangedAttributes && showCollapseLinks && this.renderShowAllChangedAttributesLink()}
+                        {showingAllChangedAttributes && showCollapseLinks && this.renderHideAllChangedAttributesLink()}
                     </>}
                 </div>
                 {showUnchangedAttributes && <>

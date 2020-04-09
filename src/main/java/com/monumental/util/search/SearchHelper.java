@@ -1,8 +1,5 @@
 package com.monumental.util.search;
 
-import com.monumental.models.User;
-import com.monumental.models.suggestions.CreateMonumentSuggestion;
-
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;

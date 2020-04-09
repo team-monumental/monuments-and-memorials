@@ -35,7 +35,7 @@ export default class UpdateMonumentSuggestions extends React.Component {
     }
 
     render() {
-        const { suggestions, hideMoreThan } = this.props;
+        const { suggestions, hideMoreThan, showTitlesAsLinks } = this.props;
         const { expanded } = this.state;
 
         let showingSuggestions = suggestions;
@@ -50,7 +50,8 @@ export default class UpdateMonumentSuggestions extends React.Component {
         return (<>
             {suggestions && <div className="update-suggestions">
                 {showingSuggestions.map((suggestion, index) => (
-                    <UpdateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}/>
+                    <UpdateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}
+                                              showTitleAsLink={showTitlesAsLinks}/>
                 ))}
                 {hiddenSuggestions && hiddenSuggestions.length > 0 && <>
                     <Collapse in={expanded}>
@@ -58,7 +59,9 @@ export default class UpdateMonumentSuggestions extends React.Component {
                             {hiddenSuggestions.map((suggestion) => {
                                 hiddenSuggestionsStartIndex++;
                                 return (
-                                    <UpdateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={hiddenSuggestionsStartIndex + 1}/>
+                                    <UpdateMonumentSuggestion key={suggestion.id} suggestion={suggestion}
+                                                              index={hiddenSuggestionsStartIndex + 1}
+                                                              showTitleAsLink={showTitlesAsLinks}/>
                                 );
                             })}
                         </div>

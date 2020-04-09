@@ -139,7 +139,7 @@ export default class CreateMonumentSuggestion extends React.Component {
 
         const titleText = showIndex ?
             `${index}. ${suggestion.title}` :
-            suggestion.title;
+            `Create New Record: ${suggestion.title}`;
 
         return (
             <Card className="create-suggestion">

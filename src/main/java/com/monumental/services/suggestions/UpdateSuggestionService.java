@@ -1,6 +1,7 @@
 package com.monumental.services.suggestions;
 
 import com.monumental.exceptions.UnauthorizedException;
+import com.monumental.models.Monument;
 import com.monumental.models.User;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
@@ -10,11 +11,9 @@ import com.monumental.util.search.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
@@ -94,5 +93,26 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
                 false, false);
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
+    }
+
+    /**
+     * Get the pending UpdateMonumentSuggestions for the Monument with the specified monumentId
+     * @param monumentId - Integer ID of the Monument to get the pending UpdateMonumentSuggestions for
+     * @return List<UpdateMonumentSuggestion> - List of pending UpdateMonumentSuggestions for the Monument with the
+     * specified monumentId
+     */
+    public List<UpdateMonumentSuggestion> getPendingSuggestionsForMonument(Integer monumentId) {
+        CriteriaBuilder builder = this.getCriteriaBuilder();
+        CriteriaQuery<UpdateMonumentSuggestion> query = this.createCriteriaQuery(builder, false);
+        Root<UpdateMonumentSuggestion> root = this.createRoot(query);
+        query.select(root);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(builder.equal(root.get("monument"), builder.literal(monumentId)));
+
+        SearchHelper.executeQueryWithPredicates(builder, query, predicates);
+
+        return this.getWithCriteriaQuery(query);
     }
 }

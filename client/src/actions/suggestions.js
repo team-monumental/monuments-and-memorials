@@ -87,13 +87,26 @@ export function fetchBulkCreateSuggestions() {
     return fetchSuggestions(actions.fetchBulkCreates);
 }
 
-function fetchSuggestion(action, id) {
+function fetchSuggestion(action, id, isUpdateSuggestion) {
     return async dispatch => {
         dispatch(pending(action));
 
         try {
             const suggestion = await get(`${action.uri}/${id}`);
-            dispatch(success(action, suggestion));
+
+            // Special case for UpdateMonumentSuggestions: Fetch the all of the pending UpdateMonumentSuggestions for
+            // the Monument
+            if (isUpdateSuggestion) {
+                const allPendingUpdateSuggestionsForMonument = await get(`/api/search/suggestions/update/pending/${suggestion.monument.id}`);
+                const result = {
+                    suggestion: suggestion,
+                    allPendingForMonument: allPendingUpdateSuggestionsForMonument
+                };
+                dispatch(success(action, result));
+            }
+            else {
+                dispatch(success(action, suggestion));
+            }
         } catch (err) {
             dispatch(error(action, err.message));
         }
@@ -101,15 +114,15 @@ function fetchSuggestion(action, id) {
 }
 
 export function fetchCreateSuggestion(id) {
-    return fetchSuggestion(actions.fetchCreate, id);
+    return fetchSuggestion(actions.fetchCreate, id, false);
 }
 
 export function fetchUpdateSuggestion(id) {
-    return fetchSuggestion(actions.fetchUpdate, id);
+    return fetchSuggestion(actions.fetchUpdate, id, true);
 }
 
 export function fetchBulkCreateSuggestion(id) {
-    return fetchSuggestion(actions.fetchBulkCreate, id);
+    return fetchSuggestion(actions.fetchBulkCreate, id, false);
 }
 
 function approveSuggestion(action, id) {

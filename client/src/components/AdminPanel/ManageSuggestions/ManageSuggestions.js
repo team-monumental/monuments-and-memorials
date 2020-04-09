@@ -8,7 +8,7 @@ import ManageSuggestion from './ManageSuggestion/ManageSuggestion';
 class ManageSuggestions extends React.Component {
 
     render() {
-        const { mode, history, suggestion, onApproveClick, onRejectClick } = this.props;
+        const { mode, history, suggestion, onApproveClick, onRejectClick, type } = this.props;
 
         return (
             <div className="manage-suggestions">
@@ -26,7 +26,7 @@ class ManageSuggestions extends React.Component {
                             <SuggestionSearchPage showSearchResults={mode === 'search'}/>
                         }
                         {(mode === 'suggestion' && suggestion) && <>
-                            <ManageSuggestion type="create" suggestion={suggestion} onApproveClick={onApproveClick}
+                            <ManageSuggestion type={type} suggestion={suggestion} onApproveClick={onApproveClick}
                                               onRejectClick={onRejectClick}/>
                         </>}
                     </Card.Body>

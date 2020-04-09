@@ -1,5 +1,6 @@
 package com.monumental.controllers;
 
+import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.models.Tag;
@@ -7,6 +8,7 @@ import com.monumental.models.User;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
+import com.monumental.repositories.MonumentRepository;
 import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
@@ -22,12 +24,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SearchController {
@@ -49,6 +53,9 @@ public class SearchController {
 
     @Autowired
     private BulkCreateSuggestionService bulkCreateSuggestionService;
+
+    @Autowired
+    private MonumentRepository monumentRepository;
 
     /**
      * This function lets you search Monuments via a few different request parameters
@@ -269,16 +276,27 @@ public class SearchController {
     @GetMapping("/api/search/suggestions/pending")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Integer countPendingSuggestions() {
-        Integer createCount = this.createSuggestionService.countSearchResults(null, false, false);
-        Integer updateCount = this.updateSuggestionService.countSearchResults(null, false, false);
-        Integer bulkCount = this.bulkCreateSuggestionService.countSearchResults(null, false, false);
-
-        System.out.println("Create: " + createCount);
-        System.out.println("Update: " + updateCount);
-        System.out.println("Bulk: " + bulkCount);
-
         return this.createSuggestionService.countSearchResults(null, false, false) +
                 this.updateSuggestionService.countSearchResults(null, false, false) +
                 this.bulkCreateSuggestionService.countSearchResults(null, false, false);
+    }
+
+    /**
+     * Get all of the pending UpdateMonumentSuggestions for the Monument with the specified monumentId, if it exists
+     * @param monumentId - Integer ID of the Monument to get the other pending UpdateMonumentSuggestions for
+     * @return List<UpdateMonumentSuggestion> - List of pending UpdateMonumentSuggestions for the Monument with the
+     * specified monumentId, if it exists
+     * @throws ResourceNotFoundException - If the Monument with the specified monumentId does not exist
+     */
+    @GetMapping("/api/search/suggestions/update/pending/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public List<UpdateMonumentSuggestion> getPendingUpdateSuggestionsForMonument(@PathVariable("id") Integer monumentId)
+            throws ResourceNotFoundException {
+        Optional<Monument> optional = this.monumentRepository.findById(monumentId);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+
+        return this.updateSuggestionService.getPendingSuggestionsForMonument(monumentId);
     }
 }

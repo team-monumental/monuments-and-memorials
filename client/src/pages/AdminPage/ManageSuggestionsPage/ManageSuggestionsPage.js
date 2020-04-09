@@ -84,7 +84,8 @@ class ManageSuggestionsPage extends React.Component {
 
     render() {
         const { mode, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
-            approveCreateSuggestion, rejectCreateSuggestion } = this.props;
+            approveCreateSuggestion, rejectCreateSuggestion, location: { search } } = this.props;
+        const type = QueryString.parse(search).type;
 
         const suggestion = approveCreateSuggestion.result || rejectCreateSuggestion.result ||
             fetchCreateSuggestion.result || fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
@@ -94,7 +95,7 @@ class ManageSuggestionsPage extends React.Component {
 
         return (<>
             <Spinner show={pending}/>
-            <ManageSuggestions mode={mode} suggestion={suggestion}
+            <ManageSuggestions type={type} mode={mode} suggestion={suggestion}
                                onApproveClick={() => this.handleSuggestionApproveButtonClick()}
                                onRejectClick={() => this.handleSuggestionRejectButtonClick()}/>
         </>);

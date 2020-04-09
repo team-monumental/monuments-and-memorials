@@ -20,7 +20,8 @@ export default class SuggestionSearchResults extends React.Component {
                     </>}
                     {suggestions.updateSuggestions && suggestions.updateSuggestions.length > 0 && <>
                         <h5 className="mt-4">Update Monument or Memorial Suggestion Results</h5>
-                        <UpdateMonumentSuggestions suggestions={suggestions.updateSuggestions} hideMoreThan={3}/>
+                        <UpdateMonumentSuggestions suggestions={suggestions.updateSuggestions} hideMoreThan={3}
+                                                   showTitlesAsLinks={true}/>
                     </>}
                     {suggestions.bulkCreateSuggestions && suggestions.bulkCreateSuggestions.length > 0 && <>
                         <h5 className="mt-4">Bulk New Monument or Memorial Suggestion Results</h5>
