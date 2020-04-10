@@ -1,35 +1,25 @@
 # Monuments and Memorials
 
-**Team Monumental**
+[Monuments + Memorials](https://monuments.us.org/) is a crowd-sourced initiative developed at the Rochester Institute of Technology under the direction of Dr. Juilee Decker. For more information about this project please visit https://monuments.us.org/about.
 
+This public repository was created and developed by software engineering students in the Golisano College of Computer and Information Sciences.
 
-## Deploying
+## Team Members
 
-1. Set up SSH keys with the VM
-    1. Generate an ssh key if you do not already have one
-        ```bash
-        $ ssh-keygen
-        ```
-    2. Add your key to the VM (requires password authentication)
-        ```bash
-        $ ssh-copy-id -i ~/.ssh/id_rsa monumental@monumental.se.rit.edu 
-        ```
-2. Checkout the version of the application you want to deploy (this should always be master)
-    ```bash
-    git fetch origin
-    git checkout -b master --track origin/master 
-    git pull
-    ```
-3. Add the VM as a git remote
-    ```bash
-    git remote add deploy monumental@monumental.se.rit.edu:/home/monumental/monuments-and-memorials 
-    ```
-4. Deploy
-    ```bash
-    git push deploy master 
-    ```
-    1. If you're pushing from a branch other than master,
-        ```bash
-        git push deploy my-branch:master
-        ```
-    2. 
+Dr. Juilee Decker - Project Sponsor
+
+Eric Mansfield - Faculty Advisor
+
+#### 2019-2020 Software Engineering Students
+
+Ben Vogler
+
+Nick Deyette
+
+Ben Smith
+
+AJ Delposen
+
+## Contributing
+
+Contributors are currently limited to students in the software engineering senior project at Rochester Institute of Technology but anyone is welcome to create issues and leave feedback. Anyone may contribute data to this project at https://monuments.us.org.
