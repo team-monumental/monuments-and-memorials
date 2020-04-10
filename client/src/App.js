@@ -67,10 +67,10 @@ class App extends React.Component {
                             <Route exact path="/signup" component={SignupPage}/>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
-                            <ProtectedRoute exact path="/create" component={CreateMonumentPage}/>
+                            <ProtectedRoute exact path="/create" component={CreateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                             <Route exact path="/about" component={AboutPage}/>
-                            <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
+                            <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                             <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
                             <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>

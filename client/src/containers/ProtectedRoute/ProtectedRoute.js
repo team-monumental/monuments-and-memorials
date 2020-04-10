@@ -14,7 +14,7 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-        const { session, oneOf, component: Component, path, history, exact, customProps } = this.props;
+        const { session, oneOf, component: Component, path, history, exact, customProps, verifyEmail } = this.props;
 
         // Wait until we've finished getting the user session before making any redirects
         if (session.pending) {
@@ -32,7 +32,6 @@ class ProtectedRoute extends React.Component {
         let render = (props) => (<Component {...props} {...customProps} />);
 
         // If using exact path, match exactly, otherwise do some fuzzy checking
-        // TODO: Verify that this fuzzy checking is good enough
         const active = exact ? history.location.pathname === path :
             history.location.pathname.startsWith(path.replace(/\/:[a-zA-Z_-]*/g, ''));
 
@@ -49,6 +48,11 @@ class ProtectedRoute extends React.Component {
         // TODO: This doesn't support role hierarchy, and probably should
         else if (oneOf && !oneOf.includes(session.user.role)) {
             render = () => noAccessRedirect('You do not have sufficient privileges to view that page.');
+        }
+        // If the user has not verified their email and email verification is required for the route,
+        // redirect them
+        if (verifyEmail && session.user && !session.user.isEmailVerified) {
+            render = () => noAccessRedirect('You must verify your email address to view that page.');
         }
 
         return (
