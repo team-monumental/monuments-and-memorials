@@ -8,7 +8,9 @@ import {
     APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR,
     REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR,
     APPROVE_UPDATE_SUGGESTION_PENDING, APPROVE_UPDATE_SUGGESTION_SUCCESS, APPROVE_UPDATE_SUGGESTION_ERROR,
-    REJECT_UPDATE_SUGGESTION_PENDING, REJECT_UPDATE_SUGGESTION_SUCCESS, REJECT_UPDATE_SUGGESTION_ERROR
+    REJECT_UPDATE_SUGGESTION_PENDING, REJECT_UPDATE_SUGGESTION_SUCCESS, REJECT_UPDATE_SUGGESTION_ERROR,
+    APPROVE_BULK_CREATE_SUGGESTION_PENDING, APPROVE_BULK_CREATE_SUGGESTION_SUCCESS, APPROVE_BULK_CREATE_SUGGESTION_ERROR,
+    REJECT_BULK_CREATE_SUGGESTION_PENDING, REJECT_BULK_CREATE_SUGGESTION_SUCCESS, REJECT_BULK_CREATE_SUGGESTION_ERROR
 } from '../constants';
 import { pending, success, error } from '../utils/action-util';
 import { get, put } from '../utils/api-util';
@@ -74,6 +76,18 @@ const actions = {
         error: REJECT_UPDATE_SUGGESTION_ERROR,
         uri: '/api/suggestion/update'
     },
+    approveBulkCreate: {
+        pending: APPROVE_BULK_CREATE_SUGGESTION_PENDING,
+        success: APPROVE_BULK_CREATE_SUGGESTION_SUCCESS,
+        error: APPROVE_BULK_CREATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/bulk'
+    },
+    rejectBulkCreate: {
+        pending: REJECT_BULK_CREATE_SUGGESTION_PENDING,
+        success: REJECT_BULK_CREATE_SUGGESTION_SUCCESS,
+        error: REJECT_BULK_CREATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/bulk'
+    }
 };
 
 function fetchSuggestions(action) {
@@ -139,7 +153,7 @@ export function fetchBulkCreateSuggestion(id) {
     return fetchSuggestion(actions.fetchBulkCreate, id, false);
 }
 
-function approveSuggestion(action, id) {
+function approveSuggestion(action, id, isAsyncJob=false) {
     return async dispatch => {
         dispatch(pending(action));
 
@@ -158,6 +172,36 @@ export function approveCreateSuggestion(id) {
 
 export function approveUpdateSuggestion(id) {
     return approveSuggestion(actions.approveUpdate, id);
+}
+
+export function approveBulkCreateSuggestion(id) {
+    return async dispatch => {
+        dispatch(pending(actions.approveBulkCreate));
+
+        try {
+            let approveResult = await (await fetch(`${actions.approveBulkCreate.uri}/${id}/approve`, {
+                method: 'put'
+            })).json();
+
+            const approveJobId = approveResult.id;
+
+            let interval;
+            await new Promise(resolve => {
+                interval = window.setInterval(async() => {
+                    approveResult = await (await fetch(`${actions.approveBulkCreate.uri}/approve/progress/${approveJobId}`)).json();
+                    dispatch(pending(actions.approveBulkCreate, approveResult.progress));
+
+                    if (approveResult.future && approveResult.future.done) resolve();
+                }, 200);
+            });
+            window.clearInterval(interval);
+
+            approveResult = await (await fetch(`${actions.approveBulkCreate.uri}/approve/result/${approveJobId}`)).json();
+            dispatch(success(actions.approveBulkCreate, approveResult));
+        } catch (err) {
+            dispatch(error(actions.approveBulkCreate, err));
+        }
+    };
 }
 
 function rejectSuggestion(action, id) {
@@ -179,4 +223,8 @@ export function rejectCreateSuggestion(id) {
 
 export function rejectUpdateSuggestion(id) {
     return rejectSuggestion(actions.rejectUpdate, id);
+}
+
+export function rejectBulkCreateSuggestion(id) {
+    return rejectSuggestion(actions.rejectBulkCreate, id);
 }

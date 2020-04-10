@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { approveCreateSuggestion, approveUpdateSuggestion, fetchBulkCreateSuggestion, fetchCreateSuggestion,
-    fetchUpdateSuggestion, rejectCreateSuggestion, rejectUpdateSuggestion } from '../../../actions/suggestions';
+    fetchUpdateSuggestion, rejectCreateSuggestion, rejectUpdateSuggestion, rejectBulkCreateSuggestion,
+    approveBulkCreateSuggestion } from '../../../actions/suggestions';
 import Spinner from '../../../components/Spinner/Spinner';
 import ManageSuggestions from '../../../components/AdminPanel/ManageSuggestions/ManageSuggestions';
 import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
+import { Modal, ProgressBar } from 'react-bootstrap';
 
 class ManageSuggestionsPage extends React.Component {
 
@@ -17,7 +19,9 @@ class ManageSuggestionsPage extends React.Component {
             approveCreateSuggestion: state.approveCreateSuggestion,
             rejectCreateSuggestion: state.rejectCreateSuggestion,
             approveUpdateSuggestion: state.approveUpdateSuggestion,
-            rejectUpdateSuggestion: state.rejectUpdateSuggestion
+            rejectUpdateSuggestion: state.rejectUpdateSuggestion,
+            approveBulkCreateSuggestion: state.approveBulkCreateSuggestion,
+            rejectBulkCreateSuggestion: state.rejectBulkCreateSuggestion
         };
     }
 
@@ -64,6 +68,11 @@ class ManageSuggestionsPage extends React.Component {
                         case 'update':
                             dispatch(approveUpdateSuggestion(suggestionId));
                             break;
+                        case 'bulk':
+                            dispatch(approveBulkCreateSuggestion(suggestionId));
+                            break;
+                        default:
+                            return;
                     }
                 }
             } catch (err) {}
@@ -84,6 +93,11 @@ class ManageSuggestionsPage extends React.Component {
                         case 'update':
                             dispatch(rejectUpdateSuggestion(suggestionId));
                             break;
+                        case 'bulk':
+                            dispatch(rejectBulkCreateSuggestion(suggestionId));
+                            break;
+                        default:
+                            return;
                     }
                 }
             } catch (err) {}
@@ -93,22 +107,38 @@ class ManageSuggestionsPage extends React.Component {
     render() {
         const { mode, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
             approveCreateSuggestion, rejectCreateSuggestion, approveUpdateSuggestion, rejectUpdateSuggestion,
-            location: { search } } = this.props;
+            location: { search }, rejectBulkCreateSuggestion, approveBulkCreateSuggestion } = this.props;
         const type = QueryString.parse(search).type;
 
         const suggestion = approveCreateSuggestion.result || rejectCreateSuggestion.result ||
-            approveUpdateSuggestion.result || rejectUpdateSuggestion.result || fetchCreateSuggestion.result ||
-            fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
+            approveUpdateSuggestion.result || rejectUpdateSuggestion.result || approveBulkCreateSuggestion.result ||
+            rejectBulkCreateSuggestion.result || fetchCreateSuggestion.result || fetchUpdateSuggestion.result ||
+            fetchBulkCreateSuggestion.result;
 
         const pending = approveCreateSuggestion.pending || rejectCreateSuggestion.pending ||
-            approveUpdateSuggestion.pending || rejectUpdateSuggestion.pending || fetchCreateSuggestion.pending ||
-            fetchUpdateSuggestion.pending || fetchBulkCreateSuggestion.pending;
+            approveUpdateSuggestion.pending || rejectUpdateSuggestion.pending || rejectBulkCreateSuggestion.pending ||
+            fetchCreateSuggestion.pending || fetchUpdateSuggestion.pending || fetchBulkCreateSuggestion.pending;
+
+        console.log(approveBulkCreateSuggestion);
 
         return (<>
             <Spinner show={pending}/>
             <ManageSuggestions type={type} mode={mode} suggestion={suggestion}
                                onApproveClick={() => this.handleSuggestionApproveButtonClick()}
                                onRejectClick={() => this.handleSuggestionRejectButtonClick()}/>
+           <Modal show={approveBulkCreateSuggestion.pending}>
+               <Modal.Header>
+                   <Modal.Title>
+                       Bulk Creating Monuments or Memorials
+                   </Modal.Title>
+               </Modal.Header>
+               <Modal.Body>
+                   <div>
+                       Please wait while these monuments or memorials are being created...
+                   </div>
+                   <ProgressBar now={approveBulkCreateSuggestion.progress * 100}/>
+               </Modal.Body>
+           </Modal>
         </>);
     }
 }

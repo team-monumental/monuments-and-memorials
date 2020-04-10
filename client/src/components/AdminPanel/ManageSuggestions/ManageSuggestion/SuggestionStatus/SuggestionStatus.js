@@ -27,11 +27,25 @@ export default class SuggestionStatus extends React.Component {
 
         const isPending = !isApproved && !isRejected;
 
-        return (<>
-            {isPending && !isFromBulk && this.renderStatusButtons()}
-            {isPending && isFromBulk && <div className="status pending">Pending</div>}
-            {isApproved && <div className="status approved">Approved</div>}
-            {isRejected && <div className="status rejected">Rejected</div>}
-        </>);
+        if (isPending && !isFromBulk) {
+            return this.renderStatusButtons();
+        }
+
+        let statusDisplay;
+        if (isPending && isFromBulk) {
+            statusDisplay = <span className="status pending">Pending</span>
+        }
+        else if (isApproved) {
+            statusDisplay = <span className="status approved">Approved</span>
+        }
+        else if (isRejected) {
+            statusDisplay = <span className="status rejected">Rejected</span>
+        }
+
+        return (
+            <div className="status-container">
+                Status:&nbsp;{statusDisplay}
+            </div>
+        );
     }
 }

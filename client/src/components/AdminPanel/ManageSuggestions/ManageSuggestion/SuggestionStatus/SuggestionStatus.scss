@@ -12,22 +12,26 @@
     }
 }
 
-.status {
+.status-container {
     justify-content: center;
     display: flex;
-    font-size: 20px;
     margin-top: 0.5rem;
-    text-decoration: underline;
-}
+    font-size: 16px;
+    font-weight: bold;
 
-.approved {
-    color: $primary;
-}
+    .status {
+        text-decoration: underline;
 
-.rejected {
-    color: red;
-}
+        &.pending {
+            color: rgb(200, 200, 0);
+        }
 
-.pending {
-    color: rgb(225, 225, 0);
+        &.approved {
+            color: green;
+        }
+
+        &.rejected {
+            color: red;
+        }
+    }
 }

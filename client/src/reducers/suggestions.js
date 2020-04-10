@@ -8,7 +8,9 @@ import {
     APPROVE_CREATE_SUGGESTION_PENDING, APPROVE_CREATE_SUGGESTION_SUCCESS, APPROVE_CREATE_SUGGESTION_ERROR,
     REJECT_CREATE_SUGGESTION_PENDING, REJECT_CREATE_SUGGESTION_SUCCESS, REJECT_CREATE_SUGGESTION_ERROR,
     APPROVE_UPDATE_SUGGESTION_PENDING, APPROVE_UPDATE_SUGGESTION_SUCCESS, APPROVE_UPDATE_SUGGESTION_ERROR,
-    REJECT_UPDATE_SUGGESTION_PENDING, REJECT_UPDATE_SUGGESTION_SUCCESS, REJECT_UPDATE_SUGGESTION_ERROR
+    REJECT_UPDATE_SUGGESTION_PENDING, REJECT_UPDATE_SUGGESTION_SUCCESS, REJECT_UPDATE_SUGGESTION_ERROR,
+    APPROVE_BULK_CREATE_SUGGESTION_PENDING, APPROVE_BULK_CREATE_SUGGESTION_SUCCESS, APPROVE_BULK_CREATE_SUGGESTION_ERROR,
+    REJECT_BULK_CREATE_SUGGESTION_PENDING, REJECT_BULK_CREATE_SUGGESTION_SUCCESS, REJECT_BULK_CREATE_SUGGESTION_ERROR
 } from '../constants';
 
 const fetchCreatesInitialState = {
@@ -289,6 +291,55 @@ export function rejectUpdateSuggestion(state = rejectInitialState, action) {
                 result: action.payload
             };
         case REJECT_UPDATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function approveBulkCreateSuggestion(state = approveInitialState, action) {
+    switch (action.type) {
+        case APPROVE_BULK_CREATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                pending: true,
+                progress: action.progress
+            };
+        case APPROVE_BULK_CREATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                result: action.payload
+            };
+        case APPROVE_BULK_CREATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function rejectBulkCreateSuggestion(state = rejectInitialState, action) {
+    switch (action.type) {
+        case REJECT_BULK_CREATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                pending: true
+            };
+        case REJECT_BULK_CREATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                result: action.payload
+            };
+        case REJECT_BULK_CREATE_SUGGESTION_ERROR:
             return {
                 ...state,
                 pending: false,

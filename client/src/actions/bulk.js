@@ -116,8 +116,7 @@ export function bulkCreateMonuments(form) {
 
             // Approve the BulkCreateMonumentSuggestion
             let approveResult = await (await fetch(`${actions.create.approveUri}/${suggestResult.id}/approve`, {
-                method: 'put',
-                body: buildFormData(form)
+                method: 'put'
             })).json();
 
             const approveJobId = approveResult.id;
