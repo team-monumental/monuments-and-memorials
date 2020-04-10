@@ -1,0 +1,33 @@
+@import "../../../../../theme";
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .btn {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Open Sans", sans-serif;
+    }
+}
+
+.status {
+    justify-content: center;
+    display: flex;
+    font-size: 20px;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+}
+
+.approved {
+    color: $primary;
+}
+
+.rejected {
+    color: red;
+}
+
+.pending {
+    color: rgb(225, 225, 0);
+}

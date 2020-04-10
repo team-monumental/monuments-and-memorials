@@ -4,6 +4,7 @@ import { Card, Collapse } from 'react-bootstrap';
 import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
 import { Link } from 'react-router-dom';
+import SuggestionStatus from '../../../AdminPanel/ManageSuggestions/ManageSuggestion/SuggestionStatus/SuggestionStatus';
 
 /**
  * Presentational component for displaying a CreateMonumentSuggestion
@@ -61,7 +62,7 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     renderSuggestionDetails() {
-        const { suggestion, showCollapse=true, showCollapseLinks=true } = this.props;
+        const { suggestion, showCollapse=true, showCollapseLinks=true, displayStatus, isFromBulk } = this.props;
         const { expanded } = this.state;
 
         const artist = (suggestion.artist && suggestion.artist.length) ? suggestion.artist : 'None';
@@ -131,6 +132,10 @@ export default class CreateMonumentSuggestion extends React.Component {
                 {!expanded && showCollapseLinks && expandLink}
                 {expanded && showCollapseLinks && hideLink}
             </>}
+            {displayStatus &&
+                <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
+                                  isFromBulk={isFromBulk}/>
+            }
         </>);
     }
 
@@ -139,7 +144,7 @@ export default class CreateMonumentSuggestion extends React.Component {
 
         const titleText = showIndex ?
             `${index}. ${suggestion.title}` :
-            `Create New Record: ${suggestion.title}`;
+            `Create new record: ${suggestion.title}`;
 
         return (
             <Card className="create-suggestion">

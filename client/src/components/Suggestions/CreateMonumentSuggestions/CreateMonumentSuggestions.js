@@ -9,7 +9,7 @@ export default class CreateMonumentSuggestions extends React.Component {
         super(props);
 
         this.state = {
-            expanded: false
+            expanded: props.expandedByDefault || false
         }
     }
 
@@ -35,7 +35,8 @@ export default class CreateMonumentSuggestions extends React.Component {
     }
 
     render() {
-        const { suggestions, hideMoreThan, showSuggestionCollapse, showTitlesAsLinks } = this.props;
+        const { suggestions, hideMoreThan, showSuggestionCollapse, showTitlesAsLinks,
+            showCollapseLinks=true, displayStatuses, areFromBulk } = this.props;
         const { expanded } = this.state;
 
         let showingSuggestions = suggestions;
@@ -52,7 +53,8 @@ export default class CreateMonumentSuggestions extends React.Component {
                 {showingSuggestions.map((suggestion, index) => (
                     <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}
                                               showCollapse={showSuggestionCollapse}
-                                              showTitleAsLink={showTitlesAsLinks}/>
+                                              showTitleAsLink={showTitlesAsLinks} displayStatus={displayStatuses}
+                                              isFromBulk={areFromBulk} showCollapseLinks={showCollapseLinks}/>
                 ))}
                 {hiddenSuggestions && hiddenSuggestions.length > 0 && <>
                     <Collapse in={expanded}>
@@ -63,14 +65,18 @@ export default class CreateMonumentSuggestions extends React.Component {
                                     <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion}
                                                               index={hiddenSuggestionsStartIndex + 1}
                                                               showCollapse={showSuggestionCollapse}
-                                                              showTitleAsLink={showTitlesAsLinks}/>
+                                                              showTitleAsLink={showTitlesAsLinks}
+                                                              displayStatus={displayStatuses}
+                                                              isFromBulk={areFromBulk}
+                                                              showCollapseLinks={showCollapseLinks}
+                                    />
                                 );
                             })}
                         </div>
                     </Collapse>
 
-                    {!expanded && this.renderExpandLink()}
-                    {expanded && this.renderHideLink()}
+                    {!expanded && showCollapseLinks && this.renderExpandLink()}
+                    {expanded && showCollapseLinks && this.renderHideLink()}
                 </>}
             </div>}
         </>);

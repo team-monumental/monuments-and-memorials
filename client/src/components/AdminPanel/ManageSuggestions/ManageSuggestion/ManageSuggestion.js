@@ -2,9 +2,10 @@ import * as React from 'react';
 import './ManageSuggestion.scss';
 import { Helmet } from 'react-helmet';
 import CreateMonumentSuggestion from '../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestion/CreateMonumentSuggestion';
-import ManagementButtonToolbar from '../../../Suggestions/ManagementButtonToolbar/ManagementButtonToolbar';
 import UpdateMonumentSuggestion from '../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestion/UpdateMonumentSuggestion';
 import { Alert } from 'react-bootstrap';
+import BulkCreateMonumentSuggestion from '../../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestion/BulkCreateMonumentSuggestion';
+import SuggestionStatus from './SuggestionStatus/SuggestionStatus';
 
 export default class ManageSuggestion extends React.Component {
 
@@ -16,48 +17,17 @@ export default class ManageSuggestion extends React.Component {
         };
     }
 
-    renderSuggestionStatus() {
-        const { suggestion, onApproveClick, onRejectClick } = this.props;
-
-        let isPending;
-        if (suggestion.suggestion) {
-            isPending = !suggestion.suggestion.isApproved && !suggestion.suggestion.isRejected;
-        }
-        else {
-            isPending = !suggestion.isApproved && !suggestion.isRejected;
-        }
-
-        let isApproved;
-        if (suggestion.suggestion) {
-            isApproved = suggestion.suggestion.isApproved;
-        }
-        else {
-            isApproved = suggestion.isApproved;
-        }
-
-        let isRejected;
-        if (suggestion.suggestion) {
-            isRejected = suggestion.suggestion.isRejected;
-        }
-        else {
-            isRejected = suggestion.isRejected;
-        }
-
-        return (<>
-            {isPending && <ManagementButtonToolbar onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>}
-            {isApproved && <div className="status approved">Approved</div>}
-            {isRejected && <div className="status rejected">Rejected</div>}
-        </>);
-    }
-
     renderUpdateNotice() {
-        const { suggestion } = this.props;
+        let { suggestion } = this.props;
         const { alertDismissed } = this.state;
+
+        if (suggestion.suggestion) {
+            suggestion = suggestion.suggestion;
+        }
 
         return (
             <>
-                {suggestion && suggestion.suggestion && suggestion.suggestion.monument &&
-                suggestion.suggestion.monument.lastModifiedDate > suggestion.suggestion.createdDate &&
+                {suggestion && suggestion.monument && suggestion.monument.lastModifiedDate > suggestion.createdDate &&
                 !alertDismissed &&
                     <Alert variant="danger" onClose={() => this.setState({alertDismissed: true})} dismissible>
                         <i className="material-icons mr-2">warning</i>
@@ -72,26 +42,28 @@ export default class ManageSuggestion extends React.Component {
     }
 
     renderManageCreateSuggestion() {
-        const { suggestion } = this.props;
+        const { suggestion, onApproveClick, onRejectClick } = this.props;
 
         return (
             <div className="manage-suggestion">
                 <Helmet title={`Manage ${suggestion.title} | Monuments and Memorials`}/>
                 <CreateMonumentSuggestion suggestion={suggestion} showIndex={false} showTitleAsLink={false}
                                           expandedByDefault={true} showCollapse={true} showCollapseLinks={false}/>
-                {this.renderSuggestionStatus()}
+                <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
+                                  onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>
             </div>
         );
     }
 
     renderManageUpdateSuggestion() {
-        const { suggestion } = this.props;
+        let { suggestion, onApproveClick, onRejectClick } = this.props;
+
+        if (suggestion.suggestion) {
+            suggestion = suggestion.suggestion;
+        }
 
         let title;
-        if (suggestion.suggestion && suggestion.suggestion.monument && suggestion.suggestion.monument.title) {
-            title = suggestion.suggestion.monument.title;
-        }
-        else if (suggestion && suggestion.monument && suggestion.monument.title) {
+        if (suggestion && suggestion.monument && suggestion.monument.title) {
             title = suggestion.monument.title;
         }
 
@@ -99,16 +71,28 @@ export default class ManageSuggestion extends React.Component {
             <div className="manage-suggestion">
                 <Helmet title={`Manage ${title} | Monuments and Memorials`}/>
                 {this.renderUpdateNotice()}
-                <UpdateMonumentSuggestion suggestion={suggestion.suggestion || suggestion} showIndex={false}
+                <UpdateMonumentSuggestion suggestion={suggestion} showIndex={false}
                                           showTitleAsLink={false} expandedByDefault={true}
                                           showCollapseLinks={false}/>
-                {this.renderSuggestionStatus()}
+                <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
+                                  onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>
             </div>
         );
     }
 
     renderManageBulkSuggestion() {
-        return <div/>;
+        const { suggestion, onApproveClick, onRejectClick } = this.props;
+
+        return (
+            <div className="manage-suggestion">
+                <Helmet title={`Manage ${suggestion.fileName} | Monuments and Memorials`}/>
+                <BulkCreateMonumentSuggestion suggestion={suggestion} showIndex={false} showTitleAsLink={false}
+                                              displayCreateMonumentStatuses={true} showCreateTitlesAsLinks={true}/>
+                <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
+                                  onApproveClick={onApproveClick} onRejectClick={onRejectClick}
+                                  isBulk={true}/>
+            </div>
+        );
     }
 
     render() {

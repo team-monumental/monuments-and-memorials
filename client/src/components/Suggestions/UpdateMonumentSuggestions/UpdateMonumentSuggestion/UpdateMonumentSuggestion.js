@@ -51,7 +51,7 @@ export default class UpdateMonumentSuggestion extends React.Component {
         if (suggestion && suggestion.monument && suggestion.monument.title) {
             titleText = showIndex ?
                 `${index}. ${suggestion.monument.title}` :
-                `Update To: ${suggestion.monument.title}`;
+                `Update to record: ${suggestion.monument.title}`;
         }
 
         return (
