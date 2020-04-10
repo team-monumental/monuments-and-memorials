@@ -51,7 +51,7 @@ class ProtectedRoute extends React.Component {
         }
         // If the user has not verified their email and email verification is required for the route,
         // redirect them
-        if (verifyEmail && session.user && !session.user.isEmailVerified) {
+        else if (verifyEmail && session.user && !session.user.isEmailVerified) {
             render = () => noAccessRedirect('You must verify your email address to view that page.');
         }
 
