@@ -140,7 +140,7 @@ class ManageSuggestionsPage extends React.Component {
                </Modal.Header>
                <Modal.Body>
                    <div>
-                       Please wait while these monuments or memorials are being created...
+                       Please wait while the monuments or memorials are being created...
                    </div>
                    <ProgressBar now={approveBulkCreateSuggestion.progress * 100}/>
                </Modal.Body>

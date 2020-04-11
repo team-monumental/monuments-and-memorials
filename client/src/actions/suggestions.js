@@ -115,15 +115,15 @@ export function fetchBulkCreateSuggestions() {
     return fetchSuggestions(actions.fetchBulkCreates);
 }
 
-function fetchSuggestion(action, id, isUpdateSuggestion) {
+function fetchSuggestion(action, id, isUpdateSuggestion=false) {
     return async dispatch => {
         dispatch(pending(action));
 
         try {
             const suggestion = await get(`${action.uri}/${id}`);
 
-            // Special case for UpdateMonumentSuggestions: Fetch the all of the pending UpdateMonumentSuggestions for
-            // the Monument
+            // Special case for UpdateMonumentSuggestions: Fetch all of the pending UpdateMonumentSuggestions for the
+            // Monument
             if (isUpdateSuggestion) {
                 const allPendingUpdateSuggestionsForMonument = await get(`/api/search/suggestions/update/pending/${suggestion.monument.id}`);
                 const result = {
@@ -142,7 +142,7 @@ function fetchSuggestion(action, id, isUpdateSuggestion) {
 }
 
 export function fetchCreateSuggestion(id) {
-    return fetchSuggestion(actions.fetchCreate, id, false);
+    return fetchSuggestion(actions.fetchCreate, id);
 }
 
 export function fetchUpdateSuggestion(id) {
@@ -150,10 +150,10 @@ export function fetchUpdateSuggestion(id) {
 }
 
 export function fetchBulkCreateSuggestion(id) {
-    return fetchSuggestion(actions.fetchBulkCreate, id, false);
+    return fetchSuggestion(actions.fetchBulkCreate, id);
 }
 
-function approveSuggestion(action, id, isAsyncJob=false) {
+function approveSuggestion(action, id) {
     return async dispatch => {
         dispatch(pending(action));
 

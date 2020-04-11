@@ -43,7 +43,7 @@ public class SearchHelper {
 
     /**
      * Build a Predicate for the specified pg_tgrm similarity expression
-     * @param builder - CriteriaBuilder to use to build the similary Predicate
+     * @param builder - CriteriaBuilder to use to build the similarity Predicate
      * @param expression - pg_tgrm similarity Expression to use to build the Predicate
      * @param threshold - The threshold (0-1) to limit the results by. You can learn about this score at: https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @return Predicate - Predicate built using the specified builder and expression
@@ -146,9 +146,9 @@ public class SearchHelper {
                                                             String searchQuery, boolean orderBySimilarity) {
         // Build the similarity expressions for first name, last name and email
         List<Expression<Number>> expressions = new ArrayList<>();
-        Expression<Number> firstNameExpression = SearchHelper.buildSimilarityExpression(builder, userJoin, searchQuery, "firstName");
-        Expression<Number> lastNameExpression = SearchHelper.buildSimilarityExpression(builder, userJoin, searchQuery, "lastName");
-        Expression<Number> emailExpression = SearchHelper.buildSimilarityExpression(builder, userJoin, searchQuery, "email");
+        Expression<Number> firstNameExpression = buildSimilarityExpression(builder, userJoin, searchQuery, "firstName");
+        Expression<Number> lastNameExpression = buildSimilarityExpression(builder, userJoin, searchQuery, "lastName");
+        Expression<Number> emailExpression = buildSimilarityExpression(builder, userJoin, searchQuery, "email");
         expressions.add(firstNameExpression);
         expressions.add(lastNameExpression);
         expressions.add(emailExpression);

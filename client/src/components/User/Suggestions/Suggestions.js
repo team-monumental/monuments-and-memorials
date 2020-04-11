@@ -3,7 +3,7 @@ import './Suggestions.scss';
 import Spinner from '../../Spinner/Spinner';
 import { Card, Tab, Tabs } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import { Role } from'../../../utils/authentication-util';
+import { Role } from '../../../utils/authentication-util';
 import CreateMonumentSuggestions from '../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 import UpdateMonumentSuggestions from '../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
 import BulkCreateMonumentSuggestions from '../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
@@ -87,8 +87,6 @@ export default class Suggestions extends React.Component {
                 window.location.replace('/panel/bulk');
             }} to="/panel/bulk" key="bulk">clicking here</NavLink>
         );
-
-        console.log(bulk);
 
         return (<>
             <h6>New Monument or Memorial Suggestions</h6>

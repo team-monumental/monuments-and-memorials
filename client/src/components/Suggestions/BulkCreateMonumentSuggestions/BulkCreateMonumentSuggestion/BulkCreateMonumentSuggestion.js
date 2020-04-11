@@ -11,7 +11,7 @@ export default class BulkCreateMonumentSuggestion extends React.Component {
 
     render() {
         const { suggestion, index, showTitleAsLink, showIndex=true, displayCreateMonumentStatuses,
-            showCreateTitlesAsLinks} = this.props;
+            showCreateTitlesAsLinks } = this.props;
 
         const titleText = showIndex ?
             `${index}. ${suggestion.fileName}` :

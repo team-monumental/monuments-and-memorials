@@ -329,7 +329,7 @@ public class SuggestionController {
      * @return AsyncJob - Object containing the id of the job and the current value of the Future object
      */
     @GetMapping("/api/suggestion/bulk/approve/progress/{id}")
-    @PreAuthorize(Authorization.isPartnerOrAbove)
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     public AsyncJob getApproveBulkCreateMonumentSuggestionJob(@PathVariable Integer id) {
         return this.asyncJobService.getJob(id);
     }
@@ -344,7 +344,7 @@ public class SuggestionController {
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
     @GetMapping("/api/suggestion/bulk/approve/result/{id}")
-    @PreAuthorize(Authorization.isPartnerOrAbove)
+    @PreAuthorize(Authorization.isResearcherOrAbove)
     @SuppressWarnings("unchecked")
     public List<Monument> getApproveBulkCreateMonumentSuggestionJobResult(@PathVariable Integer id)
             throws ExecutionException, InterruptedException {

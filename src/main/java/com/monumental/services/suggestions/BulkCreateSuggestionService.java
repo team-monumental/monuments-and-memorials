@@ -82,8 +82,8 @@ public class BulkCreateSuggestionService extends ModelService<BulkCreateMonument
 
         return limit != null
                 ? page != null
-                ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
-                : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+                    ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                    : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
                 : this.getWithCriteriaQuery(query);
     }
 

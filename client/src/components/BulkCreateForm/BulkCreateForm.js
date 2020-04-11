@@ -233,7 +233,7 @@ export default class BulkCreateForm extends React.Component {
 
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults, term, showCreateResults } = this.props;
+        const { showValidationResults, showCreateResults, term } = this.props;
 
         return (
             <Card className="bulk-create-form-container">

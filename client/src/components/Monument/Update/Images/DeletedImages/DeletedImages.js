@@ -4,7 +4,7 @@ import { getS3ImageNameFromObjectUrl } from '../../../../../utils/api-util';
 import Thumbnails from '../../../Images/Thumbnails/Thumbnails';
 
 /**
- * Presentational component for displaying deleted image URLs for a Monument
+ * Presentational component for displaying deleted images for a Monument
  */
 export default class DeletedImages extends React.Component {
 

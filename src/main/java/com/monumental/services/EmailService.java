@@ -62,7 +62,7 @@ public class EmailService {
     public void sendEmail(String recipientAddress, String templateName, String extraMessage) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
-        email.setFrom(outboundEmailAddress);
+        email.setFrom(this.outboundEmailAddress);
         email.setSubject(this.messages.getMessage(templateName + ".subject", null, Locale.getDefault()));
         email.setText(this.messages.getMessage(templateName + ".body", null, Locale.getDefault()) + extraMessage);
 

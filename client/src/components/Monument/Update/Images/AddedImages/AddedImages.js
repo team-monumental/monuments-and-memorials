@@ -3,7 +3,7 @@ import './AddedImages.scss';
 import Thumbnails from '../../../Images/Thumbnails/Thumbnails';
 
 /**
- * Presentational component for displaying newly added image URLs for a Monument
+ * Presentational component for displaying newly added images for a Monument
  */
 export default class AddedImages extends React.Component {
 
