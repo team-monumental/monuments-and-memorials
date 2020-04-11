@@ -32,6 +32,8 @@ class MonumentPage extends React.Component {
     componentDidMount() {
         const { dispatch, match: { params: { monumentId } } } = this.props;
         dispatch(fetchMonument(monumentId));
+        // Change the url to include the slug if it's not present
+        this.redirectToSlug();
     }
 
     /**
@@ -68,8 +70,6 @@ class MonumentPage extends React.Component {
     }
 
     render() {
-        // Change the url to include the slug if it's not present
-        this.redirectToSlug();
         const {
             monument, nearbyMonuments, relatedMonuments, favorite, session,
             fetchMonumentPending, fetchNearbyPending, fetchRelatedPending, fetchFavoritePending
