@@ -35,8 +35,8 @@ export default class CreateMonumentSuggestions extends React.Component {
     }
 
     render() {
-        const { suggestions, hideMoreThan, showSuggestionCollapse, showTitlesAsLinks,
-            showCollapseLinks=true, displayStatuses, areFromBulk } = this.props;
+        const { suggestions, hideMoreThan, showSuggestionCollapses=true, showTitlesAsLinks,
+            showCollapseLinks=true, displayStatuses, areFromBulk, showSuggestionCollapseLinks=true } = this.props;
         const { expanded } = this.state;
 
         let showingSuggestions = suggestions;
@@ -52,9 +52,9 @@ export default class CreateMonumentSuggestions extends React.Component {
             {suggestions && <div className="create-suggestions">
                 {showingSuggestions.map((suggestion, index) => (
                     <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}
-                                              showCollapse={showSuggestionCollapse}
+                                              showCollapse={showSuggestionCollapses}
                                               showTitleAsLink={showTitlesAsLinks} displayStatus={displayStatuses}
-                                              isFromBulk={areFromBulk} showCollapseLinks={showCollapseLinks}/>
+                                              isFromBulk={areFromBulk} showCollapseLinks={showSuggestionCollapseLinks}/>
                 ))}
                 {hiddenSuggestions && hiddenSuggestions.length > 0 && <>
                     <Collapse in={expanded}>
@@ -64,11 +64,11 @@ export default class CreateMonumentSuggestions extends React.Component {
                                 return (
                                     <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion}
                                                               index={hiddenSuggestionsStartIndex + 1}
-                                                              showCollapse={showSuggestionCollapse}
+                                                              showCollapse={showSuggestionCollapses}
                                                               showTitleAsLink={showTitlesAsLinks}
                                                               displayStatus={displayStatuses}
                                                               isFromBulk={areFromBulk}
-                                                              showCollapseLinks={showCollapseLinks}
+                                                              showCollapseLinks={showSuggestionCollapseLinks}
                                     />
                                 );
                             })}

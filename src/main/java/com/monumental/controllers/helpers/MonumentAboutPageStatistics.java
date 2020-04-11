@@ -27,6 +27,8 @@ public class MonumentAboutPageStatistics {
 
     private Integer nineElevenMemorialId;
 
+    private Integer vietnamVeteransMemorialId;
+
     public int getTotalNumberOfMonuments() {
         return this.totalNumberOfMonuments;
     }
@@ -97,5 +99,13 @@ public class MonumentAboutPageStatistics {
 
     public void setNineElevenMemorialId(Integer nineElevenMemorialId) {
         this.nineElevenMemorialId = nineElevenMemorialId;
+    }
+
+    public Integer getVietnamVeteransMemorialId() {
+        return this.vietnamVeteransMemorialId;
+    }
+
+    public void setVietnamVeteransMemorialId(Integer vietnamVeteransMemorialId) {
+        this.vietnamVeteransMemorialId = vietnamVeteransMemorialId;
     }
 }

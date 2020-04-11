@@ -57,7 +57,7 @@ const createSuggestionInitialState = {
 };
 
 export function createSuggestionSearchPage(state = createSuggestionInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, createSuggestionInitialState, action, {
         pending: SEARCH_CREATE_SUGGESTIONS_PENDING,
         success: SEARCH_CREATE_SUGGESTIONS_SUCCESS,
         error: SEARCH_CREATE_SUGGESTIONS_ERROR
@@ -72,7 +72,7 @@ const updateSuggestionInitialState = {
 };
 
 export function updateSuggestionSearchPage(state = updateSuggestionInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, updateSuggestionInitialState, action, {
         pending: SEARCH_UPDATE_SUGGESTIONS_PENDING,
         success: SEARCH_UPDATE_SUGGESTIONS_SUCCESS,
         error: SEARCH_UPDATE_SUGGESTIONS_ERROR
@@ -87,7 +87,7 @@ const bulkCreateSuggestionInitialState = {
 };
 
 export function bulkCreateSuggestionSearchPage(state = bulkCreateSuggestionInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, bulkCreateSuggestionInitialState, action, {
         pending: SEARCH_BULK_CREATE_SUGGESTIONS_PENDING,
         success: SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS,
         error: SEARCH_BULK_CREATE_SUGGESTIONS_ERROR
@@ -101,9 +101,9 @@ const pendingSuggestionsInitialState = {
 };
 
 export function pendingSuggestions(state = pendingSuggestionsInitialState, action) {
-    return basicReducer(state, action, {
+    return basicReducer(state, pendingSuggestionsInitialState, action, {
         pending: GET_PENDING_SUGGESTION_COUNT_PENDING,
         success: GET_PENDING_SUGGESTION_COUNT_SUCCESS,
         error: GET_PENDING_SUGGESTION_COUNT_ERROR
-    });
+    }, false);
 }

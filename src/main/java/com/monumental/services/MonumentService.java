@@ -743,6 +743,15 @@ public class MonumentService extends ModelService<Monument> {
             if (nineElevenMemorialSearchResults.size() > 0) {
                 statistics.setNineElevenMemorialId(nineElevenMemorialSearchResults.get(0).getId());
             }
+
+            // Search for the Vietnam Veterans Memorial so we can link to it
+            List<Monument> vietnamVeteransMemorialSearchResults = this.search("Vietnam Veterans Memorial", null, null,
+                    0.75, 38.891632, -77.047809, 0.5, null, null, SortType.DISTANCE, null, null, null, true);
+
+            // Only take the first result, if there are any results
+            if (vietnamVeteransMemorialSearchResults.size() > 0) {
+                statistics.setVietnamVeteransMemorialId(vietnamVeteransMemorialSearchResults.get(0).getId());
+            }
         }
 
         return statistics;

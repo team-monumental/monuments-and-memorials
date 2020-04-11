@@ -44,6 +44,16 @@ export default class AboutInformation extends React.Component {
             );
         }
 
+        let vietnamVeteransMemorialLink = "Vietnam Veterans Memorial";
+        if (monumentStatistics && monumentStatistics.vietnamVeteransMemorialId) {
+            vietnamVeteransMemorialLink = (
+                <NavLink onClick={e => {
+                    e.preventDefault();
+                    window.location.replace(`/monuments/${monumentStatistics.vietnamVeteransMemorialId}`);
+                }} to={`/monuments/${monumentStatistics.vietnamVeteransMemorialId}`} key="vietnam-veterans-memorial">Vietnam Veterans Memorial</NavLink>
+            );
+        }
+
         let loginLink = (
             <NavLink onClick={e => {
                 e.preventDefault();
@@ -102,7 +112,7 @@ export default class AboutInformation extends React.Component {
                     Monuments and memorials offer insight into a community's values. They offer tribute to a person,
                     idea, or event and/or honor an individual or group who have passed away or have been, in the case
                     of veterans, killed in action. Across the United States, thousands of such work exists. While some
-                    familiar outdoor memorials include the Vietnam Veterans Memorial in Washington, D.C. and the&nbsp;
+                    familiar outdoor memorials include the {vietnamVeteransMemorialLink} in Washington, D.C. and the&nbsp;
                     {nineElevenMemorialLink} and Museum in NYC -- and such works are deemed part of our national
                     treasures -- no method exists to enable someone to research and locate public monuments and memorials
                     throughout the United States. In short, our nation's vast collection of publicly-accessible art,

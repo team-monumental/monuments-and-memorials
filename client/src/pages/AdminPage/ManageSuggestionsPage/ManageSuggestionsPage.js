@@ -29,6 +29,15 @@ class ManageSuggestionsPage extends React.Component {
         this.fetchSuggestionIfIdAndTypeExists();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { dispatch, match: { params: { suggestionId } } } = this.props;
+
+        if (prevProps.approveBulkCreateSuggestion.pending && !this.props.approveBulkCreateSuggestion.pending &&
+            Array.isArray(this.props.approveBulkCreateSuggestion.result)) {
+            dispatch(fetchBulkCreateSuggestion(suggestionId));
+        }
+    }
+
     fetchSuggestionIfIdAndTypeExists() {
         const { dispatch, match: { params: { suggestionId } }, location: { search } } = this.props;
         const type = QueryString.parse(search).type;
@@ -111,15 +120,12 @@ class ManageSuggestionsPage extends React.Component {
         const type = QueryString.parse(search).type;
 
         const suggestion = approveCreateSuggestion.result || rejectCreateSuggestion.result ||
-            approveUpdateSuggestion.result || rejectUpdateSuggestion.result || approveBulkCreateSuggestion.result ||
-            rejectBulkCreateSuggestion.result || fetchCreateSuggestion.result || fetchUpdateSuggestion.result ||
-            fetchBulkCreateSuggestion.result;
+            approveUpdateSuggestion.result || rejectUpdateSuggestion.result || rejectBulkCreateSuggestion.result ||
+            fetchCreateSuggestion.result || fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
 
         const pending = approveCreateSuggestion.pending || rejectCreateSuggestion.pending ||
             approveUpdateSuggestion.pending || rejectUpdateSuggestion.pending || rejectBulkCreateSuggestion.pending ||
             fetchCreateSuggestion.pending || fetchUpdateSuggestion.pending || fetchBulkCreateSuggestion.pending;
-
-        console.log(approveBulkCreateSuggestion);
 
         return (<>
             <Spinner show={pending}/>

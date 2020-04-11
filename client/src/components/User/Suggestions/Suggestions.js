@@ -88,6 +88,8 @@ export default class Suggestions extends React.Component {
             }} to="/panel/bulk" key="bulk">clicking here</NavLink>
         );
 
+        console.log(bulk);
+
         return (<>
             <h6>New Monument or Memorial Suggestions</h6>
             {(!create || create.length === 0) && !error && <>
@@ -140,7 +142,7 @@ export default class Suggestions extends React.Component {
                         <Tab title="Pending" eventKey="pending">
                             {this.renderSuggestions(this.filterPendingSuggestions(), 'pending')}
                         </Tab>
-                        <Tab title="Rejected" eventKey="rejected">
+                        <Tab title="Not Approved" eventKey="rejected">
                             {this.renderSuggestions(this.filterRejectedSuggestions(), 'rejected')}
                         </Tab>
                     </Tabs>

@@ -19,7 +19,7 @@ const createMonumentInitialState = {
 export function createCreateSuggestion(state = createCreateSuggestionInitialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return initialState;
+            return createCreateSuggestionInitialState;
         case CREATE_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,

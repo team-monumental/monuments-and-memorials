@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.scss';
 import './theme.scss';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
