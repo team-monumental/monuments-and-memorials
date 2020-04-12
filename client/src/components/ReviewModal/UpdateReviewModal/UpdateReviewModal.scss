@@ -6,6 +6,7 @@
   .update-review-modal {
     &.modal-header {
       padding-bottom: 0;
+      border-bottom: 2px solid #DEE2E6;
 
       .modal-title {
         color: #61616D;
@@ -14,7 +15,7 @@
     }
 
     &.modal-body {
-      padding: 0.25rem 1rem 0.25rem 1rem;
+      padding: 0.25rem 1rem 0.5rem 1rem;
       overflow: hidden;
       white-space: normal;
 
@@ -34,39 +35,6 @@
         i {
           font-size: 36px;
         }
-
-        .attribute-update {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          word-break: break-word;
-
-          .old-attribute {
-            padding-right: 0.25rem;
-          }
-
-          .new-attribute {
-            padding-left: 0.25rem;
-          }
-
-          .none {
-            color: red;
-            font-weight: bold;
-          }
-        }
-
-        .changed-references {
-          .changed-references-list {
-            .reference-change {
-              display: flex;
-              align-items: center;
-            }
-          }
-        }
-      }
-
-      .attribute-label {
-        font-weight: bold;
       }
     }
 
@@ -79,42 +47,5 @@
         font-family: "Open Sans", sans-serif;
       }
     }
-  }
-
-  hr.update-review-modal {
-    width: 100%;
-    border-top: 2px solid rgba(0, 0, 0, 0.1);
-    margin-bottom: 0;
-  }
-
-  hr.unchanged-attributes-divider {
-    width: 100%;
-    border-top: 2px dotted rgb(0, 0, 0);
-    margin-bottom: 0.5rem;
-  }
-
-  .added {
-    color: green;
-    font-weight: bold;
-  }
-
-  .removed {
-    color: red;
-    font-weight: bold;
-  }
-
-  .show-unchanged-changes-link {
-    cursor: pointer;
-    color: $primary;
-    text-decoration: underline;
-    font-size: medium;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .no-attributes-changed-message {
-    font-weight: bold;
-    text-align: center;
-    font-size: large;
   }
 }

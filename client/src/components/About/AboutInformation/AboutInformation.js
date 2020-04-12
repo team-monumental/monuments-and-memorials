@@ -44,6 +44,30 @@ export default class AboutInformation extends React.Component {
             );
         }
 
+        let vietnamVeteransMemorialLink = "Vietnam Veterans Memorial";
+        if (monumentStatistics && monumentStatistics.vietnamVeteransMemorialId) {
+            vietnamVeteransMemorialLink = (
+                <NavLink onClick={e => {
+                    e.preventDefault();
+                    window.location.replace(`/monuments/${monumentStatistics.vietnamVeteransMemorialId}`);
+                }} to={`/monuments/${monumentStatistics.vietnamVeteransMemorialId}`} key="vietnam-veterans-memorial">Vietnam Veterans Memorial</NavLink>
+            );
+        }
+
+        let loginLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace('/login');
+            }} to="/login" key="login">click here</NavLink>
+        );
+
+        let signupLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace('/signup');
+            }} to="/signup" key="signup">click here to create an account</NavLink>
+        );
+
         const readMoreContributorsLink = (
             <div className="more-contributors-link"
                  onClick={() => this.handleMoreContributorsClick()}>
@@ -73,11 +97,10 @@ export default class AboutInformation extends React.Component {
                     data by contributing 900 additional monuments + memorials, so that all states are represented, as
                     are two territories (Guam and Puerto Rico).
                 </p>
-                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
                     Our goal is to document all temporary and permanent monuments + memorials throughout the United
                     States and territories. We are looking for contributors to add information, please join us by
-                    creating an account (sign-in link here) or by contacting the organizers&nbsp;
+                    creating an account ({signupLink}) or by contacting the organizers&nbsp;
                     <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>. To view monuments
                     and memorials, {mapNavLink}.
                 </p>
@@ -89,7 +112,7 @@ export default class AboutInformation extends React.Component {
                     Monuments and memorials offer insight into a community's values. They offer tribute to a person,
                     idea, or event and/or honor an individual or group who have passed away or have been, in the case
                     of veterans, killed in action. Across the United States, thousands of such work exists. While some
-                    familiar outdoor memorials include the Vietnam Veterans Memorial in Washington, D.C. and the&nbsp;
+                    familiar outdoor memorials include the {vietnamVeteransMemorialLink} in Washington, D.C. and the&nbsp;
                     {nineElevenMemorialLink} and Museum in NYC -- and such works are deemed part of our national
                     treasures -- no method exists to enable someone to research and locate public monuments and memorials
                     throughout the United States. In short, our nation's vast collection of publicly-accessible art,
@@ -106,9 +129,8 @@ export default class AboutInformation extends React.Component {
                 <h3 className="font-italic">
                     Contributors:
                 </h3>
-                {/* TODO: Replace click here with link to sign-in page */}
                 <p>
-                    We invite contributions from anyone. If you are interested in contributing, please click here. Your
+                    We invite contributions from anyone. If you are interested in contributing, please {loginLink}. Your
                     submissions will be recognized in our list of contributors:
                 </p>
 

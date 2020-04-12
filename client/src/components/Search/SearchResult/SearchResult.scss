@@ -24,14 +24,4 @@
             }
         }
     }
-    .monument-thumbnail {
-        $size: 96px;
-        min-width: $size;
-        width: $size;
-        height: $size;
-        border-radius: 14px;
-        background-position: center;
-        background-size: cover;
-        margin-right: 1rem;
-    }
 }

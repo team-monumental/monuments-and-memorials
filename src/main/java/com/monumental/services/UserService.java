@@ -1,6 +1,5 @@
 package com.monumental.services;
 
-import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.CreateUserRequest;
 import com.monumental.exceptions.InvalidEmailOrPasswordException;
 import com.monumental.exceptions.ResourceNotFoundException;
@@ -11,12 +10,8 @@ import com.monumental.repositories.UserRepository;
 import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
 import com.monumental.security.UserAwareUserDetails;
+import com.monumental.util.search.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,29 +35,16 @@ import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 public class UserService extends ModelService<User> {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    VerificationTokenRepository tokenRepository;
+    private VerificationTokenRepository tokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Qualifier("resourceBundleMessageSource")
-    private MessageSource messages;
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
-    private AppConfig appConfig;
-
-    @Value("${OUTBOUND_EMAIL_ADDRESS:noreply@monuments.us.org}")
-    private String outboundEmailAddress;
-
-    @Value("${spring.mail.username:#{null}}")
-    private String springMailUsername;
+    private EmailService emailService;
 
     /**
      * Gets our custom Spring Security session object (UserAwareUserDetails) which includes our User.
@@ -123,7 +105,7 @@ public class UserService extends ModelService<User> {
         user.setIsEmailVerified(false);
         this.userRepository.save(user);
 
-        this.sendSignupVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.EMAIL));
+        this.emailService.sendSignupVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.EMAIL));
 
         return user;
     }
@@ -144,7 +126,7 @@ public class UserService extends ModelService<User> {
                 return;
             }
             VerificationToken token = this.generateVerificationToken(user, VerificationToken.Type.PASSWORD_RESET);
-            this.sendPasswordResetEmail(user, token);
+            this.emailService.sendPasswordResetEmail(user, token);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -291,82 +273,6 @@ public class UserService extends ModelService<User> {
     }
 
     /**
-     * Sends an email to the specified address using the stored email template name
-     * TODO: Replace with HTML email templates with proper templating where user data can be filled in automatically
-     * @param recipientAddress - The email address to send to
-     * @param name - The email template name
-     */
-    private void sendEmail(String recipientAddress, String name) {
-        this.sendEmail(recipientAddress, name, "");
-    }
-
-    /**
-     * Sends an email to the specified address using the stored email template name, adding the extraMessage onto the
-     * end of the email template
-     * TODO: This is a lazy way of not having to write email templating yet. Replace this with true templating
-     * @param recipientAddress - The email address to send to
-     * @param templateName - The email template name
-     * @param extraMessage - The extra content to add to the end of the template
-     */
-    private void sendEmail(String recipientAddress, String templateName, String extraMessage) {
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setFrom(outboundEmailAddress);
-        email.setSubject(this.messages.getMessage(templateName + ".subject", null, Locale.getDefault()));
-        email.setText(this.messages.getMessage(templateName + ".body", null, Locale.getDefault()) + extraMessage);
-
-        if (this.springMailUsername == null || this.springMailUsername.equals("")) {
-            System.out.println("WARNING: You have not provided mail credentials, so the following email will NOT be sent: " + email);
-        } else {
-            System.out.println("Sent email " + templateName + " to " + recipientAddress);
-            mailSender.send(email);
-        }
-    }
-
-    /**
-     * Sent when a user requests to change their email address, and includes a link with a verification token
-     * to verify that they own the new email address
-     */
-    public void sendEmailChangeVerificationEmail(User user, VerificationToken token) {
-        this.sendEmail(
-            user.getEmail(),
-            "email-change.begin",
-            "\n\n" + this.appConfig.publicUrl + "/account/update/confirm?token=" + token.getToken()
-        );
-    }
-
-    /**
-     * Sent upon signup and includes a link with a verification token to verify that the user owns the specified
-     * email address
-     */
-    public void sendSignupVerificationEmail(User user, VerificationToken token) {
-        this.sendEmail(
-            user.getEmail(),
-            "registration.success",
-            "\n\n" + this.appConfig.publicUrl + "/signup/confirm?token=" + token.getToken()
-        );
-    }
-
-    /**
-     * Sent when a user requests to change their password, and includes a link with a verification token
-     * to verify that they own their email address still
-     */
-    public void sendPasswordResetEmail(User user, VerificationToken token) {
-        this.sendEmail(
-            user.getEmail(),
-            "password-reset.begin",
-            "\n\n" +     this.appConfig.publicUrl + "/password-reset/confirm?token=" + token.getToken()
-        );
-    }
-
-    /**
-     * Sent when a user successfully changes their password
-     */
-    public void sendPasswordResetCompleteEmail(User user) {
-        this.sendEmail(user.getEmail(), "password-reset.success");
-    }
-
-    /**
      * Generates a search for Users based on matching the specified parameters
      * May make use of the pg_trgm similarity function
      * @param name - The string to search names against, using pg_trgm similarity
@@ -408,75 +314,29 @@ public class UserService extends ModelService<User> {
         List<Expression<Number>> expressions = new ArrayList<>();
 
         if (!isNullOrEmpty(name)) {
-            Expression<Number> firstNameExpression = this.buildSimilarityExpression(builder, root, name, "firstName");
-            Expression<Number> lastNameExpression = this.buildSimilarityExpression(builder, root, name, "lastName");
+            Expression<Number> firstNameExpression = SearchHelper.buildSimilarityExpression(builder, root, name, "firstName");
+            Expression<Number> lastNameExpression = SearchHelper.buildSimilarityExpression(builder, root, name, "lastName");
             predicates.add(builder.or(
-                    this.buildSimilarityPredicate(builder, firstNameExpression),
-                    this.buildSimilarityPredicate(builder, lastNameExpression)
+                    SearchHelper.buildSimilarityPredicate(builder, firstNameExpression, 0.1),
+                    SearchHelper.buildSimilarityPredicate(builder, lastNameExpression, 0.1)
             ));
             expressions.add(firstNameExpression);
             expressions.add(lastNameExpression);
         }
         if (!isNullOrEmpty(email)) {
-            Expression<Number> emailExpression = this.buildSimilarityExpression(builder, root, email, "email");
-            predicates.add(this.buildSimilarityPredicate(builder, emailExpression));
+            Expression<Number> emailExpression = SearchHelper.buildSimilarityExpression(builder, root, email, "email");
+            predicates.add(SearchHelper.buildSimilarityPredicate(builder, emailExpression, 0.1));
             expressions.add(emailExpression);
         }
         if (orderBySimilarity && expressions.size() > 0) {
-            this.orderResultsBySimilarity(builder, query, expressions);
+            SearchHelper.orderSimilarityResults(builder, query, expressions);
         }
         if (!isNullOrEmpty(roleName)) {
             Role role = Role.valueOf(roleName.toUpperCase());
             predicates.add(builder.equal(builder.literal(role), root.get("role")));
         }
 
-        switch (predicates.size()) {
-            case 0:
-                return;
-            case 1:
-                query.where(predicates.get(0));
-                break;
-            default:
-                Predicate[] predicatesArray = new Predicate[predicates.size()];
-                predicatesArray = predicates.toArray(predicatesArray);
-                query.where(builder.and(predicatesArray));
-        }
-    }
-
-    /**
-     * Order search results by the sum of similarity scores used to search for them
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param expressions - The similarity queries that were used for the search
-     */
-    private void orderResultsBySimilarity(CriteriaBuilder builder, CriteriaQuery query, List<Expression<Number>> expressions) {
-        Expression<Number> sum;
-        if (expressions.size() == 1) sum = expressions.get(0);
-        else {
-            // Dynamically sum up all the expressions
-            sum = builder.sum(expressions.remove(0), expressions.remove(0));
-            while (expressions.size() > 0) {
-                sum = builder.sum(sum, expressions.remove(0));
-            }
-        }
-        query.orderBy(builder.desc(sum));
-    }
-
-    /**
-     * Shorthand way to get the similarity predicate used for User searches
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param expression - The similarity expression
-     * @return Predicate - The comparison of the similarity to the pre-set threshold
-     */
-    private Predicate buildSimilarityPredicate(CriteriaBuilder builder, Expression<Number> expression) {
-        return builder.gt(expression, 0.1);
-    }
-
-    /**
-     * Build a similarity expression for the given search string and field name
-     */
-    private Expression<Number> buildSimilarityExpression(CriteriaBuilder builder, Root root, String searchQuery, String fieldName) {
-        return builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery));
+        SearchHelper.executeQueryWithPredicates(builder, query, predicates);
     }
 
     /**

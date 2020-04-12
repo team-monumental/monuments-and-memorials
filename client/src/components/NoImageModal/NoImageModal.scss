@@ -1,7 +1,8 @@
 .modal-content {
   .no-image-modal {
     &.modal-header {
-      padding-bottom: 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #dee2e6;
 
       button {
         color: black;
@@ -24,12 +25,7 @@
     }
 
     &.modal-body {
-      padding: 0.25rem 1rem 0.25rem 1rem;
+      padding: 0.5rem 1rem 0 1rem;
     }
-  }
-
-  hr.no-image-modal {
-    width: 100%;
-    border-top: 2px solid rgba(0, 0, 0, 0.1);
   }
 }

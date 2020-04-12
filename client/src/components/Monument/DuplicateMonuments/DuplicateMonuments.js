@@ -26,11 +26,11 @@ export default class DuplicateMonuments extends React.Component {
                         As part of this effort, we want to minimize the number of duplicate monument or memorial records
                         we have in our database.<br/><br/>
                         We've detected at least one already existing record that was very similar to the one you're
-                        trying to create!<br/><br/>
+                        trying to suggest!<br/><br/>
                         Please take a moment to look at these records and determine if they are duplicates. If they are,
                         feel free to update those records instead.<br/><br/>
                         If you feel that these are <span className="font-weight-bold">not</span> duplicates, then you
-                        can continue with your creation.
+                        can continue with your suggestion.
                     </p>
                     <div className="duplicates-container">
                         <SearchResults
@@ -42,7 +42,7 @@ export default class DuplicateMonuments extends React.Component {
                 </Modal.Body>
                 <Modal.Footer className="duplicate-monuments">
                     <Button variant="danger" onClick={onConfirm}>
-                        Continue with Create
+                        Continue with Suggestion
                     </Button>
                 </Modal.Footer>
             </Modal>

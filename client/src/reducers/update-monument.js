@@ -2,21 +2,22 @@ import {
     FETCH_MONUMENT_UPDATE_PENDING,
     FETCH_MONUMENT_UPDATE_SUCCESS,
     FETCH_MONUMENT_UPDATE_ERROR,
-    UPDATE_MONUMENT_PENDING,
-    UPDATE_MONUMENT_SUCCESS,
-    UPDATE_MONUMENT_ERROR,
+    CREATE_UPDATE_SUGGESTION_PENDING,
+    CREATE_UPDATE_SUGGESTION_SUCCESS,
+    CREATE_UPDATE_SUGGESTION_ERROR,
     TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
     TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
-    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
+    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR,
+    UPDATE_MONUMENT_PENDING, UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
 } from '../constants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import basicReducer from '../utils/basic-reducer';
 
 const initialState = {
     fetchMonumentForUpdatePending: false,
-    updateMonumentPending: false,
+    createUpdateSuggestionPending: false,
     monument: {},
-    updatedMonument: {},
+    updateSuggestion: {},
     error: null
 };
 
@@ -41,21 +42,21 @@ export function updateMonumentPage(state = initialState, action) {
                 fetchMonumentForUpdatePending: false,
                 error: action.error
             };
-        case UPDATE_MONUMENT_PENDING:
+        case CREATE_UPDATE_SUGGESTION_PENDING:
             return {
                 ...state,
-                updateMonumentPending: true,
+                createUpdateSuggestionPending: true,
             };
-        case UPDATE_MONUMENT_SUCCESS:
+        case CREATE_UPDATE_SUGGESTION_SUCCESS:
             return {
                 ...state,
-                updateMonumentPending: false,
-                updatedMonument: action.payload
+                createUpdateSuggestionPending: false,
+                updateSuggestion: action.payload
             };
-        case UPDATE_MONUMENT_ERROR:
+        case CREATE_UPDATE_SUGGESTION_ERROR:
             return {
                 ...state,
-                updateMonumentPending: false,
+                createUpdateSuggestionPending: false,
                 error: action.error
             };
         default:
@@ -89,4 +90,34 @@ export function deleteMonument(state = initialDeleteState, action) {
         success: DELETE_MONUMENT_SUCCESS,
         error: DELETE_MONUMENT_ERROR
     });
+}
+
+const initialUpdateState = {
+    updatePending: false,
+    updatedMonument: {},
+    updateError: null
+};
+
+export function updateMonument(state = initialUpdateState, action) {
+    switch (action.type) {
+        case UPDATE_MONUMENT_PENDING:
+            return {
+                ...state,
+                updatePending: true,
+            };
+        case UPDATE_MONUMENT_SUCCESS:
+            return {
+                ...state,
+                updatePending: false,
+                updatedMonument: action.payload
+            };
+        case UPDATE_MONUMENT_ERROR:
+            return {
+                ...state,
+                updatePending: false,
+                updateError: action.error
+            };
+        default:
+            return state;
+    }
 }

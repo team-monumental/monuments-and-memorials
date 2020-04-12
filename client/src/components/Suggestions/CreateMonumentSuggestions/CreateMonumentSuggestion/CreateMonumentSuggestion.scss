@@ -1,0 +1,21 @@
+@import "../../../../theme";
+
+.create-suggestion.card.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.collapse-link {
+  cursor: pointer;
+  color: $primary;
+  text-decoration: underline;
+  font-size: small;
+  font-weight: bold;
+  text-align: center;
+}
+
+.monument-thumbnail {
+  $size: 124px;
+  min-width: $size;
+  width: $size;
+  height: $size;
+}

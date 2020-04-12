@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { prettyPrintDate } from '../../../utils/string-util';
 
 /**
- * Presentational component for the Modal shown before a Monument Creation is completed
+ * Presentational component for the Modal shown before a CreateMonumentSuggestion is created
  */
 export default class CreateReviewModal extends React.Component {
 
@@ -44,14 +44,22 @@ export default class CreateReviewModal extends React.Component {
             </ul>
         );
 
-        let tags = (
+        let tags = [];
+        let tagsDisplay = (
             <span className="missing-attribute">NONE</span>
         );
+
         if (form.tags && form.tags.length) {
-            tags = (
+            tags.push(form.tags);
+        }
+        if (form.newTags && form.newTags.length) {
+            tags.push(form.newTags);
+        }
+
+        if (tags && tags.length) {
+            tagsDisplay = (
                 <ul>
-                    {form.tags.map(tag => <li key={tag}>{tag}</li>)}
-                    {form.newTags.map(newTag => <li key={newTag}>{newTag}</li>)}
+                    {tags.map(tag => <li key={tag}>{tag}</li>)}
                 </ul>
             );
         }
@@ -158,7 +166,7 @@ export default class CreateReviewModal extends React.Component {
                         </div>
                         <div className="attribute">
                             <span className="attribute-label">Tags:&nbsp;</span>
-                            {tags}
+                            {tagsDisplay}
                         </div>
                         <div className="attribute">
                             <span className="attribute-label">References:&nbsp;</span>

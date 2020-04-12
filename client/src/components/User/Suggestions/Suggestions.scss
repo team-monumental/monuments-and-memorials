@@ -1,0 +1,21 @@
+.suggestions {
+  h6 {
+    text-decoration: underline !important;
+  }
+
+  .nav {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+
+    &.nav-tabs {
+      border-bottom: 1px solid #dee2e6;
+
+      .nav-link {
+        display: block !important;
+        padding: .5rem 1rem !important;
+      }
+    }
+  }
+}

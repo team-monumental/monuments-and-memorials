@@ -4,6 +4,7 @@ import { Card } from 'react-bootstrap';
 import Tags from '../../Tags/Tags';
 import Address from '../../Monument/Details/Address/Address';
 import { Link } from 'react-router-dom';
+import Thumbnail from '../../Monument/Images/Thumbnails/Thumbnail/Thumbnail';
 
 /**
  * A condensed Monument info card for use in search results
@@ -24,7 +25,7 @@ export default class SearchResult extends React.Component {
         return (
             <div className="search-result">
                 {!hideImages &&
-                    <div style={{backgroundImage: imageUrl}} className="monument-thumbnail"/>
+                    <Thumbnail imageUrl={imageUrl}/>
                 }
                 <Card>
                     <Card.Title>

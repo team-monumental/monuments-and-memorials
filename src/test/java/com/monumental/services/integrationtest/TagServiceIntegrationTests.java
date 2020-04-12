@@ -30,13 +30,13 @@ import static org.junit.Assert.assertNull;
 public class TagServiceIntegrationTests {
 
     @Autowired
-    TagService tagService;
+    private TagService tagService;
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     @Autowired
-    MonumentRepository monumentRepository;
+    private MonumentRepository monumentRepository;
 
     @Test
     public void testTagService_createTag_NullName() {

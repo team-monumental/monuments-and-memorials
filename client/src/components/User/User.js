@@ -4,11 +4,12 @@ import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Favorites from './Favorites/Favorites';
 import { capitalize, getUserFullName } from '../../utils/string-util';
+import Suggestions from './Suggestions/Suggestions';
 
 export default class User extends React.Component {
 
     render() {
-        const { user, favorites } = this.props;
+        const { user, favorites, suggestions, role } = this.props;
         return (
             <div className="d-flex justify-content-center">
                 <div className="d-flex flex-column">
@@ -18,15 +19,15 @@ export default class User extends React.Component {
                         </Card.Header>
                         <Card.Body>
                             <div className="mb-2">
-                                Name: {getUserFullName(user)}
+                                <span className="font-weight-bold">Name:</span> {getUserFullName(user)}
                             </div>
                             {user.role &&
                             <div className="mb-2">
-                                Role: {capitalize(user.role)}
+                                <span className="font-weight-bold">Role:</span> {capitalize(user.role)}
                             </div>
                             }
                             <div className="mb-2">
-                                Email Address: {user.email}
+                                <span className="font-weight-bold">Email Address:</span> {user.email}
                                 <div className="mt-2 pl-2 font-italic">
                                     {!user.isEmailVerified && <>
                                         Your email address is not yet verified. <Link to="/signup/confirm?resend=true">
@@ -53,6 +54,7 @@ export default class User extends React.Component {
                         </Card.Body>
                     </Card>
                     <Favorites favorites={favorites.result} pending={favorites.pending} error={favorites.error}/>
+                    <Suggestions suggestions={suggestions} pending={suggestions.pending} error={suggestions.error} role={role}/>
                 </div>
             </div>
         );

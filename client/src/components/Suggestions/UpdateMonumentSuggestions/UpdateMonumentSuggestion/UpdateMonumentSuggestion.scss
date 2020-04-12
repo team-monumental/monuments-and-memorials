@@ -1,0 +1,20 @@
+.update-suggestion.card.card {
+  border: 1px solid rgba(0,0, 0, 0.125);
+}
+
+.update-suggestion {
+  .collapse-link {
+    font-size: small;
+  }
+
+  i {
+    font-size: 24px;
+  }
+
+  .monument-thumbnail {
+    $size: 124px;
+    min-width: $size;
+    width: $size;
+    height: $size;
+  }
+}

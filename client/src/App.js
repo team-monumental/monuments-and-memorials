@@ -28,6 +28,8 @@ import UserPage from './pages/UserPage/UserPage';
 import UpdateUserPage from './pages/UpdateUserPage/UpdateUserPage';
 import ConfirmEmailChangePage from './pages/ConfirmEmailChangePage/ConfirmEmailChangePage';
 import AdminPage from './pages/AdminPage/AdminPage';
+import { Role } from './utils/authentication-util';
+import SuggestionCreatedPage from './pages/SuggestionCreatedPage/SuggestionCreatedPage';
 
 class App extends React.Component {
 
@@ -65,17 +67,18 @@ class App extends React.Component {
                             <Route exact path="/signup" component={SignupPage}/>
                             <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
                             <Route path="/search" component={SearchPage}/>
-                            <ProtectedRoute exact path="/create" component={CreateMonumentPage}/>
+                            <ProtectedRoute exact path="/create" component={CreateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                             <Route exact path="/about" component={AboutPage}/>
-                            <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}/>
+                            <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                             <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
                             <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>
                             <ProtectedRoute exact path="/account" component={UserPage}/>
                             <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
                             <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
-                            <ProtectedRoute path="/panel" component={AdminPage}/>
+                            <ProtectedRoute path="/panel" component={AdminPage} oneOf={Role.PARTNER_OR_ABOVE}/>
+                            <ProtectedRoute exact path="/suggestion-created" component={SuggestionCreatedPage}/>
                         </ErrorHandler>
                     </div>
                 </ConnectedRouter>

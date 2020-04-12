@@ -1,0 +1,35 @@
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .btn {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Open Sans", sans-serif;
+    }
+}
+
+.status-container {
+    justify-content: center;
+    display: flex;
+    margin-top: 0.5rem;
+    font-size: 16px;
+    font-weight: bold;
+
+    .status {
+        text-decoration: underline;
+
+        &.pending {
+            color: rgb(200, 200, 0);
+        }
+
+        &.approved {
+            color: green;
+        }
+
+        &.rejected {
+            color: red;
+        }
+    }
+}

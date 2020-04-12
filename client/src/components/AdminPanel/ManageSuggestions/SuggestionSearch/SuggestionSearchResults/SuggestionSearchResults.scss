@@ -1,0 +1,9 @@
+@import "../../../../../theme";
+
+.suggestion-search-results {
+    .card-title {
+        a {
+            color: $secondary;
+        }
+    }
+}
