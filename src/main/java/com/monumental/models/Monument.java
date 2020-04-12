@@ -1,9 +1,13 @@
 package com.monumental.models;
 
+import com.bedatadriven.jackson.datatype.jts.serialization.GeometryDeserializer;
+import com.bedatadriven.jackson.datatype.jts.serialization.GeometrySerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.monumental.util.string.StringHelper;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import org.hibernate.LazyInitializationException;
 
 import javax.persistence.*;
@@ -32,6 +36,8 @@ public class Monument extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
+    @JsonSerialize(using = GeometrySerializer.class)
+    @JsonDeserialize(using = GeometryDeserializer.class)
     @Column(name = "coordinates", columnDefinition = "geometry")
     private Point coordinates;
 

@@ -27,9 +27,6 @@ sourceCompatibility = '10'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'http://repo.boundlessgeo.com/main/'
-    }
 }
 
 springBoot {
@@ -48,19 +45,18 @@ dependencies {
     implementation('com.sun.xml.bind:jaxb-core:2.3.0')
     implementation('com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.10.0')
     implementation group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.11.3.Final'
-    implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.1.0.Final'
+    implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.4.14.Final'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
     implementation('com.google.maps:google-maps-services:0.10.1')
-    implementation('com.bedatadriven:jackson-datatype-jts:2.4')
+    implementation('com.graphhopper.external:jackson-datatype-jts:0.10-2.5-1')
     implementation('com.amazonaws:aws-java-sdk-s3:1.11.665')
     implementation('com.opencsv:opencsv:3.7')
     implementation('io.jsonwebtoken:jjwt:0.9.1')
-    // Geodb includes H2 as a dependency, so no need to import it separately
-    implementation group: 'org.opengeo', name: 'geodb', version: '0.9'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('junit:junit:4.12')
     testImplementation('org.mockito:mockito-core:2.13.0')
     testImplementation('org.springframework.security:spring-security-test')
+    testImplementation('org.orbisgis:h2gis:1.5.0')
 }
 
 node {

@@ -64,7 +64,7 @@ Since this project does not have long term technical support, it's critical that
 
 Once you are satisfied with the script, you can test it by changing `sudo certbot renew` to `sudo certbot renew --dry-run`. Then run the script `./ssl-renew` and check that the server's SSL still works when it starts up. Note that this is still using your existing certificate, not a new one, but should be a valid test.
 
-Finally, create the cron job that will run the script every other month. The certificates expire every three months but this avoids any weird cron timing causing the site to have an expired cert for any period of time, and also gives time to handle renewal failures if they occur. First, open crontab
+Finally, create the cron job that will run the script every other month. The certificates expire every three months but the script just exits if the certificate is valid, so this ensures that it's renewed as soon as it's invalid (certbot will automatically renew a few days before the expiry date, no need to worry about specific timing on the day).
 
 ```bash
 crontab -e
@@ -73,7 +73,7 @@ crontab -e
 Then, at the bottom of the file add the new job
 
 ```bash
-0 0 1 */2 * /home/ubuntu/monuments-and-memorials/renew-ssl.sh &>>/tmp/renew-ssl.log
+0 1 * * * /home/ubuntu/monuments-and-memorials/renew-ssl.sh >> /tmp/renew-ssl.log 2&>1
 ```
 
 This will set the job to run at the start of every other month and print the output to `renew-ssl.log`.

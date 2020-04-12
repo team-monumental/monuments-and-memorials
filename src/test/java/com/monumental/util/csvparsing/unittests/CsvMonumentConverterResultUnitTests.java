@@ -4,7 +4,7 @@ import com.monumental.models.Monument;
 import com.monumental.models.Reference;
 import com.monumental.services.MonumentService;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
