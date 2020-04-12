@@ -15,7 +15,7 @@ import com.monumental.repositories.TagRepository;
 import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
