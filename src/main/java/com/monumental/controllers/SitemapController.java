@@ -36,7 +36,6 @@ public class SitemapController {
             this.publicUrl + "/",
             this.publicUrl + "/about",
             this.publicUrl + "/map",
-            this.publicUrl + "/create",
             this.publicUrl + "/search"
         );
 
