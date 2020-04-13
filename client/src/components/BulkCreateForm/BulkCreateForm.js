@@ -33,7 +33,7 @@ export default class BulkCreateForm extends React.Component {
             fields: [
                 {name: 'artist'}, {name: 'title', label: 'Title/Name'}, {name: 'date', label: 'Date Created'},
                 {name: 'latitude'}, {name: 'longitude'}, {name: 'city'}, {name: 'state'}, {name: 'address'},
-                {name: 'description'}, {name: 'inscription'}, {name: 'tags'}, {name: 'materials'}, {name: 'images'},
+                {name: 'description'}, {name: 'inscription'}, {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Name'},
                 {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
             ].map(field => {
                 return {
@@ -346,7 +346,7 @@ export default class BulkCreateForm extends React.Component {
                             Our Fields
                         </div>
                     </div>
-                    {mapping.map(pair => (
+                    {mapping.map((pair, index) => (
                         <div className="d-flex row" key={pair.originalField}>
                             <div className="column d-flex align-items-center">{pair.originalField}</div>
                             <div className="column d-flex align-items-center justify-content-center">
@@ -357,6 +357,11 @@ export default class BulkCreateForm extends React.Component {
                             <div className="column d-flex justify-content-end my-1">
                                 <Form.Control as="select" className="mr-3" value={pair.mappedField} onChange={event => {
                                     pair.mappedField = event.currentTarget.value;
+                                    mapping.forEach((currentPair, currentIndex) => {
+                                        if (currentPair.mappedField === pair.mappedField && index !== currentIndex) {
+                                            currentPair.mappedField = '';
+                                        }
+                                    });
                                     fields.forEach(field => {
                                         field.selected = !!mapping.find(currentPair => {
                                             return currentPair.mappedField === field.name;
@@ -365,9 +370,9 @@ export default class BulkCreateForm extends React.Component {
                                     this.setState({mapping, fields});
                                 }}>
                                     <option value={null}>Select a Field</option>
+                                    <option value={null}>Do Not Map</option>
                                     {fields.map(field => (
                                         <option key={field.name}
-                                                disabled={field.selected && field.name !== pair.mappedField}
                                                 value={field.name}>
                                             {field.label}
                                         </option>
@@ -405,6 +410,8 @@ export default class BulkCreateForm extends React.Component {
             row.index = index;
             results.push(row);
         }
+
+        let rowCount = results.length;
 
         const errorCount = results.filter(result => result.errors.length > 0).length;
         const warningCount = results.filter(result => result.warnings.length > 0).length;
@@ -474,11 +481,11 @@ export default class BulkCreateForm extends React.Component {
                         have non-critical issues that should be addressed with updates later.
                     </div>
                 }
-                {errorCount > 0 &&
+                {errorCount > 0 && errorCount !== rowCount &&
                     <div>
                         If you choose to continue with errors, any rows with errors
-                        will <span className="font-weight-bold">not</span> be created. Any rows with warnings will still be
-                        created, but may have non-critical issues that should be addressed with updates later.
+                        will <span className="font-weight-bold">not</span> be created. {warningCount > 0 && <span>Any rows with warnings will still be
+                        created, but may have non-critical issues that should be addressed with updates later.</span>}
                     </div>
                 }
             </Card.Body>
@@ -490,7 +497,7 @@ export default class BulkCreateForm extends React.Component {
                         Continue With Warnings
                     </Button>
                 }
-                {errorCount > 0 &&
+                {errorCount > 0 && errorCount !== rowCount &&
                     <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
                         Continue With Errors
                     </Button>

@@ -16,7 +16,7 @@ class Header extends React.Component {
         {name: 'Map', route: '/map'},
         {name: 'About', route: '/about'},
         {name: 'My Account', route: '/account', protected: true},
-        {name: 'Advanced', route: '/panel', protected: true, roles: Role.PARTNER_OR_ABOVE}
+        {name: 'Control Panel', route: '/panel', protected: true, roles: Role.PARTNER_OR_ABOVE}
     ];
 
     constructor(props) {
@@ -140,7 +140,7 @@ class Header extends React.Component {
                         <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {this.setState({isMenuOpen: false})}}>
                             <ul>
                                 {publicLinks.concat(privateLinks).map(link =>
-                                    <li>{link}</li>
+                                    <li key={link.key}>{link}</li>
                                 )}
                                 <hr/>
                                 {session.user && <>

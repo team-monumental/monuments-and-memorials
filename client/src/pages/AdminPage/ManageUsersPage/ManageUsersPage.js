@@ -18,7 +18,8 @@ class ManageUsersPage extends React.Component {
     static mapStateToProps(state) {
         return {
             fetchUser: state.fetchUser,
-            updateUser: state.updateUser
+            updateUser: state.updateUser,
+            session: state.session
         };
     }
 
@@ -60,7 +61,7 @@ class ManageUsersPage extends React.Component {
     }
 
     render() {
-        const { mode, fetchUser, updateUser } = this.props;
+        const { mode, fetchUser, updateUser, session } = this.props;
         const { changeRoleSuccess } = this.state;
 
         return (<>
@@ -68,7 +69,7 @@ class ManageUsersPage extends React.Component {
             <ManageUsers mode={mode} user={fetchUser.result && fetchUser.result.user}
                          contributions={fetchUser.result && fetchUser.result.contributions}
                          onChangeRole={role => this.handleChangeRole(role)}
-                         changeRoleSuccess={changeRoleSuccess}/>
+                         changeRoleSuccess={changeRoleSuccess} session={(session && session.user) ? session : null}/>
         </>);
     }
 }

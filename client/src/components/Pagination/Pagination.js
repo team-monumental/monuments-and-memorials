@@ -10,7 +10,7 @@ export default class Pagination extends React.Component {
 
     constructor(props) {
         super(props);
-        if (props && props.page) {
+        if (props && !isNaN(props.page)) {
             this.state = {
                 count: props.count || 0,
                 page: props.page || 0

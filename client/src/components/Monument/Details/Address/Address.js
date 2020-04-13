@@ -12,17 +12,12 @@ export default class Address extends React.Component {
             <i className="material-icons">room</i>
         );
 
-        if (monument.address) {
-            return (
-                <div style={{display: 'flex', alignItems: 'center'}} className="address-container font-italic">
-                    {locationIcon} {monument.address}
-                </div>
-            )
-        } else if (monument.city && monument.state) {
+        const address = monument.address || [monument.city, monument.state].filter(str => str && str.trim()).join(', ');
+        if (address) {
             return (
                 <div className="address-container font-italic">
                     {locationIcon}
-                    <span className="city-state">{[monument.city, monument.state].filter(str => str && str.trim()).join(', ')}</span>
+                    <span className="address">{address}</span>
                 </div>
             );
         }

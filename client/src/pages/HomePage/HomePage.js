@@ -2,6 +2,7 @@ import React from 'react';
 import './HomePage.scss';
 import SuggestChanges from '../../components/SuggestChanges/SuggestChanges';
 import { NavLink, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
@@ -19,8 +20,15 @@ class HomePage extends React.Component {
         history.replace('/create/')
     }
 
+    static mapStateToProps(state) {
+        return {
+            session: state.session
+        };
+    }
+
     render() {
-        const alert = this.props.location.state ? this.props.location.state.alert : undefined;
+        const { location, session } = this.props;
+        const alert = location.state && !session.pending && !session.user ? location.state.alert : undefined;
         const { dismissAlert } = this.state;
 
         let mapNavLink = (
@@ -37,8 +45,9 @@ class HomePage extends React.Component {
                     <Alert variant="danger"
                            onClose={() => this.setState({dismissAlert: true})}
                            dismissible
-                           className="mx-4">
-                        {alert}
+                           className="mx-4 d-flex align-items-center">
+                        <i className="material-icons mr-2">warning</i>
+                        <span>{alert}</span>
                     </Alert>
                 }
                 <div id="welcome-page-body">
@@ -97,4 +106,4 @@ class HomePage extends React.Component {
     }
 }
 
-export default withRouter(HomePage);
+export default connect(HomePage.mapStateToProps)(withRouter(HomePage));

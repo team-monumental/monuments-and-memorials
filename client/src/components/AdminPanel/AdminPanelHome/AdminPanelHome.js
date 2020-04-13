@@ -74,7 +74,7 @@ export default class AdminPanelHome extends React.Component {
                 <Card>
                     <Card.Header>
                         <Card.Title>
-                            Welcome to the {role} Panel
+                            Welcome to the {role} Control Panel
                         </Card.Title>
                     </Card.Header>
                     <Card.Body>

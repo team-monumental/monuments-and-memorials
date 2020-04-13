@@ -1,6 +1,7 @@
 import React from 'react';
 import './Gallery.scss';
 import { Modal } from 'react-bootstrap';
+import Pagination from '../../Pagination/Pagination';
 
 export default class Gallery extends React.Component {
 
@@ -160,16 +161,19 @@ export default class Gallery extends React.Component {
         const selectedImage = images[modalImageIndex];
         return (
             <div onClick={e => e.stopPropagation()}>
-                <Modal show={modalOpen} onHide={() => this.closeModal()}>
+                <Modal show={modalOpen} onHide={() => this.closeModal()} className="image-view-modal">
                     <Modal.Header closeButton>
                         Image {modalImageIndex + 1} of {images.length}
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="d-flex justify-content-center">
-                            <img src={selectedImage.url} alt="large"/>
-                        </div>
+                        <img src={selectedImage.url} alt="large"/>
                         {/*<p className="caption">Image description...</p>*/}
                     </Modal.Body>
+                    <Modal.Footer className="d-flex justify-content-center">
+                        <Pagination count={images.length} page={modalImageIndex} onPage={page => {
+                            this.setState({modalImageIndex: page});
+                        }}/>
+                    </Modal.Footer>
                 </Modal>
             </div>
         )

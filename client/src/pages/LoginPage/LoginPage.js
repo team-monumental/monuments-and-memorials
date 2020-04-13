@@ -21,10 +21,14 @@ class LoginPage extends React.Component {
     }
 
     onLogin(data) {
-        const { dispatch } = this.props;
-        const redirect = QueryString.parse(this.props.location.search).redirect || '/';
+        const { dispatch, history } = this.props;
+        const redirect = QueryString.parse(this.props.location.search).redirect;
         dispatch(login(data, () => {
-            this.setState({redirect});
+            if (redirect) {
+                this.setState({redirect});
+            } else {
+                history.goBack();
+            }
         }))
     }
 
