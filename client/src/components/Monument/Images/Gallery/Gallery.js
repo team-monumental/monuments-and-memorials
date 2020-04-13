@@ -1,7 +1,7 @@
 import React from 'react';
 import './Gallery.scss';
 import { Modal } from 'react-bootstrap';
-import Pagination from '../../Pagination/Pagination';
+import Pagination from '../../../Pagination/Pagination';
 
 export default class Gallery extends React.Component {
 
