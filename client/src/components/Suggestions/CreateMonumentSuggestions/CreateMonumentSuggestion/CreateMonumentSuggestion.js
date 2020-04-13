@@ -65,14 +65,16 @@ export default class CreateMonumentSuggestion extends React.Component {
         const { suggestion, showCollapse=true, showCollapseLinks=true, displayStatus, isFromBulk } = this.props;
         const { expanded } = this.state;
 
-        const artist = (suggestion.artist && suggestion.artist.length) ? suggestion.artist : 'None';
-        const address = (suggestion.address && suggestion.address.length) ? suggestion.address : 'None';
-        const city = (suggestion.city && suggestion.city.length) ? suggestion.city : 'None';
-        const state = (suggestion.state && suggestion.state.length) ? suggestion.state : 'None';
-        const latitude = suggestion.latitude ? suggestion.latitude : 'None';
-        const longitude = suggestion.longitude ? suggestion.longitude : 'None';
-        const description = (suggestion.description && suggestion.description.length) ? suggestion.description : 'None';
-        const inscription = (suggestion.inscription && suggestion.inscription.length) ? suggestion.inscription : 'None';
+        const parse = (field, isString) => field && (!isString || field.length) ? field : 'None';
+
+        const artist = parse(suggestion.artist, true);
+        const address = parse(suggestion.address, true);
+        const city = parse(suggestion.city, true);
+        const state = parse(suggestion.state, true);
+        const latitude = parse(suggestion.latitude);
+        const longitude = parse(suggestion.longitude);
+        const description = parse(suggestion.description, true);
+        const inscription = parse(suggestion.inscription, true);
 
         let date = 'None';
         if (suggestion.date && suggestion.date.length) {

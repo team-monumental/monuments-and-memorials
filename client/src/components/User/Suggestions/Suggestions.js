@@ -72,7 +72,6 @@ export default class Suggestions extends React.Component {
 
     renderSuggestions(suggestions, type) {
         const { role, error } = this.props;
-        const { create, update, bulk } = {...suggestions};
 
         const createPageNavLink = (
             <NavLink onClick={e => {
@@ -90,31 +89,31 @@ export default class Suggestions extends React.Component {
 
         return (<>
             <h6>New Monument or Memorial Suggestions</h6>
-            {(!create || create.length === 0) && !error && <>
+            {(!suggestions.create || suggestions.create.length === 0) && !error && <>
                 You don't have any {type} new monument or memorial suggestions yet. You can suggest a new monument or
                 memorial by {createPageNavLink}.
             </>}
-            {create && create.length > 0 && <>
-                <CreateMonumentSuggestions suggestions={create}/>
+            {suggestions.create && suggestions.create.length > 0 && <>
+                <CreateMonumentSuggestions suggestions={suggestions.create}/>
             </>}
             <h6 className="mt-4">Update Monument or Memorial Suggestions</h6>
-            {(!update || update.length === 0) && !error && <>
+            {(!suggestions.update || suggestions.update.length === 0) && !error && <>
                 You don't have any {type} update monument or memorial suggestions yet. You can suggest an update to an
                 existing monument or memorial by clicking
                 the "<span className="font-weight-bold">SUGGEST A CHANGE</span>" button while viewing the
                 monument or memorial page you want to update.
             </>}
-            {update && update.length > 0 && <>
-                <UpdateMonumentSuggestions suggestions={update}/>
+            {suggestions.update && suggestions.update.length > 0 && <>
+                <UpdateMonumentSuggestions suggestions={suggestions.update}/>
             </>}
             {role.toUpperCase() === Role.PARTNER && <>
                 <h6 className="mt-4">Bulk New Monument or Memorial Suggestions</h6>
-                {(!bulk || bulk.length === 0) && !error && <>
+                {(!suggestions.bulk || suggestions.bulk.length === 0) && !error && <>
                     You don't have any {type} bulk new monument or memorial suggestions yet. You can suggest bulk
                     new monuments or memorials by {bulkCreatePageNavLink}.
                 </>}
-                {bulk && bulk.length > 0 && <>
-                    <BulkCreateMonumentSuggestions suggestions={bulk}/>
+                {suggestions.bulk && suggestions.bulk.length > 0 && <>
+                    <BulkCreateMonumentSuggestions suggestions={suggestions.bulk}/>
                 </>}
             </>}
             {error && <>

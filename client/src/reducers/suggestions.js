@@ -14,31 +14,13 @@ import {
 } from '../constants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 
-const fetchSuggestionsInitialState = {
+const initialState = {
     pending: false,
     result: null,
     error: null
 };
 
-const fetchSuggestionInitialState = {
-    pending: false,
-    result: null,
-    error: null
-};
-
-const approveInitialState = {
-    pending: false,
-    result: null,
-    error: null
-};
-
-const rejectInitialState = {
-    pending: false,
-    result: null,
-    error: null
-};
-
-export function fetchCreateSuggestions(state = fetchSuggestionsInitialState, action) {
+export function fetchCreateSuggestions(state = initialState, action) {
     switch (action.type) {
         case FETCH_CREATE_SUGGESTIONS_PENDING:
             return {
@@ -62,7 +44,7 @@ export function fetchCreateSuggestions(state = fetchSuggestionsInitialState, act
     }
 }
 
-export function fetchUpdateSuggestions(state = fetchSuggestionsInitialState, action) {
+export function fetchUpdateSuggestions(state = initialState, action) {
     switch (action.type) {
         case FETCH_UPDATE_SUGGESTIONS_PENDING:
             return {
@@ -86,7 +68,7 @@ export function fetchUpdateSuggestions(state = fetchSuggestionsInitialState, act
     }
 }
 
-export function fetchBulkCreateSuggestions(state = fetchSuggestionsInitialState, action) {
+export function fetchBulkCreateSuggestions(state = initialState, action) {
     switch (action.type) {
         case FETCH_BULK_CREATE_SUGGESTIONS_PENDING:
             return {
@@ -110,10 +92,10 @@ export function fetchBulkCreateSuggestions(state = fetchSuggestionsInitialState,
     }
 }
 
-export function fetchCreateSuggestion(state = fetchSuggestionInitialState, action) {
+export function fetchCreateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return fetchSuggestionInitialState;
+            return initialState;
         case FETCH_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -136,10 +118,10 @@ export function fetchCreateSuggestion(state = fetchSuggestionInitialState, actio
     }
 }
 
-export function fetchUpdateSuggestion(state = fetchSuggestionInitialState, action) {
+export function fetchUpdateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return fetchSuggestionInitialState;
+            return initialState;
         case FETCH_UPDATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -162,10 +144,10 @@ export function fetchUpdateSuggestion(state = fetchSuggestionInitialState, actio
     }
 }
 
-export function fetchBulkCreateSuggestion(state = fetchSuggestionInitialState, action) {
+export function fetchBulkCreateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return fetchSuggestionInitialState;
+            return initialState;
         case FETCH_BULK_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -188,10 +170,10 @@ export function fetchBulkCreateSuggestion(state = fetchSuggestionInitialState, a
     }
 }
 
-export function approveCreateSuggestion(state = approveInitialState, action) {
+export function approveCreateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return approveInitialState;
+            return initialState;
         case APPROVE_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -214,10 +196,10 @@ export function approveCreateSuggestion(state = approveInitialState, action) {
     }
 }
 
-export function rejectCreateSuggestion(state = rejectInitialState, action) {
+export function rejectCreateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return rejectInitialState;
+            return initialState;
         case REJECT_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -240,10 +222,10 @@ export function rejectCreateSuggestion(state = rejectInitialState, action) {
     }
 }
 
-export function approveUpdateSuggestion(state = approveInitialState, action) {
+export function approveUpdateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return approveInitialState;
+            return initialState;
         case APPROVE_UPDATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -266,10 +248,10 @@ export function approveUpdateSuggestion(state = approveInitialState, action) {
     }
 }
 
-export function rejectUpdateSuggestion(state = rejectInitialState, action) {
+export function rejectUpdateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return rejectInitialState;
+            return initialState;
         case REJECT_UPDATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -292,10 +274,10 @@ export function rejectUpdateSuggestion(state = rejectInitialState, action) {
     }
 }
 
-export function approveBulkCreateSuggestion(state = approveInitialState, action) {
+export function approveBulkCreateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return approveInitialState;
+            return initialState;
         case APPROVE_BULK_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,
@@ -319,10 +301,10 @@ export function approveBulkCreateSuggestion(state = approveInitialState, action)
     }
 }
 
-export function rejectBulkCreateSuggestion(state = rejectInitialState, action) {
+export function rejectBulkCreateSuggestion(state = initialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return rejectInitialState;
+            return initialState;
         case REJECT_BULK_CREATE_SUGGESTION_PENDING:
             return {
                 ...state,

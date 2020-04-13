@@ -18,15 +18,8 @@ export function prettyPrintDate(date) {
 export function prettyPrintDateString(dateString) {
     if (!dateString) return;
 
-    const dateArray = dateString.split("-");
-    const year = dateArray[0];
-    const month = parseInt(dateArray[1], 10) - 1;
-    const day = dateArray[2];
-
-    const date = moment(new Date(year, month, day));
-
     // Wednesday, October 16th, 2019 format
-    return date.format('dddd, MMMM Do, YYYY');
+    return moment(dateString).format('dddd, MMMM Do, YYYY');
 }
 
 export const validEmailRegex =

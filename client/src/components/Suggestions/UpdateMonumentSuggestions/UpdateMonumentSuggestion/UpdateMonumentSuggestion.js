@@ -31,15 +31,15 @@ export default class UpdateMonumentSuggestion extends React.Component {
                 newMonth: suggestion.newMonth,
                 newDate: suggestion.newDate
             },
-            newLatitude: suggestion.newLatitude ? suggestion.newLatitude.toString() : '',
-            newLongitude: suggestion.newLongitude ? suggestion.newLongitude.toString() : '',
-            newMaterials: suggestion.newMaterialsJson ? JSON.parse(suggestion.newMaterialsJson) : undefined,
-            newTags : suggestion.newTagsJson ? JSON.parse(suggestion.newTagsJson) : undefined,
-            deletedReferenceIds: suggestion.deletedReferenceIdsJson ? JSON.parse(suggestion.deletedReferenceIdsJson) : undefined,
-            updatedReferenceUrlsById: suggestion.updatedReferenceUrlsByIdJson ? JSON.parse(suggestion.updatedReferenceUrlsByIdJson) : undefined,
-            newReferenceUrls: suggestion.newReferenceUrlsJson ? JSON.parse(suggestion.newReferenceUrlsJson) : undefined,
-            addedImages: suggestion.newImageUrlsJson ? JSON.parse(suggestion.newImageUrlsJson).map(url => ({url})) : undefined,
-            deletedImageUrls: suggestion.deletedImageUrlsJson ? JSON.parse(suggestion.deletedImageUrlsJson) : undefined,
+            newLatitude: (suggestion.newLatitude || '').toString(),
+            newLongitude: (suggestion.newLongitude || '').toString(),
+            newMaterials: suggestion.newMaterialsJson && JSON.parse(suggestion.newMaterialsJson),
+            newTags : suggestion.newTagsJson && JSON.parse(suggestion.newTagsJson),
+            deletedReferenceIds: suggestion.deletedReferenceIdsJson && JSON.parse(suggestion.deletedReferenceIdsJson),
+            updatedReferenceUrlsById: suggestion.updatedReferenceUrlsByIdJson && JSON.parse(suggestion.updatedReferenceUrlsByIdJson),
+            newReferenceUrls: suggestion.newReferenceUrlsJson && JSON.parse(suggestion.newReferenceUrlsJson),
+            addedImages: suggestion.newImageUrlsJson && JSON.parse(suggestion.newImageUrlsJson).map(url => ({url})),
+            deletedImageUrls: suggestion.deletedImageUrlsJson && JSON.parse(suggestion.deletedImageUrlsJson),
             displayDeletedImageNames: false
         };
     }

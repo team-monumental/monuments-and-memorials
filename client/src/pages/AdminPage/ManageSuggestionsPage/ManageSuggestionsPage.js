@@ -26,7 +26,7 @@ class ManageSuggestionsPage extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchSuggestionIfIdAndTypeExists();
+        this.fetchSuggestionIfIdAndTypeExist();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -38,7 +38,7 @@ class ManageSuggestionsPage extends React.Component {
         }
     }
 
-    fetchSuggestionIfIdAndTypeExists() {
+    dispatchSuggestionActions(actions) {
         const { dispatch, match: { params: { suggestionId } }, location: { search } } = this.props;
         const type = QueryString.parse(search).type;
 
@@ -47,70 +47,32 @@ class ManageSuggestionsPage extends React.Component {
                 if (!isNaN(parseInt(suggestionId))) {
                     switch (type) {
                         case 'create':
-                            dispatch(fetchCreateSuggestion(suggestionId));
+                            dispatch(actions.create(suggestionId));
                             break;
                         case 'update':
-                            dispatch(fetchUpdateSuggestion(suggestionId));
+                            dispatch(actions.update(suggestionId));
                             break;
                         case 'bulk':
-                            dispatch(fetchBulkCreateSuggestion(suggestionId));
+                            dispatch(actions.bulk(suggestionId));
                             break;
                         default:
-                            break;
+                            return;
                     }
                 }
             } catch (err) {}
         }
+    }
+
+    fetchSuggestionIfIdAndTypeExist() {
+        this.dispatchSuggestionActions({create: fetchCreateSuggestion, update: fetchUpdateSuggestion, bulk: fetchBulkCreateSuggestion});
     }
 
     handleSuggestionApproveButtonClick() {
-        const { dispatch, match: { params: { suggestionId } }, location: { search } } = this.props;
-        const type = QueryString.parse(search).type;
-
-        if (suggestionId && type) {
-            try {
-                if (!isNaN(parseInt(suggestionId))) {
-                    switch (type) {
-                        case 'create':
-                            dispatch(approveCreateSuggestion(suggestionId));
-                            break;
-                        case 'update':
-                            dispatch(approveUpdateSuggestion(suggestionId));
-                            break;
-                        case 'bulk':
-                            dispatch(approveBulkCreateSuggestion(suggestionId));
-                            break;
-                        default:
-                            return;
-                    }
-                }
-            } catch (err) {}
-        }
+        this.dispatchSuggestionActions({create: approveCreateSuggestion, update: approveUpdateSuggestion, bulk: approveBulkCreateSuggestion});
     }
 
     handleSuggestionRejectButtonClick() {
-        const { dispatch, match: { params: { suggestionId } }, location: { search } } = this.props;
-        const type = QueryString.parse(search).type;
-
-        if (suggestionId && type) {
-            try {
-                if (!isNaN(parseInt(suggestionId))) {
-                    switch (type) {
-                        case 'create':
-                            dispatch(rejectCreateSuggestion(suggestionId));
-                            break;
-                        case 'update':
-                            dispatch(rejectUpdateSuggestion(suggestionId));
-                            break;
-                        case 'bulk':
-                            dispatch(rejectBulkCreateSuggestion(suggestionId));
-                            break;
-                        default:
-                            return;
-                    }
-                }
-            } catch (err) {}
-        }
+        this.dispatchSuggestionActions({create: rejectCreateSuggestion, update: rejectUpdateSuggestion, bulk: rejectBulkCreateSuggestion});
     }
 
     render() {

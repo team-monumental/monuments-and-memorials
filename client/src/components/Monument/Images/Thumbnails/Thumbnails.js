@@ -8,7 +8,7 @@ export default class Thumbnails extends React.Component {
         const { imageUrls } = this.props;
 
         return (<>
-            {imageUrls && <div className="images">
+            {imageUrls && <div className="thumbnail-images">
                 {imageUrls.map(imageUrl => (
                     <Thumbnail key={imageUrl} imageUrl={imageUrl}/>
                 ))}

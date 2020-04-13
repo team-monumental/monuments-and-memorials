@@ -4,6 +4,7 @@ import {
     BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR
 } from '../constants';
 import { pending, success, error } from '../utils/action-util';
+import { put } from '../utils/api-util';
 
 const actions = {
     validate: {
@@ -111,9 +112,7 @@ export function bulkCreateMonuments(form) {
             suggestResult = await (await fetch(`${actions.create.suggestUri}/result/${suggestJobId}`)).json();
 
             // Approve the BulkCreateMonumentSuggestion
-            let approveResult = await (await fetch(`${actions.create.approveUri}/${suggestResult.id}/approve`, {
-                method: 'put'
-            })).json();
+            let approveResult = await put(`${actions.create.approveUri}/${suggestResult.id}/approve`);
 
             const approveJobId = approveResult.id;
 

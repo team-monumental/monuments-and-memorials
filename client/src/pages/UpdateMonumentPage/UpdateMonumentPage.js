@@ -151,9 +151,9 @@ class UpdateMonumentPage extends React.Component {
     render() {
         const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, user } = this.props;
 
-        let action = 'Suggest an update to ';
+        let action = 'Suggest an update to';
         if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
-            action = 'Update ';
+            action = 'Update';
         }
 
         return (

@@ -37,9 +37,9 @@ class SuggestionSearchBar extends React.Component {
 
         search({
             q: searchQuery,
-            isApproved: statusFilter === 'approved',
-            isRejected: statusFilter === 'rejected',
-            isPending: statusFilter === 'pending',
+            approved: statusFilter === 'approved',
+            rejected: statusFilter === 'rejected',
+            pending: statusFilter === 'pending',
             type: typeFilter
         }, history, '/panel/manage/suggestions/search');
     }
