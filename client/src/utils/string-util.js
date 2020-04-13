@@ -19,7 +19,7 @@ export function prettyPrintDateString(dateString) {
     if (!dateString) return;
 
     // Wednesday, October 16th, 2019 format
-    return moment(dateString).format('dddd, MMMM Do, YYYY');
+    return moment(dateString, "YYYY-MM-DD").format('dddd, MMMM Do, YYYY');
 }
 
 export const validEmailRegex =

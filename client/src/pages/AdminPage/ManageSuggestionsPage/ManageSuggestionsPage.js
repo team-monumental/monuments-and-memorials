@@ -81,13 +81,16 @@ class ManageSuggestionsPage extends React.Component {
             location: { search }, rejectBulkCreateSuggestion, approveBulkCreateSuggestion } = this.props;
         const type = QueryString.parse(search).type;
 
+        const reducers = [
+            approveCreateSuggestion, rejectCreateSuggestion, approveUpdateSuggestion, rejectUpdateSuggestion,
+            rejectBulkCreateSuggestion, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion
+        ];
+
         const suggestion = approveCreateSuggestion.result || rejectCreateSuggestion.result ||
             approveUpdateSuggestion.result || rejectUpdateSuggestion.result || rejectBulkCreateSuggestion.result ||
             fetchCreateSuggestion.result || fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
 
-        const pending = approveCreateSuggestion.pending || rejectCreateSuggestion.pending ||
-            approveUpdateSuggestion.pending || rejectUpdateSuggestion.pending || rejectBulkCreateSuggestion.pending ||
-            fetchCreateSuggestion.pending || fetchUpdateSuggestion.pending || fetchBulkCreateSuggestion.pending;
+        const pending = reducers.filter(reducer => reducer.pending).length > 0;
 
         return (<>
             <Spinner show={pending}/>

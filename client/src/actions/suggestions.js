@@ -96,7 +96,7 @@ function fetchSuggestions(action) {
 
         try {
             const suggestions = await get(action.uri);
-            dispatch(success(action, suggestions));
+            dispatch(success(action, {result: suggestions}));
         } catch (err) {
             dispatch(error(action, err.message));
         }
@@ -130,10 +130,10 @@ function fetchSuggestion(action, id, isUpdateSuggestion=false) {
                     suggestion: suggestion,
                     allPendingForMonument: allPendingUpdateSuggestionsForMonument
                 };
-                dispatch(success(action, result));
+                dispatch(success(action, {result}));
             }
             else {
-                dispatch(success(action, suggestion));
+                dispatch(success(action, {result: suggestion}));
             }
         } catch (err) {
             dispatch(error(action, err.message));
@@ -158,8 +158,8 @@ function approveSuggestion(action, id) {
         dispatch(pending(action));
 
         try {
-            const approvedSuggestion = await put(`${action.uri}/${id}/approve`);
-            dispatch(success(action, approvedSuggestion));
+            const result = await put(`${action.uri}/${id}/approve`);
+            dispatch(success(action, {result}));
         } catch (err) {
             dispatch(error(action, err.message));
         }
@@ -179,9 +179,7 @@ export function approveBulkCreateSuggestion(id) {
         dispatch(pending(actions.approveBulkCreate));
 
         try {
-            let approveResult = await (await fetch(`${actions.approveBulkCreate.uri}/${id}/approve`, {
-                method: 'put'
-            })).json();
+            let approveResult = await put(`${actions.approveBulkCreate.uri}/${id}/approve`);
 
             const approveJobId = approveResult.id;
 
@@ -209,8 +207,8 @@ function rejectSuggestion(action, id) {
         dispatch(pending(action));
 
         try {
-            const rejectedSuggestion = await put(`${action.uri}/${id}/reject`);
-            dispatch(success(action, rejectedSuggestion));
+            const result = await put(`${action.uri}/${id}/reject`);
+            dispatch(success(action, {result}));
         } catch (err) {
             dispatch(error(action, err.message));
         }
