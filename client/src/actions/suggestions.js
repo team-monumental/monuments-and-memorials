@@ -95,8 +95,8 @@ function fetchSuggestions(action) {
         dispatch(pending(action));
 
         try {
-            const suggestions = await get(action.uri);
-            dispatch(success(action, {result: suggestions}));
+            const result = await get(action.uri);
+            dispatch(success(action, {result}));
         } catch (err) {
             dispatch(error(action, err.message));
         }
