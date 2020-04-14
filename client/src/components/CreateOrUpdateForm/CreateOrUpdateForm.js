@@ -326,6 +326,11 @@ export default class CreateOrUpdateForm extends React.Component {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must not be blank';
                 formIsValid = false;
+            } else if (latitude.value.includes('°')) {
+                latitude.isValid = false;
+                latitude.message = 'Please use decimal coordinates, not degrees. ' +
+                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
+                formIsValid = false;
             } else if (!validator.matches(latitude.value, latitudeRegex)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
@@ -335,7 +340,13 @@ export default class CreateOrUpdateForm extends React.Component {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must not be blank';
                 formIsValid = false;
-            } else if (!validator.matches(longitude.value, longitudeRegex)) {
+            } else if (longitude.value.includes('°')) {
+                longitude.isValid = false;
+                longitude.message = 'Please use decimal coordinates, not degrees. ' +
+                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
+                formIsValid = false;
+            }
+            else if (!validator.matches(longitude.value, longitudeRegex)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
@@ -1107,8 +1118,9 @@ export default class CreateOrUpdateForm extends React.Component {
                         <ImageUploader
                             withIcon={false}
                             imgExtension={['.jpg', '.png']}
+                            maxFileSize={5000000}
                             label=""
-                            fileSizeError="File size is too large"
+                            fileSizeError="File size is too large. Maximum file size is 5MB"
                             fileTypeError="File type is not supported"
                             withPreview={true}
                             onChange={(files) => this.handleImageUploaderChange(files)}

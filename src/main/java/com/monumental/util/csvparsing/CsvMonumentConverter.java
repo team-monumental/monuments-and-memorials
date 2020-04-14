@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -110,7 +111,13 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
                             } else {
                                 try {
-                                    result.getImageFiles().add(ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry));
+                                    File imageFile = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
+                                    if (imageFile.length() > 5000000) {
+                                        result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
+                                    }
+                                    else {
+                                        result.getImageFiles().add(ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry));
+                                    }
                                 } catch (IOException e) {
                                     result.getErrors().add("Failed to read image file from .zip");
                                 }
