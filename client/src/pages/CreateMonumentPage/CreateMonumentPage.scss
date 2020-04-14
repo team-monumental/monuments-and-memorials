@@ -10,7 +10,6 @@
   height: 100%;
 
   .column {
-    flex: 1 1 100%;
     padding: 1rem 0;
   }
 
@@ -18,16 +17,17 @@
     flex-direction: row;
 
     .column {
-      flex-basis: 35%;
-      padding: 0 1rem;
+      flex: 1 1 0px;
+    }
 
-      &.left {
-        flex-basis: 20%;
-      }
+    .form-column {
+      display: flex;
+      justify-content: center;
+    }
 
-      &.form-column {
-        flex-basis: 80%;
-      }
+    .thank-you-column .card {
+        max-width: fit-content;
+        margin-left: 1rem;
     }
   }
 }

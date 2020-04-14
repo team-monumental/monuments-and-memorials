@@ -192,6 +192,7 @@ class CreateMonumentPage extends React.Component {
                         action={action}
                     />
                 </div>
+                <div className="column"/>
 
                 {this.renderDuplicateMonuments()}
                 {this.renderNoImageModal()}

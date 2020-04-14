@@ -169,6 +169,7 @@ class UpdateMonumentPage extends React.Component {
                         action={action}
                     />
                 </div>
+                <div className="column"/>
 
                 {this.renderNoImageModal()}
                 {this.renderReviewModal()}
