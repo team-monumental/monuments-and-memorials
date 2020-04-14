@@ -61,9 +61,10 @@ class TagsSearch extends React.Component {
           <div/>
         );
 
-        if (allowTagCreation && searchQuery !== '' && !selectedTags.find(tag => tag.name === searchQuery)
-            && !createdTags.find(tag => tag.name === searchQuery))
-        {
+        if (allowTagCreation && searchQuery !== ''
+            && !selectedTags.find(tag => tag.name.toLowerCase() === searchQuery.toLowerCase())
+            && !createdTags.find(tag => tag.name.toLowerCase() === searchQuery.toLowerCase())
+            && !visibleSearchResults.find(tag => tag.name.toLowerCase() === searchQuery.toLowerCase())) {
             const tag = {
                 id: createdTagsKey,
                 name: searchQuery,
