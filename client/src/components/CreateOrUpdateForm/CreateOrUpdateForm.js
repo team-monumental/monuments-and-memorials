@@ -1120,7 +1120,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             imgExtension={['.jpg', '.png']}
                             maxFileSize={5000000}
                             label=""
-                            fileSizeError="File size is too large. Maximum file size is 5MB"
+                            fileSizeError="- File is too large. The maximum file size is 5MB"
                             fileTypeError="File type is not supported"
                             withPreview={true}
                             onChange={(files) => this.handleImageUploaderChange(files)}

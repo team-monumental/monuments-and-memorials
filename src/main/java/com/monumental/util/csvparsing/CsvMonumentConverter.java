@@ -19,6 +19,9 @@ import java.util.zip.ZipFile;
  */
 public class CsvMonumentConverter {
 
+    private static final String coordinatesDMSFormatWarning = "Please use decimal coordinates, not degrees. To " +
+            "convert, input your degrees into Google Maps.";
+
     /**
      * Convert CSV rows into CsvMonumentConverterResults
      * @param csvRows - List of String Arrays of cells in a CSV
@@ -72,21 +75,35 @@ public class CsvMonumentConverter {
                         suggestion.setInscription(value);
                         break;
                     case "latitude":
-                        try {
-                            latitude = Double.parseDouble(value);
-                        } catch (NumberFormatException e) {
-                            result.getWarnings().add("Latitude should be a valid number.");
-                        } finally {
-                            suggestion.setLatitude(latitude);
+                        if (value.contains("°")) {
+                            if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                result.getWarnings().add(coordinatesDMSFormatWarning);
+                            }
+                        }
+                        else {
+                            try {
+                                latitude = Double.parseDouble(value);
+                            } catch (NumberFormatException e) {
+                                result.getWarnings().add("Latitude should be a valid number.");
+                            } finally {
+                                suggestion.setLatitude(latitude);
+                            }
                         }
                         break;
                     case "longitude":
-                        try {
-                            longitude = Double.parseDouble(value);
-                        } catch (NumberFormatException e) {
-                            result.getWarnings().add("Longitude should be a valid number.");
-                        } finally {
-                            suggestion.setLongitude(longitude);
+                        if (value.contains("°")) {
+                            if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                result.getWarnings().add(coordinatesDMSFormatWarning);
+                            }
+                        }
+                        else {
+                            try {
+                                longitude = Double.parseDouble(value);
+                            } catch (NumberFormatException e) {
+                                result.getWarnings().add("Longitude should be a valid number.");
+                            } finally {
+                                suggestion.setLongitude(longitude);
+                            }
                         }
                         break;
                     case "city":
@@ -210,6 +227,20 @@ public class CsvMonumentConverter {
             names.add(name);
         }
         return names;
+    }
+
+    /**
+     * Static method to add the beginning and ending quotes to a specified String
+     * Does nothing if there are already beginning and ending quotes
+     * @param string - the String to add the quotes to
+     * @return String - the updated String, with beginning and ending quotes
+     */
+    private static String addBeginningAndEndingQuotes(String string) {
+        if (string.startsWith("\"") && string.endsWith("\"")) {
+            return string;
+        }
+
+        return "\"" + string + "\"";
     }
 
     /**
