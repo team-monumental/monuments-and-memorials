@@ -48,7 +48,8 @@ export default class ManageSuggestion extends React.Component {
             <div className="manage-suggestion">
                 <Helmet title={`Manage ${suggestion.title} | Monuments and Memorials`}/>
                 <CreateMonumentSuggestion suggestion={suggestion} showIndex={false} showTitleAsLink={false}
-                                          expandedByDefault={true} showCollapse={true} showCollapseLinks={false}/>
+                                          expandedByDefault={true} showCollapse={true} showCollapseLinks={false}
+                                          showCreatedBy={true}/>
                 <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
                                   onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>
             </div>
@@ -73,7 +74,7 @@ export default class ManageSuggestion extends React.Component {
                 {this.renderUpdateNotice()}
                 <UpdateMonumentSuggestion suggestion={suggestion} showIndex={false}
                                           showTitleAsLink={false} expandedByDefault={true}
-                                          showCollapseLinks={false}/>
+                                          showCollapseLinks={false} showCreatedBy={true}/>
                 <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
                                   onApproveClick={onApproveClick} onRejectClick={onRejectClick}/>
             </div>
@@ -87,7 +88,8 @@ export default class ManageSuggestion extends React.Component {
             <div className="manage-suggestion">
                 <Helmet title={`Manage ${suggestion.fileName} | Monuments and Memorials`}/>
                 <BulkCreateMonumentSuggestion suggestion={suggestion} showIndex={false} showTitleAsLink={false}
-                                              displayCreateMonumentStatuses={true} showCreateTitlesAsLinks={true}/>
+                                              displayCreateMonumentStatuses={true} showCreateTitlesAsLinks={true}
+                                              showCreatedBy={true}/>
                 <SuggestionStatus isApproved={suggestion.isApproved} isRejected={suggestion.isRejected}
                                   onApproveClick={onApproveClick} onRejectClick={onRejectClick}
                                   isBulk={true}/>

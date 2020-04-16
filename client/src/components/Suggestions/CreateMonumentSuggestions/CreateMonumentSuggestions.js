@@ -36,7 +36,8 @@ export default class CreateMonumentSuggestions extends React.Component {
 
     render() {
         const { suggestions, hideMoreThan, showSuggestionCollapses=true, showTitlesAsLinks,
-            showCollapseLinks=true, displayStatuses, areFromBulk, showSuggestionCollapseLinks=true } = this.props;
+            showCollapseLinks=true, displayStatuses, areFromBulk, showSuggestionCollapseLinks=true,
+            showCreatedBys } = this.props;
         const { expanded } = this.state;
 
         let showingSuggestions = suggestions;
@@ -54,7 +55,8 @@ export default class CreateMonumentSuggestions extends React.Component {
                     <CreateMonumentSuggestion key={suggestion.id} suggestion={suggestion} index={index + 1}
                                               showCollapse={showSuggestionCollapses}
                                               showTitleAsLink={showTitlesAsLinks} displayStatus={displayStatuses}
-                                              isFromBulk={areFromBulk} showCollapseLinks={showSuggestionCollapseLinks}/>
+                                              isFromBulk={areFromBulk} showCollapseLinks={showSuggestionCollapseLinks}
+                                              showCreatedBy={showCreatedBys}/>
                 ))}
                 {hiddenSuggestions && hiddenSuggestions.length > 0 && <>
                     <Collapse in={expanded}>
@@ -69,7 +71,7 @@ export default class CreateMonumentSuggestions extends React.Component {
                                                               displayStatus={displayStatuses}
                                                               isFromBulk={areFromBulk}
                                                               showCollapseLinks={showSuggestionCollapseLinks}
-                                    />
+                                                              showCreatedBy={showCreatedBys}/>
                                 );
                             })}
                         </div>

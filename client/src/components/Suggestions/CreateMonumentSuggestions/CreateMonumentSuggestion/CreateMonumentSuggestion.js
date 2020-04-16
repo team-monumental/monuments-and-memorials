@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './CreateMonumentSuggestion.scss';
 import { Card, Collapse } from 'react-bootstrap';
-import { prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
+import { getUserFullName, prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
-import { Link } from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import SuggestionStatus from '../../../AdminPanel/ManageSuggestions/ManageSuggestion/SuggestionStatus/SuggestionStatus';
 
 /**
@@ -142,11 +142,18 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     render() {
-        const { suggestion, index, showTitleAsLink, showIndex=true } = this.props;
+        const { suggestion, index, showTitleAsLink, showIndex=true, showCreatedBy } = this.props;
 
         const titleText = showIndex ?
             `${index}. ${suggestion.title}` :
             `Create new record: ${suggestion.title}`;
+
+        const manageUserLink = (
+            <NavLink onClick={e => {
+                e.preventDefault();
+                window.location.replace(`/panel/manage/users/user/${suggestion.createdBy.id}`);
+            }} to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>{getUserFullName(suggestion.createdBy)}</NavLink>
+        );
 
         return (
             <Card className="create-suggestion">
@@ -156,6 +163,12 @@ export default class CreateMonumentSuggestion extends React.Component {
                             showTitleAsLink ?
                                 <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=create`}>{titleText}</Link> :
                                 titleText
+                        }
+                        {showCreatedBy &&
+                            <div className="created-by-container">
+                                Created By:&nbsp;
+                                {manageUserLink} (<a href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>)
+                            </div>
                         }
                     </Card.Title>
                 </Card.Header>

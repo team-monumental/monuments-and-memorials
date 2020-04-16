@@ -2,6 +2,11 @@
 
 .create-suggestion.card.card {
   border: 1px solid rgba(0, 0, 0, 0.125);
+
+  .card-title {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .collapse-link {
