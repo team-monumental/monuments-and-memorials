@@ -335,7 +335,17 @@ export default class CreateOrUpdateForm extends React.Component {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
                 formIsValid = false;
+            } else {
+                const latAsDouble = parseFloat(latitude.value);
+                // Alaska is the furthest north location and its latitude is approximately 71
+                // The American Samoa is the furthest south location and its latitude is approximately -14
+                if (latAsDouble > 72 || latAsDouble < -15) {
+                    latitude.isValid = false;
+                    latitude.message = 'Latitude is not near the United States';
+                    formIsValid = false;
+                }
             }
+
             if (validator.isEmpty(longitude.value)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must not be blank';
@@ -350,6 +360,15 @@ export default class CreateOrUpdateForm extends React.Component {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
+            } else {
+                const lonAsDouble = parseFloat(longitude.value);
+                // Guam is the furthest west location and its longitude is approximately 144
+                // Puerto Rico is the furthest east location and its longitude is approximately -65
+                if (lonAsDouble > -64 && !(lonAsDouble < 180 && lonAsDouble > 143)) {
+                    longitude.isValid = false;
+                    longitude.message = 'Longitude is not near the United States';
+                    formIsValid = false;
+                }
             }
         } else {
             locationType.isValid = false;
