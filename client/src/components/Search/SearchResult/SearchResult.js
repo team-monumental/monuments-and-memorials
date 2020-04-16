@@ -14,7 +14,6 @@ export default class SearchResult extends React.Component {
     render() {
         const { monument, index, includeIndexInTitle, hideImages, searchUri, monumentUri } = this.props;
         const image = monument && monument.images ? monument.images.find(monument => monument.isPrimary) : null;
-        const imageUrl = image ? `url("${image.url}")` : null;
         const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
 
         let tags = [];
@@ -25,7 +24,7 @@ export default class SearchResult extends React.Component {
         return (
             <div className="search-result">
                 {!hideImages &&
-                    <Thumbnail imageUrl={imageUrl}/>
+                    <Thumbnail imageUrl={image && image.url}/>
                 }
                 <Card>
                     <Card.Title>
