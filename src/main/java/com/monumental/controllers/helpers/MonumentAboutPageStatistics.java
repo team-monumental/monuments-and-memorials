@@ -29,6 +29,14 @@ public class MonumentAboutPageStatistics {
 
     private Integer vietnamVeteransMemorialId;
 
+    private String mostPopularTagName;
+
+    private int mostPopularTagUses;
+
+    private String mostPopularMaterialName;
+
+    private int mostPopularMaterialUses;
+
     public int getTotalNumberOfMonuments() {
         return this.totalNumberOfMonuments;
     }
@@ -107,5 +115,37 @@ public class MonumentAboutPageStatistics {
 
     public void setVietnamVeteransMemorialId(Integer vietnamVeteransMemorialId) {
         this.vietnamVeteransMemorialId = vietnamVeteransMemorialId;
+    }
+
+    public String getMostPopularTagName() {
+        return this.mostPopularTagName;
+    }
+
+    public void setMostPopularTagName(String mostPopularTagName) {
+        this.mostPopularTagName = mostPopularTagName;
+    }
+
+    public int getMostPopularTagUses() {
+        return this.mostPopularTagUses;
+    }
+
+    public void setMostPopularTagUses(int mostPopularTagUses) {
+        this.mostPopularTagUses = mostPopularTagUses;
+    }
+
+    public String getMostPopularMaterialName() {
+        return this.mostPopularMaterialName;
+    }
+
+    public void setMostPopularMaterialName(String mostPopularMaterialName) {
+        this.mostPopularMaterialName = mostPopularMaterialName;
+    }
+
+    public int getMostPopularMaterialUses() {
+        return this.mostPopularMaterialUses;
+    }
+
+    public void setMostPopularMaterialUses(int mostPopularMaterialUses) {
+        this.mostPopularMaterialUses = mostPopularMaterialUses;
     }
 }

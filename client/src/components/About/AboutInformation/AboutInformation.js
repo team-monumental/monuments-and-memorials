@@ -191,6 +191,12 @@ export default class AboutInformation extends React.Component {
                             description={'Number of Monuments tagged with: ' + monumentStatistics.randomTagName}
                         />
                     </div>
+                    <div className="statistics-row last">
+                        <StatisticCard statistic={monumentStatistics.mostPopularTagName}
+                                       description={`Most Popular Tag (used ${monumentStatistics.mostPopularTagUses} times)`}/>
+                        <StatisticCard statistic={monumentStatistics.mostPopularMaterialName}
+                                       description={`Most Popular Material (used ${monumentStatistics.mostPopularMaterialUses} times)`}/>
+                    </div>
                 </div>
                 <div className="charts-container">
                     <NumberOfMonumentsByStateBarChart
