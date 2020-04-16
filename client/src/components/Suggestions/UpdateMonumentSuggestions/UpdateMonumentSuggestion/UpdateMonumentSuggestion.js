@@ -2,7 +2,7 @@ import * as React from 'react';
 import './UpdateMonumentSuggestion.scss';
 import { Card } from 'react-bootstrap';
 import MonumentUpdate from '../../../Monument/Update/MonumentUpdate';
-import {Link, NavLink} from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { getUserFullName } from '../../../../utils/string-util';
 
 export default class UpdateMonumentSuggestion extends React.Component {

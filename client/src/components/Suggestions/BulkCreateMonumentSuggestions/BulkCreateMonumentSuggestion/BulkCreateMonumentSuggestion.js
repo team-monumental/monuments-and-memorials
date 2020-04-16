@@ -2,7 +2,7 @@ import * as React from 'react';
 import './BulkCreateMonumentSuggestion.scss';
 import { Card } from 'react-bootstrap';
 import CreateMonumentSuggestions from '../../CreateMonumentSuggestions/CreateMonumentSuggestions';
-import {Link, NavLink} from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { getUserFullName } from '../../../../utils/string-util';
 
 /**

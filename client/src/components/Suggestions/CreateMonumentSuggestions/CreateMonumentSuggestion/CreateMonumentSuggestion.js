@@ -3,7 +3,7 @@ import './CreateMonumentSuggestion.scss';
 import { Card, Collapse } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
-import {Link, NavLink} from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import SuggestionStatus from '../../../AdminPanel/ManageSuggestions/ManageSuggestion/SuggestionStatus/SuggestionStatus';
 
 /**
