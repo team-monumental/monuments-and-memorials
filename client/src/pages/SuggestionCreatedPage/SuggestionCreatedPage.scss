@@ -13,5 +13,15 @@
     p {
       font-size: medium;
     }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      button {
+        max-width: 200px;
+      }
+    }
   }
 }

@@ -61,7 +61,7 @@ class CreateMonumentPage extends React.Component {
         }
         else {
             if (this.props.createError === null && this.props.createSuggestion.id !== undefined) {
-                this.props.history.push('/suggestion-created');
+                this.props.history.push('/suggestion-created?type=create');
             }
         }
     }

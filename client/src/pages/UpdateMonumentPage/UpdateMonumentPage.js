@@ -50,7 +50,7 @@ class UpdateMonumentPage extends React.Component {
         }
         else {
             if (this.props.error === null && this.props.updateSuggestion.id !== undefined) {
-                this.props.history.push('/suggestion-created');
+                this.props.history.push('/suggestion-created?type=update');
             }
         }
     }

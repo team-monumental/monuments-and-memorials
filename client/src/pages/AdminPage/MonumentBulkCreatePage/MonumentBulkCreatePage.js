@@ -31,7 +31,7 @@ class MonumentBulkCreatePage extends React.Component {
             this.setState({showingErrorModal: true});
         }
         else if (this.props.createSuggestionResult && !this.props.bulkSuggestionCreatePending) {
-            this.props.history.push('/panel/suggestion-created');
+            this.props.history.push('/panel/suggestion-created?type=bulk');
         }
         else if (this.props.createResult && !this.props.bulkCreatePending && !prevProps.createResult) {
             this.setState({showCreateResults: true})
