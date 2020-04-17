@@ -12,6 +12,8 @@ export default class DuplicateMonuments extends React.Component {
     render() {
         const { duplicates, onCancel, onConfirm, showing } = this.props;
 
+        console.log(duplicates);
+
         return (
             <Modal show={showing} onHide={onCancel}>
                 <Modal.Header className="duplicate-monuments">
@@ -33,11 +35,7 @@ export default class DuplicateMonuments extends React.Component {
                         can continue with your suggestion.
                     </p>
                     <div className="duplicates-container">
-                        <SearchResults
-                            monuments={duplicates}
-                            limit={25}
-                            page={1}
-                        />
+                        <SearchResults monuments={duplicates} limit={25} page={1} monumentUri={'/monuments'}/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="duplicate-monuments">
