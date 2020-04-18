@@ -145,7 +145,7 @@ public class CsvMonumentConverter {
                                         result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
                                     }
                                     else {
-                                        result.getImageFiles().add(ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry));
+                                        result.getImageFiles().add(imageFile);
                                     }
                                 } catch (IOException e) {
                                     result.getErrors().add("Failed to read image file from .zip");
@@ -239,20 +239,6 @@ public class CsvMonumentConverter {
             names.add(name);
         }
         return names;
-    }
-
-    /**
-     * Static method to add the beginning and ending quotes to a specified String
-     * Does nothing if there are already beginning and ending quotes
-     * @param string - the String to add the quotes to
-     * @return String - the updated String, with beginning and ending quotes
-     */
-    private static String addBeginningAndEndingQuotes(String string) {
-        if (string.startsWith("\"") && string.endsWith("\"")) {
-            return string;
-        }
-
-        return "\"" + string + "\"";
     }
 
     /**

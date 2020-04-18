@@ -1,13 +1,11 @@
 package com.monumental.repositories;
 
 import com.monumental.models.Tag;
-import javassist.compiler.ast.Pair;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.util.List;
 

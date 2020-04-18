@@ -12,8 +12,6 @@ export default class DuplicateMonuments extends React.Component {
     render() {
         const { duplicates, onCancel, onConfirm, showing } = this.props;
 
-        console.log(duplicates);
-
         return (
             <Modal show={showing} onHide={onCancel}>
                 <Modal.Header className="duplicate-monuments">
