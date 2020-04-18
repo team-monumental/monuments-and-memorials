@@ -2,17 +2,18 @@ import React from 'react';
 import './UpdateMonumentPage.scss';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import fetchMonumentForUpdate, { updateMonument } from '../../actions/update-monument';
+import { fetchMonumentForUpdate, createUpdateSuggestion, updateMonument } from '../../actions/update-monument';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
-import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
 import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
+import { isEmptyObject } from '../../utils/object-util';
+import { Role } from '../../utils/authentication-util';
 
 /**
- * Root container for the page to update an existing Monument
+ * Root container for the page to suggest an update to an existing Monument
  */
 class UpdateMonumentPage extends React.Component {
 
@@ -29,12 +30,29 @@ class UpdateMonumentPage extends React.Component {
     }
 
     static mapStateToProps(state) {
-        return state.updateMonumentPage;
+        return {
+            ...state.session,
+            ...state.updateMonumentPage,
+            ...state.updateMonument
+        };
     }
 
     componentDidMount() {
         const { dispatch, match: { params: { monumentId } } } = this.props;
         dispatch(fetchMonumentForUpdate(monumentId));
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (Role.RESEARCHER_OR_ABOVE.includes(this.props.user.role.toUpperCase())) {
+            if (this.props.updateError === null && !isEmptyObject(this.props.updatedMonument)) {
+                this.props.history.push(`/monuments/${this.props.updatedMonument.id}`);
+            }
+        }
+        else {
+            if (this.props.error === null && this.props.updateSuggestion.id !== undefined) {
+                this.props.history.push('/suggestion-created?type=update');
+            }
+        }
     }
 
     validateImages() {
@@ -44,24 +62,32 @@ class UpdateMonumentPage extends React.Component {
 
         let formHasImages = false;
         if (form) {
-            formHasImages = form.images && form.images.length;
+            formHasImages = (form.images && form.images.length) || (form.imagesForUpdate && form.imagesForUpdate.length);
         }
 
         return imagesWereAdded || formHasImages;
     }
 
     async submitUpdateForm() {
-        const { dispatch } = this.props;
+        const { dispatch, user } = this.props;
         const { form, monument } = this.state;
 
-        // First, upload the new images to S3 and save the URLs in the form
-        form.newImageUrls = await uploadImagesToS3(form.images);
+        // First, upload the new images to the temporary S3 folder and save the URLs in the form
+        const newImageObjectUrls = await uploadImagesToS3(form.images, true);
+        form.newImageUrlsJson = JSON.stringify(newImageObjectUrls);
 
         // Then, delete the deleted images from S3
         await deleteImagesFromS3(form.deletedImageUrls);
 
-        // Finally, update the Monument
-        dispatch(updateMonument(monument.id, form));
+        // Finally, make the appropriate API call
+        // Researchers and Admins bypass Suggestions and can directly update Monuments
+        if (Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            dispatch(updateMonument(monument.id, form));
+        }
+        // Any other role has to create a Suggestion
+        else {
+            dispatch(createUpdateSuggestion(monument.id, form));
+        }
     }
 
     handleUpdateFormCancelButtonClick() {
@@ -107,6 +133,10 @@ class UpdateMonumentPage extends React.Component {
     renderReviewModal() {
         const { showingReviewModal, monument, form, addedImages } = this.state;
 
+        if (form) {
+            form.addedImages = addedImages;
+        }
+
         return (
             <UpdateReviewModal
                 showing={showingReviewModal}
@@ -114,30 +144,29 @@ class UpdateMonumentPage extends React.Component {
                 onConfirm={() => this.submitUpdateForm()}
                 oldMonument={monument}
                 newMonument={form}
-                addedImages={addedImages}
             />
         );
     }
 
     render() {
-        const { fetchMonumentForUpdatePending, updateMonumentPending, monument, updatedMonument, error } = this.props;
+        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, user } = this.props;
 
-        if (error === null && updatedMonument.id !== undefined) {
-            this.props.history.push(`/monuments/${updatedMonument.id}`);
+        let action = 'Suggest an update to';
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            action = 'Update';
         }
 
         return (
             <div className="update-monument-page-container">
                 {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
-                <Spinner show={fetchMonumentForUpdatePending || updateMonumentPending}/>
-                <div className="column thank-you-column">
-                    <ContributionAppreciation/>
-                </div>
+                <Spinner show={fetchMonumentForUpdatePending || createUpdateSuggestionPending}/>
+                <div className="column left"/>
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         monument={monument}
                         onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
                         onSubmit={(id, form, addedImages) => this.handleUpdateFormSubmit(id, form, addedImages)}
+                        action={action}
                     />
                 </div>
 

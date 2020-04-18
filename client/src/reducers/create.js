@@ -1,17 +1,49 @@
-import { CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR } from '../constants';
+import { CREATE_CREATE_SUGGESTION_PENDING, CREATE_CREATE_SUGGESTION_SUCCESS,
+    CREATE_CREATE_SUGGESTION_ERROR, CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS,
+    CREATE_MONUMENT_ERROR } from '../constants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 
-const initialState = {
-    createMonumentPending : false,
-    monument: {},
+const createCreateSuggestionInitialState = {
+    createCreateSuggestionPending : false,
+    createSuggestion: {},
     createError: null
 };
 
-// Tracks the progress for creating a new Monument for the CreatePage
-export default function createPage(state = initialState, action) {
+const createMonumentInitialState = {
+    createMonumentPending: false,
+    monument: {},
+    createMonumentError: null
+};
+
+// Tracks the progress for creating a new CreateMonumentSuggestion for the CreatePage
+export function createCreateSuggestion(state = createCreateSuggestionInitialState, action) {
     switch (action.type) {
         case LOCATION_CHANGE:
-            return initialState;
+            return createCreateSuggestionInitialState;
+        case CREATE_CREATE_SUGGESTION_PENDING:
+            return {
+                ...state,
+                createCreateSuggestionPending: true
+            };
+        case CREATE_CREATE_SUGGESTION_SUCCESS:
+            return {
+                ...state,
+                createCreateSuggestionPending: false,
+                createSuggestion: action.payload
+            };
+        case CREATE_CREATE_SUGGESTION_ERROR:
+            return {
+                ...state,
+                createCreateSuggestionPending: false,
+                createError: action.error
+            };
+        default:
+            return state;
+    }
+}
+
+export function createMonument(state = createMonumentInitialState, action) {
+    switch (action.type) {
         case CREATE_MONUMENT_PENDING:
             return {
                 ...state,
@@ -27,7 +59,7 @@ export default function createPage(state = initialState, action) {
             return {
                 ...state,
                 createMonumentPending: false,
-                createError: action.error
+                createMonumentError: action.error
             };
         default:
             return state;

@@ -1,5 +1,7 @@
 package com.monumental.util.async;
 
+import com.monumental.models.User;
+
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncJob {
@@ -9,6 +11,8 @@ public class AsyncJob {
     private CompletableFuture future;
 
     private Double progress = 0.0;
+
+    private User user;
 
     public AsyncJob(Integer id) {
         this.setId(id);
@@ -41,5 +45,13 @@ public class AsyncJob {
 
     public void setProgress(Double progress) {
         this.progress = progress;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

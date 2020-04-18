@@ -1,8 +1,10 @@
 import {
-    SEARCH_MONUMENTS_PENDING,
-    SEARCH_MONUMENTS_SUCCESS,
-    SEARCH_MONUMENTS_ERROR,
-    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR
+    SEARCH_MONUMENTS_PENDING, SEARCH_MONUMENTS_SUCCESS, SEARCH_MONUMENTS_ERROR,
+    SEARCH_USERS_PENDING, SEARCH_USERS_SUCCESS, SEARCH_USERS_ERROR,
+    SEARCH_CREATE_SUGGESTIONS_PENDING, SEARCH_CREATE_SUGGESTIONS_SUCCESS, SEARCH_CREATE_SUGGESTIONS_ERROR,
+    SEARCH_UPDATE_SUGGESTIONS_PENDING, SEARCH_UPDATE_SUGGESTIONS_SUCCESS, SEARCH_UPDATE_SUGGESTIONS_ERROR,
+    SEARCH_BULK_CREATE_SUGGESTIONS_PENDING, SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS, SEARCH_BULK_CREATE_SUGGESTIONS_ERROR,
+    GET_PENDING_SUGGESTION_COUNT_PENDING, GET_PENDING_SUGGESTION_COUNT_SUCCESS, GET_PENDING_SUGGESTION_COUNT_ERROR
 } from '../constants';
 import basicReducer from '../utils/basic-reducer';
 
@@ -34,5 +36,64 @@ export function userSearchPage(state = userInitialState, action) {
         pending: SEARCH_USERS_PENDING,
         success: SEARCH_USERS_SUCCESS,
         error: SEARCH_USERS_ERROR
+    }, false);
+}
+
+const createSuggestionInitialState = {
+    pending: false,
+    createSuggestions: [],
+    count: 0,
+    error: null
+};
+
+export function createSuggestionSearchPage(state = createSuggestionInitialState, action) {
+    return basicReducer(state, createSuggestionInitialState, action, {
+        pending: SEARCH_CREATE_SUGGESTIONS_PENDING,
+        success: SEARCH_CREATE_SUGGESTIONS_SUCCESS,
+        error: SEARCH_CREATE_SUGGESTIONS_ERROR
+    });
+}
+
+const updateSuggestionInitialState = {
+    pending: false,
+    updateSuggestions: [],
+    count: 0,
+    error: null
+};
+
+export function updateSuggestionSearchPage(state = updateSuggestionInitialState, action) {
+    return basicReducer(state, updateSuggestionInitialState, action, {
+        pending: SEARCH_UPDATE_SUGGESTIONS_PENDING,
+        success: SEARCH_UPDATE_SUGGESTIONS_SUCCESS,
+        error: SEARCH_UPDATE_SUGGESTIONS_ERROR
+    });
+}
+
+const bulkCreateSuggestionInitialState = {
+    pending: false,
+    bulkCreateSuggestions: [],
+    count: 0,
+    error: null
+};
+
+export function bulkCreateSuggestionSearchPage(state = bulkCreateSuggestionInitialState, action) {
+    return basicReducer(state, bulkCreateSuggestionInitialState, action, {
+        pending: SEARCH_BULK_CREATE_SUGGESTIONS_PENDING,
+        success: SEARCH_BULK_CREATE_SUGGESTIONS_SUCCESS,
+        error: SEARCH_BULK_CREATE_SUGGESTIONS_ERROR
+    });
+}
+
+const pendingSuggestionsInitialState = {
+    pending: false,
+    count: 0,
+    error: null
+};
+
+export function pendingSuggestions(state = pendingSuggestionsInitialState, action) {
+    return basicReducer(state, pendingSuggestionsInitialState, action, {
+        pending: GET_PENDING_SUGGESTION_COUNT_PENDING,
+        success: GET_PENDING_SUGGESTION_COUNT_SUCCESS,
+        error: GET_PENDING_SUGGESTION_COUNT_ERROR
     }, false);
 }

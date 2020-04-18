@@ -1,10 +1,25 @@
 import * as moment from 'moment';
 
+/**
+ * Format the specified date into a user-friendly string
+ * @param date - Date to format into a user-friendly string
+ */
 export function prettyPrintDate(date) {
     if (!date) return;
     date = moment(new Date(date));
     // Wednesday, October 16th, 2019 format
     return date.format('dddd, MMMM Do, YYYY');
+}
+
+/**
+ * Parse the specified dateString into a consistent, user-friendly format
+ * @param dateString - String to parse into a consistent, user-friendly format
+ */
+export function prettyPrintDateString(dateString) {
+    if (!dateString) return;
+
+    // Wednesday, October 16th, 2019 format
+    return moment(dateString, "YYYY-MM-DD").format('dddd, MMMM Do, YYYY');
 }
 
 export const validEmailRegex =

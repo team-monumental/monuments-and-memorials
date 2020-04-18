@@ -3,7 +3,9 @@ import * as AWS from 'aws-sdk';
 // Constant for the S3 Bucket name for the project
 const s3ImageBucketName = 'monuments-and-memorials';
 // Constant for the S3 folder name where the Monument images are stored
-const s3ImageBucketFolderName = 'images/';
+const s3ImageFolderName = 'images/';
+// Constant for the S3 folder name where temporary Monument images are stored
+const s3TemporaryImageFolderName = 'temp/';
 
 const httpMethodTypes = ['GET', 'POST', 'PUT', 'DELETE'];
 
@@ -126,9 +128,10 @@ async function sendRequest(url, {methodType='GET', data=undefined, file=undefine
 /**
  * Uploads the specified images to the monument-images S3 bucket, inside the images/ folder
  * @param images - List of images to upload to S3
+ * @param temporaryFolder - True to upload the images to the temporary folder, False otherwise
  * @returns {Promise<[]>} - Promise that when awaited, returns a List of S3 Object keys for the uploaded images
  */
-export async function uploadImagesToS3(images) {
+export async function uploadImagesToS3(images, temporaryFolder) {
     // Setup the global AWS config
     AWS.config.update({
         region: 'us-east-2',
@@ -137,13 +140,14 @@ export async function uploadImagesToS3(images) {
     });
 
     let imageUrls = [];
+    const folderName = temporaryFolder ? s3TemporaryImageFolderName : s3ImageFolderName;
 
     for (const image of images) {
         // Create an S3 upload
         let s3Upload = new AWS.S3.ManagedUpload({
             params: {
                 Bucket: s3ImageBucketName,
-                Key: s3ImageBucketFolderName + image.name,
+                Key: folderName + image.name,
                 Body: image,
                 ACL: 'public-read'
             }
@@ -198,7 +202,7 @@ export async function deleteImagesFromS3(imageUrls) {
 export function getS3ImageObjectKeyFromObjectUrl(encodedObjectUrl) {
     const decodedObjectUrl = decodeURIComponent(encodedObjectUrl);
     const decodedObjectUrlArray = decodedObjectUrl.split('/');
-    return s3ImageBucketFolderName + decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
+    return s3ImageFolderName + decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
 }
 
 /**

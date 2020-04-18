@@ -8,9 +8,10 @@ import * as CSVParser from 'csvtojson';
 import moment from 'moment';
 import ExportToCsvButton from '../Export/ExportToCsvButton/ExportToCsvButton';
 import { capitalize } from '../../utils/string-util';
+import { Link } from 'react-router-dom';
 
 /**
- * Presentational component for the Form to submit a CSV file for bulk creating Monuments
+ * Presentational component for the Form to submit a CSV file for bulk creating/suggesting Monuments
  */
 export default class BulkCreateForm extends React.Component {
 
@@ -232,13 +233,13 @@ export default class BulkCreateForm extends React.Component {
 
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults, showCreateResults } = this.props;
+        const { showValidationResults, showCreateResults, term } = this.props;
 
         return (
             <Card className="bulk-create-form-container">
                 <Card.Header>
                     <Card.Title>
-                        Bulk Create Monuments and Memorials
+                        Bulk {term} Monuments and Memorials
                     </Card.Title>
                 </Card.Header>
                 {!showFieldMapping && !showValidationResults && <>
@@ -254,12 +255,14 @@ export default class BulkCreateForm extends React.Component {
 
     renderFileUpload() {
         const { fileUpload, fileUploadInputKey } = this.state;
+        const { term } = this.props;
+
         return (<Card.Body>
             <Card.Subtitle className="mt-2">
                 CSV Upload
             </Card.Subtitle>
             <p className="mb-4">
-                You can create multiple monuments or memorials by uploading
+                You can {term.toLowerCase()} multiple monuments or memorials by uploading
                 a <code>.csv</code> file with information about them.
             </p>
             <Card.Subtitle>
@@ -397,7 +400,7 @@ export default class BulkCreateForm extends React.Component {
 
     renderValidationResults() {
         const { fileUpload } = this.state;
-        const { validationResult } = this.props;
+        const { validationResult, actionHappeningTerm, pastTenseTerm } = this.props;
 
         // TODO: Handle general errors
         // const { error } = validationResult;
@@ -420,7 +423,7 @@ export default class BulkCreateForm extends React.Component {
             return (<>
                 <Card.Body>
                     We've validated your <code>{fileUpload.zip ? '.zip' : '.csv'}</code> and have found no errors or warnings.
-                    You may now proceed with creating {results.length} monuments or memorials.
+                    You may now proceed with {actionHappeningTerm.toLowerCase()} {results.length} monuments or memorials.
                 </Card.Body>
 
                 <Card.Footer className="d-flex justify-content-end">
@@ -477,15 +480,21 @@ export default class BulkCreateForm extends React.Component {
                 </div>
                 {warningCount > 0 && errorCount === 0 &&
                     <div>
-                        If you choose to continue with warnings, the affected rows will still be created, but may
-                        have non-critical issues that should be addressed with updates later.
+                        If you choose to continue with warnings, the affected rows will still be&nbsp;
+                        {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
+                        updates later.
                     </div>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
                     <div>
                         If you choose to continue with errors, any rows with errors
-                        will <span className="font-weight-bold">not</span> be created. {warningCount > 0 && <span>Any rows with warnings will still be
-                        created, but may have non-critical issues that should be addressed with updates later.</span>}
+                        will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
+                        {warningCount > 0 &&
+                            <span>
+                                Any rows with warnings will still be {pastTenseTerm.toLowerCase()}, but may have
+                                non-critical issues that should be addressed with updates later.
+                            </span>
+                        }
                     </div>
                 }
             </Card.Body>
@@ -512,11 +521,20 @@ export default class BulkCreateForm extends React.Component {
 
     renderCreateResults() {
         const { createResult } = this.props;
+
         return (
             <Card.Body>
                 <h5>Success!</h5>
-                <div>
-                    {createResult.length} monuments or memorials have been created. I would list them out here, but pretty soon they're just going to be suggestions anyway!
+                <div className="create-results">
+                    {createResult.length} monuments or memorials have been created!<br/>
+                    You can view each by following the links below:
+                    <ul className="mt-1">
+                        {createResult.map(result => (
+                            <li key={result.id}>
+                                <Link to={`/monuments/${result.id}`}>{result.title}</Link>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </Card.Body>
         );

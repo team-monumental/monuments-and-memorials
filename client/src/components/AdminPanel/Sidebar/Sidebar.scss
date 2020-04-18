@@ -17,9 +17,21 @@
         &.active, &:hover {
             color: white;
             background-color: $primary;
+
+            .badge {
+                background-color: white;
+                color: $primary;
+            }
         }
         i {
             font-size: 1.25em;
         }
+    }
+
+    .badge {
+        font-size: 12px;
+        background-color: $primary;
+        color: white;
+        transition: all 0.025s ease-in !important;
     }
 }

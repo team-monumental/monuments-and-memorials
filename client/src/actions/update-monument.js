@@ -1,10 +1,11 @@
 import {
-    FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, UPDATE_MONUMENT_PENDING,
-    UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING, TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
-    TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS, DELETE_MONUMENT_ERROR
+    FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, CREATE_UPDATE_SUGGESTION_PENDING,
+    CREATE_UPDATE_SUGGESTION_SUCCESS, CREATE_UPDATE_SUGGESTION_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
+    TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS, TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS,
+    DELETE_MONUMENT_ERROR, UPDATE_MONUMENT_PENDING, UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
 } from '../constants';
 import { addError } from './errors';
-import { get, put, del } from '../utils/api-util';
+import { get, post, put, del } from '../utils/api-util';
 import { pending, success, error } from '../utils/action-util';
 
 const actions = {
@@ -13,10 +14,10 @@ const actions = {
         success: FETCH_MONUMENT_UPDATE_SUCCESS,
         error: FETCH_MONUMENT_UPDATE_ERROR
     },
-    update: {
-        pending: UPDATE_MONUMENT_PENDING,
-        success: UPDATE_MONUMENT_SUCCESS,
-        error: UPDATE_MONUMENT_ERROR
+    createUpdateSuggestion: {
+        pending: CREATE_UPDATE_SUGGESTION_PENDING,
+        success: CREATE_UPDATE_SUGGESTION_SUCCESS,
+        error: CREATE_UPDATE_SUGGESTION_ERROR
     },
     toggleActive: {
         pending: TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
@@ -27,14 +28,18 @@ const actions = {
         pending: DELETE_MONUMENT_PENDING,
         success: DELETE_MONUMENT_SUCCESS,
         error: DELETE_MONUMENT_ERROR
+    },
+    update: {
+        pending: UPDATE_MONUMENT_PENDING,
+        success: UPDATE_MONUMENT_SUCCESS,
+        error: UPDATE_MONUMENT_ERROR
     }
 };
 
 /**
  * Queries for a Monument and all related records to be displayed on the Update Monument Page
  */
-export default function fetchMonumentForUpdate(id) {
-
+export function fetchMonumentForUpdate(id) {
     return async dispatch => {
         dispatch(pending(actions.fetch));
 
@@ -51,16 +56,35 @@ export default function fetchMonumentForUpdate(id) {
 }
 
 /**
- * Send a request to the server to update the Monument with the specified ID to have the attributes contained
- * in newMonument
+ * Send a request to the server to create an UpdateMonumentSuggestion for the Monument with the specified monumentId to
+ * have the attributes contained in updateSuggestion
  */
-export function updateMonument(id, newMonument) {
+export function createUpdateSuggestion(monumentId, updateSuggestion) {
+    return async dispatch => {
+        dispatch(pending(actions.createUpdateSuggestion));
 
+        try {
+            const createdUpdateSuggestion = await post(`/api/suggestion/update/${monumentId}`, updateSuggestion);
+            dispatch(success(actions.createUpdateSuggestion, createdUpdateSuggestion));
+        } catch (err) {
+            dispatch(error(actions.createUpdateSuggestion, err));
+            dispatch(addError({
+                message: err.message
+            }));
+        }
+    };
+}
+
+/**
+ * Send a request to the server to update the Monument with the specified monumentId to have the attributes contained
+ * in updateSuggestion
+ */
+export function updateMonument(monumentId, updateSuggestion) {
     return async dispatch => {
         dispatch(pending(actions.update));
 
         try {
-            const updatedMonument = await put(`/api/monument/${id}`, newMonument);
+            const updatedMonument = await put(`/api/monument/update/${monumentId}`, updateSuggestion);
             dispatch(success(actions.update, updatedMonument));
         } catch (err) {
             dispatch(error(actions.update, err));

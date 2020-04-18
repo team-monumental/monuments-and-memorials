@@ -8,9 +8,19 @@ import java.util.Map;
  */
 public class MonumentBulkValidationResult {
 
+    private String fileName;
+
     private Map<Integer, CsvMonumentConverterResult> results = new HashMap<>();
 
     private String error;
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public Map<Integer, CsvMonumentConverterResult> getResults() {
         return this.results;

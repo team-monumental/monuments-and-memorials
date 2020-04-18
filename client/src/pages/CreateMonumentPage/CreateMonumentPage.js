@@ -2,8 +2,7 @@ import React from 'react';
 import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
-import ContributionAppreciation from '../../components/ContributionAppreciation/ContributionAppreciation';
-import createMonument from '../../actions/create';
+import { createCreateSuggestion, createMonument } from '../../actions/create';
 import { uploadImagesToS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
@@ -12,9 +11,10 @@ import fetchDuplicates from '../../actions/duplicates';
 import DuplicateMonuments from '../../components/Monument/DuplicateMonuments/DuplicateMonuments';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
+import { Role } from '../../utils/authentication-util';
 
 /**
- * Root container for the page to create a new Monument
+ * Root container for the page to create a new CreateMonumentSuggestion
  */
 class CreateMonumentPage extends React.Component {
 
@@ -31,12 +31,15 @@ class CreateMonumentPage extends React.Component {
 
     static mapStateToProps(state) {
         return {
-            ...state.createPage,
+            ...state.session,
+            ...state.createCreateSuggestion,
+            ...state.createMonument,
             ...state.duplicateMonuments
         };
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        // Duplicates
         if (!prevProps.duplicates && this.props.duplicates) {
             if (this.props.duplicates.length) {
                 this.setState({showingDuplicateMonuments: true});
@@ -48,6 +51,17 @@ class CreateMonumentPage extends React.Component {
                 else {
                     this.setState({showingReviewModal: true});
                 }
+            }
+        }
+        // Redirects
+        if (this.props.user && Role.RESEARCHER_OR_ABOVE.includes(this.props.user.role.toUpperCase())) {
+            if (this.props.createMonumentError === null && this.props.monument.id !== undefined) {
+                this.props.history.push(`/monuments/${this.props.monument.id}`);
+            }
+        }
+        else {
+            if (this.props.createError === null && this.props.createSuggestion.id !== undefined) {
+                this.props.history.push('/suggestion-created?type=create');
             }
         }
     }
@@ -63,14 +77,22 @@ class CreateMonumentPage extends React.Component {
     }
 
     async submitCreateForm() {
-        const { dispatch } = this.props;
+        const { dispatch, user } = this.props;
         const { form } = this.state;
 
-        // First, upload the images to S3 and save the URLs in the form
-        form.images = await uploadImagesToS3(form.images);
+        // First, upload the images to the temporary S3 folder and save the URLs in the form
+        const imageObjectUrls = await uploadImagesToS3(form.images, true);
+        form.imagesJson = JSON.stringify(imageObjectUrls);
 
-        // Then, create the Monument
-        dispatch(createMonument(form));
+        // Then, make the appropriate API call
+        // Researchers and Admins bypass Suggestions and can directly add new Monuments
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            dispatch(createMonument(form));
+        }
+        // Any other role has to create a Suggestion
+        else {
+            dispatch(createCreateSuggestion(form));
+        }
     }
 
     handleCreateFormCancelButtonClick() {
@@ -150,23 +172,24 @@ class CreateMonumentPage extends React.Component {
     }
 
     render() {
-        const { createMonumentPending, monument, createError, fetchDuplicatesPending } = this.props;
+        const { createCreateSuggestionPending, fetchDuplicatesPending, pending, createMonumentPending,
+            user } = this.props;
 
-        if (createError === null && monument.id !== undefined) {
-            this.props.history.push(`/monuments/${monument.id}`);
+        let action = 'Suggest';
+        if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
+            action = 'Create';
         }
 
         return (
             <div className="create-page-container">
                 <Helmet title="Create | Monuments and Memorials"/>
-                <Spinner show={createMonumentPending || fetchDuplicatesPending}/>
-                <div className="column thank-you-column">
-                    <ContributionAppreciation/>
-                </div>
+                <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
+                <div className="column left"/>
                 <div className="column form-column">
                     <CreateOrUpdateForm
                         onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
                         onSubmit={(form) => this.handleCreateFormSubmit(form)}
+                        action={action}
                     />
                 </div>
 

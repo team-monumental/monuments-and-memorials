@@ -41,6 +41,7 @@ public class BulkCreateMonumentRequest {
     }
 
     public static class ParseResult {
+        public String csvFileName;
         public List<String[]> csvContents;
         public Map<String, String> mapping;
         public ZipFile zipFile;
@@ -61,6 +62,8 @@ public class BulkCreateMonumentRequest {
         } else {
             result.csvContents = monumentService.readCSV(this.getCsv());
         }
+
+        result.csvFileName = this.getCsv().getOriginalFilename();
 
         return result;
     }

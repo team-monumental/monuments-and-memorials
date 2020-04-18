@@ -393,7 +393,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     /**
-     * Build the form object for creating a new Monument
+     * Build the form object for creating a new CreateMonumentSuggestion
      */
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
@@ -432,11 +432,18 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
         }
 
+        // JSON fields
+        createForm.referencesJson = JSON.stringify(createForm.references);
+        createForm.materialsJson = JSON.stringify(createForm.materials);
+        createForm.newMaterialsJson = JSON.stringify(createForm.newMaterials);
+        createForm.tagsJson = JSON.stringify(createForm.tags);
+        createForm.newTagsJson = JSON.stringify(createForm.newTags);
+
         return createForm;
     }
 
     /**
-     * Build the form object for updating a Monument
+     * Build the form object for creating an UpdateMonumentSuggestion
      */
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
@@ -452,17 +459,10 @@ export default class CreateOrUpdateForm extends React.Component {
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images: images,
+            newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
-            newIsTemporary: isTemporary.value
+            imagesForUpdate: imagesForUpdate
         };
-
-        let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
-        let createdMaterialNames = newMaterials.map(newMaterial => newMaterial.name);
-        updateForm.newMaterials = newlyAssociatedMaterialNames.concat(createdMaterialNames);
-
-        let newlyAssociatedTagNames = tags.map(tag => tag.name);
-        let createdTagNames = newTags.map(newTag => newTag.name);
-        updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
 
         switch (dateSelectValue) {
             case 'year':
@@ -479,7 +479,15 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
         }
 
-        updateForm.updatedReferencesUrlsById = {};
+        let newlyAssociatedMaterialNames = materials.materialObjects.map(material => material.name);
+        let createdMaterialNames = newMaterials.map(newMaterial => newMaterial.name);
+        updateForm.newMaterials = newlyAssociatedMaterialNames.concat(createdMaterialNames);
+
+        let newlyAssociatedTagNames = tags.map(tag => tag.name);
+        let createdTagNames = newTags.map(newTag => newTag.name);
+        updateForm.newTags = newlyAssociatedTagNames.concat(createdTagNames);
+
+        updateForm.updatedReferenceUrlsById = {};
         updateForm.newReferenceUrls = [];
         updateForm.deletedReferenceIds = [];
 
@@ -489,7 +497,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     updateForm.deletedReferenceIds.push(reference.id);
                 }
                 else {
-                    updateForm.updatedReferencesUrlsById[reference.id] = reference.value;
+                    updateForm.updatedReferenceUrlsById[reference.id] = reference.value;
                 }
             }
             else {
@@ -511,15 +519,16 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
-        return updateForm;
-    }
+        // JSON fields
+        updateForm.updatedReferenceUrlsByIdJson = JSON.stringify(updateForm.updatedReferenceUrlsById);
+        updateForm.newReferenceUrlsJson = JSON.stringify(updateForm.newReferenceUrls);
+        updateForm.deletedReferenceIdsJson = JSON.stringify(updateForm.deletedReferenceIds);
+        updateForm.deletedImageIdsJson = JSON.stringify(updateForm.deletedImageIds);
+        updateForm.deletedImageUrlsJson = JSON.stringify(updateForm.deletedImageUrls);
+        updateForm.newMaterialsJson = JSON.stringify(updateForm.newMaterials);
+        updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 
-    /**
-     * Send the form for updating a Monument to the onSubmit handler
-     */
-    submitUpdateForm(id) {
-        const { onSubmit } = this.props;
-        onSubmit(id, this.buildUpdateForm());
+        return updateForm;
     }
 
     handleInputChange(event) {
@@ -825,7 +834,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
             imagesForUpdate, isTemporary, locationType } = this.state;
-        const { monument } = this.props;
+        const { monument, action } = this.props;
 
         const advancedInformationLink = (
             <div className="advanced-information-link more-link" onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
@@ -968,8 +977,8 @@ export default class CreateOrUpdateForm extends React.Component {
         return (
             <div className="create-form-container">
                 {monument
-                    ? <div className="h5 update">Update an existing Monument or Memorial</div>
-                    : <div className="h5 create">Suggest a new Monument or Memorial</div>}
+                    ? <div className="h5 update">{action} an existing Monument or Memorial</div>
+                    : <div className="h5 create">{action} a new Monument or Memorial</div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}

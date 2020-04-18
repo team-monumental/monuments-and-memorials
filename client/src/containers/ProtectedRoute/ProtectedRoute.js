@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 /**
  * Wraps React Router's Route component with some permissions checking, allowing routes
- * to be limited to certain user groups. If `oneOf` is not specified, then it simply
+ * to be limited to certain user groups. If `roles` is not specified, then it simply
  * checks that the user is logged into an account of any type
  */
 class ProtectedRoute extends React.Component {
@@ -14,7 +14,7 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-        const { session, oneOf, component: Component, path, history, exact, customProps } = this.props;
+        const { session, roles, component: Component, path, history, exact, customProps, verifyEmail } = this.props;
 
         // Wait until we've finished getting the user session before making any redirects
         if (session.pending) {
@@ -28,11 +28,17 @@ class ProtectedRoute extends React.Component {
             }
         }}/>);
 
+        const unverifiedEmailRedirect = message => (<Redirect to={{
+            pathname: '/account',
+            state: history.location.state && history.location.state.suppressAuthenticationBanner ? {} : {
+                alert: message
+            }
+        }}/>);
+
         let loggedIn = session.user && session.user.role;
         let render = (props) => (<Component {...props} {...customProps} />);
 
         // If using exact path, match exactly, otherwise do some fuzzy checking
-        // TODO: Verify that this fuzzy checking is good enough
         const active = exact ? history.location.pathname === path :
             history.location.pathname.startsWith(path.replace(/\/:[a-zA-Z_-]*/g, ''));
 
@@ -43,12 +49,17 @@ class ProtectedRoute extends React.Component {
 
         // In all other cases, we pass our action to the render function of the route rather than instantly redirect,
         // because they need to run when the route is actually navigated to
-        if (!loggedIn && oneOf) {
+        if (!loggedIn && roles) {
             render = () => (<Redirect to={`/login?warn=true&redirect=${encodeURIComponent(path)}`}/>)
         }
         // TODO: This doesn't support role hierarchy, and probably should
-        else if (oneOf && !oneOf.includes(session.user.role)) {
+        else if (roles && !roles.includes(session.user.role)) {
             render = () => noAccessRedirect('You do not have sufficient privileges to view that page.');
+        }
+        // If the user has not verified their email and email verification is required for the route,
+        // redirect them
+        else if (verifyEmail && session.user && !session.user.isEmailVerified) {
+            render = () => unverifiedEmailRedirect('You must verify your email address to view that page.');
         }
 
         return (
