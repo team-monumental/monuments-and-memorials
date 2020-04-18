@@ -86,6 +86,14 @@ class ManageSuggestionsPage extends React.Component {
             rejectBulkCreateSuggestion, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion
         ];
 
+        /**
+         * This code determines what Suggestion object to pass down to the ManageSuggestions component
+         * The order these ||'s are evaluated in is important. Typically all of these values will be falsey besides one,
+         * which is the one we will assign to suggestion.
+         * However in the situation where we approve a suggestion, say a Create Suggestion,
+         * approveCreateSuggestion.result AND fetchCreateSuggestion.result will both be truthy.
+         * Therefore, we check approveCreateSuggestion.result first since it is the updated Suggestion.
+         */
         const suggestion = approveCreateSuggestion.result || rejectCreateSuggestion.result ||
             approveUpdateSuggestion.result || rejectUpdateSuggestion.result || rejectBulkCreateSuggestion.result ||
             fetchCreateSuggestion.result || fetchUpdateSuggestion.result || fetchBulkCreateSuggestion.result;
