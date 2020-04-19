@@ -97,6 +97,27 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> deletedImageUrls;
 
+    @Column(name = "new_photosphere_image_urls_json", length = 1024)
+    private String newPhotoSphereImageUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> newPhotoSphereImageUrls;
+
+    @Column(name = "deleted_photosphere_image_ids_json", length = 1024)
+    private String deletedPhotoSphereImageIdsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<Integer> deletedPhotoSphereImageIds;
+
+    @Column(name = "deleted_photosphere_image_urls_json", length = 1024)
+    private String deletedPhotoSphereImageUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> deletedPhotoSphereImageUrls;
+
     @Column(name = "new_materials_json", length = 1024)
     private String newMaterialsJson;
 
@@ -313,6 +334,54 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.deletedImageUrls;
+    }
+
+    public String getNewPhotoSphereImageUrlsJson() {
+        return this.newPhotoSphereImageUrlsJson;
+    }
+
+    public void setNewPhotoSphereImageUrlsJson(String newPhotoSphereImageUrlsJson) {
+        this.newPhotoSphereImageUrlsJson = newPhotoSphereImageUrlsJson;
+    }
+
+    public List<String> getNewPhotoSphereImageUrls() {
+        if (this.newPhotoSphereImageUrls == null) {
+            this.newPhotoSphereImageUrls = this.deserializeStringList(this.newPhotoSphereImageUrlsJson);
+        }
+
+        return this.newPhotoSphereImageUrls;
+    }
+
+    public String getDeletedPhotoSphereImageIdsJson() {
+        return this.deletedPhotoSphereImageIdsJson;
+    }
+
+    public void setDeletedPhotoSphereImageIdsJson(String deletedPhotoSphereImageIdsJson) {
+        this.deletedPhotoSphereImageIdsJson = deletedPhotoSphereImageIdsJson;
+    }
+
+    public List<Integer> getDeletedPhotoSphereImageIds() {
+        if (this.deletedPhotoSphereImageIds == null) {
+            this.deletedPhotoSphereImageIds = this.deserializeIntegerList(this.deletedPhotoSphereImageIdsJson);
+        }
+
+        return this.deletedPhotoSphereImageIds;
+    }
+
+    public String getDeletedPhotoSphereImageUrlsJson() {
+        return this.deletedPhotoSphereImageUrlsJson;
+    }
+
+    public void setDeletedPhotoSphereImageUrlsJson(String deletedPhotoSphereImageUrlsJson) {
+        this.deletedPhotoSphereImageUrlsJson = deletedPhotoSphereImageUrlsJson;
+    }
+
+    public List<String> getDeletedPhotoSphereImageUrls() {
+        if (this.deletedPhotoSphereImageUrls == null) {
+            this.deletedPhotoSphereImageUrls = this.deserializeStringList(this.deletedPhotoSphereImageUrlsJson);
+        }
+
+        return this.deletedPhotoSphereImageUrls;
     }
 
     public String getNewMaterialsJson() {

@@ -45,43 +45,6 @@
         background-position: center;
     }
 
-    .image-selection {
-        display: flex;
-        justify-content: center;
-        padding-top: 1rem;
-
-        .image-option {
-            margin-right: 1rem;
-            min-width: 12px;
-            min-height: 12px;
-            background-color: #e8e8e8;
-            transition: background-color 0.1s ease-in;
-            border-radius: 100%;
-
-            &.selected {
-                background-color: $primary;
-            }
-
-            &:not(.animating) {
-                cursor: pointer;
-
-                &:hover {
-                    @include media-breakpoint-up(lg) {
-                        background-color: darken(#e8e8e8, 20%);
-                    }
-                }
-
-                &.selected {
-                    @include media-breakpoint-up(lg) {
-                        &:hover {
-                            background-color: darken($primary, 20%);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     .modal-content {
         background-color: rgba(0, 0, 0, 0);
         border: 0;
@@ -136,6 +99,43 @@
                     height: 100%;
                     width: 100%;
                     object-fit: contain;
+                }
+            }
+        }
+    }
+}
+
+.image-selection {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+
+    .image-option {
+        margin-right: 1rem;
+        min-width: 12px;
+        min-height: 12px;
+        background-color: #e8e8e8;
+        transition: background-color 0.1s ease-in;
+        border-radius: 100%;
+
+        &.selected {
+            background-color: $primary;
+        }
+
+        &:not(.animating) {
+            cursor: pointer;
+
+            &:hover {
+                @include media-breakpoint-up(lg) {
+                    background-color: darken(#e8e8e8, 20%);
+                }
+            }
+
+            &.selected {
+                @include media-breakpoint-up(lg) {
+                    &:hover {
+                        background-color: darken($primary, 20%);
+                    }
                 }
             }
         }

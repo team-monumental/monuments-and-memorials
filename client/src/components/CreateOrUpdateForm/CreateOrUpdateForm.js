@@ -9,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import { isEmptyObject } from '../../utils/object-util';
 import LocationSearch from '../Header/SearchBar/LocationSearch/LocationSearch';
+import PhotoSphereImages from './PhotoSphereImages/PhotoSphereImages';
 
 /**
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
@@ -80,7 +81,9 @@ export default class CreateOrUpdateForm extends React.Component {
             },
             references: [reference],
             images: [],
+            photoSphereImages: [],
             imagesForUpdate:[],
+            photoSphereImagesForUpdate: [],
             imageUploaderKey: 0,
             materials: {
                 materialObjects: [],
@@ -194,7 +197,8 @@ export default class CreateOrUpdateForm extends React.Component {
         const { monument } = this.props;
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
             materials, locationType } = this.state;
-        let { datePickerCurrentDate, references, tags, imagesForUpdate, images, imageUploaderKey } = this.state;
+        let { datePickerCurrentDate, references, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
+            photoSphereImages, imageUploaderKey } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -267,23 +271,26 @@ export default class CreateOrUpdateForm extends React.Component {
 
         if (monument.images && monument.images.length) {
             imagesForUpdate = [];
-            for (const image of monument.images) {
-                imagesForUpdate.push(
-                    {
-                        id: image.id,
-                        url: image.url,
-                        isPrimary: image.isPrimary,
-                        hasBeenDeleted: false
-                    }
-                )
+            photoSphereImagesForUpdate = [];
+            for (const originalImage of monument.images) {
+                const image = Object.create(originalImage);
+                image.hasBeenDeleted = false;
+                if (image.isPhotoSphere) {
+                    photoSphereImagesForUpdate.push(image);
+                }
+                else {
+                    imagesForUpdate.push(image);
+                }
             }
         }
 
         images = [];
+        photoSphereImages = [];
         imageUploaderKey++;
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, references, materials, tags, imagesForUpdate, images, imageUploaderKey, locationType});
+            datePickerCurrentDate, references, materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
+            photoSphereImages, imageUploaderKey, locationType});
     }
 
     /**
@@ -478,7 +485,8 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
-            datePickerCurrentDate, references, images, imagesForUpdate, materials, tags, isTemporary } = this.state;
+            datePickerCurrentDate, references, images, imagesForUpdate, photoSphereImages, photoSphereImagesForUpdate,
+            materials, tags, isTemporary } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -490,6 +498,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images: images,
+            photoSphereImages: photoSphereImages,
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             imagesForUpdate: imagesForUpdate
@@ -538,6 +547,8 @@ export default class CreateOrUpdateForm extends React.Component {
 
         updateForm.deletedImageUrls = [];
         updateForm.deletedImageIds = [];
+        updateForm.deletedPhotoSphereImageUrls = [];
+        updateForm.deletedPhotoSphereImageIds = [];
 
         for (const imageForUpdate of imagesForUpdate) {
             if (imageForUpdate.isPrimary) {
@@ -547,6 +558,13 @@ export default class CreateOrUpdateForm extends React.Component {
             if (imageForUpdate.hasBeenDeleted) {
                 updateForm.deletedImageUrls.push(imageForUpdate.url);
                 updateForm.deletedImageIds.push(imageForUpdate.id);
+            }
+        }
+
+        for (const photoSphereImage of photoSphereImagesForUpdate) {
+            if (photoSphereImage.hasBeenDeleted) {
+                updateForm.deletedPhotoSphereImageUrls.push(photoSphereImage.url);
+                updateForm.deletedPhotoSphereImageIds.push(photoSphereImage.id);
             }
         }
 
@@ -725,7 +743,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
     handleSubmit(event) {
         const { monument, onSubmit } = this.props;
-        const { images } = this.state;
+        const { images, photoSphereImages } = this.state;
 
         event.preventDefault();
 
@@ -736,7 +754,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 onSubmit(this.buildCreateForm());
             }
             else {
-                onSubmit(monument, this.buildUpdateForm(), images);
+                onSubmit(monument, this.buildUpdateForm(), images, photoSphereImages);
             }
         }
     }
@@ -745,6 +763,37 @@ export default class CreateOrUpdateForm extends React.Component {
         const { onCancelButtonClick } = this.props;
 
         onCancelButtonClick();
+    }
+
+    handleAddPhotoSphereImage(image) {
+        const { photoSphereImages } = this.state;
+        photoSphereImages.push(image);
+        this.setState({photoSphereImages});
+    }
+
+    handleDeletePhotoSphereImage({image, index}) {
+        const { photoSphereImages, photoSphereImagesForUpdate } = this.state;
+
+        if (image) {
+            photoSphereImagesForUpdate.find(i => {
+                return i.id === image.id;
+            }).hasBeenDeleted = true;
+        }
+        else if (index) {
+            photoSphereImages.splice(index, 1);
+        }
+
+        this.setState({photoSphereImagesForUpdate, photoSphereImages});
+    }
+
+    handleRestorePhotoSphereImage(image) {
+        const { photoSphereImagesForUpdate } = this.state;
+
+        photoSphereImagesForUpdate.find(i => {
+            return i.id === image.id;
+        }).hasBeenDeleted = false;
+
+        this.setState({photoSphereImagesForUpdate});
     }
 
     renderReferenceDeleteButton(reference, index) {
@@ -881,7 +930,7 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate, isTemporary, locationType } = this.state;
+            imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
@@ -1165,6 +1214,11 @@ export default class CreateOrUpdateForm extends React.Component {
 
                     <Collapse in={showingAdvancedInformation}>
                         <div>
+                            {/* PhotoSphere Images */}
+                            <PhotoSphereImages images={photoSphereImagesForUpdate.concat(photoSphereImages)}
+                                               onAddImage={this.handleAddPhotoSphereImage.bind(this)}
+                                               onDeleteImage={this.handleDeletePhotoSphereImage.bind(this)}
+                                               onRestoreImage={this.handleRestorePhotoSphereImage.bind(this)}/>
                             {/* Artist */}
                             <Form.Group controlId="create-form-artist">
                                 <Form.Label>Artist:</Form.Label>

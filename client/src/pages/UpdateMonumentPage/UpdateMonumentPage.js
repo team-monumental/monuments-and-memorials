@@ -25,7 +25,8 @@ class UpdateMonumentPage extends React.Component {
             showingNoImageModal: false,
             monument: undefined,
             form: undefined,
-            addedImages: []
+            addedImages: [],
+            addedPhotoSphereImages: []
         };
     }
 
@@ -56,13 +57,14 @@ class UpdateMonumentPage extends React.Component {
     }
 
     validateImages() {
-        const { form, addedImages } = this.state;
+        const { form, addedImages, addedPhotoSphereImages, monument } = this.state;
 
-        const imagesWereAdded = addedImages && addedImages.length;
+        const imagesWereAdded = (addedImages && addedImages.length) || (addedPhotoSphereImages && addedPhotoSphereImages.length);
 
         let formHasImages = false;
         if (form) {
-            formHasImages = (form.images && form.images.length) || (form.imagesForUpdate && form.imagesForUpdate.length);
+            formHasImages = (form.images && form.images.length) ||
+                (monument.images && monument.images.length > form.deletedImageIds.length);
         }
 
         return imagesWereAdded || formHasImages;
@@ -74,7 +76,9 @@ class UpdateMonumentPage extends React.Component {
 
         // First, upload the new images to the temporary S3 folder and save the URLs in the form
         const newImageObjectUrls = await uploadImagesToS3(form.images, true);
+        const newPhotoSphereImageObjectUrls = await uploadImagesToS3(form.photoSphereImages, true);
         form.newImageUrlsJson = JSON.stringify(newImageObjectUrls);
+        form.newPhotoSphereImageUrlsJson = JSON.stringify(newPhotoSphereImageObjectUrls);
 
         // Then, delete the deleted images from S3
         await deleteImagesFromS3(form.deletedImageUrls);
@@ -94,8 +98,8 @@ class UpdateMonumentPage extends React.Component {
         this.props.history.goBack();
     }
 
-    async handleUpdateFormSubmit(monument, form, addedImages) {
-        await this.setState({monument: monument, form: form, addedImages: addedImages});
+    async handleUpdateFormSubmit(monument, form, addedImages, addedPhotoSphereImages) {
+        await this.setState({monument, form, addedImages, addedPhotoSphereImages});
 
         if (!this.validateImages()) {
             this.setState({showingNoImageModal: true});
@@ -131,10 +135,11 @@ class UpdateMonumentPage extends React.Component {
     }
 
     renderReviewModal() {
-        const { showingReviewModal, monument, form, addedImages } = this.state;
+        const { showingReviewModal, monument, form, addedImages, addedPhotoSphereImages } = this.state;
 
         if (form) {
             form.addedImages = addedImages;
+            form.addedPhotoSphereImages = addedPhotoSphereImages;
         }
 
         return (
@@ -165,7 +170,7 @@ class UpdateMonumentPage extends React.Component {
                     <CreateOrUpdateForm
                         monument={monument}
                         onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
-                        onSubmit={(id, form, addedImages) => this.handleUpdateFormSubmit(id, form, addedImages)}
+                        onSubmit={this.handleUpdateFormSubmit.bind(this)}
                         action={action}
                     />
                 </div>
