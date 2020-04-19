@@ -75,47 +75,45 @@ public class CsvMonumentConverter {
                         suggestion.setInscription(value);
                         break;
                     case "latitude":
-                        if (value.contains("°")) {
-                            if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
-                                result.getWarnings().add(coordinatesDMSFormatWarning);
-                            }
-                        }
-                        else {
-                            try {
-                                latitude = Double.parseDouble(value);
-
-                                // Alaska is the furthest north location and its latitude is approximately 71
-                                // The American Samoa is the furthest south location and its latitude is approximately -14
-                                if (latitude > 72 || latitude < -15) {
-                                    result.getErrors().add("Latitude is not near the United States");
+                        try {
+                            if (value.contains("°")) {
+                                if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                    result.getWarnings().add(coordinatesDMSFormatWarning);
                                 }
-                            } catch (NumberFormatException e) {
-                                result.getWarnings().add("Latitude should be a valid number.");
-                            } finally {
-                                suggestion.setLatitude(latitude);
                             }
+
+                            latitude = Double.parseDouble(value);
+
+                            // Alaska is the furthest north location and its latitude is approximately 71
+                            // The American Samoa is the furthest south location and its latitude is approximately -14
+                            if (latitude > 72 || latitude < -15) {
+                                result.getErrors().add("Latitude is not near the United States");
+                            }
+                        } catch (NumberFormatException e) {
+                            result.getWarnings().add("Latitude should be a valid number.");
+                        } finally {
+                            suggestion.setLatitude(latitude);
                         }
                         break;
                     case "longitude":
-                        if (value.contains("°")) {
-                            if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
-                                result.getWarnings().add(coordinatesDMSFormatWarning);
-                            }
-                        }
-                        else {
-                            try {
-                                longitude = Double.parseDouble(value);
-
-                                // Guam is the furthest west location and its longitude is approximately 144
-                                // Puerto Rico is the furthest east location and its longitude is approximately -65
-                                if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
-                                    result.getErrors().add("Longitude is not near the United States");
+                        try {
+                            if (value.contains("°")) {
+                                if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                    result.getWarnings().add(coordinatesDMSFormatWarning);
                                 }
-                            } catch (NumberFormatException e) {
-                                result.getWarnings().add("Longitude should be a valid number.");
-                            } finally {
-                                suggestion.setLongitude(longitude);
                             }
+
+                            longitude = Double.parseDouble(value);
+
+                            // Guam is the furthest west location and its longitude is approximately 144
+                            // Puerto Rico is the furthest east location and its longitude is approximately -65
+                            if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
+                                result.getErrors().add("Longitude is not near the United States");
+                            }
+                        } catch (NumberFormatException e) {
+                            result.getWarnings().add("Longitude should be a valid number.");
+                        } finally {
+                            suggestion.setLongitude(longitude);
                         }
                         break;
                     case "city":

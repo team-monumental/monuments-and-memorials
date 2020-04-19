@@ -175,7 +175,7 @@ public class MonumentServiceMockIntegrationTests {
 
     @Test
     public void testMonumentService_BulkCreateFlow_OneInvalidCsvRecord() {
-        String csvRow = "Test Submitted By,Test Artist,,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
+        String csvRow = "Test Submitted By,Test Artist,,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000°,180.000°,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
 
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
@@ -185,6 +185,9 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(1, validationResult.getInvalidResults().size());
 
         CsvMonumentConverterResult validationErrors = validationResult.getInvalidResults().get(1);
+
+        assertEquals(3, validationErrors.getWarnings().size());
+        assertTrue(validationErrors.getWarnings().contains("Please use decimal coordinates, not degrees. To convert, input your degrees into Google Maps."));
 
         assertEquals(2, validationErrors.getErrors().size());
         assertTrue(validationErrors.getErrors().contains("Title is required"));
@@ -209,7 +212,7 @@ public class MonumentServiceMockIntegrationTests {
 
     @Test
     public void testMonumentService_BulkCreateFlow_OneValidRecord() {
-        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,40.730610,-73.935242,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
 
         // validateMonumentCSV
         MonumentBulkValidationResult validationResult = this.validateCSV(csvRow);
@@ -254,13 +257,17 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, validationResult.getInvalidResults().size());
 
         CsvMonumentConverterResult validationErrorsRow1 = validationResult.getResults().get(1);
-        assertEquals(2, validationErrorsRow1.getErrors().size());
+        assertEquals(4, validationErrorsRow1.getErrors().size());
         assertTrue(validationErrorsRow1.getErrors().contains("Title is required"));
         assertTrue(validationErrorsRow1.getErrors().contains("All References must be valid URLs"));
+        assertTrue(validationErrorsRow1.getErrors().contains("Latitude is not near the United States"));
+        assertTrue(validationErrorsRow1.getErrors().contains("Longitude is not near the United States"));
 
         CsvMonumentConverterResult validationErrorsRow2 = validationResult.getInvalidResults().get(2);
-        assertEquals(1, validationErrorsRow2.getErrors().size());
+        assertEquals(3, validationErrorsRow2.getErrors().size());
         assertTrue(validationErrorsRow2.getErrors().contains("At least one Material is required"));
+        assertTrue(validationErrorsRow2.getErrors().contains("Latitude is not near the United States"));
+        assertTrue(validationErrorsRow2.getErrors().contains("Longitude is not near the United States"));
 
         // parseMonumentBulkValidationResult
         BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);
@@ -281,7 +288,7 @@ public class MonumentServiceMockIntegrationTests {
 
     @Test
     public void testMonumentService_BulkCreateFlow_TwoValidRecords() {
-        String csvRows = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
+        String csvRows = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,40.730610,-73.935242,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
                 "\n,Test Artist,Test Title,,\"Material 1, Material 2\",,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
 
         // validateMonumentCSV
@@ -316,7 +323,7 @@ public class MonumentServiceMockIntegrationTests {
 
     @Test
     public void testMonumentService_BulkCreateFlow_MixedValidAndInvalidRows() {
-        String csvRows = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
+        String csvRows = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,40.730610,-73.935242,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
                 "\nTest Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,93.000,184.000,Test City,Test State,,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
                 "\n,Test Artist,Test Title,,\"Material 1, Material 2\",,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com," +
                 "\n,Test Artist,,,,,,,,,Test Address,\"Tag 1, Tag 2, Tag 3\",http://test.com,";
@@ -329,9 +336,11 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, validationResult.getInvalidResults().size());
 
         CsvMonumentConverterResult validationErrorsRow2 = validationResult.getInvalidResults().get(2);
-        assertEquals(2, validationErrorsRow2.getErrors().size());
+        assertEquals(4, validationErrorsRow2.getErrors().size());
         assertTrue(validationErrorsRow2.getErrors().contains("Latitude must be valid"));
         assertTrue(validationErrorsRow2.getErrors().contains("Longitude must be valid"));
+        assertTrue(validationErrorsRow2.getErrors().contains("Latitude is not near the United States"));
+        assertTrue(validationErrorsRow2.getErrors().contains("Longitude is not near the United States"));
 
         CsvMonumentConverterResult validationErrorsRow4 = validationResult.getInvalidResults().get(4);
         assertEquals(2, validationErrorsRow4.getErrors().size());
