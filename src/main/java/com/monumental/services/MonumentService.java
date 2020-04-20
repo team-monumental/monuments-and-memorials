@@ -867,7 +867,10 @@ public class MonumentService extends ModelService<Monument> {
         /* Images Section */
         List<Image> images = new ArrayList<>();
         if (monumentSuggestion.getImages() != null && monumentSuggestion.getImages().size() > 0) {
-            images = this.createMonumentImages(monumentSuggestion.getImages(), createdMonument);
+            images.addAll(this.createMonumentImages(monumentSuggestion.getImages(), createdMonument, false));
+        }
+        if (monumentSuggestion.getPhotoSphereImages() != null && monumentSuggestion.getPhotoSphereImages().size() > 0) {
+            images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(), createdMonument, true));
         }
         createdMonument.setImages(images);
 
@@ -1109,12 +1112,14 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create Images using the specified imageUrls and associate them with the specified Monument
-     * Also moves the S3 images with the specified imageUrls into the permanent S3 image folder
+     * If arePhotoSphereImages is false, also moves the S3 images with the specified imageUrls into the permanent S3
+     * image folder
      * @param imageUrls - List of Strings for the URLs to use for the Images
      * @param monument - Monument to associate the new Images with
+     * @param arePhotoSphereImages - True if the specified imageUrls are for PhotoSphere images, False otherwise
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
      */
-    public List<Image> createMonumentImages(List<String> imageUrls, Monument monument) {
+    public List<Image> createMonumentImages(List<String> imageUrls, Monument monument, boolean arePhotoSphereImages) {
         if (imageUrls == null || monument == null) {
             return null;
         }
@@ -1134,14 +1139,22 @@ public class MonumentService extends ModelService<Monument> {
 
         for (String imageUrl : imageUrls) {
             if (!isNullOrEmpty(imageUrl)) {
-                // Move image to permanent folder
-                String permanentImageUrl = AwsS3Service.getObjectKey(imageUrl, false);
-                this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
+                Image image = null;
 
-                imagesCount++;
-                boolean isPrimary = imagesCount == 1;
+                if (!arePhotoSphereImages) {
+                    // Move image to permanent folder
+                    String permanentImageUrl = AwsS3Service.getObjectKey(imageUrl, false);
+                    this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
 
-                Image image = new Image(permanentImageUrl, isPrimary);
+                    imagesCount++;
+                    boolean isPrimary = imagesCount == 1;
+                    image = new Image(permanentImageUrl, isPrimary);
+                }
+                else {
+                    image = new Image(imageUrl, false);
+                    image.setIsPhotoSphere(true);
+                }
+
                 image.setMonument(monument);
                 image = this.imageRepository.save(image);
                 images.add(image);
