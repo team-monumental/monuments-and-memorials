@@ -138,7 +138,10 @@ class Header extends React.Component {
                             </i>
                         </Button>
                         <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {this.setState({isMenuOpen: false})}}>
-                            <ul>
+                            <ul onClick={event => {
+                                this.setState({isMenuOpen: false});
+                                return true;
+                            }}>
                                 {publicLinks.concat(privateLinks).map(link =>
                                     <li key={link.key}>{link}</li>
                                 )}
