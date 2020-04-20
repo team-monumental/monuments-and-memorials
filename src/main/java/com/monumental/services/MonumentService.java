@@ -1009,24 +1009,31 @@ public class MonumentService extends ModelService<Monument> {
         /* Images section */
 
         // Add any new Images
+        List<Image> newImages = new ArrayList<>();
         if (updateSuggestion.getNewImageUrls() != null && updateSuggestion.getNewImageUrls().size() > 0) {
-            List<Image> newImages = this.createMonumentImages(updateSuggestion.getNewImageUrls(), currentMonument);
+            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewImageUrls(), currentMonument, false));
+        }
+        if (updateSuggestion.getNewPhotoSphereImageUrls() != null &&
+                updateSuggestion.getNewPhotoSphereImageUrls().size() > 0) {
+            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewPhotoSphereImageUrls(), currentMonument, true));
+        }
 
-            // If the Monument does not have any Images, we can just set them
-            if (currentMonument.getImages() == null || currentMonument.getImages().size() == 0) {
-                currentMonument.setImages(newImages);
-            }
-            // Otherwise we need them to add them to the List
-            else {
-                currentMonument.getImages().addAll(newImages);
-            }
+        // If the Monument does not have any Images, we can just set them
+        if (currentMonument.getImages() == null || currentMonument.getImages().size() == 0) {
+            currentMonument.setImages(newImages);
+        }
+        // Otherwise we need to add them to the List
+        else {
+            currentMonument.getImages().addAll(newImages);
         }
 
         // Update the primary Image
         this.updateMonumentPrimaryImage(currentMonument, updateSuggestion.getNewPrimaryImageId());
 
         // Delete any Images
-        this.deleteMonumentImages(currentMonument, updateSuggestion.getDeletedImageIds());
+        List<Integer> allImageIdsToDelete = updateSuggestion.getDeletedImageIds();
+        allImageIdsToDelete.addAll(updateSuggestion.getDeletedPhotoSphereImageIds());
+        this.deleteMonumentImages(currentMonument, allImageIdsToDelete);
 
         // If for some reason the primary Image is deleted, default to the first Image
         this.resetMonumentPrimaryImage(currentMonument);
@@ -1139,7 +1146,7 @@ public class MonumentService extends ModelService<Monument> {
 
         for (String imageUrl : imageUrls) {
             if (!isNullOrEmpty(imageUrl)) {
-                Image image = null;
+                Image image;
 
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
@@ -1300,8 +1307,15 @@ public class MonumentService extends ModelService<Monument> {
             }
 
             if (!primaryImageFound) {
-                monument.getImages().get(0).setIsPrimary(true);
-                this.imageRepository.save(monument.getImages().get(0));
+                List<Image> images = monument.getImages();
+                for (Image image : images) {
+                    // PhotoSphere Images can not be the primary Image
+                    if (!image.getIsPhotoSphere()) {
+                        image.setIsPrimary(true);
+                        this.imageRepository.save(image);
+                        break;
+                    }
+                }
             }
         }
     }
