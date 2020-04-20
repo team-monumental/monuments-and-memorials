@@ -33,7 +33,7 @@ export default class DuplicateMonuments extends React.Component {
                         can continue with your suggestion.
                     </p>
                     <div className="duplicates-container">
-                        <SearchResults monuments={duplicates} limit={25} page={1} monumentUri={'/monuments'}/>
+                        <SearchResults monuments={duplicates} limit={25} page={1}/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className="duplicate-monuments">

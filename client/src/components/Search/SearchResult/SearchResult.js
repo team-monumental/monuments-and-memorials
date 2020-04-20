@@ -12,7 +12,7 @@ import Thumbnail from '../../Monument/Images/Thumbnails/Thumbnail/Thumbnail';
 export default class SearchResult extends React.Component {
 
     render() {
-        const { monument, index, includeIndexInTitle, hideImages, searchUri, monumentUri } = this.props;
+        const { monument, index, includeIndexInTitle, hideImages, searchUri, monumentUri='/monuments' } = this.props;
         const image = monument && monument.images ? monument.images.find(monument => monument.isPrimary) : null;
         const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
 

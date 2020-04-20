@@ -4,7 +4,7 @@ import SearchResult from '../SearchResult/SearchResult';
 export default class SearchResults extends React.Component {
 
     render() {
-        const { monuments, limit, page, hideImages, monumentUri, searchUri } = this.props;
+        const { monuments, limit, page, hideImages, monumentUri='/monuments', searchUri } = this.props;
         if (monuments && monuments.length) {
             return (
                 <div>{
