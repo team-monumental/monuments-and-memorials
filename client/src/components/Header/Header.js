@@ -72,7 +72,9 @@ class Header extends React.Component {
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
                 <div className="left">
-                    <Logo/>
+                    <Link to="/">
+                        <Logo/>
+                    </Link>
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
