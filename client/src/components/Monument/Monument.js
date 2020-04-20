@@ -33,7 +33,7 @@ export default class Monument extends React.Component {
                              onToggleFavorite={() => onToggleFavorite()} showFavorite={showFavorite}/>
                 </div>
                 <div className="column related-monuments-column">
-                    <SuggestChanges onButtonClick={() => onSuggestChangesButtonClick()}/>
+                    <SuggestChanges mode="update" onButtonClick={() => onSuggestChangesButtonClick()}/>
                     <RelatedMonuments title="Nearby Monuments or Memorials" monuments={nearbyMonuments} pending={fetchNearbyPending}/>
                     <RelatedMonuments title="Related Monuments or Memorials" monuments={relatedMonuments} pending={fetchRelatedPending}/>
                 </div>

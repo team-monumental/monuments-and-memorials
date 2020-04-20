@@ -44,7 +44,7 @@ class ProtectedRoute extends React.Component {
 
         // If you log out while on a restricted page, this will instantly redirect back to the homepage
         if (!loggedIn && active) {
-            return noAccessRedirect('You must be logged in to view that page.');
+            return noAccessRedirect(`You must be logged in to view that page. <a href="/login?warn=true&redirect=${encodeURIComponent(path)}">Click here</a> to login.`);
         }
 
         // In all other cases, we pass our action to the render function of the route rather than instantly redirect,

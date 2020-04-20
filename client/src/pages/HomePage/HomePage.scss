@@ -1,60 +1,96 @@
 @import "../../../node_modules/bootstrap/scss/functions";
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
 
-#welcome-page-body {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+.home-page {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 2rem 4rem;
 
-  p {
-    max-width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    font-size: large;
-  }
-
-  .card.card {
-    text-align: center;
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: 80%;
+    @include media-breakpoint-up(lg) {
+        padding: 0 4rem 4rem;
     }
-  }
 }
 
-#home-page-title {
-  font-size: 1.35em;
+.home-page-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-  @include media-breakpoint-up(md) {
-    font-size: 2em;
-  }
+    max-width: 1200px;
+
+    & > .row {
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        padding-bottom: 2.5rem;
+        margin-bottom: 3.5rem;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        width: 100%;
+    }
 }
 
-#home-page-image {
-  width: 100%;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  margin-top: 1rem;
-  margin-bottom: 3rem;
+.home-page-title {
+    font-size: 1.35em;
 
-  @include media-breakpoint-down(sm) {
-    background-image: url('/home_page_mobile_image.jpg');
-    height: 30vh;
-  }
+    h1, h2 {
+        text-align: left;
 
-  @include media-breakpoint-up(sm) {
-    background-image: url('/home_page_large_image.jpg');
+        &:before {
+            content: '';
+            width: 100px;
+            height: 6px;
+            background-color: $primary;
+            display: block;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+    }
 
-    @include media-breakpoint-up(md) {
-      height: 30vh;
+    h2 {
+        font-size: 1.75rem;
+        margin-left: 0;
+
+        &:before {
+            background-color: $secondary;
+        }
+    }
+}
+
+.home-page-centered-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .home-page-centered {
+        max-width: 600px;
+    }
+}
+
+.home-page-text {
+    white-space: normal;
+}
+
+
+.home-page-image-container {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    height: 400px;
+    .home-page-image {
+        width: 100%;
+        height: 100%;
+        background-image: url("/home_page_large_image.jpg");
+        background-position: center;
+        margin-top: 2rem;
     }
 
     @include media-breakpoint-up(lg) {
-      height: 60vh;
+        padding-left: 2rem !important;
+        .home-page-image {
+            margin-top: 0;
+        }
     }
-  }
 }
