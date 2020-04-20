@@ -5,6 +5,7 @@ import {
     FETCH_FAVORITE_ERROR, CREATE_FAVORITE_ERROR, CREATE_FAVORITE_PENDING, CREATE_FAVORITE_SUCCESS,
     DELETE_FAVORITE_ERROR, DELETE_FAVORITE_PENDING, DELETE_FAVORITE_SUCCESS
 } from '../constants';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import basicReducer from '../utils/basic-reducer';
 
 const initialState = {
@@ -94,6 +95,8 @@ export function monumentPage(state = initialState, action) {
                 fetchFavoritePending: false,
                 fetchFavoriteError: action.error
             };
+        case LOCATION_CHANGE:
+            return initialState;
         default:
             return state;
     }
