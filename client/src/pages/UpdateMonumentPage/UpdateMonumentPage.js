@@ -76,9 +76,10 @@ class UpdateMonumentPage extends React.Component {
 
         // First, upload the new images to the temporary S3 folder and save the URLs in the form
         const newImageObjectUrls = await uploadImagesToS3(form.images, true);
-        const newPhotoSphereImageObjectUrls = await uploadImagesToS3(form.photoSphereImages, true);
         form.newImageUrlsJson = JSON.stringify(newImageObjectUrls);
-        form.newPhotoSphereImageUrlsJson = JSON.stringify(newPhotoSphereImageObjectUrls);
+
+        // Next, store the PhotoSphere Image URLs in the form
+        form.newPhotoSphereImageUrlsJson = JSON.stringify(form.photoSphereImages);
 
         // Then, delete the deleted images from S3
         await deleteImagesFromS3(form.deletedImageUrls);
