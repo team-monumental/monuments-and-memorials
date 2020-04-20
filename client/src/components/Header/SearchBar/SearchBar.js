@@ -24,6 +24,19 @@ class SearchBar extends React.Component {
         };
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.location.pathname + prevProps.location.search !== this.props.location.pathname + this.props.location.search
+            && !this.props.location.pathname.includes('/search')) {
+            this.setState({
+                textSearchQuery: '',
+                locationAddress: '',
+                locationLat: '',
+                locationLon: '',
+                distanceFilter: 25
+            });
+        }
+    }
+
     handleTextSearchChange(textSearchQuery) {
         this.setState({textSearchQuery: textSearchQuery});
     }
