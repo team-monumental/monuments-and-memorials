@@ -25,7 +25,9 @@ public class GoogleMapsService {
                 System.out.println("[GOOGLE MAPS SERVICE]: Making reverse geocode request for lat/lon: (" + lat + ", " + lon + ")");
                 GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(lat, lon))
                         .await();
-                return results[0].formattedAddress;
+                if (results.length > 0) {
+                    return results[0].formattedAddress;
+                }
             }
         } catch (ApiException | InterruptedException | IOException e) {
             System.out.println("[GOOGLE MAPS SERVICE]: Error when attempting to make reverse geocode request for lat/lon: (" + lat + ", " + lon + ")");
@@ -50,7 +52,9 @@ public class GoogleMapsService {
                 System.out.println("[GOOGLE MAPS SERVICE]: Making geocode request for address: " + address);
                 GeocodingResult[] results = GeocodingApi.geocode(context, address)
                         .await();
-                return results[0].geometry;
+                if (results.length > 0) {
+                    return results[0].geometry;
+                }
             }
         } catch (ApiException | InterruptedException | IOException e) {
             System.out.println("[GOOGLE MAPS SERVICE]: Error when attempting to make geocode request for address: " + address);

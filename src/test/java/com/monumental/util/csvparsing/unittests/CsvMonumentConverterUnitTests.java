@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -314,7 +313,7 @@ public class CsvMonumentConverterUnitTests {
 
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_LatitudeAndLongitude() {
-        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,90.000,180.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,40.730610,-73.935242,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
@@ -330,8 +329,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test Title", suggestionResult.getTitle());
         assertEquals("12-03-1997", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
-        assertEquals(90.000, suggestionResult.getLatitude(), 0.0);
-        assertEquals(180.000, suggestionResult.getLongitude(), 0.0);
+        assertEquals(40.730610, suggestionResult.getLatitude(), 0.0);
+        assertEquals(-73.935242, suggestionResult.getLongitude(), 0.0);
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
         assertEquals("Test Address", suggestionResult.getAddress());
@@ -344,7 +343,7 @@ public class CsvMonumentConverterUnitTests {
     }
 
     @Test
-    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidLatitudeAndLongitude() {
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidLatitudeAndLongitude_NotValidNumbers() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,lat,lon,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
@@ -373,6 +372,70 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals(2, result.getWarnings().size());
         assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidLatitudeAndLongitude_DegreesFormat() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,40.730°,-73.935°,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(2, materialNameResults.size());
+        assertEquals(3, tagNameResults.size());
+
+        assertEquals(3, result.getWarnings().size());
+        assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidLatitudeAndLongitude_NotNearTheUS() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,\"Material 1, Material 2\",Test Inscription,73.000,-62.000,Test City,Test State,Test Address,\"Tag 1, Tag 2, Tag 3\",Test Reference,";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertEquals(73.000, suggestionResult.getLatitude(), 0.0);
+        assertEquals(-62.000, suggestionResult.getLongitude(), 0.0);
+
+        assertEquals(2, materialNameResults.size());
+        assertEquals(3, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(3, result.getErrors().size());
     }
 
     @Test

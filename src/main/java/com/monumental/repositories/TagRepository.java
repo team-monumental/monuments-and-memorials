@@ -38,4 +38,11 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     List<Tag> getAllByName(String name);
 
     List<Tag> getAllByNameIn(List<String> names);
+
+    /**
+     * Get all Tags (including Materials) in descending order of most uses
+     * This returns a List<Object[]>, where Object[0] is the Tag and Object[1] is the count
+     */
+    @Query("select t, count(t.name) as tCount from Tag t join t.monumentTags mt on t.id = mt.tag.id group by t.id order by tCount desc")
+    List<Object[]> getAllOrderByMostUsedDesc();
 }

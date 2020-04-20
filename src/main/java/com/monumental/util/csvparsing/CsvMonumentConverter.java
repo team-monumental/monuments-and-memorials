@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -17,6 +18,9 @@ import java.util.zip.ZipFile;
  * 3. Convert a CsvMonumentConverterResult object into a CreateMonumentSuggestion object
  */
 public class CsvMonumentConverter {
+
+    private static final String coordinatesDMSFormatWarning = "Please use decimal coordinates, not degrees. To " +
+            "convert, input your degrees into Google Maps.";
 
     /**
      * Convert CSV rows into CsvMonumentConverterResults
@@ -72,7 +76,19 @@ public class CsvMonumentConverter {
                         break;
                     case "latitude":
                         try {
+                            if (value.contains("°")) {
+                                if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                    result.getWarnings().add(coordinatesDMSFormatWarning);
+                                }
+                            }
+
                             latitude = Double.parseDouble(value);
+
+                            // Alaska is the furthest north location and its latitude is approximately 71
+                            // The American Samoa is the furthest south location and its latitude is approximately -14
+                            if (latitude > 72 || latitude < -15) {
+                                result.getErrors().add("Latitude is not near the United States");
+                            }
                         } catch (NumberFormatException e) {
                             result.getWarnings().add("Latitude should be a valid number.");
                         } finally {
@@ -81,7 +97,19 @@ public class CsvMonumentConverter {
                         break;
                     case "longitude":
                         try {
+                            if (value.contains("°")) {
+                                if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                    result.getWarnings().add(coordinatesDMSFormatWarning);
+                                }
+                            }
+
                             longitude = Double.parseDouble(value);
+
+                            // Guam is the furthest west location and its longitude is approximately 144
+                            // Puerto Rico is the furthest east location and its longitude is approximately -65
+                            if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
+                                result.getErrors().add("Longitude is not near the United States");
+                            }
                         } catch (NumberFormatException e) {
                             result.getWarnings().add("Longitude should be a valid number.");
                         } finally {
@@ -110,7 +138,13 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
                             } else {
                                 try {
-                                    result.getImageFiles().add(ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry));
+                                    File imageFile = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
+                                    if (imageFile.length() > 5000000) {
+                                        result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
+                                    }
+                                    else {
+                                        result.getImageFiles().add(imageFile);
+                                    }
                                 } catch (IOException e) {
                                     result.getErrors().add("Failed to read image file from .zip");
                                 }

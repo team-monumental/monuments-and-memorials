@@ -666,6 +666,8 @@ public class MonumentService extends ModelService<Monument> {
         List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
                 SortType.OLDEST, null, null, null, true);
 
+        List<Object[]> allTagsAndCountsMostUsedFirst = this.tagRepository.getAllOrderByMostUsedDesc();
+
         // Total number of Monuments
         statistics.setTotalNumberOfMonuments(allMonumentOldestFirst.size());
 
@@ -722,17 +724,49 @@ public class MonumentService extends ModelService<Monument> {
             }
 
             // Number of Monuments with random Tag
-            List<Tag> allTags = this.tagRepository.findAll();
+            if (allTagsAndCountsMostUsedFirst.size() > 0) {
+                int randomTagIndex = random.nextInt(allTagsAndCountsMostUsedFirst.size());
 
-            if (allTags.size() > 0) {
-                int randomTagIndex = random.nextInt(allTags.size());
-
-                Tag randomTag = allTags.get(randomTagIndex);
+                Tag randomTag = (Tag) allTagsAndCountsMostUsedFirst.get(randomTagIndex)[0];
 
                 statistics.setRandomTagName(randomTag.getName());
                 statistics.setNumberOfMonumentsWithRandomTag(this.monumentRepository.getAllByTagId(randomTag.getId()).size());
             }
         }
+
+        // Most popular Tag and Material
+        Tag mostPopularTag = null;
+        long mostPopularTagCount = 0;
+
+        Tag mostPopularMaterial = null;
+        long mostPopularMaterialCount = 0;
+
+        for (Object[] result : allTagsAndCountsMostUsedFirst) {
+            Tag resultTag = (Tag) result[0];
+            if (resultTag.getIsMaterial() && mostPopularMaterial == null) {
+                mostPopularMaterial = resultTag;
+                mostPopularMaterialCount = (long) result[1];
+            }
+            else if (!resultTag.getIsMaterial() && mostPopularTag == null) {
+                mostPopularTag = resultTag;
+                mostPopularTagCount = (long) result[1];
+            }
+
+            if (mostPopularTag != null && mostPopularMaterial != null) {
+                break;
+            }
+        }
+
+        if (mostPopularMaterial != null) {
+            statistics.setMostPopularMaterialName(mostPopularMaterial.getName());
+            statistics.setMostPopularMaterialUses(Math.toIntExact(mostPopularMaterialCount));
+        }
+
+        if (mostPopularTag != null) {
+            statistics.setMostPopularTagName(mostPopularTag.getName());
+            statistics.setMostPopularTagUses(Math.toIntExact(mostPopularTagCount));
+        }
+
 
         if (searchForSpecificMonuments) {
             // Search for the 9/11 Memorial so we can link to it

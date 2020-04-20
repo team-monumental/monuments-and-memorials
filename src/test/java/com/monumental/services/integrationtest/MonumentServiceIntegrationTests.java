@@ -450,6 +450,10 @@ public class MonumentServiceIntegrationTests {
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
         assertNull(result.getNineElevenMemorialId());
+        assertNull(result.getMostPopularTagName());
+        assertEquals(0, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
     }
 
     @Test
@@ -468,6 +472,10 @@ public class MonumentServiceIntegrationTests {
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
         assertNull(result.getNineElevenMemorialId());
+        assertNull(result.getMostPopularTagName());
+        assertEquals(0, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
     }
 
     @Test
@@ -488,6 +496,10 @@ public class MonumentServiceIntegrationTests {
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
         assertNull(result.getNineElevenMemorialId());
+        assertNull(result.getMostPopularTagName());
+        assertEquals(0, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
     }
 
     @Test
@@ -509,6 +521,10 @@ public class MonumentServiceIntegrationTests {
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
         assertNull(result.getNineElevenMemorialId());
+        assertNull(result.getMostPopularTagName());
+        assertEquals(0, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
     }
 
     @Test
@@ -531,6 +547,10 @@ public class MonumentServiceIntegrationTests {
         assertNull(result.getRandomTagName());
         assertEquals(0, result.getNumberOfMonumentsWithRandomTag());
         assertNull(result.getNineElevenMemorialId());
+        assertNull(result.getMostPopularTagName());
+        assertEquals(0, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
     }
 
     @Test
@@ -543,6 +563,7 @@ public class MonumentServiceIntegrationTests {
 
         Tag tag = new Tag();
         tag.setName("Tag");
+        tag.setIsMaterial(false);
         tag.addMonument(monument);
         this.tagRepository.save(tag);
 
@@ -558,6 +579,10 @@ public class MonumentServiceIntegrationTests {
         assertEquals("Tag", result.getRandomTagName());
         assertEquals(1, result.getNumberOfMonumentsWithRandomTag());
         assertNull(result.getNineElevenMemorialId());
+        assertEquals("Tag", result.getMostPopularTagName());
+        assertEquals(1, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
     }
 
     @Test
@@ -582,11 +607,13 @@ public class MonumentServiceIntegrationTests {
 
         Tag tag1 = new Tag();
         tag1.setName("Tag 1");
+        tag1.setIsMaterial(false);
         tag1.addMonument(monument1);
         this.tagRepository.save(tag1);
 
         Tag tag2 = new Tag();
         tag2.setName("Tag 2");
+        tag2.setIsMaterial(false);
         tag2.addMonument(monument2);
         this.tagRepository.save(tag2);
 
@@ -609,6 +636,153 @@ public class MonumentServiceIntegrationTests {
         assertTrue(usedStates.contains(result.getRandomState()));
         assertTrue(usedTagNames.contains(result.getRandomTagName()));
         assertNull(result.getNineElevenMemorialId());
+        assertNotNull(result.getMostPopularTagName());
+        assertEquals(1, result.getMostPopularTagUses());
+        assertNull(result.getMostPopularMaterialName());
+        assertEquals(0, result.getMostPopularMaterialUses());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_MostUsedTagAndMaterial_OneOfEach() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1.setDate(new Date());
+        monument1.setState("New York");
+        this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2.setDate(Date.from(ZonedDateTime.now().minusMonths(1).toInstant()));
+        monument2.setState("Rhode Island");
+        this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3.setTitle("Monument 3");
+        monument3.setDate(Date.from(ZonedDateTime.now().minusMonths(3).toInstant()));
+        monument3.setState("Rhode Island");
+        this.monumentRepository.save(monument3);
+
+        Tag tag = new Tag();
+        tag.setName("Tag");
+        tag.setIsMaterial(false);
+        tag.addMonument(monument1);
+        this.tagRepository.save(tag);
+
+        Tag material = new Tag();
+        material.setName("Material");
+        material.setIsMaterial(true);
+        material.addMonument(monument2);
+        this.tagRepository.save(material);
+
+        List<String> usedStates = new ArrayList<>();
+        usedStates.add("New York");
+        usedStates.add("Rhode Island");
+
+        List<String> usedTagNames = new ArrayList<>();
+        usedTagNames.add("Tag");
+        usedTagNames.add("Material");
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
+
+        assertEquals(3, result.getTotalNumberOfMonuments());
+        assertEquals("Monument 3", result.getOldestMonument().getTitle());
+        assertEquals("Monument 1", result.getNewestMonument().getTitle());
+        assertEquals(2, result.getNumberOfMonumentsByState().size());
+        assertEquals(Integer.valueOf(1), result.getNumberOfMonumentsByState().get("New York"));
+        assertEquals(Integer.valueOf(2), result.getNumberOfMonumentsByState().get("Rhode Island"));
+        assertTrue(usedStates.contains(result.getRandomState()));
+        assertTrue(usedTagNames.contains(result.getRandomTagName()));
+        assertNull(result.getNineElevenMemorialId());
+        assertEquals("Tag", result.getMostPopularTagName());
+        assertEquals(1, result.getMostPopularTagUses());
+        assertEquals("Material", result.getMostPopularMaterialName());
+        assertEquals(1, result.getMostPopularMaterialUses());
+    }
+
+    @Test
+    public void testMonumentService_getMonumentAboutPageStatistics_MostUsedTagAndMaterial_VariousAmountsOfEach() {
+        Monument monument1 = new Monument();
+        monument1.setTitle("Monument 1");
+        monument1.setDate(new Date());
+        monument1.setState("New York");
+        this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2.setTitle("Monument 2");
+        monument2.setDate(Date.from(ZonedDateTime.now().minusMonths(1).toInstant()));
+        monument2.setState("Rhode Island");
+        this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3.setTitle("Monument 3");
+        monument3.setDate(Date.from(ZonedDateTime.now().minusMonths(3).toInstant()));
+        monument3.setState("Rhode Island");
+        this.monumentRepository.save(monument3);
+
+        Tag tag1 = new Tag();
+        tag1.setName("Tag 1");
+        tag1.setIsMaterial(false);
+        tag1.addMonument(monument1);
+        this.tagRepository.save(tag1);
+
+        Tag tag2 = new Tag();
+        tag2.setName("Tag 2");
+        tag2.setIsMaterial(false);
+        tag2.addMonument(monument1);
+        tag2.addMonument(monument2);
+        this.tagRepository.save(tag2);
+
+        Tag tag3 = new Tag();
+        tag3.setName("Tag 3");
+        tag3.setIsMaterial(false);
+        this.tagRepository.save(tag3);
+
+        Tag material1 = new Tag();
+        material1.setName("Material 1");
+        material1.setIsMaterial(true);
+        material1.addMonument(monument2);
+        this.tagRepository.save(material1);
+
+        Tag material2 = new Tag();
+        material2.setName("Material 2");
+        material2.setIsMaterial(true);
+        this.tagRepository.save(material2);
+
+        Tag material3 = new Tag();
+        material3.setName("Material 3");
+        material3.setIsMaterial(true);
+        material3.addMonument(monument1);
+        material3.addMonument(monument2);
+        material3.addMonument(monument3);
+        this.tagRepository.save(material3);
+
+        List<String> usedStates = new ArrayList<>();
+        usedStates.add("New York");
+        usedStates.add("Rhode Island");
+
+        List<String> usedTagNames = new ArrayList<>();
+        usedTagNames.add("Tag 1");
+        usedTagNames.add("Tag 2");
+        usedTagNames.add("Tag 3");
+        usedTagNames.add("Material 1");
+        usedTagNames.add("Material 2");
+        usedTagNames.add("Material 3");
+
+        MonumentAboutPageStatistics result = this.monumentService.getMonumentAboutPageStatistics(false);
+
+        assertEquals(3, result.getTotalNumberOfMonuments());
+        assertEquals("Monument 3", result.getOldestMonument().getTitle());
+        assertEquals("Monument 1", result.getNewestMonument().getTitle());
+        assertEquals(2, result.getNumberOfMonumentsByState().size());
+        assertEquals(Integer.valueOf(1), result.getNumberOfMonumentsByState().get("New York"));
+        assertEquals(Integer.valueOf(2), result.getNumberOfMonumentsByState().get("Rhode Island"));
+        assertTrue(usedStates.contains(result.getRandomState()));
+        assertTrue(usedTagNames.contains(result.getRandomTagName()));
+        assertNull(result.getNineElevenMemorialId());
+        assertEquals("Tag 2", result.getMostPopularTagName());
+        assertEquals(2, result.getMostPopularTagUses());
+        assertEquals("Material 3", result.getMostPopularMaterialName());
+        assertEquals(3, result.getMostPopularMaterialUses());
     }
 
     /* updateMonumentReferences Tests **/

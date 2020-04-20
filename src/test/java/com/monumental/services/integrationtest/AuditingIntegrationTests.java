@@ -100,7 +100,6 @@ public class AuditingIntegrationTests {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 new UserAwareUserDetails(partner), password
         ));
-        List<User> users = this.userRepository.findAll();
         monument = updateMonument(monument);
         assertNotNull(monument.getLastModifiedDate());
         assertTrue(monument.getLastModifiedDate().getTime() > monument.getCreatedDate().getTime());

@@ -181,4 +181,86 @@ public class TagRepositoryIntegrationTests {
         assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), false).size());
         assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
     }
+
+    /** getAllOrderByMostUsedDesc Tests **/
+
+    @Test
+    public void testTagRepository_getAllOrderByMostUsedDesc_NoTags() {
+        List<Object[]> result = this.tagRepository.getAllOrderByMostUsedDesc();
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testTagRepository_getAllOrderByMostUsedDesc_OneTag_NoUses() {
+        this.tagService.createTag("Tag", new ArrayList<>(), false);
+
+        List<Object[]> result = this.tagRepository.getAllOrderByMostUsedDesc();
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testTagRepository_getAllOrderByMostUsedDesc_OneTag_OneUse() {
+        Monument monument = new Monument();
+        monument = this.monumentRepository.save(monument);
+
+        ArrayList<Monument> monuments = new ArrayList<>();
+        monuments.add(monument);
+
+        this.tagService.createTag("Tag", monuments, false);
+
+        List<Object[]> result = this.tagRepository.getAllOrderByMostUsedDesc();
+        assertEquals(1, result.size());
+
+        Tag tagResult = (Tag) result.get(0)[0];
+        assertEquals("Tag", tagResult.getName());
+
+        long countResult = (long) result.get(0)[1];
+        assertEquals(1, countResult);
+    }
+
+    @Test
+    public void testTagRepository_getAllOrderByMostUsedDesc_MultipleTags_CorrectOrdering() {
+        Monument monument1 = new Monument();
+        monument1 = this.monumentRepository.save(monument1);
+
+        Monument monument2 = new Monument();
+        monument2 = this.monumentRepository.save(monument2);
+
+        Monument monument3 = new Monument();
+        monument3 = this.monumentRepository.save(monument3);
+
+        ArrayList<Monument> tag1Monuments = new ArrayList<>();
+        tag1Monuments.add(monument1);
+        tag1Monuments.add(monument2);
+        tag1Monuments.add(monument3);
+
+        ArrayList<Monument> tag2Monuments = new ArrayList<>();
+        tag2Monuments.add(monument1);
+        tag2Monuments.add(monument2);
+
+        ArrayList<Monument> tag3Monuments = new ArrayList<>();
+        tag3Monuments.add(monument1);
+
+        this.tagService.createTag("Tag 1", tag1Monuments, false);
+        this.tagService.createTag("Tag 2", tag2Monuments, false);
+        this.tagService.createTag("Tag 3", tag3Monuments, false);
+
+        List<Object[]> result = this.tagRepository.getAllOrderByMostUsedDesc();
+        assertEquals(3, result.size());
+
+        Tag firstTagResult = (Tag) result.get(0)[0];
+        assertEquals("Tag 1", firstTagResult.getName());
+        long firstCountResult = (long) result.get(0)[1];
+        assertEquals(3, firstCountResult);
+
+        Tag secondTagResult = (Tag) result.get(1)[0];
+        assertEquals("Tag 2", secondTagResult.getName());
+        long secondCountResult = (long) result.get(1)[1];
+        assertEquals(2, secondCountResult);
+
+        Tag thirdTagResult = (Tag) result.get(2)[0];
+        assertEquals("Tag 3", thirdTagResult.getName());
+        long thirdCountResult = (long) result.get(2)[1];
+        assertEquals(1, thirdCountResult);
+    }
 }
