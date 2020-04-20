@@ -13,7 +13,7 @@ export default class Favorites extends React.Component {
             <Spinner show={pending}/>
             <Card className="favorites">
                 <Card.Header>
-                    <Card.Title>Your Favorites</Card.Title>
+                    <Card.Title>Your Favorites{favorites && favorites.length ? ` (${favorites.length})` : ''}</Card.Title>
                 </Card.Header>
                 <Card.Body>
                     {favorites && <>
