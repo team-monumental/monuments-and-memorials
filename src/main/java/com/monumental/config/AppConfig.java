@@ -1,8 +1,12 @@
 package com.monumental.config;
 
 import com.bedatadriven.jackson.datatype.jts.JtsModule;
+import com.bedatadriven.jackson.datatype.jts.parsers.GeometryParser;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,5 +59,20 @@ public class AppConfig {
     @Bean
     public JtsModule jtsModule() {
         return new JtsModule();
+    }
+
+    /**
+     * There is an issue where the GeometryDeserializer class tries to use a GeometryParser bean but doesn't find any
+     * This seems to fix this issue, and the deserializer still works right
+     * I admit, I don't know why returning null here doesn't cause the deserialization to return null. But it doesn't.
+     */
+    @Bean
+    public GeometryParser<Point> geometryParser() {
+        return new GeometryParser<Point>() {
+            @Override
+            public Point geometryFromJson(JsonNode node) throws JsonMappingException {
+                return null;
+            }
+        };
     }
 }

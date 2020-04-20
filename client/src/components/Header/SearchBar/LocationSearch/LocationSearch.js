@@ -19,6 +19,12 @@ export default class LocationSearch extends React.Component {
         };
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.value !== this.props.value) {
+            this.handleChange(this.props.value);
+        }
+    }
+
     handleChange(newSearchQuery) {
         const sessionToken = this.state.sessionToken || new google.maps.places.AutocompleteSessionToken();
         if (this.state.sessionToken !== sessionToken) {
@@ -56,14 +62,14 @@ export default class LocationSearch extends React.Component {
 
     render() {
         const { searchQuery } = this.state;
-        const { className } = this.props;
+        const { className, placeholder, isInvalid } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div className="autocomplete-container">
                 <input
                     {...getInputProps({
-                        placeholder: "Near...",
-                        className: className
+                        placeholder: placeholder || "Near...",
+                        className: [className, isInvalid ? 'is-invalid' : undefined].join(' ')
                     })}
                 />
                 <div className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>

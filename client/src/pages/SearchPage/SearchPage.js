@@ -18,13 +18,7 @@ class SearchPage extends React.Component {
 
     constructor(props) {
         super(props);
-        const params = QueryString.parse(props.history.location.search);
-        this.state = {
-            q: params.q,
-            page: params.page || 1,
-            limit: params.limit || 25,
-            d: params.d || 25
-        };
+        this.state = {};
     }
 
     static mapStateToProps(state) {
@@ -37,7 +31,14 @@ class SearchPage extends React.Component {
 
     componentDidMount() {
         const { dispatch, location: { search } } = this.props;
-        dispatch(searchMonuments(QueryString.parse(search)));
+        const params = QueryString.parse(search);
+        dispatch(searchMonuments(params));
+        this.setState({
+            q: params.q,
+            page: params.page || 1,
+            limit: params.limit || 25,
+            d: params.d || 25
+        });
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

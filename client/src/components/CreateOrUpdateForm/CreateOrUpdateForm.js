@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import { isEmptyObject } from '../../utils/object-util';
+import LocationSearch from '../Header/SearchBar/LocationSearch/LocationSearch';
 
 /**
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
@@ -568,6 +569,23 @@ export default class CreateOrUpdateForm extends React.Component {
         this.setState({[event.target.name]: currentState});
     }
 
+    handleLocationSearchSelect(lat, lon, address) {
+        this.setState({
+            address: {
+                ...this.state.address,
+                value: address
+            },
+            latitude: {
+                ...this.state.latitude,
+                value: lat
+            },
+            longitude: {
+                ...this.state.longitude,
+                value: lon
+            }
+        });
+    }
+
     handleAdvancedInformationClick() {
         const { showingAdvancedInformation } = this.state;
 
@@ -1085,16 +1103,12 @@ export default class CreateOrUpdateForm extends React.Component {
                         {locationType.value === 'address' &&
                             <Form.Group controlId="create-form-address" className="mt-3">
                                 <Form.Label>Address:</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="address"
-                                    placeholder="Address"
-                                    value={address.value}
-                                    onChange={(event) => this.handleInputChange(event)}
-                                    isInvalid={!address.isValid}
-                                    className="text-control w-100"
-                                />
-                                <Form.Control.Feedback type="invalid">{address.message}</Form.Control.Feedback>
+                                <LocationSearch value={address.value}
+                                                placeholder="Address"
+                                                isInvalid={!address.isValid}
+                                                className="form-control text-control w-100"
+                                                onSuggestionSelect={this.handleLocationSearchSelect.bind(this)}/>
+                                {!address.isValid && <div className="invalid-feedback d-inline-block">{address.message}</div>}
                             </Form.Group>
                         }
 

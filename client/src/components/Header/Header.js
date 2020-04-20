@@ -72,7 +72,9 @@ class Header extends React.Component {
             <div className="header" id="pageHeader" ref={element => this.divRef = element}>
 
                 <div className="left">
-                    <Logo/>
+                    <Link to="/">
+                        <Logo/>
+                    </Link>
 
                     <div className="desktop-links">
                         <div className="links d-lg-block">
@@ -138,7 +140,10 @@ class Header extends React.Component {
                             </i>
                         </Button>
                         <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {this.setState({isMenuOpen: false})}}>
-                            <ul>
+                            <ul onClick={event => {
+                                this.setState({isMenuOpen: false});
+                                return true;
+                            }}>
                                 {publicLinks.concat(privateLinks).map(link =>
                                     <li key={link.key}>{link}</li>
                                 )}

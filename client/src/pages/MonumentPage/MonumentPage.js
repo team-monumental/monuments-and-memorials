@@ -24,7 +24,8 @@ class MonumentPage extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { dispatch, session, match: { params: { monumentId } } } = this.props;
-        if (prevProps.session.pending && !session.pending && session.user) {
+        if ((prevProps.session.pending && !session.pending && session.user) ||
+            (prevProps.monument.id !== this.props.monument.id && this.props.monument.id)) {
             dispatch(fetchFavorite(monumentId));
         }
     }

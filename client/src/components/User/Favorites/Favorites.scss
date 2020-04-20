@@ -3,4 +3,8 @@
         background-color: rgba(0,0,0,0);
         min-width: 0;
     }
+    & > .card-body {
+        max-height: 411px;
+        overflow-y: auto;
+    }
 }

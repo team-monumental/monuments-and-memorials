@@ -22,5 +22,11 @@ export default function search(changedParams, history, uri = '/search') {
     if (!changedParams.hasOwnProperty('page')) params.page = '1';
 
     const queryString = QueryString.stringify(params, {arrayFormat: 'comma'});
-    history.push(`${uri}/?${queryString}`);
+    uri = `${uri}/?${queryString}`;
+
+    // Check that this isn't a no-op, because this ends up causing the page to lose its search results state
+    if (uri !== window.location.pathname + window.location.search) {
+        // Navigate to the search results page. The SearchPage component will then automatically search for results
+        history.push(uri);
+    }
 }

@@ -100,6 +100,8 @@ const initialUpdateState = {
 
 export function updateMonument(state = initialUpdateState, action) {
     switch (action.type) {
+        case LOCATION_CHANGE:
+            return initialUpdateState;
         case UPDATE_MONUMENT_PENDING:
             return {
                 ...state,
