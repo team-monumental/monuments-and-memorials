@@ -3,7 +3,7 @@ import './HomePage.scss';
 import SuggestChanges from '../../components/SuggestChanges/SuggestChanges';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Alert, Button } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
 class HomePage extends React.Component {
@@ -68,8 +68,8 @@ class HomePage extends React.Component {
                                     <p>
                                         Begun in the spring 2019 with data collection and launched as a site in fall 2019,&nbsp;
                                          <span className='font-italic'>Monuments + Memorials</span> is a long-term look at monuments,
-                                        memorials, and memory in the US. To view monuments and memorials, {mapLink}. To enter
-                                        data, {suggestionLink}.
+                                        memorials, and memory in the US. To view monuments and memorials, {mapLink}. To
+                                        suggest a new record, {suggestionLink}.
                                     </p>
                                 </div>
                                 <Link to="/about" className="btn btn-primary mt-3">Learn More</Link>

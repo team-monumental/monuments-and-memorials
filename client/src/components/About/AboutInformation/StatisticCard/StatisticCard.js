@@ -1,6 +1,5 @@
 import React from 'react';
 import './StatisticCard.scss';
-import Card from 'react-bootstrap/Card';
 
 /**
  * Presentational component for a Card that displays a statistic
