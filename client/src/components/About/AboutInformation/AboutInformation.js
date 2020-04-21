@@ -132,7 +132,7 @@ export default class AboutInformation extends React.Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-lg-6 col-12">
+                    <div className="col-lg-6 col-12 mb-5 mb-lg-0">
                         <div className="static-page-title">
                             <h2>
                                 Contributors
