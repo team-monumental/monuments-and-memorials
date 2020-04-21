@@ -101,7 +101,7 @@ export default class PhotoSphereImages extends React.Component {
                     <h5>Step 2.</h5>
                     <p>
                         Next, click on the image of the monument or memorial to go to the photos tab. You will see a
-                        page similar to the one below. Look for the tab that says "360° view", circled in red below.
+                        page similar to the one below. Look for the tab that says "360° view".
                     </p>
                     <p>
                         If there is not a tab that says "360° view" then your monument or memorial does not have any
