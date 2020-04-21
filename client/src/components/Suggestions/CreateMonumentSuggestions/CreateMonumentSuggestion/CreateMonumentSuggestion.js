@@ -133,7 +133,7 @@ export default class CreateMonumentSuggestion extends React.Component {
                         {!imageUrls.length && <>
                             None
                         </>}
-                        <div className="font-weight-bold">PhotoSphere Images: </div>
+                        <div className="font-weight-bold">360° Images: </div>
                         {photoSphereImageUrls.length > 0 && <>
                             {
                                 photoSphereImageUrls.map(photoSphereImageUrl => {

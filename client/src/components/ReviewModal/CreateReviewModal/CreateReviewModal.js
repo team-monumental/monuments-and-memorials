@@ -188,7 +188,7 @@ export default class CreateReviewModal extends React.Component {
                             {images}
                         </div>
                         <div className="attribute">
-                            <span className="font-weight-bold">PhotoSphere Images:&nbsp;</span>
+                            <span className="font-weight-bold">360° Images:&nbsp;</span>
                             {photoSphereImages}
                         </div>
                     </div>

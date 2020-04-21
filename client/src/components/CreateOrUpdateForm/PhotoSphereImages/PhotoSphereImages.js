@@ -2,7 +2,6 @@ import * as React from 'react';
 import './PhotoSphereImages.scss';
 import { Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { validUrlRegex } from '../../../utils/string-util';
-import { Link } from 'react-router-dom';
 
 /**
  * Presentational component for displaying an input to add and delete PhotoSphere Images on the CreateOrUpdateForm
@@ -75,7 +74,7 @@ export default class PhotoSphereImages extends React.Component {
         const { modalShowing } = this.state;
 
         const googleMapsLink = (
-            <Link to="google.com/maps">Google Maps</Link>
+            <a href="https://google.com/maps">Google Maps</a>
         );
 
         return (
