@@ -34,7 +34,7 @@ class HomePage extends React.Component {
         const { dismissAlert } = this.state;
 
         let mapLink = (
-            <Link to="'/map'">click here</Link>
+            <Link to="/map">click here</Link>
         );
 
         let suggestionLink = (
