@@ -92,6 +92,11 @@ export default class CreateMonumentSuggestion extends React.Component {
             imageUrls = JSON.parse(suggestion.imagesJson);
         }
 
+        let photoSphereImageUrls = [];
+        if (suggestion.photoSphereImagesJson) {
+            photoSphereImageUrls = JSON.parse(suggestion.photoSphereImagesJson);
+        }
+
         const expandLink = (
             <div className="collapse-link" onClick={() => this.handleCollapseLinkClick()}>
                 Show More
@@ -126,6 +131,21 @@ export default class CreateMonumentSuggestion extends React.Component {
                             <Thumbnails imageUrls={imageUrls}/>
                         </>}
                         {!imageUrls.length && <>
+                            None
+                        </>}
+                        <div className="font-weight-bold">PhotoSphere Images: </div>
+                        {photoSphereImageUrls.length > 0 && <>
+                            {
+                                photoSphereImageUrls.map(photoSphereImageUrl => {
+                                    return (
+                                        <div className="d-flex justify-content-center mb-2 mt-2">
+                                            <iframe title="PhotoSphere" src={photoSphereImageUrl} key={photoSphereImageUrl} frameBorder="0" allowFullScreen/>
+                                        </div>
+                                    );
+                                })
+                            }
+                        </>}
+                        {!photoSphereImageUrls.length && <>
                             None
                         </>}
                     </div>

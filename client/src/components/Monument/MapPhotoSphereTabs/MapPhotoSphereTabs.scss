@@ -17,3 +17,10 @@
 iframe {
     height: 100%;
 }
+
+.nav-tabs .nav-link {
+    display: block !important;
+    padding: .5rem !important;
+    min-width: 75px;
+    text-align: center;
+}

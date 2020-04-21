@@ -343,7 +343,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     }
 
     public List<String> getPhotoSphereImages() {
-        if (this.getPhotoSphereImagesJson() == null || (this.photoSphereImagesJson != null &&
+        if (this.photoSphereImages == null || (this.photoSphereImagesJson != null &&
                 this.photoSphereImages.isEmpty() && !this.photoSphereImagesJson.isEmpty())) {
             this.photoSphereImages = this.deserializeStringList(this.photoSphereImagesJson);
         }

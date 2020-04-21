@@ -2,6 +2,7 @@ import * as React from 'react';
 import './PhotoSphereImages.scss';
 import { Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { validUrlRegex } from '../../../utils/string-util';
+import { Link } from 'react-router-dom';
 
 /**
  * Presentational component for displaying an input to add and delete PhotoSphere Images on the CreateOrUpdateForm
@@ -73,6 +74,10 @@ export default class PhotoSphereImages extends React.Component {
     renderModal() {
         const { modalShowing } = this.state;
 
+        const googleMapsLink = (
+            <Link to="google.com/maps">Google Maps</Link>
+        );
+
         return (
             <Modal show={modalShowing} onHide={() => this.setState({modalShowing: false})}>
                 <Modal.Header closeButton>
@@ -83,37 +88,42 @@ export default class PhotoSphereImages extends React.Component {
                 <Modal.Body>
                     <h5>About</h5>
                     <p>
-                        360° images are a feature available on Google Maps allowing users to view locations as if they were in person. They allow visitors to get a more in-person view of the monument or memorial and are a great addition to our database.
+                        360° images are a feature available on Google Maps allowing users to view locations as if they
+                        were there in-person. They allow visitors to experience the monument or memorial in a new way
+                        and are a great addition to our database.
                     </p>
                     <h5>Step 1.</h5>
                     <p>
-                        To find 360° images, start by finding your monument or memorial in Google Maps.
+                        To upload 360° images, start by finding your monument or memorial in {googleMapsLink}.
                     </p>
                     <div className="mb-5">
                         <img alt="Step 1" src="/photosphere/step1.png"/>
                     </div>
                     <h5>Step 2.</h5>
                     <p>
-                        Next, click on the image of the monument or memorial to go to the photos tab. You will see a page similar to the one below.
-                        Look for the tab that says "360° view", highlighted in red below.
+                        Next, click on the image of the monument or memorial to go to the photos tab. You will see a
+                        page similar to the one below. Look for the tab that says "360° view", circled in red below.
                     </p>
                     <p>
-                        If there is not a tab that says "360° view" then your monument or memorial does not have any 360° images available and you won't be able to upload any.
-                        If your monument or memorial does have this tab, click on it and you will be taken to the "360° view" page.
+                        If there is not a tab that says "360° view" then your monument or memorial does not have any
+                        360° images available. If your monument or memorial does have this tab, click on it and you will
+                        be taken to the "360° view" page.
                     </p>
                     <div className="mb-5">
                         <img alt="Step 2" src="/photosphere/step2.png"/>
                     </div>
                     <h5>Step 3.</h5>
                     <p>
-                        Once on this page, find the 360° image you like, and click the button with three vertical dots next to the name of the image, then click "Share or embed image" in the dropdown menu.
+                        Once on this page, find the 360° image you like and click the button with three vertical dots
+                        next to the name of the image and click "Share or embed image" in the dropdown menu.
                     </p>
                     <div className="mb-5">
                         <img alt="Step 3" src="/photosphere/step3.png"/>
                     </div>
                     <h5>Step 4.</h5>
                     <p>
-                        Finally, click on the "Embed a map" tab and then click "COPY HTML". You can then paste this into the "Paste 360° HTML" field on this page.
+                        Finally, click on the "Embed a map" tab and click "COPY HTML". You can then paste this into the
+                        "Paste 360° HTML" field on this page.
                     </p>
                     <div>
                         <img alt="Step 4" src="/photosphere/step4.png"/>

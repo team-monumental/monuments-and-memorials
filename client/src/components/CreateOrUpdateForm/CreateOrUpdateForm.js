@@ -435,7 +435,8 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
-            datePickerCurrentDate, references, images, materials, newMaterials, tags, newTags, isTemporary } = this.state;
+            datePickerCurrentDate, references, images, photoSphereImages, materials, newMaterials, tags, newTags,
+            isTemporary } = this.state;
 
         let createForm = {
             title: title.value,
@@ -447,6 +448,7 @@ export default class CreateOrUpdateForm extends React.Component {
             inscription: inscription.value === '' ? null : inscription.value,
             references: references.map(reference => reference.value),
             images: images,
+            photoSphereImages: photoSphereImages,
             materials: materials.materialObjects.map(material => material.name),
             newMaterials: newMaterials.map(newMaterial => newMaterial.name),
             tags: tags.map(tag => tag.name),
@@ -779,7 +781,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 return i.id === image.id;
             }).hasBeenDeleted = true;
         }
-        else if (index) {
+        else {
             photoSphereImages.splice(index, 1);
         }
 

@@ -32,16 +32,21 @@
         background-color: lightgray;
         padding: 0.5rem;
 
-        .attribute-label {
-          font-weight: bold;
-        }
-
         .missing-attribute {
           font-weight: bold;
           color: red;
         }
 
         ul {
+          margin-bottom: 0;
+        }
+
+        iframe {
+          height: 300px;
+          margin-bottom: 1rem;
+        }
+
+        iframe:last-child {
           margin-bottom: 0;
         }
       }
