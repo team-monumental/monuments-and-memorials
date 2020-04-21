@@ -38,7 +38,7 @@ class HomePage extends React.Component {
         );
 
         let suggestionLink = (
-            <Link to="/create" key="login">click here</Link>
+            <Link to="/create" key="create">click here</Link>
         );
 
         return (
