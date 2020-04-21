@@ -1,37 +1,61 @@
 @import "../../../../theme";
 
-.statistic-card-container {
-  .card {
-    background-color: #DBD8E6 !important;
-    width: 300px;
-    height: 285.5px;
+.stat {
+    width: 375px;
+    min-height: 250px;
+    height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
+    margin: 10px;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: rgba(10, 20, 50, 0.01);
+    border: 1px solid rgba(10, 20, 50, 0.05);
+    box-shadow: rgba(10, 20, 50, 0.1) 2px 2px 6px;
 
-    .card-title {
-      color: $primary;
-      font-size: 4vw;
-      justify-content: center;
-      text-align: center;
-      display: flex;
-      margin-bottom: 48px;
-
-      &.small {
-        font-size: 2vw;
-      }
+    .stat-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-right: 3rem;
+        padding-top: 1rem;
     }
 
-    .card-footer {
-      border: none;
-      font-size: medium;
-      font-weight: bold;
-      text-align: center;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      min-width: 100%;
+    .stat-title {
+        color: $secondary;
+        font-size: 60px;
+        line-height: 60px;
+        justify-content: center;
+        text-align: center;
+        display: flex;
+        font-weight: 600;
+
+        &.small {
+            font-size: 40px;
+            line-height: 40px;
+        }
+
+        a {
+            color: $secondary;
+        }
     }
-  }
+
+    .stat-description {
+        font-size: medium;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .icon-container {
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        i {
+            background-color: $primary;
+            padding: 0.75rem;
+            border-radius: 100%;
+            font-size: 50px;
+            color: white;
+        }
+    }
 }

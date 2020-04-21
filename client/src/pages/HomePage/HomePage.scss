@@ -1,60 +1,31 @@
 @import "../../../node_modules/bootstrap/scss/functions";
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
 
-#welcome-page-body {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-
-  p {
-    max-width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    font-size: large;
-  }
-
-  .card.card {
-    text-align: center;
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: 80%;
+.home.page {
+    @include media-breakpoint-up(lg) {
+        padding-top: 0;
     }
-  }
 }
 
-#home-page-title {
-  font-size: 1.35em;
-
-  @include media-breakpoint-up(md) {
-    font-size: 2em;
-  }
-}
-
-#home-page-image {
-  width: 100%;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  margin-top: 1rem;
-  margin-bottom: 3rem;
-
-  @include media-breakpoint-down(sm) {
-    background-image: url('/home_page_mobile_image.jpg');
-    height: 30vh;
-  }
-
-  @include media-breakpoint-up(sm) {
-    background-image: url('/home_page_large_image.jpg');
-
-    @include media-breakpoint-up(md) {
-      height: 30vh;
+.home-page-image-container {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    height: 400px;
+    .home-page-image {
+        width: 100%;
+        height: 100%;
+        background-image: url("/home_page_large_image.jpg");
+        background-position: center;
+        margin-top: 2rem;
     }
 
     @include media-breakpoint-up(lg) {
-      height: 60vh;
+        padding-left: 2rem !important;
+        .home-page-image {
+            margin-top: 0;
+        }
     }
-  }
 }

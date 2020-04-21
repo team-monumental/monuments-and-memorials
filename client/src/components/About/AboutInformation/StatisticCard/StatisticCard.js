@@ -1,6 +1,5 @@
 import React from 'react';
 import './StatisticCard.scss';
-import Card from 'react-bootstrap/Card';
 
 /**
  * Presentational component for a Card that displays a statistic
@@ -8,7 +7,7 @@ import Card from 'react-bootstrap/Card';
 export default class StatisticCard extends React.Component {
 
     render() {
-        const { statistic, description, statisticFontSize, link } = this.props;
+        const { statistic, description, statisticFontSize, link, iconName } = this.props;
 
         let statisticFontSizeClassName = 'large';
 
@@ -27,24 +26,21 @@ export default class StatisticCard extends React.Component {
 
         if (statistic && description) {
             return (
-                <div className="statistic-card-container">
-                    <Card>
-                        <Card.Header>
-                            <Card.Title className={statisticFontSizeClassName}>
-                                {statisticWithLink ? statisticWithLink : statistic}
-                            </Card.Title>
-                        </Card.Header>
-                        <Card.Footer>
+                <div className="stat">
+                    <div className="icon-container">
+                        <i className="material-icons">{iconName}</i>
+                    </div>
+                    <div className="stat-body">
+                        <div className={`stat-title ${statisticFontSizeClassName}`}>
+                            {statisticWithLink ? statisticWithLink : statistic}
+                        </div>
+                        <div className="stat-description">
                             {description}
-                        </Card.Footer>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
             );
         }
-        else {
-            return (
-                <div/>
-            );
-        }
+        return (<></>);
     }
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import './UpdateMonumentSuggestion.scss';
 import { Card } from 'react-bootstrap';
 import MonumentUpdate from '../../../Monument/Update/MonumentUpdate';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getUserFullName } from '../../../../utils/string-util';
 
 export default class UpdateMonumentSuggestion extends React.Component {
@@ -59,10 +59,9 @@ export default class UpdateMonumentSuggestion extends React.Component {
         }
 
         const manageUserLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace(`/panel/manage/users/user/${suggestion.createdBy.id}`);
-            }} to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>{getUserFullName(suggestion.createdBy)}</NavLink>
+            <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`}>
+                {getUserFullName(suggestion.createdBy)}
+            </Link>
         );
 
         return (
