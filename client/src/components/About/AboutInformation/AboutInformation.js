@@ -195,7 +195,7 @@ export default class AboutInformation extends React.Component {
                                         : null}
                                     statisticFontSize="small"
                                     link={monumentStatistics.oldestMonument ? '/monuments/' + monumentStatistics.oldestMonument.id : null}
-                                    iconName="event"
+                                    iconName="today"
                                 />
                                 <StatisticCard
                                     statistic={monumentStatistics.newestMonument ? monumentStatistics.newestMonument.title : null}
@@ -204,11 +204,11 @@ export default class AboutInformation extends React.Component {
                                         : null}
                                     statisticFontSize="small"
                                     link={monumentStatistics.newestMonument ? '/monuments/' + monumentStatistics.newestMonument.id : null}
-                                    iconName="today"
+                                    iconName="event"
                                 />
                                 <StatisticCard
                                     statistic={monumentStatistics.numberOfMonumentsInRandomState}
-                                    description={'Number of Monuments in ' + monumentStatistics.randomState}
+                                    description={'Monuments and Memorials in ' + monumentStatistics.randomState}
                                     iconName="public"
                                 />
                                 <StatisticCard statistic={monumentStatistics.mostPopularTagName}
@@ -223,7 +223,7 @@ export default class AboutInformation extends React.Component {
                                                iconName="trending_up"/>
                                 <StatisticCard
                                     statistic={monumentStatistics.numberOfMonumentsWithRandomTag}
-                                    description={'Number of Monuments tagged with: ' + monumentStatistics.randomTagName}
+                                    description={'Monuments tagged with: ' + monumentStatistics.randomTagName}
                                     iconName="local_offer"
                                 />
                             </div>
