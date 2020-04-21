@@ -15,10 +15,8 @@ export default class AddedPhotoSphereImages extends React.Component {
             let addedImagesList = [];
 
             for (const addedImage of images) {
-                addedImagesList.push(<div className="added" key={addedImage.url}>
-                    <div className="photosphere-preview">
-                        <iframe title="PhotoSphere" src={addedImage.url} frameBorder="0"/>
-                    </div>
+                addedImagesList.push(<div className="d-flex justify-content-center">
+                        <iframe title="PhotoSphere" src={addedImage.url} frameBorder="0" allowFullScreen/>
                 </div>);
             }
 
@@ -26,7 +24,7 @@ export default class AddedPhotoSphereImages extends React.Component {
         }
 
         return (
-            <div>
+            <div className="added-photosphere-images">
                 <span className="font-weight-bold">Added 360° Images:&nbsp;</span>
                 {addedImagesDisplay}
             </div>
