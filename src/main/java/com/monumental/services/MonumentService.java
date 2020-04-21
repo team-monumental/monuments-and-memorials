@@ -948,7 +948,7 @@ public class MonumentService extends ModelService<Monument> {
         // Update basic String fields
         this.setBasicFieldsOnMonument(currentMonument, updateSuggestion.getNewTitle(), updateSuggestion.getNewAddress(),
                 updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription(),
-                updateSuggestion.getMonument().getCity(), updateSuggestion.getMonument().getState());
+                updateSuggestion.getNewCity(), updateSuggestion.getNewState());
 
         // Update the Coordinates
         Point point = MonumentService.createMonumentPoint(updateSuggestion.getNewLongitude(), updateSuggestion.getNewLatitude());

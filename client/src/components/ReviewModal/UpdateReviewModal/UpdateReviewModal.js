@@ -36,18 +36,18 @@ export default class UpdateReviewModal extends React.Component {
                 onHide={onCancel}
                 dialogClassName="update-review-modal-dialog"
             >
-                <Modal.Header className="update-review-modal">
+                <Modal.Header>
                     <Modal.Title>
                         Review Update
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body className="update-review-modal">
+                <Modal.Body>
                     <p>Please review the updates you have made for correctness and completeness!</p>
                     <div className="attributes-update-container">
                         <MonumentUpdate oldMonument={oldMonument} update={this.buildUpdate()}/>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className="update-review-modal">
+                <Modal.Footer>
                     <Button
                         variant="danger"
                         onClick={onCancel}

@@ -25,6 +25,12 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_address")
     private String newAddress;
 
+    @Column(name = "new_city")
+    private String newCity;
+
+    @Column(name = "new_state")
+    private String newState;
+
     @Column(name = "new_artist")
     private String newArtist;
 
@@ -158,6 +164,22 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public void setNewAddress(String newAddress) {
         this.newAddress = newAddress;
+    }
+
+    public String getNewCity() {
+        return this.newCity;
+    }
+
+    public void setNewCity(String newCity) {
+        this.newCity = newCity;
+    }
+
+    public String getNewState() {
+        return this.newState;
+    }
+
+    public void setNewState(String newState) {
+        this.newState = newState;
     }
 
     public String getNewArtist() {

@@ -170,7 +170,7 @@ export default class PhotoSphereImages extends React.Component {
                 <Button variant="link" className="pl-0" onClick={() => this.setState({modalShowing: true})}>
                     How do I find 360° images?
                 </Button>
-                <div>
+                <div className="add-photosphere-group d-flex">
                     <Form.Control
                         type="text"
                         name="add-photosphere"
@@ -178,10 +178,10 @@ export default class PhotoSphereImages extends React.Component {
                         value={linkInput.value}
                         onChange={event => this.handleInputChange(event)}
                         isInvalid={!linkInput.isValid}
-                        className="text-control d-inline-block"
+                        className="text-control d-inline-block mr-3"
                     />
                     <Button disabled={!linkInput.value || !linkInput.isValid}
-                            className="ml-3 text-uppercase d-inline-block"
+                            className="text-uppercase d-inline-block"
                             onClick={() => this.handleAddImage()}>
                         Add 360° Image
                     </Button>

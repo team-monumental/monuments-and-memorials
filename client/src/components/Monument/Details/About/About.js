@@ -161,16 +161,19 @@ export default class About extends React.Component {
 
         let contributorsList;
         if (contributions && contributions.length) {
+            let contributors = contributions.map(contribution => {
+                if (contribution.submittedByUser) {
+                    contribution.submittedBy = getUserFullName(contribution.submittedByUser);
+                }
+                return contribution.submittedBy;
+            });
+            // Remove any duplicates
+            contributors = contributors.filter((contributor, index) => contributors.indexOf(contributor) === index);
             contributorsList = (
                 <div>
                     <span className="detail-label">Contributors:&nbsp;</span>
                     <ul>
-                        {contributions.map(contribution => {
-                            if (contribution.submittedByUser) {
-                                contribution.submittedBy = getUserFullName(contribution.submittedByUser);
-                            }
-                            return (<li key={contribution.id}>{contribution.submittedBy}</li>);
-                        })}
+                        {contributors.map(contributor => (<li key={contributor.id}>{contributor}</li>))}
                     </ul>
                 </div>
             )

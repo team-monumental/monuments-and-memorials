@@ -1,6 +1,7 @@
 @import "../../theme";
 
-.create-form-container {
+.create-form {
+    max-width: 390px;
     .h4 {
         padding-bottom: 1rem;
         text-align: center;
@@ -60,14 +61,7 @@
         padding-bottom: 1rem;
         font-weight: bold;
         text-decoration: underline;
-
-        &.more-link {
-            padding-left: 9.75rem;
-        }
-
-        &.hide-link {
-            padding-left: 9rem;
-        }
+        text-align: center;
     }
 
     .address-coordinates-container {
@@ -135,7 +129,6 @@
     }
 
     .fileUploader {
-        width: 25rem;
 
         .fileContainer {
             box-shadow: none;
@@ -147,7 +140,7 @@
                 font-weight: bold;
                 text-transform: uppercase;
                 font-family: "Open Sans", sans-serif;
-                margin: 0 0 10px 50px;
+                margin: 0;
 
                 &:hover {
                     background-color: #389c6f;

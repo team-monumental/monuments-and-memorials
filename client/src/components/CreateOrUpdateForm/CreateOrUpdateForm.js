@@ -200,7 +200,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
             materials, locationType } = this.state;
         let { datePickerCurrentDate, references, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey } = this.state;
+            photoSphereImages, imageUploaderKey, city, state } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -225,6 +225,8 @@ export default class CreateOrUpdateForm extends React.Component {
         year.value = monumentYear ? monumentYear : '';
         month.value = monumentMonth ? monumentMonth : '';
         datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+        city = monument.city;
+        state = monument.state;
 
         if (address.value) locationType.value = 'address';
         else if (latitude.value && longitude.value) locationType.value = 'coordinates';
@@ -292,7 +294,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
             datePickerCurrentDate, references, materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey, locationType});
+            photoSphereImages, imageUploaderKey, locationType, city, state});
     }
 
     /**
@@ -438,7 +440,7 @@ export default class CreateOrUpdateForm extends React.Component {
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
             datePickerCurrentDate, references, images, photoSphereImages, materials, newMaterials, tags, newTags,
-            isTemporary } = this.state;
+            isTemporary, city, state } = this.state;
 
         let createForm = {
             title: title.value,
@@ -456,7 +458,9 @@ export default class CreateOrUpdateForm extends React.Component {
             tags: tags.map(tag => tag.name),
             newTags: newTags.map(newTag => newTag.name),
             dateSelectValue: dateSelectValue,
-            isTemporary: isTemporary.value
+            isTemporary: isTemporary.value,
+            city,
+            state
         };
 
         switch (dateSelectValue) {
@@ -490,7 +494,7 @@ export default class CreateOrUpdateForm extends React.Component {
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
             datePickerCurrentDate, references, images, imagesForUpdate, photoSphereImages, photoSphereImagesForUpdate,
-            materials, tags, isTemporary } = this.state;
+            materials, tags, isTemporary, city, state } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -505,8 +509,12 @@ export default class CreateOrUpdateForm extends React.Component {
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
-            imagesForUpdate: imagesForUpdate
+            imagesForUpdate: imagesForUpdate,
+            newCity: city,
+            newState: state
         };
+
+        console.log(updateForm);
 
         switch (dateSelectValue) {
             case 'year':
@@ -648,6 +656,7 @@ export default class CreateOrUpdateForm extends React.Component {
         }
         address = result.formatted_address;
         this.setState({city, state, address: {...this.state.address, value: address}});
+        console.log({city, state, address: {...this.state.address, value: address}});
     }
 
     handleAdvancedInformationClick() {
@@ -1119,7 +1128,7 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         return (
-            <div className="create-form-container">
+            <div className="create-form">
                 {monument
                     ? <div className="h4 update">{action} an existing Monument or Memorial</div>
                     : <div className="h4 create">{action} a new Monument or Memorial</div>}
@@ -1377,30 +1386,32 @@ export default class CreateOrUpdateForm extends React.Component {
                         </div>
                     </Collapse>
 
-                    {!showingAdvancedInformation && advancedInformationLink}
-                    {showingAdvancedInformation && hideAdvancedInformationLink}
+                    <div className="d-flex flex-column justify-content-center">
+                        {!showingAdvancedInformation && advancedInformationLink}
+                        {showingAdvancedInformation && hideAdvancedInformationLink}
 
-                    <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            className="mr-4 mt-1"
-                        >
-                            Submit
-                        </Button>
+                        <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                className="mr-4 mt-1"
+                            >
+                                Submit
+                            </Button>
 
-                        {this.renderClearButton()}
-                        {this.renderResetButton()}
+                            {this.renderClearButton()}
+                            {this.renderResetButton()}
 
-                        <Button
-                            variant="danger"
-                            type="button"
-                            onClick={() => this.handleCancelButtonClick()}
-                            className="mt-1"
-                        >
-                            Cancel
-                        </Button>
-                    </ButtonToolbar>
+                            <Button
+                                variant="danger"
+                                type="button"
+                                onClick={() => this.handleCancelButtonClick()}
+                                className="mt-1"
+                            >
+                                Cancel
+                            </Button>
+                        </ButtonToolbar>
+                    </div>
                 </Form>
             </div>
         );

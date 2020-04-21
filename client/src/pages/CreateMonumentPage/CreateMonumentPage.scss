@@ -2,11 +2,12 @@
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
-.create-page-container {
+.create-form-container {
   min-width: 100%;
   margin: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   height: 100%;
 
   .column {
