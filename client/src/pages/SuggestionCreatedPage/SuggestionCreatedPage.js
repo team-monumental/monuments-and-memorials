@@ -2,7 +2,7 @@ import React from 'react';
 import './SuggestionCreatedPage.scss';
 import Helmet from 'react-helmet';
 import { Card } from 'react-bootstrap';
-import { NavLink, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import { Button } from 'react-bootstrap';
 
@@ -32,10 +32,7 @@ class SuggestionCreatedPage extends React.Component {
         const type = QueryString.parse(search).type;
 
         const accountPageLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace('/account');
-            }} to="/account" key="account">clicking here</NavLink>
+            <Link to="/account" key="account">clicking here</Link>
         );
 
         return (

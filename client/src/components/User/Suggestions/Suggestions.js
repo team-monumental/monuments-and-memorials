@@ -2,7 +2,7 @@ import * as React from 'react';
 import './Suggestions.scss';
 import Spinner from '../../Spinner/Spinner';
 import { Card, Tab, Tabs } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Role } from '../../../utils/authentication-util';
 import CreateMonumentSuggestions from '../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 import UpdateMonumentSuggestions from '../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
@@ -73,25 +73,19 @@ export default class Suggestions extends React.Component {
     renderSuggestions(suggestions, type) {
         const { role, error } = this.props;
 
-        const createPageNavLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace('/create');
-            }} to="/create" key="create">clicking here</NavLink>
+        const createPageLink = (
+            <Link to="/create" key="create">clicking here</Link>
         );
 
-        const bulkCreatePageNavLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace('/panel/bulk');
-            }} to="/panel/bulk" key="bulk">clicking here</NavLink>
+        const bulkCreatePageLink = (
+            <Link to="/panel/bulk" key="bulk">clicking here</Link>
         );
 
         return (<>
             <h6>New Monument or Memorial Suggestions</h6>
             {(!suggestions.create || suggestions.create.length === 0) && !error && <>
                 You don't have any {type} new monument or memorial suggestions yet. You can suggest a new monument or
-                memorial by {createPageNavLink}.
+                memorial by {createPageLink}.
             </>}
             {suggestions.create && suggestions.create.length > 0 && <>
                 <CreateMonumentSuggestions suggestions={suggestions.create}/>
@@ -110,7 +104,7 @@ export default class Suggestions extends React.Component {
                 <h6 className="mt-4">Bulk New Monument or Memorial Suggestions</h6>
                 {(!suggestions.bulk || suggestions.bulk.length === 0) && !error && <>
                     You don't have any {type} bulk new monument or memorial suggestions yet. You can suggest bulk
-                    new monuments or memorials by {bulkCreatePageNavLink}.
+                    new monuments or memorials by {bulkCreatePageLink}.
                 </>}
                 {suggestions.bulk && suggestions.bulk.length > 0 && <>
                     <BulkCreateMonumentSuggestions suggestions={suggestions.bulk}/>

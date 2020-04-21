@@ -3,7 +3,7 @@ import './CreateMonumentSuggestion.scss';
 import { Card, Collapse } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SuggestionStatus from '../../../AdminPanel/ManageSuggestions/ManageSuggestion/SuggestionStatus/SuggestionStatus';
 
 /**
@@ -149,10 +149,9 @@ export default class CreateMonumentSuggestion extends React.Component {
             `Create new record: ${suggestion.title}`;
 
         const manageUserLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace(`/panel/manage/users/user/${suggestion.createdBy.id}`);
-            }} to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>{getUserFullName(suggestion.createdBy)}</NavLink>
+            <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
+                {getUserFullName(suggestion.createdBy)}
+            </Link>
         );
 
         return (

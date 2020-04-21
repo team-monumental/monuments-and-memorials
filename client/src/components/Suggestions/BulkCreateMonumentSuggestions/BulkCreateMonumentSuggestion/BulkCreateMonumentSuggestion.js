@@ -2,7 +2,7 @@ import * as React from 'react';
 import './BulkCreateMonumentSuggestion.scss';
 import { Card } from 'react-bootstrap';
 import CreateMonumentSuggestions from '../../CreateMonumentSuggestions/CreateMonumentSuggestions';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getUserFullName } from '../../../../utils/string-util';
 
 /**
@@ -19,10 +19,9 @@ export default class BulkCreateMonumentSuggestion extends React.Component {
             `Create many new records from: ${suggestion.fileName}`;
 
         const manageUserLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace(`/panel/manage/users/user/${suggestion.createdBy.id}`);
-            }} to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>{getUserFullName(suggestion.createdBy)}</NavLink>
+            <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
+                {getUserFullName(suggestion.createdBy)}
+            </Link>
         );
 
         return (
