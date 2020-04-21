@@ -10,6 +10,8 @@ import AddedReferences from './References/AddedReferences/AddedReferences';
 import DeletedReferences from './References/DeletedReferences/DeletedReferences';
 import AddedImages from './Images/AddedImages/AddedImages';
 import DeletedImages from './Images/DeletedImages/DeletedImages';
+import AddedPhotoSphereImages from './Images/AddedPhotoSphereImages/AddedPhotoSphereImages';
+import DeletedPhotoSphereImages from './Images/DeletedPhotoSphereImages/DeletedPhotoSphereImages';
 import { Collapse } from 'react-bootstrap';
 
 /**
@@ -371,6 +373,16 @@ export default class MonumentUpdate extends React.Component {
             (update.deletedImageUrls && update.deletedImageUrls.length) ?
                 changedAttributes.push(deletedImagesDisplay) :
                 unchangedAttributes.push(deletedImagesDisplay);
+
+            let addedPhotoSphereImagesDisplay = <AddedPhotoSphereImages images={update.addedPhotoSphereImages} key="addedPhotoSphereImages"/>;
+            (update.addedPhotoSphereImages && update.addedPhotoSphereImages.length) ?
+                changedAttributes.push(addedPhotoSphereImagesDisplay) :
+                unchangedAttributes.push(addedPhotoSphereImagesDisplay);
+
+            let deletedPhotoSphereImagesDisplay = <DeletedPhotoSphereImages deletedImageUrls={update.deletedPhotoSphereImageUrls} key="deletedPhotoSphereImages"/>;
+            (update.deletedPhotoSphereImageUrls && update.deletedPhotoSphereImageUrls.length) ?
+                changedAttributes.push(deletedPhotoSphereImagesDisplay) :
+                unchangedAttributes.push(deletedPhotoSphereImagesDisplay);
         }
 
         if (!changedAttributes.length) {

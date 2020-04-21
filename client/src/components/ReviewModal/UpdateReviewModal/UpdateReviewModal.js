@@ -28,7 +28,7 @@ export default class UpdateReviewModal extends React.Component {
     }
 
     render() {
-        const { showing, onCancel, onConfirm, oldMonument  } = this.props;
+        const { showing, onCancel, onConfirm, oldMonument } = this.props;
 
         return (
             <Modal

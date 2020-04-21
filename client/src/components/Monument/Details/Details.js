@@ -42,7 +42,7 @@ export default class Details extends React.Component {
             <div className="details">
                 <div>
                     <div className="d-flex">
-                        <div className="h1 mb-0 pb-2">
+                        <div className="h1 mb-0 pb-2 text-left">
                             {monument.title}
                             {showFavorite &&
                                 <OverlayTrigger

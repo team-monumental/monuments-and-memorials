@@ -168,6 +168,14 @@
         }
     }
 
+    div.deleteImage {
+        background: $danger;
+
+        &:hover {
+            background: darken($danger, 10%);
+        }
+    }
+
     .invalid-feedback {
         font-size: medium;
 
@@ -295,7 +303,7 @@
 
         &.reference {
             top: 2.5rem;
-            right: 57.5rem;
+            right: -24px;
             width: 20px;
             height: 20px;
             font-size: 16px;
@@ -307,10 +315,35 @@
             z-index: 2;
         }
     }
-}
 
-.is-temporary {
-    i {
+    .form-label i {
         font-size: 110%;
     }
+}
+
+div.photosphere-preview {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    width: min-content;
+
+    &:not(:first-of-type) {
+        margin-top: 2rem;
+    }
+
+    iframe {
+        width: 500px;
+        max-width: 90vw;
+        height: 300px;
+        max-height: 60vh;
+        box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
+        border: 1px solid #d0dbe4;
+        border-radius: 12px;
+    }
+}
+
+.deleteImage {
+    user-select: none;
 }

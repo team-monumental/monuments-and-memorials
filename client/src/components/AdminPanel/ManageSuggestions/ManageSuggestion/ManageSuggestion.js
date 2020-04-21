@@ -25,9 +25,11 @@ export default class ManageSuggestion extends React.Component {
             suggestion = suggestion.suggestion;
         }
 
+        const isPending = !suggestion.isApproved && !suggestion.isRejected;
+
         return (
             <>
-                {suggestion && suggestion.monument && suggestion.monument.lastModifiedDate > suggestion.createdDate &&
+                {suggestion && isPending && suggestion.monument && suggestion.monument.lastModifiedDate > suggestion.createdDate &&
                 !alertDismissed &&
                     <Alert variant="danger" onClose={() => this.setState({alertDismissed: true})} dismissible>
                         <i className="material-icons mr-2">warning</i>

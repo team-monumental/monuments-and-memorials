@@ -73,7 +73,8 @@ class CreateMonumentPage extends React.Component {
             return false;
         }
 
-        return !(!form.images || !form.images.length);
+        return (!(!form.images || !form.images.length)) ||
+            (!(!form.photoSphereImages || !form.photoSphereImages.length));
     }
 
     async submitCreateForm() {
@@ -83,6 +84,9 @@ class CreateMonumentPage extends React.Component {
         // First, upload the images to the temporary S3 folder and save the URLs in the form
         const imageObjectUrls = await uploadImagesToS3(form.images, true);
         form.imagesJson = JSON.stringify(imageObjectUrls);
+
+        // Next, store the PhotoSphere Image URLs in the form
+        form.photoSphereImagesJson = JSON.stringify(form.photoSphereImages.map(photoSphereImage => photoSphereImage.url));
 
         // Then, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly add new Monuments

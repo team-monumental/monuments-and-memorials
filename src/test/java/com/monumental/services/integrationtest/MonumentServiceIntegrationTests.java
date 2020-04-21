@@ -2009,6 +2009,83 @@ public class MonumentServiceIntegrationTests {
     }
 
     @Test
+    public void testMonumentService_createMonument_PhotoSphereImagesSet() {
+        CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
+        createSuggestion.setIsApproved(true);
+        createSuggestion.setCreatedBy(this.testUser);
+        createSuggestion.setTitle("Title");
+        createSuggestion.setAddress("Address");
+        createSuggestion.setArtist("Artist");
+        createSuggestion.setDescription("Description");
+        createSuggestion.setInscription("Inscription");
+        createSuggestion.setCity("City");
+        createSuggestion.setState("State");
+        createSuggestion.setLatitude(90.0);
+        createSuggestion.setLongitude(180.0);
+        createSuggestion.setMonth("03");
+        createSuggestion.setYear("2019");
+
+        List<String> contributions = new ArrayList<>();
+        contributions.add("Contributor 1");
+        contributions.add("Contributor 2");
+        contributions.add("Contributor 3");
+
+        String contributionsJson = this.gson.toJson(contributions);
+        createSuggestion.setContributionsJson(contributionsJson);
+
+        List<String> referenceUrls = new ArrayList<>();
+        referenceUrls.add("URL 1");
+        referenceUrls.add("URL 2");
+        referenceUrls.add("URL 3");
+
+        String referencesJson = this.gson.toJson(referenceUrls);
+        createSuggestion.setReferencesJson(referencesJson);
+
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("URL 1");
+        imageUrls.add("URL 2");
+        imageUrls.add("URL 3");
+
+        String imagesJson = this.gson.toJson(imageUrls);
+        createSuggestion.setImagesJson(imagesJson);
+
+        List<String> photoSphereImageUrls = new ArrayList<>();
+        photoSphereImageUrls.add("PhotoSphere URL 1");
+        photoSphereImageUrls.add("PhotoSphere URL 2");
+        photoSphereImageUrls.add("PhotoSphere URL 3");
+
+        String photoSphereImagesJson = this.gson.toJson(photoSphereImageUrls);
+        createSuggestion.setPhotoSphereImagesJson(photoSphereImagesJson);
+
+        Monument result = this.monumentService.createMonument(createSuggestion);
+
+        assertEquals("Title", result.getTitle());
+        assertEquals("Address", result.getAddress());
+        assertEquals("Artist", result.getArtist());
+        assertEquals("Description", result.getDescription());
+        assertEquals("Inscription", result.getInscription());
+        assertEquals("City", result.getCity());
+        assertEquals("State", result.getState());
+        assertFalse(result.getIsTemporary());
+        assertEquals(90.0, result.getLat(), 0.0);
+        assertEquals(180.0, result.getLon(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(result.getDate());
+
+        assertEquals(2019, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(3, result.getContributions().size());
+        assertEquals(3, result.getReferences().size());
+        assertEquals(6, result.getImages().size());
+
+        assertEquals(0, result.getMaterials().size());
+        assertEquals(0, result.getTags().size());
+    }
+
+    @Test
     public void testMonumentService_createMonument_MaterialsSet() {
         CreateMonumentSuggestion createSuggestion = new CreateMonumentSuggestion();
         createSuggestion.setIsApproved(true);
@@ -2594,18 +2671,18 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonumentImages_NullImagesUrls_NonNullMonument() {
         Monument monument = new Monument();
-        assertNull(this.monumentService.createMonumentImages(null, monument));
+        assertNull(this.monumentService.createMonumentImages(null, monument, false));
     }
 
     @Test
     public void testMonumentService_createMonumentImages_NonNullImagesUrls_NullMonument() {
         List<String> imageUrls = new ArrayList<>();
-        assertNull(this.monumentService.createMonumentImages(imageUrls, null));
+        assertNull(this.monumentService.createMonumentImages(imageUrls, null, false));
     }
 
     @Test
     public void testMonumentService_createMonumentImages_NullImageUrls_NullMonument() {
-        assertNull(this.monumentService.createMonumentImages(null, null));
+        assertNull(this.monumentService.createMonumentImages(null, null, false));
     }
 
     @Test
@@ -2614,7 +2691,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2627,7 +2704,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2640,7 +2717,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2654,7 +2731,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2668,7 +2745,7 @@ public class MonumentServiceIntegrationTests {
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2676,6 +2753,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals("images/test", image.getUrl());
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
+        assertFalse(image.getIsPhotoSphere());
     }
 
     @Test
@@ -2692,7 +2770,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2700,6 +2778,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals("images/test1", image.getUrl());
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
+        assertFalse(image.getIsPhotoSphere());
     }
 
     @Test
@@ -2716,7 +2795,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2724,6 +2803,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals("images/test1", image.getUrl());
         assertFalse(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
+        assertFalse(image.getIsPhotoSphere());
     }
 
     @Test
@@ -2739,7 +2819,7 @@ public class MonumentServiceIntegrationTests {
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2747,16 +2827,19 @@ public class MonumentServiceIntegrationTests {
         assertEquals("images/test1", image1.getUrl());
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
 
         Image image2 = result.get(1);
         assertEquals("images/test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
 
         Image image3 = result.get(2);
         assertEquals("images/test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
     }
 
     @Test
@@ -2777,7 +2860,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2785,16 +2868,19 @@ public class MonumentServiceIntegrationTests {
         assertEquals("images/test1", image1.getUrl());
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
 
         Image image2 = result.get(1);
         assertEquals("images/test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
 
         Image image3 = result.get(2);
         assertEquals("images/test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
     }
 
     @Test
@@ -2815,7 +2901,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2823,16 +2909,55 @@ public class MonumentServiceIntegrationTests {
         assertEquals("images/test1", image1.getUrl());
         assertFalse(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
 
         Image image2 = result.get(1);
         assertEquals("images/test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
 
         Image image3 = result.get(2);
         assertEquals("images/test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreePhotoSphereImageUrlsWithOneNullAndOneEmpty() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, true);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("test1", image1.getUrl());
+        assertFalse(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertTrue(image1.getIsPhotoSphere());
+
+        Image image2 = result.get(1);
+        assertEquals("test2", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertTrue(image2.getIsPhotoSphere());
+
+        Image image3 = result.get(2);
+        assertEquals("test3", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertTrue(image3.getIsPhotoSphere());
     }
 
     /* updateMonumentTags Tests */
@@ -4742,6 +4867,482 @@ public class MonumentServiceIntegrationTests {
         }
 
         assertTrue(primaryImageFound);
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_AddNewPhotoSphereImages() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
+
+        List<String> newPhotoSphereImageUrls = new ArrayList<>();
+        newPhotoSphereImageUrls.add("New PhotoSphere Image URL 1");
+        newPhotoSphereImageUrls.add("New PhotoSphere Image URL 2");
+        newPhotoSphereImageUrls.add("New PhotoSphere Image URL 3");
+
+        String newPhotoSphereImageUrlsJson = this.gson.toJson(newPhotoSphereImageUrls);
+        updateSuggestion.setNewPhotoSphereImageUrlsJson(newPhotoSphereImageUrlsJson);
+
+        this.monumentService.updateMonument(updateSuggestion);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        List<String> referenceUrls = new ArrayList<>();
+        for (Reference reference : monument.getReferences()) {
+            referenceUrls.add(reference.getUrl());
+        }
+
+        assertTrue(referenceUrls.contains("New Reference URL 2"));
+        assertFalse(referenceUrls.contains("Reference URL 2"));
+
+        assertTrue(referenceUrls.contains("Reference URL 3"));
+
+        assertEquals(6, monument.getImages().size());
+        assertTrue(monument.getImages().get(0).getIsPrimary());
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_AddNewPhotoSphereImages_AlreadyExistingPhotoSphereImages() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        Image photoSphereImage1 = new Image();
+        photoSphereImage1.setUrl("PhotoSphere Image URL 1");
+        photoSphereImage1.setIsPrimary(false);
+        photoSphereImage1.setMonument(monument);
+        photoSphereImage1.setIsPhotoSphere(true);
+        photoSphereImage1 = this.imageRepository.save(photoSphereImage1);
+
+        Image photoSphereImage2 = new Image();
+        photoSphereImage2.setUrl("PhotoSphere Image URL 2");
+        photoSphereImage2.setIsPrimary(false);
+        photoSphereImage2.setMonument(monument);
+        photoSphereImage2.setIsPhotoSphere(true);
+        photoSphereImage2 = this.imageRepository.save(photoSphereImage2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+        images.add(photoSphereImage1);
+        images.add(photoSphereImage2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
+
+        List<String> newPhotoSphereImageUrls = new ArrayList<>();
+        newPhotoSphereImageUrls.add("New PhotoSphere Image URL 1");
+        newPhotoSphereImageUrls.add("New PhotoSphere Image URL 2");
+        newPhotoSphereImageUrls.add("New PhotoSphere Image URL 3");
+
+        String newPhotoSphereImageUrlsJson = this.gson.toJson(newPhotoSphereImageUrls);
+        updateSuggestion.setNewPhotoSphereImageUrlsJson(newPhotoSphereImageUrlsJson);
+
+        this.monumentService.updateMonument(updateSuggestion);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        List<String> referenceUrls = new ArrayList<>();
+        for (Reference reference : monument.getReferences()) {
+            referenceUrls.add(reference.getUrl());
+        }
+
+        assertTrue(referenceUrls.contains("New Reference URL 2"));
+        assertFalse(referenceUrls.contains("Reference URL 2"));
+
+        assertTrue(referenceUrls.contains("Reference URL 3"));
+
+        assertEquals(10, monument.getImages().size());
+
+        for (Image image : monument.getImages()) {
+            if (image.getUrl().equals("Image URL 1")) {
+                assertTrue(image.getIsPrimary());
+            }
+            else {
+                assertFalse(image.getIsPrimary());
+            }
+
+            if (image.getUrl().contains("PhotoSphere")) {
+                assertTrue(image.getIsPhotoSphere());
+            }
+            else {
+                assertFalse(image.getIsPhotoSphere());
+            }
+        }
+
+        assertEquals(1, monument.getContributions().size());
+
+        Contribution contribution = monument.getContributions().get(0);
+        assertEquals("test@gmail.com", contribution.getSubmittedByUser().getEmail());
+    }
+
+    @Test
+    public void testMonumentService_updateMonument_DeletePhotoSphereImages() {
+        Monument monument = new Monument();
+        monument.setTitle("Title");
+        monument.setAddress("Address");
+        monument.setArtist("Artist");
+        monument.setDescription("Description");
+        monument.setInscription("Inscription");
+        monument.setCity("City");
+        monument.setState("State");
+        monument.setIsTemporary(false);
+
+        Point coordinates = MonumentService.createMonumentPoint(90.0, 180.0);
+        monument.setCoordinates(coordinates);
+
+        monument.setDate(new Date());
+
+        monument = this.monumentRepository.save(monument);
+
+        Reference reference1 = new Reference();
+        reference1.setUrl("Reference URL 1");
+        reference1.setMonument(monument);
+        reference1 = this.referenceRepository.save(reference1);
+
+        Reference reference2 = new Reference();
+        reference2.setUrl("Reference URL 2");
+        reference2.setMonument(monument);
+        reference2 = this.referenceRepository.save(reference2);
+
+        List<Reference> references = new ArrayList<>();
+        references.add(reference1);
+        references.add(reference2);
+
+        monument.setReferences(references);
+
+        Image image1 = new Image();
+        image1.setUrl("Image URL 1");
+        image1.setIsPrimary(true);
+        image1.setMonument(monument);
+        image1 = this.imageRepository.save(image1);
+
+        Image image2 = new Image();
+        image2.setUrl("Image URL 2");
+        image2.setIsPrimary(false);
+        image2.setMonument(monument);
+        image2 = this.imageRepository.save(image2);
+
+        Image photoSphereImage1 = new Image();
+        photoSphereImage1.setUrl("PhotoSphere Image URL 1");
+        photoSphereImage1.setIsPrimary(false);
+        photoSphereImage1.setMonument(monument);
+        photoSphereImage1.setIsPhotoSphere(true);
+        photoSphereImage1 = this.imageRepository.save(photoSphereImage1);
+
+        Image photoSphereImage2 = new Image();
+        photoSphereImage2.setUrl("PhotoSphere Image URL 2");
+        photoSphereImage2.setIsPrimary(false);
+        photoSphereImage2.setMonument(monument);
+        photoSphereImage2.setIsPhotoSphere(true);
+        photoSphereImage2 = this.imageRepository.save(photoSphereImage2);
+
+        List<Image> images = new ArrayList<>();
+        images.add(image1);
+        images.add(image2);
+        images.add(photoSphereImage1);
+        images.add(photoSphereImage2);
+
+        monument.setImages(images);
+
+        monument = this.monumentRepository.save(monument);
+
+        UpdateMonumentSuggestion updateSuggestion = new UpdateMonumentSuggestion();
+        updateSuggestion.setIsApproved(true);
+        updateSuggestion.setCreatedBy(this.testUser);
+        updateSuggestion.setMonument(monument);
+        updateSuggestion.setNewTitle("New Title");
+        updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewArtist("New Artist");
+        updateSuggestion.setNewDescription("New Description");
+        updateSuggestion.setNewInscription("New Inscription");
+        updateSuggestion.setNewIsTemporary(true);
+        updateSuggestion.setNewLongitude(95.0);
+        updateSuggestion.setNewLatitude(185.0);
+        updateSuggestion.setNewYear("2012");
+        updateSuggestion.setNewMonth("03");
+
+        List<String> newReferenceUrls = new ArrayList<>();
+        newReferenceUrls.add("Reference URL 3");
+        String newReferenceUrlsJson = this.gson.toJson(newReferenceUrls);
+        updateSuggestion.setNewReferenceUrlsJson(newReferenceUrlsJson);
+
+        Map<Integer, String> updatedReferenceUrlsById = new HashMap<>();
+        updatedReferenceUrlsById.put(reference2.getId(), "New Reference URL 2");
+        String updatedReferenceUrlsByIdJson = this.gson.toJson(updatedReferenceUrlsById);
+        updateSuggestion.setUpdatedReferenceUrlsByIdJson(updatedReferenceUrlsByIdJson);
+
+        List<Integer> deletedReferenceIds = new ArrayList<>();
+        deletedReferenceIds.add(reference1.getId());
+        String deletedReferenceIdsJson = this.gson.toJson(deletedReferenceIds);
+        updateSuggestion.setDeletedReferenceIdsJson(deletedReferenceIdsJson);
+
+        List<String> newImageUrls = new ArrayList<>();
+        newImageUrls.add("New Image URL 1");
+        newImageUrls.add("New Image URL 2");
+        newImageUrls.add("New Image URL 3");
+        String newImageUrlsJson = this.gson.toJson(newImageUrls);
+        updateSuggestion.setNewImageUrlsJson(newImageUrlsJson);
+
+        updateSuggestion.setNewPrimaryImageId(image2.getId());
+
+        List<Integer> deletedImageIds = new ArrayList<>();
+        deletedImageIds.add(image1.getId());
+        String deletedImageIdsJson = this.gson.toJson(deletedImageIds);
+        updateSuggestion.setDeletedImageIdsJson(deletedImageIdsJson);
+
+        List<Integer> deletedPhotoSphereImageIds = new ArrayList<>();
+        deletedPhotoSphereImageIds.add(photoSphereImage1.getId());
+        String deletedPhotoSphereImageIdsJson = this.gson.toJson(deletedPhotoSphereImageIds);
+        updateSuggestion.setDeletedPhotoSphereImageIdsJson(deletedPhotoSphereImageIdsJson);
+
+        this.monumentService.updateMonument(updateSuggestion);
+
+        assertEquals("New Title", monument.getTitle());
+        assertEquals("New Address", monument.getAddress());
+        assertEquals("New Artist", monument.getArtist());
+        assertEquals("New Description", monument.getDescription());
+        assertEquals("New Inscription", monument.getInscription());
+        assertEquals("City", monument.getCity());
+        assertEquals("State", monument.getState());
+        assertTrue(monument.getIsTemporary());
+
+        assertEquals(95.0, monument.getLon(), 0.0);
+        assertEquals(185.0, monument.getLat(), 0.0);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(monument.getDate());
+
+        assertEquals(2012, calendar.get(Calendar.YEAR));
+        assertEquals(3, calendar.get(Calendar.MONTH));
+        assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        assertEquals(2, monument.getReferences().size());
+
+        List<String> referenceUrls = new ArrayList<>();
+        for (Reference reference : monument.getReferences()) {
+            referenceUrls.add(reference.getUrl());
+        }
+
+        assertTrue(referenceUrls.contains("New Reference URL 2"));
+        assertFalse(referenceUrls.contains("Reference URL 2"));
+
+        assertTrue(referenceUrls.contains("Reference URL 3"));
+
+        assertEquals(5, monument.getImages().size());
+
+        for (Image image : monument.getImages()) {
+            if (image.getUrl().equals("Image URL 2")) {
+                assertTrue(image.getIsPrimary());
+            }
+            else {
+                assertFalse(image.getIsPrimary());
+            }
+
+            if (image.getUrl().contains("PhotoSphere")) {
+                assertTrue(image.getIsPhotoSphere());
+            }
+            else {
+                assertFalse(image.getIsPhotoSphere());
+            }
+        }
 
         assertEquals(1, monument.getContributions().size());
 

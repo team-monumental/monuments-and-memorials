@@ -102,6 +102,13 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> images;
 
+    @Column(name = "photosphere_images_json", length = 1024)
+    private String photoSphereImagesJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> photoSphereImages;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bulk_create_suggestion_id")
@@ -325,6 +332,23 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.images;
+    }
+
+    public String getPhotoSphereImagesJson() {
+        return this.photoSphereImagesJson;
+    }
+
+    public void setPhotoSphereImagesJson(String photoSphereImagesJson) {
+        this.photoSphereImagesJson = photoSphereImagesJson;
+    }
+
+    public List<String> getPhotoSphereImages() {
+        if (this.photoSphereImages == null || (this.photoSphereImagesJson != null &&
+                this.photoSphereImages.isEmpty() && !this.photoSphereImagesJson.isEmpty())) {
+            this.photoSphereImages = this.deserializeStringList(this.photoSphereImagesJson);
+        }
+
+        return this.photoSphereImages;
     }
 
     public BulkCreateMonumentSuggestion getBulkCreateSuggestion() {

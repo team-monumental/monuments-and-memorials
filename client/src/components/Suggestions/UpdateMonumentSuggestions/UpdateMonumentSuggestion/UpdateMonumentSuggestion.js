@@ -40,7 +40,9 @@ export default class UpdateMonumentSuggestion extends React.Component {
             updatedReferenceUrlsById: suggestion.updatedReferenceUrlsByIdJson && JSON.parse(suggestion.updatedReferenceUrlsByIdJson),
             newReferenceUrls: suggestion.newReferenceUrlsJson && JSON.parse(suggestion.newReferenceUrlsJson),
             addedImages: suggestion.newImageUrlsJson && JSON.parse(suggestion.newImageUrlsJson).map(url => ({url})),
+            addedPhotoSphereImages: suggestion.newPhotoSphereImageUrlsJson && JSON.parse(suggestion.newPhotoSphereImageUrlsJson).map(url => ({url})),
             deletedImageUrls: suggestion.deletedImageUrlsJson && JSON.parse(suggestion.deletedImageUrlsJson),
+            deletedPhotoSphereImageUrls: suggestion.deletedPhotoSphereImageUrlsJson && JSON.parse(suggestion.deletedPhotoSphereImageUrlsJson),
             displayDeletedImageNames: false
         };
     }
