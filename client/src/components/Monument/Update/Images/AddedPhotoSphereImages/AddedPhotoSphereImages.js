@@ -15,7 +15,7 @@ export default class AddedPhotoSphereImages extends React.Component {
             let addedImagesList = [];
 
             for (const addedImage of images) {
-                addedImagesList.push(<div className="d-flex justify-content-center">
+                addedImagesList.push(<div className="d-flex justify-content-center" key={addedImage.url}>
                         <iframe title="PhotoSphere" src={addedImage.url} frameBorder="0" allowFullScreen/>
                 </div>);
             }

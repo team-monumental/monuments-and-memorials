@@ -1032,7 +1032,9 @@ public class MonumentService extends ModelService<Monument> {
 
         // Delete any Images
         List<Integer> allImageIdsToDelete = updateSuggestion.getDeletedImageIds();
-        allImageIdsToDelete.addAll(updateSuggestion.getDeletedPhotoSphereImageIds());
+        if (updateSuggestion.getDeletedPhotoSphereImageIds() != null) {
+            allImageIdsToDelete.addAll(updateSuggestion.getDeletedPhotoSphereImageIds());
+        }
         this.deleteMonumentImages(currentMonument, allImageIdsToDelete);
 
         // If for some reason the primary Image is deleted, default to the first Image

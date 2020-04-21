@@ -261,6 +261,8 @@ export default class MonumentUpdate extends React.Component {
         const { oldMonument, update, showUnchangedAttributes=true, showAllChangedAttributes=true,
             showCollapseLinks=true } = this.props;
 
+        console.log(update.deletedPhotoSphereImageUrls);
+
         let changedAttributes = [];
         let unchangedAttributes = [];
 

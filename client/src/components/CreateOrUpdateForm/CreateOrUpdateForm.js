@@ -500,7 +500,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images: images,
-            photoSphereImages: photoSphereImages,
+            photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             imagesForUpdate: imagesForUpdate
@@ -576,6 +576,8 @@ export default class CreateOrUpdateForm extends React.Component {
         updateForm.deletedReferenceIdsJson = JSON.stringify(updateForm.deletedReferenceIds);
         updateForm.deletedImageIdsJson = JSON.stringify(updateForm.deletedImageIds);
         updateForm.deletedImageUrlsJson = JSON.stringify(updateForm.deletedImageUrls);
+        updateForm.deletedPhotoSphereImageIdsJson = JSON.stringify(updateForm.deletedPhotoSphereImageIds);
+        updateForm.deletedPhotoSphereImageUrlsJson = JSON.stringify(updateForm.deletedPhotoSphereImageUrls);
         updateForm.newMaterialsJson = JSON.stringify(updateForm.newMaterials);
         updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 

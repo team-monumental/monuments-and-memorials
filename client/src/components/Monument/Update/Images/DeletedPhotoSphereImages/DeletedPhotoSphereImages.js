@@ -15,10 +15,8 @@ export default class DeletedPhotoSphereImages extends React.Component {
             let deletedImagesList = [];
 
             for (const deletedImageUrl of deletedImageUrls) {
-                deletedImagesList.push(<div className="removed">
-                    <div className="photosphere-preview">
-                        <iframe title="PhotoSphere" src={deletedImageUrl} frameBorder="0"/>
-                    </div>
+                deletedImagesList.push(<div className="d-flex justify-content-center" key={deletedImageUrl}>
+                        <iframe title="PhotoSphere" src={deletedImageUrl} frameBorder="0" allowFullScreen/>
                 </div>);
             }
 
@@ -26,7 +24,7 @@ export default class DeletedPhotoSphereImages extends React.Component {
         }
 
         return (
-            <div>
+            <div className="deleted-photosphere-images">
                 <span className="font-weight-bold">Deleted 360° Images:&nbsp;</span>
                 {deletedImagesDisplay}
             </div>
