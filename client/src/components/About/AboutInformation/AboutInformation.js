@@ -228,12 +228,12 @@ export default class AboutInformation extends React.Component {
                                 />
                             </div>
                         </div>
-                        <div className="static-page-title mt-5">
+                        <div className="static-page-title mt-5 d-none d-lg-flex">
                             <h2>
                                 Number of Monuments By State
                             </h2>
                         </div>
-                        <div className="static-page-text">
+                        <div className="static-page-text d-none d-lg-block">
                             <NumberOfMonumentsByStateBarChart
                                 numberOfMonumentsByState={monumentStatistics.numberOfMonumentsByState}
                             />
