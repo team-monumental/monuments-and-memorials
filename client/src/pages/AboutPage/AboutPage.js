@@ -25,11 +25,11 @@ class AboutPage extends React.Component {
             contributorsError, monumentStatisticsError } = this.props;
 
         return (
-            <div className="about-page-container">
+            <div className="about page static">
                 <Helmet title="About | Monuments and Memorials"/>
                 <Spinner show={fetchContributorsPending || fetchMonumentStatisticsPending}/>
                 <AboutInformation
-                    contributors={contributorsError ? null : contributors}
+                    contributors={contributorsError ? null : contributors.filter(contributor => contributor)}
                     monumentStatistics={monumentStatisticsError ? null : monumentStatistics}
                 />
             </div>

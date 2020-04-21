@@ -1,7 +1,7 @@
 import React from 'react';
 import './HomePage.scss';
 import SuggestChanges from '../../components/SuggestChanges/SuggestChanges';
-import { Link, NavLink, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Alert, Button } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
@@ -33,11 +33,8 @@ class HomePage extends React.Component {
             : undefined;
         const { dismissAlert } = this.state;
 
-        let mapNavLink = (
-            <NavLink onClick={e => {
-                e.preventDefault();
-                window.location.replace('/map');
-            }} to='/map' key='map'>click here</NavLink>
+        let mapLink = (
+            <Link to="'/map'">click here</Link>
         );
 
         let suggestionLink = (
@@ -56,22 +53,22 @@ class HomePage extends React.Component {
                         <span>{alert}</span>
                     </Alert>
                 }
-                <div className="home-page">
-                    <div className="home-page-body">
-                        <div className="row">
+                <div className="home page static">
+                    <div className="static-page-body">
+                        <div className="row align-items-center">
                             <div className="col-lg-5 col-12">
-                                <div className="home-page-title">
+                                <div className="static-page-title">
                                     <h1>Welcome to Monuments + Memorials</h1>
                                 </div>
-                                <div className="home-page-text">
+                                <div className="static-page-text">
                                     <p>
                                         Thank you for visiting <span className='font-italic'>Monuments + Memorials</span>, a
                                         crowd-sourced initiative developed at Rochester Institute of Technology.
                                     </p>
                                     <p>
-                                        Begun in the spring 2019 with data collection and launched as a site in fall 2019,
-                                        <span className='font-italic'>Monuments + Memorials</span> is a long-term look at monuments,
-                                        memorials, and memory in the US. To view monuments and memorials, {mapNavLink}. To enter
+                                        Begun in the spring 2019 with data collection and launched as a site in fall 2019,&nbsp;
+                                         <span className='font-italic'>Monuments + Memorials</span> is a long-term look at monuments,
+                                        memorials, and memory in the US. To view monuments and memorials, {mapLink}. To enter
                                         data, {suggestionLink}.
                                     </p>
                                 </div>
@@ -82,12 +79,12 @@ class HomePage extends React.Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col home-page-centered-col">
-                                <div className="home-page-centered">
-                                    <div className="home-page-title">
+                            <div className="col static-page-centered-col">
+                                <div className="static-page-centered">
+                                    <div className="static-page-title">
                                         <h2>Our Mission</h2>
                                     </div>
-                                    <div className="home-page-text">
+                                    <div className="static-page-text">
                                         <p>
                                             <span className='font-italic'>Monuments + Memorials</span> is a crowd-sourced initiative to map every permanent and temporary monument or memorial in the United States
                                             and its inhabited territories (American Samoa, Guam, Puerto Rico, the North Mariana Islands,
@@ -102,12 +99,12 @@ class HomePage extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
+                        <div className="row align-items-center">
                             <div className="col-lg-6 col-12">
-                                <div className="home-page-title">
+                                <div className="static-page-title">
                                     <h2>Contributing</h2>
                                 </div>
-                                <div className="home-page-text pr-lg-4">
+                                <div className="static-page-text pr-lg-4">
                                     <p>
                                         If you would like to join our team as a Monuments + Memorials <strong>Partner</strong> and
                                         serve as a key connection to local communities, please let us know. Partners are vital to

@@ -11,8 +11,8 @@ export default class ContributorsList extends React.Component {
         const { contributors, showingAllContributors } = this.props;
 
         if (contributors && contributors.length) {
-            const contributorsToDisplay = contributors.slice(0, 3);
-            const hiddenContributors = contributors.slice(3);
+            const contributorsToDisplay = contributors.slice(0, 5);
+            const hiddenContributors = contributors.slice(5);
 
             return (
                 <div>

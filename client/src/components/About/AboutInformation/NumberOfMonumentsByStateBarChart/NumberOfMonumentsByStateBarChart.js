@@ -62,7 +62,6 @@ export default class NumberOfMonumentsByStateBarChart extends React.Component {
 
         return (
             <div>
-                <h2>Number of Monuments by State</h2>
                 {numberOfMonumentsByState && chartDisplay}
             </div>
         );

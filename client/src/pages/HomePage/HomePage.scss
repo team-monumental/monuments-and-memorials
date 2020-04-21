@@ -3,76 +3,11 @@
 @import "../../../node_modules/bootstrap/scss/mixins";
 @import "../../theme";
 
-.home-page {
-    display: flex;
-    justify-content: center;
-    padding: 1rem 2rem 4rem;
-
+.home.page {
     @include media-breakpoint-up(lg) {
-        padding: 0 4rem 4rem;
+        padding-top: 0;
     }
 }
-
-.home-page-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    max-width: 1200px;
-
-    & > .row {
-        max-width: 100%;
-        display: flex;
-        align-items: center;
-        padding-bottom: 2.5rem;
-        margin-bottom: 3.5rem;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
-        width: 100%;
-    }
-}
-
-.home-page-title {
-    font-size: 1.35em;
-
-    h1, h2 {
-        text-align: left;
-
-        &:before {
-            content: '';
-            width: 100px;
-            height: 6px;
-            background-color: $primary;
-            display: block;
-            border-radius: 2px;
-            margin-bottom: 1rem;
-        }
-    }
-
-    h2 {
-        font-size: 1.75rem;
-        margin-left: 0;
-
-        &:before {
-            background-color: $secondary;
-        }
-    }
-}
-
-.home-page-centered-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    .home-page-centered {
-        max-width: 600px;
-    }
-}
-
-.home-page-text {
-    white-space: normal;
-}
-
 
 .home-page-image-container {
     overflow: hidden;
