@@ -43,15 +43,12 @@ export default class LocationSearch extends React.Component {
         this.setState({searchQuery: newSearchQuery});
     }
 
-    handleSelect(address) {
+    async handleSelect(address) {
         const { onSuggestionSelect } = this.props;
 
-        geocodeByAddress(address)
-            .then(results => getLatLng(results[0]))
-            .then(latLon => {
-                onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address);
-            })
-            .catch(error => console.error("Error", error));
+        const results = await geocodeByAddress(address);
+        const latLon = await getLatLng(results[0]);
+        onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, results[0]);
     }
 
     handleClear() {

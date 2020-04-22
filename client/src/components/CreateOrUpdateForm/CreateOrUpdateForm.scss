@@ -1,6 +1,7 @@
 @import "../../theme";
 
-.create-form-container {
+.create-form {
+    max-width: 390px;
     .h4 {
         padding-bottom: 1rem;
         text-align: center;
@@ -60,20 +61,11 @@
         padding-bottom: 1rem;
         font-weight: bold;
         text-decoration: underline;
-
-        &.more-link {
-            padding-left: 9.75rem;
-        }
-
-        &.hide-link {
-            padding-left: 9rem;
-        }
+        text-align: center;
     }
 
     .address-coordinates-container {
-        border-style: solid;
-        border-color: lightgray;
-        border-width: thin;
+        border: 1px solid lightgray;
         padding: 1.0rem 1.5rem 1.5rem 1.5rem;
         width: 30rem;
         margin-bottom: 1rem;
@@ -89,13 +81,16 @@
 
         .coordinates-group {
             display: flex;
+
             .coordinate-field {
                 flex-basis: 50%;
                 display: flex;
                 flex-direction: column;
+
                 &:first-child {
                     margin-right: 0.5rem;
                 }
+
                 .form-control {
                     width: 100%;
                 }
@@ -134,7 +129,6 @@
     }
 
     .fileUploader {
-        width: 25rem;
 
         .fileContainer {
             box-shadow: none;
@@ -146,7 +140,7 @@
                 font-weight: bold;
                 text-transform: uppercase;
                 font-family: "Open Sans", sans-serif;
-                margin: 0 0 10px 50px;
+                margin: 0;
 
                 &:hover {
                     background-color: #389c6f;
@@ -237,7 +231,6 @@
     }
 
     .images-for-update-container {
-        margin-top: -3rem;
         display: flex;
 
         .image-for-update-container {
@@ -313,6 +306,18 @@
         &.undo {
             background: $secondary;
             z-index: 2;
+        }
+    }
+
+    .coordinates-geocode-group {
+        border: 1px solid lightgray;
+        background-color: rgba(10, 20, 50, 0.01);
+        padding: 1rem;
+        margin-top: 1rem;
+
+        .coordinates-geocode-row-label {
+            display: inline;
+            font-weight: 500;
         }
     }
 
