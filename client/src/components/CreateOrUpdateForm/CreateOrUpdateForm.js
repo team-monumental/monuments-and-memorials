@@ -514,8 +514,6 @@ export default class CreateOrUpdateForm extends React.Component {
             newState: state
         };
 
-        console.log(updateForm);
-
         switch (dateSelectValue) {
             case 'year':
                 updateForm.newYear = year.value === '' ? undefined : year.value;
@@ -656,7 +654,6 @@ export default class CreateOrUpdateForm extends React.Component {
         }
         address = result.formatted_address;
         this.setState({city, state, address: {...this.state.address, value: address}});
-        console.log({city, state, address: {...this.state.address, value: address}});
     }
 
     handleAdvancedInformationClick() {
@@ -986,7 +983,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
             imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
-            city, state} = this.state;
+            city, state } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
