@@ -111,14 +111,15 @@ export default class CreateReviewModal extends React.Component {
             <Modal
                 show={showing}
                 onHide={onCancel}
+                className="create-review-modal"
             >
-                <Modal.Header className="create-review-modal">
+                <Modal.Header>
                     <Modal.Title>
                         Review Creation
                     </Modal.Title>
                 </Modal.Header>
-                <hr className="create-review-modal"/>
-                <Modal.Body className="create-review-modal">
+                <hr/>
+                <Modal.Body>
                     <p>Please review the data you entered for correctness and completeness!</p>
                     <p>*Fields marked with an asterisk are required.</p>
                     <p>**Address OR Latitude AND Longitude are required.</p>
@@ -160,6 +161,18 @@ export default class CreateReviewModal extends React.Component {
                             )}
                         </div>
                         <div className="attribute">
+                            <span className="font-weight-bold">City:&nbsp;</span>
+                            {form.city ? form.city : (
+                                <span className="missing-attribute">NONE</span>
+                            )}
+                        </div>
+                        <div className="attribute">
+                            <span className="font-weight-bold">State:&nbsp;</span>
+                            {form.state ? form.state : (
+                                <span className="missing-attribute">NONE</span>
+                            )}
+                        </div>
+                        <div className="attribute">
                             <span className="font-weight-bold">Description:&nbsp;</span>
                             {form.description ? form.description : (
                                 <span className="missing-attribute">NONE</span>
@@ -193,7 +206,7 @@ export default class CreateReviewModal extends React.Component {
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className="create-review-modal">
+                <Modal.Footer>
                     <Button
                         variant="danger"
                         onClick={onCancel}

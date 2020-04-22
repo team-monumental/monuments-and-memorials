@@ -11,6 +11,8 @@ import { isEmptyObject } from '../../utils/object-util';
 import LocationSearch from '../Header/SearchBar/LocationSearch/LocationSearch';
 import PhotoSphereImages from './PhotoSphereImages/PhotoSphereImages';
 
+/* global google */
+
 /**
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
  */
@@ -198,7 +200,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { title, address, latitude, longitude, year, month, artist, description, inscription,
             materials, locationType } = this.state;
         let { datePickerCurrentDate, references, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey } = this.state;
+            photoSphereImages, imageUploaderKey, city, state } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -223,6 +225,8 @@ export default class CreateOrUpdateForm extends React.Component {
         year.value = monumentYear ? monumentYear : '';
         month.value = monumentMonth ? monumentMonth : '';
         datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+        city = monument.city;
+        state = monument.state;
 
         if (address.value) locationType.value = 'address';
         else if (latitude.value && longitude.value) locationType.value = 'coordinates';
@@ -290,7 +294,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
             datePickerCurrentDate, references, materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey, locationType});
+            photoSphereImages, imageUploaderKey, locationType, city, state});
     }
 
     /**
@@ -436,7 +440,7 @@ export default class CreateOrUpdateForm extends React.Component {
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
             datePickerCurrentDate, references, images, photoSphereImages, materials, newMaterials, tags, newTags,
-            isTemporary } = this.state;
+            isTemporary, city, state } = this.state;
 
         let createForm = {
             title: title.value,
@@ -454,7 +458,9 @@ export default class CreateOrUpdateForm extends React.Component {
             tags: tags.map(tag => tag.name),
             newTags: newTags.map(newTag => newTag.name),
             dateSelectValue: dateSelectValue,
-            isTemporary: isTemporary.value
+            isTemporary: isTemporary.value,
+            city,
+            state
         };
 
         switch (dateSelectValue) {
@@ -488,7 +494,7 @@ export default class CreateOrUpdateForm extends React.Component {
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
             datePickerCurrentDate, references, images, imagesForUpdate, photoSphereImages, photoSphereImagesForUpdate,
-            materials, tags, isTemporary } = this.state;
+            materials, tags, isTemporary, city, state } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -503,7 +509,9 @@ export default class CreateOrUpdateForm extends React.Component {
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
-            imagesForUpdate: imagesForUpdate
+            imagesForUpdate: imagesForUpdate,
+            newCity: city,
+            newState: state
         };
 
         switch (dateSelectValue) {
@@ -584,14 +592,39 @@ export default class CreateOrUpdateForm extends React.Component {
         return updateForm;
     }
 
-    handleInputChange(event) {
-        const currentState = this.state[event.target.name];
+    async handleInputChange(event) {
+        const { target: { name } } = event;
+        const currentState = this.state[name];
         currentState.value = event.target.value;
 
-        this.setState({[event.target.name]: currentState});
+        await this.setState({[name]: currentState});
+
+        if (name === 'latitude' || name === 'longitude') {
+            const { latitude, longitude } = this.state;
+            if (!validator.isEmpty(latitude.value) && !validator.isEmpty(longitude.value) &&
+                validator.matches(latitude.value, latitudeRegex) && validator.matches(longitude.value, longitudeRegex)) {
+                this.reverseGeocode();
+            }
+        }
     }
 
-    handleLocationSearchSelect(lat, lon, address) {
+    async reverseGeocode() {
+        const { latitude, longitude, previousCoordinates } = this.state;
+        const coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        // Avoid doing duplicate requests
+        if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
+            return;
+        }
+        const geocoder = new google.maps.Geocoder;
+        const result = await new Promise(resolve => geocoder.geocode({location: coordinates}, (results, status) => resolve({results, status})));
+        if (result.status !== 'OK' || !result.results || result.results.length === 0) {
+            return;
+        }
+        this.getAddressCityStateFromGeocodingResult(result.results[0]);
+        this.setState({previousCoordinates: coordinates});
+    }
+
+    handleLocationSearchSelect(lat, lon, address, result) {
         this.setState({
             address: {
                 ...this.state.address,
@@ -606,6 +639,21 @@ export default class CreateOrUpdateForm extends React.Component {
                 value: lon
             }
         });
+        this.getAddressCityStateFromGeocodingResult(result);
+    }
+
+    getAddressCityStateFromGeocodingResult(result) {
+        let city, state, address;
+        for (let component of result.address_components) {
+            if (component.types.includes('locality')) {
+                city = component.long_name;
+            }
+            if (component.types.includes('administrative_area_level_1')) {
+                state = component.short_name;
+            }
+        }
+        address = result.formatted_address;
+        this.setState({city, state, address: {...this.state.address, value: address}});
     }
 
     handleAdvancedInformationClick() {
@@ -934,7 +982,8 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
             longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages } = this.state;
+            imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
+            city, state } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
@@ -1076,7 +1125,7 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         return (
-            <div className="create-form-container">
+            <div className="create-form">
                 {monument
                     ? <div className="h4 update">{action} an existing Monument or Memorial</div>
                     : <div className="h4 create">{action} a new Monument or Memorial</div>}
@@ -1153,7 +1202,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             <Form.Control.Feedback type="invalid">{locationType.message}</Form.Control.Feedback>
                         </Form.Group>
 
-                        {locationType.value === 'address' &&
+                        {locationType.value === 'address' && <>
                             <Form.Group controlId="create-form-address" className="mt-3">
                                 <Form.Label>Address:</Form.Label>
                                 <LocationSearch value={address.value}
@@ -1163,7 +1212,18 @@ export default class CreateOrUpdateForm extends React.Component {
                                                 onSuggestionSelect={this.handleLocationSearchSelect.bind(this)}/>
                                 {!address.isValid && <div className="invalid-feedback d-inline-block">{address.message}</div>}
                             </Form.Group>
-                        }
+                            {latitude.value && longitude.value && <div className="coordinates-geocode-group">
+                                <div className="coordinates-geocode-row">
+                                    <span className="coordinates-geocode-row-label">Coordinates:</span> {latitude.value}, {longitude.value}
+                                </div>
+                                <div className="coordinates-geocode-row">
+                                    <span className="coordinates-geocode-row-label">City:</span> {city}
+                                </div>
+                                <div className="coordinates-geocode-row">
+                                    <span className="coordinates-geocode-row-label">State:</span> {state}
+                                </div>
+                            </div>}
+                        </>}
 
                         {locationType.value === 'coordinates' &&
                             <Form.Group controlId="create-form-coordinates" className="mt-3">
@@ -1194,6 +1254,17 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
                                     </div>
                                 </div>
+                                {address.value && <div className="coordinates-geocode-group">
+                                    <div className="coordinates-geocode-row">
+                                        <span className="coordinates-geocode-row-label">Address:</span> {address.value}
+                                    </div>
+                                    <div className="coordinates-geocode-row">
+                                        <span className="coordinates-geocode-row-label">City:</span> {city}
+                                    </div>
+                                    <div className="coordinates-geocode-row">
+                                        <span className="coordinates-geocode-row-label">State:</span> {state}
+                                    </div>
+                                </div>}
                             </Form.Group>
                         }
                     </div>
@@ -1312,30 +1383,32 @@ export default class CreateOrUpdateForm extends React.Component {
                         </div>
                     </Collapse>
 
-                    {!showingAdvancedInformation && advancedInformationLink}
-                    {showingAdvancedInformation && hideAdvancedInformationLink}
+                    <div className="d-flex flex-column justify-content-center">
+                        {!showingAdvancedInformation && advancedInformationLink}
+                        {showingAdvancedInformation && hideAdvancedInformationLink}
 
-                    <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            className="mr-4 mt-1"
-                        >
-                            Submit
-                        </Button>
+                        <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                className="mr-4 mt-1"
+                            >
+                                Submit
+                            </Button>
 
-                        {this.renderClearButton()}
-                        {this.renderResetButton()}
+                            {this.renderClearButton()}
+                            {this.renderResetButton()}
 
-                        <Button
-                            variant="danger"
-                            type="button"
-                            onClick={() => this.handleCancelButtonClick()}
-                            className="mt-1"
-                        >
-                            Cancel
-                        </Button>
-                    </ButtonToolbar>
+                            <Button
+                                variant="danger"
+                                type="button"
+                                onClick={() => this.handleCancelButtonClick()}
+                                className="mt-1"
+                            >
+                                Cancel
+                            </Button>
+                        </ButtonToolbar>
+                    </div>
                 </Form>
             </div>
         );

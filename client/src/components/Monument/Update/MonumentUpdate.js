@@ -292,6 +292,16 @@ export default class MonumentUpdate extends React.Component {
                 changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} key="address"/>) :
                 unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} didChange={false} key="address"/>);
 
+            /* City */
+            (this.didAttributeChange(oldMonument.city, update.newCity)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="City" oldAttribute={oldMonument.city} newAttribute={update.newCity} key="city"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="City" oldAttribute={oldMonument.city} newAttribute={update.newCity} didChange={false} key="city"/>);
+
+            /* State */
+            (this.didAttributeChange(oldMonument.state, update.newState)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="State" oldAttribute={oldMonument.state} newAttribute={update.newState} key="state"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="State" oldAttribute={oldMonument.state} newAttribute={update.newState} didChange={false} key="state"/>);
+
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             (this.didAttributeChange(oldLatitude, update.newLatitude)) ?

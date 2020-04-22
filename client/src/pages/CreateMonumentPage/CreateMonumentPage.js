@@ -187,18 +187,16 @@ class CreateMonumentPage extends React.Component {
 
         return (
             <div className="page-container">
-                <div className="create-page-container">
+                <div className="create page">
                     <Helmet title="Create | Monuments and Memorials"/>
                     <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
-                    <div className="column left"/>
-                    <div className="column form-column">
+                    <div className="create-form-container">
                         <CreateOrUpdateForm
                             onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
                             onSubmit={(form) => this.handleCreateFormSubmit(form)}
                             action={action}
                         />
                     </div>
-                    <div className="column"/>
 
                     {this.renderDuplicateMonuments()}
                     {this.renderNoImageModal()}

@@ -1,6 +1,17 @@
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../../../theme";
 
+.main-column {
+    width: 100%;
+}
 .details {
+    width: 100%;
+    @include media-breakpoint-up(md) {
+        min-width: 500px;
+        width: auto;
+    }
     .favorite-icon {
         transform: translateY(-14px);
         cursor: pointer;
