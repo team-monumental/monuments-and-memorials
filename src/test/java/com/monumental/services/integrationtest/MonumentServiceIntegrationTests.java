@@ -3506,6 +3506,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3517,8 +3519,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
 
         assertEquals(1, monument.getContributions().size());
 
@@ -3545,6 +3547,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3557,8 +3561,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(1, monument.getContributions().size());
@@ -3590,6 +3594,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3604,8 +3610,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -3642,6 +3648,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3657,8 +3665,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -3702,6 +3710,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3717,8 +3727,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -3762,6 +3772,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3778,8 +3790,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -3823,6 +3835,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3847,8 +3861,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -3912,6 +3926,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -3936,8 +3952,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4001,6 +4017,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4030,8 +4048,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4108,6 +4126,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4139,8 +4159,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4214,6 +4234,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4253,8 +4275,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4349,6 +4371,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4388,8 +4412,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4492,6 +4516,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4532,8 +4558,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4636,6 +4662,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4681,8 +4709,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4785,6 +4813,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4830,8 +4860,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -4917,6 +4947,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -4964,8 +4996,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -5076,6 +5108,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -5123,8 +5157,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -5250,6 +5284,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -5300,8 +5336,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -5411,6 +5447,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -5464,8 +5502,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -5579,6 +5617,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -5634,8 +5674,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -5749,6 +5789,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -5803,8 +5845,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -5918,6 +5960,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -5980,8 +6024,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -6098,6 +6142,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -6162,8 +6208,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -6280,6 +6326,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -6343,8 +6391,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", monument.getArtist());
         assertEquals("New Description", monument.getDescription());
         assertEquals("New Inscription", monument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, monument.getLon(), 0.0);
@@ -6461,6 +6509,8 @@ public class MonumentServiceIntegrationTests {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setNewTitle("New Title");
         updateSuggestion.setNewAddress("New Address");
+        updateSuggestion.setNewCity("New City");
+        updateSuggestion.setNewState("New State");
         updateSuggestion.setNewArtist("New Artist");
         updateSuggestion.setNewDescription("New Description");
         updateSuggestion.setNewInscription("New Inscription");
@@ -6526,8 +6576,8 @@ public class MonumentServiceIntegrationTests {
         assertEquals("New Artist", updatedMonument.getArtist());
         assertEquals("New Description", updatedMonument.getDescription());
         assertEquals("New Inscription", updatedMonument.getInscription());
-        assertEquals("City", monument.getCity());
-        assertEquals("State", monument.getState());
+        assertEquals("New City", monument.getCity());
+        assertEquals("New State", monument.getState());
         assertTrue(monument.getIsTemporary());
 
         assertEquals(95.0, updatedMonument.getLon(), 0.0);
