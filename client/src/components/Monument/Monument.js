@@ -27,7 +27,7 @@ export default class Monument extends React.Component {
         if (!monument) return (<div/>);
 
         return (
-            <div className="page-container">
+            <div className="monument-page-container">
                 <div className="column main-column">
                     <Details monument={monument} favorite={favorite} fetchFavoritePending={fetchFavoritePending}
                              onToggleFavorite={() => onToggleFavorite()} showFavorite={showFavorite}/>

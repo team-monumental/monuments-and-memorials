@@ -11,6 +11,7 @@ import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/Up
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import { isEmptyObject } from '../../utils/object-util';
 import { Role } from '../../utils/authentication-util';
+import Footer from '../../components/Footer/Footer';
 
 /**
  * Root container for the page to suggest an update to an existing Monument
@@ -163,22 +164,25 @@ class UpdateMonumentPage extends React.Component {
         }
 
         return (
-            <div className="update-monument-page-container">
-                {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
-                <Spinner show={fetchMonumentForUpdatePending || createUpdateSuggestionPending}/>
-                <div className="column left"/>
-                <div className="column form-column">
-                    <CreateOrUpdateForm
-                        monument={monument}
-                        onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
-                        onSubmit={this.handleUpdateFormSubmit.bind(this)}
-                        action={action}
-                    />
-                </div>
-                <div className="column"/>
+            <div className="page-container">
+                <div className="update-monument-page-container">
+                    {monument && <Helmet title={`Update ${monument.title} | Monuments and Memorials`}/>}
+                    <Spinner show={fetchMonumentForUpdatePending || createUpdateSuggestionPending}/>
+                    <div className="column left"/>
+                    <div className="column form-column">
+                        <CreateOrUpdateForm
+                            monument={monument}
+                            onCancelButtonClick={() => this.handleUpdateFormCancelButtonClick()}
+                            onSubmit={this.handleUpdateFormSubmit.bind(this)}
+                            action={action}
+                        />
+                    </div>
+                    <div className="column"/>
 
-                {this.renderNoImageModal()}
-                {this.renderReviewModal()}
+                    {this.renderNoImageModal()}
+                    {this.renderReviewModal()}
+                </div>
+                <Footer/>
             </div>
         );
     }

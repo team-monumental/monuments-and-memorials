@@ -6,11 +6,11 @@
 .footer
 {
     display: flex;
-    position:relative;
-    margin-top: 5vh;
-    border-top: 1px groove black;
-    line-height: normal;
-    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    margin-top: 1em;
+    border-top: 1px solid rgba(0,0,0,0.1);
 }
 
 .footer-content {
@@ -18,5 +18,14 @@
     list-style-type: none;
     flex-wrap: wrap;
     vertical-align: top;
+    margin: 0;
+    padding: 0;
+
+    li:not(:last-child) {
+        &:after {
+            content: '|';
+            margin: 0 0.5rem;
+        }
+    }
 }
 

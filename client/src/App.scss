@@ -19,6 +19,14 @@ body {
     margin: 0;
 }
 
+.page-container {
+    min-height: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .page {
     padding: 0 1rem 1rem 1rem;
 

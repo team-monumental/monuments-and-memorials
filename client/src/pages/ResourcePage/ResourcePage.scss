@@ -1,35 +1,76 @@
-@import "../../../node_modules/bootstrap/scss/functions";
-@import "../../../node_modules/bootstrap/scss/variables";
-@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
 
-#resource-page-body {
-  display: block;
+.resources.page {
+    .static-page-body {
+        width: 935px;
+        max-width: 935px;
 
-  p {
-    text-align: left;
-    text-indent: each-line;
-  }
-
-  b {
-    text-align: center;
-    text-indent: each-line;
-  }
-
-  .card.card {
-    text-align: center;
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: 80%;
+        .row:last-child {
+            border: none;
+            margin: 0;
+        }
     }
-  }
-}
 
-#resource-page-title {
-  text-align: center;
-  font-size: 1.35em;
+    .field-name {
+        display: flex;
+        align-items: center;
+        i {
+            transform: translateY(-2px);
+            cursor: pointer;
+            color: $secondary;
+            user-select: none;
+            &:hover {
+                color: darken($secondary, 15%);
+                transform: scale(1.1) translateY(-2px);
+            }
+            &:active {
+                color: darken($secondary, 30%);
+            }
+        }
+    }
 
-  @include media-breakpoint-up(md) {
-    font-size: 2em;
-  }
+    .field-content {
+        padding-top: 0.75rem;
+
+        p {
+            margin-bottom: 0.5rem;
+        }
+
+        .important {
+            text-decoration: none !important;
+            font-weight: 500;
+            color: $secondary;
+        }
+    }
+
+    .collapse-all-search-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .collapse-btn {
+        white-space: nowrap;
+    }
+
+    .text-search {
+        margin-right: 1rem;
+        input {
+            width: 400px;
+        }
+    }
+
+    a {
+        word-break: break-all;
+    }
+
+    @include media-breakpoint-down(sm) {
+        .collapse-all-search-container {
+            > div, .text-search {
+                flex-grow: 1;
+            }
+            input {
+                width: 100%;
+            }
+        }
+    }
 }

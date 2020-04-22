@@ -12,6 +12,7 @@ import DuplicateMonuments from '../../components/Monument/DuplicateMonuments/Dup
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
 import { Role } from '../../utils/authentication-util';
+import Footer from '../../components/Footer/Footer';
 
 /**
  * Root container for the page to create a new CreateMonumentSuggestion
@@ -185,22 +186,25 @@ class CreateMonumentPage extends React.Component {
         }
 
         return (
-            <div className="create-page-container">
-                <Helmet title="Create | Monuments and Memorials"/>
-                <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
-                <div className="column left"/>
-                <div className="column form-column">
-                    <CreateOrUpdateForm
-                        onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
-                        onSubmit={(form) => this.handleCreateFormSubmit(form)}
-                        action={action}
-                    />
-                </div>
-                <div className="column"/>
+            <div className="page-container">
+                <div className="create-page-container">
+                    <Helmet title="Create | Monuments and Memorials"/>
+                    <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
+                    <div className="column left"/>
+                    <div className="column form-column">
+                        <CreateOrUpdateForm
+                            onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}
+                            onSubmit={(form) => this.handleCreateFormSubmit(form)}
+                            action={action}
+                        />
+                    </div>
+                    <div className="column"/>
 
-                {this.renderDuplicateMonuments()}
-                {this.renderNoImageModal()}
-                {this.renderReviewModal()}
+                    {this.renderDuplicateMonuments()}
+                    {this.renderNoImageModal()}
+                    {this.renderReviewModal()}
+                </div>
+                <Footer/>
             </div>
         );
     }

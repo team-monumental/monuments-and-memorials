@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
 import MonumentPage from './pages/MonumentPage/MonumentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ErrorHandler from './containers/ErrorHandler/ErrorHandler';
@@ -61,7 +60,7 @@ class App extends React.Component {
                 <Toaster/>
                 <ConnectedRouter history={history}>
                     <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
-                    <div>
+                    <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <ErrorHandler>
                             <Route exact path="/map" component={MapPage}/>
                             <Route exact path="/" component={HomePage}/>
@@ -84,7 +83,6 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/suggestion-created" component={SuggestionCreatedPage}/>
                         </ErrorHandler>
                     </div>
-                    <Footer headerHeight={`${headerHeight}px`}/>
                 </ConnectedRouter>
             </div>
         );

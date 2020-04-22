@@ -6,6 +6,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument, { createFavorite, deleteFavorite, fetchFavorite } from '../../actions/monument';
 import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/Footer/Footer';
 
 /**
  * Root container component for the monument record page which handles retrieving the monument
@@ -76,15 +77,18 @@ class MonumentPage extends React.Component {
             fetchMonumentPending, fetchNearbyPending, fetchRelatedPending, fetchFavoritePending
         } = this.props;
         return (
-            <div className="page h-100">
-                {monument && <Helmet title={monument.title + ' | Monuments and Memorials'}/>}
-                <Spinner show={fetchMonumentPending}/>
-                <Monument monument={monument} nearbyMonuments={nearbyMonuments} relatedMonuments={relatedMonuments}
-                          fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}
-                          fetchFavoritePending={fetchFavoritePending} favorite={favorite}
-                          onToggleFavorite={() => this.handleToggleFavorite()} showFavorite={!!session.user}
-                          onSuggestChangesButtonClick={() => this.handleSuggestChangesButtonClick()}
-                />
+            <div className="page-container">
+                <div className="page h-100">
+                    {monument && <Helmet title={monument.title + ' | Monuments and Memorials'}/>}
+                    <Spinner show={fetchMonumentPending}/>
+                    <Monument monument={monument} nearbyMonuments={nearbyMonuments} relatedMonuments={relatedMonuments}
+                              fetchNearbyPending={fetchNearbyPending} fetchRelatedPending={fetchRelatedPending}
+                              fetchFavoritePending={fetchFavoritePending} favorite={favorite}
+                              onToggleFavorite={() => this.handleToggleFavorite()} showFavorite={!!session.user}
+                              onSuggestChangesButtonClick={() => this.handleSuggestChangesButtonClick()}
+                    />
+                </div>
+                <Footer/>
             </div>
         );
     }

@@ -6,6 +6,7 @@ import FinishPasswordReset from '../../components/FinishPasswordReset/FinishPass
 import { finishPasswordReset } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/Footer/Footer';
 
 class FinishPasswordResetPage extends React.Component {
 
@@ -21,12 +22,15 @@ class FinishPasswordResetPage extends React.Component {
     render() {
         const { success, error, pending } = this.props;
         return (
-            <div className="page d-flex justify-content-center mt-5">
-                <Helmet title="Reset Password | Monuments and Memorials"/>
-                {pending && <Spinner show={pending}/>}
-                <FinishPasswordReset onResetPassword={data => this.onSubmit(data)}
-                   success={success}
-                   error={error}/>
+            <div className="page-container">
+                <div className="page d-flex justify-content-center mt-5">
+                    <Helmet title="Reset Password | Monuments and Memorials"/>
+                    {pending && <Spinner show={pending}/>}
+                    <FinishPasswordReset onResetPassword={data => this.onSubmit(data)}
+                       success={success}
+                       error={error}/>
+                </div>
+                <Footer/>
             </div>
         )
     }

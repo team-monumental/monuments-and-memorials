@@ -6,6 +6,8 @@ import { login } from '../../actions/authentication';
 import * as QueryString from 'query-string';
 import { withRouter, Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import ErrorHandler from '../../containers/ErrorHandler/ErrorHandler';
+import Footer from '../../components/Footer/Footer';
 
 class LoginPage extends React.Component {
 
@@ -40,12 +42,15 @@ class LoginPage extends React.Component {
             return (<Redirect to={redirect}/>);
         }
         return (
-            <div className="page d-flex justify-content-center mt-5">
-                <Helmet title="Login | Monuments and Memorials"/>
-                <Login onLogin={data => this.onLogin(data)}
-                       result={result}
-                       error={error && error.message}
-                       warn={warn}/>
+            <div className="page-container">
+                <div className="page d-flex justify-content-center mt-5">
+                    <Helmet title="Login | Monuments and Memorials"/>
+                    <Login onLogin={data => this.onLogin(data)}
+                           result={result}
+                           error={error && error.message}
+                           warn={warn}/>
+                </div>
+                <Footer/>
             </div>
         )
     }
