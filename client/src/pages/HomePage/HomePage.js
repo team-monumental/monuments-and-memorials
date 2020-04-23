@@ -5,7 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
-import ErrorHandler from '../../containers/ErrorHandler/ErrorHandler';
 import Footer from '../../components/Footer/Footer';
 
 class HomePage extends React.Component {

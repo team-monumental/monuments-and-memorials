@@ -1,9 +1,8 @@
 import React from 'react';
 import './Footer.scss';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-class Footer extends React.Component {
+export default class Footer extends React.Component {
 
     render() {
         return (
@@ -21,5 +20,3 @@ class Footer extends React.Component {
         );
     }
 }
-
-export default connect(Footer.mapStateToProps)(Footer);

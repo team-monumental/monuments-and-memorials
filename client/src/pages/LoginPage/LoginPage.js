@@ -6,7 +6,6 @@ import { login } from '../../actions/authentication';
 import * as QueryString from 'query-string';
 import { withRouter, Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import ErrorHandler from '../../containers/ErrorHandler/ErrorHandler';
 import Footer from '../../components/Footer/Footer';
 
 class LoginPage extends React.Component {

@@ -49,7 +49,7 @@ class TagDirectoryPage extends React.Component {
                                 </div>
                                 <div className="static-page-text">
                                     <p>
-                                        This page provides a list of every tag and material in our system.
+                                        This page provides a list of every tag and material in our database.
                                         When deciding which tags or materials to add to your monument or memorial,
                                         we suggest using existing ones first before resorting to creating new ones.
                                     </p>

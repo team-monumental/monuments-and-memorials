@@ -3,6 +3,7 @@ import './ResourcePage.scss';
 import { Collapse, Button } from 'react-bootstrap';
 import TextSearch from '../../components/Header/SearchBar/TextSearch/TextSearch';
 import Footer from '../../components/Footer/Footer';
+import { capitalize } from '../../utils/string-util';
 
 export default class ResourcePage extends React.Component {
 
@@ -26,7 +27,7 @@ export default class ResourcePage extends React.Component {
 
     toggleCollapseAllFields() {
         const { fields, collapseAll } = this.state;
-        for (let fieldName in fields) {
+        for (const fieldName in fields) {
             if (!fields.hasOwnProperty(fieldName)) continue;
             fields[fieldName].collapsed = !collapseAll;
         }
@@ -80,13 +81,12 @@ export default class ResourcePage extends React.Component {
         const { search } = this.state;
 
         const fields = [];
-        for (let fieldName in this.state.fields) {
+        for (const fieldName in this.state.fields) {
             if (!this.state.fields.hasOwnProperty(fieldName)) continue;
             const field = this.state.fields[fieldName];
             field.content = this.fieldContent[fieldName];
             field.name = fieldName;
-            field.prettyName = fieldName.replace(/([A-Z])/g, ' $1').trim();
-            field.prettyName = field.prettyName.substring(0, 1).toUpperCase() + field.prettyName.substring(1);
+            field.prettyName = capitalize(fieldName.replace(/([A-Z])/g, ' $1').trim());
             fields.push(field);
         }
 
@@ -177,7 +177,7 @@ export default class ResourcePage extends React.Component {
                     In cases where the year is only known, use default date of 01-01-yyyy.
                 </p>
                 <p>
-                    In cases where no date is known, leave the field blank
+                    In cases where no date is known, leave the field blank.
                 </p>
             </>),
             description: (<>
@@ -202,7 +202,7 @@ export default class ResourcePage extends React.Component {
                     <span className="important">Example:</span> Bronze
                 </p>
                 <p>
-                    If more than one material was used in the creation of this work, select all relevant tags from the list provided.
+                    If more than one material was used in the creation of this work, select all relevant materials from the list provided.
                 </p>
             </>),
             inscription: (<>
@@ -241,7 +241,7 @@ export default class ResourcePage extends React.Component {
             </>),
             city: (<>
                 <p>
-                    The city where monument or memorial is located
+                    The city where the monument or memorial is located.
                 </p>
                 <p>
                     <span className="important">Format:</span> Use common name of city, with punctuation if required
@@ -252,7 +252,7 @@ export default class ResourcePage extends React.Component {
             </>),
             state: (<>
                 <p>
-                    The state or territory where monument or memorial is located
+                    The state or territory where the monument or memorial is located.
                 </p>
                 <p>
                     <span className="important">Format:</span> Use common abbreviation of state – two letters, no punctuation
@@ -263,18 +263,18 @@ export default class ResourcePage extends React.Component {
             </>),
             tags: (<>
                 <p>
-                    Terms that are relevant to describe the monument or memorial
+                    Terms that are relevant to describe the monument or memorial.
                 </p>
                 <p>
                     <span className="important">Format:</span> Use terms from pre-defined list
                 </p>
                 <p>
-                    <span className="important">Example:</span> woman artist, typhoid, Brown University
+                    <span className="important">Example:</span> Woman Artist, Typhoid, Brown University
                 </p>
             </>),
             reference: (<>
                 <p>
-                    Location where reliable information was found
+                    Location where reliable information was found.
                 </p>
                 <p>
                     <span className="important">Format:</span> URL
@@ -285,10 +285,10 @@ export default class ResourcePage extends React.Component {
             </>),
             images: (<>
                 <p>
-                    Upload an image that you have taken or from another location
+                    Upload an image that you have taken or from another location.
                 </p>
                 <p>
-                    <span className="important">Format:</span> .jpg
+                    <span className="important">Format:</span> .jpg, .png
                 </p>
             </>),
             temporary: (<>
