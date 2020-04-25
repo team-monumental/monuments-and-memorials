@@ -63,6 +63,11 @@
         word-break: break-all;
     }
 
+    .example-image {
+        max-width: 400px;
+        margin-bottom: 0.5rem;
+    }
+
     @include media-breakpoint-down(sm) {
         .collapse-all-search-container {
             > div, .text-search {

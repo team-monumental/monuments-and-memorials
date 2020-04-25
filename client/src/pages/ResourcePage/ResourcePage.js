@@ -232,11 +232,9 @@ export default class ResourcePage extends React.Component {
                 <p>
                     To obtain coordinates, use the Google Maps “What’s here?” feature.
                 </p>
+                <img src="/resources/how-to-convert-degrees.png" className="example-image"/>
                 <p>
-                    See how here (link to: https://support.google.com/maps/answer/18539)
-                </p>
-                <p>
-                    Or, input address here: https://www.latlong.net/
+                    Or, input address here: <a href="https://www.latlong.net/">https://www.latlong.net/</a>
                 </p>
             </>),
             city: (<>
