@@ -33,7 +33,7 @@ class ErrorHandler extends React.Component {
             );
         }
 
-        return (<div className="h-100">{children}</div>);
+        return (<div style={{height: '100%', minHeight: '100%'}}>{children}</div>);
     }
 }
 

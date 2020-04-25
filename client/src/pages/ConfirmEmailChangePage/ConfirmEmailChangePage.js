@@ -7,6 +7,7 @@ import { confirmEmailChange } from '../../actions/user';
 import { Card } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/Footer/Footer';
 
 class ConfirmEmailChangePage extends React.Component {
 
@@ -31,24 +32,27 @@ class ConfirmEmailChangePage extends React.Component {
     render() {
         const { pending, success, error } = this.props;
         return (
-            <div className="change-email-confirmation page d-flex flex-column align-items-center">
-                <Helmet title="Confirm Your Email Address | Monuments and Memorials"/>
-                <Spinner show={pending}/>
-                <Card>
-                    <Card.Header>
-                        <Card.Title>
-                            Confirm Email Change
-                        </Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        {success && <>
-                            Success! Your email address has been verified
-                        </>}
-                        {error && <div className="error-message mb-3">
-                            {error}
-                        </div>}
-                    </Card.Body>
-                </Card>
+            <div className="page-container">
+                <div className="change-email-confirmation page d-flex flex-column align-items-center">
+                    <Helmet title="Confirm Your Email Address | Monuments and Memorials"/>
+                    <Spinner show={pending}/>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title>
+                                Confirm Email Change
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            {success && <>
+                                Success! Your email address has been verified
+                            </>}
+                            {error && <div className="error-message mb-3">
+                                {error}
+                            </div>}
+                        </Card.Body>
+                    </Card>
+                </div>
+                <Footer/>
             </div>
         );
     }

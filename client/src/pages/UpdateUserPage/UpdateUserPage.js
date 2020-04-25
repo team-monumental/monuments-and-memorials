@@ -5,6 +5,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import UpdateUser from '../../components/UpdateUser/UpdateUser';
 import { updateUser, clearUpdateUser } from '../../actions/user';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/Footer/Footer';
 
 class UpdateUserPage extends React.Component {
 
@@ -31,14 +32,17 @@ class UpdateUserPage extends React.Component {
     render() {
         const { pending, success, error, needsConfirmation, session } = this.props;
         return (
-            <div className="update-user page">
-                <Helmet title="Update Your Information | Monuments and Memorials"/>
-                <Spinner show={session.pending || pending}/>
-                {session.user &&
-                    <UpdateUser user={session.user} success={success} error={error}
-                                needsConfirmation={needsConfirmation}
-                                onSubmit={user => this.updateUser(user)}/>
-                }
+            <div className="page-container">
+                <div className="update-user page">
+                    <Helmet title="Update Your Information | Monuments and Memorials"/>
+                    <Spinner show={session.pending || pending}/>
+                    {session.user &&
+                        <UpdateUser user={session.user} success={success} error={error}
+                                    needsConfirmation={needsConfirmation}
+                                    onSubmit={user => this.updateUser(user)}/>
+                    }
+                </div>
+                <Footer/>
             </div>
         )
     }

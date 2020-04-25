@@ -7,6 +7,7 @@ import { Button, Card } from 'react-bootstrap';
 import { confirmSignup, resendConfirmation } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/Footer/Footer';
 
 class ConfirmSignupPage extends React.Component {
 
@@ -117,28 +118,31 @@ class ConfirmSignupPage extends React.Component {
         errorMessage = typeof error === 'string' ? error : errorMessage;
 
         return (
-            <div className="confirm-signup-page page d-flex justify-content-center mt-5">
-                <Card>
-                    <Card.Header>
-                        <Card.Title>
-                            {error && 'Whoops!'}
-                            {success && 'Success!'}
-                        </Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        {error && <>
-                            {errorMessage} {session.user && allowResend &&
-                                <Button
-                                   variant="link"
-                                   className="p-0"
-                                   onClick={() => this.beginResendConfirmation()}>
-                                    Try sending a new one.
-                                </Button>
-                            }
-                        </>}
-                        {success && successMessage}
-                    </Card.Body>
-                </Card>
+            <div className="page-container">
+                <div className="confirm-signup-page page d-flex justify-content-center mt-5">
+                    <Card>
+                        <Card.Header>
+                            <Card.Title>
+                                {error && 'Whoops!'}
+                                {success && 'Success!'}
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            {error && <>
+                                {errorMessage} {session.user && allowResend &&
+                                    <Button
+                                       variant="link"
+                                       className="p-0"
+                                       onClick={() => this.beginResendConfirmation()}>
+                                        Try sending a new one.
+                                    </Button>
+                                }
+                            </>}
+                            {success && successMessage}
+                        </Card.Body>
+                    </Card>
+                </div>
+                <Footer/>
             </div>
         )
     }

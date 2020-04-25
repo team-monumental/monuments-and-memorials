@@ -16,6 +16,7 @@ import CreateMonumentPage from './pages/CreateMonumentPage/CreateMonumentPage';
 import TagDirectoryPage from './pages/TagDirectoryPage/TagDirectoryPage';
 import HomePage from './pages/HomePage/HomePage';
 import AboutPage from './pages/AboutPage/AboutPage';
+import ResourcePage from './pages/ResourcePage/ResourcePage';
 import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import SignupPage from './pages/SignupPage/SignupPage';
@@ -70,6 +71,7 @@ class App extends React.Component {
                             <ProtectedRoute exact path="/create" component={CreateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                             <Route exact path="/about" component={AboutPage}/>
+                            <Route exact path="/resources" component={ResourcePage}/>
                             <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
                             <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                             <Route exact path="/password-reset" component={BeginPasswordResetPage}/>

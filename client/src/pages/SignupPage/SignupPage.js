@@ -6,6 +6,7 @@ import { signup } from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
 import { withRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import Footer from '../../components/Footer/Footer';
 
 class SignupPage extends React.Component {
 
@@ -21,10 +22,13 @@ class SignupPage extends React.Component {
     render() {
         const { pending, error, result } = this.props;
         return (
-            <div className="page d-flex justify-content-center mt-5">
-                <Helmet title="Signup | Monuments and Memorials"/>
-                <Spinner show={pending}/>
-                <Signup onSignup={data => this.signup(data)} error={error && error.message} result={result}/>
+            <div className="page-container">
+                <div className="page d-flex justify-content-center mt-5">
+                    <Helmet title="Signup | Monuments and Memorials"/>
+                    <Spinner show={pending}/>
+                    <Signup onSignup={data => this.signup(data)} error={error && error.message} result={result}/>
+                </div>
+                <Footer/>
             </div>
         )
     }

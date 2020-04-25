@@ -1,55 +1,42 @@
-@import "../../../node_modules/bootstrap/scss/functions";
-@import "../../../node_modules/bootstrap/scss/variables";
-@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../theme";
 
-.tag-directory-page-container {
-  .columns-container {
-    min-width: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-
-    .column {
-      flex: 1 1 100%;
-      padding: 1rem 0;
-
-      h2 {
-        text-align: center;
-        color: #35495e;
-      }
-
-      .tags {
+.tag-directory.page {
+    .alphanumeric-filter {
+        display: flex;
         justify-content: center;
-        padding-top: 0.5rem;
-      }
+        flex-wrap: wrap;
+        width: 100%;
+        margin-bottom: 4rem;
+
+        .character {
+            &.selected a {
+                background-color: $primary;
+                color: white;
+                font-weight: 500;
+                border-radius: 3px;
+            }
+            &:not(:last-child):after {
+                content: '|';
+                margin: 0 0.25rem;
+                cursor: default;
+            }
+            a {
+                padding: 0 0.25rem;
+            }
+        }
     }
 
-    @include media-breakpoint-up(lg) {
-      flex-direction: row;
-
-      .column {
-        flex-basis: 50%;
-        padding: 0 1rem;
-      }
+    .static-page-body > .row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
     }
 
-    h2 {
-      padding-top: 2rem;
-      text-decoration: underline;
+    .tags {
+        padding-top: 1rem;
+        max-height: 600px;
+        overflow-y: auto;
+        @include media-breakpoint-down(sm) {
+            max-height: 300px;
+        }
     }
-
-    .tag {
-      font-size: 1.1rem;
-      margin-right: 1.25rem;
-      margin-bottom: 1rem;
-    }
-  }
-
-  .page-title {
-    h1 {
-      text-align: center;
-      color: #35495e;
-    }
-  }
 }
