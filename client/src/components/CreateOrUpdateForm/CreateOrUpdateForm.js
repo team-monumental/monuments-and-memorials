@@ -615,7 +615,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
             return;
         }
-        const geocoder = new google.maps.Geocoder;
+        const geocoder = new google.maps.Geocoder();
         const result = await new Promise(resolve => geocoder.geocode({location: coordinates}, (results, status) => resolve({results, status})));
         if (result.status !== 'OK' || !result.results || result.results.length === 0) {
             return;
@@ -643,7 +643,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     getAddressCityStateFromGeocodingResult(result) {
-        let city, state, address;
+        let city, state, address, country;
         for (let component of result.address_components) {
             if (component.types.includes('locality')) {
                 city = component.long_name;
@@ -651,6 +651,23 @@ export default class CreateOrUpdateForm extends React.Component {
             if (component.types.includes('administrative_area_level_1')) {
                 state = component.short_name;
             }
+            if (component.types.includes('country')) {
+                country = component.short_name;
+            }
+        }
+        /* US Territories are usually listed as countries, with some strange edge cases, like
+           San Juan, Puerto Rico where the administrative_area_level_1 is San Juan, not Puerto Rico.
+           For Guam, there is no administrative_area_level_1, and Guam is the country
+           This is kind of a catch all attempt to get a 2 letter state code
+         */
+        if ((!state || state.length !== 2) && country && country.length === 2) {
+            state = country;
+        }
+        /* If there was no 2 letter state code, we could end up with something longer like San Juan, so fallback to
+           leaving the field blank if it's not 2 letters long
+         */
+        if (state.length !== 2) {
+            state = undefined;
         }
         address = result.formatted_address;
         this.setState({city, state, address: {...this.state.address, value: address}});

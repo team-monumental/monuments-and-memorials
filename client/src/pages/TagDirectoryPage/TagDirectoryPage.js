@@ -6,6 +6,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import Tags from '../../components/Tags/Tags';
 import { Helmet } from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
+import { Button } from 'react-bootstrap';
 
 /**
  * Root container component for the Tag Directory Page
@@ -92,17 +93,15 @@ class TagDirectoryPage extends React.Component {
         return (
             <div className="alphanumeric-filter">
                 <span className={`character${alphanumericFilter === '' ? ' selected' : ''}`}>
-                    <a href="javascript:void();"
-                       onClick={() => this.setState({alphanumericFilter: ''})}>
+                    <Button variant="link" onClick={() => this.setState({alphanumericFilter: ''})}>
                         All
-                    </a>
+                    </Button>
                 </span>
                 {characters.map(character => (
                     <span key={character} className={`character${alphanumericFilter === character ? ' selected' : ''}`}>
-                        <a href="javascript:void();"
-                           onClick={() => this.setState({alphanumericFilter: character})}>
+                        <Button variant="link" onClick={() => this.setState({alphanumericFilter: character})}>
                             {character.toUpperCase()}
-                        </a>
+                        </Button>
                     </span>
                 ))}
             </div>
