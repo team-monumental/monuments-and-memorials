@@ -98,6 +98,7 @@ export default class LocationSearch extends React.Component {
                     value={searchQuery}
                     onChange={newSearchQuery => this.handleChange(newSearchQuery)}
                     onSelect={address => this.handleSelect(address)}
+                    onError={(status, clearSuggestions) => clearSuggestions()}
                     searchOptions={searchOptions}
                     highlightFirstSuggestion={true}>
                     {renderFunc}
