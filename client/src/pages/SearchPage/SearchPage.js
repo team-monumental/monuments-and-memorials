@@ -44,7 +44,11 @@ class SearchPage extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { dispatch, location: { search } } = this.props;
         if (prevProps.location.search !== search) {
-            dispatch(searchMonuments(QueryString.parse(search)));
+            const params = QueryString.parse(search);
+            dispatch(searchMonuments(params));
+            this.setState({
+                ...params
+            });
         }
     }
 
