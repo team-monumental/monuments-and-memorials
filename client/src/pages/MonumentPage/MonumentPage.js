@@ -58,7 +58,7 @@ class MonumentPage extends React.Component {
         });
         // Don't redirect if the correct slug is already present
         if (slug !== newSlug) {
-            history.replace(`/monuments/${monument.id}/${newSlug}`);
+            history.push(`/monuments/${monument.id}/${newSlug}`);
         }
     }
 
@@ -73,7 +73,7 @@ class MonumentPage extends React.Component {
 
     handleSuggestChangesButtonClick() {
         const { monument, history } = this.props;
-        history.replace(`/update-monument/${monument.id}`)
+        history.push(`/update-monument/${monument.id}`);
     }
 
     render() {
