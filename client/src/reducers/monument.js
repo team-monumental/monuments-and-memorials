@@ -96,7 +96,6 @@ export function monumentPage(state = initialState, action) {
                 fetchFavoriteError: action.error
             };
         case LOCATION_CHANGE:
-            console.log(`location change ${window.location}`);
             return initialState;
         default:
             return state;
