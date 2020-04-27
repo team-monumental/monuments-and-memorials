@@ -24,18 +24,23 @@ class MonumentPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, session, match: { params: { monumentId } } } = this.props;
+        const { dispatch, session, match: { params: { monumentId, slug } } } = this.props;
         if ((prevProps.session.pending && !session.pending && session.user) ||
             (prevProps.monument.id !== this.props.monument.id && this.props.monument.id)) {
             dispatch(fetchFavorite(monumentId));
+        }
+        if (prevProps.monument.id && !this.props.monument.id) {
+            dispatch(fetchMonument(monumentId));
+        }
+        if (this.props.monument.title && !slug) {
+            // Change the url to include the slug if it's not present
+            this.redirectToSlug();
         }
     }
 
     componentDidMount() {
         const { dispatch, match: { params: { monumentId } } } = this.props;
         dispatch(fetchMonument(monumentId));
-        // Change the url to include the slug if it's not present
-        this.redirectToSlug();
     }
 
     /**
