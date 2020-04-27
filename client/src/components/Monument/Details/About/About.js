@@ -173,7 +173,7 @@ export default class About extends React.Component {
                 <div>
                     <span className="detail-label">Contributors:&nbsp;</span>
                     <ul>
-                        {contributors.map(contributor => (<li key={contributor.id}>{contributor}</li>))}
+                        {contributors.map(contributor => (<li key={contributor}>{contributor}</li>))}
                     </ul>
                 </div>
             )
