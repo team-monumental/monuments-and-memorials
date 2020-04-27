@@ -114,7 +114,7 @@ public class MonumentService extends ModelService<Monument> {
                 builder.desc(
                     builder.sum(
                         builder.sum(
-                            SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"),
+                            builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), 3),
                             SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist")
                         ),
                         SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description")

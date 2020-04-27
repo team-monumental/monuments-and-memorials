@@ -23,7 +23,22 @@ public class SearchHelper {
      */
     public static Expression<Number> buildSimilarityExpression(CriteriaBuilder builder, Root root, String searchQuery,
                                                                String fieldName) {
-        return builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery));
+        /* "coalesce" here will cause null values to return as 0 instead. This is important because if a field is null,
+           similarity and word_similarity return null, which when added to the other fields' scores makes the whole thing null
+           We're also multiplying word_similarity by 5 here because this is generally more meaningful than simple similarity
+           However we still include similarity because if the search term isn't like any word in any of the monuments,
+           we still want to return something at least a little similar as there may have been a spelling error
+         */
+        return builder.sum(
+                builder.coalesce(builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery)), 0),
+                builder.prod(
+                    builder.coalesce(
+                        builder.function("word_similarity", Number.class, root.get(fieldName), builder.literal(searchQuery)),
+                        0
+                    ),
+                    5
+                )
+        );
     }
 
     /**
