@@ -18,7 +18,7 @@ class HomePage extends React.Component {
 
     handleSuggestChangesButtonClick() {
         const { history } = this.props;
-        history.replace('/create');
+        history.push('/create');
     }
 
     static mapStateToProps(state) {

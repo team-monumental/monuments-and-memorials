@@ -46,7 +46,7 @@ class Header extends React.Component {
     handleLogout() {
         const { onLogout, history } = this.props;
         // If the user is currently on an authenticated route, tell ProtectedRoute not to show the unauthorized banner
-        history.replace({
+        history.push({
             pathname: history.location.pathname,
             state: { suppressAuthenticationBanner: true }
         });

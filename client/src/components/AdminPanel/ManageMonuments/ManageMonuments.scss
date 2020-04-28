@@ -71,7 +71,7 @@
     }
 
     .update-monument-page-container {
-        .thank-you-column {
+        .column.left, .column:last-child {
             display: none;
         }
         .create-form-container {

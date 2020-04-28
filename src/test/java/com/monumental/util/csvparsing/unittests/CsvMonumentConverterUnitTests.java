@@ -402,7 +402,7 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(2, materialNameResults.size());
         assertEquals(3, tagNameResults.size());
 
-        assertEquals(3, result.getWarnings().size());
+        assertEquals(1, result.getWarnings().size());
         assertEquals(1, result.getErrors().size());
     }
 

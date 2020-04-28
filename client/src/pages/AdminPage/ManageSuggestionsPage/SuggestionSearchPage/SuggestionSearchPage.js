@@ -73,7 +73,9 @@ class SuggestionSearchPage extends React.Component {
             this.setState({type: params.type});
         }
         if (prevProps.location.search !== search) {
-            dispatch(searchSuggestions(QueryString.parse(search)));
+            const queryParams = QueryString.parse(search);
+            this.setState({...queryParams});
+            dispatch(searchSuggestions(queryParams));
         }
     }
 
@@ -93,7 +95,7 @@ class SuggestionSearchPage extends React.Component {
     }
 
     async search(changedState) {
-        await this.setState({changedState});
+        await this.setState(changedState);
         search(this.state, this.props.history, '/panel/manage/suggestions/search');
     }
 

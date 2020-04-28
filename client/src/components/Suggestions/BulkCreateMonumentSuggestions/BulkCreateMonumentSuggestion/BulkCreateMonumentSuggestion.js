@@ -1,38 +1,52 @@
 import * as React from 'react';
 import './BulkCreateMonumentSuggestion.scss';
+import { connect } from 'react-redux';
 import { Card } from 'react-bootstrap';
 import CreateMonumentSuggestions from '../../CreateMonumentSuggestions/CreateMonumentSuggestions';
 import { Link } from 'react-router-dom';
 import { getUserFullName } from '../../../../utils/string-util';
+import { Role } from '../../../../utils/authentication-util';
 
 /**
  * Presentational component for displaying a BulkCreateMonumentSuggestion
  */
-export default class BulkCreateMonumentSuggestion extends React.Component {
+class BulkCreateMonumentSuggestion extends React.Component {
+
+    static mapStateToProps(state) {
+        return {
+            session: state.session
+        };
+    }
 
     render() {
         const { suggestion, index, showTitleAsLink, showIndex=true, displayCreateMonumentStatuses,
-            showCreateTitlesAsLinks, showCreatedBy } = this.props;
+            showCreateTitlesAsLinks, showCreatedBy, session } = this.props;
 
         const titleText = showIndex ?
             `${index}. ${suggestion.fileName}` :
             `Create many new records from: ${suggestion.fileName}`;
 
         const manageUserLink = (
-            <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
-                {getUserFullName(suggestion.createdBy)}
-            </Link>
+            session.user.role === Role.ADMIN ?
+                <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
+                    {getUserFullName(suggestion.createdBy)}
+                </Link> :
+                <span>
+                    {getUserFullName(suggestion.createdBy)}
+                </span>
         );
 
         return (
             <Card className="bulk-create-suggestion">
                 <Card.Header className="bulk-create-suggestion-header pt-0">
                     <Card.Title>
-                        {
-                            showTitleAsLink ?
-                                <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=bulk`}>{titleText}</Link> :
-                                titleText
-                        }
+                        <span className="pr-3">
+                            {
+                                showTitleAsLink ?
+                                    <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=bulk`}>{titleText}</Link> :
+                                    titleText
+                            }
+                        </span>
                         {showCreatedBy &&
                             <div className="created-by-container">
                                 Created By:&nbsp;
@@ -54,3 +68,5 @@ export default class BulkCreateMonumentSuggestion extends React.Component {
         );
     }
 }
+
+export default connect(BulkCreateMonumentSuggestion.mapStateToProps)(BulkCreateMonumentSuggestion);

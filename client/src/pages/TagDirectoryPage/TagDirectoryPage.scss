@@ -9,7 +9,7 @@
         margin-bottom: 4rem;
 
         .character {
-            &.selected a {
+            &.selected .btn-link {
                 background-color: $primary;
                 color: white;
                 font-weight: 500;
@@ -20,7 +20,7 @@
                 margin: 0 0.25rem;
                 cursor: default;
             }
-            a {
+            .btn-link {
                 padding: 0 0.25rem;
             }
         }

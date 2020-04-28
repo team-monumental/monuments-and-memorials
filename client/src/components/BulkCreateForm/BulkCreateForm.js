@@ -164,6 +164,7 @@ export default class BulkCreateForm extends React.Component {
                     await this.setState({showFieldMapping: true});
                 }
                 const mapping = headers.map(header => {
+                    if (!header) return;
                     let mappedField = '';
                     for (let field of fields) {
                         // By default don't select images on CSV uploads since they don't work.
@@ -184,8 +185,7 @@ export default class BulkCreateForm extends React.Component {
                         originalField: header,
                         mappedField
                     }
-                });
-
+                }).filter(pair => pair);
                 this.setState({mapping, fields})
             });
     }
@@ -360,11 +360,13 @@ export default class BulkCreateForm extends React.Component {
                             <div className="column d-flex justify-content-end my-1">
                                 <Form.Control as="select" className="mr-3" value={pair.mappedField} onChange={event => {
                                     pair.mappedField = event.currentTarget.value;
-                                    mapping.forEach((currentPair, currentIndex) => {
-                                        if (currentPair.mappedField === pair.mappedField && index !== currentIndex) {
-                                            currentPair.mappedField = '';
-                                        }
-                                    });
+                                    if (pair.mappedField !== 'Do Not Map') {
+                                        mapping.forEach((currentPair, currentIndex) => {
+                                            if (currentPair.mappedField === pair.mappedField && index !== currentIndex) {
+                                                currentPair.mappedField = '';
+                                            }
+                                        });
+                                    }
                                     fields.forEach(field => {
                                         field.selected = !!mapping.find(currentPair => {
                                             return currentPair.mappedField === field.name;
@@ -491,7 +493,7 @@ export default class BulkCreateForm extends React.Component {
                         will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
                         {warningCount > 0 &&
                             <span>
-                                Any rows with warnings will still be {pastTenseTerm.toLowerCase()}, but may have
+                                &nbsp;Any rows with warnings will still be {pastTenseTerm.toLowerCase()}, but may have
                                 non-critical issues that should be addressed with updates later.
                             </span>
                         }

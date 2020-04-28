@@ -13,7 +13,7 @@ export default class SuggestionSearch extends React.Component {
         return (
             <div className="suggestion-search">
                 <div className="sticky-top">
-                    <SuggestionSearchBar/>
+                    <SuggestionSearchBar page={page} limit={limit}/>
                     {showSearchResults &&
                         <div className="mt-2">
                             <SearchInfo onLimitChange={onLimitChange} limit={limit} page={page} count={count} hideSortBy/>

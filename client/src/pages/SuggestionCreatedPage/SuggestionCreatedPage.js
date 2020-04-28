@@ -18,10 +18,10 @@ class SuggestionCreatedPage extends React.Component {
 
         switch (type) {
             case 'create':
-                history.replace('/create');
+                history.push('/create');
                 break;
             case 'bulk':
-                history.replace('/panel/bulk');
+                history.push('/panel/bulk');
                 break;
             default:
                 return;

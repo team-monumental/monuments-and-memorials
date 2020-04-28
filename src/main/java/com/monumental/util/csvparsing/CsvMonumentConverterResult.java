@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.monumental.util.csvparsing.CsvMonumentConverter.*;
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 /**
@@ -121,7 +122,27 @@ public class CsvMonumentConverterResult {
         /* An Address OR Coordinates must be specified */
         if (isNullOrEmpty(this.monumentSuggestion.getAddress()) &&
                 (this.monumentSuggestion.getLatitude() == null || this.monumentSuggestion.getLongitude() == null)) {
-            this.getErrors().add("Address OR Coordinates are required");
+            List<String> warnings = this.getWarnings();
+            List<String> errors = this.getErrors();
+            // If Lat/Long are missing because of any of these three warnings, elevate them to errors
+            if (warnings.contains(coordinatesDMSFormatWarning)) {
+                warnings.remove(coordinatesDMSFormatWarning);
+                errors.add(coordinatesDMSFormatWarning);
+            // This isn't a particularly pretty check but if we use if-else here and they're both invalid, one will be a
+            // warning while the other will be an error, which is strange
+            } else if (warnings.contains(latitudeNumberFormatExceptionWarning) || warnings.contains(longitudeNumberFormatExceptionWarning)) {
+                if (warnings.contains(latitudeNumberFormatExceptionWarning)) {
+                    warnings.remove(latitudeNumberFormatExceptionWarning);
+                    errors.add(latitudeNumberFormatExceptionWarning);
+                }
+                if (warnings.contains(longitudeNumberFormatExceptionWarning)) {
+                    warnings.remove(longitudeNumberFormatExceptionWarning);
+                    errors.add(longitudeNumberFormatExceptionWarning);
+                }
+            // Otherwise, the data is actually missing, so add that as an error
+            } else {
+                this.getErrors().add("Address OR Coordinates are required");
+            }
         }
 
         /* Latitude Validation */

@@ -8,7 +8,7 @@ export default class Footer extends React.Component {
         return (
             <div className="footer">
                 <ul className="footer-content">
-                    <li>Monuments + Memorials © 2020</li>
+                    <li>Monuments + Memorials © {new Date().getFullYear()}</li>
                     <li>
                         <Link to="/resources">Resources</Link>
                     </li>

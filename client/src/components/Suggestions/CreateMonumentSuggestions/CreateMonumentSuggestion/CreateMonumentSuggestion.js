@@ -1,21 +1,29 @@
 import * as React from 'react';
 import './CreateMonumentSuggestion.scss';
+import { connect } from 'react-redux';
 import { Card, Collapse } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate, prettyPrintMonth } from '../../../../utils/string-util';
 import Thumbnails from '../../../Monument/Images/Thumbnails/Thumbnails';
 import { Link } from 'react-router-dom';
 import SuggestionStatus from '../../../AdminPanel/ManageSuggestions/ManageSuggestion/SuggestionStatus/SuggestionStatus';
+import { Role } from '../../../../utils/authentication-util';
 
 /**
  * Presentational component for displaying a CreateMonumentSuggestion
  */
-export default class CreateMonumentSuggestion extends React.Component {
+class CreateMonumentSuggestion extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             expanded: props.expandedByDefault || false
+        };
+    }
+
+    static mapStateToProps(state) {
+        return {
+            session: state.session
         };
     }
 
@@ -162,27 +170,33 @@ export default class CreateMonumentSuggestion extends React.Component {
     }
 
     render() {
-        const { suggestion, index, showTitleAsLink, showIndex=true, showCreatedBy } = this.props;
+        const { suggestion, index, showTitleAsLink, showIndex=true, showCreatedBy, session } = this.props;
 
         const titleText = showIndex ?
             `${index}. ${suggestion.title}` :
             `Create new record: ${suggestion.title}`;
 
         const manageUserLink = (
-            <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
-                {getUserFullName(suggestion.createdBy)}
-            </Link>
+            session.user.role === Role.ADMIN ?
+                <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
+                    {getUserFullName(suggestion.createdBy)}
+                </Link> :
+                <span>
+                    {getUserFullName(suggestion.createdBy)}
+                </span>
         );
 
         return (
             <Card className="create-suggestion">
                 <Card.Header className="pt-0">
                     <Card.Title>
-                        {
-                            showTitleAsLink ?
-                                <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=create`}>{titleText}</Link> :
-                                titleText
-                        }
+                        <span className="pr-3">
+                            {
+                                showTitleAsLink ?
+                                    <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=create`}>{titleText}</Link> :
+                                    titleText
+                            }
+                        </span>
                         {showCreatedBy &&
                             <div className="created-by-container">
                                 Created By:&nbsp;
@@ -198,3 +212,5 @@ export default class CreateMonumentSuggestion extends React.Component {
         );
     }
 }
+
+export default connect(CreateMonumentSuggestion.mapStateToProps)(CreateMonumentSuggestion);
