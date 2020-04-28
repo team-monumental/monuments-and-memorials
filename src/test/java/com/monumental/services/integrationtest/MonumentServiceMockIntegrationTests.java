@@ -11,6 +11,7 @@ import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.services.AwsS3Service;
 import com.monumental.services.MonumentService;
+import com.monumental.util.csvparsing.CsvMonumentConverter;
 import com.monumental.util.csvparsing.CsvMonumentConverterResult;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
 import com.opencsv.CSVReader;
@@ -187,7 +188,7 @@ public class MonumentServiceMockIntegrationTests {
         CsvMonumentConverterResult validationErrors = validationResult.getInvalidResults().get(1);
 
         assertEquals(1, validationErrors.getWarnings().size());
-        assertTrue(validationErrors.getWarnings().contains("Please use decimal coordinates, not degrees. To convert, input your degrees into Google Maps."));
+        assertTrue(validationErrors.getWarnings().contains(CsvMonumentConverter.coordinatesDMSFormatWarning));
 
         assertEquals(2, validationErrors.getErrors().size());
         assertTrue(validationErrors.getErrors().contains("Title is required"));

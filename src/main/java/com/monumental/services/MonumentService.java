@@ -1379,7 +1379,7 @@ public class MonumentService extends ModelService<Monument> {
     public void populateNewMonumentLocation(Monument monument) {
         // If the Monument has no address, do a reverse geocode
         if (monument.getAddress() == null && monument.getCoordinates() != null) {
-            GoogleMapsService.AddressBundle bundle = googleMapsService.getAddressFromCoordinates(monument.getLat(), monument.getLon());
+            GoogleMapsService.AddressBundle bundle = this.googleMapsService.getAddressFromCoordinates(monument.getLat(), monument.getLon());
             if (bundle != null) {
                 monument.setAddress(bundle.address);
                 monument.setCity(bundle.city);
@@ -1454,7 +1454,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Perform reverse geocoding
-        GoogleMapsService.AddressBundle bundle = googleMapsService.getAddressFromCoordinates(newMonument.getLat(), newMonument.getLon());
+        GoogleMapsService.AddressBundle bundle = this.googleMapsService.getAddressFromCoordinates(newMonument.getLat(), newMonument.getLon());
         if (bundle != null) {
             newMonument.setAddress(bundle.address);
             newMonument.setCity(bundle.city);

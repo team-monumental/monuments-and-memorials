@@ -93,7 +93,7 @@ public class CsvMonumentConverter {
                                 if (latitude > 72 || latitude < -15) {
                                     result.getErrors().add("Latitude is not near the United States");
                                 }
-                                // If the not a valid latitude, set it to null because extremely large values can break everything
+                                // If not a valid latitude, set it to null because extremely large values can break everything
                                 if (latitude > 90 || latitude < -90) {
                                     latitude = null;
                                 }
@@ -118,7 +118,7 @@ public class CsvMonumentConverter {
                                 if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
                                     result.getErrors().add("Longitude is not near the United States");
                                 }
-                                // If the not a valid longitude, set it to null because extremely large values can break everything
+                                // If not a valid longitude, set it to null because extremely large values can break everything
                                 if (longitude > 180 || longitude < -180) {
                                     longitude = null;
                                 }

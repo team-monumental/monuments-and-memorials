@@ -16,7 +16,7 @@ export default class Map extends React.Component {
             q = [monument.lat, monument.lon].join(',');
         }
 
-        q = escape(q);
+        q = encodeURIComponent(q);
 
         return (
             <iframe title="gmaps-iframe"
