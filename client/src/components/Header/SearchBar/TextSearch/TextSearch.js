@@ -15,6 +15,12 @@ export default class TextSearch extends React.Component {
         if (!props.disableAnimation) this.animateSearchPlaceholder();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.value !== this.props.value) {
+            this.setState({searchQuery: this.props.value});
+        }
+    }
+
     handleChange(event) {
         const { onSearchChange } = this.props;
         const newSearchQuery = event.target.value;
