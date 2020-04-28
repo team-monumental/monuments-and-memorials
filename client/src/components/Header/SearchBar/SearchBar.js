@@ -25,7 +25,6 @@ class SearchBar extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(prevProps.location.pathname, prevProps.location.search, this.props.location.pathname, this.props.location.search);
         if (prevProps.location.pathname + prevProps.location.search !== this.props.location.pathname + this.props.location.search
             && !this.props.location.pathname.includes('/search')) {
             this.setState({
@@ -73,7 +72,6 @@ class SearchBar extends React.Component {
 
     render() {
         const { textSearchQuery, locationAddress } = this.state;
-        console.log(textSearchQuery);
         return (
             <Form inline className="search-bar">
                 <TextSearch value={textSearchQuery}
