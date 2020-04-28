@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+/**
+ * This class is responsible for redirecting HTTP requests from port 8080 to HTTPS on port 443
+ */
 @Profile("production")
 @Configuration
 public class ProductionHTTPRedirect {
@@ -27,7 +30,7 @@ public class ProductionHTTPRedirect {
                 context.addConstraint(securityConstraint);
             }
         };
-        tomcat.addAdditionalTomcatConnectors(redirectConnector());
+        tomcat.addAdditionalTomcatConnectors(this.redirectConnector());
         return tomcat;
     }
 

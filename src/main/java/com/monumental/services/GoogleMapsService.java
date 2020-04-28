@@ -23,6 +23,12 @@ public class GoogleMapsService {
         public Geometry geometry;
     }
 
+    /**
+     * Get an address along with city and state from the specified coordinates using Google Maps
+     * @param lat - latitude
+     * @param lon - longitude
+     * @return AddressBundle - Bundle including address, city, and state
+     */
     public AddressBundle getAddressFromCoordinates(Double lat, Double lon) {
         try {
             GeoApiContext context = this.buildGeoApiContext();
@@ -42,9 +48,9 @@ public class GoogleMapsService {
     }
 
     /**
-     * Get a set of coordinates from the specified address using Google Maps
+     * Get a set of coordinates along with city and state from the specified address using Google Maps
      * @param address - String for the address to geocode
-     * @return Geometry - Google Maps Geometry containing the location data for the address
+     * @return AddressBundle - Bundle including Google Maps Geometry containing the location data for the address
      */
     public AddressBundle getCoordinatesFromAddress(String address) {
         if (StringHelper.isNullOrEmpty(address)) {
@@ -69,6 +75,12 @@ public class GoogleMapsService {
         return null;
     }
 
+    /**
+     * Takes a GeocodingResult and parses it for address, city, state, and geometry data, then packages it in
+     * an AddressBundle
+     * @param result - GeocodingResult from a Google Maps Geocoding or Reverse-Geocoding request
+     * @return AddressBundle - The bundle of address, geometry, city, and state data
+     */
     private AddressBundle buildBundle(GeocodingResult result) {
         AddressBundle bundle = new AddressBundle();
         String country = null;
