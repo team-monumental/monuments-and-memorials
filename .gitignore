@@ -1,6 +1,7 @@
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+keystore.p12
 
 ### SSL ###
 *.p12
