@@ -110,7 +110,7 @@ public class GoogleMapsService {
         /* If there was no 2 letter state code, we could end up with something longer like San Juan, so fallback to
            leaving the field blank if it's not 2 letters long
          */
-        if (bundle.state == null || bundle.state.length() != 2) {
+        if (bundle.state != null && bundle.state.length() != 2) {
             bundle.state = null;
         }
 
