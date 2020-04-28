@@ -1379,16 +1379,20 @@ public class MonumentService extends ModelService<Monument> {
     public void populateNewMonumentLocation(Monument monument) {
         // If the Monument has no address, do a reverse geocode
         if (monument.getAddress() == null && monument.getCoordinates() != null) {
-            String address = this.googleMapsService.getAddressFromCoordinates(monument.getLat(), monument.getLon());
-            if (address != null) {
-                monument.setAddress(address);
+            GoogleMapsService.AddressBundle bundle = googleMapsService.getAddressFromCoordinates(monument.getLat(), monument.getLon());
+            if (bundle != null) {
+                monument.setAddress(bundle.address);
+                monument.setCity(bundle.city);
+                monument.setState(bundle.state);
             }
         }
         // Otherwise if the Monument has no coordinates, do a geocode
         else if (monument.getCoordinates() == null && monument.getAddress() != null) {
-            com.google.maps.model.Geometry geometry = this.googleMapsService.getCoordinatesFromAddress(monument.getAddress());
-            if (geometry != null) {
-                monument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
+            GoogleMapsService.AddressBundle bundle = this.googleMapsService.getCoordinatesFromAddress(monument.getAddress());
+            if (bundle != null) {
+                monument.setCoordinates(createMonumentPoint(bundle.geometry.location.lng, bundle.geometry.location.lat));
+                monument.setCity(bundle.city);
+                monument.setState(bundle.state);
             }
         }
     }
@@ -1450,9 +1454,11 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Perform reverse geocoding
-        String address = this.googleMapsService.getAddressFromCoordinates(newMonument.getLat(), newMonument.getLon());
-        if (address != null) {
-            newMonument.setAddress(address);
+        GoogleMapsService.AddressBundle bundle = googleMapsService.getAddressFromCoordinates(newMonument.getLat(), newMonument.getLon());
+        if (bundle != null) {
+            newMonument.setAddress(bundle.address);
+            newMonument.setCity(bundle.city);
+            newMonument.setState(bundle.state);
         }
     }
 
@@ -1481,9 +1487,11 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         // Perform geocode
-        com.google.maps.model.Geometry geometry = this.googleMapsService.getCoordinatesFromAddress(newMonument.getAddress());
-        if (geometry != null) {
-            newMonument.setCoordinates(createMonumentPoint(geometry.location.lng, geometry.location.lat));
+        GoogleMapsService.AddressBundle bundle = this.googleMapsService.getCoordinatesFromAddress(newMonument.getAddress());
+        if (bundle != null) {
+            newMonument.setCoordinates(createMonumentPoint(bundle.geometry.location.lng, bundle.geometry.location.lat));
+            newMonument.setCity(bundle.city);
+            newMonument.setState(bundle.state);
         }
     }
 
@@ -1503,12 +1511,12 @@ public class MonumentService extends ModelService<Monument> {
     public List<Monument> findDuplicateMonuments(String title, Double latitude, Double longitude, String address, Boolean onlyActive) {
         if (title != null) {
             if ((latitude == null || longitude == null) && address != null) {
-                com.google.maps.model.Geometry point = this.googleMapsService.getCoordinatesFromAddress(address);
-                if (point == null) {
+                GoogleMapsService.AddressBundle bundle = this.googleMapsService.getCoordinatesFromAddress(address);
+                if (bundle.geometry == null) {
                     return new ArrayList<>();
                 }
-                latitude = point.location.lat;
-                longitude = point.location.lng;
+                latitude = bundle.geometry.location.lat;
+                longitude = bundle.geometry.location.lng;
             }
 
             if (latitude != null && longitude != null) {

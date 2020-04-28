@@ -3,9 +3,7 @@ package com.monumental.services;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.Geometry;
-import com.google.maps.model.LatLng;
+import com.google.maps.model.*;
 import com.monumental.util.string.StringHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,14 @@ public class GoogleMapsService {
     @Value("${GOOGLE_API_KEY:default}")
     private String GOOGLE_API_KEY;
 
-    public String getAddressFromCoordinates(Double lat, Double lon) {
+    public static class AddressBundle {
+        public String address;
+        public String city;
+        public String state;
+        public Geometry geometry;
+    }
+
+    public AddressBundle getAddressFromCoordinates(Double lat, Double lon) {
         try {
             GeoApiContext context = this.buildGeoApiContext();
             if (context != null) {
@@ -26,7 +31,7 @@ public class GoogleMapsService {
                 GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(lat, lon))
                         .await();
                 if (results.length > 0) {
-                    return results[0].formattedAddress;
+                    return this.buildBundle(results[0]);
                 }
             }
         } catch (ApiException | InterruptedException | IOException e) {
@@ -41,7 +46,7 @@ public class GoogleMapsService {
      * @param address - String for the address to geocode
      * @return Geometry - Google Maps Geometry containing the location data for the address
      */
-    public Geometry getCoordinatesFromAddress(String address) {
+    public AddressBundle getCoordinatesFromAddress(String address) {
         if (StringHelper.isNullOrEmpty(address)) {
             return null;
         }
@@ -53,7 +58,7 @@ public class GoogleMapsService {
                 GeocodingResult[] results = GeocodingApi.geocode(context, address)
                         .await();
                 if (results.length > 0) {
-                    return results[0].geometry;
+                    return this.buildBundle(results[0]);
                 }
             }
         } catch (ApiException | InterruptedException | IOException e) {
@@ -62,6 +67,44 @@ public class GoogleMapsService {
         }
 
         return null;
+    }
+
+    private AddressBundle buildBundle(GeocodingResult result) {
+        AddressBundle bundle = new AddressBundle();
+        String country = null;
+        for (AddressComponent component : result.addressComponents) {
+            for (AddressComponentType type : component.types) {
+                switch (type) {
+                    case LOCALITY:
+                        bundle.city = component.longName;
+                        break;
+                    case ADMINISTRATIVE_AREA_LEVEL_1:
+                        bundle.state = component.shortName;
+                        break;
+                    case COUNTRY:
+                        country = component.shortName;
+                        break;
+                }
+            }
+        }
+        /* US Territories are usually listed as countries, with some strange edge cases, like
+           San Juan, Puerto Rico where the administrative_area_level_1 is San Juan, not Puerto Rico.
+           For Guam, there is no administrative_area_level_1, and Guam is the country
+           This is kind of a catch all attempt to get a 2 letter state code
+         */
+        if ((bundle.state == null || bundle.state.length() != 2) && country != null && country.length() == 2) {
+            bundle.state = country;
+        }
+        /* If there was no 2 letter state code, we could end up with something longer like San Juan, so fallback to
+           leaving the field blank if it's not 2 letters long
+         */
+        if (bundle.state == null || bundle.state.length() != 2) {
+            bundle.state = null;
+        }
+
+        bundle.address = result.formattedAddress;
+        bundle.geometry = result.geometry;
+        return bundle;
     }
 
     /**
