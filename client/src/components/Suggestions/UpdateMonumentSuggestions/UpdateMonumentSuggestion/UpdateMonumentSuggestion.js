@@ -1,11 +1,19 @@
 import * as React from 'react';
 import './UpdateMonumentSuggestion.scss';
+import { connect } from 'react-redux';
 import { Card } from 'react-bootstrap';
 import MonumentUpdate from '../../../Monument/Update/MonumentUpdate';
 import { Link } from 'react-router-dom';
 import { getUserFullName } from '../../../../utils/string-util';
+import { Role } from '../../../../utils/authentication-util';
 
-export default class UpdateMonumentSuggestion extends React.Component {
+class UpdateMonumentSuggestion extends React.Component {
+
+    static mapStateToProps(state) {
+        return {
+            session: state.session
+        };
+    }
 
     determineDateTypeForUpdate() {
         const { suggestion } = this.props;
@@ -49,7 +57,7 @@ export default class UpdateMonumentSuggestion extends React.Component {
 
     render() {
         const { suggestion, index, showTitleAsLink, showIndex=true, expandedByDefault, showCollapseLinks,
-            showCreatedBy } = this.props;
+            showCreatedBy, session } = this.props;
 
         let titleText;
         if (suggestion && suggestion.monument && suggestion.monument.title) {
@@ -59,20 +67,26 @@ export default class UpdateMonumentSuggestion extends React.Component {
         }
 
         const manageUserLink = (
-            <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`}>
-                {getUserFullName(suggestion.createdBy)}
-            </Link>
+            session.user.role === Role.ADMIN ?
+                <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
+                    {getUserFullName(suggestion.createdBy)}
+                </Link> :
+                <span>
+                    {getUserFullName(suggestion.createdBy)}
+                </span>
         );
 
         return (
             <Card className="update-suggestion">
                 <Card.Header className="pt-0">
                     <Card.Title>
-                        {
-                            showTitleAsLink ?
-                                <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=update`}>{titleText}</Link> :
-                                titleText
-                        }
+                        <span className="pr-3">
+                            {
+                                showTitleAsLink ?
+                                    <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=update`}>{titleText}</Link> :
+                                    titleText
+                            }
+                        </span>
                         {showCreatedBy &&
                             <div className="created-by-container">
                                 Created By:&nbsp;
@@ -91,3 +105,5 @@ export default class UpdateMonumentSuggestion extends React.Component {
         );
     }
 }
+
+export default connect(UpdateMonumentSuggestion.mapStateToProps)(UpdateMonumentSuggestion);
