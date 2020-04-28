@@ -186,7 +186,6 @@ export default class BulkCreateForm extends React.Component {
                         mappedField
                     }
                 }).filter(pair => pair);
-                console.log('made mapping', mapping);
                 this.setState({mapping, fields})
             });
     }
