@@ -9,7 +9,9 @@ export default class Map extends React.Component {
         const monument = this.props.monument;
 
         let q = monument.address;
-        if (!q && monument.lat && monument.lon) q = [monument.lat, monument.lon].join(',');
+        if (monument.address && monument.address.includes('Unnamed Road') || (!q && monument.lat && monument.lon)) {
+            q = [monument.lat, monument.lon].join(',');
+        }
 
         return (
             <iframe title="gmaps-iframe"
