@@ -666,7 +666,7 @@ export default class CreateOrUpdateForm extends React.Component {
         /* If there was no 2 letter state code, we could end up with something longer like San Juan, so fallback to
            leaving the field blank if it's not 2 letters long
          */
-        if (state.length !== 2) {
+        if (state && state.length !== 2) {
             state = undefined;
         }
         address = result.formatted_address;
