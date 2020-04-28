@@ -10,10 +10,12 @@ export default class SuggestionSearch extends React.Component {
         const { showSearchResults, onLimitChange, onPageChange, limit, page, count, suggestions } = this.props;
         const pageCount = Math.ceil(count / limit);
 
+        console.log(page);
+
         return (
             <div className="suggestion-search">
                 <div className="sticky-top">
-                    <SuggestionSearchBar/>
+                    <SuggestionSearchBar page={page} limit={limit}/>
                     {showSearchResults &&
                         <div className="mt-2">
                             <SearchInfo onLimitChange={onLimitChange} limit={limit} page={page} count={count} hideSortBy/>

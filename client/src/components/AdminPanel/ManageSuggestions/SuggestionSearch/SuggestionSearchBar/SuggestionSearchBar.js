@@ -32,7 +32,7 @@ class SuggestionSearchBar extends React.Component {
     }
 
     search() {
-        const { history } = this.props;
+        const { history, page, limit } = this.props;
         const { searchQuery, statusFilter, typeFilter } = this.state;
 
         search({
@@ -40,7 +40,9 @@ class SuggestionSearchBar extends React.Component {
             approved: statusFilter === 'approved',
             rejected: statusFilter === 'rejected',
             pending: statusFilter === 'pending',
-            type: typeFilter
+            type: typeFilter,
+            page,
+            limit
         }, history, '/panel/manage/suggestions/search');
     }
 
