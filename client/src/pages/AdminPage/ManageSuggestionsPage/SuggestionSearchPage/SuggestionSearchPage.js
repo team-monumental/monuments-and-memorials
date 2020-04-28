@@ -95,8 +95,8 @@ class SuggestionSearchPage extends React.Component {
     }
 
     async search(changedState) {
-        await this.setState({changedState});
-        search({...this.state, ...changedState}, this.props.history, '/panel/manage/suggestions/search');
+        await this.setState(changedState);
+        search(this.state, this.props.history, '/panel/manage/suggestions/search');
     }
 
     render() {
