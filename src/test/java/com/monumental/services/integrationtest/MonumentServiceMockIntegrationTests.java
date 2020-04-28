@@ -186,7 +186,7 @@ public class MonumentServiceMockIntegrationTests {
 
         CsvMonumentConverterResult validationErrors = validationResult.getInvalidResults().get(1);
 
-        assertEquals(3, validationErrors.getWarnings().size());
+        assertEquals(1, validationErrors.getWarnings().size());
         assertTrue(validationErrors.getWarnings().contains("Please use decimal coordinates, not degrees. To convert, input your degrees into Google Maps."));
 
         assertEquals(2, validationErrors.getErrors().size());
@@ -336,9 +336,8 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, validationResult.getInvalidResults().size());
 
         CsvMonumentConverterResult validationErrorsRow2 = validationResult.getInvalidResults().get(2);
-        assertEquals(4, validationErrorsRow2.getErrors().size());
-        assertTrue(validationErrorsRow2.getErrors().contains("Latitude must be valid"));
-        assertTrue(validationErrorsRow2.getErrors().contains("Longitude must be valid"));
+        assertEquals(3, validationErrorsRow2.getErrors().size());
+        assertTrue(validationErrorsRow2.getErrors().contains("Address OR Coordinates are required"));
         assertTrue(validationErrorsRow2.getErrors().contains("Latitude is not near the United States"));
         assertTrue(validationErrorsRow2.getErrors().contains("Longitude is not near the United States"));
 
