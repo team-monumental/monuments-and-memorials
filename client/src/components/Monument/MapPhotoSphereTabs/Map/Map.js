@@ -13,6 +13,8 @@ export default class Map extends React.Component {
             q = [monument.lat, monument.lon].join(',');
         }
 
+        q = escape(q);
+
         return (
             <iframe title="gmaps-iframe"
                     src={`https://maps.google.com/maps?q=${q}&z=16&output=embed`}
