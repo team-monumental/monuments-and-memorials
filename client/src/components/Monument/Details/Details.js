@@ -74,7 +74,7 @@ export default class Details extends React.Component {
                             }
                             <div className="field">{monument.description}</div>
                         </div>
-                        <Tags tags={tags}/>
+                        <Tags tags={tags} searchUri="/search"/>
                     </div>
                 </div>
                 <Gallery images={images}/>
