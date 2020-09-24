@@ -5,7 +5,7 @@ import {exportToPdf} from '../../../utils/export-util';
 /**
  * Presentational component for a button that exports data to CSV
  */
-export default class ExportToCsvButton extends React.Component {
+export default class ExportToPdfButton extends React.Component {
 
     handleClick() {
         const { fields, data, exportTitle } = this.props;
