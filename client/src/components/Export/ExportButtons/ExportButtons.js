@@ -9,7 +9,7 @@ import ExportToPdfButton from "../ExportToPdfButton/ExportToPdfButton";
 export default class ExportButtons extends React.Component {
 
     render() {
-        const { className, fields, data, title } = this.props;
+        const { fields, data, title } = this.props;
 
         return (
             <span>
