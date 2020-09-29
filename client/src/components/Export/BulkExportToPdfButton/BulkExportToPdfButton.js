@@ -1,15 +1,15 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import {exportToPdf} from '../../../utils/export-util';
+import {bulkExportToPdf} from '../../../utils/export-util';
 
 /**
- * Presentational component for a button that exports data to PDF
+ * Presentational component for a button that exports bulk data to PDF
  */
-export default class ExportToPdfButton extends React.Component {
+export default class BulkExportToPdfButton extends React.Component {
 
     handleClick() {
         const { fields, data, exportTitle } = this.props;
-        exportToPdf(fields, data, exportTitle)
+        bulkExportToPdf(fields, data, exportTitle)
     }
 
     render() {
@@ -17,7 +17,7 @@ export default class ExportToPdfButton extends React.Component {
 
         return (
             <Button variant="light" className={className} onClick={() => this.handleClick()}>
-                Export to PDF
+                Export All to PDF
             </Button>
         );
     }
