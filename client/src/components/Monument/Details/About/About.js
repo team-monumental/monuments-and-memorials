@@ -1,8 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
-import moment from 'moment';
-import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButton';
+import ExportButtons from "../../../Export/ExportButtons/ExportButtons";
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
@@ -10,19 +9,19 @@ import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButt
  */
 export default class About extends React.Component {
 
-    csvExportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
+    exportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
         'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 
-    buildCsvExportData() {
+    buildExportData() {
         const { monument, contributions, references } = this.props;
 
         let materialsList = '';
         let tagsList = '';
         if (monument.monumentTags && monument.monumentTags.length) {
             materialsList = monument.monumentTags.filter(monumentTag => monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(',');
+                .map(monumentTag => monumentTag.tag.name).join(', ');
             tagsList = monument.monumentTags.filter(monumentTag => !monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(',');
+                .map(monumentTag => monumentTag.tag.name).join(', ');
         }
 
         const prepareArray = (array=[], field) => {
@@ -53,7 +52,7 @@ export default class About extends React.Component {
     }
 
     render() {
-        const { monument, contributions, references, header, showHiddenFields, hideExportToCSV, hideTitle } = this.props;
+        const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle } = this.props;
 
         let title;
         if (!hideTitle && monument.title) {
@@ -223,10 +222,12 @@ export default class About extends React.Component {
                         {isActive}
                     </div>
                     <div className="d-flex">
-                        {!hideExportToCSV &&
-                            <ExportToCsvButton className="mt-2" fields={this.csvExportFields}
-                                               data={this.buildCsvExportData()}
-                                               exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                        {!hideExport &&
+                            <span>
+                                <ExportButtons className="mt-2" fields={this.exportFields}
+                                               data={this.buildExportData()}
+                                               title={monument.title}/>
+                            </span>
                         }
                     </div>
                 </Card.Body>

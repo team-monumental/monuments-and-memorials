@@ -47,7 +47,7 @@ export default class ManageMonument extends React.Component {
         return (
             <div className="manage-monument">
                 <About monument={monument} contributions={monument.contributions} references={monument.references}
-                       header={monument.title} showHiddenFields hideExportToCSV hideTitle/>
+                       header={monument.title} showHiddenFields hideExport hideTitle/>
                 {(monument.images && monument.images.length) ?
                     <div className="images">
                         {monument.images.map(image => (
