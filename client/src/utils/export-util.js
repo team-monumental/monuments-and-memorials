@@ -27,7 +27,11 @@ export function exportToPdf(fields, data, exportTitle) {
     doc.autoTable({
         head: [fields],
         body: [dataArr],
-        columnStyles: {12: {cellWidth: 23}}
+        theme: 'grid',
+        columnStyles: {
+            0: {cellWidth: 25},
+            12: {cellWidth: 23}
+        }
     })
 
     doc.save(exportTitle + '.pdf')

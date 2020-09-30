@@ -19,9 +19,9 @@ export default class About extends React.Component {
         let tagsList = '';
         if (monument.monumentTags && monument.monumentTags.length) {
             materialsList = monument.monumentTags.filter(monumentTag => monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(',');
+                .map(monumentTag => monumentTag.tag.name).join(', ');
             tagsList = monument.monumentTags.filter(monumentTag => !monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(',');
+                .map(monumentTag => monumentTag.tag.name).join(', ');
         }
 
         const prepareArray = (array=[], field) => {
