@@ -184,7 +184,7 @@ export default class About extends React.Component {
                         {!hideExport &&
                             <span>
                                 <ExportButtons className="mt-2" fields={exportFields}
-                                               data={buildExportData()}
+                                               data={[buildExportData(monument)]}
                                                title={monument.title}/>
                             </span>
                         }

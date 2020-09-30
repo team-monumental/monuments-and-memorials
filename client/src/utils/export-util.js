@@ -31,7 +31,7 @@ export function buildExportData(monument, contributions=monument.contributions |
     const contributionsList = prepareArray(contributions, 'submittedBy');
     const referencesList = prepareArray(references, 'url');
 
-    return [{
+    return {
         'Title': monument.title,
         'Artist': monument.artist || '',
         'Date': monument.date ? prettyPrintDate(monument.date) : '',
@@ -48,7 +48,7 @@ export function buildExportData(monument, contributions=monument.contributions |
         'Contributors': contributionsList,
         'References': referencesList,
         'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
-    }];
+    };
 }
 
 /**
@@ -68,38 +68,11 @@ export function exportToCsv(fields, data) {
  */
 export function exportToPdf(fields, data, exportTitle) {
     const dataArr = []
-    for (const field in data[0]) {
-        dataArr.push(data[0][field])
-    }
-
-    const doc = new jsPDF('landscape');
-
-    doc.autoTable({
-        head: [fields],
-        body: [dataArr],
-        theme: 'grid',
-        columnStyles: {
-            0: {cellWidth: 25},
-            12: {cellWidth: 23}
-        }
-    })
-
-    doc.save(exportTitle + '.pdf')
-}
-
-/**
- * Export the specified data with the specified fields to PDF format
- * @param fields - Array of the names of the columns for the PDF
- * @param data - Array of data representing the rows of the PDF
- * @param exportTitle - filename without extension
- */
-export function bulkExportToPdf(fields, data, exportTitle) {
-    const dataArr = []
     for (let i = 0; i < data.length; i++) {
         dataArr.push([])
         const monument = data[i]
-        for (const field in monument[0]) {
-            dataArr[i].push(monument[0][field])
+        for (const field in monument) {
+            dataArr[i].push(monument[field])
         }
     }
 
@@ -111,8 +84,13 @@ export function bulkExportToPdf(fields, data, exportTitle) {
         theme: 'grid',
         columnStyles: {
             0: {cellWidth: 25},
+            3: {cellWidth: 20},
+            4: {cellWidth: 10},
+            8: {cellWidth: 20},
+            9: {cellWidth: 25},
             12: {cellWidth: 23}
-        }
+        },
+        rowPageBreak: 'avoid'
     })
 
     doc.save(exportTitle + '.pdf')

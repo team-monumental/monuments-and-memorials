@@ -6,8 +6,8 @@ import Filters from './Filters/Filters';
 import SearchInfo from './SearchInfo/SearchInfo';
 import SearchResults from './SearchResults/SearchResults';
 import * as moment from 'moment';
-import BulkExportToPdfButton from '../Export/BulkExportToPdfButton/BulkExportToPdfButton';
 import {buildBulkExportData, exportFields} from '../../utils/export-util';
+import ExportButtons from '../Export/ExportButtons/ExportButtons';
 
 /**
  * Root presentational component for the search page
@@ -78,9 +78,9 @@ export default class Search extends React.Component {
                                     showDistanceSort={lat && lon}/>
                     </div>
                     <div className="search-results">
-                        <BulkExportToPdfButton className="mt-2" fields={exportFields}
-                                           data={exportData}
-                                           exportTitle={`${searchUri} ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                        <ExportButtons className="mt-2" fields={exportFields}
+                                       data={exportData}
+                                       title="Search"/>
                         <SearchResults monuments={monuments} limit={limit} page={page} hideImages={hideImages} searchUri={searchUri || '/search'} monumentUri={monumentUri || '/monuments'}/>
                     </div>
                     <div className="pagination-container">
