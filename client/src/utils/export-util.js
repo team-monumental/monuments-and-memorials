@@ -83,12 +83,20 @@ export function exportToPdf(fields, data, exportTitle) {
         body: dataArr,
         theme: 'grid',
         columnStyles: {
-            0: {cellWidth: 25},
-            3: {cellWidth: 20},
-            4: {cellWidth: 10},
+            0: {cellWidth: 24},
+            1: {cellWidth: 20},
+            3: {cellWidth: 21},
+            4: {cellWidth: 13},
             8: {cellWidth: 20},
             9: {cellWidth: 25},
-            12: {cellWidth: 23}
+            12: {cellWidth: 23},
+            13: {cellWidth: 18}
+        },
+        margin: {
+            right: 0,
+            left: 0,
+            top: 0,
+            bottom: 0
         },
         rowPageBreak: 'avoid'
     })
