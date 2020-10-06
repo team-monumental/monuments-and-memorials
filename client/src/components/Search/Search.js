@@ -78,9 +78,11 @@ export default class Search extends React.Component {
                                     showDistanceSort={lat && lon}/>
                     </div>
                     <div className="search-results">
-                        <ExportButtons className="mt-2" fields={exportFields}
-                                       data={exportData}
-                                       title="Search"/>
+                        <div className="export-buttons-search">
+                            <ExportButtons className="mt-2" fields={exportFields}
+                                           data={exportData}
+                                           title="Search"/>
+                        </div>
                         <SearchResults monuments={monuments} limit={limit} page={page} hideImages={hideImages} searchUri={searchUri || '/search'} monumentUri={monumentUri || '/monuments'}/>
                     </div>
                     <div className="pagination-container">

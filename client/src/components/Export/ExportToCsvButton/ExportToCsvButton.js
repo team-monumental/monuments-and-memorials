@@ -24,11 +24,12 @@ export default class ExportToCsvButton extends React.Component {
     }
 
     render() {
-        const { className } = this.props;
+        const { className, data } = this.props;
+        const text = data.length > 1 ? "Export all to CSV" : "Export to CSV"
 
         return (
             <Button variant="light" className={className} onClick={() => this.handleClick()}>
-                Export to CSV
+                {text}
             </Button>
         );
     }
