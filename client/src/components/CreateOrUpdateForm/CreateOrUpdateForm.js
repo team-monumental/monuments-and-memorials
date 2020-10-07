@@ -345,7 +345,7 @@ export default class CreateOrUpdateForm extends React.Component {
     validateForm() {
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, references,
             materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
-            datePickerError } = this.state;
+            datePickerError, dateSelectValue, deactivatedDateSelectValue } = this.state;
         let { deactivatedDatePickerError } = this.state
         const currentDate = new Date();
         let formIsValid = true;
@@ -487,8 +487,8 @@ export default class CreateOrUpdateForm extends React.Component {
 
 
         /* Check that the deactivated date is after created date */
-        if ((!validator.isEmpty(deactivatedYear.value) || deactivatedDatePickerCurrentDate)
-            && (!validator.isEmpty(year.value) || datePickerCurrentDate)) {
+        if ((!validator.isEmpty(deactivatedYear.value) || (deactivatedDatePickerCurrentDate && deactivatedDateSelectValue === 'exact-date'))
+            && (!validator.isEmpty(year.value) || (datePickerCurrentDate && dateSelectValue === 'exact-date'))) {
             const deactivatedYearInt = parseInt(deactivatedYear.value || deactivatedDatePickerCurrentDate.getFullYear());
             const deactivatedMonthInt = parseInt(deactivatedMonth.value > 0 ? deactivatedMonth.value : deactivatedDatePickerCurrentDate.getMonth());
             const deactivatedDayInt = parseInt(deactivatedDatePickerCurrentDate.getDate());
