@@ -844,6 +844,10 @@ public class MonumentService extends ModelService<Monument> {
             deactivatedDate = MonumentService.createMonumentDate(monumentSuggestion.getDeactivatedYear(), monumentSuggestion.getDeactivatedMonth());
         }
 
+        if (deactivatedDate != null) {
+            createdMonument.setIsActive(false);
+        }
+
         createdMonument.setDeactivatedDate(deactivatedDate);
 
         // Save the initial Monument
@@ -991,6 +995,9 @@ public class MonumentService extends ModelService<Monument> {
             deactivatedDate = MonumentService.createMonumentDate(updateSuggestion.getNewDeactivatedYear(), updateSuggestion.getNewDeactivatedMonth());
         }
 
+        if (deactivatedDate != null) {
+            currentMonument.setIsActive(false);
+        }
         currentMonument.setDeactivatedDate(deactivatedDate);
 
         // Save the current updates
