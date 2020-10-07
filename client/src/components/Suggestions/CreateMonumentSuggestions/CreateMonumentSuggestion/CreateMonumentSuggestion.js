@@ -95,6 +95,17 @@ class CreateMonumentSuggestion extends React.Component {
             date = suggestion.year;
         }
 
+        let deactivatedDate = 'None';
+        if (suggestion.deactivatedDate && suggestion.deactivatedDate.length) {
+            deactivatedDate = prettyPrintDate(new Date(suggestion.deactivatedDate));
+        }
+        else if (suggestion.deactivatedMonth && suggestion.deactivatedMonth.length) {
+            deactivatedDate = `${prettyPrintMonth(suggestion.deactivatedMonth)}, ${suggestion.deactivatedYear}`;
+        }
+        else if (suggestion.deactivatedYear && suggestion.deactivatedYear.length) {
+            deactivatedDate = suggestion.deactivatedYear;
+        }
+
         let imageUrls = [];
         if (suggestion.imagesJson) {
             imageUrls = JSON.parse(suggestion.imagesJson);
@@ -120,6 +131,7 @@ class CreateMonumentSuggestion extends React.Component {
         return (<>
             <div><strong>Artist:</strong> {artist}</div>
             <div><strong>Date:</strong> {date}</div>
+            <div><strong>Deactivated Date:</strong> {deactivatedDate}</div>
             <div><strong>Address:</strong> {address}</div>
             {showCollapse && <>
                 <Collapse in={expanded}>

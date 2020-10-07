@@ -55,6 +55,15 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_date")
     private String newDate;
 
+    @Column(name = "newDeactivatedYear")
+    private String newDeactivatedYear;
+
+    @Column(name = "newDeactivatedMonth")
+    private String newDeactivatedMonth;
+
+    @Column(name = "newDeactivatedDate")
+    private String newDeactivatedDate;
+
     @Column(name = "new_is_temporary")
     private Boolean newIsTemporary = false;
 
@@ -252,6 +261,30 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public void setNewIsTemporary(Boolean newIsTemporary) {
         this.newIsTemporary = newIsTemporary;
+    }
+
+    public String getNewDeactivatedYear() {
+        return newDeactivatedYear;
+    }
+
+    public void setNewDeactivatedYear(String newDeactivatedYear) {
+        this.newDeactivatedYear = newDeactivatedYear;
+    }
+
+    public String getNewDeactivatedMonth() {
+        return newDeactivatedMonth;
+    }
+
+    public void setNewDeactivatedMonth(String newDeactivatedMonth) {
+        this.newDeactivatedMonth = newDeactivatedMonth;
+    }
+
+    public String getNewDeactivatedDate() {
+        return newDeactivatedDate;
+    }
+
+    public void setNewDeactivatedDate(String newDeactivatedDate) {
+        this.newDeactivatedDate = newDeactivatedDate;
     }
 
     public String getUpdatedReferenceUrlsByIdJson() {

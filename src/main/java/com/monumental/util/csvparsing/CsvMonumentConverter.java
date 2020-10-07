@@ -83,7 +83,7 @@ public class CsvMonumentConverter {
                         else {
                             result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
-                        suggestion.setDate(value);
+                        suggestion.setDeactivatedDate(value);
                         break;
                     case "materials":
                         result.getMaterialNames().addAll(parseCsvTags(value));
