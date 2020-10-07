@@ -34,9 +34,9 @@ export default class CreateOrUpdateForm extends React.Component {
                 message: ''
             },
             showingAdvancedInformation: false,
-            dateSelectValue: 'exact-date',
+            dateSelectValue: 'year',
             datePickerCurrentDate: new Date(),
-            deactivatedDateSelectValue: 'exact-date',
+            deactivatedDateSelectValue: 'year',
             deactivatedDatePickerCurrentDate: new Date(),
             title: {
                 value: '',
@@ -344,7 +344,9 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     validateForm() {
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, references,
-            materials, newMaterials, locationType } = this.state;
+            materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
+            datePickerError } = this.state;
+        let { deactivatedDatePickerError } = this.state
         const currentDate = new Date();
         let formIsValid = true;
 
@@ -483,6 +485,35 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
+
+        /* Check that the deactivated date is after created date */
+        if ((!validator.isEmpty(deactivatedYear.value) || deactivatedDatePickerCurrentDate)
+            && (!validator.isEmpty(year.value) || datePickerCurrentDate)) {
+            const deactivatedYearInt = parseInt(deactivatedYear.value || deactivatedDatePickerCurrentDate.getFullYear());
+            const deactivatedMonthInt = parseInt(deactivatedMonth.value > 0 ? deactivatedMonth.value : deactivatedDatePickerCurrentDate.getMonth());
+            const deactivatedDayInt = parseInt(deactivatedDatePickerCurrentDate.getDate());
+            const yearInt = parseInt(year.value || datePickerCurrentDate.getFullYear());
+            const monthInt = parseInt(month.value > 0 ? month.value : datePickerCurrentDate.getMonth());
+            const dayInt = parseInt(datePickerCurrentDate.getDate());
+
+            if (yearInt > deactivatedYearInt) {
+                deactivatedYear.isValid = false;
+                deactivatedYear.message = 'Deactivated date must be after created date';
+                formIsValid = false;
+            } else if (yearInt === deactivatedYearInt) {
+                if (monthInt > deactivatedMonthInt) {
+                    deactivatedMonth.isValid = false;
+                    deactivatedMonth.message = 'Deactivated date must be after created date';
+                    formIsValid = false;
+                } else if (monthInt === deactivatedMonthInt) {
+                    if (dayInt > deactivatedDayInt) {
+                        formIsValid = false;
+                        deactivatedDatePickerError = 'Deactivated date must be after created date'
+                    }
+                }
+            }
+        }
+
         /* References Validation */
         /* Check that the References are valid URLs */
         for (let reference of references) {
@@ -497,7 +528,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         if (!formIsValid) {
             this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
-                references});
+                references, datePickerError, deactivatedDatePickerError});
         }
 
         return formIsValid;
@@ -787,7 +818,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     handleDatePickerChange(date) {
-        this.setState({datePickerCurrentDate: date});
+        this.setState({datePickerCurrentDate: date, datePickerError: null});
     }
 
     handleDeactivatedDateSelectChange(event) {
@@ -795,7 +826,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     handleDeactivatedDatePickerChange(date) {
-        this.setState({deactivatedDatePickerCurrentDate: date});
+        this.setState({deactivatedDatePickerCurrentDate: date, deactivatedDatePickerError: null});
     }
 
     handleReferenceChange(event) {
@@ -1112,7 +1143,7 @@ export default class CreateOrUpdateForm extends React.Component {
             deactivatedDatePickerCurrentDate, title, address, latitude, longitude, year, deactivatedYear, month,
             deactivatedMonth, artist, description, inscription, references, imageUploaderKey, materials,
             imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
-            city, state } = this.state;
+            city, state, datePickerError, deactivatedDatePickerError } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
@@ -1191,7 +1222,9 @@ export default class CreateOrUpdateForm extends React.Component {
                             onChange={(date) => this.handleDatePickerChange(date)}
                             minDate={minimumDate}
                             maxDate={currentDate}
+                            defaultValue={null}
                         />
+                        <div style={{color: "red"}}>{datePickerError}</div>
                     </Form.Group>
                 );
                 break;
@@ -1268,6 +1301,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             minDate={minimumDate}
                             maxDate={currentDate}
                         />
+                        <div style={{color: "red"}}>{deactivatedDatePickerError}</div>
                     </Form.Group>
                 );
                 break;
