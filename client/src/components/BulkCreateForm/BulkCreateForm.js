@@ -33,8 +33,9 @@ export default class BulkCreateForm extends React.Component {
             mapping: [],
             fields: [
                 {name: 'artist'}, {name: 'title', label: 'Title/Name'}, {name: 'date', label: 'Date Created'},
-                {name: 'latitude'}, {name: 'longitude'}, {name: 'city'}, {name: 'state'}, {name: 'address'},
-                {name: 'description'}, {name: 'inscription'}, {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Name'},
+                {name: 'deactivatedDate', label: 'Deactivated Date'}, {name: 'latitude'}, {name: 'longitude'},
+                {name: 'city'}, {name: 'state'}, {name: 'address'}, {name: 'description'}, {name: 'inscription'},
+                {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Name'},
                 {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
             ].map(field => {
                 return {
