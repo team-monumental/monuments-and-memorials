@@ -49,5 +49,8 @@ export function capitalize(string) {
 }
 
 export function getUserFullName(user) {
+    if (!user) {
+        return ''
+    }
     return [user.firstName, user.lastName].join(' ');
 }

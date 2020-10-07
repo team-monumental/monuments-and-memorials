@@ -56,12 +56,12 @@ class CreateMonumentSuggestion extends React.Component {
 
         let tagArray;
         if (areMaterials) {
-            const materials = JSON.parse(suggestion.materialsJson);
+            const materials = JSON.parse(suggestion.materialsJson) || [];
             const newMaterials = JSON.parse(suggestion.newMaterialsJson);
             tagArray = materials.concat(newMaterials);
         }
         else {
-            const tags = JSON.parse(suggestion.tagsJson);
+            const tags = JSON.parse(suggestion.tagsJson) || [];
             const newTags = JSON.parse(suggestion.newTagsJson);
             tagArray = tags.concat(newTags);
         }

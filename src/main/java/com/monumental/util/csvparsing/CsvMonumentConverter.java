@@ -73,6 +73,18 @@ public class CsvMonumentConverter {
                         }
                         suggestion.setDate(value);
                         break;
+                    case "deactivatedDate":
+                        if (canParseDate(value)) {
+                            Date parsedDate = parseDate(value);
+                            if (isDateInFuture(parsedDate)) {
+                                result.getWarnings().add("Deactivated date should not be in the future.");
+                            }
+                        }
+                        else {
+                            result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
+                        }
+                        suggestion.setDate(value);
+                        break;
                     case "materials":
                         result.getMaterialNames().addAll(parseCsvTags(value));
                         break;
