@@ -47,6 +47,8 @@ public class CsvMonumentConverter {
             CsvMonumentConverterResult result = new CsvMonumentConverterResult();
             Double latitude = null;
             Double longitude = null;
+            Date dateForValidate = null;
+            Date deactivatedDateForValidate = null;
             for (int i = 0; i < values.size(); i++) {
                 String field = fields.get(i);
                 String value = values.get(i);
@@ -64,8 +66,12 @@ public class CsvMonumentConverter {
                     case "date":
                         if (canParseDate(value)) {
                             Date parsedDate = parseDate(value);
+                            dateForValidate = parsedDate;
                             if (isDateInFuture(parsedDate)) {
                                 result.getWarnings().add("Date should not be in the future.");
+                            }
+                            if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
+                                result.getWarnings().add("Created date should not be after deactivated date.");
                             }
                         }
                         else {
@@ -76,8 +82,12 @@ public class CsvMonumentConverter {
                     case "deactivatedDate":
                         if (canParseDate(value)) {
                             Date parsedDate = parseDate(value);
+                            deactivatedDateForValidate = parsedDate;
                             if (isDateInFuture(parsedDate)) {
                                 result.getWarnings().add("Deactivated date should not be in the future.");
+                            }
+                            if (dateForValidate != null && dateForValidate.after(parsedDate)) {
+                                result.getWarnings().add("Created date should not be after deactivated date.");
                             }
                         }
                         else {
