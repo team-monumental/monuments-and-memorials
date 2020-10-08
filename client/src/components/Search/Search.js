@@ -6,12 +6,13 @@ import Filters from './Filters/Filters';
 import SearchInfo from './SearchInfo/SearchInfo';
 import SearchResults from './SearchResults/SearchResults';
 import * as moment from 'moment';
+import {buildBulkExportData, exportFields} from '../../utils/export-util';
+import ExportButtons from '../Export/ExportButtons/ExportButtons';
 
 /**
  * Root presentational component for the search page
  */
 export default class Search extends React.Component {
-
     handlePageChange(page) {
         const { onPageChange } = this.props;
         onPageChange(page);
@@ -56,6 +57,8 @@ export default class Search extends React.Component {
             return Math.floor(date.year() / 10) * 10;
         }).sort())];
 
+        const exportData = buildBulkExportData(monuments)
+
         return (
             <div className="search-results-page">
                 {!hideMap &&
@@ -75,6 +78,11 @@ export default class Search extends React.Component {
                                     showDistanceSort={lat && lon}/>
                     </div>
                     <div className="search-results">
+                        <div className="export-buttons-search">
+                            <ExportButtons className="mt-2" fields={exportFields}
+                                           data={exportData}
+                                           title="Search"/>
+                        </div>
                         <SearchResults monuments={monuments} limit={limit} page={page} hideImages={hideImages} searchUri={searchUri || '/search'} monumentUri={monumentUri || '/monuments'}/>
                     </div>
                     <div className="pagination-container">
