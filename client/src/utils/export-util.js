@@ -89,6 +89,7 @@ export function exportToPdf(fields, data, exportTitle) {
             4: {cellWidth: 13},
             8: {cellWidth: 20},
             9: {cellWidth: 25},
+            10: {cellWidth: 25},
             12: {cellWidth: 23},
             13: {cellWidth: 18}
         },
