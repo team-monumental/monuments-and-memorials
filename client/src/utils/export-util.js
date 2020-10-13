@@ -30,6 +30,13 @@ export function buildExportData(monument, contributions=monument.contributions |
         return set.join(',');
     };
 
+    const dateFromContributions = (contributions=[]) => {
+        if (contributions && contributions.length > 0) {
+            return prettyPrintDate(contributions[contributions.length - 1].createdDate)
+        }
+        return ''
+    };
+
     const contributionsList = prepareArray(contributions, 'submittedBy');
     const referencesList = prepareArray(references, 'url');
 
@@ -51,7 +58,8 @@ export function buildExportData(monument, contributions=monument.contributions |
         'Inscription': monument.inscription || '',
         'Contributors': contributionsList,
         'References': referencesList,
-        'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
+        'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate)
+            : dateFromContributions(monument.contributions)
     };
 }
 
