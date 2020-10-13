@@ -25,7 +25,7 @@ const actions = {
         pending: FETCH_FAVORITES_PENDING,
         success: FETCH_FAVORITES_SUCCESS,
         error: FETCH_FAVORITES_ERROR,
-        uri: '/api/favorites'
+        uri: '/api/favorites?cascade=true'
     },
     fetch: {
         pending: FETCH_USER_PENDING,
