@@ -3,8 +3,8 @@ import { jsPDF } from "jspdf";
 import 'jspdf-autotable'
 import {prettyPrintDate} from "./string-util";
 
-export const exportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
-    'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
+export const exportFields = ['Title', 'ID', 'Artist', 'Date', 'Deactivated', 'City', 'State', 'Address',
+    'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 
 export function buildBulkExportData(monuments) {
     const data = []
@@ -25,7 +25,9 @@ export function buildExportData(monument, contributions=monument.contributions |
     }
 
     const prepareArray = (array=[], field) => {
-        return array.map(el => el[field]).join(',');
+        let arr = array.map(it => it[field]);
+        const set = arr.filter((item, index) => arr.indexOf(item) === index);
+        return set.join(',');
     };
 
     const contributionsList = prepareArray(contributions, 'submittedBy');
@@ -33,8 +35,10 @@ export function buildExportData(monument, contributions=monument.contributions |
 
     return {
         'Title': monument.title,
+        'ID': monument.id,
         'Artist': monument.artist || '',
         'Date': monument.date ? prettyPrintDate(monument.date) : '',
+        'Deactivated': monument.deactivatedDate ? prettyPrintDate(monument.deactivatedDate) : '',
         'City': monument.city || '',
         'State': monument.state || '',
         'Address': monument.address || '',
@@ -84,13 +88,15 @@ export function exportToPdf(fields, data, exportTitle) {
         theme: 'grid',
         columnStyles: {
             0: {cellWidth: 24},
-            1: {cellWidth: 20},
+            1: {cellWidth: 10},
+            2: {cellWidth: 20},
             3: {cellWidth: 21},
-            4: {cellWidth: 13},
-            8: {cellWidth: 20},
-            9: {cellWidth: 25},
-            12: {cellWidth: 23},
-            13: {cellWidth: 18}
+            4: {cellWidth: 21},
+            6: {cellWidth: 13},
+            10: {cellWidth: 20},
+            11: {cellWidth: 25},
+            14: {cellWidth: 23},
+            15: {cellWidth: 18}
         },
         margin: {
             right: 0,
