@@ -29,6 +29,20 @@ class UpdateMonumentSuggestion extends React.Component {
         return 'year';
     }
 
+    determineDeactivatedDateTypeForUpdate() {
+        const { suggestion } = this.props;
+
+        if (suggestion.newDeactivatedDate) {
+            return 'exact-date';
+        }
+
+        if (suggestion.newDeactivatedMonth) {
+            return 'month-year';
+        }
+
+        return 'year';
+    }
+
     buildUpdate() {
         const { suggestion } = this.props;
 
@@ -39,6 +53,12 @@ class UpdateMonumentSuggestion extends React.Component {
                 newYear: suggestion.newYear,
                 newMonth: suggestion.newMonth,
                 newDate: suggestion.newDate
+            },
+            deactivatedDate: {
+                type: this.determineDeactivatedDateTypeForUpdate(),
+                newDeactivatedYear: suggestion.newDeactivatedYear,
+                newDeactivatedMonth: suggestion.newDeactivatedMonth,
+                newDeactivatedDate: suggestion.newDeactivatedDate
             },
             newLatitude: (suggestion.newLatitude || '').toString(),
             newLongitude: (suggestion.newLongitude || '').toString(),

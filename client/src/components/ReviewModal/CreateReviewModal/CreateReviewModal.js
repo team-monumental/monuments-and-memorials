@@ -37,6 +37,27 @@ export default class CreateReviewModal extends React.Component {
                 break;
         }
 
+        let deactivatedDate = (
+            <span className="missing-attribute">NONE</span>
+        );
+        switch (form.deactivatedDateSelectValue) {
+            case 'year':
+                if (form.deactivatedYear) {
+                    deactivatedDate = `${form.deactivatedYear}`;
+                }
+                break;
+            case 'month-year':
+                if (form.eactivatedYear) {
+                    deactivatedDate = `${form.deactivatedMonth}, ${form.deactivatedYear}`;
+                }
+                break;
+            case 'exact-date':
+                deactivatedDate = prettyPrintDate(form.deactivatedDate);
+                break;
+            default:
+                break;
+        }
+
         let materials = (
             <ul>
                 {form.materials.map(material => <li key={material}>{material}</li>)}
@@ -141,6 +162,10 @@ export default class CreateReviewModal extends React.Component {
                         <div className="attribute">
                             <span className="font-weight-bold">Date:&nbsp;</span>
                             {date}
+                        </div>
+                        <div className="attribute">
+                            <span className="font-weight-bold">Deactivated Date:&nbsp;</span>
+                            {deactivatedDate}
                         </div>
                         <div className="attribute">
                             <span className="font-weight-bold">**Address:&nbsp;</span>
