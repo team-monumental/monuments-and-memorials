@@ -103,7 +103,7 @@ export function fetchAllMonuments(dispatch, onlyActive=true) {
         let queryString = QueryString.stringify(queryOptions);
 
         try {
-            const allMonuments = await get(`/api/monuments/?${queryString}`);
+            const allMonuments = await get(`/api/monuments/?cascade=true&${queryString}`);
             dispatch(success(actions.all, allMonuments));
         } catch (err) {
             dispatch(error(actions.all, err));

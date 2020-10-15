@@ -177,7 +177,7 @@ export default class BulkCreateForm extends React.Component {
                     await this.setState({showFieldMapping: true});
                 }
                 const mapping = headers.map(header => {
-                    if (!header) return;
+                    if (!header) return null;
                     let mappedField = '';
                     for (let field of fields) {
                         // By default don't select images on CSV uploads since they don't work.
