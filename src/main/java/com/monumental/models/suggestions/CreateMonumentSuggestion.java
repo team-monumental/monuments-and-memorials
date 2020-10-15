@@ -50,6 +50,9 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "deactivatedDate")
     private String deactivatedDate;
 
+    @Column(name = "deactivatedComment")
+    private String deactivatedComment;
+
     @Column(name = "artist")
     private String artist;
 
@@ -253,6 +256,14 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
 
     public void setDeactivatedDate(String deactivatedDate) {
         this.deactivatedDate = deactivatedDate;
+    }
+
+    public String getDeactivatedComment() {
+        return deactivatedComment;
+    }
+
+    public void setDeactivatedComment(String deactivatedComment) {
+        this.deactivatedComment = deactivatedComment;
     }
 
     public String getContributionsJson() {

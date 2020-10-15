@@ -812,7 +812,7 @@ public class MonumentService extends ModelService<Monument> {
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentSuggestion.getTitle(), monumentSuggestion.getAddress(),
                 monumentSuggestion.getArtist(), monumentSuggestion.getDescription(), monumentSuggestion.getInscription(),
-                monumentSuggestion.getCity(), monumentSuggestion.getState());
+                monumentSuggestion.getCity(), monumentSuggestion.getState(), monumentSuggestion.getDeactivatedComment());
 
         // Set the Coordinates
         Point point = MonumentService.createMonumentPoint(monumentSuggestion.getLongitude(), monumentSuggestion.getLatitude());
@@ -960,7 +960,7 @@ public class MonumentService extends ModelService<Monument> {
         // Update basic String fields
         this.setBasicFieldsOnMonument(currentMonument, updateSuggestion.getNewTitle(), updateSuggestion.getNewAddress(),
                 updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription(),
-                updateSuggestion.getNewCity(), updateSuggestion.getNewState());
+                updateSuggestion.getNewCity(), updateSuggestion.getNewState(), updateSuggestion.getNewDeactivatedComment());
 
         // Update the Coordinates
         Point point = MonumentService.createMonumentPoint(updateSuggestion.getNewLongitude(), updateSuggestion.getNewLatitude());
@@ -1207,10 +1207,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param inscription - String for the inscription of the Monument
      * @param city - String for the city of the Monument
      * @param state - String for the state of the Monument
+     * @param deactivatedComment - String describing why a Monument was deactivated
      * @throws IllegalArgumentException - If the specified title is null or empty
      */
     public void setBasicFieldsOnMonument(Monument monument, String title, String address, String artist,
-                                         String description, String inscription, String city, String state) {
+                                         String description, String inscription, String city, String state,
+                                         String deactivatedComment) {
         if (monument != null) {
             if (isNullOrEmpty(title)) {
                 throw new IllegalArgumentException("Monument can not have a null or empty title");
@@ -1223,6 +1225,7 @@ public class MonumentService extends ModelService<Monument> {
             monument.setInscription(inscription);
             monument.setCity(city);
             monument.setState(state);
+            monument.setDeactivatedComment(deactivatedComment);
         }
     }
 

@@ -78,6 +78,11 @@ export default class CreateOrUpdateForm extends React.Component {
                 isValid: true,
                 message: ''
             },
+            deactivatedComment: {
+                value: '',
+                isValid: true,
+                message: ''
+            },
             artist: {
                 value: '',
                 isValid: true,
@@ -130,8 +135,8 @@ export default class CreateOrUpdateForm extends React.Component {
      * @param clearValues - If true, also clears the values inside the inputs
      */
     clearForm(clearValues) {
-        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, artist,
-            description, inscription, references, isTemporary } = this.state;
+        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            artist, description, inscription, references, isTemporary } = this.state;
         let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, images, imageUploaderKey, materials,
             newMaterials, tags, newTags } = this.state;
 
@@ -158,6 +163,9 @@ export default class CreateOrUpdateForm extends React.Component {
 
         deactivatedMonth.isValid = true;
         deactivatedMonth.message = '';
+
+        deactivatedComment.isValid = true;
+        deactivatedComment.message = '';
 
         artist.isValid = true;
         artist.message = '';
@@ -190,8 +198,9 @@ export default class CreateOrUpdateForm extends React.Component {
             longitude.value = '';
             year.value = '';
             month.value = '0';
-            deactivatedYear.value = ''
+            deactivatedYear.value = '';
             deactivatedMonth.value = '0';
+            deactivatedComment.value = '';
             artist.value = '';
             description.value = '';
             inscription.value = '';
@@ -210,9 +219,10 @@ export default class CreateOrUpdateForm extends React.Component {
             isTemporary.value = false;
         }
 
-        this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, artist, description, inscription,
-            datePickerCurrentDate, deactivatedDatePickerCurrentDate, references, images, imageUploaderKey, materials,
-            newMaterials, tags, newTags, isTemporary});
+        this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
+            deactivatedComment, artist, description, inscription, datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags,
+            newTags, isTemporary});
     }
 
     /**
@@ -220,8 +230,8 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     setFormFieldValuesForUpdate() {
         const { monument } = this.props;
-        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, artist,
-            description, inscription, materials, locationType } = this.state;
+        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            artist, description, inscription, materials, locationType } = this.state;
         let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, references, tags, imagesForUpdate,
             photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, city, state } = this.state;
 
@@ -264,6 +274,7 @@ export default class CreateOrUpdateForm extends React.Component {
         deactivatedYear.value = monumentDeactivatedYear ? monumentDeactivatedYear : '';
         deactivatedMonth.value = monumentDeactivatedMonth ? monumentDeactivatedMonth : '';
         deactivatedDatePickerCurrentDate = monumentExactDeactivatedDate ? monumentExactDeactivatedDate : new Date();
+        deactivatedComment.value = monument.deactivatedComment ? monument.deactivatedComment : '';
         city = monument.city;
         state = monument.state;
 
@@ -332,9 +343,9 @@ export default class CreateOrUpdateForm extends React.Component {
         imageUploaderKey++;
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate, references,
-            materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey,
-            locationType, city, state});
+            datePickerCurrentDate, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
+            deactivatedComment, references, materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
+            photoSphereImages, imageUploaderKey, locationType, city, state});
     }
 
     /**
@@ -343,8 +354,8 @@ export default class CreateOrUpdateForm extends React.Component {
      * @returns {boolean} - True if the Form is valid, False otherwise
      */
     validateForm() {
-        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, references,
-            materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
+        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            references, materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
             datePickerError, dateSelectValue, deactivatedDateSelectValue } = this.state;
         let { deactivatedDatePickerError } = this.state
         const currentDate = new Date();
@@ -508,10 +519,19 @@ export default class CreateOrUpdateForm extends React.Component {
                 } else if (monthInt === deactivatedMonthInt) {
                     if (dayInt > deactivatedDayInt) {
                         formIsValid = false;
-                        deactivatedDatePickerError = 'Deactivated date must be after created date'
+                        deactivatedDatePickerError = 'Deactivated date must be after created date';
                     }
                 }
             }
+        }
+
+        /* Checks that a deactivated date exists if a deactivated comment exists */
+        if (!validator.isEmpty(deactivatedComment.value)
+            && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== 'exact-date')
+            && validator.isEmpty(deactivatedYear.value)) {
+            deactivatedComment.isValid = false;
+            deactivatedComment.message = 'Deactivated date is required in order to provide a deactivated reason';
+            formIsValid = false;
         }
 
         /* References Validation */
@@ -540,8 +560,8 @@ export default class CreateOrUpdateForm extends React.Component {
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, deactivatedDateSelectValue, year, month,
             deactivatedYear, deactivatedMonth, artist, description, inscription, datePickerCurrentDate,
-            deactivatedDatePickerCurrentDate, references, images, photoSphereImages, materials, newMaterials, tags,
-            newTags, isTemporary, city, state } = this.state;
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, photoSphereImages, materials,
+            newMaterials, tags, newTags, isTemporary, city, state } = this.state;
 
         let createForm = {
             title: title.value,
@@ -560,6 +580,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newTags: newTags.map(newTag => newTag.name),
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
+            deactivatedComment: deactivatedComment.value === '' ? null : deactivatedComment.value,
             isTemporary: isTemporary.value,
             city,
             state
@@ -611,8 +632,8 @@ export default class CreateOrUpdateForm extends React.Component {
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
             deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
-            deactivatedDatePickerCurrentDate, references, images, imagesForUpdate, photoSphereImages,
-            photoSphereImagesForUpdate, materials, tags, isTemporary, city, state } = this.state;
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imagesForUpdate,
+            photoSphereImages, photoSphereImagesForUpdate, materials, tags, isTemporary, city, state } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -628,6 +649,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
+            newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
             imagesForUpdate: imagesForUpdate,
             newCity: city,
             newState: state
@@ -1141,8 +1163,8 @@ export default class CreateOrUpdateForm extends React.Component {
     render() {
         const { showingAdvancedInformation, dateSelectValue, deactivatedDateSelectValue, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, title, address, latitude, longitude, year, deactivatedYear, month,
-            deactivatedMonth, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
+            deactivatedMonth, deactivatedComment, artist, description, inscription, references, imageUploaderKey,
+            materials, imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
             city, state, datePickerError, deactivatedDatePickerError } = this.state;
         const { monument, action } = this.props;
 
@@ -1587,6 +1609,22 @@ export default class CreateOrUpdateForm extends React.Component {
                                 {/* Deactivated Date: Input (Year, Year/Month, or Date Picker) */}
                                 {deactivatedDateInput}
                             </div>
+
+                            {/* Deactivated Comment */}
+                            <Form.Group controlId="create-form-deactivated-comment">
+                                <Form.Label>Deactivated Reason:</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows="3"
+                                    name="deactivatedComment"
+                                    placeholder="Deactivated Reason"
+                                    value={deactivatedComment.value}
+                                    onChange={(event) => this.handleInputChange(event)}
+                                    isInvalid={!deactivatedComment.isValid}
+                                    className="multi-line-text-control"
+                                />
+                                <Form.Control.Feedback type="invalid">{deactivatedComment.message}</Form.Control.Feedback>
+                            </Form.Group>
 
                             {/* Description */}
                             <Form.Group controlId="create-form-description">

@@ -95,6 +95,9 @@ public class CsvMonumentConverter {
                         }
                         suggestion.setDeactivatedDate(value);
                         break;
+                    case "deactivatedComment":
+                        suggestion.setDeactivatedComment(value);
+                        break;
                     case "materials":
                         result.getMaterialNames().addAll(parseCsvTags(value));
                         break;
@@ -189,6 +192,12 @@ public class CsvMonumentConverter {
                         }
                         break;
                 }
+            }
+
+            if ((suggestion.getDeactivatedDate() == null || suggestion.getDeactivatedDate().isEmpty()) &&
+                    (suggestion.getDeactivatedYear() == null || suggestion.getDeactivatedYear().isEmpty()) &&
+                    (suggestion.getDeactivatedComment() != null && !suggestion.getDeactivatedComment().isEmpty())) {
+                result.getWarnings().add("Deactivated date is required in order to have a deactivated comment");
             }
 
             result.setMonumentSuggestion(suggestion);

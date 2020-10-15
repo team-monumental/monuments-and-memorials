@@ -53,6 +53,16 @@ export default class About extends React.Component {
             );
         }
 
+        let deactivatedComment;
+        if (monument.deactivatedComment) {
+            deactivatedComment = (
+                <div>
+                    <span className="detail-label">Deactivation Reason:&nbsp;</span>
+                    {monument.deactivatedComment}
+                </div>
+            );
+        }
+
         let city;
         if (monument.city) {
             city = (
@@ -180,6 +190,7 @@ export default class About extends React.Component {
                         {artist}
                         {date}
                         {deactivatedDate}
+                        {deactivatedComment}
                         {city}
                         {state}
                         {address}
