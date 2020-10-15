@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import 'jspdf-autotable'
 import {getUserFullName, prettyPrintDate} from "./string-util";
 
-export const exportFields = ['Title', 'ID', 'Artist', 'Date', 'Deactivated', 'City', 'State', 'Address',
+export const exportFields = ['Title', 'ID', 'Artist', 'Date', 'Deactivated', 'Deactivated Reason', 'City', 'State', 'Address',
     'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 
 export function buildBulkExportData(monuments) {
@@ -53,6 +53,7 @@ export function buildExportData(monument, contributions=monument.contributions |
         'Artist': monument.artist || '',
         'Date': monument.date ? prettyPrintDate(monument.date) : '',
         'Deactivated': monument.deactivatedDate ? prettyPrintDate(monument.deactivatedDate) : '',
+        'Deactivated Reason': monument.deactivatedComment,
         'City': monument.city || '',
         'State': monument.state || '',
         'Address': monument.address || '',
@@ -102,22 +103,30 @@ export function exportToPdf(fields, data, exportTitle) {
         body: dataArr,
         theme: 'grid',
         columnStyles: {
-            0: {cellWidth: 24},
+            0: {cellWidth: 20},
             1: {cellWidth: 10},
-            2: {cellWidth: 20},
-            3: {cellWidth: 21},
+            2: {cellWidth: 17},
+            3: {cellWidth: 18},
             4: {cellWidth: 21},
-            6: {cellWidth: 13},
-            10: {cellWidth: 20},
-            11: {cellWidth: 25},
-            14: {cellWidth: 23},
-            15: {cellWidth: 18}
+            5: {cellWidth: 22},
+            7: {cellWidth: 13},
+            8: {cellWidth: 17},
+            9: {cellWidth: 14},
+            10: {cellWidth: 17},
+            11: {cellWidth: 20},
+            12: {cellWidth: 25},
+            13: {cellWidth: 16},
+            14: {cellWidth: 18},
+            16: {cellWidth: 18}
         },
         margin: {
             right: 0,
             left: 0,
             top: 0,
             bottom: 0
+        },
+        styles: {
+            fontSize: 9
         },
         rowPageBreak: 'avoid'
     })
