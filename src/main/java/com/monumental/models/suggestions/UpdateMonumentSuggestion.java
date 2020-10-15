@@ -64,6 +64,9 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "newDeactivatedDate")
     private String newDeactivatedDate;
 
+    @Column(name = "newDeactivatedComment")
+    private String newDeactivatedComment;
+
     @Column(name = "new_is_temporary")
     private Boolean newIsTemporary = false;
 
@@ -285,6 +288,14 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public void setNewDeactivatedDate(String newDeactivatedDate) {
         this.newDeactivatedDate = newDeactivatedDate;
+    }
+
+    public String getNewDeactivatedComment() {
+        return newDeactivatedComment;
+    }
+
+    public void setNewDeactivatedComment(String newDeactivatedComment) {
+        this.newDeactivatedComment = newDeactivatedComment;
     }
 
     public String getUpdatedReferenceUrlsByIdJson() {

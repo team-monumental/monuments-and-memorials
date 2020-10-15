@@ -66,6 +66,9 @@ public class Monument extends Model implements Serializable {
     @Column(name = "deactivatedDate")
     private Date deactivatedDate;
 
+    @Column(name = "deactivatedComment")
+    private String deactivatedComment;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @OneToMany(mappedBy = "monument")
     private Set<MonumentTag> monumentTags;
@@ -209,6 +212,14 @@ public class Monument extends Model implements Serializable {
 
     public void setDeactivatedDate(Date deactivatedDate) {
         this.deactivatedDate = deactivatedDate;
+    }
+
+    public String getDeactivatedComment() {
+        return deactivatedComment;
+    }
+
+    public void setDeactivatedComment(String deactivatedComment) {
+        this.deactivatedComment = deactivatedComment;
     }
 
     @JsonIgnore

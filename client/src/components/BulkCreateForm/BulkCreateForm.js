@@ -33,7 +33,8 @@ export default class BulkCreateForm extends React.Component {
             mapping: [],
             fields: [
                 {name: 'artist'}, {name: 'title', label: 'Title/Name'}, {name: 'date', label: 'Date Created'},
-                {name: 'deactivatedDate', label: 'Deactivated Date'}, {name: 'latitude'}, {name: 'longitude'},
+                {name: 'deactivatedDate', label: 'Deactivated Date'},
+                {name: 'deactivatedComment', label: 'Deactivation Reason'}, {name: 'latitude'}, {name: 'longitude'},
                 {name: 'city'}, {name: 'state'}, {name: 'address'}, {name: 'description'}, {name: 'inscription'},
                 {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Name'},
                 {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
@@ -177,7 +178,7 @@ export default class BulkCreateForm extends React.Component {
                     await this.setState({showFieldMapping: true});
                 }
                 const mapping = headers.map(header => {
-                    if (!header) return;
+                    if (!header) return null;
                     let mappedField = '';
                     for (let field of fields) {
                         // By default don't select images on CSV uploads since they don't work.
