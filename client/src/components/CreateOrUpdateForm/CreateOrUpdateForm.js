@@ -1262,7 +1262,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             <Form.Control
                                 as="select"
                                 name="deactivatedMonth"
-                                value={month.value}
+                                value={deactivatedMonth.value}
                                 onChange={(event) => this.handleInputChange(event)}
                                 isInvalid={!deactivatedMonth.isValid}
                                 className="select-control mr-2"
