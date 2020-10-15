@@ -104,8 +104,8 @@ export function exportToPdf(fields, data, exportTitle) {
         theme: 'grid',
         columnStyles: {
             0: {cellWidth: 20},
-            1: {cellWidth: 10},
-            2: {cellWidth: 17},
+            1: {cellWidth: 11},
+            2: {cellWidth: 15},
             3: {cellWidth: 18},
             4: {cellWidth: 21},
             5: {cellWidth: 22},
