@@ -43,6 +43,16 @@ export default class About extends React.Component {
             );
         }
 
+        let deactivatedDate;
+        if (monument.deactivatedDate) {
+            deactivatedDate = (
+                <div>
+                    <span className="detail-label">Deactivated Date:&nbsp;</span>
+                    {prettyPrintDate(monument.deactivatedDate)}
+                </div>
+            );
+        }
+
         let city;
         if (monument.city) {
             city = (
@@ -169,6 +179,7 @@ export default class About extends React.Component {
                         {title}
                         {artist}
                         {date}
+                        {deactivatedDate}
                         {city}
                         {state}
                         {address}

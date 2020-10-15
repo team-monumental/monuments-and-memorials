@@ -6,7 +6,8 @@ import * as moment from 'moment';
  */
 export function prettyPrintDate(date) {
     if (!date) return;
-    date = moment(new Date(date));
+    date = new Date(date);
+    date = moment(new Date( date.getTime() + Math.abs(date.getTimezoneOffset()*60000)))
     // Wednesday, October 16th, 2019 format
     return date.format('dddd, MMMM Do, YYYY');
 }
@@ -49,5 +50,8 @@ export function capitalize(string) {
 }
 
 export function getUserFullName(user) {
+    if (!user) {
+        return ''
+    }
     return [user.firstName, user.lastName].join(' ');
 }
