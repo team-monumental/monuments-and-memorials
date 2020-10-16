@@ -7,6 +7,7 @@ import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.security.Role;
 import com.monumental.services.FavoriteService;
+import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +26,9 @@ public class FavoriteController {
     private FavoriteService favoriteService;
 
     @Autowired
+    private MonumentService monumentService;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping("/api/favorite")
@@ -39,15 +43,29 @@ public class FavoriteController {
 
     @GetMapping("/api/favorites")
     @PreAuthorize(Authentication.isAuthenticated)
-    public List<Favorite> getUserFavorites() throws UnauthorizedException {
-        return this.favoriteService.getUserFavorites();
+    public List<Favorite> getUserFavorites(@RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
+            throws UnauthorizedException {
+        List<Favorite> favorites = this.favoriteService.getUserFavorites();
+
+        if (cascade) {
+            favorites.forEach(favorite -> this.monumentService.initializeAllLazyLoadedCollections(favorite.getMonument()));
+        }
+
+        return favorites;
     }
 
     @GetMapping("/api/favorites/{userId}")
     @PreAuthorize(Authorization.isPartnerOrAbove)
-    public List<Favorite> getUserFavorites(@PathVariable(value = "userId", required = false) Integer userId)
+    public List<Favorite> getUserFavorites(@PathVariable(value = "userId", required = false) Integer userId,
+                                           @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws ResourceNotFoundException, UnauthorizedException {
-        return this.favoriteService.getUserFavorites(userId);
+        List<Favorite> favorites = this.favoriteService.getUserFavorites(userId);
+
+        if (cascade) {
+            favorites.forEach(favorite -> this.monumentService.initializeAllLazyLoadedCollections(favorite.getMonument()));
+        }
+
+        return favorites;
     }
 
     private static class FavoriteRequest {

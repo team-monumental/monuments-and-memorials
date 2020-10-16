@@ -21,7 +21,7 @@ export default class Favorites extends React.Component {
                         <span className="export-buttons-favorites">
                             <ExportButtons className="mt-2" fields={exportFields}
                                            data={exportData}
-                                           title="Search"/>
+                                           title="Favorites"/>
                         </span>
                     </Card.Title>
                 </Card.Header>
