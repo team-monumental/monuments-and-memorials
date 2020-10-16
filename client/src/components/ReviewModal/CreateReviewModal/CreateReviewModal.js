@@ -168,6 +168,12 @@ export default class CreateReviewModal extends React.Component {
                             {deactivatedDate}
                         </div>
                         <div className="attribute">
+                            <span className="font-weight-bold">Deactivation Reason:&nbsp;</span>
+                            {form.deactivatedComment ? form.deactivatedComment : (
+                                <span className="missing-attribute">NONE</span>
+                            )}
+                        </div>
+                        <div className="attribute">
                             <span className="font-weight-bold">**Address:&nbsp;</span>
                             {form.address ? form.address : (
                                 <span className="missing-attribute">NONE</span>

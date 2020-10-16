@@ -316,6 +316,11 @@ export default class MonumentUpdate extends React.Component {
                 changedAttributes.push(<AttributeChange attributeLabel="Deactivated Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} key="deactivatedDate"/>) :
                 unchangedAttributes.push(<AttributeChange attributeLabel="Deactivated Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} didChange={false} key="deactivatedDate"/>);
 
+            /* Deactivated Comment */
+            (this.didAttributeChange(oldMonument.deactivatedComment, update.newDeactivatedComment)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Deactivated Comment" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Deactivated Comment" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
+
             /* Address */
             (this.didAttributeChange(oldMonument.address, update.newAddress)) ?
                 changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} key="address"/>) :
