@@ -210,6 +210,6 @@ public class MonumentServiceUnitTests {
         assertEquals("Inscription", monument.getInscription());
         assertEquals("City", monument.getCity());
         assertEquals("State", monument.getState());
-        assertEquals("State", monument.getDeactivatedComment());
+        assertEquals("Deactivated Comment", monument.getDeactivatedComment());
     }
 }
