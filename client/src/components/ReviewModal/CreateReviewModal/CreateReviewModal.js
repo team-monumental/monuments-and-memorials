@@ -22,16 +22,16 @@ export default class CreateReviewModal extends React.Component {
         switch (form.dateSelectValue) {
             case DateFormat.YEAR:
                 if (form.year) {
-                    date = `${form.year}`;
+                    date = prettyPrintDate(`${form.year}`, form.dateSelectValue);
                 }
                 break;
             case DateFormat.MONTH_YEAR:
                 if (form.year) {
-                    date = `${form.month}, ${form.year}`;
+                    date = prettyPrintDate(`${form.year}-${form.month}`, form.dateSelectValue);
                 }
                 break;
             case DateFormat.EXACT_DATE:
-                date = prettyPrintDate(form.date);
+                date = prettyPrintDate(form.date, form.dateSelectValue);
                 break;
             default:
                 break;
@@ -43,16 +43,16 @@ export default class CreateReviewModal extends React.Component {
         switch (form.deactivatedDateSelectValue) {
             case DateFormat.YEAR:
                 if (form.deactivatedYear) {
-                    deactivatedDate = `${form.deactivatedYear}`;
+                    deactivatedDate = prettyPrintDate(`${form.deactivatedYear}`, form.deactivatedDateSelectValue);
                 }
                 break;
             case DateFormat.MONTH_YEAR:
-                if (form.eactivatedYear) {
-                    deactivatedDate = `${form.deactivatedMonth}, ${form.deactivatedYear}`;
+                if (form.deactivatedYear) {
+                    deactivatedDate = prettyPrintDate(`${form.deactivatedYear}-${form.deactivatedMonth}`, form.deactivatedDateSelectValue);
                 }
                 break;
             case DateFormat.EXACT_DATE:
-                deactivatedDate = prettyPrintDate(form.deactivatedDate);
+                deactivatedDate = prettyPrintDate(form.deactivatedDate, form.deactivatedDateSelectValue);
                 break;
             default:
                 break;

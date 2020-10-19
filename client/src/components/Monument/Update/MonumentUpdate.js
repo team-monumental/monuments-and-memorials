@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './MonumentUpdate.scss';
 import AttributeChange from './AttributeChange/AttributeChange';
-import {DateFormat, prettyPrintDate, prettyPrintDateString} from '../../../utils/string-util';
+import {DateFormat, prettyPrintDate} from '../../../utils/string-util';
 import UnchangedTags from './TagChanges/UnchangedTags/UnchangedTags';
 import AddedTags from './TagChanges/AddedTags/AddedTags';
 import RemovedTags from './TagChanges/RemovedTags/RemovedTags';
@@ -318,8 +318,8 @@ export default class MonumentUpdate extends React.Component {
 
             /* Deactivated Comment */
             (this.didAttributeChange(oldMonument.deactivatedComment, update.newDeactivatedComment)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Deactivated Comment" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Deactivated Comment" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Deactivated Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Deactivated Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
 
             /* Address */
             (this.didAttributeChange(oldMonument.address, update.newAddress)) ?

@@ -16,8 +16,6 @@ export function prettyPrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
     date = new Date(date);
     date = moment(new Date( date.getTime() + Math.abs(date.getTimezoneOffset()*60000)))
 
-    console.log(date)
-
     switch (dateFormat) {
         case DateFormat.YEAR:
             // 2019 format
