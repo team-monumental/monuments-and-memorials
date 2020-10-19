@@ -27,7 +27,7 @@ export function buildExportData(monument, contributions=monument.contributions |
     const prepareArray = (array=[], field) => {
         let arr = array.map(it => it[field]);
         const set = arr.filter((item, index) => arr.indexOf(item) === index);
-        return set.join(',');
+        return set.join(', ');
     };
 
     const dateFromContributions = (contributions=[]) => {
@@ -104,12 +104,16 @@ export function exportToPdf(fields, data, exportTitle) {
         columnStyles: {
             0: {cellWidth: 24},
             1: {cellWidth: 10},
-            2: {cellWidth: 20},
+            2: {cellWidth: 18},
             3: {cellWidth: 21},
             4: {cellWidth: 21},
-            6: {cellWidth: 13},
+            5: {cellWidth: 16},
+            6: {cellWidth: 11},
+            8: {cellWidth: 16},
             10: {cellWidth: 20},
             11: {cellWidth: 25},
+            12: {cellWidth: 23},
+            13: {cellWidth: 18},
             14: {cellWidth: 23},
             15: {cellWidth: 18}
         },
@@ -118,6 +122,9 @@ export function exportToPdf(fields, data, exportTitle) {
             left: 0,
             top: 0,
             bottom: 0
+        },
+        styles: {
+            fontSize: 9
         },
         rowPageBreak: 'avoid'
     })
