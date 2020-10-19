@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Card } from 'react-bootstrap';
 import MonumentUpdate from '../../../Monument/Update/MonumentUpdate';
 import { Link } from 'react-router-dom';
-import { getUserFullName } from '../../../../utils/string-util';
+import {DateFormat, getUserFullName} from '../../../../utils/string-util';
 import { Role } from '../../../../utils/authentication-util';
 
 class UpdateMonumentSuggestion extends React.Component {
@@ -19,28 +19,28 @@ class UpdateMonumentSuggestion extends React.Component {
         const { suggestion } = this.props;
 
         if (suggestion.newDate) {
-            return 'exact-date';
+            return DateFormat.EXACT_DATE;
         }
 
         if (suggestion.newMonth) {
-            return 'month-year';
+            return DateFormat.MONTH_YEAR;
         }
 
-        return 'year';
+        return DateFormat.YEAR;
     }
 
     determineDeactivatedDateTypeForUpdate() {
         const { suggestion } = this.props;
 
         if (suggestion.newDeactivatedDate) {
-            return 'exact-date';
+            return DateFormat.EXACT_DATE;
         }
 
         if (suggestion.newDeactivatedMonth) {
-            return 'month-year';
+            return DateFormat.MONTH_YEAR;
         }
 
-        return 'year';
+        return DateFormat.YEAR;
     }
 
     buildUpdate() {

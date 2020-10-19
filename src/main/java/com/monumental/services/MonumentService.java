@@ -811,8 +811,10 @@ public class MonumentService extends ModelService<Monument> {
 
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentSuggestion.getTitle(), monumentSuggestion.getAddress(),
-                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(), monumentSuggestion.getInscription(),
-                monumentSuggestion.getCity(), monumentSuggestion.getState(), monumentSuggestion.getDeactivatedComment());
+                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(),
+                monumentSuggestion.getInscription(), monumentSuggestion.getCity(), monumentSuggestion.getState(),
+                monumentSuggestion.getDeactivatedComment(), monumentSuggestion.getDateFormat(),
+                monumentSuggestion.getDeactivatedDateFormat());
 
         // Set the Coordinates
         Point point = MonumentService.createMonumentPoint(monumentSuggestion.getLongitude(), monumentSuggestion.getLatitude());
@@ -959,8 +961,10 @@ public class MonumentService extends ModelService<Monument> {
 
         // Update basic String fields
         this.setBasicFieldsOnMonument(currentMonument, updateSuggestion.getNewTitle(), updateSuggestion.getNewAddress(),
-                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription(),
-                updateSuggestion.getNewCity(), updateSuggestion.getNewState(), updateSuggestion.getNewDeactivatedComment());
+                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(),
+                updateSuggestion.getNewInscription(), updateSuggestion.getNewCity(), updateSuggestion.getNewState(),
+                updateSuggestion.getNewDeactivatedComment(), updateSuggestion.getNewDateFormat(),
+                updateSuggestion.getNewDeactivatedDateFormat());
 
         // Update the Coordinates
         Point point = MonumentService.createMonumentPoint(updateSuggestion.getNewLongitude(), updateSuggestion.getNewLatitude());
@@ -1212,7 +1216,8 @@ public class MonumentService extends ModelService<Monument> {
      */
     public void setBasicFieldsOnMonument(Monument monument, String title, String address, String artist,
                                          String description, String inscription, String city, String state,
-                                         String deactivatedComment) {
+                                         String deactivatedComment, DateFormat dateFormat,
+                                         DateFormat deactivatedDateFormat) {
         if (monument != null) {
             if (isNullOrEmpty(title)) {
                 throw new IllegalArgumentException("Monument can not have a null or empty title");
@@ -1226,6 +1231,8 @@ public class MonumentService extends ModelService<Monument> {
             monument.setCity(city);
             monument.setState(state);
             monument.setDeactivatedComment(deactivatedComment);
+            monument.setDateFormat(dateFormat);
+            monument.setDeactivatedDateFormat(deactivatedDateFormat);
         }
     }
 
