@@ -1,6 +1,7 @@
 package com.monumental.util.csvparsing;
 
 import com.google.gson.Gson;
+import com.monumental.models.DateFormat;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.MonumentService;
 
@@ -79,6 +80,9 @@ public class CsvMonumentConverter {
                         }
                         suggestion.setDate(value);
                         break;
+                    case "dateFormat":
+                        suggestion.setDateFormat(DateFormat.valueOf(value));
+                        break;
                     case "deactivatedDate":
                         if (canParseDate(value)) {
                             Date parsedDate = parseDate(value);
@@ -94,6 +98,9 @@ public class CsvMonumentConverter {
                             result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
                         suggestion.setDeactivatedDate(value);
+                        break;
+                    case "deactivatedDateFormat":
+                        suggestion.setDeactivatedDateFormat(DateFormat.valueOf(value));
                         break;
                     case "deactivatedComment":
                         suggestion.setDeactivatedComment(value);

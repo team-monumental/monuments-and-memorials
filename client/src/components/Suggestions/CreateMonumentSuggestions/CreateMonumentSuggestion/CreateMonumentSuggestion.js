@@ -83,6 +83,7 @@ class CreateMonumentSuggestion extends React.Component {
         const longitude = parse(suggestion.longitude);
         const description = parse(suggestion.description, true);
         const inscription = parse(suggestion.inscription, true);
+        const deactivatedComment = parse(suggestion.deactivatedComment, true)
 
         let date = 'None';
         if (suggestion.date && suggestion.date.length) {
@@ -142,6 +143,7 @@ class CreateMonumentSuggestion extends React.Component {
                         <div><strong>Longitude:</strong> {longitude}</div>
                         <div><strong>Description:</strong> {description}</div>
                         <div><strong>Inscription:</strong> {inscription}</div>
+                        <div><strong>Deactivated Reason:</strong> {deactivatedComment}</div>
                         <div className="font-weight-bold">Contributors: </div> {this.renderStringArray(JSON.parse(suggestion.contributionsJson))}
                         <div className="font-weight-bold">References: </div> {this.renderStringArray(JSON.parse(suggestion.referencesJson))}
                         <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}

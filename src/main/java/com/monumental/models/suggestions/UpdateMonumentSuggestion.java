@@ -1,6 +1,7 @@
 package com.monumental.models.suggestions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.monumental.models.DateFormat;
 import com.monumental.models.Monument;
 
 import javax.persistence.*;
@@ -55,6 +56,9 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_date")
     private String newDate;
 
+    @Column(name = "new_date_format")
+    private DateFormat newDateFormat;
+
     @Column(name = "newDeactivatedYear")
     private String newDeactivatedYear;
 
@@ -63,6 +67,9 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     @Column(name = "newDeactivatedDate")
     private String newDeactivatedDate;
+
+    @Column(name = "new_deactivated_date_format")
+    private DateFormat newDeactivatedDateFormat;
 
     @Column(name = "newDeactivatedComment")
     private String newDeactivatedComment;
@@ -252,6 +259,22 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public String getNewDate() {
         return this.newDate;
+    }
+
+    public DateFormat getNewDateFormat() {
+        return newDateFormat;
+    }
+
+    public void setNewDateFormat(DateFormat newDateFormat) {
+        this.newDateFormat = newDateFormat;
+    }
+
+    public DateFormat getNewDeactivatedDateFormat() {
+        return newDeactivatedDateFormat;
+    }
+
+    public void setNewDeactivatedDateFormat(DateFormat newDeactivatedDateFormat) {
+        this.newDeactivatedDateFormat = newDeactivatedDateFormat;
     }
 
     public void setNewDate(String newDate) {

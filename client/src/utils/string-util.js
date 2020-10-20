@@ -1,15 +1,32 @@
 import * as moment from 'moment';
 
 /**
+ * valid date formats.  exact date (yyyy-mm-dd), month-year, year
+ * @type {Readonly<{MONTH_YEAR: string, YEAR: string, EXACT_DATE: string}>}
+ */
+export const DateFormat = Object.freeze({YEAR: 'YEAR', MONTH_YEAR: 'MONTH_YEAR', EXACT_DATE: 'EXACT_DATE'})
+
+/**
  * Format the specified date into a user-friendly string
  * @param date - Date to format into a user-friendly string
+ * @param dateFormat describes format to output
  */
-export function prettyPrintDate(date) {
+export function prettyPrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
     if (!date) return;
     date = new Date(date);
     date = moment(new Date( date.getTime() + Math.abs(date.getTimezoneOffset()*60000)))
-    // Wednesday, October 16th, 2019 format
-    return date.format('dddd, MMMM Do, YYYY');
+
+    switch (dateFormat) {
+        case DateFormat.YEAR:
+            // 2019 format
+            return date.format('YYYY');
+        case DateFormat.MONTH_YEAR:
+            // October, 2019 format
+            return date.format('MMMM, YYYY');
+        default:
+            // Wednesday, October 16th, 2019 format
+            return date.format('dddd, MMMM Do, YYYY');
+    }
 }
 
 /**
