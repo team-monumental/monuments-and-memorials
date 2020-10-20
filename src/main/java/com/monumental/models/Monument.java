@@ -36,6 +36,9 @@ public class Monument extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
+    @Column(name = "date_format")
+    private DateFormat dateFormat;
+
     @JsonSerialize(using = GeometrySerializer.class)
     @JsonDeserialize(using = GeometryDeserializer.class)
     @Column(name = "coordinates", columnDefinition = "geometry")
@@ -65,6 +68,9 @@ public class Monument extends Model implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "deactivatedDate")
     private Date deactivatedDate;
+
+    @Column(name = "deactivated_ate_format")
+    private DateFormat deactivatedDateFormat;
 
     @Column(name = "deactivatedComment")
     private String deactivatedComment;
@@ -114,6 +120,22 @@ public class Monument extends Model implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public DateFormat getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public DateFormat getDeactivatedDateFormat() {
+        return deactivatedDateFormat;
+    }
+
+    public void setDeactivatedDateFormat(DateFormat deactivatedDateFormat) {
+        this.deactivatedDateFormat = deactivatedDateFormat;
     }
 
     public Point getCoordinates() {

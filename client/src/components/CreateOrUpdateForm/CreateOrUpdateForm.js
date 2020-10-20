@@ -2,6 +2,7 @@ import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
 import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
+import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
@@ -34,9 +35,9 @@ export default class CreateOrUpdateForm extends React.Component {
                 message: ''
             },
             showingAdvancedInformation: false,
-            dateSelectValue: 'year',
+            dateSelectValue: DateFormat.YEAR,
             datePickerCurrentDate: new Date(),
-            deactivatedDateSelectValue: 'year',
+            deactivatedDateSelectValue: DateFormat.YEAR,
             deactivatedDatePickerCurrentDate: new Date(),
             title: {
                 value: '',
@@ -232,8 +233,9 @@ export default class CreateOrUpdateForm extends React.Component {
         const { monument } = this.props;
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType } = this.state;
-        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, references, tags, imagesForUpdate,
-            photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, city, state } = this.state;
+        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
+            references, tags, imagesForUpdate, photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey,
+            city, state } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -271,6 +273,8 @@ export default class CreateOrUpdateForm extends React.Component {
         year.value = monumentYear ? monumentYear : '';
         month.value = monumentMonth ? monumentMonth : '';
         datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+        dateSelectValue = monument.dateFormat ? monument.dateFormat : DateFormat.YEAR;
+        deactivatedDateSelectValue = monument.deactivatedDateFormat ? monument.deactivatedDateFormat : DateFormat.YEAR;
         deactivatedYear.value = monumentDeactivatedYear ? monumentDeactivatedYear : '';
         deactivatedMonth.value = monumentDeactivatedMonth ? monumentDeactivatedMonth : '';
         deactivatedDatePickerCurrentDate = monumentExactDeactivatedDate ? monumentExactDeactivatedDate : new Date();
@@ -343,9 +347,9 @@ export default class CreateOrUpdateForm extends React.Component {
         imageUploaderKey++;
 
         this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
-            deactivatedComment, references, materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey, locationType, city, state});
+            datePickerCurrentDate, dateSelectValue, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
+            deactivatedDateSelectValue, deactivatedComment, references, materials, tags, imagesForUpdate,
+            photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, locationType, city, state});
     }
 
     /**
@@ -496,10 +500,9 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
-
         /* Check that the deactivated date is after created date */
-        if ((!validator.isEmpty(deactivatedYear.value) || (deactivatedDatePickerCurrentDate && deactivatedDateSelectValue === 'exact-date'))
-            && (!validator.isEmpty(year.value) || (datePickerCurrentDate && dateSelectValue === 'exact-date'))) {
+        if ((!validator.isEmpty(deactivatedYear.value) || (deactivatedDatePickerCurrentDate && deactivatedDateSelectValue === DateFormat.EXACT_DATE))
+            && (!validator.isEmpty(year.value) || (datePickerCurrentDate && dateSelectValue === DateFormat.EXACT_DATE))) {
             const deactivatedYearInt = parseInt(deactivatedYear.value || deactivatedDatePickerCurrentDate.getFullYear());
             const deactivatedMonthInt = parseInt(deactivatedMonth.value > 0 ? deactivatedMonth.value : deactivatedDatePickerCurrentDate.getMonth());
             const deactivatedDayInt = parseInt(deactivatedDatePickerCurrentDate.getDate());
@@ -527,7 +530,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         /* Checks that a deactivated date exists if a deactivated comment exists */
         if (!validator.isEmpty(deactivatedComment.value)
-            && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== 'exact-date')
+            && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== DateFormat.EXACT_DATE)
             && validator.isEmpty(deactivatedYear.value)) {
             deactivatedComment.isValid = false;
             deactivatedComment.message = 'Deactivated date is required in order to provide a deactivated reason';
@@ -580,6 +583,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newTags: newTags.map(newTag => newTag.name),
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
+            dateFormat: dateSelectValue,
+            deactivatedDateFormat: deactivatedDateSelectValue,
             deactivatedComment: deactivatedComment.value === '' ? null : deactivatedComment.value,
             isTemporary: isTemporary.value,
             city,
@@ -587,14 +592,14 @@ export default class CreateOrUpdateForm extends React.Component {
         };
 
         switch (dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 createForm.year = year.value === '' ? null : year.value;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 createForm.year = year.value === '' ? null : year.value;
                 createForm.month = month.value;
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 createForm.date = datePickerCurrentDate;
                 break;
             default:
@@ -602,14 +607,14 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         switch (deactivatedDateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 createForm.deactivatedYear = deactivatedYear.value === '' ? null : deactivatedYear.value;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 createForm.deactivatedYear = deactivatedYear.value === '' ? null : deactivatedYear.value;
                 createForm.deactivatedMonth = deactivatedMonth.value;
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 createForm.deactivatedDate = deactivatedDatePickerCurrentDate;
                 break;
             default:
@@ -649,6 +654,8 @@ export default class CreateOrUpdateForm extends React.Component {
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
+            newDateFormat: dateSelectValue,
+            newDeactivatedDateFormat: deactivatedDateSelectValue,
             newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
             imagesForUpdate: imagesForUpdate,
             newCity: city,
@@ -656,14 +663,14 @@ export default class CreateOrUpdateForm extends React.Component {
         };
 
         switch (dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 updateForm.newYear = year.value === '' ? undefined : year.value;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 updateForm.newYear = year.value === '' ? undefined : year.value;
                 updateForm.newMonth = month.value;
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 updateForm.newDate = datePickerCurrentDate;
                 break;
             default:
@@ -671,14 +678,14 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         switch (deactivatedDateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 updateForm.newDeactivatedYear = deactivatedYear.value === '' ? undefined : deactivatedYear.value;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 updateForm.newDeactivatedYear = deactivatedYear.value === '' ? undefined : deactivatedYear.value;
                 updateForm.newDeactivatedMonth = deactivatedMonth.value;
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 updateForm.newDeactivatedDate = deactivatedDatePickerCurrentDate;
                 break;
             default:
@@ -1195,10 +1202,10 @@ export default class CreateOrUpdateForm extends React.Component {
         );
 
         switch (dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 dateInput = dateYearInput;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 dateInput = (
                     <Form.Row>
                         <Form.Group controlId="create-form-date-month">
@@ -1231,7 +1238,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     </Form.Row>
                 );
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 const minimumDate = new Date(1, 0);
                 minimumDate.setFullYear(1);
                 const currentDate = new Date();
@@ -1273,10 +1280,10 @@ export default class CreateOrUpdateForm extends React.Component {
         );
 
         switch (deactivatedDateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 deactivatedDateInput = deactivatedDateYearInput;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 deactivatedDateInput = (
                     <Form.Row>
                         <Form.Group controlId="create-form-deactivated-date-month">
@@ -1309,7 +1316,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     </Form.Row>
                 );
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 const minimumDate = new Date(1, 0);
                 minimumDate.setFullYear(1);
                 const currentDate = new Date();
@@ -1578,11 +1585,11 @@ export default class CreateOrUpdateForm extends React.Component {
                                         as="select"
                                         className="select-control"
                                         onChange={(event) => this.handleDateSelectChange(event)}
-                                        defaultValue={dateSelectValue}
+                                        value={dateSelectValue}
                                     >
-                                        <option value="year">Year</option>
-                                        <option value="month-year">Month/Year</option>
-                                        <option value="exact-date">Exact Date</option>
+                                        <option value={DateFormat.YEAR}>Year</option>
+                                        <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
+                                        <option value={DateFormat.EXACT_DATE}>Exact Date</option>
                                     </Form.Control>
                                 </Form.Group>
 
@@ -1600,9 +1607,9 @@ export default class CreateOrUpdateForm extends React.Component {
                                         onChange={(event) => this.handleDeactivatedDateSelectChange(event)}
                                         defaultValue={deactivatedDateSelectValue}
                                     >
-                                        <option value="year">Year</option>
-                                        <option value="month-year">Month/Year</option>
-                                        <option value="exact-date">Exact Date</option>
+                                        <option value={DateFormat.YEAR}>Year</option>
+                                        <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
+                                        <option value={DateFormat.EXACT_DATE}>Exact Date</option>
                                     </Form.Control>
                                 </Form.Group>
 
