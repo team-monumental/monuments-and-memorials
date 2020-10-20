@@ -27,7 +27,7 @@ class BulkCreateMonumentSuggestion extends React.Component {
             `Create many new records from: ${suggestion.fileName}`;
 
         const manageUserLink = (
-            session.user.role === Role.ADMIN ?
+            session.user.role === Role.ADMIN && suggestion.createdBy ?
                 <Link to={`/panel/manage/users/user/${suggestion.createdBy.id}`} key={suggestion.createdBy.id}>
                     {getUserFullName(suggestion.createdBy)}
                 </Link> :
@@ -50,7 +50,7 @@ class BulkCreateMonumentSuggestion extends React.Component {
                         {showCreatedBy &&
                             <div className="created-by-container">
                                 Created By:&nbsp;
-                                {manageUserLink} (<a href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>)
+                                {manageUserLink} ({suggestion.createdBy && <a href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>})
                             </div>
                         }
                     </Card.Title>

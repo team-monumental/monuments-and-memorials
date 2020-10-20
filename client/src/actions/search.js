@@ -81,6 +81,7 @@ const actions = {
  * Searches for monuments and gets the total count of results
  */
 export function searchMonuments(options = {}) {
+    options.cascade = true
     return search(options, actions.monuments, 'monuments');
 }
 

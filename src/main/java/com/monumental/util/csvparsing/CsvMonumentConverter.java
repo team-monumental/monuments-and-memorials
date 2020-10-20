@@ -47,6 +47,8 @@ public class CsvMonumentConverter {
             CsvMonumentConverterResult result = new CsvMonumentConverterResult();
             Double latitude = null;
             Double longitude = null;
+            Date dateForValidate = null;
+            Date deactivatedDateForValidate = null;
             for (int i = 0; i < values.size(); i++) {
                 String field = fields.get(i);
                 String value = values.get(i);
@@ -64,14 +66,37 @@ public class CsvMonumentConverter {
                     case "date":
                         if (canParseDate(value)) {
                             Date parsedDate = parseDate(value);
+                            dateForValidate = parsedDate;
                             if (isDateInFuture(parsedDate)) {
                                 result.getWarnings().add("Date should not be in the future.");
+                            }
+                            if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
+                                result.getWarnings().add("Created date should not be after deactivated date.");
                             }
                         }
                         else {
                             result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
                         suggestion.setDate(value);
+                        break;
+                    case "deactivatedDate":
+                        if (canParseDate(value)) {
+                            Date parsedDate = parseDate(value);
+                            deactivatedDateForValidate = parsedDate;
+                            if (isDateInFuture(parsedDate)) {
+                                result.getWarnings().add("Deactivated date should not be in the future.");
+                            }
+                            if (dateForValidate != null && dateForValidate.after(parsedDate)) {
+                                result.getWarnings().add("Created date should not be after deactivated date.");
+                            }
+                        }
+                        else {
+                            result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
+                        }
+                        suggestion.setDeactivatedDate(value);
+                        break;
+                    case "deactivatedComment":
+                        suggestion.setDeactivatedComment(value);
                         break;
                     case "materials":
                         result.getMaterialNames().addAll(parseCsvTags(value));
@@ -167,6 +192,12 @@ public class CsvMonumentConverter {
                         }
                         break;
                 }
+            }
+
+            if ((suggestion.getDeactivatedDate() == null || suggestion.getDeactivatedDate().isEmpty()) &&
+                    (suggestion.getDeactivatedYear() == null || suggestion.getDeactivatedYear().isEmpty()) &&
+                    (suggestion.getDeactivatedComment() != null && !suggestion.getDeactivatedComment().isEmpty())) {
+                result.getWarnings().add("Deactivated date is required in order to have a deactivated comment");
             }
 
             result.setMonumentSuggestion(suggestion);

@@ -1,55 +1,14 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
-import ExportButtons from "../../../Export/ExportButtons/ExportButtons";
+import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
+import {buildExportData, exportFields} from '../../../../utils/export-util';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
  * who has contributed to it, and the references used
  */
 export default class About extends React.Component {
-
-    exportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
-        'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
-
-    buildExportData() {
-        const { monument, contributions, references } = this.props;
-
-        let materialsList = '';
-        let tagsList = '';
-        if (monument.monumentTags && monument.monumentTags.length) {
-            materialsList = monument.monumentTags.filter(monumentTag => monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(', ');
-            tagsList = monument.monumentTags.filter(monumentTag => !monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(', ');
-        }
-
-        const prepareArray = (array=[], field) => {
-            return array.map(el => el[field]).join(',');
-        };
-
-        const contributionsList = prepareArray(contributions, 'submittedBy');
-        const referencesList = prepareArray(references, 'url');
-
-        return [{
-            'Title': monument.title,
-            'Artist': monument.artist || '',
-            'Date': monument.date ? prettyPrintDate(monument.date) : '',
-            'City': monument.city || '',
-            'State': monument.state || '',
-            'Address': monument.address || '',
-            'Coordinates': monument.coordinates ?
-                `${monument.coordinates.coordinates[1]}, ${monument.coordinates.coordinates[0]}` :
-                '',
-            'Materials' : materialsList,
-            'Tags': tagsList,
-            'Description': monument.description || '',
-            'Inscription': monument.inscription || '',
-            'Contributors': contributionsList,
-            'References': referencesList,
-            'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
-        }];
-    }
 
     render() {
         const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle } = this.props;
@@ -80,6 +39,26 @@ export default class About extends React.Component {
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
                     {prettyPrintDate(monument.date)}
+                </div>
+            );
+        }
+
+        let deactivatedDate;
+        if (monument.deactivatedDate) {
+            deactivatedDate = (
+                <div>
+                    <span className="detail-label">Deactivated Date:&nbsp;</span>
+                    {prettyPrintDate(monument.deactivatedDate)}
+                </div>
+            );
+        }
+
+        let deactivatedComment;
+        if (monument.deactivatedComment) {
+            deactivatedComment = (
+                <div>
+                    <span className="detail-label">Deactivation Reason:&nbsp;</span>
+                    {monument.deactivatedComment}
                 </div>
             );
         }
@@ -210,6 +189,8 @@ export default class About extends React.Component {
                         {title}
                         {artist}
                         {date}
+                        {deactivatedDate}
+                        {deactivatedComment}
                         {city}
                         {state}
                         {address}
@@ -224,8 +205,8 @@ export default class About extends React.Component {
                     <div className="d-flex">
                         {!hideExport &&
                             <span>
-                                <ExportButtons className="mt-2" fields={this.exportFields}
-                                               data={this.buildExportData()}
+                                <ExportButtons className="mt-2" fields={exportFields}
+                                               data={[buildExportData(monument)]}
                                                title={monument.title}/>
                             </span>
                         }

@@ -9,6 +9,7 @@ import ManageUsersPage from '../../pages/AdminPage/ManageUsersPage/ManageUsersPa
 import { Role } from '../../utils/authentication-util';
 import ManageSuggestionsPage from '../../pages/AdminPage/ManageSuggestionsPage/ManageSuggestionsPage';
 import SuggestionCreatedPage from '../../pages/SuggestionCreatedPage/SuggestionCreatedPage';
+import BulkExportPage from '../../pages/AdminPage/BulkExportPage/BulkExportPage';
 
 export default class AdminPanel extends React.Component {
 
@@ -22,6 +23,7 @@ export default class AdminPanel extends React.Component {
                 <div className="viewport">
                     <ProtectedRoute exact path="/panel" component={AdminPanelHome} customProps={{role}}/>
                     <ProtectedRoute exact path="/panel/bulk" component={MonumentBulkCreatePage} customProps={{role}}/>
+                    <ProtectedRoute exact path="/panel/bulk-export" component={BulkExportPage} customProps={{role}}/>
                     <ProtectedRoute exact path="/panel/suggestion-created" component={SuggestionCreatedPage}/>
                     <ProtectedRoute exact path="/panel/manage/monuments" component={ManageMonumentsPage} roles={Role.RESEARCHER_OR_ABOVE}/>
                     <ProtectedRoute exact path="/panel/manage/monuments/search" component={ManageMonumentsPage} customProps={{mode: 'search'}} roles={Role.RESEARCHER_OR_ABOVE}/>

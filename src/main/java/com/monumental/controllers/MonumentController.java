@@ -89,13 +89,22 @@ public class MonumentController {
      * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
     @GetMapping("/api/monuments")
-    public List<Monument> getAllMonuments(@RequestParam(defaultValue = "true") Boolean onlyActive) throws UnauthorizedException {
+    public List<Monument> getAllMonuments(@RequestParam(defaultValue = "true") Boolean onlyActive,
+                                      @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade
+    ) throws UnauthorizedException {
+        List<Monument> monuments;
         if (onlyActive) {
-            return this.monumentRepository.findAllByIsActive(true);
+            monuments = this.monumentRepository.findAllByIsActive(true);
         } else {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
-            return this.monumentRepository.findAll();
+            monuments = this.monumentRepository.findAll();
         }
+
+        if (cascade) {
+            monuments.forEach(monument -> this.monumentService.initializeAllLazyLoadedCollections(monument));
+        }
+
+        return monuments;
     }
 
     private static class ToggleIsActiveRequest {

@@ -145,7 +145,7 @@ public class MonumentServiceUnitTests {
     public void testMonumentService_setBasicFieldsOnMonument_NullMonument() {
         Monument monument = null;
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "", "");
 
         assertNull(monument);
     }
@@ -154,21 +154,21 @@ public class MonumentServiceUnitTests {
     public void testMonumentService_setBasicFieldsOnMonument_NullTitle() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, null, "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, null, "", "", "", "", "", "", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testMonumentService_setBasicFieldsOnMonument_EmptyTitle() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "", "");
     }
 
     @Test
     public void testMonumentService_setBasicFieldsOnMonument_ValidTitle_NullOtherFields() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "Title", null, null, null, null, null, null);
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", null, null, null, null, null, null, null);
 
         assertEquals("Title", monument.getTitle());
         assertNull(monument.getAddress());
@@ -177,13 +177,14 @@ public class MonumentServiceUnitTests {
         assertNull(monument.getInscription());
         assertNull(monument.getCity());
         assertNull(monument.getState());
+        assertNull(monument.getDeactivatedComment());
     }
 
     @Test
     public void testMonumentService_setBasicFieldsOnMonument_ValidTitle_EmptyOtherFields() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "Title", "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", "", "", "", "", "", "", "");
 
         assertEquals("Title", monument.getTitle());
         assertEquals("", monument.getAddress());
@@ -192,6 +193,7 @@ public class MonumentServiceUnitTests {
         assertEquals("", monument.getInscription());
         assertEquals("", monument.getCity());
         assertEquals("", monument.getState());
+        assertEquals("", monument.getDeactivatedComment());
     }
 
     @Test
@@ -199,7 +201,7 @@ public class MonumentServiceUnitTests {
         Monument monument = new Monument();
 
         this.monumentService.setBasicFieldsOnMonument(monument, "Title", "Address", "Artist", "Description",
-                "Inscription", "City", "State");
+                "Inscription", "City", "State", "Deactivated Comment");
 
         assertEquals("Title", monument.getTitle());
         assertEquals("Address", monument.getAddress());
@@ -208,5 +210,6 @@ public class MonumentServiceUnitTests {
         assertEquals("Inscription", monument.getInscription());
         assertEquals("City", monument.getCity());
         assertEquals("State", monument.getState());
+        assertEquals("Deactivated Comment", monument.getDeactivatedComment());
     }
 }

@@ -1,0 +1,16 @@
+.admin .panel .bulk-export {
+  display: flex;
+  justify-content: center;
+
+  .card-title {
+    padding: 0;
+  }
+
+  .card-header {
+    padding: 2rem 1.25rem 0.75rem 1.25rem;
+  }
+
+  .export-buttons {
+    text-align: center;
+  }
+}
