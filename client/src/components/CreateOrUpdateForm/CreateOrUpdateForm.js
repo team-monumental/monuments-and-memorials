@@ -388,7 +388,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (locationType.value === 'address') {
             if (validator.isEmpty(address.value)) {
                 address.isValid = false;
-                address.message = 'Address must not be blank';
+                address.message = 'Address must be selected from the dropdown';
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
