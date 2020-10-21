@@ -1607,7 +1607,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         as="select"
                                         className="select-control"
                                         onChange={(event) => this.handleDeactivatedDateSelectChange(event)}
-                                        defaultValue={deactivatedDateSelectValue}
+                                        value={deactivatedDateSelectValue}
                                     >
                                         <option value={DateFormat.YEAR}>Year</option>
                                         <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
