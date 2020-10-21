@@ -52,9 +52,7 @@ export default class LocationSearch extends React.Component {
     }
 
     handleClear() {
-        const { onSuggestionSelect } = this.props;
         this.setState({searchQuery: ''});
-        onSuggestionSelect('', '', '');
     }
 
     render() {
@@ -92,6 +90,10 @@ export default class LocationSearch extends React.Component {
             sessionToken: this.state.sessionToken
         };
 
+        const xStyle = {
+            right: isInvalid ? '1.25em' : '0.5em'
+        }
+
         return (
             <div className="location-search position-relative">
                 <PlacesAutocomplete
@@ -103,7 +105,8 @@ export default class LocationSearch extends React.Component {
                     highlightFirstSuggestion={true}>
                     {renderFunc}
                 </PlacesAutocomplete>
-                {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
+                {searchQuery && <i className="material-icons search-clear" style={xStyle}
+                                   onClick={() => this.handleClear()}>clear</i>}
             </div>
         )
     }

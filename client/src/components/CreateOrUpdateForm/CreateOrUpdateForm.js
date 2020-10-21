@@ -388,7 +388,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (locationType.value === 'address') {
             if (validator.isEmpty(address.value)) {
                 address.isValid = false;
-                address.message = 'Address must not be blank';
+                address.message = 'Address must be selected from the dropdown';
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
@@ -807,15 +807,17 @@ export default class CreateOrUpdateForm extends React.Component {
 
     getAddressCityStateFromGeocodingResult(result) {
         let city, state, address, country;
-        for (let component of result.address_components) {
-            if (component.types.includes('locality')) {
-                city = component.long_name;
-            }
-            if (component.types.includes('administrative_area_level_1')) {
-                state = component.short_name;
-            }
-            if (component.types.includes('country')) {
-                country = component.short_name;
+        if (result) {
+            for (let component of result.address_components) {
+                if (component.types.includes('locality')) {
+                    city = component.long_name;
+                }
+                if (component.types.includes('administrative_area_level_1')) {
+                    state = component.short_name;
+                }
+                if (component.types.includes('country')) {
+                    country = component.short_name;
+                }
             }
         }
         /* US Territories are usually listed as countries, with some strange edge cases, like
@@ -832,7 +834,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (state && state.length !== 2) {
             state = undefined;
         }
-        address = result.formatted_address;
+        address = result ? result.formatted_address : '';
         this.setState({city, state, address: {...this.state.address, value: address}});
     }
 
