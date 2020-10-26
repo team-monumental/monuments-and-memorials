@@ -7,10 +7,14 @@ import com.monumental.services.MonumentService;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
 /**
  * Class used to:
@@ -78,7 +82,7 @@ public class CsvMonumentConverter {
                         else {
                             result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
-                        suggestion.setDate(value);
+                        suggestion.setDate(convertDateFormat(value));
                         break;
                     case "dateFormat":
                         suggestion.setDateFormat(DateFormat.valueOf(value));
@@ -97,7 +101,7 @@ public class CsvMonumentConverter {
                         else {
                             result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
-                        suggestion.setDeactivatedDate(value);
+                        suggestion.setDeactivatedDate(convertDateFormat(value));
                         break;
                     case "deactivatedDateFormat":
                         suggestion.setDeactivatedDateFormat(DateFormat.valueOf(value));
@@ -340,5 +344,27 @@ public class CsvMonumentConverter {
         }
 
         return suggestion;
+    }
+
+    /**
+     * Converts date from dd-mm-yyyy to yyyy-mm-dd
+     * @param jsonDate - String date to convert
+     * @return String - converted date
+     */
+    public static String convertDateFormat(String jsonDate) {
+        if (isNullOrEmpty(jsonDate)) {
+            return null;
+        }
+
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+//            Date date = parseDate(jsonDate);
+            Date date = oldDateFormat.parse(jsonDate);
+            return newDateFormat.format(date);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

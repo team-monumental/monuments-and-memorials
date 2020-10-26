@@ -533,7 +533,7 @@ export default class CreateOrUpdateForm extends React.Component {
             && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== DateFormat.EXACT_DATE)
             && validator.isEmpty(deactivatedYear.value)) {
             deactivatedComment.isValid = false;
-            deactivatedComment.message = 'Deactivated date is required in order to provide a deactivated reason';
+            deactivatedComment.message = 'Deactivated date is required in order to provide a deactivation reason';
             formIsValid = false;
         }
 
@@ -1619,12 +1619,12 @@ export default class CreateOrUpdateForm extends React.Component {
 
                             {/* Deactivated Comment */}
                             <Form.Group controlId="create-form-deactivated-comment">
-                                <Form.Label>Deactivated Reason:</Form.Label>
+                                <Form.Label>Deactivation Reason:</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows="3"
                                     name="deactivatedComment"
-                                    placeholder="Deactivated Reason"
+                                    placeholder="Deactivation Reason"
                                     value={deactivatedComment.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!deactivatedComment.isValid}
