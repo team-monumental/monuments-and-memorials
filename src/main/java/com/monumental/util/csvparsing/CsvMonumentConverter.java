@@ -360,11 +360,10 @@ public class CsvMonumentConverter {
         SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         try {
-//            Date date = parseDate(jsonDate);
             Date date = oldDateFormat.parse(jsonDate);
             return newDateFormat.format(date);
         } catch (ParseException e) {
-            return null;
+            return jsonDate;
         }
     }
 }
