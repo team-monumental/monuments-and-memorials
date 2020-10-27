@@ -163,6 +163,9 @@ public class CsvMonumentConverter {
                     case "address":
                         suggestion.setAddress(value);
                         break;
+                    case "description":
+                        suggestion.setDescription(value);
+                        break;
                     case "tags":
                         result.getTagNames().addAll(parseCsvTags(value));
                         break;
