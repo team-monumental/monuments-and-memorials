@@ -135,7 +135,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -231,7 +231,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -263,7 +263,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -295,7 +295,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -327,7 +327,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals(40.730610, suggestionResult.getLatitude(), 0.0);
         assertEquals(-73.935242, suggestionResult.getLongitude(), 0.0);
@@ -358,7 +358,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -390,7 +390,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -422,7 +422,7 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
