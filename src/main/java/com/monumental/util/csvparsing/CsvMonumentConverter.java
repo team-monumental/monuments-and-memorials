@@ -54,6 +54,8 @@ public class CsvMonumentConverter {
             Double longitude = null;
             Date dateForValidate = null;
             Date deactivatedDateForValidate = null;
+            DateFormat dateFormat = null;
+            DateFormat deactivatedDateFormat = null;
             for (int i = 0; i < values.size(); i++) {
                 String field = fields.get(i);
                 String value = values.get(i);
@@ -69,11 +71,12 @@ public class CsvMonumentConverter {
                         suggestion.setTitle(value);
                         break;
                     case "date":
-                        String dateFormat = getDateFormat(value);
-                        if (dateFormat != null) {
+                        String dateFormatString = getDateFormat(value);
+                        if (dateFormatString != null) {
                             Date parsedDate = null;
+                            dateFormat = stringToDateFormat(dateFormatString);
                             try {
-                                parsedDate = parseDate(value, dateFormat);
+                                parsedDate = parseDate(value, dateFormatString);
                             } catch (ParseException e) {
                                 result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                             }
@@ -82,20 +85,25 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Date should not be in the future.");
                             }
                             if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
-                                result.getWarnings().add("Created date should not be after deactivated date.");
+                                if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                   (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
+                                   (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
+                                    result.getWarnings().add("Created date should not be after deactivated date.");
+                                }
                             }
+                            suggestion.setDate(convertDateFormat(value, dateFormatString));
+                            suggestion.setDateFormat(dateFormat);
                         } else {
                             result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                         }
-                        suggestion.setDate(convertDateFormat(value, dateFormat));
-                        suggestion.setDateFormat(stringToDateFormat(dateFormat));
                         break;
                     case "deactivatedDate":
-                        String deactivatedDateFormat = getDateFormat(value);
-                        if (deactivatedDateFormat != null) {
+                        String deactivatedDateFormatString = getDateFormat(value);
+                        if (deactivatedDateFormatString != null) {
                             Date parsedDate = null;
+                            deactivatedDateFormat = stringToDateFormat(deactivatedDateFormatString);
                             try {
-                                parsedDate = parseDate(value, deactivatedDateFormat);
+                                parsedDate = parseDate(value, deactivatedDateFormatString);
                             } catch (ParseException e) {
                                 result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                             }
@@ -104,13 +112,17 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Deactivated date should not be in the future.");
                             }
                             if (dateForValidate != null && dateForValidate.after(parsedDate)) {
-                                result.getWarnings().add("Created date should not be after deactivated date.");
+                                if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                   (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
+                                   (dateForValidate.getYear() > parsedDate.getYear())) {
+                                    result.getWarnings().add("Created date should not be after deactivated date.");
+                                }
                             }
+                            suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
+                            suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
                         } else {
                             result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
-                        suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormat));
-                        suggestion.setDeactivatedDateFormat(stringToDateFormat(deactivatedDateFormat));
                         break;
                     case "deactivatedComment":
                         suggestion.setDeactivatedComment(value);
