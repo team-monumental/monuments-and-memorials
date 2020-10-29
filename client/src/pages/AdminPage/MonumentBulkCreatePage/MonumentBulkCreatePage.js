@@ -35,6 +35,8 @@ class MonumentBulkCreatePage extends React.Component {
         }
         else if (this.props.createResult && !this.props.bulkCreatePending && !prevProps.createResult) {
             this.setState({showCreateResults: true})
+        } else if (prevState.showCreateResults) {
+            this.setState({showCreateResults: false})
         }
     }
 
@@ -79,6 +81,7 @@ class MonumentBulkCreatePage extends React.Component {
             validationError, createSuggestionResult, createSuggestionError, createSuggestionProgress,
             createProgress, createResult, createError } = this.props;
 
+        showCreateResults = showCreateResults && createResult
         showValidationResults = showValidationResults && !bulkSuggestionValidatePending && !showCreateResults;
 
         return (

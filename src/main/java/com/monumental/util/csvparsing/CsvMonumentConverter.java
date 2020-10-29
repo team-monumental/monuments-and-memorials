@@ -54,6 +54,8 @@ public class CsvMonumentConverter {
             Double longitude = null;
             Date dateForValidate = null;
             Date deactivatedDateForValidate = null;
+            DateFormat dateFormat = null;
+            DateFormat deactivatedDateFormat = null;
             for (int i = 0; i < values.size(); i++) {
                 String field = fields.get(i);
                 String value = values.get(i);
@@ -69,42 +71,58 @@ public class CsvMonumentConverter {
                         suggestion.setTitle(value);
                         break;
                     case "date":
-                        if (canParseDate(value)) {
-                            Date parsedDate = parseDate(value);
+                        String dateFormatString = getDateFormat(value);
+                        if (dateFormatString != null) {
+                            Date parsedDate = null;
+                            dateFormat = stringToDateFormat(dateFormatString);
+                            try {
+                                parsedDate = parseDate(value, dateFormatString);
+                            } catch (ParseException e) {
+                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                            }
                             dateForValidate = parsedDate;
                             if (isDateInFuture(parsedDate)) {
                                 result.getWarnings().add("Date should not be in the future.");
                             }
                             if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
-                                result.getWarnings().add("Created date should not be after deactivated date.");
+                                if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                   (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
+                                   (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
+                                    result.getWarnings().add("Created date should not be after deactivated date.");
+                                }
                             }
+                            suggestion.setDate(convertDateFormat(value, dateFormatString));
+                            suggestion.setDateFormat(dateFormat);
+                        } else {
+                            result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                         }
-                        else {
-                            result.getWarnings().add("Date should be a valid date in the format DD-MM-YYYY or YYYY.");
-                        }
-                        suggestion.setDate(convertDateFormat(value));
-                        break;
-                    case "dateFormat":
-                        suggestion.setDateFormat(DateFormat.valueOf(value));
                         break;
                     case "deactivatedDate":
-                        if (canParseDate(value)) {
-                            Date parsedDate = parseDate(value);
+                        String deactivatedDateFormatString = getDateFormat(value);
+                        if (deactivatedDateFormatString != null) {
+                            Date parsedDate = null;
+                            deactivatedDateFormat = stringToDateFormat(deactivatedDateFormatString);
+                            try {
+                                parsedDate = parseDate(value, deactivatedDateFormatString);
+                            } catch (ParseException e) {
+                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                            }
                             deactivatedDateForValidate = parsedDate;
                             if (isDateInFuture(parsedDate)) {
                                 result.getWarnings().add("Deactivated date should not be in the future.");
                             }
                             if (dateForValidate != null && dateForValidate.after(parsedDate)) {
-                                result.getWarnings().add("Created date should not be after deactivated date.");
+                                if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                   (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
+                                   (dateForValidate.getYear() > parsedDate.getYear())) {
+                                    result.getWarnings().add("Created date should not be after deactivated date.");
+                                }
                             }
-                        }
-                        else {
+                            suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
+                            suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
+                        } else {
                             result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
                         }
-                        suggestion.setDeactivatedDate(convertDateFormat(value));
-                        break;
-                    case "deactivatedDateFormat":
-                        suggestion.setDeactivatedDateFormat(DateFormat.valueOf(value));
                         break;
                     case "deactivatedComment":
                         suggestion.setDeactivatedComment(value);
@@ -223,21 +241,25 @@ public class CsvMonumentConverter {
 
     /**
      * Determine if the specified value can be parsed into a valid Date
-     * Dates must be in the following format: dd-MM-yyyy
-     * If the day and month are unknown, then the date can also be in yyyy format
+     * Dates must be in one of the following formats: dd-MM-yyyy, MM/dd/yyyy, MM-yyyy, MM/yyyy, yyyy
      * Any other format is considered invalid
      * @param value - String to determine if it can be parsed into a valid Date
-     * @return - True if the specified value can be parsed into a valid Date, False otherwise
+     * @return - String date format if valid, null otherwise
      */
-    private static boolean canParseDate(String value) {
-        // "dd-MM-yyyy" format
-        if (value.contains("-")) {
-            String[] dateArray = value.split("-");
-            return dateArray.length == 3;
+    private static String getDateFormat(String value) {
+        if (value.toLowerCase().matches("^\\d{1,2}/\\d{1,2}/\\d{4}$")) {
+            return "MM/dd/yyyy";
+        } else if (value.toLowerCase().matches("^\\d{1,2}/\\d{4}$")) {
+            return "MM/yyyy";
+        } else if (value.toLowerCase().matches("^\\d{1,2}-\\d{1,2}-\\d{4}$")) {
+            return "dd-MM-yyyy";
+        } else if (value.toLowerCase().matches("^\\d{1,2}-\\d{4}$")) {
+            return "MM-yyyy";
+        } else if (value.toLowerCase().matches("^\\d{4}$")) {
+            return "yyyy";
+        } else {
+            return null;
         }
-
-        // "yyyy" format
-        return value.length() == 4 && value.matches("[0-9]+");
     }
 
     /**
@@ -249,23 +271,42 @@ public class CsvMonumentConverter {
      * @return Date - Date object created from parsing the specified value
      * @throws DateTimeParseException - If the specified value can not be parsed into a Date
      */
-    private static Date parseDate(String value) throws DateTimeParseException {
-        String[] dateArray = value.split("-");
+    private static Date parseDate(String value, String dateFormatString) throws DateTimeParseException, ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatString);
+        return dateFormat.parse(value);
+    }
 
-        // Parsing format "yyyy"
-        if (dateArray.length == 1) {
-            return MonumentService.createMonumentDate(dateArray[0]);
+    /**
+     * Converts date from dd-mm-yyyy to yyyy-mm-dd
+     * @param jsonDate - String date to convert
+     * @return String - converted date
+     */
+    public static String convertDateFormat(String jsonDate, String oldDateFormatString) {
+        if (isNullOrEmpty(jsonDate)) {
+            return null;
         }
-        // Parsing format "dd-mm-yyyy"
-        else if (dateArray.length == 3) {
-            int monthInt = Integer.parseInt(dateArray[1]);
-            monthInt--;
-            String zeroBasedMonth = Integer.toString(monthInt);
 
-            return MonumentService.createMonumentDate(dateArray[2], zeroBasedMonth,
-                    dateArray[0]);
-        } else {
-            throw new DateTimeParseException("Invalid date format", value, 0);
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat(oldDateFormatString);
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+            Date date = oldDateFormat.parse(jsonDate);
+            return newDateFormat.format(date);
+        } catch (ParseException e) {
+            return jsonDate;
+        }
+    }
+
+    public static DateFormat stringToDateFormat(String dateFormatString) {
+        switch (dateFormatString) {
+            case "MM/dd/yyyy":
+            case "dd-MM-yyyy":
+                return DateFormat.EXACT_DATE;
+            case "MM/yyyy":
+            case "MM-yyyy":
+                return DateFormat.MONTH_YEAR;
+            case "yyyy": return DateFormat.YEAR;
+            default: return null;
         }
     }
 
@@ -347,26 +388,5 @@ public class CsvMonumentConverter {
         }
 
         return suggestion;
-    }
-
-    /**
-     * Converts date from dd-mm-yyyy to yyyy-mm-dd
-     * @param jsonDate - String date to convert
-     * @return String - converted date
-     */
-    public static String convertDateFormat(String jsonDate) {
-        if (isNullOrEmpty(jsonDate)) {
-            return null;
-        }
-
-        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-        try {
-            Date date = oldDateFormat.parse(jsonDate);
-            return newDateFormat.format(date);
-        } catch (ParseException e) {
-            return jsonDate;
-        }
     }
 }

@@ -83,6 +83,7 @@ export default class BulkCreateForm extends React.Component {
     submitCreate() {
         const { onCreateSubmit } = this.props;
         onCreateSubmit(this.buildForm());
+        this.resetForm(true)
     }
 
     /**
@@ -256,7 +257,7 @@ export default class BulkCreateForm extends React.Component {
                         Bulk {term} Monuments and Memorials
                     </Card.Title>
                 </Card.Header>
-                {!showFieldMapping && !showValidationResults && <>
+                {!showFieldMapping && !showValidationResults && !showCreateResults && <>
                     {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
