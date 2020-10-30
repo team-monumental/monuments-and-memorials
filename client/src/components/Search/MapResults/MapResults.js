@@ -1,7 +1,6 @@
 import React from 'react';
 import './MapResults.scss';
 import { Map, CircleMarker, Popup, TileLayer, Marker } from 'react-leaflet';
-import * as leaflet from 'leaflet';
 import Address from '../../Monument/Details/Address/Address';
 import * as Leaflet from 'leaflet';
 
@@ -32,6 +31,9 @@ export default class MapResults extends React.Component {
             if (bounds.south === null || bounds.south < monument.lat) bounds.south = monument.lat;
             if (bounds.west === null || bounds.west > monument.lon) bounds.west = monument.lon;
 
+            // regular monuments color = blue, temporary monuments color = green
+            const color = monument.isTemporary ? "green" : "blue"
+
             const popup = (
                 <Popup>
                     <a href={'/monuments/' + monument.id}>{monument.title}</a>
@@ -39,18 +41,26 @@ export default class MapResults extends React.Component {
                 </Popup>
             );
             if (useCircleMarkers) {
-                const latLng = leaflet.latLng(monument.lat, monument.lon);
+                const latLng = Leaflet.latLng(monument.lat, monument.lon);
                 if (latLng) markers.push((
-                    <CircleMarker key={monument.id} center={latLng} radius="5">
+                    <CircleMarker key={monument.id} center={latLng} radius="5" color={color}>
                         {popup}
                     </CircleMarker>
                 ));
             } else {
-                markers.push((
-                    <Marker key={monument.id} position={[monument.lat, monument.lon]}>
-                        {popup}
-                    </Marker>
-                ));
+                // use green marker for temporary monuments, default marker for others
+                const newMarker = monument.isTemporary ?
+                    (
+                        <Marker key={monument.id} position={[monument.lat, monument.lon]} icon={greenIcon}>
+                            {popup}
+                        </Marker>
+                    ) :
+                    (
+                        <Marker key={monument.id} position={[monument.lat, monument.lon]}>
+                            {popup}
+                        </Marker>
+                    )
+                markers.push(newMarker);
             }
         }
 
@@ -74,3 +84,12 @@ export default class MapResults extends React.Component {
         );
     }
 }
+
+const greenIcon = new Leaflet.Icon({
+    iconUrl: '/marker-icon-2x-green.png',
+    shadowUrl: '/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
