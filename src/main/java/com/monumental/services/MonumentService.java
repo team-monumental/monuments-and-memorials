@@ -1181,8 +1181,8 @@ public class MonumentService extends ModelService<Monument> {
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
                     String objectKey = AwsS3Service.getObjectKey(imageUrl, false);
-                    this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), objectKey);
-                    String permanentImageUrl = AwsS3Service.getObjectUrl(objectKey);
+                    String newKey = this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), objectKey);
+                    String permanentImageUrl = AwsS3Service.getObjectUrl(newKey);
 
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
