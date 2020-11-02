@@ -18,6 +18,8 @@ export default class Monument extends React.Component {
             favorite, fetchFavoritePending, showFavorite
         } = this.props;
 
+        console.log(monument)
+
         if (nearbyMonuments && nearbyMonuments.length) {
             nearbyMonuments = nearbyMonuments.filter(nearbyMonument => nearbyMonument.id !== monument.id);
         }
