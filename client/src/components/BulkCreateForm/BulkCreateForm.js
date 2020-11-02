@@ -66,12 +66,12 @@ export default class BulkCreateForm extends React.Component {
             mapping: JSON.stringify(map)
         };
 
-        if (fileUpload.zip) {
-            // When dealing with zip files, we set the csv to JSZip's object for the CSV file so that we can read the
-            // headers, but it's not the real JavaScript File object, and it isn't useful on the backend, so we don't
-            // want to include it in the request
-            delete form.csv;
-        }
+        // if (fileUpload.zip) {
+        //     // When dealing with zip files, we set the csv to JSZip's object for the CSV file so that we can read the
+        //     // headers, but it's not the real JavaScript File object, and it isn't useful on the backend, so we don't
+        //     // want to include it in the request
+        //     delete form.csv;
+        // }
         return form;
     }
 
