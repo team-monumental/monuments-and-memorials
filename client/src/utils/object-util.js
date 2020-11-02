@@ -13,3 +13,16 @@ export function isEmptyObject(object) {
 
     return true;
 }
+
+/**
+ * copies an object and returns the copy
+ * @param obj object to copy
+ */
+export function copyObject(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    const copy = obj.constructor();
+    for (const attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}

@@ -13,6 +13,7 @@ import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
 import { Role } from '../../utils/authentication-util';
 import Footer from '../../components/Footer/Footer';
+import { copyObject } from '../../utils/object-util';
 
 /**
  * Root container for the page to create a new CreateMonumentSuggestion
@@ -84,10 +85,13 @@ class CreateMonumentPage extends React.Component {
 
         // First, upload the images to the temporary S3 folder and save the URLs in the form
         const imageObjectUrls = await uploadImagesToS3(form.images, true);
-        form.images = JSON.stringify(imageObjectUrls);
+        form.imagesJson = JSON.stringify(imageObjectUrls);
 
         // Next, store the PhotoSphere Image URLs in the form
         form.photoSphereImagesJson = JSON.stringify(form.photoSphereImages.map(photoSphereImage => photoSphereImage.url));
+
+        const formToSubmit = copyObject(form)
+        formToSubmit.images = imageObjectUrls
 
         // Then, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly add new Monuments
