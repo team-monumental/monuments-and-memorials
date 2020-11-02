@@ -96,11 +96,11 @@ class CreateMonumentPage extends React.Component {
         // Then, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly add new Monuments
         if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
-            dispatch(createMonument(form));
+            dispatch(createMonument(formToSubmit));
         }
         // Any other role has to create a Suggestion
         else {
-            dispatch(createCreateSuggestion(form));
+            dispatch(createCreateSuggestion(formToSubmit));
         }
     }
 
