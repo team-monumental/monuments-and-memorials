@@ -1070,6 +1070,8 @@ public class MonumentService extends ModelService<Monument> {
 
         currentMonument = this.monumentRepository.save(currentMonument);
 
+        deleteImagesFromRepository(allImageIdsToDelete);
+
         /* Materials section */
 
         // Pull all of the current Materials for the currentMonument into memory
@@ -1180,8 +1182,9 @@ public class MonumentService extends ModelService<Monument> {
 
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
-                    String permanentImageUrl = AwsS3Service.getObjectKey(imageUrl, false);
-                    this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
+                    String objectKey = AwsS3Service.getObjectKey(imageUrl, false);
+                    String newKey = this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), objectKey);
+                    String permanentImageUrl = AwsS3Service.getObjectUrl(newKey);
 
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
@@ -1311,10 +1314,6 @@ public class MonumentService extends ModelService<Monument> {
      */
     public void deleteMonumentImages(Monument monument, List<Integer> deletedImageIds) {
         if (monument != null && deletedImageIds != null && deletedImageIds.size() > 0) {
-            for (Integer imageId : deletedImageIds) {
-                this.imageRepository.deleteById(imageId);
-            }
-
             // Since the Images may be loaded onto the Monument, we need to remove them before we save
             if (monument.getImages() != null) {
                 List<Image> newImages = new ArrayList<>();
@@ -1324,6 +1323,18 @@ public class MonumentService extends ModelService<Monument> {
                     }
                 }
                 monument.setImages(newImages);
+            }
+        }
+    }
+
+    /**
+     * Delete the specified images from the image repo
+     * @param deletedImageIds - List of IDs of the Images to delete
+     */
+    public void deleteImagesFromRepository(List<Integer> deletedImageIds) {
+        if (deletedImageIds != null && deletedImageIds.size() > 0) {
+            for (Integer imageId : deletedImageIds) {
+                this.imageRepository.deleteById(imageId);
             }
         }
     }

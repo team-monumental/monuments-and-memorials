@@ -143,6 +143,8 @@ export async function uploadImagesToS3(images, temporaryFolder) {
     const folderName = temporaryFolder ? s3TemporaryImageFolderName : s3ImageFolderName;
 
     for (const image of images) {
+        let key = generateUniqueKey(folderName + image.name)
+        console.log(key)
         // Create an S3 upload
         let s3Upload = new AWS.S3.ManagedUpload({
             params: {
@@ -213,4 +215,44 @@ export function getS3ImageNameFromObjectUrl(encodedObjectUrl) {
     const decodedObjectUrl = decodeURIComponent(encodedObjectUrl);
     const decodedObjectUrlArray = decodedObjectUrl.split('/');
     return decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
+}
+
+function generateUniqueKey(objectKey) {
+    let number = 0;
+
+    while (!isUniqueKey(objectKey)) {
+        const checkRegex = ".*\\([0-9]+\\)$";
+        const captureRegex = "\\(([0-9]+)\\)$";
+        // If the key already ends with "(1)", for example
+        if (objectKey.matches(checkRegex)) {
+            const substring = objectKey.match(captureRegex)
+            number = parseInt(substring[1].replace('(', '').replace(')', ''));
+            number++;
+            objectKey = objectKey.replaceAll(captureRegex, "(" + number + ")");
+        } else {
+            objectKey += " (1)";
+        }
+    }
+
+    return objectKey;
+}
+
+async function isUniqueKey(objectKey) {
+    // Create a new AWS S3 Client
+    const s3Client = new AWS.S3();
+
+    try {
+        try {
+            await s3Client.headObject({ Bucket: s3ImageBucketName, Key: objectKey }).promise();
+            return false
+        } catch (headErr) {
+            if (headErr.code === 'NotFound') {
+                return true
+            }
+        }
+    } catch (e) {
+        console.log("Error attempting to access S3 Bucket: " + s3ImageBucketName + " and Object: " + objectKey);
+        console.log(e);
+        return true;
+    }
 }

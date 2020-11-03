@@ -83,7 +83,8 @@ class UpdateMonumentPage extends React.Component {
         form.newPhotoSphereImageUrlsJson = JSON.stringify(form.photoSphereImages);
 
         // Then, delete the deleted images from S3
-        await deleteImagesFromS3(form.deletedImageUrls);
+        // TODO:  currently, preprod uses the same S3 as prod.  Once that is fixed, uncomment this line.
+        // await deleteImagesFromS3(form.deletedImageUrls);
 
         // Finally, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly update Monuments

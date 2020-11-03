@@ -66,12 +66,12 @@ export default class BulkCreateForm extends React.Component {
             mapping: JSON.stringify(map)
         };
 
-        if (fileUpload.zip) {
-            // When dealing with zip files, we set the csv to JSZip's object for the CSV file so that we can read the
-            // headers, but it's not the real JavaScript File object, and it isn't useful on the backend, so we don't
-            // want to include it in the request
-            delete form.csv;
-        }
+        // if (fileUpload.zip) {
+        //     // When dealing with zip files, we set the csv to JSZip's object for the CSV file so that we can read the
+        //     // headers, but it's not the real JavaScript File object, and it isn't useful on the backend, so we don't
+        //     // want to include it in the request
+        //     delete form.csv;
+        // }
         return form;
     }
 
@@ -128,8 +128,9 @@ export default class BulkCreateForm extends React.Component {
                 fileUpload.isValid = false;
             }
 
-            for (let image in fileUpload.images){
-                if (!image.endsWith('.png') || !image.endsWith('.jpg')){
+            for (let i = 0; i < fileUpload.images.length; i++) {
+                const image = fileUpload.images[i]
+                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')){
                     fileUpload.errorMessage = 'Your zip file contains unsupported file types. Please check that there are only .csv, .jpg, or' +
                         ' .png files in your .zip file.';
                     fileUpload.csv = null;
