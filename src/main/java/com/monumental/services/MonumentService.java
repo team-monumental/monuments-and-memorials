@@ -1331,7 +1331,7 @@ public class MonumentService extends ModelService<Monument> {
      * Delete the specified images from the image repo
      * @param deletedImageIds - List of IDs of the Images to delete
      */
-    private void deleteImagesFromRepository(List<Integer> deletedImageIds) {
+    public void deleteImagesFromRepository(List<Integer> deletedImageIds) {
         if (deletedImageIds != null && deletedImageIds.size() > 0) {
             for (Integer imageId : deletedImageIds) {
                 this.imageRepository.deleteById(imageId);
