@@ -4,7 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from './TextSearch/TextSearch';
-import LocationSearch from './LocationSearch/LocationSearch';
+
 import search from '../../../utils/search';
 
 /**
@@ -79,9 +79,7 @@ class SearchBar extends React.Component {
                             className="form-control form-control-sm"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
                             onClear={() => this.handleTextSearchClear()}/>
-                <LocationSearch value={locationAddress}
-                                className="form-control form-control-sm"
-                                onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
+                
                 <Button variant="primary btn-sm" className="search-button" onClick={() => this.search()}>Search</Button>
             </Form>
         )
