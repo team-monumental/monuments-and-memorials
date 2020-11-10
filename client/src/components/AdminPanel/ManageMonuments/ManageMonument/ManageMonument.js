@@ -2,6 +2,7 @@ import * as React from 'react';
 import About from '../../../Monument/Details/About/About';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Modal } from 'react-bootstrap';
+import {getMonumentSlug} from "../../../../utils/regex-util";
 
 export default class ManageMonument extends React.Component {
 
@@ -44,6 +45,8 @@ export default class ManageMonument extends React.Component {
     renderManageMonument() {
         const { monument } = this.props;
 
+        const slug = getMonumentSlug(monument)
+
         return (
             <div className="manage-monument">
                 <About monument={monument} contributions={monument.contributions} references={monument.references}
@@ -63,7 +66,7 @@ export default class ManageMonument extends React.Component {
                 }
                 <div className="buttons">
                     {monument.isActive &&
-                    <Link to={`/monuments/${monument.id}`} className="btn btn-light">View Public Page</Link>
+                    <Link to={`/monuments/${monument.id}/${slug}`} className="btn btn-light">View Public Page</Link>
                     }
                     <Link to={`/panel/manage/monuments/monument/update/${monument.id}`} className="btn btn-light">Edit</Link>
                     <Button variant="light" onClick={() => this.setState({toggleActiveModalOpen: true})}>{monument.isActive ? 'Deactivate' : 'Activate'}</Button>
