@@ -68,6 +68,7 @@ public class AwsS3Service {
      */
     public static String getObjectUrl(String objectKey) {
         try {
+            objectKey = objectKey.replaceAll(" ", "+");
             return new AmazonS3URI(httpsProtocol + bucketName + s3Domain + objectKey, false).toString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,13 +159,13 @@ public class AwsS3Service {
                 objectKey = objectKey.replaceAll(captureRegex, "(" + number + ")");
             } else {
                 String[] splitKey = objectKey.split("\\.");
-                objectKey = splitKey[0] +  " (1)";
+                objectKey = splitKey[0] +  "(1)";
                 for (int i = 1; i < splitKey.length; i++) {
                     objectKey += "." + splitKey[i];
                 }
             }
         }
 
-        return objectKey;
+        return objectKey.replaceAll(" ", "+");
     }
 }
