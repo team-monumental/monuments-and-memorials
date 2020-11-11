@@ -62,7 +62,10 @@ public class CsvMonumentConverter {
                 if (field == null || value.equals("")) continue;
                 switch (field) {
                     case "contributions":
-                        result.getContributorNames().add(value);
+                        String[] contributors = value.split("\\|");
+                        for (String contributor : contributors) {
+                            result.getContributorNames().add(contributor);
+                        }
                         break;
                     case "artist":
                         suggestion.setArtist(value);
@@ -199,7 +202,10 @@ public class CsvMonumentConverter {
                         result.getTagNames().addAll(parseCsvTags(value));
                         break;
                     case "references":
-                        result.getReferenceUrls().add(value);
+                        String[] references = value.split("\\|");
+                        for (String reference : references) {
+                            result.getReferenceUrls().add(reference);
+                        }
                         break;
                     case "images":
                         if (zipFile != null) {
@@ -229,6 +235,7 @@ public class CsvMonumentConverter {
             if ((suggestion.getDeactivatedDate() == null || suggestion.getDeactivatedDate().isEmpty()) &&
                     (suggestion.getDeactivatedYear() == null || suggestion.getDeactivatedYear().isEmpty()) &&
                     (suggestion.getDeactivatedComment() != null && !suggestion.getDeactivatedComment().isEmpty())) {
+                suggestion.setDeactivatedComment(null);
                 result.getWarnings().add("Deactivated date is required in order to have a deactivated comment");
             }
 
@@ -326,7 +333,7 @@ public class CsvMonumentConverter {
 
     private static List<String> parseCsvTags(String value) {
         // Split on commas in-case there are more than one Tag in the column
-        String[] materialArray = value.split(",");
+        String[] materialArray = value.split("\\|");
 
         List<String> names = new ArrayList<>();
 
