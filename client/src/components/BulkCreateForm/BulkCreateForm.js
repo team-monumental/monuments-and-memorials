@@ -283,7 +283,7 @@ export default class BulkCreateForm extends React.Component {
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our
-                <a href='/BulkUploadTemplate.csv'> Bulk Upload Template</a>!</span>
+                <a href='/BulkUploadTemplate.csv'> Bulk Upload CSV Template</a>!</span>
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
@@ -296,6 +296,10 @@ export default class BulkCreateForm extends React.Component {
                 If you're uploading images with your monuments, you must create
                 a <code>.zip</code> file containing
                 your <code>.csv</code> file and your image files.
+            </p>
+            <p style={{marginLeft: "16px"}}>
+                <span className="font-weight-bold">Please use our
+                <a href='/BulkUploadZipTemplate.zip'> Bulk Upload Zip Template</a>!</span>
             </p>
             <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">
