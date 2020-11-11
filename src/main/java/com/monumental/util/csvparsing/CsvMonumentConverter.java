@@ -3,7 +3,6 @@ package com.monumental.util.csvparsing;
 import com.google.gson.Gson;
 import com.monumental.models.DateFormat;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
-import com.monumental.services.MonumentService;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,10 +61,7 @@ public class CsvMonumentConverter {
                 if (field == null || value.equals("")) continue;
                 switch (field) {
                     case "contributions":
-                        String[] contributors = value.split("\\|");
-                        for (String contributor : contributors) {
-                            result.getContributorNames().add(contributor);
-                        }
+                        result.getContributorNames().addAll(parseCsvArray(value));
                         break;
                     case "artist":
                         suggestion.setArtist(value);
@@ -131,7 +127,7 @@ public class CsvMonumentConverter {
                         suggestion.setDeactivatedComment(value);
                         break;
                     case "materials":
-                        result.getMaterialNames().addAll(parseCsvTags(value));
+                        result.getMaterialNames().addAll(parseCsvArray(value));
                         break;
                     case "inscription":
                         suggestion.setInscription(value);
@@ -199,30 +195,32 @@ public class CsvMonumentConverter {
                         suggestion.setDescription(value);
                         break;
                     case "tags":
-                        result.getTagNames().addAll(parseCsvTags(value));
+                        result.getTagNames().addAll(parseCsvArray(value));
                         break;
                     case "references":
-                        String[] references = value.split("\\|");
-                        for (String reference : references) {
-                            result.getReferenceUrls().add(reference);
-                        }
+                        result.getReferenceUrls().addAll(parseCsvArray(value));
+                        break;
+                    case "is_temporary":
+                        suggestion.setIsTemporary(Boolean.valueOf(value));
                         break;
                     case "images":
                         if (zipFile != null) {
-                            ZipEntry imageZipEntry = zipFile.getEntry(value);
-                            if (imageZipEntry == null) {
-                                result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
-                            } else {
-                                try {
-                                    File imageFile = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
-                                    if (imageFile.length() > 5000000) {
-                                        result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
+                            String[] valueArray = value.split(",");
+                            for (String imageValue: valueArray) {
+                                ZipEntry imageZipEntry = zipFile.getEntry(imageValue);
+                                if (imageZipEntry == null) {
+                                    result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
+                                } else {
+                                    try {
+                                        File imageFile = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
+                                        if (imageFile.length() > 5000000) {
+                                            result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
+                                        } else {
+                                            result.getImageFiles().add(imageFile);
+                                        }
+                                    } catch (IOException e) {
+                                        result.getErrors().add("Failed to read image file from .zip");
                                     }
-                                    else {
-                                        result.getImageFiles().add(imageFile);
-                                    }
-                                } catch (IOException e) {
-                                    result.getErrors().add("Failed to read image file from .zip");
                                 }
                             }
                         } else {
@@ -331,14 +329,14 @@ public class CsvMonumentConverter {
         return false;
     }
 
-    private static List<String> parseCsvTags(String value) {
+    private static List<String> parseCsvArray(String value) {
         // Split on commas in-case there are more than one Tag in the column
-        String[] materialArray = value.split("\\|");
+        String[] valueArray = value.split(",");
 
         List<String> names = new ArrayList<>();
 
-        for (String materialValue : materialArray) {
-            String name = cleanTagName(materialValue);
+        for (String arrayValue : valueArray) {
+            String name = cleanTagName(arrayValue);
             if (name == null || name.equals("")) continue;
             names.add(name);
         }

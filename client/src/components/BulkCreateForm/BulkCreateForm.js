@@ -281,9 +281,13 @@ export default class BulkCreateForm extends React.Component {
                 You can {term.toLowerCase()} multiple monuments or memorials by uploading
                 a <code>.csv</code> file with information about them.
             </p>
+            <p style={{marginLeft: "16px"}}>
+                <span className="font-weight-bold">Please use our
+                <a href='/BulkUploadTemplate.csv'> Bulk Upload Template</a>!</span>
+            </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
-                <span className="font-weight-bold">Note</span>:  Use the <code>|</code> character to list multiple values for a field.
-                Example:  <code>Limestone|Steel|Bronze</code>
+                <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
+                Example:  <code>"Limestone,Steel,Bronze"</code>.
             </p>
             <Card.Subtitle>
                 Zip Upload
