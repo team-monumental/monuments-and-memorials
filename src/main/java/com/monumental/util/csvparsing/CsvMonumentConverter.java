@@ -105,7 +105,7 @@ public class CsvMonumentConverter {
                             try {
                                 parsedDate = parseDate(value, deactivatedDateFormatString);
                             } catch (ParseException e) {
-                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                result.getWarnings().add("Deactivated date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                             }
                             deactivatedDateForValidate = parsedDate;
                             if (isDateInFuture(parsedDate)) {
@@ -121,7 +121,7 @@ public class CsvMonumentConverter {
                             suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
                             suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
                         } else {
-                            result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
+                            result.getWarnings().add("Deactivated date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                         }
                         break;
                     case "deactivatedComment":

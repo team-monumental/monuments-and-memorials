@@ -474,7 +474,7 @@ export default class BulkCreateForm extends React.Component {
                     <table className="table validation-table">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Monument #</th>
                                 <th>Warnings</th>
                                 <th>Errors</th>
                             </tr>
@@ -485,10 +485,10 @@ export default class BulkCreateForm extends React.Component {
                                     <tr key={result.index}>
                                         <td>{result.index}</td>
                                         <td>{result.warnings.map((warning, index) => (
-                                            <div key={index} dangerouslySetInnerHTML={{__html: warning}}/>
+                                            <div key={index} dangerouslySetInnerHTML={{__html: warning}} className="bulk-warning" />
                                         ))}</td>
                                         <td>{result.errors.map((error, index) => (
-                                            <div key={index}>{error}</div>
+                                            <div key={index} className="bulk-warning">{error}</div>
                                         ))}</td>
                                     </tr>
                                 ))
