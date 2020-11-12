@@ -105,7 +105,7 @@ export default class BulkCreateForm extends React.Component {
             let content = await JSZip.loadAsync(fileUpload.zip);
 
             for (let fileName in content.files) {
-                if (!content.files.hasOwnProperty(fileName) || fileName.startsWith('__MACOSX')) continue;
+                if (!content.files.hasOwnProperty(fileName)) continue;
                 if (fileName.endsWith('.csv')) {
                     if (fileUpload.csv) {
                         fileUpload.errorMessage = 'Your .zip file contained multiple .csv files. Please only upload one .csv file at a time.';
