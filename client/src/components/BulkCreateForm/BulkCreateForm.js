@@ -26,7 +26,7 @@ export default class BulkCreateForm extends React.Component {
                 zip: null,
                 images: [],
                 isValid: true,
-                errorMessage: ''
+                errorMessages: []
             },
             fileUploadInputKey: 0,
             showFieldMapping: false,
@@ -108,12 +108,11 @@ export default class BulkCreateForm extends React.Component {
                 if (!content.files.hasOwnProperty(fileName) || fileName.startsWith('__MACOSX')) continue;
                 if (fileName.endsWith('.csv')) {
                     if (fileUpload.csv) {
-                        fileUpload.errorMessage = 'Your .zip file contained multiple .csv files. Please only upload one .csv file at a time.';
+                        fileUpload.errorMessages.push('Your .zip file contained multiple .csv files. Please only upload one .csv file at a time.');
                         fileUpload.csv = null;
                         fileUpload.zip = null;
                         fileUpload.images = [];
                         fileUpload.isValid = false;
-                        break;
                     }
                     fileUpload.csv = content.files[fileName];
                 } else {
@@ -121,8 +120,8 @@ export default class BulkCreateForm extends React.Component {
                 }
             }
 
-            if (!fileUpload.csv && !fileUpload.errorMessage) {
-                fileUpload.errorMessage = 'Your zip file didn\'t contain a .csv file. Please check the contents of your .zip file and try again.';
+            if (!fileUpload.csv && (!fileUpload.errorMessages || fileUpload.errorMessages.length === 0)) {
+                fileUpload.errorMessages.push('Your zip file didn\'t contain a .csv file. Please check the contents of your .zip file and try again.');
                 fileUpload.zip = null;
                 fileUpload.images = [];
                 fileUpload.isValid = false;
@@ -131,8 +130,8 @@ export default class BulkCreateForm extends React.Component {
             for (let i = 0; i < fileUpload.images.length; i++) {
                 const image = fileUpload.images[i]
                 if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')){
-                    fileUpload.errorMessage = 'Your zip file contains unsupported file types. Please check that there are only .csv, .jpg, or' +
-                        ' .png files in your .zip file.';
+                    fileUpload.errorMessages.push('Your zip file contains unsupported file types. Please check that there are only .csv, .jpg, and' +
+                        ' .png files in your .zip file.');
                     fileUpload.csv = null;
                     fileUpload.zip = null;
                     fileUpload.images = [];
@@ -140,6 +139,8 @@ export default class BulkCreateForm extends React.Component {
                     break;
                 }
             }
+
+            console.log(fileUpload)
 
             this.setState({fileUpload});
             this.readCSVHeaders();
@@ -217,7 +218,7 @@ export default class BulkCreateForm extends React.Component {
         let { fileUploadInputKey } = this.state;
 
         fileUpload.isValid = true;
-        fileUpload.errorMessage = '';
+        fileUpload.errorMessages = [];
 
         if (resetValue) {
             fileUpload.csv = null;
@@ -315,7 +316,9 @@ export default class BulkCreateForm extends React.Component {
                         className="file-upload-input"
                         key={fileUploadInputKey}
                     />
-                    <Form.Control.Feedback type="invalid">{fileUpload.errorMessage}</Form.Control.Feedback>
+                    {fileUpload.errorMessages.map(
+                        (errorMessage) => <Form.Control.Feedback type="invalid">{errorMessage}</Form.Control.Feedback>
+                    )}
                 </Form.Group>
             </Form>
         </Card.Body>)
