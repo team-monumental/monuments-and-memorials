@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { Role } from '../../../../utils/authentication-util';
 import { Helmet } from 'react-helmet';
+import {getMonumentSlug} from "../../../../utils/regex-util";
 
 export default class ManageUser extends React.Component {
 
@@ -89,7 +90,7 @@ export default class ManageUser extends React.Component {
                         <ul>
                             {contributions.map(({contribution, monument}) => (
                                 <li key={contribution.id}>
-                                    <Link to={`/monuments/${monument.id}`}>
+                                    <Link to={`/monuments/${monument.id}/${getMonumentSlug(monument)}`}>
                                         {monument.title}
                                     </Link>
                                     <span> on {prettyPrintDate(contribution.date)}</span>
