@@ -140,8 +140,6 @@ export default class BulkCreateForm extends React.Component {
                 }
             }
 
-            console.log(fileUpload)
-
             this.setState({fileUpload});
             this.readCSVHeaders();
         }
@@ -260,7 +258,7 @@ export default class BulkCreateForm extends React.Component {
                     </Card.Title>
                 </Card.Header>
                 {!showFieldMapping && !showValidationResults && !showCreateResults && <>
-                    {!fileUpload.csv && !fileUpload.zip && this.renderFileUpload()}
+                    {((!fileUpload.csv && !fileUpload.zip) || !fileUpload.isValid) && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
                 {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
