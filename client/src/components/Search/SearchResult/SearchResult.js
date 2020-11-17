@@ -23,6 +23,7 @@ export default class SearchResult extends React.Component {
         }
 
         const slug = getMonumentSlug(monument)
+        const to = monumentUri === '/monuments' ? `${monumentUri}/${monument.id}/${slug}` : `${monumentUri}/${monument.id}`
 
         return (
             <div className="search-result">
@@ -31,7 +32,7 @@ export default class SearchResult extends React.Component {
                 }
                 <Card>
                     <Card.Title>
-                        <Link to={`${monumentUri}/${monument.id}/${slug}`}>
+                        <Link to={to}>
                             {title}
                         </Link>
                     </Card.Title>
