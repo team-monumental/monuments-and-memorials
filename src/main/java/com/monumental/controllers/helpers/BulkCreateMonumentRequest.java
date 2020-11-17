@@ -63,7 +63,9 @@ public class BulkCreateMonumentRequest {
             result.csvContents = monumentService.readCSV(this.getCsv());
         }
 
-        result.csvFileName = this.getCsv().getOriginalFilename();
+        if (this.getCsv() != null) {
+            result.csvFileName = this.getCsv().getOriginalFilename();
+        }
 
         return result;
     }
