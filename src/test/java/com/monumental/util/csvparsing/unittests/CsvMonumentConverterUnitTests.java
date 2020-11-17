@@ -581,7 +581,7 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test Title", suggestionResult.getTitle());
         assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
-        assertEquals("Deactivated Comment", suggestionResult.getDeactivatedComment());
+        assertNull(suggestionResult.getDeactivatedComment());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());

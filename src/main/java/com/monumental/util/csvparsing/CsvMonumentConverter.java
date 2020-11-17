@@ -3,7 +3,6 @@ package com.monumental.util.csvparsing;
 import com.google.gson.Gson;
 import com.monumental.models.DateFormat;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
-import com.monumental.services.MonumentService;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,180 +55,194 @@ public class CsvMonumentConverter {
             Date deactivatedDateForValidate = null;
             DateFormat dateFormat = null;
             DateFormat deactivatedDateFormat = null;
-            for (int i = 0; i < values.size(); i++) {
-                String field = fields.get(i);
-                String value = values.get(i);
-                if (field == null || value.equals("")) continue;
-                switch (field) {
-                    case "contributions":
-                        result.getContributorNames().add(value);
-                        break;
-                    case "artist":
-                        suggestion.setArtist(value);
-                        break;
-                    case "title":
-                        suggestion.setTitle(value);
-                        break;
-                    case "date":
-                        String dateFormatString = getDateFormat(value);
-                        if (dateFormatString != null) {
-                            Date parsedDate = null;
-                            dateFormat = stringToDateFormat(dateFormatString);
-                            try {
-                                parsedDate = parseDate(value, dateFormatString);
-                            } catch (ParseException e) {
-                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
-                            }
-                            dateForValidate = parsedDate;
-                            if (isDateInFuture(parsedDate)) {
-                                result.getWarnings().add("Date should not be in the future.");
-                            }
-                            if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
-                                if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
-                                   (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
-                                   (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
-                                    result.getWarnings().add("Created date should not be after deactivated date.");
-                                }
-                            }
-                            suggestion.setDate(convertDateFormat(value, dateFormatString));
-                            suggestion.setDateFormat(dateFormat);
-                        } else {
-                            result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
-                        }
-                        break;
-                    case "deactivatedDate":
-                        String deactivatedDateFormatString = getDateFormat(value);
-                        if (deactivatedDateFormatString != null) {
-                            Date parsedDate = null;
-                            deactivatedDateFormat = stringToDateFormat(deactivatedDateFormatString);
-                            try {
-                                parsedDate = parseDate(value, deactivatedDateFormatString);
-                            } catch (ParseException e) {
-                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
-                            }
-                            deactivatedDateForValidate = parsedDate;
-                            if (isDateInFuture(parsedDate)) {
-                                result.getWarnings().add("Deactivated date should not be in the future.");
-                            }
-                            if (dateForValidate != null && dateForValidate.after(parsedDate)) {
-                                if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
-                                   (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
-                                   (dateForValidate.getYear() > parsedDate.getYear())) {
-                                    result.getWarnings().add("Created date should not be after deactivated date.");
-                                }
-                            }
-                            suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
-                            suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
-                        } else {
-                            result.getWarnings().add("Deactivated date should be a valid date in the format DD-MM-YYYY or YYYY.");
-                        }
-                        break;
-                    case "deactivatedComment":
-                        suggestion.setDeactivatedComment(value);
-                        break;
-                    case "materials":
-                        result.getMaterialNames().addAll(parseCsvTags(value));
-                        break;
-                    case "inscription":
-                        suggestion.setInscription(value);
-                        break;
-                    case "latitude":
-                        try {
-                            if (value.contains("°")) {
-                                if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
-                                    result.getWarnings().add(coordinatesDMSFormatWarning);
-                                }
-                            } else {
-                                latitude = Double.parseDouble(value);
-
-                                // Alaska is the furthest north location and its latitude is approximately 71
-                                // The American Samoa is the furthest south location and its latitude is approximately -14
-                                if (latitude > 72 || latitude < -15) {
-                                    result.getErrors().add("Latitude is not near the United States");
-                                }
-                                // If not a valid latitude, set it to null because extremely large values can break everything
-                                if (latitude > 90 || latitude < -90) {
-                                    latitude = null;
-                                }
-                            }
-                        } catch (NumberFormatException e) {
-                            result.getWarnings().add(latitudeNumberFormatExceptionWarning);
-                        } finally {
-                            suggestion.setLatitude(latitude);
-                        }
-                        break;
-                    case "longitude":
-                        try {
-                            if (value.contains("°")) {
-                                if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
-                                    result.getWarnings().add(coordinatesDMSFormatWarning);
-                                }
-                            } else {
-                                longitude = Double.parseDouble(value);
-
-                                // Guam is the furthest west location and its longitude is approximately 144
-                                // Puerto Rico is the furthest east location and its longitude is approximately -65
-                                if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
-                                    result.getErrors().add("Longitude is not near the United States");
-                                }
-                                // If not a valid longitude, set it to null because extremely large values can break everything
-                                if (longitude > 180 || longitude < -180) {
-                                    longitude = null;
-                                }
-                            }
-                        } catch (NumberFormatException e) {
-                            result.getWarnings().add(longitudeNumberFormatExceptionWarning);
-                        } finally {
-                            suggestion.setLongitude(longitude);
-                        }
-                        break;
-                    case "city":
-                        suggestion.setCity(value);
-                        break;
-                    case "state":
-                        suggestion.setState(value);
-                        break;
-                    case "address":
-                        suggestion.setAddress(value);
-                        break;
-                    case "description":
-                        suggestion.setDescription(value);
-                        break;
-                    case "tags":
-                        result.getTagNames().addAll(parseCsvTags(value));
-                        break;
-                    case "references":
-                        result.getReferenceUrls().add(value);
-                        break;
-                    case "images":
-                        if (zipFile != null) {
-                            ZipEntry imageZipEntry = zipFile.getEntry(value);
-                            if (imageZipEntry == null) {
-                                result.getWarnings().add("Could not find image in .zip file. File may be missing or named incorrectly.");
-                            } else {
+            try {
+                for (int i = 0; i < values.size(); i++) {
+                    String field = fields.get(i);
+                    String value = values.get(i);
+                    if (field == null || value.equals("")) continue;
+                    switch (field) {
+                        case "contributions":
+                            result.getContributorNames().addAll(parseCsvArray(value));
+                            break;
+                        case "artist":
+                            suggestion.setArtist(value);
+                            break;
+                        case "title":
+                            suggestion.setTitle(value);
+                            break;
+                        case "date":
+                            String dateFormatString = getDateFormat(value);
+                            if (dateFormatString != null) {
+                                Date parsedDate = null;
+                                dateFormat = stringToDateFormat(dateFormatString);
                                 try {
-                                    File imageFile = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
-                                    if (imageFile.length() > 5000000) {
-                                        result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
-                                    }
-                                    else {
-                                        result.getImageFiles().add(imageFile);
-                                    }
-                                } catch (IOException e) {
-                                    result.getErrors().add("Failed to read image file from .zip");
+                                    parsedDate = parseDate(value, dateFormatString);
+                                } catch (ParseException e) {
+                                    result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                                 }
+                                dateForValidate = parsedDate;
+                                if (isDateInFuture(parsedDate)) {
+                                    result.getWarnings().add("Date should not be in the future.");
+                                }
+                                if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
+                                    if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                            (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
+                                            (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
+                                        result.getWarnings().add("Created date should not be after deactivated date.");
+                                    }
+                                }
+                                suggestion.setDate(convertDateFormat(value, dateFormatString));
+                                suggestion.setDateFormat(dateFormat);
+                            } else {
+                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                             }
-                        } else {
-                            result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
-                        }
-                        break;
-                }
-            }
+                            break;
+                        case "deactivatedDate":
+                            String deactivatedDateFormatString = getDateFormat(value);
+                            if (deactivatedDateFormatString != null) {
+                                Date parsedDate = null;
+                                deactivatedDateFormat = stringToDateFormat(deactivatedDateFormatString);
+                                try {
+                                    parsedDate = parseDate(value, deactivatedDateFormatString);
+                                } catch (ParseException e) {
+                                    result.getWarnings().add("Deactivated date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                }
+                                deactivatedDateForValidate = parsedDate;
+                                if (isDateInFuture(parsedDate)) {
+                                    result.getWarnings().add("Deactivated date should not be in the future.");
+                                }
+                                if (dateForValidate != null && dateForValidate.after(parsedDate)) {
+                                    if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                            (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
+                                            (dateForValidate.getYear() > parsedDate.getYear())) {
+                                        result.getWarnings().add("Created date should not be after deactivated date.");
+                                    }
+                                }
+                                suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
+                                suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
+                            } else {
+                                result.getWarnings().add("Deactivated date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                            }
+                            break;
+                        case "deactivatedComment":
+                            suggestion.setDeactivatedComment(value);
+                            break;
+                        case "materials":
+                            result.getMaterialNames().addAll(parseCsvArray(value));
+                            break;
+                        case "inscription":
+                            suggestion.setInscription(value);
+                            break;
+                        case "latitude":
+                            try {
+                                if (value.contains("°")) {
+                                    if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                        result.getWarnings().add(coordinatesDMSFormatWarning);
+                                    }
+                                } else {
+                                    latitude = Double.parseDouble(value);
 
-            if ((suggestion.getDeactivatedDate() == null || suggestion.getDeactivatedDate().isEmpty()) &&
-                    (suggestion.getDeactivatedYear() == null || suggestion.getDeactivatedYear().isEmpty()) &&
-                    (suggestion.getDeactivatedComment() != null && !suggestion.getDeactivatedComment().isEmpty())) {
-                result.getWarnings().add("Deactivated date is required in order to have a deactivated comment");
+                                    // Alaska is the furthest north location and its latitude is approximately 71
+                                    // The American Samoa is the furthest south location and its latitude is approximately -14
+                                    if (latitude > 72 || latitude < -15) {
+                                        result.getErrors().add("Latitude is not near the United States");
+                                    }
+                                    // If not a valid latitude, set it to null because extremely large values can break everything
+                                    if (latitude > 90 || latitude < -90) {
+                                        latitude = null;
+                                    }
+                                }
+                            } catch (NumberFormatException e) {
+                                result.getWarnings().add(latitudeNumberFormatExceptionWarning);
+                            } finally {
+                                suggestion.setLatitude(latitude);
+                            }
+                            break;
+                        case "longitude":
+                            try {
+                                if (value.contains("°")) {
+                                    if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
+                                        result.getWarnings().add(coordinatesDMSFormatWarning);
+                                    }
+                                } else {
+                                    longitude = Double.parseDouble(value);
+
+                                    // Guam is the furthest west location and its longitude is approximately 144
+                                    // Puerto Rico is the furthest east location and its longitude is approximately -65
+                                    if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
+                                        result.getErrors().add("Longitude is not near the United States");
+                                    }
+                                    // If not a valid longitude, set it to null because extremely large values can break everything
+                                    if (longitude > 180 || longitude < -180) {
+                                        longitude = null;
+                                    }
+                                }
+                            } catch (NumberFormatException e) {
+                                result.getWarnings().add(longitudeNumberFormatExceptionWarning);
+                            } finally {
+                                suggestion.setLongitude(longitude);
+                            }
+                            break;
+                        case "city":
+                            suggestion.setCity(value);
+                            break;
+                        case "state":
+                            suggestion.setState(value);
+                            break;
+                        case "address":
+                            suggestion.setAddress(value);
+                            break;
+                        case "description":
+                            suggestion.setDescription(value);
+                            break;
+                        case "tags":
+                            result.getTagNames().addAll(parseCsvArray(value));
+                            break;
+                        case "references":
+                            result.getReferenceUrls().addAll(parseCsvArray(value));
+                            break;
+                        case "is_temporary":
+                            suggestion.setIsTemporary(Boolean.valueOf(value));
+                            break;
+                        case "images":
+                            if (zipFile != null) {
+                                String[] valueArray = value.split(",");
+                                for (String imageValue : valueArray) {
+                                    try {
+                                        ZipEntry imageZipEntry = zipFile.getEntry(imageValue);
+                                        if (imageZipEntry == null) {
+                                            result.getWarnings().add("Could not find image " + imageValue + " in .zip file. File may be missing or named incorrectly.");
+                                        } else {
+                                            try {
+                                                File imageFile = ZipFileHelper.convertZipEntryToFile(zipFile, imageZipEntry);
+                                                if (imageFile.length() > 5000000) {
+                                                    result.getWarnings().add("Image file is too large. Maximum file size is 5MB.");
+                                                } else {
+                                                    result.getImageFiles().add(imageFile);
+                                                }
+                                            } catch (IOException e) {
+                                                result.getErrors().add("Failed to read image file from .zip");
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        result.getWarnings().add("Could not find image " + imageValue + " in .zip file. File may be missing or named incorrectly.");
+                                    }
+                                }
+                            } else {
+                                result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
+                            }
+                            break;
+                    }
+                }
+
+                if ((suggestion.getDeactivatedDate() == null || suggestion.getDeactivatedDate().isEmpty()) &&
+                        (suggestion.getDeactivatedYear() == null || suggestion.getDeactivatedYear().isEmpty()) &&
+                        (suggestion.getDeactivatedComment() != null && !suggestion.getDeactivatedComment().isEmpty())) {
+                    suggestion.setDeactivatedComment(null);
+                    result.getWarnings().add("Deactivated date is required in order to have a deactivated comment");
+                }
+            } catch (Exception e) {
+                result.getErrors().add("Unknown error. Please check that this row is formatted properly.");
             }
 
             result.setMonumentSuggestion(suggestion);
@@ -324,14 +337,14 @@ public class CsvMonumentConverter {
         return false;
     }
 
-    private static List<String> parseCsvTags(String value) {
+    private static List<String> parseCsvArray(String value) {
         // Split on commas in-case there are more than one Tag in the column
-        String[] materialArray = value.split(",");
+        String[] valueArray = value.split(",");
 
         List<String> names = new ArrayList<>();
 
-        for (String materialValue : materialArray) {
-            String name = cleanTagName(materialValue);
+        for (String arrayValue : valueArray) {
+            String name = cleanTagName(arrayValue);
             if (name == null || name.equals("")) continue;
             names.add(name);
         }

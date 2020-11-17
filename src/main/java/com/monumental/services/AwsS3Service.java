@@ -5,12 +5,9 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.AmazonS3URI;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,13 +68,11 @@ public class AwsS3Service {
      */
     public static String getObjectUrl(String objectKey) {
         try {
-            return httpsProtocol + bucketName + s3Domain + URLEncoder.encode(
-                    objectKey,
-                    StandardCharsets.UTF_8.toString()
-            );
-        } catch (UnsupportedEncodingException e) {
+            objectKey = objectKey.replaceAll(" ", "+");
+            return new AmazonS3URI(httpsProtocol + bucketName + s3Domain + objectKey, false).toString();
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return httpsProtocol + bucketName + s3Domain + objectKey;
         }
     }
 
@@ -152,8 +147,8 @@ public class AwsS3Service {
         int number = 0;
 
         while (!isUniqueKey(objectKey)) {
-            String checkRegex = ".*\\([0-9]+\\)$";
-            String captureRegex = "\\(([0-9]+)\\)$";
+            String checkRegex = ".*\\([0-9]+\\).*";
+            String captureRegex = "\\(([0-9]+)\\)";
             // If the key already ends with "(1)", for example
             if (objectKey.matches(checkRegex)) {
                 Matcher matcher = Pattern.compile(captureRegex).matcher(objectKey);
@@ -163,10 +158,14 @@ public class AwsS3Service {
                 number++;
                 objectKey = objectKey.replaceAll(captureRegex, "(" + number + ")");
             } else {
-                objectKey += " (1)";
+                String[] splitKey = objectKey.split("\\.");
+                objectKey = splitKey[0] +  "(1)";
+                for (int i = 1; i < splitKey.length; i++) {
+                    objectKey += "." + splitKey[i];
+                }
             }
         }
 
-        return objectKey;
+        return objectKey.replaceAll(" ", "+");
     }
 }

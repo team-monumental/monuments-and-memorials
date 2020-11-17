@@ -36,11 +36,8 @@ public class AwsS3ServiceTest {
 
         String result = AwsS3Service.getObjectUrl(objectKey);
         try {
-            assertEquals("https://" + AwsS3Service.bucketName + ".s3.us-east-2.amazonaws.com/" + URLEncoder.encode(
-                    objectKey,
-                    StandardCharsets.UTF_8.toString()
-            ), result);
-        } catch (UnsupportedEncodingException e) {
+            assertEquals("https://" + AwsS3Service.bucketName + ".s3.us-east-2.amazonaws.com/" + objectKey, result);
+        } catch (Exception e) {
             fail(e.getMessage());
         }
     }

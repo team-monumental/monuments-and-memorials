@@ -5,6 +5,7 @@ import Tags from '../../Tags/Tags';
 import Address from '../../Monument/Details/Address/Address';
 import { Link } from 'react-router-dom';
 import Thumbnail from '../../Monument/Images/Thumbnails/Thumbnail/Thumbnail';
+import {getMonumentSlug} from "../../../utils/regex-util";
 
 /**
  * A condensed Monument info card for use in search results
@@ -21,6 +22,9 @@ export default class SearchResult extends React.Component {
             tags = monument.monumentTags.map(monumentTag => monumentTag.tag);
         }
 
+        const slug = getMonumentSlug(monument)
+        const to = monumentUri === '/monuments' ? `${monumentUri}/${monument.id}/${slug}` : `${monumentUri}/${monument.id}`
+
         return (
             <div className="search-result">
                 {!hideImages &&
@@ -28,7 +32,7 @@ export default class SearchResult extends React.Component {
                 }
                 <Card>
                     <Card.Title>
-                        <Link to={`${monumentUri}/${monument.id}`}>
+                        <Link to={to}>
                             {title}
                         </Link>
                     </Card.Title>
