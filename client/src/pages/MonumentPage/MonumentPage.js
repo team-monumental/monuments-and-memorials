@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom';
 import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument, { createFavorite, deleteFavorite, fetchFavorite } from '../../actions/monument';
-import * as slugify from 'slugify';
 import { Helmet } from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
+import {getMonumentSlug} from "../../utils/regex-util";
 
 /**
  * Root container component for the monument record page which handles retrieving the monument
@@ -29,7 +29,7 @@ class MonumentPage extends React.Component {
             (prevProps.monument.id !== this.props.monument.id && this.props.monument.id)) {
             dispatch(fetchFavorite(monumentId));
         }
-        if (prevProps.monument.id && !this.props.monument.id) {
+        if (prevProps.monument.id && (!this.props.monument.id || monumentId != prevProps.monument.id)) {
             dispatch(fetchMonument(monumentId));
         }
         if (this.props.monument.title && !slug) {
@@ -53,9 +53,7 @@ class MonumentPage extends React.Component {
         // If there's no title, slugify will throw an error, so only proceed if there's a title
         if (!monument || !monument.title) return;
         // Slugify the monument's title
-        const newSlug = slugify(monument.title, {
-            remove: /[^a-zA-Z0-9\s]/g,
-        });
+        const newSlug = getMonumentSlug(monument)
         // Don't redirect if the correct slug is already present
         if (slug !== newSlug) {
             history.push(`/monuments/${monument.id}/${newSlug}`);

@@ -235,7 +235,7 @@ export default class CreateOrUpdateForm extends React.Component {
             artist, description, inscription, materials, locationType } = this.state;
         let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
             references, tags, imagesForUpdate, photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey,
-            city, state } = this.state;
+            city, state, isTemporary } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -281,6 +281,7 @@ export default class CreateOrUpdateForm extends React.Component {
         deactivatedComment.value = monument.deactivatedComment ? monument.deactivatedComment : '';
         city = monument.city;
         state = monument.state;
+        isTemporary.value = monument.isTemporary ? monument.isTemporary : false;
 
         if (address.value) locationType.value = 'address';
         else if (latitude.value && longitude.value) locationType.value = 'coordinates';
@@ -346,10 +347,11 @@ export default class CreateOrUpdateForm extends React.Component {
         photoSphereImages = [];
         imageUploaderKey++;
 
-        this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
+        this.setState({ title, address, latitude, longitude, artist, description, inscription, year, month,
             datePickerCurrentDate, dateSelectValue, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
             deactivatedDateSelectValue, deactivatedComment, references, materials, tags, imagesForUpdate,
-            photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, locationType, city, state});
+            photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, locationType, city, state,
+            isTemporary });
     }
 
     /**

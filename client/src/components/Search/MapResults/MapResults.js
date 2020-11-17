@@ -3,6 +3,8 @@ import './MapResults.scss';
 import { Map, CircleMarker, Popup, TileLayer, Marker } from 'react-leaflet';
 import Address from '../../Monument/Details/Address/Address';
 import * as Leaflet from 'leaflet';
+import { Link } from 'react-router-dom';
+import {getMonumentSlug} from "../../../utils/regex-util";
 
 // Coordinates of the geographic center of the US, so that the map is centered on the US
 const US_GEOGRAPHIC_CENTER = [39.8283, -98.5795];
@@ -34,9 +36,11 @@ export default class MapResults extends React.Component {
             // regular monuments color = blue, temporary monuments color = green
             const color = monument.isTemporary ? "green" : "blue"
 
+            const slug = getMonumentSlug(monument)
+
             const popup = (
                 <Popup>
-                    <a href={'/monuments/' + monument.id}>{monument.title}</a>
+                    <Link to={`/monuments/${monument.id}/${slug}`}>{monument.title}</Link>
                     <Address monument={monument}/>
                 </Popup>
             );
