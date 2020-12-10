@@ -281,8 +281,8 @@ export default class BulkCreateForm extends React.Component {
                 a <code>.csv</code> file with information about them.
             </p>
             <p style={{marginLeft: "16px"}}>
-                <span className="font-weight-bold">Please use our
-                <a href='/BulkUploadTemplate.csv'> Bulk Upload CSV Template</a>!</span>
+                <span className="font-weight-bold">Please use our{' '}
+                <a href='/BulkUploadTemplate.csv'>Bulk Upload CSV Template</a>!</span>
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
@@ -297,8 +297,8 @@ export default class BulkCreateForm extends React.Component {
                 your <code>.csv</code> file and your image files.
             </p>
             <p style={{marginLeft: "16px"}}>
-                <span className="font-weight-bold">Please use our
-                <a href='/BulkUploadZipTemplate.zip'> Bulk Upload Zip Template</a>!</span>
+                <span className="font-weight-bold">Please use our{' '}
+                <a href='/BulkUploadZipTemplate.zip'>Bulk Upload Zip Template</a>!</span>
             </p>
             <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">

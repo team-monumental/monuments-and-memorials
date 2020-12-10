@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
 import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
-import {buildExportData, exportFields} from '../../../../utils/export-util';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
@@ -205,8 +204,8 @@ export default class About extends React.Component {
                     <div className="d-flex">
                         {!hideExport &&
                             <span>
-                                <ExportButtons className="mt-2" fields={exportFields}
-                                               data={[buildExportData(monument)]}
+                                <ExportButtons className="mt-2"
+                                               monuments={[monument]}
                                                title={monument.title}/>
                             </span>
                         }
