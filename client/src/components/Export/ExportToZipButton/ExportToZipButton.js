@@ -17,9 +17,6 @@ export default class ExportToZipButton extends React.Component {
             return fetch(url, { mode: "no-cors" })
                 .then((response)=> {
                     return response.blob();
-                })
-                .then(blob=> {
-                    return URL.createObjectURL(blob);
                 });
         }
 
@@ -31,7 +28,18 @@ export default class ExportToZipButton extends React.Component {
 
         for (const image of images) {
             const imgData = await toObjectUrl(image.url)
-            zip.file(getS3ImageNameFromObjectUrl(image.url), imgData, {base64: true})
+            const reader = new FileReader();
+            reader.onload = function() {
+                const dataUrl = reader.result;
+                const base64 = dataUrl.split(',')[1];
+                console.log(base64);
+                zip.file(getS3ImageNameFromObjectUrl(image.url), base64, {base64: true})
+            };
+            await reader.readAsDataURL(imgData);
+            // reader.onloadend = function() {
+            //     const base64data = reader.result;
+            // }
+
         }
 
         // var img = zip.folder("images");
