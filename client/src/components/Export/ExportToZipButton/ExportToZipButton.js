@@ -14,7 +14,7 @@ export default class ExportToZipButton extends React.Component {
         const { fields, data, exportTitle, images } = this.props;
 
         function toObjectUrl(url) {
-            return fetch(url)
+            return fetch(url, { mode: "no-cors" })
                 .then((response)=> {
                     return response.blob();
                 })
