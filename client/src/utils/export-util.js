@@ -1,7 +1,7 @@
 import { parse as toCSV } from 'json2csv';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import {getUserFullName, prettyPrintDate, simplePrintDate} from './string-util';
+import {getUserFullName, simplePrintDate} from './string-util';
 
 export const pdfExportFields = ['Title', 'ID', 'Artist', 'Date Created', 'Deactivated Date', 'City', 'State', 'Address',
     'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
@@ -22,7 +22,11 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
     const prepareArray = (array=[], field) => {
         let arr = array.map(it => it[field]);
         const set = arr.filter((item, index) => arr.indexOf(item) === index);
-        return set.join(', ');
+        if (pretty) {
+            return set.join(', ');
+        } else {
+            return set.join(',');
+        }
     };
 
     const result = {};
