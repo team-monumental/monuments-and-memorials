@@ -2,22 +2,38 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import * as JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { exportToCsv } from '../../../utils/export-util';
-import {parse as toCSV} from "json2csv";
+import { parse as toCSV } from 'json2csv';
+import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
 
 /**
  * Presentational component for a button that exports data to CSV
  */
 export default class ExportToZipButton extends React.Component {
 
-    handleClick() {
-        const { fields, data, exportTitle } = this.props;
+    async handleClick() {
+        const { fields, data, exportTitle, images } = this.props;
+
+        function toObjectUrl(url) {
+            return fetch(url)
+                .then((response)=> {
+                    return response.blob();
+                })
+                .then(blob=> {
+                    return URL.createObjectURL(blob);
+                });
+        }
 
         const csv = toCSV(data, {fields});
         const exportFileName = exportTitle.endsWith('.csv') ? exportTitle : exportTitle + '.csv';
 
         const zip = new JSZip();
         zip.file(exportFileName, csv);
+
+        for (const image of images) {
+            const imgData = await toObjectUrl(image.url)
+            zip.file(getS3ImageNameFromObjectUrl(image.url), imgData, {base64: true})
+        }
+
         // var img = zip.folder("images");
         // img.file("smile.gif", imgData, {base64: true});
         zip.generateAsync({ type: "blob" })

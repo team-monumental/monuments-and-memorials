@@ -11,24 +11,25 @@ import ExportToZipButton from "../ExportToZipButton/ExportToZipButton";
 export default class ExportButtons extends React.Component {
 
     render() {
-        const { monuments, title } = this.props;
+        const { monuments, title, images } = this.props;
 
         return (
             <span>
                 <span>
                     <ExportToCsvButton className="mt-2" fields={csvExportFields}
                                        data={buildBulkExportData(monuments, csvExportFields, false)}
-                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`} />
                 </span>
                 <span style={{marginLeft: '5px'}}>
                     <ExportToPdfButton className="mt-2" fields={pdfExportFields}
                                        data={buildBulkExportData(monuments, pdfExportFields, true)}
-                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`} />
                 </span>
                 <span style={{marginLeft: '5px'}}>
-                    <ExportToZipButton className="mt-2" fields={csvExportFields}
-                                       data={buildBulkExportData(monuments, csvExportFields, false)}
-                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                    <ExportToZipButton className="mt-2" fields={csvExportFields.concat(['images'])}
+                                       data={buildBulkExportData(monuments, csvExportFields.concat(['images']), false)}
+                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}
+                                       images={images} />
                 </span>
             </span>
         );
