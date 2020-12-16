@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import * as JSZip from 'jszip';
+import * as JSZipUtils from 'jszip-utils';
 import { saveAs } from 'file-saver';
 import { parse as toCSV } from 'json2csv';
 import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
@@ -13,13 +14,6 @@ export default class ExportToZipButton extends React.Component {
     async handleClick() {
         const { fields, data, exportTitle, images } = this.props;
 
-        function toObjectUrl(url) {
-            return fetch(url, { mode: "no-cors" })
-                .then((response)=> {
-                    return response.blob();
-                });
-        }
-
         const csv = toCSV(data, {fields});
         const exportFileName = exportTitle.endsWith('.csv') ? exportTitle : exportTitle + '.csv';
 
@@ -27,26 +21,24 @@ export default class ExportToZipButton extends React.Component {
         zip.file(exportFileName, csv);
 
         for (const image of images) {
-            const imgData = await toObjectUrl(image.url)
-            const reader = new FileReader();
-            reader.onload = function() {
-                const dataUrl = reader.result;
-                const base64 = dataUrl.split(',')[1];
-                console.log(base64);
-                zip.file(getS3ImageNameFromObjectUrl(image.url), base64, {base64: true})
-            };
-            await reader.readAsDataURL(imgData);
-            // reader.onloadend = function() {
-            //     const base64data = reader.result;
-            // }
-
+            await JSZipUtils.getBinaryContent(image.url, {}).then(
+                (data, err) => {
+                    if (err) {
+                        alert('Problem happened when download img: ' + image.url);
+                        console.error('Problem happened when download img: ' + image.url);
+                    } else {
+                        let name = getS3ImageNameFromObjectUrl(image.url)
+                        if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
+                            name = name + '.jpg'
+                        }
+                        zip.file(name, data, {binary: true});
+                    }
+                }
+            )
         }
 
-        // var img = zip.folder("images");
-        // img.file("smile.gif", imgData, {base64: true});
         zip.generateAsync({ type: "blob" })
             .then(function(content) {
-                // see FileSaver.js
                 saveAs(content, "monuments.zip");
             });
     }

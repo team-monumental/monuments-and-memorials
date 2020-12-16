@@ -89,6 +89,14 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
             if (monument.images && monument.images.length) {
                 const imagesArray = monument.images.map(image => getS3ImageNameFromObjectUrl(image.url));
 
+                let i = 0
+                for (const img of imagesArray) {
+                    if (!img.endsWith('.png') && !img.endsWith('.jpg')) {
+                        imagesArray[i] = img + '.jpg'
+                    }
+                    i += 1
+                }
+
                 if (pretty) {
                     imagesList = imagesArray.join(', ')
                 } else {

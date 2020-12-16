@@ -15,6 +15,7 @@
     "jspdf": "^2.1.1",
     "jspdf-autotable": "^3.5.13",
     "jszip": "^3.3.0",
+    "jszip-utils": "^0.1.0",
     "leaflet": "^1.6.0",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
