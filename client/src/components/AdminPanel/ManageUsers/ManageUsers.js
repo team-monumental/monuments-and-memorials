@@ -17,7 +17,7 @@ class ManageUsers extends React.Component {
                             Manage Users
                         </Card.Title>
                         {mode === 'user' && <>
-                            <Button variant="light" className="h-75" onClick={() => history.goBack()}>Back</Button>
+                            <Button variant="light" className="h-100" onClick={() => history.goBack()}>Back</Button>
                         </>}
                     </Card.Header>
                     <Card.Body>

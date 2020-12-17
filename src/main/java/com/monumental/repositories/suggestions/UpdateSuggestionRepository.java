@@ -18,4 +18,6 @@ public interface UpdateSuggestionRepository extends JpaRepository<UpdateMonument
      * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestions created by the specified createdBy
      */
     List<UpdateMonumentSuggestion> getAllByCreatedBy(User createdBy);
+
+    void deleteAllByMonumentId(Integer monumentId);
 }
