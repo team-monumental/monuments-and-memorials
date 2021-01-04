@@ -189,16 +189,18 @@ class Filters extends React.Component {
 
         return (
             <div className="filters">
-                <Form.Control as="select" className="min-width-select" value={newFilterType} onChange={event => this.handleNewFilterChange(event.target.value)}>
-                    <option value="location">Location</option>
-                    <option value="date">Date</option>
-                    <option value="tags">Tags</option>
-                    <option value="materials">Materials</option>
-                </Form.Control>
-                <button className="filter-type" onClick={() => this.addFilter(newFilterType)} style={{backgroundColor: "white", border: "none"}}><i className="material-icons ">add</i></button>
-                <div className="d-flex">
+                <div className="add-filter">
+                    <Form.Control as="select" className="min-width-select" value={newFilterType} onChange={event => this.handleNewFilterChange(event.target.value)}>
+                        <option value="location">Location</option>
+                        <option value="date">Date</option>
+                        <option value="tags">Tags</option>
+                        <option value="materials">Materials</option>
+                    </Form.Control>
+                    <button className="filter-type" onClick={() => this.addFilter(newFilterType)}><i className="material-icons ">add</i></button>
+                </div>
+                <div>
                     {
-                        this.state.filterList.map((type, index) => (<Filter type={type} key={index.toString()}></Filter>))
+                        this.state.filterList.map((type, index) => (<Filter type={type} decades={decades} history={this.props.history} key={index.toString()}></Filter>))
                     }
                     
                     

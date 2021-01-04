@@ -3,6 +3,8 @@ import LocationSearch from '../../Header/SearchBar/LocationSearch/LocationSearch
 import './Filters.scss';
 import search from '../../../utils/search';
 import TagsSearch from '../TagsSearch/TagsSearch';
+import DateSearch from './DateSearch'
+import 'rc-slider/assets/index.css';
 
 /**
  * A condensed Monument info card for use in search results
@@ -15,23 +17,29 @@ export default class Filter extends React.Component {
             locationAddress: ''
         }
     }
-    handleTagsSearchTagSelect(variant, selectedTags) {
+    handleTagsSearchTagSelect(variant, selectedTags, tag) {
         const { uri } = this.props;
         const params = {};
-
+        console.log(tag)
         params[variant] = selectedTags.map(tag => tag.name);
         search(params, this.props.history, uri);
     }
 
+    handleDateSearchSelect(params) {
+        const { uri } = this.props;
+        search(params, this.props.history, uri);
+    }
+
     render() {
-        const { type, index } = this.props;
+        const { type, decades, index } = this.props;
+        
         let toRender = (<div>ERROR</div>)
         switch(type){
             case 'tags':{
                 toRender = (<TagsSearch
                     variant="tags"
-                    tags={[]}
-                    onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags)}
+                    tags={['Men']}
+                    onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags, "tag")}
                     allowTagCreation={true}
                     />)
                 break;
@@ -39,7 +47,7 @@ export default class Filter extends React.Component {
             case 'materials':{
                 toRender = (<TagsSearch
                     variant="materials"
-                    tags={[]}
+                    tags={['Metal']}
                     onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags)}
                     allowTagCreation={true}
                     />)
@@ -49,7 +57,13 @@ export default class Filter extends React.Component {
                 toRender = (<LocationSearch value={this.state.locationAddress}
                     className="form-control form-control-sm"
                     onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>)
-                
+                break;
+            }
+            case 'date':{
+                toRender = (<DateSearch decades={decades} value={this.state.locationAddress}
+                    onChange = {(params) => this.handleDateSearchSelect(params)}
+                    className="form-control form-control-sm"/>)
+                break;
             }
 
         }
