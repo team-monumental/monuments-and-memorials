@@ -19,22 +19,23 @@ export default class ExportToZipButton extends React.Component {
 
         const zip = new JSZip();
         zip.file(exportFileName, csv);
-
-        for (const image of images) {
-            await JSZipUtils.getBinaryContent(image.url, {}).then(
-                (data, err) => {
-                    if (err) {
-                        alert('Problem happened when download img: ' + image.url);
-                        console.error('Problem happened when download img: ' + image.url);
-                    } else {
-                        let name = getS3ImageNameFromObjectUrl(image.url)
-                        if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
-                            name = name + '.jpg'
+        if (images){
+            for (const image of images) {
+                await JSZipUtils.getBinaryContent(image.url, {}).then(
+                    (data, err) => {
+                        if (err) {
+                            alert('Problem happened when download img: ' + image.url);
+                            console.error('Problem happened when download img: ' + image.url);
+                        } else {
+                            let name = getS3ImageNameFromObjectUrl(image.url)
+                            if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
+                                name = name + '.jpg'
+                            }
+                            zip.file(name, data, {binary: true});
                         }
-                        zip.file(name, data, {binary: true});
                     }
-                }
-            )
+                )
+            }
         }
 
         zip.generateAsync({ type: "blob" })
