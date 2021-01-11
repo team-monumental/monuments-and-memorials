@@ -10,7 +10,7 @@ import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
 export default class About extends React.Component {
 
     render() {
-        const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle } = this.props;
+        const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle, images } = this.props;
 
         let title;
         if (!hideTitle && monument.title) {
@@ -206,7 +206,8 @@ export default class About extends React.Component {
                             <span>
                                 <ExportButtons className="mt-2"
                                                monuments={[monument]}
-                                               title={monument.title}/>
+                                               title={monument.title}
+                                               images={images}/>
                             </span>
                         }
                     </div>

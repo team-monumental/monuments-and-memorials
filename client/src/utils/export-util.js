@@ -1,7 +1,8 @@
 import { parse as toCSV } from 'json2csv';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import {getUserFullName, prettyPrintDate, simplePrintDate} from './string-util';
+import {getUserFullName, simplePrintDate} from './string-util';
+import {getS3ImageNameFromObjectUrl} from "./api-util";
 
 export const pdfExportFields = ['Title', 'ID', 'Artist', 'Date Created', 'Deactivated Date', 'City', 'State', 'Address',
     'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
@@ -22,7 +23,11 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
     const prepareArray = (array=[], field) => {
         let arr = array.map(it => it[field]);
         const set = arr.filter((item, index) => arr.indexOf(item) === index);
-        return set.join(', ');
+        if (pretty) {
+            return set.join(', ');
+        } else {
+            return set.join(',');
+        }
     };
 
     const result = {};
@@ -79,6 +84,26 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = tagsList;
+        } else if (lowerField.includes('image')) {
+            let imagesList = '';
+            if (monument.images && monument.images.length) {
+                const imagesArray = monument.images.map(image => getS3ImageNameFromObjectUrl(image.url));
+
+                let i = 0
+                for (const img of imagesArray) {
+                    if (!img.endsWith('.png') && !img.endsWith('.jpg')) {
+                        imagesArray[i] = img + '.jpg'
+                    }
+                    i += 1
+                }
+
+                if (pretty) {
+                    imagesList = imagesArray.join(', ')
+                } else {
+                    imagesList = imagesArray.join(',')
+                }
+            }
+            result[field] = imagesList;
         } else if (lowerField.includes('address')) {
             result[field] = monument.address || '';
         } else if (lowerField.includes('description')) {
