@@ -6,7 +6,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import fetchMonument, { createFavorite, deleteFavorite, fetchFavorite } from '../../actions/monument';
 import { Helmet } from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
-import {getMonumentSlug} from "../../utils/regex-util";
+import { getMonumentSlug } from '../../utils/regex-util';
 
 /**
  * Root container component for the monument record page which handles retrieving the monument
@@ -89,6 +89,7 @@ class MonumentPage extends React.Component {
                               fetchFavoritePending={fetchFavoritePending} favorite={favorite}
                               onToggleFavorite={() => this.handleToggleFavorite()} showFavorite={!!session.user}
                               onSuggestChangesButtonClick={() => this.handleSuggestChangesButtonClick()}
+                              userRole={session.user ? session.user.role : null}
                     />
                 </div>
                 <Footer/>
