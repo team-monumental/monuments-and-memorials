@@ -22,7 +22,6 @@ export default class DateSearch extends React.Component {
             dateFiltersMode,
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
-            newFilterType: 'location',
             filterList: []
         };
     }
@@ -62,7 +61,7 @@ export default class DateSearch extends React.Component {
     async handleDistanceFilterModeChange(mode) {
         await this.setState({dateFiltersMode: mode});
         if (mode !== 'decade') {
-            this.handleFilterChange('decade', 'null');
+            this.handleFilterChange('decade', null);
         }
         if (mode !== 'range') {
             await this.handleFilterChange('start', null);
@@ -80,9 +79,8 @@ export default class DateSearch extends React.Component {
     }
 
     render() {
-        const { dateFiltersMode, dateFilterStart, newFilterType, dateFilterEnd, filters: { decade, distance } } = this.state;
+        const { dateFiltersMode, dateFilterStart, dateFilterEnd, filters: { decade, distance } } = this.state;
         const { value, decades } = this.props;
-        console.log("decades", decades)
         const minimumDate = new Date(1, 0);
         minimumDate.setFullYear(1);
         const currentDate = new Date();
