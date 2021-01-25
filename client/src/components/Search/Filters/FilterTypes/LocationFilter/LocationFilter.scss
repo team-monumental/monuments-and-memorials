@@ -3,7 +3,7 @@
 .autocomplete-container {
     display: inline-flex;
     position: relative;
-    width: 100%;
+    width: 75%;
     height: 100%;
     input{
         border: none;
@@ -39,5 +39,21 @@
     }
     i {
         color: $primary;
+    }
+}
+
+.location-search {
+    margin-top: .5em;
+    margin-bottom: .5em;
+    margin-right: 0.5rem;
+    flex-grow: 1;
+    max-width: 800px;
+    max-height: 50px;
+    select.form-control {
+        width: 100%;
+        min-width: 120px;
+        display: inline-flex !important;
+        position: static;
+        right: '0.5em';
     }
 }

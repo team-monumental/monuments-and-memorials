@@ -4,6 +4,7 @@ import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng
 } from 'react-places-autocomplete';
+import { Form }from 'react-bootstrap';
 /* global google */
 
 /**
@@ -15,7 +16,9 @@ export default class LocationSearch extends React.Component {
         super(props);
         this.state = {
             searchQuery: props.value,
-            sessionToken: ''
+            sessionToken: '',
+            showDistance: true,
+            distance: '25'
         };
     }
 
@@ -49,6 +52,7 @@ export default class LocationSearch extends React.Component {
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
         onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, results[0]);
+        this.setState({showDistance: true})
     }
 
     handleClear() {
@@ -56,7 +60,7 @@ export default class LocationSearch extends React.Component {
     }
 
     render() {
-        const { searchQuery } = this.state;
+        const { searchQuery, showDistance, distance } = this.state;
         const { className, placeholder, isInvalid } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -94,8 +98,22 @@ export default class LocationSearch extends React.Component {
             right: isInvalid ? '1.25em' : '0.5em'
         }
 
+        const distanceFilter = showDistance ? (
+            <Form.Control onChange={event => 
+                this.handleFilterChange('distance', event.target.value)} 
+                as="select" 
+                className="min-width-select dist-drop" 
+                value={distance}>
+                <option value="10">Within 10 miles</option>
+                <option value="15">Within 15 miles</option>
+                <option value="25">Within 25 miles</option>
+                <option value="50">Within 50 miles</option>
+                <option value="100">Within 100 miles</option>
+            </Form.Control>
+        ) : null;
+
         return (
-            <div className="location-search position-relative">
+            <div className="location-search">
                 <PlacesAutocomplete
                     value={searchQuery}
                     onChange={newSearchQuery => this.handleChange(newSearchQuery)}
@@ -107,6 +125,7 @@ export default class LocationSearch extends React.Component {
                 </PlacesAutocomplete>
                 {searchQuery && <i className="material-icons search-clear" style={xStyle}
                                    onClick={() => this.handleClear()}>clear</i>}
+                {distanceFilter}
             </div>
         )
     }

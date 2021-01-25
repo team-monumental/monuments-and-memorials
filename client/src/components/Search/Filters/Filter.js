@@ -20,7 +20,6 @@ export default class Filter extends React.Component {
     handleTagsSearchTagSelect(variant, selectedTags, tag) {
         const { uri } = this.props;
         const params = {};
-        console.log(tag)
         params[variant] = selectedTags.map(tag => tag.name);
         search(params, this.props.history, uri);
     }
@@ -32,7 +31,10 @@ export default class Filter extends React.Component {
 
     handleRemoveFilter(){
         const {removeFilter} = this.props;
+
+        removeFilter();
     }
+    
     render() {
         const { type, decades, removeFilter } = this.props;
         
@@ -78,9 +80,3 @@ export default class Filter extends React.Component {
         )
     }
 }
-
-/**
- * <LocationSearch value={locationAddress}
-                                className="form-control form-control-sm"
-                                onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
- */
