@@ -70,8 +70,10 @@ export default class Suggestions extends React.Component {
         return rejectedSuggestions;
     }
 
-    renderSuggestions(suggestions, type) {
+    renderSuggestions(suggestions, type, researcherOrAbove) {
         const { role, error } = this.props;
+        const createText = researcherOrAbove ? 'create' : 'suggest'
+        const updateText = researcherOrAbove ? 'make' : 'suggest'
 
         const createPageLink = (
             <Link to="/create" key="create">clicking here</Link>
@@ -84,7 +86,7 @@ export default class Suggestions extends React.Component {
         return (<>
             <h6>New Monument or Memorial Suggestions</h6>
             {(!suggestions.create || suggestions.create.length === 0) && !error && <>
-                You don't have any {type} new monument or memorial suggestions yet. You can suggest a new monument or
+                You don't have any {type} new monument or memorial suggestions yet. You can {createText} a new monument or
                 memorial by {createPageLink}.
             </>}
             {suggestions.create && suggestions.create.length > 0 && <>
@@ -92,9 +94,9 @@ export default class Suggestions extends React.Component {
             </>}
             <h6 className="mt-4">Update Monument or Memorial Suggestions</h6>
             {(!suggestions.update || suggestions.update.length === 0) && !error && <>
-                You don't have any {type} update monument or memorial suggestions yet. You can suggest an update to an
+                You don't have any {type} update monument or memorial suggestions yet. You can {updateText} an update to an
                 existing monument or memorial by clicking
-                the "<span className="font-weight-bold">SUGGEST A CHANGE</span>" button while viewing the
+                the "<span className="font-weight-bold">{updateText.toUpperCase()} A CHANGE</span>" button while viewing the
                 monument or memorial page you want to update.
             </>}
             {suggestions.update && suggestions.update.length > 0 && <>
@@ -103,7 +105,7 @@ export default class Suggestions extends React.Component {
             {role.toUpperCase() === Role.PARTNER && <>
                 <h6 className="mt-4">Bulk New Monument or Memorial Suggestions</h6>
                 {(!suggestions.bulk || suggestions.bulk.length === 0) && !error && <>
-                    You don't have any {type} bulk new monument or memorial suggestions yet. You can suggest bulk
+                    You don't have any {type} bulk new monument or memorial suggestions yet. You can {createText} bulk
                     new monuments or memorials by {bulkCreatePageLink}.
                 </>}
                 {suggestions.bulk && suggestions.bulk.length > 0 && <>
@@ -117,7 +119,8 @@ export default class Suggestions extends React.Component {
     }
 
     render() {
-        const { pending } = this.props;
+        const { pending, role } = this.props;
+        const researcherOrAbove = role && Role.RESEARCHER_OR_ABOVE.includes(role.toUpperCase())
 
         return (<>
             <Spinner show={pending}/>
@@ -126,15 +129,24 @@ export default class Suggestions extends React.Component {
                     <Card.Title>Your Suggestions</Card.Title>
                 </Card.Header>
                 <Card.Body>
+                    {researcherOrAbove &&
+                    <>
+                        <p>
+                            <span className="font-weight-bold">NOTE:</span>  Because your role is{' '}
+                            <span className="font-weight-bold red">{role.toLowerCase()}</span>,
+                            your suggestions are automatically approved.
+                        </p>
+                    </>
+                    }
                     <Tabs defaultActiveKey="approved" id="suggestions-tabs">
                         <Tab title="Approved" eventKey="approved">
-                            {this.renderSuggestions(this.filterApprovedSuggestions(), 'approved')}
+                            {this.renderSuggestions(this.filterApprovedSuggestions(), 'approved', researcherOrAbove)}
                         </Tab>
                         <Tab title="Pending" eventKey="pending">
-                            {this.renderSuggestions(this.filterPendingSuggestions(), 'pending')}
+                            {this.renderSuggestions(this.filterPendingSuggestions(), 'pending', researcherOrAbove)}
                         </Tab>
                         <Tab title="Not Approved" eventKey="rejected">
-                            {this.renderSuggestions(this.filterRejectedSuggestions(), 'rejected')}
+                            {this.renderSuggestions(this.filterRejectedSuggestions(), 'rejected', researcherOrAbove)}
                         </Tab>
                     </Tabs>
                 </Card.Body>

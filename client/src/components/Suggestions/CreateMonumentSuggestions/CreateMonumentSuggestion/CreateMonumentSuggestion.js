@@ -56,12 +56,12 @@ class CreateMonumentSuggestion extends React.Component {
 
         let tagArray;
         if (areMaterials) {
-            const materials = JSON.parse(suggestion.materialsJson);
+            const materials = JSON.parse(suggestion.materialsJson) || [];
             const newMaterials = JSON.parse(suggestion.newMaterialsJson);
             tagArray = materials.concat(newMaterials);
         }
         else {
-            const tags = JSON.parse(suggestion.tagsJson);
+            const tags = JSON.parse(suggestion.tagsJson) || [];
             const newTags = JSON.parse(suggestion.newTagsJson);
             tagArray = tags.concat(newTags);
         }
@@ -83,6 +83,7 @@ class CreateMonumentSuggestion extends React.Component {
         const longitude = parse(suggestion.longitude);
         const description = parse(suggestion.description, true);
         const inscription = parse(suggestion.inscription, true);
+        const deactivatedComment = parse(suggestion.deactivatedComment, true)
 
         let date = 'None';
         if (suggestion.date && suggestion.date.length) {
@@ -93,6 +94,17 @@ class CreateMonumentSuggestion extends React.Component {
         }
         else if (suggestion.year && suggestion.year.length) {
             date = suggestion.year;
+        }
+
+        let deactivatedDate = 'None';
+        if (suggestion.deactivatedDate && suggestion.deactivatedDate.length) {
+            deactivatedDate = prettyPrintDate(new Date(suggestion.deactivatedDate));
+        }
+        else if (suggestion.deactivatedMonth && suggestion.deactivatedMonth.length) {
+            deactivatedDate = `${prettyPrintMonth(suggestion.deactivatedMonth)}, ${suggestion.deactivatedYear}`;
+        }
+        else if (suggestion.deactivatedYear && suggestion.deactivatedYear.length) {
+            deactivatedDate = suggestion.deactivatedYear;
         }
 
         let imageUrls = [];
@@ -120,6 +132,7 @@ class CreateMonumentSuggestion extends React.Component {
         return (<>
             <div><strong>Artist:</strong> {artist}</div>
             <div><strong>Date:</strong> {date}</div>
+            <div><strong>Deactivated Date:</strong> {deactivatedDate}</div>
             <div><strong>Address:</strong> {address}</div>
             {showCollapse && <>
                 <Collapse in={expanded}>
@@ -130,6 +143,7 @@ class CreateMonumentSuggestion extends React.Component {
                         <div><strong>Longitude:</strong> {longitude}</div>
                         <div><strong>Description:</strong> {description}</div>
                         <div><strong>Inscription:</strong> {inscription}</div>
+                        <div><strong>Deactivation Reason:</strong> {deactivatedComment}</div>
                         <div className="font-weight-bold">Contributors: </div> {this.renderStringArray(JSON.parse(suggestion.contributionsJson))}
                         <div className="font-weight-bold">References: </div> {this.renderStringArray(JSON.parse(suggestion.referencesJson))}
                         <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}

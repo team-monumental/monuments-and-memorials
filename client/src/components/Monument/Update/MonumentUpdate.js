@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './MonumentUpdate.scss';
 import AttributeChange from './AttributeChange/AttributeChange';
-import { prettyPrintDate, prettyPrintDateString } from '../../../utils/string-util';
+import {DateFormat, prettyPrintDate} from '../../../utils/string-util';
 import UnchangedTags from './TagChanges/UnchangedTags/UnchangedTags';
 import AddedTags from './TagChanges/AddedTags/AddedTags';
 import RemovedTags from './TagChanges/RemovedTags/RemovedTags';
@@ -55,19 +55,41 @@ export default class MonumentUpdate extends React.Component {
         const { update } = this.props;
 
         switch (update.date.type) {
-            case 'year':
+            case DateFormat.YEAR:
                 if (update.date.newYear) {
-                    return prettyPrintDateString(`${update.date.newYear}-01-01`);
+                    return prettyPrintDate(`${update.date.newYear}`, update.date.type);
                 }
                 return undefined;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 if (update.date.newYear) {
                     const month = (parseInt(update.date.newMonth) + 1).toString();
-                    return prettyPrintDateString(`${update.date.newYear}-${month}-01`);
+                    return prettyPrintDate(`${update.date.newYear}-${month}`, update.date.type);
                 }
                 return undefined;
-            case 'exact-date':
-                return prettyPrintDate(update.date.newDate);
+            case DateFormat.EXACT_DATE:
+                return prettyPrintDate(update.date.newDate, update.date.type);
+            default:
+                return undefined;
+        }
+    }
+
+    determineNewDeactivatedDate() {
+        const { update } = this.props;
+
+        switch (update.deactivatedDate.type) {
+            case DateFormat.YEAR:
+                if (update.deactivatedDate.newDeactivatedYear) {
+                    return prettyPrintDate(`${update.deactivatedDate.newDeactivatedYear}`, update.deactivatedDate.type);
+                }
+                return undefined;
+            case DateFormat.MONTH_YEAR:
+                if (update.deactivatedDate.newDeactivatedYear) {
+                    const month = (parseInt(update.deactivatedDate.newDeactivatedMonth) + 1).toString();
+                    return prettyPrintDate(`${update.deactivatedDate.newDeactivatedYear}-${month}`, update.deactivatedDate.type);
+                }
+                return undefined;
+            case DateFormat.EXACT_DATE:
+                return prettyPrintDate(update.deactivatedDate.newDeactivatedDate, update.deactivatedDate.type);
             default:
                 return undefined;
         }
@@ -281,11 +303,23 @@ export default class MonumentUpdate extends React.Component {
                 unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={update.newArtist} didChange={false} key="artist"/>);
 
             /* Date */
-            const oldDate = prettyPrintDateString(oldMonument.date);
+            const oldDate = prettyPrintDate(oldMonument.date, oldMonument.dateFormat);
             const newDate = this.determineNewDate();
             (this.didAttributeChange(oldDate, newDate)) ?
                 changedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} key="date"/>) :
                 unchangedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} didChange={false} key="date"/>);
+
+            /* Deactivated Date */
+            const oldDeactivatedDate = prettyPrintDate(oldMonument.deactivatedDate, oldMonument.deactivatedDateFormat);
+            const newDeactivatedDate = this.determineNewDeactivatedDate();
+            (this.didAttributeChange(oldDeactivatedDate, newDeactivatedDate)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Deactivated Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} key="deactivatedDate"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Deactivated Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} didChange={false} key="deactivatedDate"/>);
+
+            /* Deactivated Comment */
+            (this.didAttributeChange(oldMonument.deactivatedComment, update.newDeactivatedComment)) ?
+                changedAttributes.push(<AttributeChange attributeLabel="Deactivation Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Deactivation Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
 
             /* Address */
             (this.didAttributeChange(oldMonument.address, update.newAddress)) ?

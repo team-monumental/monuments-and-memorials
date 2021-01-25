@@ -27,9 +27,9 @@ export default class Tag extends React.Component {
         const link = `${searchUri}/?${QueryString.stringify(params)}`;
         if (selectable) {
             return (
-                <div className="tag text-truncate">
+                <div className="tag text-truncate" onClick={() => this.handleToggleSelect()}>
                     {name}
-                    <i className="material-icons" onClick={() => this.handleToggleSelect()}>
+                    <i className="material-icons">
                         {selected ? selectedIcon || 'check' : 'add'}
                     </i>
                 </div>

@@ -88,7 +88,8 @@ public class SearchController {
                                           @RequestParam(required = false) Integer decade,
                                           @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
                                           @RequestParam(required = false) String sliderStart,
-                                          @RequestParam(required = false) String sliderEnd)
+                                          @RequestParam(required = false) String sliderEnd),
+                                          @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
@@ -98,10 +99,17 @@ public class SearchController {
         Date sliderStartDate = StringHelper.parseNullableDate(start);
         Date sliderEndDate = StringHelper.parseNullableDate(end);
         return this.monumentService.search(
+        List<Monument> monuments = this.monumentService.search(
                 searchQuery, page, limit, 0.1, latitude, longitude, distance, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
                 startDate, endDate, decade, onlyActive, sliderStartDate, sliderEndDate
         );
+
+        if (cascade) {
+            monuments.forEach(favorite -> this.monumentService.initializeAllLazyLoadedCollections(monuments));
+        }
+
+        return monuments;
     }
 
     /**

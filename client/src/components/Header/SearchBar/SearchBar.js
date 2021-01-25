@@ -43,7 +43,6 @@ class SearchBar extends React.Component {
 
     async handleTextSearchClear() {
         await this.setState({textSearchQuery: ''});
-        this.search();
     }
 
     async handleLocationSearchSelect(lat, lon, address) {

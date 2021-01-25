@@ -13,6 +13,7 @@ import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
 import { Role } from '../../utils/authentication-util';
 import Footer from '../../components/Footer/Footer';
+import { copyObject } from '../../utils/object-util';
 
 /**
  * Root container for the page to create a new CreateMonumentSuggestion
@@ -89,14 +90,17 @@ class CreateMonumentPage extends React.Component {
         // Next, store the PhotoSphere Image URLs in the form
         form.photoSphereImagesJson = JSON.stringify(form.photoSphereImages.map(photoSphereImage => photoSphereImage.url));
 
+        const formToSubmit = copyObject(form)
+        formToSubmit.images = imageObjectUrls
+
         // Then, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly add new Monuments
         if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
-            dispatch(createMonument(form));
+            dispatch(createMonument(formToSubmit));
         }
         // Any other role has to create a Suggestion
         else {
-            dispatch(createCreateSuggestion(form));
+            dispatch(createCreateSuggestion(formToSubmit));
         }
     }
 

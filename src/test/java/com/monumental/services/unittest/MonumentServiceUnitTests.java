@@ -1,5 +1,6 @@
 package com.monumental.services.unittest;
 
+import com.monumental.models.DateFormat;
 import com.monumental.models.Monument;
 import com.monumental.services.MonumentService;
 import org.locationtech.jts.geom.Point;
@@ -145,7 +146,7 @@ public class MonumentServiceUnitTests {
     public void testMonumentService_setBasicFieldsOnMonument_NullMonument() {
         Monument monument = null;
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "", "", null, null);
 
         assertNull(monument);
     }
@@ -154,21 +155,21 @@ public class MonumentServiceUnitTests {
     public void testMonumentService_setBasicFieldsOnMonument_NullTitle() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, null, "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, null, "", "", "", "", "", "", "", null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testMonumentService_setBasicFieldsOnMonument_EmptyTitle() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, "", "", "", "", "", "", "", "", null, null);
     }
 
     @Test
     public void testMonumentService_setBasicFieldsOnMonument_ValidTitle_NullOtherFields() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "Title", null, null, null, null, null, null);
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", null, null, null, null, null, null, null, null, null);
 
         assertEquals("Title", monument.getTitle());
         assertNull(monument.getAddress());
@@ -177,13 +178,16 @@ public class MonumentServiceUnitTests {
         assertNull(monument.getInscription());
         assertNull(monument.getCity());
         assertNull(monument.getState());
+        assertNull(monument.getDeactivatedComment());
+        assertNull(monument.getDateFormat());
+        assertNull(monument.getDeactivatedDateFormat());
     }
 
     @Test
     public void testMonumentService_setBasicFieldsOnMonument_ValidTitle_EmptyOtherFields() {
         Monument monument = new Monument();
 
-        this.monumentService.setBasicFieldsOnMonument(monument, "Title", "", "", "", "", "", "");
+        this.monumentService.setBasicFieldsOnMonument(monument, "Title", "", "", "", "", "", "", "", null, null);
 
         assertEquals("Title", monument.getTitle());
         assertEquals("", monument.getAddress());
@@ -192,6 +196,9 @@ public class MonumentServiceUnitTests {
         assertEquals("", monument.getInscription());
         assertEquals("", monument.getCity());
         assertEquals("", monument.getState());
+        assertEquals("", monument.getDeactivatedComment());
+        assertNull(monument.getDateFormat());
+        assertNull(monument.getDeactivatedDateFormat());
     }
 
     @Test
@@ -199,7 +206,7 @@ public class MonumentServiceUnitTests {
         Monument monument = new Monument();
 
         this.monumentService.setBasicFieldsOnMonument(monument, "Title", "Address", "Artist", "Description",
-                "Inscription", "City", "State");
+                "Inscription", "City", "State", "Deactivated Comment", DateFormat.EXACT_DATE, DateFormat.MONTH_YEAR);
 
         assertEquals("Title", monument.getTitle());
         assertEquals("Address", monument.getAddress());
@@ -208,5 +215,8 @@ public class MonumentServiceUnitTests {
         assertEquals("Inscription", monument.getInscription());
         assertEquals("City", monument.getCity());
         assertEquals("State", monument.getState());
+        assertEquals("Deactivated Comment", monument.getDeactivatedComment());
+        assertEquals(DateFormat.EXACT_DATE, monument.getDateFormat());
+        assertEquals(DateFormat.MONTH_YEAR, monument.getDeactivatedDateFormat());
     }
 }

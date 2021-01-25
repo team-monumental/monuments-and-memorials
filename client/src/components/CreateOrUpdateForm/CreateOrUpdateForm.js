@@ -2,6 +2,7 @@ import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
 import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
+import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
@@ -34,8 +35,10 @@ export default class CreateOrUpdateForm extends React.Component {
                 message: ''
             },
             showingAdvancedInformation: false,
-            dateSelectValue: 'year',
-            datePickerCurrentDate: new Date(),
+            dateSelectValue: DateFormat.EXACT_DATE,
+            datePickerCurrentDate: null,
+            deactivatedDateSelectValue: DateFormat.EXACT_DATE,
+            deactivatedDatePickerCurrentDate: null,
             title: {
                 value: '',
                 isValid: true,
@@ -63,6 +66,21 @@ export default class CreateOrUpdateForm extends React.Component {
             },
             month: {
                 value: '0',
+                isValid: true,
+                message: ''
+            },
+            deactivatedYear: {
+                value: '',
+                isValid: true,
+                message: ''
+            },
+            deactivatedMonth: {
+                value: '0',
+                isValid: true,
+                message: ''
+            },
+            deactivatedComment: {
+                value: '',
                 isValid: true,
                 message: ''
             },
@@ -118,9 +136,10 @@ export default class CreateOrUpdateForm extends React.Component {
      * @param clearValues - If true, also clears the values inside the inputs
      */
     clearForm(clearValues) {
-        const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            references, isTemporary } = this.state;
-        let { datePickerCurrentDate, images, imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
+        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            artist, description, inscription, references, isTemporary } = this.state;
+        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, images, imageUploaderKey, materials,
+            newMaterials, tags, newTags } = this.state;
 
         title.isValid = true;
         title.message = '';
@@ -139,6 +158,15 @@ export default class CreateOrUpdateForm extends React.Component {
 
         month.isValid = true;
         month.message = '';
+
+        deactivatedYear.isValid = true;
+        deactivatedYear.message = '';
+
+        deactivatedMonth.isValid = true;
+        deactivatedMonth.message = '';
+
+        deactivatedComment.isValid = true;
+        deactivatedComment.message = '';
 
         artist.isValid = true;
         artist.message = '';
@@ -171,10 +199,14 @@ export default class CreateOrUpdateForm extends React.Component {
             longitude.value = '';
             year.value = '';
             month.value = '0';
+            deactivatedYear.value = '';
+            deactivatedMonth.value = '0';
+            deactivatedComment.value = '';
             artist.value = '';
             description.value = '';
             inscription.value = '';
-            datePickerCurrentDate = new Date();
+            datePickerCurrentDate = null;
+            deactivatedDatePickerCurrentDate = null;
             images = [];
             imageUploaderKey++;
             materials.materialObjects = [];
@@ -188,8 +220,10 @@ export default class CreateOrUpdateForm extends React.Component {
             isTemporary.value = false;
         }
 
-        this.setState({title, address, latitude, longitude, year, month, artist, description, inscription,
-            datePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags, newTags, isTemporary});
+        this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
+            deactivatedComment, artist, description, inscription, datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags,
+            newTags, isTemporary});
     }
 
     /**
@@ -197,10 +231,11 @@ export default class CreateOrUpdateForm extends React.Component {
      */
     setFormFieldValuesForUpdate() {
         const { monument } = this.props;
-        const { title, address, latitude, longitude, year, month, artist, description, inscription,
-            materials, locationType } = this.state;
-        let { datePickerCurrentDate, references, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey, city, state } = this.state;
+        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            artist, description, inscription, materials, locationType } = this.state;
+        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
+            references, tags, imagesForUpdate, photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey,
+            city, state, isTemporary } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -215,6 +250,19 @@ export default class CreateOrUpdateForm extends React.Component {
             monumentExactDate = new Date(parseInt(monumentYear), monumentMonthInt, monumentDateArray[2]);
         }
 
+        let monumentDeactivatedYear, monumentDeactivatedMonth, monumentExactDeactivatedDate;
+
+        if (monument.deactivatedDate) {
+            const monumentDeactivatedDateArray = monument.deactivatedDate.split('-');
+
+            monumentDeactivatedYear = monumentDeactivatedDateArray[0];
+
+            let monumentDeactivatedMonthInt = parseInt(monumentDeactivatedDateArray[1]) - 1;
+            monumentDeactivatedMonth = (monumentDeactivatedMonthInt).toString();
+
+            monumentExactDeactivatedDate = new Date(parseInt(monumentDeactivatedYear), monumentDeactivatedMonthInt, monumentDeactivatedDateArray[2]);
+        }
+
         title.value = monument.title ? monument.title : '';
         address.value = monument.address ? monument.address : '';
         latitude.value = monument.lat ? monument.lat.toString() : '';
@@ -224,9 +272,16 @@ export default class CreateOrUpdateForm extends React.Component {
         inscription.value = monument.inscription ? monument.inscription : '';
         year.value = monumentYear ? monumentYear : '';
         month.value = monumentMonth ? monumentMonth : '';
-        datePickerCurrentDate = monumentExactDate ? monumentExactDate : new Date();
+        dateSelectValue = monument.dateFormat ? monument.dateFormat : DateFormat.EXACT_DATE;
+        datePickerCurrentDate = monumentExactDate && dateSelectValue === DateFormat.EXACT_DATE ? monumentExactDate : null;
+        deactivatedDateSelectValue = monument.deactivatedDateFormat ? monument.deactivatedDateFormat : DateFormat.EXACT_DATE;
+        deactivatedYear.value = monumentDeactivatedYear ? monumentDeactivatedYear : '';
+        deactivatedMonth.value = monumentDeactivatedMonth ? monumentDeactivatedMonth : '';
+        deactivatedDatePickerCurrentDate = monumentExactDeactivatedDate && deactivatedDateSelectValue === DateFormat.EXACT_DATE ? monumentExactDeactivatedDate : null;
+        deactivatedComment.value = monument.deactivatedComment ? monument.deactivatedComment : '';
         city = monument.city;
         state = monument.state;
+        isTemporary.value = monument.isTemporary ? monument.isTemporary : false;
 
         if (address.value) locationType.value = 'address';
         else if (latitude.value && longitude.value) locationType.value = 'coordinates';
@@ -292,9 +347,11 @@ export default class CreateOrUpdateForm extends React.Component {
         photoSphereImages = [];
         imageUploaderKey++;
 
-        this.setState({title, address, latitude, longitude, artist, description, inscription, year, month,
-            datePickerCurrentDate, references, materials, tags, imagesForUpdate, photoSphereImagesForUpdate, images,
-            photoSphereImages, imageUploaderKey, locationType, city, state});
+        this.setState({ title, address, latitude, longitude, artist, description, inscription, year, month,
+            datePickerCurrentDate, dateSelectValue, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
+            deactivatedDateSelectValue, deactivatedComment, references, materials, tags, imagesForUpdate,
+            photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, locationType, city, state,
+            isTemporary });
     }
 
     /**
@@ -303,7 +360,10 @@ export default class CreateOrUpdateForm extends React.Component {
      * @returns {boolean} - True if the Form is valid, False otherwise
      */
     validateForm() {
-        const { title, address, latitude, longitude, year, month, references, materials, newMaterials, locationType } = this.state;
+        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            references, materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
+            datePickerError, dateSelectValue, deactivatedDateSelectValue } = this.state;
+        let { deactivatedDatePickerError } = this.state
         const currentDate = new Date();
         let formIsValid = true;
 
@@ -330,7 +390,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (locationType.value === 'address') {
             if (validator.isEmpty(address.value)) {
                 address.isValid = false;
-                address.message = 'Address must not be blank';
+                address.message = 'Address must be selected from the dropdown';
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
@@ -415,6 +475,70 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
+        /* Deactivated Date Validation */
+        /* Check that the deactivated Year and Month specified are not in the future */
+        if (!validator.isEmpty(deactivatedYear.value)) {
+            const deactivatedYearInt = parseInt(deactivatedYear.value);
+            const deactivatedMonthInt = parseInt(deactivatedMonth.value);
+
+            if (deactivatedYearInt <= 0) {
+                deactivatedYear.isValid = false;
+                deactivatedYear.message = 'Deactivated year must be valid';
+                formIsValid = false;
+            }
+            else if (deactivatedYearInt > currentDate.getFullYear()) {
+                deactivatedYear.isValid = false;
+                deactivatedYear.message = 'Deactivated year must be valid';
+                formIsValid = false;
+            }
+            else {
+                if (deactivatedYearInt === currentDate.getFullYear()) {
+                    if (deactivatedMonthInt > currentDate.getMonth()) {
+                        deactivatedMonth.isValid = false;
+                        deactivatedMonth.message = 'Deactivated month must be valid';
+                        formIsValid = false;
+                    }
+                }
+            }
+        }
+
+        /* Check that the deactivated date is after created date */
+        if ((!validator.isEmpty(deactivatedYear.value) || (deactivatedDatePickerCurrentDate && deactivatedDateSelectValue === DateFormat.EXACT_DATE))
+            && (!validator.isEmpty(year.value) || (datePickerCurrentDate && dateSelectValue === DateFormat.EXACT_DATE))) {
+            const deactivatedYearInt = parseInt(deactivatedYear.value || (deactivatedDatePickerCurrentDate ? deactivatedDatePickerCurrentDate.getFullYear() : (new Date()).getFullYear().toString()));
+            const deactivatedMonthInt = parseInt(deactivatedMonth.value > 0 ? deactivatedMonth.value : (deactivatedDatePickerCurrentDate ? deactivatedDatePickerCurrentDate.getMonth() : (new Date()).getMonth().toString()));
+            const deactivatedDayInt = parseInt((deactivatedDatePickerCurrentDate ? deactivatedDatePickerCurrentDate.getDate() : (new Date()).getDate().toString()));
+            const yearInt = parseInt(year.value || (datePickerCurrentDate ? datePickerCurrentDate.getFullYear() : '0'));
+            const monthInt = parseInt(month.value > 0 ? month.value : (datePickerCurrentDate ? datePickerCurrentDate.getMonth() : '0'));
+            const dayInt = parseInt((datePickerCurrentDate ? datePickerCurrentDate.getDate() : '0'));
+
+            if (yearInt > deactivatedYearInt) {
+                deactivatedYear.isValid = false;
+                deactivatedYear.message = 'Deactivated date must be after created date';
+                formIsValid = false;
+            } else if (yearInt === deactivatedYearInt) {
+                if (monthInt > deactivatedMonthInt) {
+                    deactivatedMonth.isValid = false;
+                    deactivatedMonth.message = 'Deactivated date must be after created date';
+                    formIsValid = false;
+                } else if (monthInt === deactivatedMonthInt) {
+                    if (dayInt > deactivatedDayInt) {
+                        formIsValid = false;
+                        deactivatedDatePickerError = 'Deactivated date must be after created date';
+                    }
+                }
+            }
+        }
+
+        /* Checks that a deactivated date exists if a deactivated comment exists */
+        if (!validator.isEmpty(deactivatedComment.value)
+            && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== DateFormat.EXACT_DATE)
+            && validator.isEmpty(deactivatedYear.value)) {
+            deactivatedComment.isValid = false;
+            deactivatedComment.message = 'Deactivated date is required in order to provide a deactivation reason';
+            formIsValid = false;
+        }
+
         /* References Validation */
         /* Check that the References are valid URLs */
         for (let reference of references) {
@@ -428,7 +552,8 @@ export default class CreateOrUpdateForm extends React.Component {
         }
 
         if (!formIsValid) {
-            this.setState({title, address, latitude, longitude, year, month, references});
+            this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
+                references, datePickerError, deactivatedDatePickerError});
         }
 
         return formIsValid;
@@ -438,9 +563,10 @@ export default class CreateOrUpdateForm extends React.Component {
      * Build the form object for creating a new CreateMonumentSuggestion
      */
     buildCreateForm() {
-        const { title, address, latitude, longitude, dateSelectValue, year, month, artist, description, inscription,
-            datePickerCurrentDate, references, images, photoSphereImages, materials, newMaterials, tags, newTags,
-            isTemporary, city, state } = this.state;
+        const { title, address, latitude, longitude, dateSelectValue, deactivatedDateSelectValue, year, month,
+            deactivatedYear, deactivatedMonth, artist, description, inscription, datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, photoSphereImages, materials,
+            newMaterials, tags, newTags, isTemporary, city, state } = this.state;
 
         let createForm = {
             title: title.value,
@@ -458,21 +584,40 @@ export default class CreateOrUpdateForm extends React.Component {
             tags: tags.map(tag => tag.name),
             newTags: newTags.map(newTag => newTag.name),
             dateSelectValue: dateSelectValue,
+            deactivatedDateSelectValue: deactivatedDateSelectValue,
+            dateFormat: dateSelectValue,
+            deactivatedDateFormat: deactivatedDateSelectValue,
+            deactivatedComment: deactivatedComment.value === '' ? null : deactivatedComment.value,
             isTemporary: isTemporary.value,
             city,
             state
         };
 
         switch (dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 createForm.year = year.value === '' ? null : year.value;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 createForm.year = year.value === '' ? null : year.value;
                 createForm.month = month.value;
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 createForm.date = datePickerCurrentDate;
+                break;
+            default:
+                break;
+        }
+
+        switch (deactivatedDateSelectValue) {
+            case DateFormat.YEAR:
+                createForm.deactivatedYear = deactivatedYear.value === '' ? null : deactivatedYear.value;
+                break;
+            case DateFormat.MONTH_YEAR:
+                createForm.deactivatedYear = deactivatedYear.value === '' ? null : deactivatedYear.value;
+                createForm.deactivatedMonth = deactivatedMonth.value;
+                break;
+            case DateFormat.EXACT_DATE:
+                createForm.deactivatedDate = deactivatedDatePickerCurrentDate;
                 break;
             default:
                 break;
@@ -492,9 +637,10 @@ export default class CreateOrUpdateForm extends React.Component {
      * Build the form object for creating an UpdateMonumentSuggestion
      */
     buildUpdateForm() {
-        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue, year, month,
-            datePickerCurrentDate, references, images, imagesForUpdate, photoSphereImages, photoSphereImagesForUpdate,
-            materials, tags, isTemporary, city, state } = this.state;
+        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
+            deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imagesForUpdate,
+            photoSphereImages, photoSphereImagesForUpdate, materials, tags, isTemporary, city, state } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -509,21 +655,40 @@ export default class CreateOrUpdateForm extends React.Component {
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
+            deactivatedDateSelectValue: deactivatedDateSelectValue,
+            newDateFormat: dateSelectValue,
+            newDeactivatedDateFormat: deactivatedDateSelectValue,
+            newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
             imagesForUpdate: imagesForUpdate,
             newCity: city,
             newState: state
         };
 
         switch (dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 updateForm.newYear = year.value === '' ? undefined : year.value;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 updateForm.newYear = year.value === '' ? undefined : year.value;
                 updateForm.newMonth = month.value;
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 updateForm.newDate = datePickerCurrentDate;
+                break;
+            default:
+                break;
+        }
+
+        switch (deactivatedDateSelectValue) {
+            case DateFormat.YEAR:
+                updateForm.newDeactivatedYear = deactivatedYear.value === '' ? undefined : deactivatedYear.value;
+                break;
+            case DateFormat.MONTH_YEAR:
+                updateForm.newDeactivatedYear = deactivatedYear.value === '' ? undefined : deactivatedYear.value;
+                updateForm.newDeactivatedMonth = deactivatedMonth.value;
+                break;
+            case DateFormat.EXACT_DATE:
+                updateForm.newDeactivatedDate = deactivatedDatePickerCurrentDate;
                 break;
             default:
                 break;
@@ -644,15 +809,17 @@ export default class CreateOrUpdateForm extends React.Component {
 
     getAddressCityStateFromGeocodingResult(result) {
         let city, state, address, country;
-        for (let component of result.address_components) {
-            if (component.types.includes('locality')) {
-                city = component.long_name;
-            }
-            if (component.types.includes('administrative_area_level_1')) {
-                state = component.short_name;
-            }
-            if (component.types.includes('country')) {
-                country = component.short_name;
+        if (result) {
+            for (let component of result.address_components) {
+                if (component.types.includes('locality')) {
+                    city = component.long_name;
+                }
+                if (component.types.includes('administrative_area_level_1')) {
+                    state = component.short_name;
+                }
+                if (component.types.includes('country')) {
+                    country = component.short_name;
+                }
             }
         }
         /* US Territories are usually listed as countries, with some strange edge cases, like
@@ -669,7 +836,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (state && state.length !== 2) {
             state = undefined;
         }
-        address = result.formatted_address;
+        address = result ? result.formatted_address : '';
         this.setState({city, state, address: {...this.state.address, value: address}});
     }
 
@@ -684,7 +851,15 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     handleDatePickerChange(date) {
-        this.setState({datePickerCurrentDate: date});
+        this.setState({datePickerCurrentDate: date, datePickerError: null});
+    }
+
+    handleDeactivatedDateSelectChange(event) {
+        this.setState({deactivatedDateSelectValue: event.target.value});
+    }
+
+    handleDeactivatedDatePickerChange(date) {
+        this.setState({deactivatedDatePickerCurrentDate: date, deactivatedDatePickerError: null});
     }
 
     handleReferenceChange(event) {
@@ -997,10 +1172,11 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     render() {
-        const { showingAdvancedInformation, dateSelectValue, datePickerCurrentDate, title, address, latitude,
-            longitude, year, month, artist, description, inscription, references, imageUploaderKey, materials,
-            imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
-            city, state } = this.state;
+        const { showingAdvancedInformation, dateSelectValue, deactivatedDateSelectValue, datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate, title, address, latitude, longitude, year, deactivatedYear, month,
+            deactivatedMonth, deactivatedComment, artist, description, inscription, references, imageUploaderKey,
+            materials, imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
+            city, state, datePickerError, deactivatedDatePickerError } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
@@ -1030,10 +1206,10 @@ export default class CreateOrUpdateForm extends React.Component {
         );
 
         switch (dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 dateInput = dateYearInput;
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 dateInput = (
                     <Form.Row>
                         <Form.Group controlId="create-form-date-month">
@@ -1066,7 +1242,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     </Form.Row>
                 );
                 break;
-            case 'exact-date':
+            case DateFormat.EXACT_DATE:
                 const minimumDate = new Date(1, 0);
                 minimumDate.setFullYear(1);
                 const currentDate = new Date();
@@ -1079,12 +1255,91 @@ export default class CreateOrUpdateForm extends React.Component {
                             onChange={(date) => this.handleDatePickerChange(date)}
                             minDate={minimumDate}
                             maxDate={currentDate}
+                            defaultValue={null}
                         />
+                        <div style={{color: "red"}}>{datePickerError}</div>
                     </Form.Group>
                 );
                 break;
             default:
                 dateInput = <div/>;
+        }
+
+        let deactivatedDateInput;
+
+        const deactivatedDateYearInput = (
+            <Form.Group controlId="create-form-deactivated-date-year">
+                <Form.Label>Deactivated Year:</Form.Label>
+                <Form.Control
+                    type="number"
+                    name="deactivatedYear"
+                    placeholder="YYYY"
+                    value={deactivatedYear.value}
+                    onChange={(event) => this.handleInputChange(event)}
+                    isInvalid={!deactivatedYear.isValid}
+                    className="text-control-small"
+                />
+                <Form.Control.Feedback type="invalid">{deactivatedYear.message}</Form.Control.Feedback>
+            </Form.Group>
+        );
+
+        switch (deactivatedDateSelectValue) {
+            case DateFormat.YEAR:
+                deactivatedDateInput = deactivatedDateYearInput;
+                break;
+            case DateFormat.MONTH_YEAR:
+                deactivatedDateInput = (
+                    <Form.Row>
+                        <Form.Group controlId="create-form-deactivated-date-month">
+                            <Form.Label>Deactivated Month:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="deactivatedMonth"
+                                value={deactivatedMonth.value}
+                                onChange={(event) => this.handleInputChange(event)}
+                                isInvalid={!deactivatedMonth.isValid}
+                                className="select-control mr-2"
+                            >
+                                <option value="0">January</option>
+                                <option value="1">February</option>
+                                <option value="2">March</option>
+                                <option value="3">April</option>
+                                <option value="4">May</option>
+                                <option value="5">June</option>
+                                <option value="6">July</option>
+                                <option value="7">August</option>
+                                <option value="8">September</option>
+                                <option value="9">October</option>
+                                <option value="10">November</option>
+                                <option value="11">December</option>
+                            </Form.Control>
+                            <Form.Control.Feedback type="invalid">{deactivatedMonth.message}</Form.Control.Feedback>
+                        </Form.Group>
+
+                        {deactivatedDateYearInput}
+                    </Form.Row>
+                );
+                break;
+            case DateFormat.EXACT_DATE:
+                const minimumDate = new Date(1, 0);
+                minimumDate.setFullYear(1);
+                const currentDate = new Date();
+
+                deactivatedDateInput = (
+                    <Form.Group controlId="create-form-deactivated-datepicker">
+                        <Form.Label>Choose a Deactivated Date:</Form.Label>
+                        <DatePicker
+                            selected={deactivatedDatePickerCurrentDate}
+                            onChange={(date) => this.handleDeactivatedDatePickerChange(date)}
+                            minDate={minimumDate}
+                            maxDate={currentDate}
+                        />
+                        <div style={{color: "red"}}>{deactivatedDatePickerError}</div>
+                    </Form.Group>
+                );
+                break;
+            default:
+                deactivatedDateInput = <div/>;
         }
 
         const referenceInputs = [];
@@ -1334,16 +1589,53 @@ export default class CreateOrUpdateForm extends React.Component {
                                         as="select"
                                         className="select-control"
                                         onChange={(event) => this.handleDateSelectChange(event)}
+                                        value={dateSelectValue}
                                     >
-                                        <option value="year">Year</option>
-                                        <option value="month-year">Month/Year</option>
-                                        <option value="exact-date">Exact Date</option>
+                                        <option value={DateFormat.YEAR}>Year</option>
+                                        <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
+                                        <option value={DateFormat.EXACT_DATE}>Exact Date</option>
                                     </Form.Control>
                                 </Form.Group>
 
                                 {/* Date: Input (Year, Year/Month, or Date Picker) */}
                                 {dateInput}
                             </div>
+
+                            <div className="date-container">
+                                {/* Deactivated Date */}
+                                <Form.Group controlId="create-form-deactivated-date-select">
+                                    <Form.Label>Deactivated Date:</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        className="select-control"
+                                        onChange={(event) => this.handleDeactivatedDateSelectChange(event)}
+                                        value={deactivatedDateSelectValue}
+                                    >
+                                        <option value={DateFormat.YEAR}>Year</option>
+                                        <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
+                                        <option value={DateFormat.EXACT_DATE}>Exact Date</option>
+                                    </Form.Control>
+                                </Form.Group>
+
+                                {/* Deactivated Date: Input (Year, Year/Month, or Date Picker) */}
+                                {deactivatedDateInput}
+                            </div>
+
+                            {/* Deactivated Comment */}
+                            <Form.Group controlId="create-form-deactivated-comment">
+                                <Form.Label>Deactivation Reason:</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows="3"
+                                    name="deactivatedComment"
+                                    placeholder="Deactivation Reason"
+                                    value={deactivatedComment.value}
+                                    onChange={(event) => this.handleInputChange(event)}
+                                    isInvalid={!deactivatedComment.isValid}
+                                    className="multi-line-text-control"
+                                />
+                                <Form.Control.Feedback type="invalid">{deactivatedComment.message}</Form.Control.Feedback>
+                            </Form.Group>
 
                             {/* Description */}
                             <Form.Group controlId="create-form-description">

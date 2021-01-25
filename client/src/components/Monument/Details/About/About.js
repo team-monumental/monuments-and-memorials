@@ -38,7 +38,27 @@ export default class About extends React.Component {
             date = (
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
-                    {prettyPrintDate(monument.date)}
+                    {prettyPrintDate(monument.date, monument.dateFormat)}
+                </div>
+            );
+        }
+
+        let deactivatedDate;
+        if (monument.deactivatedDate) {
+            deactivatedDate = (
+                <div>
+                    <span className="detail-label">Deactivated Date:&nbsp;</span>
+                    {prettyPrintDate(monument.deactivatedDate, monument.deactivatedDateFormat)}
+                </div>
+            );
+        }
+
+        let deactivatedComment;
+        if (monument.deactivatedComment) {
+            deactivatedComment = (
+                <div>
+                    <span className="detail-label">Deactivation Reason:&nbsp;</span>
+                    {monument.deactivatedComment}
                 </div>
             );
         }
@@ -169,6 +189,8 @@ export default class About extends React.Component {
                         {title}
                         {artist}
                         {date}
+                        {deactivatedDate}
+                        {deactivatedComment}
                         {city}
                         {state}
                         {address}

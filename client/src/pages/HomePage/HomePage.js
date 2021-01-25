@@ -128,7 +128,7 @@ class HomePage extends React.Component {
                                     </div>
                                 </div>
                                 <div className="col-lg-6 col-12">
-                                    <SuggestChanges mode="create" onButtonClick={() => this.handleSuggestChangesButtonClick()}/>
+                                    <SuggestChanges mode="create" userRole={session.user ? session.user.role : null} onButtonClick={() => this.handleSuggestChangesButtonClick()}/>
                                 </div>
                             </div>
                             <p>

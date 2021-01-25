@@ -1,6 +1,7 @@
 package com.monumental.models.suggestions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.monumental.models.DateFormat;
 import com.monumental.models.Monument;
 
 import javax.persistence.*;
@@ -54,6 +55,24 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     @Column(name = "new_date")
     private String newDate;
+
+    @Column(name = "new_date_format")
+    private DateFormat newDateFormat;
+
+    @Column(name = "newDeactivatedYear")
+    private String newDeactivatedYear;
+
+    @Column(name = "newDeactivatedMonth")
+    private String newDeactivatedMonth;
+
+    @Column(name = "newDeactivatedDate")
+    private String newDeactivatedDate;
+
+    @Column(name = "new_deactivated_date_format")
+    private DateFormat newDeactivatedDateFormat;
+
+    @Column(name = "newDeactivatedComment")
+    private String newDeactivatedComment;
 
     @Column(name = "new_is_temporary")
     private Boolean newIsTemporary = false;
@@ -242,6 +261,22 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         return this.newDate;
     }
 
+    public DateFormat getNewDateFormat() {
+        return newDateFormat;
+    }
+
+    public void setNewDateFormat(DateFormat newDateFormat) {
+        this.newDateFormat = newDateFormat;
+    }
+
+    public DateFormat getNewDeactivatedDateFormat() {
+        return newDeactivatedDateFormat;
+    }
+
+    public void setNewDeactivatedDateFormat(DateFormat newDeactivatedDateFormat) {
+        this.newDeactivatedDateFormat = newDeactivatedDateFormat;
+    }
+
     public void setNewDate(String newDate) {
         this.newDate = newDate;
     }
@@ -252,6 +287,38 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public void setNewIsTemporary(Boolean newIsTemporary) {
         this.newIsTemporary = newIsTemporary;
+    }
+
+    public String getNewDeactivatedYear() {
+        return newDeactivatedYear;
+    }
+
+    public void setNewDeactivatedYear(String newDeactivatedYear) {
+        this.newDeactivatedYear = newDeactivatedYear;
+    }
+
+    public String getNewDeactivatedMonth() {
+        return newDeactivatedMonth;
+    }
+
+    public void setNewDeactivatedMonth(String newDeactivatedMonth) {
+        this.newDeactivatedMonth = newDeactivatedMonth;
+    }
+
+    public String getNewDeactivatedDate() {
+        return newDeactivatedDate;
+    }
+
+    public void setNewDeactivatedDate(String newDeactivatedDate) {
+        this.newDeactivatedDate = newDeactivatedDate;
+    }
+
+    public String getNewDeactivatedComment() {
+        return newDeactivatedComment;
+    }
+
+    public void setNewDeactivatedComment(String newDeactivatedComment) {
+        this.newDeactivatedComment = newDeactivatedComment;
     }
 
     public String getUpdatedReferenceUrlsByIdJson() {
