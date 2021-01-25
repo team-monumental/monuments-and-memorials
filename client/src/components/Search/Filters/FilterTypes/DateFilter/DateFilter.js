@@ -1,20 +1,16 @@
 import * as React from 'react';
 import DatePicker from 'react-datepicker';
-import { withRouter } from 'react-router-dom';
-import { Collapse, Form, Button } from 'react-bootstrap';
-import TagsSearch from '../TagsSearch/TagsSearch';
+import { Form } from 'react-bootstrap';
 import * as moment from 'moment';
-import search from '../../../utils/search';
 
 export default class DateSearch extends React.Component {
     constructor(props) {
         super(props)
-        const { distance, decade, start, end } = props;
+        const { decade, start, end } = props;
         let dateFiltersMode = 'hidden';
         this.state = {
                 
             filters: {
-                distance: distance || '25',
                 decade: decade || 'null',
                 start,
                 end
@@ -48,17 +44,16 @@ export default class DateSearch extends React.Component {
                 break;
             case 'range':
                 if (value === 'null') value = null;
-                this.handleFilterChange('range', value);
-                break;
-            default:
                 const [ startDate, endDate ] = value;
                 await this.handleFilterChange('start', moment(startDate).format('YYYY-MM-DD'));
                 this.handleFilterChange('end', moment(endDate).format('YYYY-MM-DD'));
                 break;
+            default:
+                break;
         }
     }
 
-    async handleDistanceFilterModeChange(mode) {
+    async handleTypeChange(mode) {
         await this.setState({dateFiltersMode: mode});
         if (mode !== 'decade') {
             this.handleFilterChange('decade', null);
@@ -100,7 +95,7 @@ export default class DateSearch extends React.Component {
         }
         if (dateFiltersMode === 'range') {
             dateFilter = (
-                <div className="d-flex pt-3 align-items-center">
+                <div className="d-flex align-items-center">
                     <span className="mr-2">Start Date</span>
                     <DatePicker
                         selected={dateFilterStart}
@@ -119,7 +114,7 @@ export default class DateSearch extends React.Component {
             );
         } else if (dateFiltersMode === 'decade') {
             dateFilter = (
-                <div className="pt-3 d-flex align-items-center">
+                <div className="d-flex align-items-center">
                     <span className="mr-2">Monuments or memorials created in the</span>
                     <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter('decade', event.target.value)} value={decade}>
                         <option value="null">None</option>
@@ -131,8 +126,8 @@ export default class DateSearch extends React.Component {
             );
         }else if (dateFiltersMode === 'slider') {
             dateFilter = (
-                <div className="pt-3 d-flex align-items-center">
-                    <span className="mr-2">Monuments existing within the</span>
+                <div className="d-flex align-items-center">
+                    <span className="mr-2">Active in</span>
                     <div style = {sliderStyle}>
                         <Range allowCross={false} min={1870} max={2020} step={10} defaultValue={[1870, 1960]} marks = {marks} 
                         handleStyle= {{borderColor: '#42b883', backgroundColor: '#42b883', borderRadius: '0%', width: '6px', height: '18px'}}/>
@@ -142,11 +137,10 @@ export default class DateSearch extends React.Component {
         }
 
         return ( 
-            <div className="d-flex align-items-center">
-                <span className="mr-2">Filter by Date</span>
-                <Form.Control as="select" className="min-width-select"
+            <div className="d-flex pt-3 pb-3 align-items-center">
+                <Form.Control as="select" className="min-width-select mr-2"
                             value={dateFiltersMode}
-                            onChange={event => this.handleDistanceFilterModeChange(event.target.value)}>
+                            onChange={event => this.handleTypeChange(event.target.value)}>
                     <option value="hidden">None</option>
                     <option value="range">Range</option>
                     <option value="decade">Decade</option>

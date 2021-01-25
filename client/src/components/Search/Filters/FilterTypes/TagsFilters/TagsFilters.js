@@ -1,7 +1,7 @@
 import * as React from 'react';
-import './TagsSearch.scss';
-import Tags from '../../Tags/Tags';
-import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials, clearMaterialSearchResults } from '../../../actions/tagsSearch';
+import './TagsFilters.scss';
+import Tags from '../../../../Tags/Tags';
+import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials, clearMaterialSearchResults } from '../../../../../actions/tagsSearch';
 import { connect } from 'react-redux';
 
 class TagsSearch extends React.Component {

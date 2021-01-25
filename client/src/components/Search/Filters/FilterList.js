@@ -2,7 +2,7 @@ import * as React from 'react';
 import './Filters.scss';
 import { withRouter } from 'react-router-dom';
 import { Collapse, Form, Button } from 'react-bootstrap';
-import TagsSearch from '../TagsSearch/TagsSearch';
+import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
 import search from '../../../utils/search';
 import DatePicker from 'react-datepicker';
 import * as moment from 'moment';
@@ -52,32 +52,32 @@ class Filters extends React.Component {
         onChange(this.state.filters);
     }
 
-    handleTagsSearchTagSelect(variant, selectedTags) {
-        const { uri } = this.props;
-        const params = {};
-
-        params[variant] = selectedTags.map(tag => tag.name);
-        search(params, this.props.history, uri);
-    }
-
     async handleNewFilterChange(mode) {
          this.setState({newFilterType: mode});
     }
 
-    addFilter(type){
+    async addFilter(type){
         console.log(type)
-        this.setState(state => {
+        await this.setState(state => {
             const daFilters = state.filterList.concat(type);
-            return {filterList: daFilters}
+            return {filterList: daFilters};
         }
         )
-        console.log(this.state.filterList)
+    }
+
+    async removeFilter(id){
+        await this.setState(state => {
+            const daFilters = state.filterList;
+            daFilters.splice(id, 1);
+            return {filterList: daFilters};
+        }
+        )
     }
 
     render() {
 
-        const { showDistance, tags, materials, decades } = this.props;
-        const { dateFiltersMode, dateFilterStart, newFilterType, dateFilterEnd, filters: { decade, distance } } = this.state;
+        const { showDistance, decades } = this.props;
+        const { newFilterType, filters: {  distance } } = this.state;
 
         const distanceFilter = showDistance ? (
             <Form.Control onChange={event => this.handleFilterChange('distance', event.target.value)} as="select" className="min-width-select mr-3" value={distance}>
@@ -102,7 +102,12 @@ class Filters extends React.Component {
                 </div>
                 <div>
                     {
-                        this.state.filterList.map((type, index) => (<Filter type={type} decades={decades} history={this.props.history} key={index.toString()}></Filter>))
+                        this.state.filterList.map((type, index) => (<Filter 
+                            type={type} 
+                            decades={decades} 
+                            history={this.props.history} 
+                            removeFilter={() => this.removeFilter(index)} 
+                            key={index.toString()}></Filter>))
                     }
                     
                     

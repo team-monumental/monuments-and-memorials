@@ -1,13 +1,13 @@
 import React from 'react';
-import LocationSearch from '../../Header/SearchBar/LocationSearch/LocationSearch';
+import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
 import './Filters.scss';
 import search from '../../../utils/search';
-import TagsSearch from '../TagsSearch/TagsSearch';
-import DateSearch from './DateSearch'
+import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
+import DateSearch from './FilterTypes/DateFilter/DateFilter'
 import 'rc-slider/assets/index.css';
 
 /**
- * A condensed Monument info card for use in search results
+ * A generic filter
  */
 export default class Filter extends React.Component {
 
@@ -30,26 +30,29 @@ export default class Filter extends React.Component {
         search(params, this.props.history, uri);
     }
 
+    handleRemoveFilter(){
+        const {removeFilter} = this.props;
+    }
     render() {
-        const { type, decades, index } = this.props;
+        const { type, decades, removeFilter } = this.props;
         
         let toRender = (<div>ERROR</div>)
         switch(type){
             case 'tags':{
                 toRender = (<TagsSearch
                     variant="tags"
-                    tags={['Men']}
+                    tags={''}
                     onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags, "tag")}
-                    allowTagCreation={true}
+                    allowTagCreation={false}
                     />)
                 break;
             }
             case 'materials':{
                 toRender = (<TagsSearch
                     variant="materials"
-                    tags={['Metal']}
+                    tags={''}
                     onChange={(variant, selectedTags) => this.handleTagsSearchTagSelect(variant, selectedTags)}
-                    allowTagCreation={true}
+                    allowTagCreation={false}
                     />)
                 break;
             }
@@ -69,7 +72,7 @@ export default class Filter extends React.Component {
         }
         return (
             <div className="filter-body">
-                <button style={{backgroundColor: "white", border: "none"}}><i className="material-icons ">clear</i></button>
+                <button style={{backgroundColor: "white", border: "none"}} onClick={() => removeFilter()}><i className="material-icons ">clear</i></button>
                 {toRender}
             </div>
         )

@@ -1,5 +1,5 @@
 import React from 'react';
-import './LocationSearch.scss';
+import './LocationFilter.scss';
 import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng

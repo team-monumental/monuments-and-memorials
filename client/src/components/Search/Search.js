@@ -2,7 +2,7 @@ import React from 'react';
 import './Search.scss';
 import Pagination from '../Pagination/Pagination';
 import MapResults from './MapResults/MapResults';
-import Filters from './Filters/Filters';
+import FilterList from './Filters/FilterList';
 import SearchInfo from './SearchInfo/SearchInfo';
 import SearchResults from './SearchResults/SearchResults';
 import * as moment from 'moment';
@@ -68,7 +68,7 @@ export default class Search extends React.Component {
                 }
                 <div className="search-column">
                     <div className="search-header">
-                        <Filters onChange={filters => onFilterChange(filters)}
+                        <FilterList onChange={filters => onFilterChange(filters)}
                                      showDistance={lat && lon} distance={distance}
                                      tags={tags} materials={materials} decades={decades} decade={decade}
                                      start={start} end={end} uri={searchUri}/>

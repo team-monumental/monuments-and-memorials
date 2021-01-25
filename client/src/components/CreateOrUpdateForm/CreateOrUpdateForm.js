@@ -4,12 +4,12 @@ import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonG
 import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
 import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
-import TagsSearch from '../Search/TagsSearch/TagsSearch';
+import TagsSearch from '../Search/Filters/FilterTypes/TagsFilters/TagsFilters';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import { isEmptyObject } from '../../utils/object-util';
-import LocationSearch from '../Header/SearchBar/LocationSearch/LocationSearch';
+import LocationSearch from '../Search/Filters/FilterTypes/LocationFilter/LocationFilter';
 import PhotoSphereImages from './PhotoSphereImages/PhotoSphereImages';
 
 /* global google */
