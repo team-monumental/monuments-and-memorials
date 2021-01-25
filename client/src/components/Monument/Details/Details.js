@@ -81,7 +81,8 @@ export default class Details extends React.Component {
                 <div className="inscription">
                     {inscription}
                 </div>
-                <About monument={monument} contributions={monument.contributions} references={monument.references}/>
+                <About monument={monument} contributions={monument.contributions} references={monument.references}
+                       images={images} />
             </div>
         )
     }

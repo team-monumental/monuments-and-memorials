@@ -30,6 +30,29 @@ export function prettyPrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
 }
 
 /**
+ * Format the specified date into a simple user-friendly string
+ * @param date - Date to format into a user-friendly string
+ * @param dateFormat describes format to output
+ */
+export function simplePrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
+    if (!date) return;
+    date = new Date(date);
+    date = moment(new Date( date.getTime() + Math.abs(date.getTimezoneOffset()*60000)))
+
+    switch (dateFormat) {
+        case DateFormat.YEAR:
+            // 2019 format
+            return date.format('YYYY');
+        case DateFormat.MONTH_YEAR:
+            // 10/2019 format
+            return date.format('MM/YYYY');
+        default:
+            // 10/16/2019 format
+            return date.format('MM/DD/YYYY');
+    }
+}
+
+/**
  * Parse the specified dateString into a consistent, user-friendly format
  * @param dateString - String to parse into a consistent, user-friendly format
  */
