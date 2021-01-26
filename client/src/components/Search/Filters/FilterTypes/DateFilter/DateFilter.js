@@ -2,12 +2,13 @@ import * as React from 'react';
 import DatePicker from 'react-datepicker';
 import { Form } from 'react-bootstrap';
 import * as moment from 'moment';
+import './DateFilter.scss';
 
 export default class DateSearch extends React.Component {
     constructor(props) {
         super(props)
         const { decade, start, end } = props;
-        let dateFiltersMode = 'hidden';
+        let dateFiltersMode = 'range';
         this.state = {
                 
             filters: {
@@ -138,13 +139,13 @@ export default class DateSearch extends React.Component {
 
         return ( 
             <div className="d-flex pt-3 pb-3 align-items-center">
+                <span className="date-label">Date</span>
                 <Form.Control as="select" className="min-width-select mr-2"
                             value={dateFiltersMode}
                             onChange={event => this.handleTypeChange(event.target.value)}>
-                    <option value="hidden">None</option>
-                    <option value="range">Range</option>
-                    <option value="decade">Decade</option>
-                    <option value="slider">Slider</option>
+                    <option value="range">Created(range)</option>
+                    <option value="decade">Created(decade)</option>
+                    <option value="slider">Active(range)</option>
                 </Form.Control>
                 {dateFilter}
             </div>

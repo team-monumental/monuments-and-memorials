@@ -114,6 +114,7 @@ export default class LocationSearch extends React.Component {
 
         return (
             <div className="location-search">
+                <span className="mr-1">Location</span>
                 <PlacesAutocomplete
                     value={searchQuery}
                     onChange={newSearchQuery => this.handleChange(newSearchQuery)}

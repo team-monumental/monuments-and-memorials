@@ -8,23 +8,46 @@
 
 
 .filter-body {
-    border: 1px solid #CED4DA ;
-    border-radius: .25rem;
+    border-bottom: 1px solid #CED4DA ;
     display: flex;
     flex: 90%;
-    margin-bottom: 10px;
 }
 
 .add-filter {
     display: inline-flex;
-    margin-bottom: 10px;
+    float: right;
+    padding: 0 .5em;
     
 }
 
+.filter-header {
+    padding: .5em 0em;
+    border-bottom: 1px solid #CED4DA;
+    border-top: 1px solid #CED4DA ;
+}
 .filter-type {
     background-color: #42b883;
     border: none;
-    border-radius: 10%;
-    margin-left: 5px;
+    border-radius: 10%; 
+    margin-right: 5px;
     color: white;
+    padding-bottom: 3px;
+    span{
+        margin: auto;
+    }
+}
+
+.expander {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 .5em;
+    cursor: pointer;
+    i{
+        opacity: 70%;
+    }
+    span{ 
+        margin-left: 3px;
+        opacity: 60%;
+    }
+    
 }
