@@ -3,7 +3,11 @@ import './Filters.scss';
 import { withRouter } from 'react-router-dom';
 import { Form, Collapse } from 'react-bootstrap';
 import 'rc-slider/assets/index.css';
-import Filter from './Filter'; 
+import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
+import './Filters.scss';
+import search from '../../../utils/search';
+import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
+import DateFilter from './FilterTypes/DateFilter/DateFilter'
 
 class Filters extends React.Component {
 
@@ -12,8 +16,18 @@ class Filters extends React.Component {
         super(props);
         this.state = {
             newFilterType: 'location',
-            filterList: ['date', 'location', 'tags', 'materials'],
-            showFilters: true
+            filterList: {
+                date: [ 
+                    {
+                        filterMode: 'decade',
+                        decade: 2000
+                    }
+                ],
+                location: [],
+                tags: [''],
+                materials: ['']
+            },
+            showFilters: true,
         };
     }
 
@@ -24,15 +38,16 @@ class Filters extends React.Component {
     async addFilter(type){
         console.log(type)
         this.setState(state => {
-            const daFilters = state.filterList.concat(type);
+            const daFilters = state.filterList;
+            daFilters[type].push({});
             return {filterList: daFilters};
         })
     }
 
-    async removeFilter(id){
+    async removeFilter(type, id){
         this.setState(state => {
             const daFilters = state.filterList;
-            daFilters.splice(id, 1);
+            daFilters[type].splice(id, 1);
             return {filterList: daFilters};
         })
     }
@@ -43,9 +58,32 @@ class Filters extends React.Component {
         })
     }
     
+    handleDateSearchSelect(params, id) {
+        const { uri } = this.props;
+        const updatedState = this.state.filterList.date
+        updatedState[id] = params
+        this.setState({
+            ...this.state,
+            ...updatedState
+        })
+        search(params, this.props.history, uri);
+    }
+
+    handleTagsSearchTagSelect(variant, selectedTags, tag) {
+        const { uri } = this.props;
+        const params = {};
+        params[variant] = selectedTags.map(tag => tag.name);
+        search(params, this.props.history, uri);
+    }
+
+    async handleLocationSearchSelect(lat, lon, address) {
+        await this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
+        this.search({lat: lat, lon: lon, address: address}, this.props.history, this.props.uri);
+    }
+
     render() {
 
-        const { decades } = this.props;
+        const { decades } = this.props
         const { newFilterType, showFilters } = this.state;
         const expandIcon = showFilters ? "add" : "remove";
 
@@ -72,12 +110,53 @@ class Filters extends React.Component {
                 <Collapse in={showFilters}>
                     <div>
                         {
-                            this.state.filterList.map((type, index) => (<Filter 
-                                type={type} 
-                                decades={decades} 
-                                history={this.props.history} 
-                                removeFilter={() => this.removeFilter(index)} 
-                                key={index.toString()}></Filter>))
+                            this.state.filterList.date.map((params, index) => (
+                                    <DateFilter key={index.toString()}
+                                        onRemove={() => this.removeFilter('date', index)}
+                                        data={params}
+                                        decades={decades}
+                                        onChange={(params) => this.handleDateSearchSelect(params, index)}>
+                                    </DateFilter>))
+                        }
+                        {
+                            this.state.filterList.location.map((params, index) => (
+                                <div className="filter-body" key={index.toString()}>
+                                    <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.removeFilter()}>
+                                        <i className="material-icons ">clear</i>
+                                    </button>
+                                    <LocationSearch
+                                        value={params}
+                                        onChange={(params) => this.handleLocationSearchSelect(params)}>
+                                    </LocationSearch>
+                                </div>))
+                        }
+                        {
+                            this.state.filterList.materials.map((params, index) => (
+                                <div className="filter-body" key={index.toString()}>
+                                    <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.removeFilter()}>
+                                        <i className="material-icons ">clear</i>
+                                    </button>
+                                    <TagsSearch
+                                        variant="materials"
+                                        tags={params}
+                                        allowTagCreation={false}
+                                        onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
+                                    </TagsSearch>
+                                </div>))
+                        }
+                        {
+                            this.state.filterList.tags.map((params, index) => (
+                                <div className="filter-body" key={index.toString()}>
+                                    <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.removeFilter()}>
+                                        <i className="material-icons ">clear</i>
+                                    </button>
+                                    <TagsSearch
+                                        variant="tags"
+                                        tags={params}
+                                        allowTagCreation={false}
+                                        onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
+                                    </TagsSearch>
+                                </div>))
                         }
                     </div>
                 </Collapse>

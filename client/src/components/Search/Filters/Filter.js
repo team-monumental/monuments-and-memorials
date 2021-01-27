@@ -3,7 +3,7 @@ import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
 import './Filters.scss';
 import search from '../../../utils/search';
 import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
-import DateSearch from './FilterTypes/DateFilter/DateFilter'
+import DateFilter from './FilterTypes/DateFilter/DateFilter'
 import 'rc-slider/assets/index.css';
 
 /**
@@ -24,11 +24,6 @@ export default class Filter extends React.Component {
         search(params, this.props.history, uri);
     }
 
-    handleDateSearchSelect(params) {
-        const { uri } = this.props;
-        search(params, this.props.history, uri);
-    }
-
     handleRemoveFilter(){
         const {removeFilter} = this.props;
 
@@ -36,7 +31,7 @@ export default class Filter extends React.Component {
     }
     
     render() {
-        const { type, decades, removeFilter } = this.props;
+        const { type, query, decades, removeFilter } = this.props;
         
         let toRender = (<div>ERROR</div>)
         switch(type){
@@ -62,12 +57,6 @@ export default class Filter extends React.Component {
                 toRender = (<LocationSearch value={this.state.locationAddress}
                     className="form-control form-control-sm"
                     onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>)
-                break;
-            }
-            case 'date':{
-                toRender = (<DateSearch decades={decades} value={this.state.locationAddress}
-                    onChange = {(params) => this.handleDateSearchSelect(params)}
-                    className="form-control form-control-sm"/>)
                 break;
             }
 

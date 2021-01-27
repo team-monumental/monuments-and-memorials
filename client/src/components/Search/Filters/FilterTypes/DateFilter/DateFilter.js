@@ -4,19 +4,16 @@ import { Form } from 'react-bootstrap';
 import * as moment from 'moment';
 import './DateFilter.scss';
 
-export default class DateSearch extends React.Component {
+export default class DateFilter extends React.Component {
     constructor(props) {
         super(props)
-        const { decade, start, end } = props;
-        let dateFiltersMode = 'range';
+        const { data } = props;
         this.state = {
-                
-            filters: {
-                decade: decade || 'null',
-                start,
-                end
-            },
-            dateFiltersMode,
+
+            decade: data.decade || 'null',
+            start: data.start,
+            end: data.end,
+            filterMode: data.filterMode || 'range',
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
             filterList: []
@@ -29,10 +26,8 @@ export default class DateSearch extends React.Component {
         const {onChange} = this.props;
         updatedState[name] = value;
         await this.setState({
-            filters: {
-                ...this.state.filters,
-                ...updatedState
-            }
+            ...this.state,
+            ...updatedState
         });
         onChange(updatedState)
     }
@@ -55,7 +50,7 @@ export default class DateSearch extends React.Component {
     }
 
     async handleTypeChange(mode) {
-        await this.setState({dateFiltersMode: mode});
+        await this.setState({filterMode: mode});
         if (mode !== 'decade') {
             this.handleFilterChange('decade', null);
         }
@@ -74,9 +69,14 @@ export default class DateSearch extends React.Component {
         this.handleDateFilter('range', [this.state.dateFilterStart, this.state.dateFilterEnd]);
     }
 
+    async removeFilter(){
+        const {onRemove} = this.props
+        await this.handleTypeChange(null);
+        onRemove()
+    }
     render() {
-        const { dateFiltersMode, dateFilterStart, dateFilterEnd, filters: { decade, distance } } = this.state;
-        const { value, decades } = this.props;
+        const { filterMode, dateFilterStart, dateFilterEnd, decade } = this.state;
+        const { decades } = this.props;
         const minimumDate = new Date(1, 0);
         minimumDate.setFullYear(1);
         const currentDate = new Date();
@@ -94,7 +94,7 @@ export default class DateSearch extends React.Component {
             1990: '1990\'s',
             2020: 'Present'
         }
-        if (dateFiltersMode === 'range') {
+        if (filterMode === 'range') {
             dateFilter = (
                 <div className="d-flex align-items-center">
                     <span className="mr-2">Start Date</span>
@@ -113,7 +113,7 @@ export default class DateSearch extends React.Component {
                     />
                 </div>
             );
-        } else if (dateFiltersMode === 'decade') {
+        } else if (filterMode === 'decade') {
             dateFilter = (
                 <div className="d-flex align-items-center">
                     <span className="mr-2">Monuments or memorials created in the</span>
@@ -125,7 +125,7 @@ export default class DateSearch extends React.Component {
                     </Form.Control>
                 </div>
             );
-        }else if (dateFiltersMode === 'slider') {
+        }else if (filterMode === 'slider') {
             dateFilter = (
                 <div className="d-flex align-items-center">
                     <span className="mr-2">Active in</span>
@@ -138,16 +138,21 @@ export default class DateSearch extends React.Component {
         }
 
         return ( 
-            <div className="d-flex pt-3 pb-3 align-items-center">
-                <span className="date-label">Date</span>
-                <Form.Control as="select" className="min-width-select mr-2"
-                            value={dateFiltersMode}
-                            onChange={event => this.handleTypeChange(event.target.value)}>
-                    <option value="range">Created(range)</option>
-                    <option value="decade">Created(decade)</option>
-                    <option value="slider">Active(range)</option>
-                </Form.Control>
-                {dateFilter}
+            <div className="filter-body" >
+                <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.removeFilter()}>
+                    <i className="material-icons ">clear</i>
+                </button>
+                <div className="d-flex pt-3 pb-3 align-items-center">
+                    <span className="date-label">Date</span>
+                    <Form.Control as="select" className="min-width-select mr-2"
+                                value={filterMode}
+                                onChange={event => this.handleTypeChange(event.target.value)}>
+                        <option value="range">Created(range)</option>
+                        <option value="decade">Created(decade)</option>
+                        <option value="slider">Active(range)</option>
+                    </Form.Control>
+                    {dateFilter}
+                </div>
             </div>
             )
         
