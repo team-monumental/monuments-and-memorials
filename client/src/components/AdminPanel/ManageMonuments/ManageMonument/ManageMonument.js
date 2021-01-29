@@ -84,7 +84,7 @@ export default class ManageMonument extends React.Component {
             <div onClick={e => e.stopPropagation()}>
                 <Modal show={toggleActiveModalOpen} onHide={() => this.setState({toggleActiveModalOpen: false})}>
                     <Modal.Header closeButton>
-                        {monument.isActive ? 'Deactivate' : 'Activate'} {monument.title}?
+                        {monument.isActive ? 'De-activate' : 'Activate'} {monument.title}?
                     </Modal.Header>
                     <Modal.Body>
                         <div>
@@ -97,7 +97,7 @@ export default class ManageMonument extends React.Component {
                             Cancel
                         </Button>
                         <Button variant="primary" onClick={() => this.toggleActive(!monument.isActive)}>
-                            {monument.isActive ? 'Deactivate' : 'Activate'}
+                            {monument.isActive ? 'De-activate' : 'Activate'}
                         </Button>
                     </Modal.Footer>
                 </Modal>

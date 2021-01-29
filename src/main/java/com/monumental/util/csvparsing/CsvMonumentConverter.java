@@ -88,7 +88,7 @@ public class CsvMonumentConverter {
                                     if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
                                             (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
                                             (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
-                                        result.getWarnings().add("Created date should not be after uninstalled date.");
+                                        result.getWarnings().add("Created date should not be after un-installed date.");
                                     }
                                 }
                                 suggestion.setDate(convertDateFormat(value, dateFormatString));
@@ -105,23 +105,23 @@ public class CsvMonumentConverter {
                                 try {
                                     parsedDate = parseDate(value, deactivatedDateFormatString);
                                 } catch (ParseException e) {
-                                    result.getWarnings().add("Uninstalled date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                    result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                                 }
                                 deactivatedDateForValidate = parsedDate;
                                 if (isDateInFuture(parsedDate)) {
-                                    result.getWarnings().add("Uninstalled date should not be in the future.");
+                                    result.getWarnings().add("Un-installed date should not be in the future.");
                                 }
                                 if (dateForValidate != null && dateForValidate.after(parsedDate)) {
                                     if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
                                             (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
                                             (dateForValidate.getYear() > parsedDate.getYear())) {
-                                        result.getWarnings().add("Created date should not be after uninstalled date.");
+                                        result.getWarnings().add("Created date should not be after un-installed date.");
                                     }
                                 }
                                 suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
                                 suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
                             } else {
-                                result.getWarnings().add("Uninstalled date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                             }
                             break;
                         case "deactivatedComment":
@@ -239,7 +239,7 @@ public class CsvMonumentConverter {
                         (suggestion.getDeactivatedYear() == null || suggestion.getDeactivatedYear().isEmpty()) &&
                         (suggestion.getDeactivatedComment() != null && !suggestion.getDeactivatedComment().isEmpty())) {
                     suggestion.setDeactivatedComment(null);
-                    result.getWarnings().add("Uninstalled date is required in order to have a uninstalled comment");
+                    result.getWarnings().add("Un-installed date is required in order to have a un-installed comment");
                 }
             } catch (Exception e) {
                 result.getErrors().add("Unknown error. Please check that this row is formatted properly.");

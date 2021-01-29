@@ -309,17 +309,17 @@ export default class MonumentUpdate extends React.Component {
                 changedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} key="date"/>) :
                 unchangedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} didChange={false} key="date"/>);
 
-            /* Uninstalled Date */
+            /* Un-installed Date */
             const oldDeactivatedDate = prettyPrintDate(oldMonument.deactivatedDate, oldMonument.deactivatedDateFormat);
             const newDeactivatedDate = this.determineNewDeactivatedDate();
             (this.didAttributeChange(oldDeactivatedDate, newDeactivatedDate)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Uninstalled Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} key="deactivatedDate"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Uninstalled Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} didChange={false} key="deactivatedDate"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Un-installed Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} key="deactivatedDate"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Un-installed Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} didChange={false} key="deactivatedDate"/>);
 
-            /* Uninstalled Comment */
+            /* Un-installed Comment */
             (this.didAttributeChange(oldMonument.deactivatedComment, update.newDeactivatedComment)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Uninstalled Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Uninstalled Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Un-installed Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Un-installed Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
 
             /* Address */
             (this.didAttributeChange(oldMonument.address, update.newAddress)) ?

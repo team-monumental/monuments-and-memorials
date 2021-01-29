@@ -46,7 +46,7 @@ export default class About extends React.Component {
         if (monument.deactivatedDate) {
             deactivatedDate = (
                 <div>
-                    <span className="detail-label">Uninstalled Date:&nbsp;</span>
+                    <span className="detail-label">Un-installed Date:&nbsp;</span>
                     {prettyPrintDate(monument.deactivatedDate, monument.deactivatedDateFormat)}
                 </div>
             );
@@ -56,7 +56,7 @@ export default class About extends React.Component {
         if (monument.deactivatedComment) {
             deactivatedComment = (
                 <div>
-                    <span className="detail-label">Uninstalled Reason:&nbsp;</span>
+                    <span className="detail-label">Un-installed Reason:&nbsp;</span>
                     {monument.deactivatedComment}
                 </div>
             );

@@ -164,11 +164,11 @@ export default class CreateReviewModal extends React.Component {
                             {date}
                         </div>
                         <div className="attribute">
-                            <span className="font-weight-bold">Uninstalled Date:&nbsp;</span>
+                            <span className="font-weight-bold">Un-installed Date:&nbsp;</span>
                             {deactivatedDate}
                         </div>
                         <div className="attribute">
-                            <span className="font-weight-bold">Uninstalled Reason:&nbsp;</span>
+                            <span className="font-weight-bold">Un-installed Reason:&nbsp;</span>
                             {form.deactivatedComment ? form.deactivatedComment : (
                                 <span className="missing-attribute">NONE</span>
                             )}
