@@ -105,7 +105,7 @@ export default class BulkCreateForm extends React.Component {
             let content = await JSZip.loadAsync(fileUpload.zip);
 
             for (let fileName in content.files) {
-                if (!content.files.hasOwnProperty(fileName) || fileName.startsWith('__MACOSX')) continue;
+                if (!content.files.hasOwnProperty(fileName)) continue;
                 if (fileName.endsWith('.csv')) {
                     if (fileUpload.csv) {
                         fileUpload.errorMessages.push('Your .zip file contained multiple .csv files. Please only upload one .csv file at a time.');
@@ -449,6 +449,21 @@ export default class BulkCreateForm extends React.Component {
 
         const errorCount = results.filter(result => result.errors.length > 0).length;
         const warningCount = results.filter(result => result.warnings.length > 0).length;
+
+        if (results.length === 0){
+            return (<>
+                <Card.Body>
+                    During validation of your <code>{fileUpload.zip ? '.zip' : '.csv'}</code>, an unexpected error occurred.
+                    Please check your file for any issues.
+                </Card.Body>
+
+                <Card.Footer className="d-flex justify-content-end">
+                    <Button variant="bare" onClick={() => this.resetForm(true)}>
+                        Cancel
+                    </Button>
+                </Card.Footer>
+            </>);
+        }
 
         if (errorCount === 0 && warningCount === 0) {
             return (<>
