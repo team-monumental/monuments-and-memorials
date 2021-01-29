@@ -9,11 +9,13 @@ export default class DateFilter extends React.Component {
         super(props)
         const { data } = props;
         this.state = {
+            params:{
+                decade: data.params.decade || null,
+                start: data.params.start || null, //TODO - make date dynamic
+                end: data.params.end || null
+            },
 
-            decade: data.decade || 'null',
-            start: data.start,
-            end: data.end,
-            filterMode: data.filterMode || 'range',
+            filterMode: data.config.filterMode || 'decade',
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
             filterList: []
@@ -26,10 +28,12 @@ export default class DateFilter extends React.Component {
         const {onChange} = this.props;
         updatedState[name] = value;
         await this.setState({
-            ...this.state,
-            ...updatedState
+            params:{
+                ...this.state.params,
+                ...updatedState
+            }
         });
-        onChange(updatedState)
+        onChange(this.state.params)
     }
 
     async handleDateFilter(type, value) {
@@ -75,7 +79,8 @@ export default class DateFilter extends React.Component {
         onRemove()
     }
     render() {
-        const { filterMode, dateFilterStart, dateFilterEnd, decade } = this.state;
+        const { filterMode, dateFilterStart, dateFilterEnd, params } = this.state;
+        const decade = params.decade
         const { decades } = this.props;
         const minimumDate = new Date(1, 0);
         minimumDate.setFullYear(1);

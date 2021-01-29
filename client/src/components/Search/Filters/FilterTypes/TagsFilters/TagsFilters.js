@@ -49,6 +49,7 @@ class TagsSearch extends React.Component {
             })
         }
     }
+    
 
     render() {
         const { searchQuery, selectedTags, createdTags, createdTagsKey } = this.state;
@@ -131,6 +132,12 @@ class TagsSearch extends React.Component {
         await this.setState({selectedTags});
 
         onChange(variant, selectedTags, createdTags);
+    }
+
+    async removeFilter(){
+        const {onRemove, onChange, variant} = this.props
+        onChange(variant, '', '')
+        onRemove()
     }
 
     async handleNewTagSelect(value, tag) {

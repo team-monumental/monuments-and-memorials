@@ -18,10 +18,10 @@ class Filters extends React.Component {
             newFilterType: 'location',
             filterList: {
                 date: [ 
-                    {
-                        filterMode: 'decade',
+                    { config:{}, params:{ 
                         decade: 2000
-                    }
+                    }}, { config:{filterMode: 'range'}, params:{
+                    start: '2000-01-25', end: '2021-01-27'}}
                 ],
                 location: [],
                 tags: [''],
@@ -39,7 +39,7 @@ class Filters extends React.Component {
         console.log(type)
         this.setState(state => {
             const daFilters = state.filterList;
-            daFilters[type].push({});
+            daFilters[type].push({config:{}, params:{}});
             return {filterList: daFilters};
         })
     }
@@ -61,12 +61,26 @@ class Filters extends React.Component {
     handleDateSearchSelect(params, id) {
         const { uri } = this.props;
         const updatedState = this.state.filterList.date
-        updatedState[id] = params
+        updatedState[id].params = params
         this.setState({
             ...this.state,
             ...updatedState
         })
-        search(params, this.props.history, uri);
+        const try1 = {}
+        console.log(this.state.filterList)
+        for(var filterType in this.state.filterList){
+            var curPar = this.state.filterList[filterType]
+            for( var i in curPar){
+                for(let parName in curPar[i].params){
+                    if(!try1[parName]){
+                        try1[parName] = []
+                    }
+                    if(curPar[i].params[parName]) try1[parName].push(curPar[i].params[parName])
+                }
+            }
+        }
+        console.log(try1)
+        search(try1, this.props.history, uri);
     }
 
     handleTagsSearchTagSelect(variant, selectedTags, tag) {
@@ -98,7 +112,8 @@ class Filters extends React.Component {
                         <button className="filter-type" onClick={() => this.addFilter(newFilterType)}>
                             <span>New Filter</span>
                         </button>
-                        <Form.Control as="select" className="min-width-select" value={newFilterType} onChange={event => this.handleNewFilterChange(event.target.value)}>
+                        <Form.Control as="select" className="min-width-select" value={newFilterType} 
+                                onChange={event => this.handleNewFilterChange(event.target.value)}>
                             <option value="location">Location</option>
                             <option value="date">Date</option>
                             <option value="tags">Tags</option>
@@ -152,6 +167,7 @@ class Filters extends React.Component {
                                     </button>
                                     <TagsSearch
                                         variant="tags"
+                                        onRemove= {() => this.removeFilter('tags', index)}
                                         tags={params}
                                         allowTagCreation={false}
                                         onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
