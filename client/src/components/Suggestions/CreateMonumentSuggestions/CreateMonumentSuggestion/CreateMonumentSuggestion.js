@@ -132,7 +132,7 @@ class CreateMonumentSuggestion extends React.Component {
         return (<>
             <div><strong>Artist:</strong> {artist}</div>
             <div><strong>Date:</strong> {date}</div>
-            <div><strong>Deactivated Date:</strong> {deactivatedDate}</div>
+            <div><strong>Uninstalled Date:</strong> {deactivatedDate}</div>
             <div><strong>Address:</strong> {address}</div>
             {showCollapse && <>
                 <Collapse in={expanded}>
@@ -143,7 +143,7 @@ class CreateMonumentSuggestion extends React.Component {
                         <div><strong>Longitude:</strong> {longitude}</div>
                         <div><strong>Description:</strong> {description}</div>
                         <div><strong>Inscription:</strong> {inscription}</div>
-                        <div><strong>Deactivation Reason:</strong> {deactivatedComment}</div>
+                        <div><strong>Uninstalled Reason:</strong> {deactivatedComment}</div>
                         <div className="font-weight-bold">Contributors: </div> {this.renderStringArray(JSON.parse(suggestion.contributionsJson))}
                         <div className="font-weight-bold">References: </div> {this.renderStringArray(JSON.parse(suggestion.referencesJson))}
                         <div className="font-weight-bold">Materials: </div> {this.renderTags(true)}

@@ -529,7 +529,7 @@ public class CsvMonumentConverterUnitTests {
 
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_WithDeactivatedComment() {
-        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,13-03-1997,Deactivated Comment";
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,13-03-1997,Uninstalled Comment";
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
@@ -547,7 +547,7 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("1997-03-13T00:00:00", suggestionResult.getDeactivatedDate());
         assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDeactivatedDateFormat());
-        assertEquals("Deactivated Comment", suggestionResult.getDeactivatedComment());
+        assertEquals("Uninstalled Comment", suggestionResult.getDeactivatedComment());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -565,7 +565,7 @@ public class CsvMonumentConverterUnitTests {
 
     @Test
     public void testCsvMonumentConverter_convertCsvRow_VariousValues_WithDeactivatedComment_NoDeactivatedDate_Invalid() {
-        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,,Deactivated Comment";
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,,Uninstalled Comment";
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);

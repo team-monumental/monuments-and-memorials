@@ -1,14 +1,14 @@
 import { parse as toCSV } from 'json2csv';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import {getUserFullName, simplePrintDate} from './string-util';
-import {getS3ImageNameFromObjectUrl} from "./api-util";
+import { getUserFullName, simplePrintDate } from './string-util';
+import { getS3ImageNameFromObjectUrl } from './api-util';
 
-export const pdfExportFields = ['Title', 'ID', 'Artist', 'Date Created', 'Deactivated Date', 'City', 'State', 'Address',
+export const pdfExportFields = ['Title', 'ID', 'Artist', 'Date Created', 'Uninstalled Date', 'City', 'State', 'Address',
     'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 export const csvExportFields = ['ID', 'Title', 'Artist', 'Date Created', 'Materials', 'Latitude', 'Longitude', 'City',
-    'State', 'Address', 'Inscription', 'Description', 'Tags', 'Contributors', 'References', 'Deactivated Date',
-    'Deactivation Reason', 'Is Temporary', 'Last Updated'];
+    'State', 'Address', 'Inscription', 'Description', 'Tags', 'Contributors', 'References', 'Uninstalled Date',
+    'Uninstalled Reason', 'Is Temporary', 'Last Updated'];
 
 export function buildBulkExportData(monuments, fields=csvExportFields, pretty=false) {
     const data = []
@@ -41,9 +41,9 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
             result[field] = monument.artist || '';
         } else if (lowerField.includes('date created')) {
             result[field] = monument.date ? simplePrintDate(monument.date, monument.dateFormat) : '';
-        } else if ((lowerField.includes('deactivated') || lowerField.includes('deactivation')) && lowerField.includes('date')) {
+        } else if ((lowerField.includes('deactivated') || lowerField.includes('deactivation') || lowerField.includes('uninstalled')) && lowerField.includes('date')) {
             result[field] = monument.deactivatedDate ? simplePrintDate(monument.deactivatedDate, monument.deactivatedDateFormat) : '';
-        } else if ((lowerField.includes('deactivated') || lowerField.includes('deactivation')) && (lowerField.includes('reason') || lowerField.includes('comment'))) {
+        } else if ((lowerField.includes('deactivated') || lowerField.includes('deactivation') || lowerField.includes('uninstalled')) && (lowerField.includes('reason') || lowerField.includes('comment'))) {
             result[field] = monument.deactivatedComment || '';
         } else if (lowerField.includes('city')) {
             result[field] = monument.city || '';
