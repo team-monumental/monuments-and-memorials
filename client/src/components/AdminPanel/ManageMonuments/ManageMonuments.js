@@ -20,7 +20,7 @@ class ManageMonuments extends React.Component {
                             Manage Monuments or Memorials
                         </Card.Title>
                         {mode === 'monument' && <>
-                            <Button variant="light" className="h-75" onClick={() => history.goBack()}>Back</Button>
+                            <Button variant="light" className="h-100" onClick={() => history.goBack()}>Back</Button>
                         </>}
                     </Card.Header>
                     <Card.Body>

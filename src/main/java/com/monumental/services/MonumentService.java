@@ -11,6 +11,7 @@ import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
+import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.search.SearchHelper;
@@ -58,6 +59,12 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     private MonumentTagRepository monumentTagRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private UpdateSuggestionRepository updateSuggestionRepository;
 
     @Autowired
     private GoogleMapsService googleMapsService;
@@ -636,6 +643,8 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     public void deleteMonument(Integer id) {
+        this.favoriteRepository.deleteAllByMonumentId(id);
+        this.updateSuggestionRepository.deleteAllByMonumentId(id);
         this.monumentTagRepository.deleteAllByMonumentId(id);
         this.monumentRepository.deleteById(id);
     }

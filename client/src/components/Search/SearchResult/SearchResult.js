@@ -28,7 +28,7 @@ export default class SearchResult extends React.Component {
         return (
             <div className="search-result">
                 {!hideImages &&
-                    <Thumbnail imageUrl={image && image.url}/>
+                    <Thumbnail imageUrl={image && image.url} />
                 }
                 <Card>
                     <Card.Title>
@@ -38,7 +38,7 @@ export default class SearchResult extends React.Component {
                     </Card.Title>
                     <Card.Body>
                         <Address monument={monument}/>
-                        <Tags tags={tags} searchUri={searchUri}/>
+                        <Tags tags={tags} searchUri={searchUri} />
                     </Card.Body>
                 </Card>
             </div>
