@@ -5,6 +5,7 @@ import PlacesAutocomplete, {
     getLatLng
 } from 'react-places-autocomplete';
 import { Form }from 'react-bootstrap';
+import * as QueryString from 'query-string';
 /* global google */
 
 /**
@@ -28,6 +29,12 @@ export default class LocationSearch extends React.Component {
         }
     }
 
+    handleFilterChange(value){
+        const {changeDistance} = this.props;
+        this.setState({distance: value});
+        changeDistance(value)
+
+    }
     handleChange(newSearchQuery) {
         const sessionToken = this.state.sessionToken || new google.maps.places.AutocompleteSessionToken();
         if (this.state.sessionToken !== sessionToken) {
@@ -52,7 +59,7 @@ export default class LocationSearch extends React.Component {
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
         onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, results[0]);
-        this.setState({showDistance: true})
+        this.setState({showDistance: true, address: address})
     }
 
     handleClear() {
@@ -100,7 +107,7 @@ export default class LocationSearch extends React.Component {
 
         const distanceFilter = showDistance ? (
             <Form.Control onChange={event => 
-                this.handleFilterChange('distance', event.target.value)} 
+                this.handleFilterChange(event.target.value)} 
                 as="select" 
                 className="min-width-select dist-drop" 
                 value={distance}>

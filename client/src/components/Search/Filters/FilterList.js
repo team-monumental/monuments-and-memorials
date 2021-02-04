@@ -17,9 +17,7 @@ class Filters extends React.Component {
         this.state = {
             newFilterType: 'location',
             filterList: {
-                date: [{ config:{filterMode: 'range'}, params:{
-                    start: '2000-01-25', end: '2021-01-27'}}
-                ],
+                date: [],
                 location: [],
                 tags: [],
                 materials: []
@@ -110,9 +108,24 @@ class Filters extends React.Component {
         this.handleSearch()
     }
 
-    async handleLocationSearchSelect(lat, lon, address) {
-        await this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
-        this.search({lat: lat, lon: lon, address: address}, this.props.history, this.props.uri);
+    async handleLocationSearchSelect(lat, lon, address, id) {
+        const updatedState = this.state.filterList.location
+        updatedState[id].params = {lat: lat, lon: lon, address: address}
+        this.setState({
+            ...this.state,
+            ...updatedState
+        })
+        this.handleSearch()
+    }
+
+    async handleChangeDistance(value, id) {
+        const updatedState = this.state.filterList.location
+        updatedState[id].params.d = value
+        this.setState({
+            ...this.state,
+            ...updatedState
+        })
+        this.handleSearch()
     }
 
     
@@ -170,7 +183,8 @@ class Filters extends React.Component {
                                     </button>
                                     <LocationSearch
                                         value={params}
-                                        onChange={(params) => this.handleLocationSearchSelect(params)}>
+                                        onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address, index)}
+                                        changeDistance={(distance)=> this.handleChangeDistance(distance, index)}>
                                     </LocationSearch>
                                 </div>))
                         }
