@@ -51,3 +51,16 @@
     }
     
 }
+
+.type-header {
+    display: flex;
+    width: 100%;
+
+    background-color: #e0e1e2;
+    border-bottom: 2px solid black;
+    p{
+        margin: auto;
+        font-size: 20px;
+        text-align: center;
+    }
+}

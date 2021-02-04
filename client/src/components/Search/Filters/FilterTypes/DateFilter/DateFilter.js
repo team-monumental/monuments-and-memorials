@@ -148,7 +148,6 @@ export default class DateFilter extends React.Component {
                     <i className="material-icons ">clear</i>
                 </button>
                 <div className="d-flex pt-3 pb-3 align-items-center">
-                    <span className="date-label">Date</span>
                     <Form.Control as="select" className="min-width-select mr-2"
                                 value={filterMode}
                                 onChange={event => this.handleTypeChange(event.target.value)}>
