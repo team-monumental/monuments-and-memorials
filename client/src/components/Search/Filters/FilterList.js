@@ -182,7 +182,6 @@ class Filters extends React.Component {
                                         <i className="material-icons ">clear</i>
                                     </button>
                                     <LocationSearch
-                                        value={params}
                                         onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address, index)}
                                         changeDistance={(distance)=> this.handleChangeDistance(distance, index)}>
                                     </LocationSearch>
