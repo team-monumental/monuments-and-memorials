@@ -12,11 +12,15 @@
     display: flex;
     flex: 90%;
 }
-
-.add-filter {
+.clear-filters {
     display: inline-flex;
     float: right;
     padding: 0 .5em;
+    button{
+        border: none;
+        border-radius: 10%;
+        padding-bottom:3px;
+    }
     
 }
 
@@ -26,12 +30,12 @@
     border-top: 1px solid #CED4DA ;
 }
 .filter-type {
-    background-color: #42b883;
-    border: none;
-    border-radius: 10%; 
-    margin-right: 5px;
-    color: white;
-    padding-bottom: 3px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 .5em;
+    cursor: pointer;
+    border-left: solid 1px;
+    width: 5em;
     span{
         margin: auto;
     }

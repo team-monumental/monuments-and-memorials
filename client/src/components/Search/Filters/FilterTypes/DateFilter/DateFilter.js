@@ -75,7 +75,6 @@ export default class DateFilter extends React.Component {
 
     async removeFilter(){
         const {onRemove} = this.props
-        await this.handleTypeChange(null);
         onRemove()
     }
     render() {

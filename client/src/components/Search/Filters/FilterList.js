@@ -21,8 +21,8 @@ class Filters extends React.Component {
                     start: '2000-01-25', end: '2021-01-27'}}
                 ],
                 location: [],
-                tags: [{config:{}, params:{tags: ['']}}],
-                materials: [{config:{}, params:{materials: ['']}}]
+                tags: [],
+                materials: []
             },
             showFilters: true,
         };
@@ -43,9 +43,23 @@ class Filters extends React.Component {
 
     async removeFilter(type, id){
         console.log(type)
-        this.setState(state => {
+        await this.setState(state => {
             const daFilters = state.filterList;
             daFilters[type].splice(id, 1);
+            console.log(daFilters)
+            return {filterList: daFilters};
+        })
+        this.handleSearch()
+    }
+
+    async clearFilters(){
+        await this.setState(state => {
+            const daFilters =  {
+                date: [],
+                location: [],
+                tags: [],
+                materials: []
+            }
             return {filterList: daFilters};
         })
         this.handleSearch()
@@ -57,7 +71,7 @@ class Filters extends React.Component {
         })
     }
     
-    handleSearch(){
+    async handleSearch(){
         const {uri} = this.props;
         const try1 = {}
         console.log(this.state.filterList)
@@ -101,6 +115,8 @@ class Filters extends React.Component {
         this.search({lat: lat, lon: lon, address: address}, this.props.history, this.props.uri);
     }
 
+    
+
     render() {
 
         const { decades } = this.props
@@ -114,23 +130,22 @@ class Filters extends React.Component {
                         <i className="material-icons">{expandIcon}</i>
                         <span>{showFilters ? "Show" : "Hide"}</span>
                     </div>
-                    <div className="add-filter">
-                        <button className="filter-type" onClick={() => this.addFilter(newFilterType)}>
-                            <span>New Filter</span>
+                    <div className="clear-filters">
+                        <button onClick={() => this.clearFilters()}>
+                            <span>Clear Filters</span>
                         </button>
-                        <Form.Control as="select" className="min-width-select" value={newFilterType} 
-                                onChange={event => this.handleNewFilterChange(event.target.value)}>
-                            <option value="location">Location</option>
-                            <option value="date">Date</option>
-                            <option value="tags">Tags</option>
-                            <option value="materials">Materials</option>
-                        </Form.Control>
                         
                     </div>
                 </div>
                 <Collapse in={showFilters}>
                     <div>
-                        <div className="type-header"><p>Date</p></div>
+                        <div className="type-header">
+                            <p>Date</p> 
+                            <div className="filter-type" onClick={() => this.addFilter('date')}>
+                                <i className="material-icons">{expandIcon}</i>
+                                <span>{this.state.filterList.date.length > 0 ? "OR" : "New" }</span>
+                            </div>
+                        </div>
                         {
                             this.state.filterList.date.map((params, index) => (
                                     <DateFilter key={index.toString()}
@@ -140,7 +155,13 @@ class Filters extends React.Component {
                                         onChange={(params) => this.handleDateSearchSelect(params, index)}>
                                     </DateFilter>))
                         }
-                        <div className="type-header"><p>Location</p></div>
+                        <div className="type-header">
+                            <p>Location</p> 
+                            <div className="filter-type" onClick={() => this.addFilter('location')}>
+                                <i className="material-icons">{expandIcon}</i>
+                                <span>{this.state.filterList.location.length > 0 ? "OR" : "New" }</span>
+                            </div>
+                        </div>
                         {
                             this.state.filterList.location.map((params, index) => (
                                 <div className="filter-body" key={index.toString()}>
@@ -153,7 +174,13 @@ class Filters extends React.Component {
                                     </LocationSearch>
                                 </div>))
                         }
-                        <div className="type-header"><p>Materials</p></div>
+                        <div className="type-header">
+                            <p>Materials</p> 
+                            <div className="filter-type" onClick={() => this.addFilter('materials')}>
+                                <i className="material-icons">{expandIcon}</i>
+                                <span>{this.state.filterList.materials.length > 0 ? "OR" : "New" }</span>
+                            </div>
+                        </div>
                         {
                             this.state.filterList.materials.map((params, index) => (
                                 <div className="filter-body" key={index.toString()}>
@@ -168,7 +195,13 @@ class Filters extends React.Component {
                                     </TagsSearch>
                                 </div>))
                         }
-                        <div className="type-header"><p>Tags</p></div>
+                        <div className="type-header">
+                            <p>Tags</p> 
+                            <div className="filter-type" onClick={() => this.addFilter('tags')}>
+                                <i className="material-icons">{expandIcon}</i>
+                                <span>{this.state.filterList.tags.length > 0 ? "OR" : "New" }</span>
+                            </div>
+                        </div>
                         {
                             this.state.filterList.tags.map((params, index) => (
                                 <div className="filter-body" key={index.toString()}>
