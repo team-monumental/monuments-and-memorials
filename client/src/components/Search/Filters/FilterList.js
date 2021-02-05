@@ -7,7 +7,8 @@ import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
 import './Filters.scss';
 import search from '../../../utils/search';
 import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
-import DateFilter from './FilterTypes/DateFilter/DateFilter'
+import DateFilter from './FilterTypes/DateFilter/DateFilter';
+import * as QueryString from 'query-string';
 
 class Filters extends React.Component {
 
@@ -17,10 +18,10 @@ class Filters extends React.Component {
         this.state = {
             newFilterType: 'location',
             filterList: {
-                date: [],
-                location: [],
-                tags: [],
-                materials: []
+                date: [{config:{}, params:{}}],
+                location: [{config:{}, params:{}}],
+                tags: [{config:{}, params:{}}],
+                materials: [{config:{}, params:{}}]
             },
             showFilters: true,
         };
@@ -84,7 +85,8 @@ class Filters extends React.Component {
                 }
             }
         }
-        console.log(try1)
+        const old = QueryString.parse(this.props.history.location.search)
+        if(old.q) try1.q = old.q;
         search(try1, this.props.history, uri);
 
     }
@@ -223,7 +225,6 @@ class Filters extends React.Component {
                                     </button>
                                     <TagsSearch
                                         variant="tags"
-                                        onRemove= {() => this.removeFilter('tags', index)}
                                         tags={params}
                                         allowTagCreation={false}
                                         onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params, index)}>

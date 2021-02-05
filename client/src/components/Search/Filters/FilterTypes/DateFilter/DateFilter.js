@@ -139,6 +139,8 @@ export default class DateFilter extends React.Component {
                      </div>
                 </div>
             );
+        }else{
+            dateFilter = (<div></div>)
         }
 
         return ( 
@@ -150,9 +152,10 @@ export default class DateFilter extends React.Component {
                     <Form.Control as="select" className="min-width-select mr-2"
                                 value={filterMode}
                                 onChange={event => this.handleTypeChange(event.target.value)}>
+                        <option value="none">None</option>
                         <option value="range">Created(range)</option>
                         <option value="decade">Created(decade)</option>
-                        <option value="slider">Active(range)</option>
+                        
                     </Form.Control>
                     {dateFilter}
                 </div>

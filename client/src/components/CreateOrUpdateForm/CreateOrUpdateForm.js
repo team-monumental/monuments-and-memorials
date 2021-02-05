@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
 import { isEmptyObject } from '../../utils/object-util';
-import LocationSearch from '../Search/Filters/FilterTypes/LocationFilter/LocationFilter';
+import LocationSearch from '../Header/SearchBar/LocationSearch/LocationSearch';
 import PhotoSphereImages from './PhotoSphereImages/PhotoSphereImages';
 
 /* global google */

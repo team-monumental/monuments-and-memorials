@@ -134,11 +134,6 @@ class TagsSearch extends React.Component {
         onChange(variant, selectedTags, createdTags);
     }
 
-    async removeFilter(){
-        const {onRemove, onChange, variant} = this.props
-        onChange(variant, '', '')
-        onRemove()
-    }
 
     async handleNewTagSelect(value, tag) {
         let { createdTags, createdTagsKey } = this.state;
