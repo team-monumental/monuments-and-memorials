@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from './TextSearch/TextSearch';
 
-import search from '../../../utils/search';
+import newSearch from '../../../utils/new-search';
 
 /**
  * Root presentational component for the search bar, including text and location searching
@@ -52,7 +52,7 @@ class SearchBar extends React.Component {
     search() {
         const { history, onCloseModal, uri } = this.props;
         let { textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter } = this.state;
-        search({
+        newSearch({
             q: textSearchQuery,
             lat: locationLat,
             lon: locationLon,

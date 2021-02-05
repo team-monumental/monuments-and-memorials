@@ -4,7 +4,7 @@ import { searchMonuments } from '../../actions/search';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
-import search from '../../utils/search';
+import newSearch from '../../utils/new-search';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 
@@ -91,7 +91,7 @@ class SearchPage extends React.Component {
     async search(changedState) {
         const { uri } = this.props;
         await this.setState(changedState);
-        search(this.state, this.props.history, uri);
+        newSearch(this.state, this.props.history, uri);
     }
 }
 
