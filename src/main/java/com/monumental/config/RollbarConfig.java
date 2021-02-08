@@ -3,9 +3,11 @@ package com.monumental.config;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.Config;
 import com.rollbar.spring.webmvc.RollbarSpringConfigBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
@@ -20,15 +22,17 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 })
 public class RollbarConfig {
 
+    @Autowired
+    private Environment environment;
+
     /**
      * Register a Rollbar bean to configure App with Rollbar.
      */
     @Bean
     public Rollbar rollbar() {
 
-        // Your ACCESS TOKEN is: 19851651490648898dcdb32aa21d2a78
-        // Make sure to keep this secure
-        return new Rollbar(getRollbarConfigs("19851651490648898dcdb32aa21d2a78"));
+        // Need to set this environment variable
+        return new Rollbar(getRollbarConfigs(environment.getProperty("REACT_APP_ROLLBAR_SERVER_KEY")));
     }
 
     private Config getRollbarConfigs(String accessToken) {

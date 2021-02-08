@@ -5,6 +5,7 @@ import { Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import Rollbar from 'rollbar';
 
 import Header from './components/Header/Header';
 import MonumentPage from './pages/MonumentPage/MonumentPage';
@@ -37,7 +38,15 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            headerHeight: 0
+            headerHeight: 0,
+            rollbar: new Rollbar({
+                accessToken: process.env.REACT_APP_ROLLBAR_CLIENT_KEY,
+                captureUncaught: true,
+                captureUnhandledRejections: true,
+                payload: {
+                    environment: process.env.REACT_APP_ROLLBAR_ENV
+                }
+            })
         };
     }
 
