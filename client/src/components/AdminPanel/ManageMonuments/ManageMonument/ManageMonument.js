@@ -69,7 +69,7 @@ export default class ManageMonument extends React.Component {
                     <Link to={`/monuments/${monument.id}/${slug}`} className="btn btn-light">View Public Page</Link>
                     }
                     <Link to={`/panel/manage/monuments/monument/update/${monument.id}`} className="btn btn-light">Edit</Link>
-                    <Button variant="light" onClick={() => this.setState({toggleActiveModalOpen: true})}>{monument.isActive ? 'Deactivate' : 'Activate'}</Button>
+                    <Button variant="light" onClick={() => this.setState({toggleActiveModalOpen: true})}>{monument.isActive ? 'De-activate' : 'Activate'}</Button>
                     <Button variant="danger" onClick={() => this.setState({deleteModalOpen: true})}>Delete</Button>
                 </div>
             </div>
@@ -84,11 +84,11 @@ export default class ManageMonument extends React.Component {
             <div onClick={e => e.stopPropagation()}>
                 <Modal show={toggleActiveModalOpen} onHide={() => this.setState({toggleActiveModalOpen: false})}>
                     <Modal.Header closeButton>
-                        {monument.isActive ? 'Deactivate' : 'Activate'} {monument.title}?
+                        {monument.isActive ? 'De-activate' : 'Activate'} {monument.title}?
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            {monument.isActive ? 'Are you sure you want to deactivate this monument or memorial? It will no longer be visible to the public, but you will still be able to make changes to it here.'
+                            {monument.isActive ? 'Are you sure you want to de-activate this monument or memorial? It will no longer be visible to the public, but you will still be able to make changes to it here.'
                                 : 'Are you sure you want to activate this monument or memorial? It will become visible to the public.'}
                         </div>
                     </Modal.Body>
@@ -97,7 +97,7 @@ export default class ManageMonument extends React.Component {
                             Cancel
                         </Button>
                         <Button variant="primary" onClick={() => this.toggleActive(!monument.isActive)}>
-                            {monument.isActive ? 'Deactivate' : 'Activate'}
+                            {monument.isActive ? 'De-activate' : 'Activate'}
                         </Button>
                     </Modal.Footer>
                 </Modal>
@@ -117,7 +117,7 @@ export default class ManageMonument extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            Are you sure you want to <strong>permanently</strong> delete this monument or memorial? If you would like to hide it from the public, you may deactivate it instead.
+                            Are you sure you want to <strong>permanently</strong> delete this monument or memorial? If you would like to hide it from the public, you may de-activate it instead.
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
