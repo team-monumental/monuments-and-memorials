@@ -54,12 +54,12 @@ dependencies {
     implementation('io.jsonwebtoken:jjwt:0.9.1')
     implementation('com.github.dfabulich:sitemapgen4j:1.1.2')
     implementation('com.google.code.gson:gson:2.8.6')
+    implementation('com.rollbar:rollbar-spring-boot-webmvc:1.7.2')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('junit:junit:4.12')
     testImplementation('org.mockito:mockito-core:2.13.0')
     testImplementation('org.springframework.security:spring-security-test')
     testImplementation('org.orbisgis:h2gis:1.5.0')
-    compile('com.rollbar:rollbar-spring-boot-webmvc:1.7.2')
 }
 
 node {
