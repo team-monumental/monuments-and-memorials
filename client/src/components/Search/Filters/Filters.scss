@@ -17,7 +17,9 @@
     float: right;
     padding: 0 .5em;
     button{
+        color: white;
         border: none;
+        font-size: 17px;
         border-radius: 10%;
         padding-bottom:3px;
     }
@@ -28,6 +30,7 @@
     padding: .5em 0em;
     border-bottom: 1px solid #CED4DA;
     border-top: 1px solid #CED4DA ;
+    align-items: center;
 }
 .filter-type {
     display: inline-flex;
@@ -50,8 +53,10 @@
         opacity: 70%;
     }
     span{ 
+        padding-top: 2px;
         margin-left: 3px;
         opacity: 60%;
+        font-size: 15px;
     }
     
 }
@@ -59,12 +64,22 @@
 .type-header {
     display: flex;
     width: 100%;
-
-    background-color: #e0e1e2;
-    border-bottom: 2px solid black;
+    color: white;
+    background-color: #35495E;
+    border-bottom: 2px solid;
     p{
         margin: auto;
         font-size: 20px;
+        
         text-align: center;
     }
+}
+
+.tags-row {
+    display: inline-flex;
+    width: 100%;
+}
+
+.tags-col {
+    width: 50%;
 }

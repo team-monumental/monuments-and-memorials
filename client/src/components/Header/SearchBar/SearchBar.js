@@ -65,7 +65,7 @@ class SearchBar extends React.Component {
     }
 
     render() {
-        const { textSearchQuery, locationAddress } = this.state;
+        const { textSearchQuery } = this.state;
         return (
             <Form inline className="search-bar">
                 <TextSearch value={textSearchQuery}

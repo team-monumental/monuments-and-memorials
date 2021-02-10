@@ -29,7 +29,7 @@ class MonumentPage extends React.Component {
             (prevProps.monument.id !== this.props.monument.id && this.props.monument.id)) {
             dispatch(fetchFavorite(monumentId));
         }
-        if (prevProps.monument.id && (!this.props.monument.id || monumentId != prevProps.monument.id)) {
+        if (prevProps.monument.id && (!this.props.monument.id || monumentId !== prevProps.monument.id)) {
             dispatch(fetchMonument(monumentId));
         }
         if (this.props.monument.title && !slug) {

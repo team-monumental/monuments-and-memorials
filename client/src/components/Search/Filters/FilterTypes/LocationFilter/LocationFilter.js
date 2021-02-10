@@ -5,7 +5,6 @@ import PlacesAutocomplete, {
     getLatLng
 } from 'react-places-autocomplete';
 import { Form }from 'react-bootstrap';
-import * as QueryString from 'query-string';
 /* global google */
 
 /**
@@ -32,9 +31,9 @@ export default class LocationSearch extends React.Component {
     handleFilterChange(value){
         const {changeDistance} = this.props;
         this.setState({distance: value});
-        changeDistance(value)
-
+        changeDistance(value);
     }
+
     handleChange(newSearchQuery) {
         const sessionToken = this.state.sessionToken || new google.maps.places.AutocompleteSessionToken();
         if (this.state.sessionToken !== sessionToken) {
