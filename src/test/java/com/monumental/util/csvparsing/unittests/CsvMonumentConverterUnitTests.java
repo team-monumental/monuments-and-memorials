@@ -1,6 +1,7 @@
 package com.monumental.util.csvparsing.unittests;
 
 import com.google.gson.Gson;
+import com.monumental.models.DateFormat;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.services.integrationtest.MonumentServiceMockIntegrationTests;
 import com.monumental.util.csvparsing.CsvMonumentConverter;
@@ -103,7 +104,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("1997", suggestionResult.getDate());
+        assertEquals("1997-01-01T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.YEAR, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -135,7 +137,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -152,7 +155,7 @@ public class CsvMonumentConverterUnitTests {
     }
 
     @Test
-    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidDateFormat_MonthYear() {
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DateFormat_MonthYear() {
         String csvRow = "Test Submitted By,Test Artist,Test Title,03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
@@ -167,7 +170,105 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-01T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.MONTH_YEAR, suggestionResult.getDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DateFormat_MonthYear_Slashes() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,03/1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-01T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.MONTH_YEAR, suggestionResult.getDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DateFormat_Slashes() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12/03/1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-12-03T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidDateFormat() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,December 3 1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -184,8 +285,8 @@ public class CsvMonumentConverterUnitTests {
     }
 
     @Test
-    public void testCsvMonumentConverter_convertCsvRow_VariousValues_InvalidDateFormat_Slashes() {
-        String csvRow = "Test Submitted By,Test Artist,Test Title,12/03/1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,";
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateFormatDayMonthYear() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,13-03-1997";
         List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
 
         CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
@@ -199,7 +300,288 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12/03/1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-03-13T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateFormatDayMonthYear_Slashes() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,03/13/1997";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-03-13T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateFormatMonthYear() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,03-1997";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-03-01T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.MONTH_YEAR, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateFormatMonthYear_Slashes() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,03/1997";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-03-01T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.MONTH_YEAR, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateFormatYear() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,1997";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-01-01T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.YEAR, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateFormatInvalid() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,June 1997";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(1, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_DeactivatedDateBeforeCreatedDate_Invalid() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,11-03-1997";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-03-11T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(1, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_WithDeactivatedComment() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,13-03-1997,Un-installed Comment";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertEquals("1997-03-13T00:00:00", suggestionResult.getDeactivatedDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDeactivatedDateFormat());
+        assertEquals("Un-installed Comment", suggestionResult.getDeactivatedComment());
+        assertEquals("Test Inscription", suggestionResult.getInscription());
+        assertEquals("Test City", suggestionResult.getCity());
+        assertEquals("Test State", suggestionResult.getState());
+        assertEquals("Test Address", suggestionResult.getAddress());
+
+        assertNull(suggestionResult.getLatitude());
+        assertNull(suggestionResult.getLongitude());
+
+        assertEquals(0, materialNameResults.size());
+        assertEquals(0, tagNameResults.size());
+
+        assertEquals(0, result.getWarnings().size());
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    public void testCsvMonumentConverter_convertCsvRow_VariousValues_WithDeactivatedComment_NoDeactivatedDate_Invalid() {
+        String csvRow = "Test Submitted By,Test Artist,Test Title,12-03-1997,,Test Inscription,,,Test City,Test State,Test Address,,Test Reference,,,Un-installed Comment";
+        List<String[]> csvList = MonumentServiceMockIntegrationTests.parseCSVString(csvRow);
+
+        CsvMonumentConverterResult result = CsvMonumentConverter.convertCsvRows(csvList, mapping, null).get(0);
+        CreateMonumentSuggestion suggestionResult = result.getMonumentSuggestion();
+        Set<String> materialNameResults = result.getMaterialNames();
+        Set<String> tagNameResults = result.getTagNames();
+
+        assertEquals(1, result.getContributorNames().size());
+        assertEquals(1, result.getReferenceUrls().size());
+        assertEquals(0, result.getImageFiles().size());
+
+        assertEquals("Test Artist", suggestionResult.getArtist());
+        assertEquals("Test Title", suggestionResult.getTitle());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
+        assertNull(suggestionResult.getDeactivatedComment());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -231,7 +613,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -263,7 +646,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -295,7 +679,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -327,7 +712,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals(40.730610, suggestionResult.getLatitude(), 0.0);
         assertEquals(-73.935242, suggestionResult.getLongitude(), 0.0);
@@ -358,7 +744,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -390,7 +777,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
@@ -422,7 +810,8 @@ public class CsvMonumentConverterUnitTests {
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
-        assertEquals("12-03-1997", suggestionResult.getDate());
+        assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
+        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());

@@ -14,4 +14,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
     List<Favorite> getAllByUserId(Integer id);
 
     Favorite getByUserIdAndMonumentId(Integer userId, Integer monumentId);
+
+    void deleteAllByMonumentId(Integer monumentId);
 }

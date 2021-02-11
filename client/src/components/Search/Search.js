@@ -6,12 +6,12 @@ import Filters from './Filters/Filters';
 import SearchInfo from './SearchInfo/SearchInfo';
 import SearchResults from './SearchResults/SearchResults';
 import * as moment from 'moment';
+import ExportButtons from '../Export/ExportButtons/ExportButtons';
 
 /**
  * Root presentational component for the search page
  */
 export default class Search extends React.Component {
-
     handlePageChange(page) {
         const { onPageChange } = this.props;
         onPageChange(page);
@@ -75,6 +75,11 @@ export default class Search extends React.Component {
                                     showDistanceSort={lat && lon}/>
                     </div>
                     <div className="search-results">
+                        <div className="export-buttons-search">
+                            <ExportButtons className="mt-2"
+                                           monuments={monuments}
+                                           title="Search"/>
+                        </div>
                         <SearchResults monuments={monuments} limit={limit} page={page} hideImages={hideImages} searchUri={searchUri || '/search'} monumentUri={monumentUri || '/monuments'}/>
                     </div>
                     <div className="pagination-container">

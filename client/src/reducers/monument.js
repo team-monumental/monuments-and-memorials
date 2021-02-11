@@ -1,9 +1,24 @@
 import {
-    FETCH_MONUMENT_PENDING, FETCH_MONUMENT_ERROR, FETCH_MONUMENT_SUCCESS, FETCH_NEARBY_MONUMENTS_PENDING,
-    FETCH_NEARBY_MONUMENTS_SUCCESS, FETCH_NEARBY_MONUMENTS_ERROR, FETCH_RELATED_MONUMENTS_PENDING,
-    FETCH_RELATED_MONUMENTS_SUCCESS, FETCH_RELATED_MONUMENTS_ERROR, FETCH_FAVORITE_PENDING, FETCH_FAVORITE_SUCCESS,
-    FETCH_FAVORITE_ERROR, CREATE_FAVORITE_ERROR, CREATE_FAVORITE_PENDING, CREATE_FAVORITE_SUCCESS,
-    DELETE_FAVORITE_ERROR, DELETE_FAVORITE_PENDING, DELETE_FAVORITE_SUCCESS
+    FETCH_MONUMENT_PENDING,
+    FETCH_MONUMENT_ERROR,
+    FETCH_MONUMENT_SUCCESS,
+    FETCH_NEARBY_MONUMENTS_PENDING,
+    FETCH_NEARBY_MONUMENTS_SUCCESS,
+    FETCH_NEARBY_MONUMENTS_ERROR,
+    FETCH_RELATED_MONUMENTS_PENDING,
+    FETCH_RELATED_MONUMENTS_SUCCESS,
+    FETCH_RELATED_MONUMENTS_ERROR,
+    FETCH_FAVORITE_PENDING,
+    FETCH_FAVORITE_SUCCESS,
+    FETCH_FAVORITE_ERROR,
+    CREATE_FAVORITE_ERROR,
+    CREATE_FAVORITE_PENDING,
+    CREATE_FAVORITE_SUCCESS,
+    DELETE_FAVORITE_ERROR,
+    DELETE_FAVORITE_PENDING,
+    DELETE_FAVORITE_SUCCESS,
+    FETCH_ALL_MONUMENTS_PENDING,
+    FETCH_ALL_MONUMENTS_SUCCESS, FETCH_ALL_MONUMENTS_ERROR
 } from '../constants';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import basicReducer from '../utils/basic-reducer';
@@ -43,6 +58,23 @@ export function monumentPage(state = initialState, action) {
                 ...state,
                 fetchMonumentPending: false,
                 fetchMonumentError: action.error
+            };
+        case FETCH_ALL_MONUMENTS_PENDING:
+            return {
+                ...state,
+                fetchAllPending: true
+            };
+        case FETCH_ALL_MONUMENTS_SUCCESS:
+            return {
+                ...state,
+                fetchAllPending: false,
+                allMonuments: action.payload
+            };
+        case FETCH_ALL_MONUMENTS_ERROR:
+            return {
+                ...state,
+                fetchAllPending: false,
+                fetchAllError: action.error
             };
         case FETCH_NEARBY_MONUMENTS_PENDING:
             return {

@@ -2,7 +2,7 @@ import React from 'react';
 import './CreateReviewModal.scss';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { prettyPrintDate } from '../../../utils/string-util';
+import {DateFormat, prettyPrintDate} from '../../../utils/string-util';
 
 /**
  * Presentational component for the Modal shown before a CreateMonumentSuggestion is created
@@ -20,18 +20,39 @@ export default class CreateReviewModal extends React.Component {
             <span className="missing-attribute">NONE</span>
         );
         switch (form.dateSelectValue) {
-            case 'year':
+            case DateFormat.YEAR:
                 if (form.year) {
-                    date = `${form.year}`;
+                    date = prettyPrintDate(`${form.year}`, form.dateSelectValue);
                 }
                 break;
-            case 'month-year':
+            case DateFormat.MONTH_YEAR:
                 if (form.year) {
-                    date = `${form.month}, ${form.year}`;
+                    date = prettyPrintDate(`${form.year}-${form.month}`, form.dateSelectValue);
                 }
                 break;
-            case 'exact-date':
-                date = prettyPrintDate(form.date);
+            case DateFormat.EXACT_DATE:
+                date = prettyPrintDate(form.date, form.dateSelectValue);
+                break;
+            default:
+                break;
+        }
+
+        let deactivatedDate = (
+            <span className="missing-attribute">NONE</span>
+        );
+        switch (form.deactivatedDateSelectValue) {
+            case DateFormat.YEAR:
+                if (form.deactivatedYear) {
+                    deactivatedDate = prettyPrintDate(`${form.deactivatedYear}`, form.deactivatedDateSelectValue);
+                }
+                break;
+            case DateFormat.MONTH_YEAR:
+                if (form.deactivatedYear) {
+                    deactivatedDate = prettyPrintDate(`${form.deactivatedYear}-${form.deactivatedMonth}`, form.deactivatedDateSelectValue);
+                }
+                break;
+            case DateFormat.EXACT_DATE:
+                deactivatedDate = prettyPrintDate(form.deactivatedDate, form.deactivatedDateSelectValue);
                 break;
             default:
                 break;
@@ -141,6 +162,16 @@ export default class CreateReviewModal extends React.Component {
                         <div className="attribute">
                             <span className="font-weight-bold">Date:&nbsp;</span>
                             {date}
+                        </div>
+                        <div className="attribute">
+                            <span className="font-weight-bold">Un-installed Date:&nbsp;</span>
+                            {deactivatedDate}
+                        </div>
+                        <div className="attribute">
+                            <span className="font-weight-bold">Un-installed Reason:&nbsp;</span>
+                            {form.deactivatedComment ? form.deactivatedComment : (
+                                <span className="missing-attribute">NONE</span>
+                            )}
                         </div>
                         <div className="attribute">
                             <span className="font-weight-bold">**Address:&nbsp;</span>

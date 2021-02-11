@@ -1,6 +1,7 @@
 package com.monumental.models.suggestions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.monumental.models.DateFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,24 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
 
     @Column(name = "date")
     private String date;
+
+    @Column(name = "date_format")
+    private DateFormat dateFormat;
+
+    @Column(name = "deactivatedYear")
+    private String deactivatedYear;
+
+    @Column(name = "deactivatedMonth")
+    private String deactivatedMonth;
+
+    @Column(name = "deactivatedDate")
+    private String deactivatedDate;
+
+    @Column(name = "deactivated_date_format")
+    private DateFormat deactivatedDateFormat;
+
+    @Column(name = "deactivatedComment")
+    private String deactivatedComment;
 
     @Column(name = "artist")
     private String artist;
@@ -190,6 +209,22 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         this.date = date;
     }
 
+    public DateFormat getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public DateFormat getDeactivatedDateFormat() {
+        return deactivatedDateFormat;
+    }
+
+    public void setDeactivatedDateFormat(DateFormat deactivatedDateFormat) {
+        this.deactivatedDateFormat = deactivatedDateFormat;
+    }
+
     public String getArtist() {
         return this.artist;
     }
@@ -220,6 +255,38 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
 
     public void setIsTemporary(Boolean isTemporary) {
         this.isTemporary = isTemporary;
+    }
+
+    public String getDeactivatedYear() {
+        return deactivatedYear;
+    }
+
+    public void setDeactivatedYear(String deactivatedYear) {
+        this.deactivatedYear = deactivatedYear;
+    }
+
+    public String getDeactivatedMonth() {
+        return deactivatedMonth;
+    }
+
+    public void setDeactivatedMonth(String deactivatedMonth) {
+        this.deactivatedMonth = deactivatedMonth;
+    }
+
+    public String getDeactivatedDate() {
+        return deactivatedDate;
+    }
+
+    public void setDeactivatedDate(String deactivatedDate) {
+        this.deactivatedDate = deactivatedDate;
+    }
+
+    public String getDeactivatedComment() {
+        return deactivatedComment;
+    }
+
+    public void setDeactivatedComment(String deactivatedComment) {
+        this.deactivatedComment = deactivatedComment;
     }
 
     public String getContributionsJson() {

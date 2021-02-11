@@ -11,6 +11,7 @@ import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
+import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.*;
 import com.monumental.util.search.SearchHelper;
@@ -58,6 +59,12 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     private MonumentTagRepository monumentTagRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private UpdateSuggestionRepository updateSuggestionRepository;
 
     @Autowired
     private GoogleMapsService googleMapsService;
@@ -636,6 +643,8 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     public void deleteMonument(Integer id) {
+        this.favoriteRepository.deleteAllByMonumentId(id);
+        this.updateSuggestionRepository.deleteAllByMonumentId(id);
         this.monumentTagRepository.deleteAllByMonumentId(id);
         this.monumentRepository.deleteById(id);
     }
@@ -811,8 +820,10 @@ public class MonumentService extends ModelService<Monument> {
 
         // Set basic String fields
         this.setBasicFieldsOnMonument(createdMonument, monumentSuggestion.getTitle(), monumentSuggestion.getAddress(),
-                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(), monumentSuggestion.getInscription(),
-                monumentSuggestion.getCity(), monumentSuggestion.getState());
+                monumentSuggestion.getArtist(), monumentSuggestion.getDescription(),
+                monumentSuggestion.getInscription(), monumentSuggestion.getCity(), monumentSuggestion.getState(),
+                monumentSuggestion.getDeactivatedComment(), monumentSuggestion.getDateFormat(),
+                monumentSuggestion.getDeactivatedDateFormat());
 
         // Set the Coordinates
         Point point = MonumentService.createMonumentPoint(monumentSuggestion.getLongitude(), monumentSuggestion.getLatitude());
@@ -822,7 +833,7 @@ public class MonumentService extends ModelService<Monument> {
         // In the situation where only the address OR coordinates were specified, populate the missing field
         this.populateNewMonumentLocation(createdMonument);
 
-        // Set the Date
+        // Set the date
         Date date;
 
         if (!isNullOrEmpty(monumentSuggestion.getDate())) {
@@ -833,6 +844,18 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         createdMonument.setDate(date);
+
+        // Set the deactivatedDate
+        Date deactivatedDate;
+
+        if (!isNullOrEmpty(monumentSuggestion.getDeactivatedDate())) {
+            deactivatedDate = MonumentService.createMonumentDateFromJsonDate(monumentSuggestion.getDeactivatedDate());
+        }
+        else {
+            deactivatedDate = MonumentService.createMonumentDate(monumentSuggestion.getDeactivatedYear(), monumentSuggestion.getDeactivatedMonth());
+        }
+
+        createdMonument.setDeactivatedDate(deactivatedDate);
 
         // Save the initial Monument
         createdMonument = this.monumentRepository.save(createdMonument);
@@ -947,8 +970,10 @@ public class MonumentService extends ModelService<Monument> {
 
         // Update basic String fields
         this.setBasicFieldsOnMonument(currentMonument, updateSuggestion.getNewTitle(), updateSuggestion.getNewAddress(),
-                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(), updateSuggestion.getNewInscription(),
-                updateSuggestion.getNewCity(), updateSuggestion.getNewState());
+                updateSuggestion.getNewArtist(), updateSuggestion.getNewDescription(),
+                updateSuggestion.getNewInscription(), updateSuggestion.getNewCity(), updateSuggestion.getNewState(),
+                updateSuggestion.getNewDeactivatedComment(), updateSuggestion.getNewDateFormat(),
+                updateSuggestion.getNewDeactivatedDateFormat());
 
         // Update the Coordinates
         Point point = MonumentService.createMonumentPoint(updateSuggestion.getNewLongitude(), updateSuggestion.getNewLatitude());
@@ -957,7 +982,7 @@ public class MonumentService extends ModelService<Monument> {
         // In the situation that the address or coordinates were removed or changed, try to populate them with correct data
         this.populateUpdatedMonumentLocation(currentMonument, oldAddress, oldCoordinates);
 
-        // Update the Date
+        // Update the date
         Date date;
 
         if (!isNullOrEmpty(updateSuggestion.getNewDate())) {
@@ -968,6 +993,18 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         currentMonument.setDate(date);
+
+        // Update the deactivatedDate
+        Date deactivatedDate;
+
+        if (!isNullOrEmpty(updateSuggestion.getNewDeactivatedDate())) {
+            deactivatedDate = MonumentService.createMonumentDateFromJsonDate(updateSuggestion.getNewDeactivatedDate());
+        }
+        else {
+            deactivatedDate = MonumentService.createMonumentDate(updateSuggestion.getNewDeactivatedYear(), updateSuggestion.getNewDeactivatedMonth());
+        }
+
+        currentMonument.setDeactivatedDate(deactivatedDate);
 
         // Save the current updates
         currentMonument = this.monumentRepository.save(currentMonument);
@@ -1041,6 +1078,8 @@ public class MonumentService extends ModelService<Monument> {
         this.resetMonumentPrimaryImage(currentMonument);
 
         currentMonument = this.monumentRepository.save(currentMonument);
+
+        deleteImagesFromRepository(allImageIdsToDelete);
 
         /* Materials section */
 
@@ -1152,8 +1191,9 @@ public class MonumentService extends ModelService<Monument> {
 
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
-                    String permanentImageUrl = AwsS3Service.getObjectKey(imageUrl, false);
-                    this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), permanentImageUrl);
+                    String objectKey = AwsS3Service.getObjectKey(imageUrl, false);
+                    String newKey = this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), objectKey);
+                    String permanentImageUrl = AwsS3Service.getObjectUrl(newKey);
 
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
@@ -1183,10 +1223,13 @@ public class MonumentService extends ModelService<Monument> {
      * @param inscription - String for the inscription of the Monument
      * @param city - String for the city of the Monument
      * @param state - String for the state of the Monument
+     * @param deactivatedComment - String describing why a Monument was deactivated
      * @throws IllegalArgumentException - If the specified title is null or empty
      */
     public void setBasicFieldsOnMonument(Monument monument, String title, String address, String artist,
-                                         String description, String inscription, String city, String state) {
+                                         String description, String inscription, String city, String state,
+                                         String deactivatedComment, DateFormat dateFormat,
+                                         DateFormat deactivatedDateFormat) {
         if (monument != null) {
             if (isNullOrEmpty(title)) {
                 throw new IllegalArgumentException("Monument can not have a null or empty title");
@@ -1199,6 +1242,9 @@ public class MonumentService extends ModelService<Monument> {
             monument.setInscription(inscription);
             monument.setCity(city);
             monument.setState(state);
+            monument.setDeactivatedComment(deactivatedComment);
+            monument.setDateFormat(dateFormat);
+            monument.setDeactivatedDateFormat(deactivatedDateFormat);
         }
     }
 
@@ -1277,10 +1323,6 @@ public class MonumentService extends ModelService<Monument> {
      */
     public void deleteMonumentImages(Monument monument, List<Integer> deletedImageIds) {
         if (monument != null && deletedImageIds != null && deletedImageIds.size() > 0) {
-            for (Integer imageId : deletedImageIds) {
-                this.imageRepository.deleteById(imageId);
-            }
-
             // Since the Images may be loaded onto the Monument, we need to remove them before we save
             if (monument.getImages() != null) {
                 List<Image> newImages = new ArrayList<>();
@@ -1290,6 +1332,18 @@ public class MonumentService extends ModelService<Monument> {
                     }
                 }
                 monument.setImages(newImages);
+            }
+        }
+    }
+
+    /**
+     * Delete the specified images from the image repo
+     * @param deletedImageIds - List of IDs of the Images to delete
+     */
+    public void deleteImagesFromRepository(List<Integer> deletedImageIds) {
+        if (deletedImageIds != null && deletedImageIds.size() > 0) {
+            for (Integer imageId : deletedImageIds) {
+                this.imageRepository.deleteById(imageId);
             }
         }
     }

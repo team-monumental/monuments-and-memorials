@@ -25,7 +25,7 @@ class ManageSuggestions extends React.Component {
                                 Manage Suggestions
                             </Card.Title>
                             {mode === 'suggestion' && <>
-                                <Button variant="light" className="h-75" onClick={() => history.goBack()}>Back</Button>
+                                <Button variant="light" className="h-100" onClick={() => history.goBack()}>Back</Button>
                             </>}
                         </Card.Header>
                         <Card.Body>

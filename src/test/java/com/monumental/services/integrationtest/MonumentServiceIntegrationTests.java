@@ -1291,6 +1291,7 @@ public class MonumentServiceIntegrationTests {
         deletedImageIds.add(image.getId());
 
         this.monumentService.deleteMonumentImages(monument, deletedImageIds);
+        this.monumentService.deleteImagesFromRepository(deletedImageIds);
 
         assertEquals(0, monument.getImages().size());
         assertEquals(0, this.imageRepository.findAll().size());
@@ -1330,6 +1331,7 @@ public class MonumentServiceIntegrationTests {
         deletedImageIds.add(image3.getId());
 
         this.monumentService.deleteMonumentImages(monument, deletedImageIds);
+        this.monumentService.deleteImagesFromRepository(deletedImageIds);
 
         assertEquals(1, monument.getImages().size());
         assertEquals(image2.getId(), monument.getImages().get(0).getId());
@@ -1371,6 +1373,7 @@ public class MonumentServiceIntegrationTests {
         deletedImageIds.add(image3.getId());
 
         this.monumentService.deleteMonumentImages(monument, deletedImageIds);
+        this.monumentService.deleteImagesFromRepository(deletedImageIds);
 
         assertEquals(0, monument.getImages().size());
         assertEquals(0, this.imageRepository.findAll().size());
@@ -2750,7 +2753,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.size());
 
         Image image = result.get(0);
-        assertEquals("images/test", image.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image.getUrl());
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
         assertFalse(image.getIsPhotoSphere());
@@ -2775,7 +2778,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.size());
 
         Image image = result.get(0);
-        assertEquals("images/test1", image.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image.getUrl());
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
         assertFalse(image.getIsPhotoSphere());
@@ -2800,7 +2803,7 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, result.size());
 
         Image image = result.get(0);
-        assertEquals("images/test1", image.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image.getUrl());
         assertFalse(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
         assertFalse(image.getIsPhotoSphere());
@@ -2824,19 +2827,19 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, result.size());
 
         Image image1 = result.get(0);
-        assertEquals("images/test1", image1.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertFalse(image1.getIsPhotoSphere());
 
         Image image2 = result.get(1);
-        assertEquals("images/test2", image2.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertFalse(image2.getIsPhotoSphere());
 
         Image image3 = result.get(2);
-        assertEquals("images/test3", image3.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertFalse(image3.getIsPhotoSphere());
@@ -2865,19 +2868,19 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, result.size());
 
         Image image1 = result.get(0);
-        assertEquals("images/test1", image1.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertFalse(image1.getIsPhotoSphere());
 
         Image image2 = result.get(1);
-        assertEquals("images/test2", image2.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertFalse(image2.getIsPhotoSphere());
 
         Image image3 = result.get(2);
-        assertEquals("images/test3", image3.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertFalse(image3.getIsPhotoSphere());
@@ -2906,19 +2909,19 @@ public class MonumentServiceIntegrationTests {
         assertEquals(3, result.size());
 
         Image image1 = result.get(0);
-        assertEquals("images/test1", image1.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
         assertFalse(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertFalse(image1.getIsPhotoSphere());
 
         Image image2 = result.get(1);
-        assertEquals("images/test2", image2.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertFalse(image2.getIsPhotoSphere());
 
         Image image3 = result.get(2);
-        assertEquals("images/test3", image3.getUrl());
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertFalse(image3.getIsPhotoSphere());

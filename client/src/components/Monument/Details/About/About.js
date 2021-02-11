@@ -1,8 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
-import moment from 'moment';
-import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButton';
+import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
 
 /**
  * Renders meta-info about a Monument, such as when it was last updated,
@@ -10,50 +9,8 @@ import ExportToCsvButton from '../../../Export/ExportToCsvButton/ExportToCsvButt
  */
 export default class About extends React.Component {
 
-    csvExportFields = ['Title', 'Artist', 'Date', 'City', 'State', 'Address', 'Coordinates', 'Materials', 'Tags',
-        'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
-
-    buildCsvExportData() {
-        const { monument, contributions, references } = this.props;
-
-        let materialsList = '';
-        let tagsList = '';
-        if (monument.monumentTags && monument.monumentTags.length) {
-            materialsList = monument.monumentTags.filter(monumentTag => monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(',');
-            tagsList = monument.monumentTags.filter(monumentTag => !monumentTag.tag.isMaterial)
-                .map(monumentTag => monumentTag.tag.name).join(',');
-        }
-
-        const prepareArray = (array=[], field) => {
-            return array.map(el => el[field]).join(',');
-        };
-
-        const contributionsList = prepareArray(contributions, 'submittedBy');
-        const referencesList = prepareArray(references, 'url');
-
-        return [{
-            'Title': monument.title,
-            'Artist': monument.artist || '',
-            'Date': monument.date ? prettyPrintDate(monument.date) : '',
-            'City': monument.city || '',
-            'State': monument.state || '',
-            'Address': monument.address || '',
-            'Coordinates': monument.coordinates ?
-                `${monument.coordinates.coordinates[1]}, ${monument.coordinates.coordinates[0]}` :
-                '',
-            'Materials' : materialsList,
-            'Tags': tagsList,
-            'Description': monument.description || '',
-            'Inscription': monument.inscription || '',
-            'Contributors': contributionsList,
-            'References': referencesList,
-            'Last Updated': monument.updatedDate ? prettyPrintDate(monument.updatedDate) : ''
-        }];
-    }
-
     render() {
-        const { monument, contributions, references, header, showHiddenFields, hideExportToCSV, hideTitle } = this.props;
+        const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle, images } = this.props;
 
         let title;
         if (!hideTitle && monument.title) {
@@ -80,7 +37,27 @@ export default class About extends React.Component {
             date = (
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
-                    {prettyPrintDate(monument.date)}
+                    {prettyPrintDate(monument.date, monument.dateFormat)}
+                </div>
+            );
+        }
+
+        let deactivatedDate;
+        if (monument.deactivatedDate) {
+            deactivatedDate = (
+                <div>
+                    <span className="detail-label">Un-installed Date:&nbsp;</span>
+                    {prettyPrintDate(monument.deactivatedDate, monument.deactivatedDateFormat)}
+                </div>
+            );
+        }
+
+        let deactivatedComment;
+        if (monument.deactivatedComment) {
+            deactivatedComment = (
+                <div>
+                    <span className="detail-label">Un-installed Reason:&nbsp;</span>
+                    {monument.deactivatedComment}
                 </div>
             );
         }
@@ -211,6 +188,8 @@ export default class About extends React.Component {
                         {title}
                         {artist}
                         {date}
+                        {deactivatedDate}
+                        {deactivatedComment}
                         {city}
                         {state}
                         {address}
@@ -223,10 +202,13 @@ export default class About extends React.Component {
                         {isActive}
                     </div>
                     <div className="d-flex">
-                        {!hideExportToCSV &&
-                            <ExportToCsvButton className="mt-2" fields={this.csvExportFields}
-                                               data={this.buildCsvExportData()}
-                                               exportTitle={`${monument.title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
+                        {!hideExport &&
+                            <span>
+                                <ExportButtons className="mt-2"
+                                               monuments={[monument]}
+                                               title={monument.title}
+                                               images={images}/>
+                            </span>
                         }
                     </div>
                 </Card.Body>

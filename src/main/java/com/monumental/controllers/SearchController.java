@@ -76,7 +76,7 @@ public class SearchController {
     @GetMapping("/api/search/monuments")
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
                                           @RequestParam(required = false, defaultValue = "1") String page,
-                                          @RequestParam(required = false, defaultValue = "25") String limit,
+                                          @RequestParam(required = false, defaultValue = "10") String limit,
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
                                           @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
@@ -86,18 +86,25 @@ public class SearchController {
                                           @RequestParam(required = false) String start,
                                           @RequestParam(required = false) String end,
                                           @RequestParam(required = false) Integer decade,
-                                          @RequestParam(required = false, defaultValue = "true") Boolean onlyActive)
+                                          @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
+                                          @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
         }
         Date startDate = StringHelper.parseNullableDate(start);
         Date endDate = StringHelper.parseNullableDate(end);
-        return this.monumentService.search(
+        List<Monument> monuments = this.monumentService.search(
                 searchQuery, page, limit, 0.1, latitude, longitude, distance, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
                 startDate, endDate, decade, onlyActive
         );
+
+        if (cascade) {
+            monuments.forEach(favorite -> this.monumentService.initializeAllLazyLoadedCollections(monuments));
+        }
+
+        return monuments;
     }
 
     /**

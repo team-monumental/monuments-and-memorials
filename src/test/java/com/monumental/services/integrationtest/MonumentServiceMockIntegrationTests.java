@@ -1,6 +1,5 @@
 package com.monumental.services.integrationtest;
 
-import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.repositories.ContributionRepository;
@@ -74,7 +73,7 @@ public class MonumentServiceMockIntegrationTests {
     @Autowired
     private ContributionRepository contributionRepository;
 
-    private static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images";
+    private static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images,deactivatedDate,deactivatedComment";
 
     public static Map<String, String> mapping = Map.ofEntries(
             Map.entry("contributions", "contributions"),
@@ -90,7 +89,9 @@ public class MonumentServiceMockIntegrationTests {
             Map.entry("address", "address"),
             Map.entry("tags", "tags"),
             Map.entry("references", "references"),
-            Map.entry("images", "images")
+            Map.entry("images", "images"),
+            Map.entry("deactivatedDate", "deactivatedDate"),
+            Map.entry("deactivatedComment", "deactivatedComment")
     );
 
     public static List<String[]> parseCSVString(String csvRows) {
