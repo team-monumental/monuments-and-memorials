@@ -1,7 +1,7 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
-import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
+import { latitudeDecRegex, longitudeDecRegex, latitudeDegRegex, longitudeDegRegex } from '../../utils/regex-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
@@ -334,16 +334,31 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
+            if (latitude.value.includes('°')) {
+                latitude.value.replaceAll(/\s/g, '');
+                if (false){//(!validator.matches(latitude.value, latitudeDegRegex)) {
+                    latitude.isValid = false;
+                    latitude.message = 'Latitude must be valid';
+                    formIsValid = false;
+                } else {
+                    const latValues = latitude.value.split(/\°|\'|\"/g);
+                    const latDegree = parseFloat(latValues[0]);
+                    const latMin = parseFloat(latValues[1]);
+                    const latSec = parseFloat(latValues[2]);
+
+                    //decimal = degrees + (minutes/60) + (seconds/3600)
+                    let latDecimal = latDegree + (latMin/60) + (latSec/3600);
+                    if (latitude.value.includes('S')) {
+                         latDecimal *= -1;
+                    }
+                    latitude.value = latDecimal.toString();
+                }
+            }
             if (validator.isEmpty(latitude.value)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must not be blank';
                 formIsValid = false;
-            } else if (latitude.value.includes('°')) {
-                latitude.isValid = false;
-                latitude.message = 'Please use decimal coordinates, not degrees. ' +
-                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
-                formIsValid = false;
-            } else if (!validator.matches(latitude.value, latitudeRegex)) {
+            } else if (!validator.matches(latitude.value, latitudeDecRegex)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
                 formIsValid = false;
@@ -358,17 +373,31 @@ export default class CreateOrUpdateForm extends React.Component {
                 }
             }
 
+            if (longitude.value.includes('°')) {
+                longitude.value.replaceAll(/\s/g, '');
+                if (false){//(!validator.matches(longitude.value, longitudeDegRegex)) {
+                    longitude.isValid = false;
+                    longitude.message = 'Longitude must be valid';
+                    formIsValid = false;
+                } else {
+                    const lonValues = longitude.value.split(/\°|\'|\"/g);
+                    const lonDegree = parseFloat(lonValues[0]);
+                    const lonMin = parseFloat(lonValues[1]);
+                    const lonSec = parseFloat(lonValues[2]);
+
+                    //decimal = degrees + (minutes/60) + (seconds/3600)
+                    let lonDecimal = lonDegree + (lonMin/60) + (lonSec/3600);
+                    if (longitude.value.includes('W')) {
+                        lonDecimal *= -1;
+                    }
+                    longitude.value = lonDecimal.toString();
+                }
+            }
             if (validator.isEmpty(longitude.value)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must not be blank';
                 formIsValid = false;
-            } else if (longitude.value.includes('°')) {
-                longitude.isValid = false;
-                longitude.message = 'Please use decimal coordinates, not degrees. ' +
-                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
-                formIsValid = false;
-            }
-            else if (!validator.matches(longitude.value, longitudeRegex)) {
+            } else if (!validator.matches(longitude.value, longitudeDecRegex)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
@@ -602,7 +631,7 @@ export default class CreateOrUpdateForm extends React.Component {
         if (name === 'latitude' || name === 'longitude') {
             const { latitude, longitude } = this.state;
             if (!validator.isEmpty(latitude.value) && !validator.isEmpty(longitude.value) &&
-                validator.matches(latitude.value, latitudeRegex) && validator.matches(longitude.value, longitudeRegex)) {
+                validator.matches(latitude.value, latitudeDecRegex) && validator.matches(longitude.value, longitudeDecRegex)) {
                 this.reverseGeocode();
             }
         }
@@ -1271,6 +1300,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
                                     </div>
                                 </div>
+                                <Form.Label>{`Valid Formats:\n43.084670, -77.674357\n43°05'04.8"N, 77°40'27.7"W\n43°05'04.8", -77°40'27.7"`}</Form.Label>
                                 {address.value && <div className="coordinates-geocode-group">
                                     <div className="coordinates-geocode-row">
                                         <span className="coordinates-geocode-row-label">Address:</span> {address.value}
