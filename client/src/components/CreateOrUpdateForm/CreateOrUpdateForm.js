@@ -395,8 +395,8 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         } else if (locationType.value === 'coordinates') {
             if (latitude.value.includes('°')) {
-                latitude.value.replaceAll(/\s/g, '');
-                if (false){//(!validator.matches(latitude.value, latitudeDegRegex)) {
+                latitude.value = latitude.value.replaceAll(/\s/g, '');
+                if (!validator.matches(latitude.value, latitudeDegRegex)) {
                     latitude.isValid = false;
                     latitude.message = 'Latitude must be valid';
                     formIsValid = false;
@@ -408,7 +408,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
                     //decimal = degrees + (minutes/60) + (seconds/3600)
                     let latDecimal = Math.abs(latDegree) + (latMin/60) + (latSec/3600);
-                    if ((latitude.value.includes('S'))||(latDegree<0)) {
+                    if ((latitude.value.includes('S'))||(latitude.value.includes('s'))||(latDegree<0)) {
                          latDecimal *= -1;
                     }
                     latitude.value = latDecimal.toString();
@@ -434,8 +434,8 @@ export default class CreateOrUpdateForm extends React.Component {
             }
 
             if (longitude.value.includes('°')) {
-                longitude.value.replaceAll(/\s/g, '');
-                if (false){//(!validator.matches(longitude.value, longitudeDegRegex)) {
+                longitude.value = longitude.value.replaceAll(/\s/g, '');
+                if (!validator.matches(longitude.value, longitudeDegRegex)) {
                     longitude.isValid = false;
                     longitude.message = 'Longitude must be valid';
                     formIsValid = false;
@@ -447,7 +447,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
                     //decimal = degrees + (minutes/60) + (seconds/3600)
                     let lonDecimal = Math.abs(lonDegree) + (lonMin/60) + (lonSec/3600);
-                    if ((longitude.value.includes('W'))||(lonDegree<0)) {
+                    if ((longitude.value.includes('W'))||(longitude.value.includes('w'))||(lonDegree<0)) {
                         lonDecimal *= -1;
                     }
                     longitude.value = lonDecimal.toString();
@@ -1555,7 +1555,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
                                     </div>
                                 </div>
-                                <Form.Label>{`Valid Formats:\n43.084670, -77.674357\n43°05'04.8"N, 77°40'27.7"W\n43°05'04.8", -77°40'27.7"`}</Form.Label>
+                                <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W`}</Form.Label>
                                 {address.value && <div className="coordinates-geocode-group">
                                     <div className="coordinates-geocode-row">
                                         <span className="coordinates-geocode-row-label">Address:</span> {address.value}
