@@ -224,10 +224,19 @@ export default class ResourcePage extends React.Component {
                     The longitude and latitude coordinates of the monument or memorial's location.
                 </p>
                 <p>
-                    <span className="important">Format:</span> degrees, using + for Northern Hemisphere, relative to the equator - for Western Hemisphere, relative to the Greenwich Meridian
+                    <span className="important">Format:</span> decimal or degrees minutes seconds, using + for Northern Hemisphere, relative to the equator - for Western Hemisphere, relative to the Greenwich Meridian
                 </p>
                 <p>
-                    <span className="important">Example:</span> 41.835270, -71.461780
+                    <span className="important">Examples:</span>
+                </p>
+                <p>
+                    41.835270, -71.461780
+                </p>
+                <p>
+                    41°50'07.0", -71°27'42.4"
+                </p>
+                <p>
+                    41°50'07.0"N, 71°27'42.4"W
                 </p>
                 <p>
                     To obtain coordinates, use the Google Maps “What’s here?” feature.

@@ -407,8 +407,8 @@ export default class CreateOrUpdateForm extends React.Component {
                     const latSec = parseFloat(latValues[2]);
 
                     //decimal = degrees + (minutes/60) + (seconds/3600)
-                    let latDecimal = latDegree + (latMin/60) + (latSec/3600);
-                    if (latitude.value.includes('S')) {
+                    let latDecimal = Math.abs(latDegree) + (latMin/60) + (latSec/3600);
+                    if ((latitude.value.includes('S'))||(latDegree<0)) {
                          latDecimal *= -1;
                     }
                     latitude.value = latDecimal.toString();
@@ -446,8 +446,8 @@ export default class CreateOrUpdateForm extends React.Component {
                     const lonSec = parseFloat(lonValues[2]);
 
                     //decimal = degrees + (minutes/60) + (seconds/3600)
-                    let lonDecimal = lonDegree + (lonMin/60) + (lonSec/3600);
-                    if (longitude.value.includes('W')) {
+                    let lonDecimal = Math.abs(lonDegree) + (lonMin/60) + (lonSec/3600);
+                    if ((longitude.value.includes('W'))||(lonDegree<0)) {
                         lonDecimal *= -1;
                     }
                     longitude.value = lonDecimal.toString();
