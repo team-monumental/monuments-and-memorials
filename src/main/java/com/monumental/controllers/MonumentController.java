@@ -80,7 +80,10 @@ public class MonumentController {
         if (cascade) {
             this.monumentService.initializeAllLazyLoadedCollections(monument);
         }
-        rollbar.info("Retrieved monument!");
+
+        // this requires committing to a rollbar paid plan because it will greatly increase out event volume.
+        // rollbar.info("Retrieved monument!");
+
         return monument;
     }
 
@@ -138,6 +141,9 @@ public class MonumentController {
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Map<String, Boolean> deleteMonument(@PathVariable("id") Integer id) {
         this.monumentService.deleteMonument(id);
+
+        rollbar.info("Deleted monument " + id + "!");
+
         return Map.of("success", true);
     }
 
@@ -173,6 +179,9 @@ public class MonumentController {
     public Monument createMonument(@RequestBody CreateMonumentSuggestion createSuggestion) {
         createSuggestion.setIsApproved(true);
         createSuggestion = this.createSuggestionRepository.save(createSuggestion);
+
+        rollbar.info("Created monument!");
+
         return this.monumentService.createMonument(createSuggestion);
     }
 
@@ -199,6 +208,9 @@ public class MonumentController {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
+
+        rollbar.info("Updated monument!");
+
         return this.monumentService.updateMonument(updateSuggestion);
     }
 }
