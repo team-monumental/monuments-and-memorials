@@ -24,6 +24,7 @@ export default class Monument extends React.Component {
         if (relatedMonuments && relatedMonuments.length) {
             relatedMonuments = relatedMonuments.filter(relatedMonument => relatedMonument.id !== monument.id);
         }
+        console.log(monument.bruh.bruh)
         if (!monument) return (<div/>);
 
         return (
