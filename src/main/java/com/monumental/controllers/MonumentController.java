@@ -147,7 +147,6 @@ public class MonumentController {
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Map<String, Boolean> deleteMonument(@PathVariable("id") Integer id) {
         this.monumentService.deleteMonument(id);
-        rollbar.info("Deleted monument " + id + "!");
         return Map.of("success", true);
     }
 
@@ -183,9 +182,7 @@ public class MonumentController {
     public Monument createMonument(@RequestBody CreateMonumentSuggestion createSuggestion) {
         createSuggestion.setIsApproved(true);
         createSuggestion = this.createSuggestionRepository.save(createSuggestion);
-        Monument monument = this.monumentService.createMonument(createSuggestion);
-        rollbar.info("Created monument" + monument.getId() + "!");
-        return monument;
+        return this.monumentService.createMonument(createSuggestion);
     }
 
     /**
@@ -211,8 +208,6 @@ public class MonumentController {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
-        Monument updatedMonument = this.monumentService.updateMonument(updateSuggestion);
-        rollbar.info("Updated monument" + updatedMonument.getId() + "!");
-        return updatedMonument;
+        return this.monumentService.updateMonument(updateSuggestion);
     }
 }
