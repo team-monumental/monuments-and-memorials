@@ -41,18 +41,14 @@ public class FavoriteService {
      * @throws UnauthorizedException - If not logged in
      */
     public Favorite getFavoriteByMonumentIdAndUserId(Integer monumentId, Integer userId)
-            throws ResourceNotFoundException, UnauthorizedException {
+            throws UnauthorizedException {
         User currentUser = this.userService.getCurrentUser();
 
         this.userService.requireUserExistsIfNotNull(userId);
 
-        Favorite favorite = userId == null ?
+        return userId == null ?
                 this.favoriteRepository.getByUserIdAndMonumentId(currentUser.getId(), monumentId) :
                 this.favoriteRepository.getByUserIdAndMonumentId(userId, monumentId);
-
-        if (favorite == null) throw new ResourceNotFoundException();
-
-        return favorite;
     }
 
     /**

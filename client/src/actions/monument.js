@@ -160,10 +160,14 @@ export function fetchFavorite(monumentId) {
     return async dispatch => {
         dispatch(pending(actions.favorite.fetch));
         try {
-            const result = await get(actions.favorite.fetch.uri + '?monumentId=' + monumentId, {returnFullError: true});
+            const result = await get(actions.favorite.fetch.uri + '?monumentId=' + monumentId, {returnFullError: true})
+                .then((text) => text || null)
+                .catch((error) => {
+                    dispatch(success(actions.favorite.fetch, {result: null}));
+                });
             dispatch(success(actions.favorite.fetch, {result: result}));
         } catch (err) {
-            if (err.status === 404) {
+            if (!err || err.status === 404) {
                 dispatch(success(actions.favorite.fetch, {result: null}));
             } else {
                 const message = JSON.parse(await err.text()).message;
