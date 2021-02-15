@@ -2,6 +2,7 @@ import React from 'react';
 import './Gallery.scss';
 import { Modal } from 'react-bootstrap';
 import Pagination from '../../../Pagination/Pagination';
+import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
 
 export default class Gallery extends React.Component {
 
@@ -103,9 +104,11 @@ export default class Gallery extends React.Component {
             return;
         }
         const selectedImage = images[selectedImageIndex];
+        const imageFileName = selectedImage ? getS3ImageNameFromObjectUrl(selectedImage.url) : 'None';
+        const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
         return (
-            <div className="image-wrapper">
-                <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}}/>
+            <div className="image-wrapper" role="img" aria-label={`Image: ${imageName}`}>
+                <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}} />
                 {this.renderAnimation()}
                 <div className="overlay" onClick={() => this.openModal(selectedImage)}>
                     <i className="material-icons">
@@ -160,6 +163,8 @@ export default class Gallery extends React.Component {
         const { modalOpen, modalImageIndex } = this.state;
         const { images } = this.props;
         const selectedImage = images[modalImageIndex];
+        const imageFileName = selectedImage ? getS3ImageNameFromObjectUrl(selectedImage.url) : 'None';
+        const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
         return (
             <div onClick={e => e.stopPropagation()}>
                 <Modal show={modalOpen} onHide={() => this.closeModal()} className="image-view-modal">
@@ -167,7 +172,7 @@ export default class Gallery extends React.Component {
                         Image {modalImageIndex + 1} of {images.length}
                     </Modal.Header>
                     <Modal.Body>
-                        <img src={selectedImage.url} alt="large"/>
+                        <img src={selectedImage.url} alt={`Image: ${imageName}`} />
                         {/*<p className="caption">Image description...</p>*/}
                     </Modal.Body>
                     <Modal.Footer className="d-flex justify-content-center">
