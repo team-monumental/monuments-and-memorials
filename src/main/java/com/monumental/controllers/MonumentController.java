@@ -130,7 +130,13 @@ public class MonumentController {
     public Monument updateMonumentIsActive(@PathVariable("id") Integer id, @RequestBody ToggleIsActiveRequest request) {
         Monument monument = this.monumentRepository.getOne(id);
         monument.setIsActive(request.isActive);
-        return this.monumentRepository.save(monument);
+        Monument updatedMonument = this.monumentRepository.save(monument);
+        if (request.isActive) {
+            rollbar.info("Activated monument" + updatedMonument.getId() + "!");
+        } else {
+            rollbar.info("Deactivated monument" + updatedMonument.getId() + "!");
+        }
+        return updatedMonument;
     }
 
     /**
@@ -141,9 +147,7 @@ public class MonumentController {
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Map<String, Boolean> deleteMonument(@PathVariable("id") Integer id) {
         this.monumentService.deleteMonument(id);
-
         rollbar.info("Deleted monument " + id + "!");
-
         return Map.of("success", true);
     }
 
@@ -179,10 +183,9 @@ public class MonumentController {
     public Monument createMonument(@RequestBody CreateMonumentSuggestion createSuggestion) {
         createSuggestion.setIsApproved(true);
         createSuggestion = this.createSuggestionRepository.save(createSuggestion);
-
-        rollbar.info("Created monument!");
-
-        return this.monumentService.createMonument(createSuggestion);
+        Monument monument = this.monumentService.createMonument(createSuggestion);
+        rollbar.info("Created monument" + monument.getId() + "!");
+        return monument;
     }
 
     /**
@@ -208,9 +211,8 @@ public class MonumentController {
         updateSuggestion.setMonument(monument);
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
-
-        rollbar.info("Updated monument!");
-
-        return this.monumentService.updateMonument(updateSuggestion);
+        Monument updatedMonument = this.monumentService.updateMonument(updateSuggestion);
+        rollbar.info("Updated monument" + updatedMonument.getId() + "!");
+        return updatedMonument;
     }
 }
