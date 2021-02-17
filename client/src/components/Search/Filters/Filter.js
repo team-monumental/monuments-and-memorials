@@ -1,7 +1,7 @@
 import React from 'react';
 import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
 import './Filters.scss';
-import search from '../../../utils/search';
+import search from '../../../utils/new-search';
 import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
 import DateFilter from './FilterTypes/DateFilter/DateFilter'
 import 'rc-slider/assets/index.css';

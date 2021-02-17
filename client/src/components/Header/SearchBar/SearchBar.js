@@ -4,8 +4,8 @@ import { Button, Form } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from './TextSearch/TextSearch';
-
-import newSearch from '../../../utils/new-search';
+import LocationSearch from './LocationSearch/LocationSearch';
+import search from '../../../utils/search';
 
 /**
  * Root presentational component for the search bar, including text and location searching
@@ -43,7 +43,12 @@ class SearchBar extends React.Component {
 
     async handleTextSearchClear() {
         await this.setState({textSearchQuery: ''});
-    }    
+    }
+
+    async handleLocationSearchSelect(lat, lon, address) {
+        await this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
+        this.search();
+    }
 
     handleKeyDown(event) {
         if (event.key === 'Enter') this.search();
@@ -52,7 +57,7 @@ class SearchBar extends React.Component {
     search() {
         const { history, onCloseModal, uri } = this.props;
         let { textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter } = this.state;
-        newSearch({
+        search({
             q: textSearchQuery,
             lat: locationLat,
             lon: locationLon,
@@ -65,7 +70,7 @@ class SearchBar extends React.Component {
     }
 
     render() {
-        const { textSearchQuery } = this.state;
+        const { textSearchQuery, locationAddress } = this.state;
         return (
             <Form inline className="search-bar">
                 <TextSearch value={textSearchQuery}
@@ -73,7 +78,9 @@ class SearchBar extends React.Component {
                             className="form-control form-control-sm"
                             onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
                             onClear={() => this.handleTextSearchClear()}/>
-                
+                <LocationSearch value={locationAddress}
+                                className="form-control form-control-sm"
+                                onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}/>
                 <Button variant="primary btn-sm" className="search-button" onClick={() => this.search()}>Search</Button>
             </Form>
         )

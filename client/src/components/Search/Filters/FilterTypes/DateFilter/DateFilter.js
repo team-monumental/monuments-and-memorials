@@ -16,9 +16,12 @@ export default class DateFilter extends React.Component {
             params:{
                 decade: data.params.decade || null,
                 start: data.params.start || null, //TODO - make date dynamic
-                end: data.params.end || null
-            },
+                end: data.params.end || null,
+                activeStart: 1870,
+                activeEnd: 1960
 
+            },
+            sliderValues: [1870, 1960],
             filterMode: data.config.filterMode || Mode.NONE,
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
@@ -39,6 +42,7 @@ export default class DateFilter extends React.Component {
         });
         onChange(this.state.params)
     }
+
 
     async handleDateFilter(type, value) {
         switch (type) {
@@ -66,6 +70,10 @@ export default class DateFilter extends React.Component {
             await this.handleFilterChange('start', null);
             this.handleFilterChange('end', null);
         }
+        if (mode !== Mode.SLIDER) {
+            await this.handleFilterChange('activeStart', null);
+            this.handleFilterChange('activeEnd', null);
+        }
     }
 
     async handleRangeChange(type, value) {
@@ -76,6 +84,15 @@ export default class DateFilter extends React.Component {
         }
         this.handleDateFilter(Mode.RANGE, [this.state.dateFilterStart, this.state.dateFilterEnd]);
     }
+
+    async handleSliderChange(value){
+        await this.handleFilterChange('activeStart', value[0] )
+        this.handleFilterChange('activeEnd', value[1])
+    }
+
+    onSliderChange = value => {
+        this.handleSliderChange(value);
+      };
 
     async removeFilter(){
         const {onRemove} = this.props
@@ -141,8 +158,9 @@ export default class DateFilter extends React.Component {
             <div className="d-flex align-items-center">
                 <span className="mr-2">Active in</span>
                 <div className="slider">
-                    <Range allowCross={false} min={1870} max={2020} step={10} defaultValue={[1870, 1960]} marks={marks}
-                        handleStyle={{ borderColor: '#42b883', backgroundColor: '#42b883', borderRadius: '0%', width: '6px', height: '18px' }} />
+                    <Range value={ [this.state.params.activeStart, this.state.params.activeEnd]} allowCross={false} min={1870} max={2020} step={10} defaultValue={[1870, 1960]} marks={marks}
+                        handleStyle={{ borderColor: '#42b883', backgroundColor: '#42b883', borderRadius: '0%', width: '6px', height: '18px' }}
+                        onChange={this.onSliderChange} />
                 </div>
             </div>
         )
@@ -168,8 +186,8 @@ export default class DateFilter extends React.Component {
 
         return ( 
             <div className="filter-body" >
-                <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.removeFilter()}>
-                    <i className="material-icons ">clear</i>
+                <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.handleTypeChange(Mode.NONE)}>
+                    <i className="material-icons ">restart_alt</i>
                 </button>
                 <div className="d-flex pt-3 pb-3 align-items-center">
                     <Form.Control as="select" className="min-width-select mr-2"

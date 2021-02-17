@@ -87,8 +87,8 @@ public class SearchController {
                                           @RequestParam(required = false) String end,
                                           @RequestParam(required = false) Integer decade,
                                           @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
-                                          @RequestParam(required = false) String sliderStart,
-                                          @RequestParam(required = false) String sliderEnd,
+                                          @RequestParam(required = false) Integer activeStart,
+                                          @RequestParam(required = false) Integer activeEnd,
                                           @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
@@ -96,12 +96,10 @@ public class SearchController {
         }
         Date startDate = StringHelper.parseNullableDate(start);
         Date endDate = StringHelper.parseNullableDate(end);
-        Date sliderStartDate = StringHelper.parseNullableDate(start);
-        Date sliderEndDate = StringHelper.parseNullableDate(end);
         List<Monument> monuments = this.monumentService.search(
                 searchQuery, page, limit, 0.1, latitude, longitude, distance, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
-                startDate, endDate, decade, onlyActive, sliderStartDate, sliderEndDate
+                startDate, endDate, decade, onlyActive, activeStart, activeEnd
         );
 
         if (cascade) {
@@ -125,19 +123,18 @@ public class SearchController {
                                        @RequestParam(required = false) String end,
                                        @RequestParam(required = false) Integer decade,
                                        @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
-                                       @RequestParam(required = false) String activeStart,
-                                       @RequestParam(required = false) String activeEnd)
+                                       @RequestParam(required = false) Integer activeStart,
+                                       @RequestParam(required = false) Integer activeEnd)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
         }
         Date startDate = StringHelper.parseNullableDate(start);
-        Date endDate = StringHelper.parseNullableDate(end);
-        Date startActiveDate = StringHelper.parseNullableDate(start);
-        Date endActiveDate = StringHelper.parseNullableDate(end);
+        Date endDate = StringHelper.parseNullableDate(end); 
+
         return this.monumentService.countSearchResults(
             searchQuery, latitude, longitude, distance, tags, materials,
-            startDate, endDate, decade, onlyActive, startActiveDate, endActiveDate
+            startDate, endDate, decade, onlyActive, activeStart, activeEnd
         );
     }
 

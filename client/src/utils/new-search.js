@@ -1,7 +1,7 @@
 import * as QueryString from 'query-string';
-export default function newSearch(changedParams, history, uri = '/search') {
+export default function search(changedParams, history, uri = '/search') {
+    console.log('new-search')
     const params = {
-        ...QueryString.parse(history.location.search),
         ...changedParams
     };
     for (let param in params) {

@@ -115,12 +115,12 @@ export default class LocationSearch extends React.Component {
                 <option value="25">Within 25 miles</option>
                 <option value="50">Within 50 miles</option>
                 <option value="100">Within 100 miles</option>
+                <option value="250">Within 250 miles</option>
             </Form.Control>
         ) : null;
 
         return (
             <div className="location-filter">
-                <span className="mr-1">Location</span>
                 <PlacesAutocomplete
                     value={searchQuery}
                     onChange={newSearchQuery => this.handleChange(newSearchQuery)}

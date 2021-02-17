@@ -245,7 +245,7 @@ public class MonumentService extends ModelService<Monument> {
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double threshold, Double latitude, Double longitude, Double distance,
                                   List<String> tags, List<String> materials, SortType sortType, Date start, Date end,
-                                  Integer decade, boolean onlyActive, Date activeStart, Date activeEnd) {
+                                  Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -320,7 +320,7 @@ public class MonumentService extends ModelService<Monument> {
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double threshold, Double latitude,
                                  Double longitude, Double distance, List<String> tags, List<String> materials,
-                                 SortType sortType, Date start, Date end, Integer decade, boolean onlyActive, Date activeStart, Date activeEnd) {
+                                 SortType sortType, Date start, Date end, Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
@@ -342,10 +342,10 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Count the total number of results for a Monument search
-     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, List, List, SortType, Date, Date, Integer, boolean, Date, Date)
+     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, List, List, SortType, Date, Date, Integer, boolean, Integer, Integer)
      */
     public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
-                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade, boolean onlyActive, Date activeStart, Date activeEnd) {
+                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
@@ -655,8 +655,10 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     @SuppressWarnings("unchecked")
-    private Predicate buildActiveDateRangeQuery(CriteriaBuilder builder, Root root, Date start, Date end) {
-        return builder.and(builder.lessThanOrEqualTo(root.<Date>get("endDate"), end), builder.greaterThanOrEqualTo(root.<Date>get("date"), start));
+    private Predicate buildActiveDateRangeQuery(CriteriaBuilder builder, Root root, Integer start, Integer end) {
+        Date dStart = new GregorianCalendar(start, Calendar.JANUARY, 1).getTime();
+        Date dEnd = new GregorianCalendar(end + 9, Calendar.DECEMBER, 31).getTime();
+        return builder.between(root.get("date"), dStart, dEnd);
     }
     /**
      * Gathers the various statistics related to Monuments for the About Page

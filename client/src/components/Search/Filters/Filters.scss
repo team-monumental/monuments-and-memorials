@@ -8,22 +8,25 @@
 
 
 .filter-body {
-    border-bottom: 1px solid #CED4DA ;
     display: flex;
     flex: 90%;
+    .clear-button{
+        background-color: white;
+        border: none;
+        float: right;
+    } 
 }
+
 .clear-filters {
-    display: inline-flex;
     float: right;
     padding: 0 .5em;
     button{
         color: white;
         border: none;
-        font-size: 17px;
+        font-size: 15px;
         border-radius: 10%;
         padding-bottom:3px;
     }
-    
 }
 
 .filter-header {
@@ -49,13 +52,9 @@
     align-items: center;
     padding: 0 .5em;
     cursor: pointer;
-    i{
-        opacity: 70%;
-    }
     span{ 
         padding-top: 2px;
         margin-left: 3px;
-        opacity: 60%;
         font-size: 15px;
     }
     
@@ -65,11 +64,10 @@
     display: flex;
     width: 100%;
     color: white;
-    background-color: #35495E;
-    border-bottom: 2px solid;
+    background-color: #585b5e;
     p{
         margin: auto;
-        font-size: 20px;
+        font-size: 16px;
         
         text-align: center;
     }
@@ -78,8 +76,40 @@
 .tags-row {
     display: inline-flex;
     width: 100%;
+    border-bottom: 1px solid #CED4DA;
 }
 
 .tags-col {
     width: 50%;
+
+}
+
+.text-search-header {
+    display: inline-flex;
+    width: 100%;
+    padding: .3rem;
+    border-top: 1px solid #CED4DA;
+    .search-button {
+        float: right;
+        height: 2.5rem;
+        margin-left: .5em;
+        margin-right: .3em;
+        align-self: center;
+        span{
+            font-size: 15px;
+        }
+    }
+}
+
+.location-search-header {
+    display: inline-flex;
+    width: 100%;
+    padding-left: .3rem;
+}
+
+
+.location-row {
+    display: inline-flex;
+    width: 100%;
+    padding-left: .3em;
 }
