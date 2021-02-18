@@ -78,6 +78,14 @@
     width: 100%;
     border-bottom: 1px solid #CED4DA;
 }
+.tag-link {
+    display: inline-flex;
+    width: 100%;
+    border-bottom: 1px solid #CED4DA;
+    a{
+        margin:auto;
+    }
+}
 
 .tags-col {
     width: 50%;
