@@ -241,7 +241,6 @@ export default class ResourcePage extends React.Component {
                 <p>
                     To obtain coordinates, use the Google Maps “What’s here?” feature.
                 </p>
-                <img src="/resources/how-to-convert-degrees.png" className="example-image" alt="How To Obtain Coordinates"/>
                 <p>
                     Or, input address here: <a href="https://www.latlong.net/">https://www.latlong.net/</a>
                 </p>

@@ -354,6 +354,22 @@ export default class CreateOrUpdateForm extends React.Component {
             isTemporary });
     }
 
+    convertCoordinate(coordinate){
+        const values = coordinate.value.split(/\°|\'|\"/g);
+        const degree = parseFloat(values[0]);
+        const min = parseFloat(values[1]);
+        const sec = parseFloat(values[2]);
+
+        //decimal = degrees + (minutes/60) + (seconds/3600)
+        let decimal = Math.abs(degree) + (min/60) + (sec/3600);
+        if ((coordinate.value.includes('W'))||(coordinate.value.includes('w'))
+            ||(coordinate.value.includes('S'))||(coordinate.value.includes('s'))
+            ||(degree<0)) {
+            decimal *= -1;
+        }
+        return decimal.toString();
+    }
+
     /**
      * Validates the Form
      * If any of the inputs are invalid, the entire Form is considered invalid
@@ -401,17 +417,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     latitude.message = 'Latitude must be valid';
                     formIsValid = false;
                 } else {
-                    const latValues = latitude.value.split(/\°|\'|\"/g);
-                    const latDegree = parseFloat(latValues[0]);
-                    const latMin = parseFloat(latValues[1]);
-                    const latSec = parseFloat(latValues[2]);
-
-                    //decimal = degrees + (minutes/60) + (seconds/3600)
-                    let latDecimal = Math.abs(latDegree) + (latMin/60) + (latSec/3600);
-                    if ((latitude.value.includes('S'))||(latitude.value.includes('s'))||(latDegree<0)) {
-                         latDecimal *= -1;
-                    }
-                    latitude.value = latDecimal.toString();
+                    latitude.value = this.convertCoordinate(latitude)
                 }
             }
             if (validator.isEmpty(latitude.value)) {
@@ -440,17 +446,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     longitude.message = 'Longitude must be valid';
                     formIsValid = false;
                 } else {
-                    const lonValues = longitude.value.split(/\°|\'|\"/g);
-                    const lonDegree = parseFloat(lonValues[0]);
-                    const lonMin = parseFloat(lonValues[1]);
-                    const lonSec = parseFloat(lonValues[2]);
-
-                    //decimal = degrees + (minutes/60) + (seconds/3600)
-                    let lonDecimal = Math.abs(lonDegree) + (lonMin/60) + (lonSec/3600);
-                    if ((longitude.value.includes('W'))||(longitude.value.includes('w'))||(lonDegree<0)) {
-                        lonDecimal *= -1;
-                    }
-                    longitude.value = lonDecimal.toString();
+                    longitude.value = this.convertCoordinate(longitude)
                 }
             }
             if (validator.isEmpty(longitude.value)) {
