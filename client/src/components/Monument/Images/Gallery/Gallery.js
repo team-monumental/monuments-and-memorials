@@ -104,10 +104,9 @@ export default class Gallery extends React.Component {
             return;
         }
         const selectedImage = images[selectedImageIndex];
-        const imageFileName = selectedImage ? getS3ImageNameFromObjectUrl(selectedImage.url) : 'None';
-        const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
+        const ariaLabel = this.getAltText(selectedImage)
         return (
-            <div className="image-wrapper" role="img" aria-label={`Image: ${imageName}`}>
+            <div className="image-wrapper" role="img" aria-label={ariaLabel}>
                 <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}} />
                 {this.renderAnimation()}
                 <div className="overlay" onClick={() => this.openModal(selectedImage)}>
@@ -163,8 +162,7 @@ export default class Gallery extends React.Component {
         const { modalOpen, modalImageIndex } = this.state;
         const { images } = this.props;
         const selectedImage = images[modalImageIndex];
-        const imageFileName = selectedImage ? getS3ImageNameFromObjectUrl(selectedImage.url) : 'None';
-        const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
+        const altText = this.getAltText(selectedImage)
         return (
             <div onClick={e => e.stopPropagation()}>
                 <Modal show={modalOpen} onHide={() => this.closeModal()} className="image-view-modal">
@@ -172,7 +170,7 @@ export default class Gallery extends React.Component {
                         Image {modalImageIndex + 1} of {images.length}
                     </Modal.Header>
                     <Modal.Body>
-                        <img src={selectedImage.url} alt={`Image: ${imageName}`} />
+                        <img src={selectedImage.url} alt={altText} />
                         {/*<p className="caption">Image description...</p>*/}
                     </Modal.Body>
                     <Modal.Footer className="d-flex justify-content-center">
@@ -183,5 +181,13 @@ export default class Gallery extends React.Component {
                 </Modal>
             </div>
         )
+    }
+
+    getAltText(image) {
+        const { tags } = this.props;
+        const imageFileName = image ? getS3ImageNameFromObjectUrl(image.url) : 'None';
+        const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
+        let tagsStrings = tags.map(tag => tag.name)
+        return `${imageName}:  a representation of ${tagsStrings}`
     }
 }
