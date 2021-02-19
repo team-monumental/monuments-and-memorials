@@ -367,7 +367,7 @@ export default class CreateOrUpdateForm extends React.Component {
             ||(degree<0)) {
             decimal *= -1;
         }
-        return decimal.toString();
+        return decimal.toFixed(6);
     }
 
     /**
@@ -792,7 +792,8 @@ export default class CreateOrUpdateForm extends React.Component {
         if (name === 'latitude' || name === 'longitude') {
             const { latitude, longitude } = this.state;
             if (!validator.isEmpty(latitude.value) && !validator.isEmpty(longitude.value) &&
-                validator.matches(latitude.value, latitudeDecRegex) && validator.matches(longitude.value, longitudeDecRegex)) {
+                (validator.matches(latitude.value, latitudeDecRegex)||validator.matches(latitude.value, latitudeDegRegex)) &&
+                (validator.matches(longitude.value, longitudeDecRegex)||validator.matches(longitude.value, longitudeDegRegex))) {
                 this.reverseGeocode();
             }
         }
@@ -800,7 +801,12 @@ export default class CreateOrUpdateForm extends React.Component {
 
     async reverseGeocode() {
         const { latitude, longitude, previousCoordinates } = this.state;
-        const coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        let coordinates = {};
+        if (longitude.value.includes('°')) {
+            coordinates = {lat: parseFloat(this.convertCoordinate(latitude)), lng: parseFloat(this.convertCoordinate(longitude))};
+        } else {
+            coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        }
         // Avoid doing duplicate requests
         if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
             return;
