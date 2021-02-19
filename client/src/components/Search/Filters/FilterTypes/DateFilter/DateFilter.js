@@ -196,8 +196,8 @@ export default class DateFilter extends React.Component {
                         <option value={Mode.NONE}>None</option>
                         <option value={Mode.RANGE}>Created(range)</option>
                         <option value={Mode.DECADE}>Created(decade)</option>
-                        {//<option value={Mode.SLIDER}>Active(slider)</option>
-                        }
+                        {/* <option value={Mode.SLIDER}>Active(slider)</option> */} 
+                        
                        </Form.Control>
                     {dateFilter}
                 </div>

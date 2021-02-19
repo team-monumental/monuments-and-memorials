@@ -22,7 +22,12 @@ class Filters extends React.Component {
         this.state = {
             filterList: {
                 date: { config: {}, params: {} },
-                location: { config: {}, params: {locationAddress: params.address || ''} },
+                location: { params: {
+                        address: params.address || '',
+                        lat: params.lat || '',
+                        lon: params.lon || '',
+                        d: params.d || '25'
+                    }},
                 tags: { config: {}, params: {} },
                 materials: { config: {}, params: {} },
                 q: {params: { q: params.q || ''}},
@@ -32,8 +37,7 @@ class Filters extends React.Component {
         };
     }
 
-    async removeFilter(type) {
-        console.log(type)
+    async clearFilter(type) {
         await this.setState(state => {
             const daFilters = state.filterList;
             daFilters[type].params = {};
@@ -46,12 +50,12 @@ class Filters extends React.Component {
         await this.setState(state => {
             const daFilters = {
                 date: { config: {filterMode: Mode.NONE}, params: {} },
-                location: { config: {}, params: {} },
+                location: { config: {}, params: {d: '25', address: ''} },
                 tags: { config: {}, params: {} },
                 materials: { config: {}, params: {} },
                 q: {params: {q: ''}}
             }
-            return { filterList: daFilters, textSearchQuery: ''};
+            return { filterList: daFilters};
         })
         this.handleSearch()
     }
@@ -122,15 +126,6 @@ class Filters extends React.Component {
         })
     }
 
-    async handleTextSearchClear() {
-        var updatedState = this.state.filterList.q
-        updatedState = ''
-        this.setState({
-            ...this.state,
-            ...updatedState
-        })
-        this.handleSearch()
-    }
 
     handleKeyDown(event) {
         if (event.key === 'Enter') this.handleSearch();
@@ -143,7 +138,7 @@ class Filters extends React.Component {
         const expandIcon = showFilters ? "remove" : "add";
         let dateMap = (
             <DateFilter 
-                onRemove={() => this.removeFilter('date')}
+                onRemove={() => this.clearFilter('date')}
                 data={filterList.date}
                 decades={decades}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
@@ -158,7 +153,7 @@ class Filters extends React.Component {
                     allowTagCreation={false}
                     onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
                 </TagsSearch>
-                <button className="clear-button" onClick={() => this.removeFilter('tags')}>
+                <button className="clear-button" onClick={() => this.clearFilter('tags')}>
                     <i className="material-icons ">clear</i>
                 </button>
             </div>);
@@ -173,7 +168,7 @@ class Filters extends React.Component {
                     allowTagCreation={false}
                     onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
                 </TagsSearch>
-                <button style={{ backgroundColor: "white", border: "none" }} onClick={() => this.removeFilter('materials')}>
+                <button style={{ backgroundColor: "white", border: "none" }} onClick={() => this.clearFilter('materials')}>
                     <i className="material-icons ">clear</i>
                 </button>
             </div>)
@@ -186,12 +181,14 @@ class Filters extends React.Component {
                         onKeyDown={event => this.handleKeyDown(event)}
                         className="form-control form-control-sm"
                         onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
-                        onClear={() => this.handleTextSearchClear()} />
+                        onClear={() => this.clearFilter('q')} />
                     <Button variant="primary btn-sm" className="search-button" onClick={() => this.handleSearch()}><span>Search  <i className="material-icons ">search</i></span></Button>
                 </div>
                 <div className="location-row">
-                    <LocationSearch value={filterList.location.params.locationAddress}
+                    <LocationSearch value={filterList.location.params.address}
+                        distance={filterList.location.params.d}
                         onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}
+                        onClear={()=> this.clearFilter('location')}
                         changeDistance={(distance) => this.handleChangeDistance(distance)}>
                     </LocationSearch>
                     <div className="clear-filters">

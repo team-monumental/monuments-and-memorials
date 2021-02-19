@@ -18,7 +18,6 @@ export default class LocationSearch extends React.Component {
             searchQuery: props.value,
             sessionToken: '',
             showDistance: true,
-            distance: '25'
         };
     }
 
@@ -30,7 +29,6 @@ export default class LocationSearch extends React.Component {
 
     handleFilterChange(value){
         const {changeDistance} = this.props;
-        this.setState({distance: value});
         changeDistance(value);
     }
 
@@ -58,16 +56,20 @@ export default class LocationSearch extends React.Component {
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
         onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, results[0]);
-        this.setState({showDistance: true, address: address})
+
+        this.setState({showDistance: true, address: address, searchQuery: address})
     }
 
     handleClear() {
+        const {onClear} = this.props;
         this.setState({searchQuery: ''});
+        onClear();
+        
     }
 
     render() {
-        const { searchQuery, showDistance, distance } = this.state;
-        const { className, placeholder, isInvalid } = this.props;
+        const { searchQuery, showDistance } = this.state;
+        const { className, placeholder, isInvalid, distance } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div className="autocomplete-container-filter">
@@ -100,10 +102,6 @@ export default class LocationSearch extends React.Component {
             sessionToken: this.state.sessionToken
         };
 
-        const xStyle = {
-            right: isInvalid ? '1.25em' : '0.5em'
-        }
-
         const distanceFilter = showDistance ? (
             <Form.Control onChange={event => 
                 this.handleFilterChange(event.target.value)} 
@@ -121,17 +119,19 @@ export default class LocationSearch extends React.Component {
 
         return (
             <div className="location-filter">
-                <PlacesAutocomplete
-                    value={searchQuery}
-                    onChange={newSearchQuery => this.handleChange(newSearchQuery)}
-                    onSelect={address => this.handleSelect(address)}
-                    onError={(status, clearSuggestions) => clearSuggestions()}
-                    searchOptions={searchOptions}
-                    highlightFirstSuggestion={true}>
-                    {renderFunc}
-                </PlacesAutocomplete>
-                {searchQuery && <i className="material-icons search-clear" style={xStyle}
-                                   onClick={() => this.handleClear()}>clear</i>}
+                <div className="location-box">
+                    <PlacesAutocomplete
+                        value={searchQuery}
+                        onChange={newSearchQuery => this.handleChange(newSearchQuery)}
+                        onSelect={address => this.handleSelect(address)}
+                        onError={(status, clearSuggestions) => clearSuggestions()}
+                        searchOptions={searchOptions}
+                        highlightFirstSuggestion={true}>
+                        {renderFunc}
+                    </PlacesAutocomplete>
+                    {searchQuery && <div className="loc-clear"><i className="material-icons"
+                                    onClick={() => this.handleClear()}>clear</i></div>}
+                </div>
                 {distanceFilter}
             </div>
         )
