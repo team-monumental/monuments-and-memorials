@@ -33,6 +33,8 @@ import AdminPage from './pages/AdminPage/AdminPage';
 import { Role } from './utils/authentication-util';
 import SuggestionCreatedPage from './pages/SuggestionCreatedPage/SuggestionCreatedPage';
 
+export const RollbarContext = React.createContext({});
+
 class App extends React.Component {
 
     constructor(props) {
@@ -47,7 +49,7 @@ class App extends React.Component {
                     environment: process.env.REACT_APP_ROLLBAR_ENV
                 }
             })
-        };
+        }
     }
 
     componentDidMount() {
@@ -62,7 +64,7 @@ class App extends React.Component {
 
     render() {
         const { history } = this.props;
-        const { headerHeight } = this.state;
+        const { headerHeight, rollbar } = this.state;
         return (
             <div className="App">
                 <Helmet title="Monuments and Memorials"/>
@@ -70,27 +72,29 @@ class App extends React.Component {
                 <ConnectedRouter history={history}>
                     <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
-                        <ErrorHandler>
-                            <Route exact path="/map" component={MapPage}/>
-                            <Route exact path="/" component={HomePage}/>
-                            <Route exact path="/login" component={LoginPage}/>
-                            <Route exact path="/signup" component={SignupPage}/>
-                            <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
-                            <Route path="/search" component={SearchPage}/>
-                            <ProtectedRoute exact path="/create" component={CreateMonumentPage} verifyEmail={true}/>
-                            <Route exact path="/tag-directory" component={TagDirectoryPage}/>
-                            <Route exact path="/about" component={AboutPage}/>
-                            <Route exact path="/resources" component={ResourcePage}/>
-                            <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
-                            <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
-                            <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
-                            <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>
-                            <ProtectedRoute exact path="/account" component={UserPage}/>
-                            <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
-                            <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
-                            <ProtectedRoute path="/panel" component={AdminPage} roles={Role.PARTNER_OR_ABOVE}/>
-                            <ProtectedRoute exact path="/suggestion-created" component={SuggestionCreatedPage}/>
-                        </ErrorHandler>
+                        <RollbarContext.Provider value={rollbar}>
+                            <ErrorHandler>
+                                <Route exact path="/map" component={MapPage}/>
+                                <Route exact path="/" component={HomePage}/>
+                                <Route exact path="/login" component={LoginPage}/>
+                                <Route exact path="/signup" component={SignupPage}/>
+                                <Route path="/monuments/:monumentId/:slug?" component={MonumentPage}/>
+                                <Route path="/search" component={SearchPage}/>
+                                <ProtectedRoute exact path="/create" component={CreateMonumentPage} verifyEmail={true}/>
+                                <Route exact path="/tag-directory" component={TagDirectoryPage}/>
+                                <Route exact path="/about" component={AboutPage}/>
+                                <Route exact path="/resources" component={ResourcePage}/>
+                                <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
+                                <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
+                                <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
+                                <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>
+                                <ProtectedRoute exact path="/account" component={UserPage}/>
+                                <ProtectedRoute exact path="/account/update" component={UpdateUserPage}/>
+                                <Route exact path="/account/update/confirm" component={ConfirmEmailChangePage}/>
+                                <ProtectedRoute path="/panel" component={AdminPage} roles={Role.PARTNER_OR_ABOVE}/>
+                                <ProtectedRoute exact path="/suggestion-created" component={SuggestionCreatedPage}/>
+                            </ErrorHandler>
+                        </RollbarContext.Provider>
                     </div>
                 </ConnectedRouter>
             </div>
