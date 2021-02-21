@@ -1,7 +1,7 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
-import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
+import { latitudeDecRegex, longitudeDecRegex, latitudeDegRegex, longitudeDegRegex } from '../../utils/regex-util';
 import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
@@ -354,6 +354,22 @@ export default class CreateOrUpdateForm extends React.Component {
             isTemporary });
     }
 
+    convertCoordinate(coordinate){
+        const values = coordinate.value.split(/\°|\'|\"/g);
+        const degree = parseFloat(values[0]);
+        const min = parseFloat(values[1]);
+        const sec = parseFloat(values[2]);
+
+        //decimal = degrees + (minutes/60) + (seconds/3600)
+        let decimal = Math.abs(degree) + (min/60) + (sec/3600);
+        if ((coordinate.value.includes('W'))||(coordinate.value.includes('w'))
+            ||(coordinate.value.includes('S'))||(coordinate.value.includes('s'))
+            ||(degree<0)) {
+            decimal *= -1;
+        }
+        return decimal.toFixed(6);
+    }
+
     /**
      * Validates the Form
      * If any of the inputs are invalid, the entire Form is considered invalid
@@ -394,16 +410,21 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
+            if (latitude.value.includes('°')) {
+                latitude.value = latitude.value.replaceAll(/\s/g, '');
+                if (!validator.matches(latitude.value, latitudeDegRegex)) {
+                    latitude.isValid = false;
+                    latitude.message = 'Latitude must be valid';
+                    formIsValid = false;
+                } else {
+                    latitude.value = this.convertCoordinate(latitude)
+                }
+            }
             if (validator.isEmpty(latitude.value)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must not be blank';
                 formIsValid = false;
-            } else if (latitude.value.includes('°')) {
-                latitude.isValid = false;
-                latitude.message = 'Please use decimal coordinates, not degrees. ' +
-                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
-                formIsValid = false;
-            } else if (!validator.matches(latitude.value, latitudeRegex)) {
+            } else if (!validator.matches(latitude.value, latitudeDecRegex)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
                 formIsValid = false;
@@ -418,17 +439,21 @@ export default class CreateOrUpdateForm extends React.Component {
                 }
             }
 
+            if (longitude.value.includes('°')) {
+                longitude.value = longitude.value.replaceAll(/\s/g, '');
+                if (!validator.matches(longitude.value, longitudeDegRegex)) {
+                    longitude.isValid = false;
+                    longitude.message = 'Longitude must be valid';
+                    formIsValid = false;
+                } else {
+                    longitude.value = this.convertCoordinate(longitude)
+                }
+            }
             if (validator.isEmpty(longitude.value)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must not be blank';
                 formIsValid = false;
-            } else if (longitude.value.includes('°')) {
-                longitude.isValid = false;
-                longitude.message = 'Please use decimal coordinates, not degrees. ' +
-                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
-                formIsValid = false;
-            }
-            else if (!validator.matches(longitude.value, longitudeRegex)) {
+            } else if (!validator.matches(longitude.value, longitudeDecRegex)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
@@ -767,7 +792,8 @@ export default class CreateOrUpdateForm extends React.Component {
         if (name === 'latitude' || name === 'longitude') {
             const { latitude, longitude } = this.state;
             if (!validator.isEmpty(latitude.value) && !validator.isEmpty(longitude.value) &&
-                validator.matches(latitude.value, latitudeRegex) && validator.matches(longitude.value, longitudeRegex)) {
+                (validator.matches(latitude.value, latitudeDecRegex)||validator.matches(latitude.value, latitudeDegRegex)) &&
+                (validator.matches(longitude.value, longitudeDecRegex)||validator.matches(longitude.value, longitudeDegRegex))) {
                 this.reverseGeocode();
             }
         }
@@ -775,7 +801,12 @@ export default class CreateOrUpdateForm extends React.Component {
 
     async reverseGeocode() {
         const { latitude, longitude, previousCoordinates } = this.state;
-        const coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        let coordinates = {};
+        if (longitude.value.includes('°')) {
+            coordinates = {lat: parseFloat(this.convertCoordinate(latitude)), lng: parseFloat(this.convertCoordinate(longitude))};
+        } else {
+            coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        }
         // Avoid doing duplicate requests
         if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
             return;
@@ -1526,6 +1557,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
                                     </div>
                                 </div>
+                                <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W`}</Form.Label>
                                 {address.value && <div className="coordinates-geocode-group">
                                     <div className="coordinates-geocode-row">
                                         <span className="coordinates-geocode-row-label">Address:</span> {address.value}
