@@ -80,9 +80,9 @@ export default class BulkUpdateForm extends React.Component{
         onValidationSubmit(this.buildForm());
     }
 
-    submitCreate() {
-        const { onCreateSubmit } = this.props;
-        onCreateSubmit(this.buildForm());
+    submitUpdate() {
+        const { onUpdateSubmit } = this.props;
+        onUpdateSubmit(this.buildForm());
         this.resetForm(true)
     }
 
@@ -248,22 +248,22 @@ export default class BulkUpdateForm extends React.Component{
 
     render() {
         const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults, showCreateResults, term } = this.props;
+        const { showValidationResults, showUpdateResults, term } = this.props;
 
         return (
-            <Card className="bulk-create-form-container">
+            <Card className="bulk-update-form-container">
                 <Card.Header>
                     <Card.Title>
                         Bulk {term} Monuments and Memorials
                     </Card.Title>
                 </Card.Header>
-                {!showFieldMapping && !showValidationResults && !showCreateResults && <>
+                {!showFieldMapping && !showValidationResults && !showUpdateResults && <>
                     {((!fileUpload.csv && !fileUpload.zip) || !fileUpload.isValid) && this.renderFileUpload()}
                     {fileUpload.images.length > 0 && this.renderUploadedFiles()}
                 </>}
-                {showFieldMapping && !showValidationResults && !showCreateResults && this.renderFieldMapping()}
+                {showFieldMapping && !showValidationResults && !showUpdateResults && this.renderFieldMapping()}
                 {showValidationResults && this.renderValidationResults()}
-                {showCreateResults && this.renderCreateResults()}
+                {showUpdateResults && this.renderCreateResults()}
             </Card>
         );
     }
@@ -282,7 +282,7 @@ export default class BulkUpdateForm extends React.Component{
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our{' '}
-                    <a href='/BulkUploadTemplate.csv'>Bulk Upload CSV Template</a>!</span>
+                    <a href='/BulkUploadTemplate.csv'>Bulk Modify CSV Template</a>!</span>
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
@@ -298,7 +298,7 @@ export default class BulkUpdateForm extends React.Component{
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our{' '}
-                    <a href='/BulkUploadZipTemplate.zip'>Bulk Upload Zip Template</a>!</span>
+                    <a href='/BulkUploadZipTemplate.zip'>Bulk Modify Zip Template</a>!</span>
             </p>
             <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">
@@ -476,7 +476,7 @@ export default class BulkUpdateForm extends React.Component{
                     <Button variant="bare" onClick={() => this.resetForm(true)}>
                         Cancel
                     </Button>
-                    <Button onClick={() => this.submitCreate()}>
+                    <Button onClick={() => this.submitUpdate()}>
                         Continue
                     </Button>
                 </Card.Footer>
@@ -548,12 +548,12 @@ export default class BulkUpdateForm extends React.Component{
                 <ExportToCsvButton className="mr-2" fields={this.csvExportFields} data={this.buildCsvExportData(results)}
                                    exportTitle={`Validation Results ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 {warningCount > 0 && errorCount === 0 &&
-                <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
+                <Button variant="warning" className="mr-2" onClick={() => this.submitUpdate()}>
                     Continue With Warnings
                 </Button>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
+                <Button variant="danger" className="mr-2" onClick={() => this.submitUpdate()}>
                     Continue With Errors
                 </Button>
                 }
@@ -572,7 +572,7 @@ export default class BulkUpdateForm extends React.Component{
             <Card.Body>
                 <h5>Success!</h5>
                 <div className="create-results">
-                    {createResult.length} monuments or memorials have been created!<br/>
+                    {createResult.length} monuments or memorials have been updated!<br/>
                     You can view each by following the links below:
                     <ul className="mt-1">
                         {createResult.map(result => (
