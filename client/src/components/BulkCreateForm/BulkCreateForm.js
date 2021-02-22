@@ -465,7 +465,7 @@ export default class BulkCreateForm extends React.Component {
             </>);
         }
 
-        if (errorCount === 0 && warningCount === 0) {
+        if (errorCount === 0 && warningCount === 0 && results.length !== 0) {
             return (<>
                 <Card.Body>
                     We've validated your <code>{fileUpload.zip ? '.zip' : '.csv'}</code> and have found no errors or warnings.
@@ -478,6 +478,22 @@ export default class BulkCreateForm extends React.Component {
                     </Button>
                     <Button onClick={() => this.submitCreate()}>
                         Continue
+                    </Button>
+                </Card.Footer>
+            </>);
+        }
+
+        //Zero monuments error check
+        else if (errorCount === 0 && warningCount === 0 && results.length === 0) {
+            return (<>
+                <Card.Body>
+                    During validation of your <code>{fileUpload.zip ? '.zip' : '.csv'}</code> an unidentified error occurred.
+                    Please check your <code>{fileUpload.zip ? '.zip' : '.csv'}</code> for errors and try again.
+                </Card.Body>
+
+                <Card.Footer className="d-flex justify-content-end">
+                    <Button variant="bare" onClick={() => this.resetForm(true)}>
+                        Cancel
                     </Button>
                 </Card.Footer>
             </>);
