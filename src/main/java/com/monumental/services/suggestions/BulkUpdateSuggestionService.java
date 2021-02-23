@@ -42,13 +42,13 @@ public class BulkUpdateSuggestionService extends ModelService<BulkUpdateMonument
      */
     public List<BulkUpdateMonumentSuggestion> getBulkUpdateMonumentSuggestion() throws UnauthorizedException{
         User currentUser = this.userService.getCurrentUser();
-        List<BulkUpdateMonumentSuggestion> bulkUpdateSuggestions = this.bulkUpdateSuggestionRepository.getAllByUpdatedBy(currentUser);
+        List<BulkUpdateMonumentSuggestion> bulkUpdateSuggestions = this.bulkUpdateSuggestionRepository.getAllByCreatedBy(currentUser);
 
         for (BulkUpdateMonumentSuggestion bulkUpdateSuggestion : bulkUpdateSuggestions) {
             bulkUpdateSuggestion.setUpdateSuggestions(this.updateSuggestionRepository.getAllByBulkUpdateSuggestionId(bulkUpdateSuggestion.getId()));
         }
 
-        return this.bulkUpdateSuggestionRepository.getAllByUpdatedBy(currentUser);
+        return this.bulkUpdateSuggestionRepository.getAllByCreatedBy(currentUser);
     }
 
     /**
