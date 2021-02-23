@@ -157,6 +157,11 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> newTags;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "bulk_update_suggestion_id")
+    private BulkUpdateMonumentSuggestion bulkUpdateSuggestion;
+
     public UpdateMonumentSuggestion() {
 
     }
@@ -503,5 +508,11 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.newTags;
+    }
+
+    public BulkUpdateMonumentSuggestion getBulkUpdateSuggestion() {return this.bulkUpdateSuggestion;}
+
+    public void setBulkUpdateSuggestion(BulkUpdateMonumentSuggestion bulkUpdateSuggestion){
+        this.bulkUpdateSuggestion = bulkUpdateSuggestion;
     }
 }
