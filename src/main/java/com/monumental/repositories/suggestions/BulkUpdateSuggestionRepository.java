@@ -14,9 +14,9 @@ public interface BulkUpdateSuggestionRepository extends JpaRepository<BulkUpdate
 
     /**
      * Get all BulkUpdateMonumentSuggestions created by the specified updatedBy
-     * @param updatedBy - User object to get all of the BulkUpdateMonumentSuggestions that were created by it
+     * @param createdBy - User object to get all of the BulkUpdateMonumentSuggestions that were created by it
      * @return List<BulkUpdateMonumentSuggestions> - List of BulkUpdateMonumentSuggestions created by the specified
      * updatedBy
      */
-    List<BulkUpdateMonumentSuggestion> getAllByUpdatedBy(User updatedBy);
+    List<BulkUpdateMonumentSuggestion> getAllByCreatedBy(User createdBy);
 }
