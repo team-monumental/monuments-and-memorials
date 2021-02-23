@@ -1,7 +1,6 @@
 package com.monumental.services.suggestions;
 
 import com.monumental.exceptions.UnauthorizedException;
-import com.monumental.models.Monument;
 import com.monumental.models.User;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
@@ -29,14 +28,15 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
     private UpdateSuggestionRepository updateSuggestionRepository;
 
     /**
-     * Get all UpdateMonumentSuggestions created by the currently logged in User
+     * Get all UpdateMonumentSuggestions created by the currently logged in User that are not part of a
+     * BulkUpdateMonumentSuggestion
      * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestions created by the currently logged in
-     * User
+     * User that are not part of a BulkUpdateMonumentSuggestion
      * @throws UnauthorizedException - If no User is currently logged in
      */
     public List<UpdateMonumentSuggestion> getUpdateMonumentSuggestions() throws UnauthorizedException {
         User currentUser = this.userService.getCurrentUser();
-        return this.updateSuggestionRepository.getAllByCreatedBy(currentUser);
+        return this.updateSuggestionRepository.getAllByCreatedByAndBulkUpdateSuggestionIsNull(currentUser);
     }
 
     /**
