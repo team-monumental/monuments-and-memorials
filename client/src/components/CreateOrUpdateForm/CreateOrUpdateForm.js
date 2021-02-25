@@ -414,7 +414,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 latitude.value = latitude.value.replaceAll(/\s/g, '');
                 if (!validator.matches(latitude.value, latitudeDegRegex)) {
                     latitude.isValid = false;
-                    latitude.message = 'Latitude must be valid :(';
+                    latitude.message = 'Latitude must be valid';
                     formIsValid = false;
                 } else {
                     latitude.value = this.convertCoordinate(latitude)
@@ -426,7 +426,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             } else if (!validator.matches(latitude.value, latitudeDecRegex)) {
                 latitude.isValid = false;
-                latitude.message = 'Latitude must be valid: '+latitude.value;
+                latitude.message = 'Latitude must be valid';
                 formIsValid = false;
             } else {
                 const latAsDouble = parseFloat(latitude.value);
@@ -443,7 +443,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 longitude.value = longitude.value.replaceAll(/\s/g, '');
                 if (!validator.matches(longitude.value, longitudeDegRegex)) {
                     longitude.isValid = false;
-                    longitude.message = 'Longitude must be valid :(';
+                    longitude.message = 'Longitude must be valid';
                     formIsValid = false;
                 } else {
                     longitude.value = this.convertCoordinate(longitude)
@@ -455,7 +455,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             } else if (!validator.matches(longitude.value, longitudeDecRegex)) {
                 longitude.isValid = false;
-                longitude.message = 'Longitude must be valid: '+ longitude.value;
+                longitude.message = 'Longitude must be valid';
                 formIsValid = false;
             } else {
                 const lonAsDouble = parseFloat(longitude.value);
