@@ -36,7 +36,7 @@ class Filters extends React.Component {
         await this.setState({
             filters: {
                 ...this.state.filters,
-                ...updatedState
+                ...updatedState //check this
             }
         });
 
