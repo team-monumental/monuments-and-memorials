@@ -206,7 +206,7 @@ public class MonumentServiceUnitTests {
         Monument monument = new Monument();
 
         this.monumentService.setBasicFieldsOnMonument(monument, "Title", "Address", "Artist", "Description",
-                "Inscription", "City", "State", "Deactivated Comment", DateFormat.EXACT_DATE, DateFormat.MONTH_YEAR);
+                "Inscription", "City", "State", "Un-installed Comment", DateFormat.EXACT_DATE, DateFormat.MONTH_YEAR);
 
         assertEquals("Title", monument.getTitle());
         assertEquals("Address", monument.getAddress());
@@ -215,7 +215,7 @@ public class MonumentServiceUnitTests {
         assertEquals("Inscription", monument.getInscription());
         assertEquals("City", monument.getCity());
         assertEquals("State", monument.getState());
-        assertEquals("Deactivated Comment", monument.getDeactivatedComment());
+        assertEquals("Un-installed Comment", monument.getDeactivatedComment());
         assertEquals(DateFormat.EXACT_DATE, monument.getDateFormat());
         assertEquals(DateFormat.MONTH_YEAR, monument.getDeactivatedDateFormat());
     }
