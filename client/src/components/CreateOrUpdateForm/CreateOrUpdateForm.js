@@ -355,7 +355,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     convertCoordinate(coordinate){
-        const values = coordinate.value.split(/\°|\'|\"/g);
+        const values = coordinate.value.split(/[°'"]/g);
         const degree = parseFloat(values[0]);
         const min = parseFloat(values[1]);
         const sec = parseFloat(values[2]);
@@ -426,7 +426,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             } else if (!validator.matches(latitude.value, latitudeDecRegex)) {
                 latitude.isValid = false;
-                //latitude.message = 'Latitude must be valid: '+latitude.value;
+                latitude.message = 'Latitude must be valid: '+latitude.value;
                 formIsValid = false;
             } else {
                 const latAsDouble = parseFloat(latitude.value);
@@ -455,7 +455,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             } else if (!validator.matches(longitude.value, longitudeDecRegex)) {
                 longitude.isValid = false;
-                //longitude.message = 'Longitude must be valid: '+ longitude.value;
+                longitude.message = 'Longitude must be valid: '+ longitude.value;
                 formIsValid = false;
             } else {
                 const lonAsDouble = parseFloat(longitude.value);
