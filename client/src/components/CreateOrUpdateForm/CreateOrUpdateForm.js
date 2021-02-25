@@ -355,7 +355,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     convertCoordinate(coordinate){
-        const values = coordinate.value.split(/\°|\'|\"/g);
+        const values = coordinate.value.split(/[°'"]/g);
         const degree = parseFloat(values[0]);
         const min = parseFloat(values[1]);
         const sec = parseFloat(values[2]);
