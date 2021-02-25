@@ -23,7 +23,7 @@ export default class Sidebar extends React.Component {
             {name: 'Bulk Suggest', icon: 'cloud_upload', route: '/panel/bulk', roles: Role.PARTNER},
             {name: 'Bulk Create', icon: 'cloud_upload', route: '/panel/bulk', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Bulk Export', icon: 'cloud_download', route: '/panel/bulk-export', roles: Role.RESEARCHER_OR_ABOVE},
-            //{name: 'Bulk Update', icon: 'account_balance', route: '/panel/bulk-update', roles: Role.RESEARCHER_OR_ABOVE},
+            {name: 'Bulk Modify', icon: 'account_balance', route: '/panel/bulk-modify', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Manage Suggestions', icon: 'description', route: '/panel/manage/suggestions', roles: Role.RESEARCHER_OR_ABOVE, extraDisplay: manageSuggestionsExtraDisplay},
             {name: 'Manage Monuments', icon: 'account_balance', route: '/panel/manage/monuments', roles: Role.RESEARCHER_OR_ABOVE},
             {name: 'Manage Users', icon: 'person', route: '/panel/manage/users', roles: Role.ADMIN}
