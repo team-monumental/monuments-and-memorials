@@ -11,10 +11,20 @@
     display: flex;
     flex: 90%;
     .clear-button{
+        display: flex;
+        align-items: center;
+        margin: 1em 0em 1em 0em;
         background-color: white;
         border: none;
         float: right;
-    } 
+        border-radius: .5em;
+    }
+    .clear-button:focus{
+        outline: none;
+    }
+    .clear-button:active{
+        opacity: 60%;
+    }
 }
 
 .clear-filters {

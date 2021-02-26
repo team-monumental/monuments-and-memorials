@@ -187,7 +187,7 @@ export default class DateFilter extends React.Component {
 
         return ( 
             <div className="filter-body" >
-                <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.handleModeChange(Mode.NONE)}>
+                <button className="clear-button" onClick={() => this.handleModeChange(Mode.NONE)}>
                     <i className="material-icons ">clear</i>
                 </button>
                 <div className="d-flex pt-3 pb-3 align-items-center">

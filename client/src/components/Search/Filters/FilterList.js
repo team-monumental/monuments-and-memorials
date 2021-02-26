@@ -205,7 +205,7 @@ class Filters extends React.Component {
                     allowTagCreation={false}
                     onChange={(addOrRemove, params) => this.handleTagsSearchTagSelect("materials", addOrRemove, params)}>
                 </TagsFilters>
-                <button style={{ backgroundColor: "white", border: "none" }} onClick={() => this.clearTags('materials')}>
+                <button className="clear-button" onClick={() => this.clearTags('materials')}>
                     <i className="material-icons ">clear</i>
                 </button>
             </div>)
