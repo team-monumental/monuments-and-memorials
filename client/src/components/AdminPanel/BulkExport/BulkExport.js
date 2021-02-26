@@ -1,14 +1,12 @@
 import * as React from 'react';
 import './BulkExport.scss';
 import { withRouter } from 'react-router-dom';
-import {Button, Card} from "react-bootstrap";
-import {buildBulkExportData, exportFields} from "../../../utils/export-util";
-import ExportButtons from "../../Export/ExportButtons/ExportButtons";
+import { Button, Card } from "react-bootstrap";
+import ExportButtons from '../../Export/ExportButtons/ExportButtons';
 
 class BulkExport extends React.Component {
     render() {
         const { mode, history, monuments } = this.props;
-        const exportData = buildBulkExportData(monuments)
 
         return (
             <div className="bulk-export">
@@ -18,7 +16,7 @@ class BulkExport extends React.Component {
                             Export All Monuments and Memorials
                         </Card.Title>
                         {mode === 'monument' && <>
-                            <Button variant="light" className="h-75" onClick={() => history.goBack()}>Back</Button>
+                            <Button variant="light" className="h-100" onClick={() => history.goBack()}>Back</Button>
                         </>}
                     </Card.Header>
                     <Card.Body>
@@ -26,8 +24,8 @@ class BulkExport extends React.Component {
                             Bulk export all monument data to a CSV or PDF
                         </p>
                         <div className="export-buttons">
-                            <ExportButtons className="mt-2" fields={exportFields}
-                                           data={exportData}
+                            <ExportButtons className="mt-2"
+                                           monuments={monuments}
                                            title="All Monuments"/>
                         </div>
                     </Card.Body>

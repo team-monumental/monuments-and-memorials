@@ -20,6 +20,16 @@ Ben Smith
 
 AJ Delposen
 
+Ren Chauret
+
+William Schultheis
+
+Dan Wang
+
+Samik Mitra
+
+Brendan Cail
+
 ## Contributing
 
 Contributors are currently limited to students in the software engineering senior project at Rochester Institute of Technology but anyone is welcome to create issues and leave feedback. Anyone may contribute data to this project at https://monuments.us.org.

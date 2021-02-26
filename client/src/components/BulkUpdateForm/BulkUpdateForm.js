@@ -1,5 +1,5 @@
 import React from 'react';
-import './BulkCreateForm.scss';
+import './BulkUpdateForm.scss';
 import { Form, Card, Button } from 'react-bootstrap';
 import validator from 'validator';
 import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
@@ -11,9 +11,9 @@ import { capitalize } from '../../utils/string-util';
 import { Link } from 'react-router-dom';
 
 /**
- * Presentational component for the Form to submit a CSV file for bulk creating/suggesting Monuments
+ * Presentational component for the Form to submit a CSV file for bulk updating Monuments.
  */
-export default class BulkCreateForm extends React.Component {
+export default class BulkUpdateForm extends React.Component{
 
     csvExportFields = ['Row Number', 'Warnings', 'Errors'];
 
@@ -33,15 +33,15 @@ export default class BulkCreateForm extends React.Component {
             mapping: [],
             fields: [
                 {name: 'artist'}, {name: 'title', label: 'Title/Name'}, {name: 'date', label: 'Date Created'},
-                {name: 'deactivatedDate', label: 'Un-installed Date'},
-                {name: 'deactivatedComment', label: 'Un-installed Reason'}, {name: 'latitude'}, {name: 'longitude'},
+                {name: 'deactivatedDate', label: 'Deactivated Date'},
+                {name: 'deactivatedComment', label: 'Deactivation Reason'}, {name: 'latitude'}, {name: 'longitude'},
                 {name: 'city'}, {name: 'state'}, {name: 'address'}, {name: 'description'}, {name: 'inscription'},
                 {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Name'},
                 {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
             ].map(field => {
                 return {
                     label: capitalize(field.name.replace(/_/g, ' ')),
-                    ...field
+                    ... field
                 }
             })
         };
@@ -105,7 +105,7 @@ export default class BulkCreateForm extends React.Component {
             let content = await JSZip.loadAsync(fileUpload.zip);
 
             for (let fileName in content.files) {
-                if (!content.files.hasOwnProperty(fileName) || fileName.startsWith('__MACOSX')) continue;
+                if (!content.files.hasOwnProperty(fileName)) continue;
                 if (fileName.endsWith('.csv')) {
                     if (fileUpload.csv) {
                         fileUpload.errorMessages.push('Your .zip file contained multiple .csv files. Please only upload one .csv file at a time.');
@@ -129,13 +129,9 @@ export default class BulkCreateForm extends React.Component {
 
             for (let i = 0; i < fileUpload.images.length; i++) {
                 const image = fileUpload.images[i]
-                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')) {
-                    if (image.name.endsWith('/')) {
-                        fileUpload.errorMessages.push('Files must be zipped directly. Do not include folders in your zip file.');
-                    } else {
-                        fileUpload.errorMessages.push('Your zip file contains unsupported file types. Only .csv, .jpg, and' +
-                            ' .png files are supported. Unsupported file: "' + image.name + '"');
-                    }
+                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')){
+                    fileUpload.errorMessages.push('Your zip file contains unsupported file types. Please check that there are only .csv, .jpg, and' +
+                        ' .png files in your .zip file.');
                     fileUpload.csv = null;
                     fileUpload.zip = null;
                     fileUpload.images = [];
@@ -162,7 +158,7 @@ export default class BulkCreateForm extends React.Component {
         // For files read from a zip file
         if (csv.async && typeof csv.async === 'function') {
             headersString = await csv.async('string');
-        // For files uploaded directly
+            // For files uploaded directly
         } else {
             shouldContinue = true;
             const reader = new FileReader();
@@ -193,9 +189,9 @@ export default class BulkCreateForm extends React.Component {
                         let label = field.label.toLowerCase().trim();
                         let trimmedHeader = header.toLowerCase().trim();
                         if ((name === trimmedHeader || label === trimmedHeader ||
-                             name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
-                             trimmedHeader.includes(name) || trimmedHeader.includes(label)) &&
-                             !field.selected && trimmedHeader) {
+                            name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
+                            trimmedHeader.includes(name) || trimmedHeader.includes(label)) &&
+                            !field.selected && trimmedHeader) {
                             field.selected = true;
                             mappedField = field.name;
                         }
@@ -286,7 +282,7 @@ export default class BulkCreateForm extends React.Component {
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our{' '}
-                <a href='/BulkUploadTemplate.csv'>Bulk Upload CSV Template</a>!</span>
+                    <a href='/BulkUploadTemplate.csv'>Bulk Upload CSV Template</a>!</span>
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
@@ -302,7 +298,7 @@ export default class BulkCreateForm extends React.Component {
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our{' '}
-                <a href='/BulkUploadZipTemplate.zip'>Bulk Upload Zip Template</a>!</span>
+                    <a href='/BulkUploadZipTemplate.zip'>Bulk Upload Zip Template</a>!</span>
             </p>
             <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">
@@ -347,11 +343,11 @@ export default class BulkCreateForm extends React.Component {
                         Uploaded Image Files ({fileUpload.images.length})
                     </Card.Subtitle>
                     <ul className="list-unstyled pl-1">
-                    {fileUpload.images.map(file => (
-                        <li key={file.name} className="mb-1">
-                            {file.name}
-                        </li>
-                    ))}
+                        {fileUpload.images.map(file => (
+                            <li key={file.name} className="mb-1">
+                                {file.name}
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </Card.Body>
@@ -505,61 +501,61 @@ export default class BulkCreateForm extends React.Component {
                 <div className="validation-table-wrapper mt-4 mb-1">
                     <table className="table validation-table">
                         <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Warnings</th>
-                                <th>Errors</th>
-                            </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>Warnings</th>
+                            <th>Errors</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {
-                                results.map(result => (
-                                    <tr key={result.index}>
-                                        <td>{result.index}</td>
-                                        <td>{result.warnings.map((warning, index) => (
-                                            <div key={index} dangerouslySetInnerHTML={{__html: warning}} className="bulk-warning" />
-                                        ))}</td>
-                                        <td>{result.errors.map((error, index) => (
-                                            <div key={index} className="bulk-warning">{error}</div>
-                                        ))}</td>
-                                    </tr>
-                                ))
-                            }
+                        {
+                            results.map(result => (
+                                <tr key={result.index}>
+                                    <td>{result.index}</td>
+                                    <td>{result.warnings.map((warning, index) => (
+                                        <div key={index} dangerouslySetInnerHTML={{__html: warning}} className="bulk-warning" />
+                                    ))}</td>
+                                    <td>{result.errors.map((error, index) => (
+                                        <div key={index} className="bulk-warning">{error}</div>
+                                    ))}</td>
+                                </tr>
+                            ))
+                        }
                         </tbody>
                     </table>
                 </div>
                 {warningCount > 0 && errorCount === 0 &&
-                    <div>
-                        If you choose to continue with warnings, the affected rows will still be&nbsp;
-                        {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
-                        updates later.
-                    </div>
+                <div>
+                    If you choose to continue with warnings, the affected rows will still be&nbsp;
+                    {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
+                    updates later.
+                </div>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                    <div>
-                        If you choose to continue with errors, any rows with errors
-                        will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
-                        {warningCount > 0 &&
-                            <span>
+                <div>
+                    If you choose to continue with errors, any rows with errors
+                    will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
+                    {warningCount > 0 &&
+                    <span>
                                 &nbsp;Any rows with warnings will still be {pastTenseTerm.toLowerCase()}, but may have
                                 non-critical issues that should be addressed with updates later.
                             </span>
-                        }
-                    </div>
+                    }
+                </div>
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
                 <ExportToCsvButton className="mr-2" fields={this.csvExportFields} data={this.buildCsvExportData(results)}
                                    exportTitle={`Validation Results ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 {warningCount > 0 && errorCount === 0 &&
-                    <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
-                        Continue With Warnings
-                    </Button>
+                <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
+                    Continue With Warnings
+                </Button>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                    <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
-                        Continue With Errors
-                    </Button>
+                <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
+                    Continue With Errors
+                </Button>
                 }
 
                 <Button onClick={() => this.resetForm(true)}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
-import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
+import { latitudeDecRegex, longitudeDecRegex, latitudeDegRegex, longitudeDegRegex } from '../../utils/regex-util';
 import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
@@ -354,6 +354,22 @@ export default class CreateOrUpdateForm extends React.Component {
             isTemporary });
     }
 
+    convertCoordinate(coordinate){
+        const values = coordinate.value.split(/[°'"]/g);
+        const degree = parseFloat(values[0]);
+        const min = parseFloat(values[1]);
+        const sec = parseFloat(values[2]);
+
+        //decimal = degrees + (minutes/60) + (seconds/3600)
+        let decimal = Math.abs(degree) + (min/60) + (sec/3600);
+        if ((coordinate.value.includes('W'))||(coordinate.value.includes('w'))
+            ||(coordinate.value.includes('S'))||(coordinate.value.includes('s'))
+            ||(degree<0)) {
+            decimal *= -1;
+        }
+        return decimal.toFixed(6);
+    }
+
     /**
      * Validates the Form
      * If any of the inputs are invalid, the entire Form is considered invalid
@@ -394,16 +410,21 @@ export default class CreateOrUpdateForm extends React.Component {
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
+            if (latitude.value.includes('°')) {
+                latitude.value = latitude.value.replaceAll(/\s/g, '');
+                if (!validator.matches(latitude.value, latitudeDegRegex)) {
+                    latitude.isValid = false;
+                    latitude.message = 'Latitude must be valid';
+                    formIsValid = false;
+                } else {
+                    latitude.value = this.convertCoordinate(latitude)
+                }
+            }
             if (validator.isEmpty(latitude.value)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must not be blank';
                 formIsValid = false;
-            } else if (latitude.value.includes('°')) {
-                latitude.isValid = false;
-                latitude.message = 'Please use decimal coordinates, not degrees. ' +
-                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
-                formIsValid = false;
-            } else if (!validator.matches(latitude.value, latitudeRegex)) {
+            } else if (!validator.matches(latitude.value, latitudeDecRegex)) {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
                 formIsValid = false;
@@ -418,17 +439,21 @@ export default class CreateOrUpdateForm extends React.Component {
                 }
             }
 
+            if (longitude.value.includes('°')) {
+                longitude.value = longitude.value.replaceAll(/\s/g, '');
+                if (!validator.matches(longitude.value, longitudeDegRegex)) {
+                    longitude.isValid = false;
+                    longitude.message = 'Longitude must be valid';
+                    formIsValid = false;
+                } else {
+                    longitude.value = this.convertCoordinate(longitude)
+                }
+            }
             if (validator.isEmpty(longitude.value)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must not be blank';
                 formIsValid = false;
-            } else if (longitude.value.includes('°')) {
-                longitude.isValid = false;
-                longitude.message = 'Please use decimal coordinates, not degrees. ' +
-                    'To convert, input your degrees into Google Maps and copy the new numbers here.';
-                formIsValid = false;
-            }
-            else if (!validator.matches(longitude.value, longitudeRegex)) {
+            } else if (!validator.matches(longitude.value, longitudeDecRegex)) {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
@@ -475,34 +500,34 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
-        /* Deactivated Date Validation */
-        /* Check that the deactivated Year and Month specified are not in the future */
+        /* Un-installed Date Validation */
+        /* Check that the un-installed Year and Month specified are not in the future */
         if (!validator.isEmpty(deactivatedYear.value)) {
             const deactivatedYearInt = parseInt(deactivatedYear.value);
             const deactivatedMonthInt = parseInt(deactivatedMonth.value);
 
             if (deactivatedYearInt <= 0) {
                 deactivatedYear.isValid = false;
-                deactivatedYear.message = 'Deactivated year must be valid';
+                deactivatedYear.message = 'Un-installed year must be valid';
                 formIsValid = false;
             }
             else if (deactivatedYearInt > currentDate.getFullYear()) {
                 deactivatedYear.isValid = false;
-                deactivatedYear.message = 'Deactivated year must be valid';
+                deactivatedYear.message = 'Un-installed year must be valid';
                 formIsValid = false;
             }
             else {
                 if (deactivatedYearInt === currentDate.getFullYear()) {
                     if (deactivatedMonthInt > currentDate.getMonth()) {
                         deactivatedMonth.isValid = false;
-                        deactivatedMonth.message = 'Deactivated month must be valid';
+                        deactivatedMonth.message = 'Un-installed month must be valid';
                         formIsValid = false;
                     }
                 }
             }
         }
 
-        /* Check that the deactivated date is after created date */
+        /* Check that the un-installed date is after created date */
         if ((!validator.isEmpty(deactivatedYear.value) || (deactivatedDatePickerCurrentDate && deactivatedDateSelectValue === DateFormat.EXACT_DATE))
             && (!validator.isEmpty(year.value) || (datePickerCurrentDate && dateSelectValue === DateFormat.EXACT_DATE))) {
             const deactivatedYearInt = parseInt(deactivatedYear.value || (deactivatedDatePickerCurrentDate ? deactivatedDatePickerCurrentDate.getFullYear() : (new Date()).getFullYear().toString()));
@@ -514,28 +539,28 @@ export default class CreateOrUpdateForm extends React.Component {
 
             if (yearInt > deactivatedYearInt) {
                 deactivatedYear.isValid = false;
-                deactivatedYear.message = 'Deactivated date must be after created date';
+                deactivatedYear.message = 'Un-installed date must be after created date';
                 formIsValid = false;
             } else if (yearInt === deactivatedYearInt) {
                 if (monthInt > deactivatedMonthInt) {
                     deactivatedMonth.isValid = false;
-                    deactivatedMonth.message = 'Deactivated date must be after created date';
+                    deactivatedMonth.message = 'Un-installed date must be after created date';
                     formIsValid = false;
                 } else if (monthInt === deactivatedMonthInt) {
                     if (dayInt > deactivatedDayInt) {
                         formIsValid = false;
-                        deactivatedDatePickerError = 'Deactivated date must be after created date';
+                        deactivatedDatePickerError = 'Un-installed date must be after created date';
                     }
                 }
             }
         }
 
-        /* Checks that a deactivated date exists if a deactivated comment exists */
+        /* Checks that a un-installed date exists if a un-installed comment exists */
         if (!validator.isEmpty(deactivatedComment.value)
             && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== DateFormat.EXACT_DATE)
             && validator.isEmpty(deactivatedYear.value)) {
             deactivatedComment.isValid = false;
-            deactivatedComment.message = 'Deactivated date is required in order to provide a deactivation reason';
+            deactivatedComment.message = 'Un-installed date is required in order to provide a un-installed reason';
             formIsValid = false;
         }
 
@@ -767,7 +792,8 @@ export default class CreateOrUpdateForm extends React.Component {
         if (name === 'latitude' || name === 'longitude') {
             const { latitude, longitude } = this.state;
             if (!validator.isEmpty(latitude.value) && !validator.isEmpty(longitude.value) &&
-                validator.matches(latitude.value, latitudeRegex) && validator.matches(longitude.value, longitudeRegex)) {
+                (validator.matches(latitude.value, latitudeDecRegex)||validator.matches(latitude.value, latitudeDegRegex)) &&
+                (validator.matches(longitude.value, longitudeDecRegex)||validator.matches(longitude.value, longitudeDegRegex))) {
                 this.reverseGeocode();
             }
         }
@@ -775,7 +801,12 @@ export default class CreateOrUpdateForm extends React.Component {
 
     async reverseGeocode() {
         const { latitude, longitude, previousCoordinates } = this.state;
-        const coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        let coordinates = {};
+        if (longitude.value.includes('°')) {
+            coordinates = {lat: parseFloat(this.convertCoordinate(latitude)), lng: parseFloat(this.convertCoordinate(longitude))};
+        } else {
+            coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+        }
         // Avoid doing duplicate requests
         if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
             return;
@@ -1269,7 +1300,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
         const deactivatedDateYearInput = (
             <Form.Group controlId="create-form-deactivated-date-year">
-                <Form.Label>Deactivated Year:</Form.Label>
+                <Form.Label>Un-installed Year:</Form.Label>
                 <Form.Control
                     type="number"
                     name="deactivatedYear"
@@ -1291,7 +1322,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 deactivatedDateInput = (
                     <Form.Row>
                         <Form.Group controlId="create-form-deactivated-date-month">
-                            <Form.Label>Deactivated Month:</Form.Label>
+                            <Form.Label>Un-installed Month:</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="deactivatedMonth"
@@ -1327,7 +1358,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
                 deactivatedDateInput = (
                     <Form.Group controlId="create-form-deactivated-datepicker">
-                        <Form.Label>Choose a Deactivated Date:</Form.Label>
+                        <Form.Label>Choose a Un-installed Date:</Form.Label>
                         <DatePicker
                             selected={deactivatedDatePickerCurrentDate}
                             onChange={(date) => this.handleDeactivatedDatePickerChange(date)}
@@ -1526,6 +1557,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
                                     </div>
                                 </div>
+                                <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W`}</Form.Label>
                                 {address.value && <div className="coordinates-geocode-group">
                                     <div className="coordinates-geocode-row">
                                         <span className="coordinates-geocode-row-label">Address:</span> {address.value}
@@ -1602,9 +1634,9 @@ export default class CreateOrUpdateForm extends React.Component {
                             </div>
 
                             <div className="date-container">
-                                {/* Deactivated Date */}
+                                {/* Un-installed Date */}
                                 <Form.Group controlId="create-form-deactivated-date-select">
-                                    <Form.Label>Deactivated Date:</Form.Label>
+                                    <Form.Label>Un-installed Date:</Form.Label>
                                     <Form.Control
                                         as="select"
                                         className="select-control"
@@ -1617,18 +1649,18 @@ export default class CreateOrUpdateForm extends React.Component {
                                     </Form.Control>
                                 </Form.Group>
 
-                                {/* Deactivated Date: Input (Year, Year/Month, or Date Picker) */}
+                                {/* Un-installed Date: Input (Year, Year/Month, or Date Picker) */}
                                 {deactivatedDateInput}
                             </div>
 
-                            {/* Deactivated Comment */}
+                            {/* Un-installed Comment */}
                             <Form.Group controlId="create-form-deactivated-comment">
-                                <Form.Label>Deactivation Reason:</Form.Label>
+                                <Form.Label>Un-installed Reason:</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows="3"
                                     name="deactivatedComment"
-                                    placeholder="Deactivation Reason"
+                                    placeholder="Un-installed Reason"
                                     value={deactivatedComment.value}
                                     onChange={(event) => this.handleInputChange(event)}
                                     isInvalid={!deactivatedComment.isValid}

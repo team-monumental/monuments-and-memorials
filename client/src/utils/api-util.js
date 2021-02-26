@@ -144,12 +144,12 @@ export async function uploadImagesToS3(images, temporaryFolder) {
 
     for (const image of images) {
         let key = generateUniqueKey(folderName + image.name)
-        console.log(key)
+
         // Create an S3 upload
         let s3Upload = new AWS.S3.ManagedUpload({
             params: {
                 Bucket: s3ImageBucketName,
-                Key: folderName + image.name,
+                Key: key,
                 Body: image,
                 ACL: 'public-read'
             }

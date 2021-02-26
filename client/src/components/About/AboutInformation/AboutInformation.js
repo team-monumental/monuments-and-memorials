@@ -163,7 +163,7 @@ export default class AboutInformation extends React.Component {
                         </div>
                         <div className="static-page-text">
                             <p>
-                                <span className="font-weight-bold">Software engineering students:</span> AJ Delposen, Nick Deyette, Ben Smith, Ben Vogler<br/>
+                                <span className="font-weight-bold">Software engineering students:</span> AJ Delposen, Nick Deyette, Ben Smith, Ben Vogler, Ren Chauret, William Schultheis, Dan Wang, Samik Mitra, Brendan Cail<br/>
                                 <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky, and Jim Vallino<br/>
                                 Lizzy Carr and Landyn Hatch, research assistants<br/>
                                 Connie Froass, graphic design<br/>

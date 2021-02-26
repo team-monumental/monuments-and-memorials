@@ -3,14 +3,12 @@ import './Favorites.scss';
 import { Card } from 'react-bootstrap';
 import Spinner from '../../Spinner/Spinner';
 import SearchResult from '../../Search/SearchResult/SearchResult';
-import {buildBulkExportData, exportFields} from "../../../utils/export-util";
 import ExportButtons from "../../Export/ExportButtons/ExportButtons";
 
 export default class Favorites extends React.Component {
 
     render() {
         const { favorites, pending, error } = this.props;
-        const exportData = favorites ? buildBulkExportData(favorites.map(favorite => favorite.monument)) : null
 
         return (<>
             <Spinner show={pending}/>
@@ -18,11 +16,11 @@ export default class Favorites extends React.Component {
                 <Card.Header>
                     <Card.Title>
                         Your Favorites{favorites && favorites.length ? ` (${favorites.length})` : ''}
-                        <span className="export-buttons-favorites">
-                            <ExportButtons className="mt-2" fields={exportFields}
-                                           data={exportData}
+                        {favorites && <span className="export-buttons-favorites">
+                            <ExportButtons className="mt-2"
+                                           monuments={favorites}
                                            title="Favorites"/>
-                        </span>
+                        </span>}
                     </Card.Title>
                 </Card.Header>
                 <Card.Body>
