@@ -53,8 +53,8 @@ export default class DateFilter extends React.Component {
             case Mode.RANGE:
                 if (value === 'null') value = null;
                 const [ startDate, endDate ] = value;
-                await this.handleFilterChange('start', moment(startDate).format('yyyy-MM-dd'));
-                this.handleFilterChange('end', moment(endDate).format('yyyy-MM-dd'));
+                await this.handleFilterChange('start', moment(startDate).format('YYYY-MM-DD'));
+                this.handleFilterChange('end', moment(endDate).format('YYYY-MM-DD'));
                 break;
             default:
                 break;
