@@ -85,10 +85,10 @@ class Header extends React.Component {
 
                 <div className="center">
                     {/* Desktop  */}
-                    {window.innerWidth >= 768 && <>
+                    {window.innerWidth >= 768 && !this.props.location.pathname.includes('/search') ?
                         <div className="search-bar-container">
                             <SearchBar/>
-                        </div>
+                        </div>:<>
                     </>}
 
                     {/* Mobile */}
