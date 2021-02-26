@@ -4,7 +4,7 @@ import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonG
 import { latitudeRegex, longitudeRegex } from '../../utils/regex-util';
 import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
-import TagsSearch from '../Search/Filters/FilterTypes/TagsFilters/TagsFilters';
+import TagsSearch from '../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';

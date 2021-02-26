@@ -5,13 +5,12 @@ import { Collapse, Button } from 'react-bootstrap';
 import 'rc-slider/assets/index.css';
 import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
 import search from '../../../utils/new-search';
-import TagsSearch from './FilterTypes/TagsFilters/TagsFilters';
+import TagsFilters from './FilterTypes/TagsFilters/TagsFilters';
 import DateFilter from './FilterTypes/DateFilter/DateFilter';
 import TextFilter from './FilterTypes/TextFilter/TextFilter';
 import * as QueryString from 'query-string';
 import { Link } from 'react-router-dom';
 import {Mode} from './FilterTypes/DateFilter/DateEnum';
-
 
 class Filters extends React.Component {
 
@@ -19,6 +18,8 @@ class Filters extends React.Component {
     constructor(props) {
         super(props);
         const params = QueryString.parse(props.history.location.search);
+        const qTags = (params.tags) ? params.tags.split(',') : [];
+        const qMats = (params.materials) ? params.materials.split(',') : [];
         this.state = {
             filterList: {
                 date: { config: {}, params: {} },
@@ -28,12 +29,11 @@ class Filters extends React.Component {
                         lon: params.lon || '',
                         d: params.d || '25'
                     }},
-                tags: { config: {}, params: {} },
-                materials: { config: {}, params: {} },
+                tags: { params: {tags: qTags} },
+                materials: {params: {materials: qMats} },
                 q: {params: { q: params.q || ''}},
             },
-            
-            showFilters: false,
+            showFilters: false
         };
     }
 
@@ -46,13 +46,31 @@ class Filters extends React.Component {
         this.handleSearch()
     }
 
+    async clearTags(type) {
+        await this.setState(state => {
+            const daFilters = state.filterList;
+            daFilters[type].params[type] = [];
+            return { filterList: daFilters };
+        })
+        this.handleSearch()
+    }
+
+    async clearLocation() {
+        await this.setState(state => {
+            const daFilters = state.filterList;
+            daFilters.location.params = {d: '25', address: ''};
+            return { filterList: daFilters };
+        })
+        this.handleSearch()
+    }
+
     async clearFilters() {
         await this.setState(state => {
             const daFilters = {
                 date: { config: {filterMode: Mode.NONE}, params: {} },
-                location: { config: {}, params: {d: '25', address: ''} },
-                tags: { config: {}, params: {} },
-                materials: { config: {}, params: {} },
+                location: { params: {d: '25', address: ''} },
+                tags: { params: {tags: []}},
+                materials: { params: {materials: []}},
                 q: {params: {q: ''}}
             }
             return { filterList: daFilters};
@@ -88,18 +106,28 @@ class Filters extends React.Component {
         this.handleSearch()
     }
 
-    handleTagsSearchTagSelect(variant, selectedTags) {
-        this.setState(state => {
-            const daFilters = state.filterList;
-            daFilters[variant].params[variant] = selectedTags.map(tag => tag.name);
-            return { filterList: daFilters }
+    async handleTagsSearchTagSelect(variant, addOrRemove, tag) {
+        let selectedTags = this.state.filterList[variant].params[variant]
+        // If the tag is being selected, add it to the selected tags and sort them alphabetically
+        if (addOrRemove) {
+            selectedTags.push(tag);
+        } else {
+            const index = selectedTags.findIndex(t => t === tag);
+            if (index >= 0) {
+                selectedTags.splice(index, 1);
+            }
+        }
+        console.log(selectedTags)
+        await this.setState({
+            ...this.state,
+            ...selectedTags
         })
         this.handleSearch()
     }
 
     async handleLocationSearchSelect(lat, lon, address) {
         var updatedState = this.state.filterList.location
-        updatedState.params = { lat: lat, lon: lon, address: address }
+        updatedState.params = { lat: lat, lon: lon, address: address, d: '25' }
         this.setState({
             ...this.state,
             ...updatedState
@@ -138,22 +166,21 @@ class Filters extends React.Component {
         const expandIcon = showFilters ? "remove" : "add";
         let dateMap = (
             <DateFilter 
-                onRemove={() => this.clearFilter('date')}
+                onRemove={() => this.clearTags('date')}
                 data={filterList.date}
                 decades={decades}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)
-
         let tagsMap = (
             <div className="filter-body border-right" >
                 
-                <TagsSearch
+                <TagsFilters
                     variant="tags"
-                    tags={filterList.tags.params}
+                    tags={filterList.tags.params.tags}
                     allowTagCreation={false}
-                    onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
-                </TagsSearch>
-                <button className="clear-button" onClick={() => this.clearFilter('tags')}>
+                    onChange={(addOrRemove, params) => this.handleTagsSearchTagSelect("tags", addOrRemove, params)}>
+                </TagsFilters>
+                <button className="clear-button" onClick={() => this.clearTags('tags')}>
                     <i className="material-icons ">clear</i>
                 </button>
             </div>);
@@ -161,14 +188,13 @@ class Filters extends React.Component {
         let materialsMap = (
             <div className="filter-body">
                 
-                <TagsSearch
+                <TagsFilters
                     variant="materials"
-                    tags={filterList.materials.params}
-                    selectedTags={filterList.materials.params.tags}
+                    tags={filterList.materials.params.materials}
                     allowTagCreation={false}
-                    onChange={(variant, params) => this.handleTagsSearchTagSelect(variant, params)}>
-                </TagsSearch>
-                <button style={{ backgroundColor: "white", border: "none" }} onClick={() => this.clearFilter('materials')}>
+                    onChange={(addOrRemove, params) => this.handleTagsSearchTagSelect("materials", addOrRemove, params)}>
+                </TagsFilters>
+                <button style={{ backgroundColor: "white", border: "none" }} onClick={() => this.clearTags('materials')}>
                     <i className="material-icons ">clear</i>
                 </button>
             </div>)
@@ -188,7 +214,7 @@ class Filters extends React.Component {
                     <LocationSearch value={filterList.location.params.address}
                         distance={filterList.location.params.d}
                         onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}
-                        onClear={()=> this.clearFilter('location')}
+                        onClear={()=> this.clearLocation()}
                         changeDistance={(distance) => this.handleChangeDistance(distance)}>
                     </LocationSearch>
                     <div className="clear-filters">
