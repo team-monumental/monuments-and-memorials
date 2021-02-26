@@ -96,6 +96,15 @@ class Filters extends React.Component {
         search(try1, this.props.history, uri);
 
     }
+
+    async handleDateChangeMode(mode){
+        await this.setState(state => {
+            const daFilters = state.filterList;
+            daFilters.date.config = mode;
+            return { filterList: daFilters };
+        })
+    }
+
     handleDateSearchSelect(params) {
         const updatedState = this.state.filterList.date
         updatedState.params = params
@@ -169,6 +178,8 @@ class Filters extends React.Component {
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
                 decades={decades}
+                filterMode={filterList.date.config.filterMode}
+                changeMode={(mode) => this.handleDateChangeMode(mode)}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)
         let tagsMap = (

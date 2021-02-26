@@ -22,7 +22,7 @@ export default class DateFilter extends React.Component {
 
             },
             sliderValues: [1870, 1960],
-            filterMode: data.config.filterMode || Mode.NONE,
+            //filterMode: data.config.filterMode || Mode.NONE,
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
             filterList: []
@@ -61,10 +61,11 @@ export default class DateFilter extends React.Component {
         }
     }
 
-    async handleTypeChange(mode) {
-        await this.setState({filterMode: mode});
+    async handleModeChange(mode) {
+        const { changeMode } = this.props
+        changeMode({filterMode: mode});
         if (mode !== Mode.DECADE) {
-            this.handleFilterChange(Mode.DECADE, null);
+            await this.handleFilterChange('decade', null);
         }
         if (mode !== Mode.RANGE) {
             await this.handleFilterChange('start', null);
@@ -167,7 +168,7 @@ export default class DateFilter extends React.Component {
     }
 
     render() {
-        const { filterMode } = this.state;
+        const { filterMode } = this.props;
         let dateFilter = null;
         switch (filterMode){
             case Mode.RANGE: 
@@ -186,13 +187,13 @@ export default class DateFilter extends React.Component {
 
         return ( 
             <div className="filter-body" >
-                <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.handleTypeChange(Mode.NONE)}>
+                <button style={{backgroundColor: "white", border: "none"}} onClick={() => this.handleModeChange(Mode.NONE)}>
                     <i className="material-icons ">clear</i>
                 </button>
                 <div className="d-flex pt-3 pb-3 align-items-center">
                     <Form.Control as="select" className="min-width-select mr-2"
                                 value={filterMode}
-                                onChange={event => this.handleTypeChange(event.target.value)}>
+                                onChange={event => this.handleModeChange(event.target.value)}>
                         <option value={Mode.NONE}>None</option>
                         <option value={Mode.RANGE}>Created(range)</option>
                         <option value={Mode.DECADE}>Created(decade)</option>
