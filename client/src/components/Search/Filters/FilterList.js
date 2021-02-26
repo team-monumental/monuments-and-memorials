@@ -126,7 +126,6 @@ class Filters extends React.Component {
                 selectedTags.splice(index, 1);
             }
         }
-        console.log(selectedTags)
         await this.setState({
             ...this.state,
             ...selectedTags

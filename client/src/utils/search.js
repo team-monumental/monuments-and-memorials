@@ -8,7 +8,6 @@ import * as QueryString from 'query-string';
  * @param uri           The uri to redirect to with search params
  */
 export default function search(changedParams, history, uri = '/search') {
-    console.log('search')
     const params = {
         ...QueryString.parse(history.location.search),
         ...changedParams

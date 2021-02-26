@@ -1,6 +1,5 @@
 import * as QueryString from 'query-string';
 export default function search(changedParams, history, uri = '/search') {
-    console.log('new-search')
     const params = {
         ...changedParams
     };
