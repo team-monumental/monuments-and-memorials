@@ -361,7 +361,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const min = parseFloat(values[1]);
         const sec = parseFloat(values[2]);
 
-        //decimal = degrees + (minutes/60) + (seconds/3600)
+        /* decimal = degrees + (minutes/60) + (seconds/3600) */
         let decimal = Math.abs(degree) + (min/60) + (sec/3600);
         if ((coordinate.value.includes('W'))||(coordinate.value.includes('w'))
             ||(coordinate.value.includes('S'))||(coordinate.value.includes('s'))
@@ -437,7 +437,6 @@ export default class CreateOrUpdateForm extends React.Component {
                 latitude.message = 'Latitude is not in the United States';
                 formIsValid = false;
             }
-            console.log(this.state.country)
 
             if (longitude.value.includes('°')) {
                 longitude.value = longitude.value.replaceAll(/\s/g, '');
