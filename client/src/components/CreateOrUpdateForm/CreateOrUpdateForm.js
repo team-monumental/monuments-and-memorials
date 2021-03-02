@@ -437,6 +437,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 latitude.message = 'Latitude is not in the United States';
                 formIsValid = false;
             }
+            console.log(this.state.country)
 
             if (longitude.value.includes('°')) {
                 longitude.value = longitude.value.replaceAll(/\s/g, '');
@@ -862,8 +863,7 @@ export default class CreateOrUpdateForm extends React.Component {
             state = undefined;
         }
         address = result ? result.formatted_address : '';
-        this.setState({city, state, address: {...this.state.address, value: address}});
-        this.setState({country: country});
+        this.setState({city, state, address: {...this.state.address, value: address}, country: country});
     }
 
     handleAdvancedInformationClick() {
