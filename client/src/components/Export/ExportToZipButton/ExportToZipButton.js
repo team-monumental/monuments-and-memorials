@@ -8,7 +8,7 @@ import { RollbarContext } from '../../../App';
 import * as AWS from 'aws-sdk';
 
 /**
- * Presentational component for a button that exports data to CSV
+ * Presentational component for a button that exports data to Zip
  */
 export const ExportToZipButton = (props) => {
 
