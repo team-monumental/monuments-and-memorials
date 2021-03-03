@@ -20,6 +20,7 @@ import com.monumental.services.suggestions.CreateSuggestionService;
 import com.monumental.services.suggestions.UpdateSuggestionService;
 import com.monumental.util.async.AsyncJob;
 import com.monumental.util.csvparsing.MonumentBulkValidationResult;
+import com.rollbar.notifier.Rollbar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,9 @@ public class SuggestionController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Rollbar rollbar;
+
     /**
      * Create a new Suggestion for creating a Monument
      * @param createSuggestion - CreateMonumentSuggestion object representing the new Monument suggestion
@@ -79,7 +83,9 @@ public class SuggestionController {
     @PostMapping("/api/suggestion/create")
     @PreAuthorize(Authentication.isAuthenticated)
     public CreateMonumentSuggestion suggestMonumentCreation(@RequestBody CreateMonumentSuggestion createSuggestion) {
-        return this.createSuggestionRepository.save(createSuggestion);
+        CreateMonumentSuggestion createMonumentSuggestion = this.createSuggestionRepository.save(createSuggestion);
+        rollbar.info("New monument suggestion:  create monument " + createMonumentSuggestion.getTitle() + ".");
+        return createMonumentSuggestion;
     }
 
     /**
@@ -100,7 +106,9 @@ public class SuggestionController {
         Monument monument = optional.get();
 
         updateSuggestion.setMonument(monument);
-        return this.updateSuggestionRepository.save(updateSuggestion);
+        UpdateMonumentSuggestion updateMonumentSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
+        rollbar.info("New monument suggestion:  update monument " + monument.getId() + ".");
+        return updateMonumentSuggestion;
     }
 
     /**

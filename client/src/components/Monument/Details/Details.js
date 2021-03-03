@@ -77,7 +77,7 @@ export default class Details extends React.Component {
                         <Tags tags={tags} searchUri="/search"/>
                     </div>
                 </div>
-                <Gallery images={images}/>
+                <Gallery images={images} tags={tags} />
                 <div className="inscription">
                     {inscription}
                 </div>

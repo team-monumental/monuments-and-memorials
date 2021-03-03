@@ -60,7 +60,7 @@ class SearchPage extends React.Component {
                 <Spinner show={pending}/>
                 <Search monuments={monuments} {...this.getQueryParams()} count={count} hideMap={hideMap} hideImages={hideImages} searchUri={searchUri} monumentUri={monumentUri}
                         onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}
-                        onFilterChange={this.handleFilterChange.bind(this)} onSortChange={this.handleSortChange.bind(this)}/>
+                        onSortChange={this.handleSortChange.bind(this)}/>
             </div>
         );
     }
@@ -80,19 +80,6 @@ class SearchPage extends React.Component {
 
     handlePageChange(page) {
         this.search({page});
-    }
-
-    handleFilterChange(filters) {
-        for (let prop in filters) {
-            if (!filters.hasOwnProperty(prop)) continue;
-            if (filters[prop] === 'null') filters[prop] = null;
-        }
-        this.search({
-            d: filters.distance,
-            decade: filters.decade,
-            start: filters.start,
-            end: filters.end
-        });
     }
 
     handleSortChange(sort) {
