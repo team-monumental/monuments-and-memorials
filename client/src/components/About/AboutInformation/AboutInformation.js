@@ -164,7 +164,7 @@ export default class AboutInformation extends React.Component {
                         <div className="static-page-text">
                             <p>
                                 <span className="font-weight-bold">Software engineering students:</span> AJ Delposen, Nick Deyette, Ben Smith, Ben Vogler, Ren Chauret, William Schultheis, Dan Wang, Samik Mitra, Brendan Cail<br/>
-                                <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky, Jim Vallino, Tom Reichlmayr<br/>
+                                <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky, Jim Vallino, and Tom Reichlmayr<br/>
                                 Lizzy Carr and Landyn Hatch, research assistants<br/>
                                 Connie Froass, graphic design<br/>
                                 Students in HIS 322 course, <span className="font-italic">Monuments & Memory</span>, spring 2019 and

@@ -49,6 +49,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 isValid: true,
                 message: ''
             },
+            country: '',
             latitude: {
                 value: '',
                 isValid: true,
@@ -117,8 +118,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 value: false,
                 isValid: true,
                 message: ''
-            },
-            country: ''
+            }
         };
 
         this.materialsSelectRef = React.createRef();
@@ -411,6 +411,10 @@ export default class CreateOrUpdateForm extends React.Component {
             if (validator.isEmpty(address.value)) {
                 address.isValid = false;
                 address.message = 'Address must be selected from the dropdown';
+                formIsValid = false;
+            } else if (!valid_countries.includes(this.state.country)) {
+                address.isValid = false;
+                address.message = 'Address is not in the United States';
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
