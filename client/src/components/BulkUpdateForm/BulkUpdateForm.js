@@ -41,7 +41,7 @@ export default class BulkUpdateForm extends React.Component{
             ].map(field => {
                 return {
                     label: capitalize(field.name.replace(/_/g, ' ')),
-                    ... field
+                    ...field
                 }
             })
         };
