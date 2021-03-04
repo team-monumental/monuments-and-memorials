@@ -134,9 +134,13 @@ export default class DateFilter extends React.Component {
                 <span className="mr-2">Monuments or memorials created in the</span>
                 <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter(Mode.DECADE, event.target.value)} value={decade}>
                     <option value="null">None</option>
-                    {decades.map(decade => (
-                        <option value={decade} key={decade}>{decade}s</option>
-                    ))}
+                    <option value="1960">1960s</option>
+                    <option value="1970">1970s</option>
+                    <option value="1980">1980s</option>
+                    <option value="1990">1990s</option>
+                    <option value="2000">2000s</option>
+                    <option value="2010">2010s</option>
+                    <option value="2020">2020s</option>
                 </Form.Control>
             </div>
         )
