@@ -6,7 +6,7 @@ import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
 import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
 import moment from 'moment';
-import ExportToCsvButton from '../Export/ExportToCsvButton/ExportToCsvButton';
+import { ExportToCsvButton } from '../Export/ExportToCsvButton/ExportToCsvButton';
 import { capitalize } from '../../utils/string-util';
 import { Link } from 'react-router-dom';
 
