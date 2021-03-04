@@ -34,7 +34,7 @@ public class FavoriteController {
     @GetMapping("/api/favorite")
     @PreAuthorize(Authentication.isAuthenticated)
     public Favorite getFavorite(@RequestParam Integer monumentId, @RequestParam(required = false) Integer userId)
-            throws UnauthorizedException, AccessDeniedException, ResourceNotFoundException {
+            throws UnauthorizedException, AccessDeniedException {
         if (userId != null && !userId.equals(this.userService.getCurrentUser().getId())) {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
         }

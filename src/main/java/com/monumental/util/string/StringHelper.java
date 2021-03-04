@@ -55,7 +55,7 @@ public class StringHelper {
         if (isNullOrEmpty(value)) return null;
         else {
             try {
-                return new SimpleDateFormat("YYYY-MM-DD").parse(value);
+                return new SimpleDateFormat("yyyy-MM-dd").parse(value);
             } catch (ParseException e) {
                 return null;
             }

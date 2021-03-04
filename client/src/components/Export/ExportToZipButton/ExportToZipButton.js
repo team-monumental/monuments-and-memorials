@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import * as JSZip from 'jszip';
 import * as JSZipUtils from 'jszip-utils';
 import { saveAs } from 'file-saver';
 import { parse as toCSV } from 'json2csv';
 import { getS3ImageNameFromObjectUrl } from '../../../utils/api-util';
+import { RollbarContext } from '../../../App';
 
 /**
  * Presentational component for a button that exports data to CSV
  */
-export default class ExportToZipButton extends React.Component {
+export const ExportToZipButton = (props) => {
 
-    async handleClick() {
-        const { fields, data, exportTitle, images } = this.props;
+    const { className, data, fields, exportTitle, images } = props;
+    const rollbar = useContext(RollbarContext)
+
+    const handleClick = async () => {
 
         const csv = toCSV(data, {fields});
         const exportFileName = exportTitle.endsWith('.csv') ? exportTitle : exportTitle + '.csv';
@@ -41,17 +44,15 @@ export default class ExportToZipButton extends React.Component {
         zip.generateAsync({ type: "blob" })
             .then(function(content) {
                 saveAs(content, "monuments.zip");
+                rollbar.info(`Exported monuments (${data.length}) to Zip`);
             });
     }
 
-    render() {
-        const { className, data } = this.props;
-        const text = data && data.length > 1 ? "Export all to Zip" : "Export to Zip"
+    const text = data && data.length > 1 ? "Export all to Zip" : "Export to Zip";
 
-        return (
-            <Button variant="light" className={className} onClick={() => this.handleClick()}>
-                {text}
-            </Button>
-        );
-    }
+    return (
+        <Button variant="light" className={className} onClick={() => handleClick()}>
+            {text}
+        </Button>
+    );
 }

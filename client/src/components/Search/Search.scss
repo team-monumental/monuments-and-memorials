@@ -44,7 +44,6 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 0 4rem;
 
   @include media-breakpoint-down(xs) {
     flex: 0 0 100%;
@@ -71,6 +70,7 @@
   .search-result {
     margin-bottom: 1.5rem;
   }
+  
 }
 
 .search-header {
@@ -114,4 +114,8 @@
 
 .export-buttons-search {
   margin-bottom: 16px;
+}
+
+.search-results, .search-info{
+  padding: 0 4em;
 }

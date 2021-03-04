@@ -53,9 +53,13 @@ public class UserController {
     }
 
     @GetMapping("/api/session")
-    @PreAuthorize(Authentication.isAuthenticated)
-    public User getSession() throws UnauthorizedException {
-        return this.userService.getCurrentUser();
+//    @PreAuthorize(Authentication.isAuthenticated)
+    public User getSession() {
+        try {
+            return this.userService.getCurrentUser();
+        } catch (UnauthorizedException ue) {
+            return null;
+        }
     }
 
     @PostMapping("/api/signup/confirm")

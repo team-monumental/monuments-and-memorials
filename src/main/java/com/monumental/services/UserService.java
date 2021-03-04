@@ -11,6 +11,7 @@ import com.monumental.repositories.VerificationTokenRepository;
 import com.monumental.security.Role;
 import com.monumental.security.UserAwareUserDetails;
 import com.monumental.util.search.SearchHelper;
+import com.rollbar.notifier.Rollbar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,6 +46,9 @@ public class UserService extends ModelService<User> {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private Rollbar rollbar;
 
     /**
      * Gets our custom Spring Security session object (UserAwareUserDetails) which includes our User.
@@ -106,6 +110,8 @@ public class UserService extends ModelService<User> {
         this.userRepository.save(user);
 
         this.emailService.sendSignupVerificationEmail(user, this.generateVerificationToken(user, VerificationToken.Type.EMAIL));
+
+        rollbar.info("New user signed up!");
 
         return user;
     }

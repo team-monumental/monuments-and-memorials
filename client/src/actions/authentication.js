@@ -100,12 +100,17 @@ export function clearUserSession() {
 
 export function getUserSession(callback) {
     return async dispatch => {
-        const res = await fetch('/api/session');
-        if (!res.ok) {
+        const res = await fetch('/api/session')
+            .then((res) => res.text())
+            .then((text) => text.length ? JSON.parse(text) : null)
+            .catch((error) => {
+                return dispatch(createUserSession(null));
+            });
+        if (!res || res.ok) {
             // User is not authenticated
             return dispatch(createUserSession(null));
         }
-        dispatch(createUserSession(await res.json()));
+        dispatch(createUserSession(await res));
         if (callback && typeof callback === 'function') callback();
     }
 }

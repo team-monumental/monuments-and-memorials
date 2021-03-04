@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import {exportToCsv} from '../../../utils/export-util';
+import { RollbarContext } from '../../../App';
 
 /**
  * Presentational component for a button that exports data to CSV
  */
-export default class ExportToCsvButton extends React.Component {
+export const ExportToCsvButton = (props) => {
 
-    handleClick() {
-        const { fields, data, exportTitle } = this.props;
+    const { fields, data, exportTitle, className } = props;
+    const rollbar = useContext(RollbarContext);
 
+    const handleClick = () => {
         const csv = exportToCsv(fields, data);
         const encodedUri = encodeURI(csv);
 
@@ -21,16 +23,14 @@ export default class ExportToCsvButton extends React.Component {
 
         document.body.appendChild(link);
         link.click();
+        rollbar.info(`Exported monuments (${data.length}) to CSV`);
     }
 
-    render() {
-        const { className, data } = this.props;
-        const text = data && data.length > 1 ? "Export all to CSV" : "Export to CSV"
+    const text = data && data.length > 1 ? "Export all to CSV" : "Export to CSV";
 
-        return (
-            <Button variant="light" className={className} onClick={() => this.handleClick()}>
-                {text}
-            </Button>
-        );
-    }
+    return (
+        <Button variant="light" className={className} onClick={() => handleClick()}>
+            {text}
+        </Button>
+    );
 }
