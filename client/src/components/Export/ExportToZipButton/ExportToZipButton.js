@@ -44,8 +44,8 @@ export const ExportToZipButton = (props) => {
                     }
                     zip.file(name, data.Body, {binary: true});
                 } catch (e) {
-                    alert('Problem happened when download img: ' + image.url);
-                    console.error('Problem happened when download img: ' + image.url);
+                    alert('Problem happened when downloading img: ' + image.url);
+                    console.error('Problem happened when downloading img: ' + image.url);
                 }
             }
         }
