@@ -46,6 +46,7 @@ export const ExportToZipButton = (props) => {
                 } catch (e) {
                     alert('Problem happened when downloading img: ' + image.url);
                     console.error('Problem happened when downloading img: ' + image.url);
+                    rollbar.error(e)
                 }
             }
         }
