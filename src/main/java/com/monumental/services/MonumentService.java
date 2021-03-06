@@ -898,10 +898,12 @@ public class MonumentService extends ModelService<Monument> {
         /* Images Section */
         List<Image> images = new ArrayList<>();
         if (monumentSuggestion.getImages() != null && monumentSuggestion.getImages().size() > 0) {
-            images.addAll(this.createMonumentImages(monumentSuggestion.getImages(), createdMonument, false));
+            images.addAll(this.createMonumentImages(monumentSuggestion.getImages(),
+                    monumentSuggestion.getImageReferenceUrls(), monumentSuggestion.getImageReferenceUrls(), createdMonument, false));
         }
         if (monumentSuggestion.getPhotoSphereImages() != null && monumentSuggestion.getPhotoSphereImages().size() > 0) {
-            images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(), createdMonument, true));
+            images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(),
+                    monumentSuggestion.getPhotoSphereImageReferenceUrls(), monumentSuggestion.getPhotoSphereImageCaptions(), createdMonument, true));
         }
         createdMonument.setImages(images);
 
@@ -1058,11 +1060,13 @@ public class MonumentService extends ModelService<Monument> {
         // Add any new Images
         List<Image> newImages = new ArrayList<>();
         if (updateSuggestion.getNewImageUrls() != null && updateSuggestion.getNewImageUrls().size() > 0) {
-            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewImageUrls(), currentMonument, false));
+            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewImageUrls(),
+                    updateSuggestion.getNewImageReferenceUrls(), updateSuggestion.getNewImageCaptions(), currentMonument, false));
         }
         if (updateSuggestion.getNewPhotoSphereImageUrls() != null &&
                 updateSuggestion.getNewPhotoSphereImageUrls().size() > 0) {
-            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewPhotoSphereImageUrls(), currentMonument, true));
+            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewPhotoSphereImageUrls(),
+                    updateSuggestion.getNewPhotoSphereImageReferenceUrls(), updateSuggestion.getNewPhotoSphereImageCaptions(), currentMonument, true));
         }
 
         // If the Monument does not have any Images, we can just set them
@@ -1179,7 +1183,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param arePhotoSphereImages - True if the specified imageUrls are for PhotoSphere images, False otherwise
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
      */
-    public List<Image> createMonumentImages(List<String> imageUrls, Monument monument, boolean arePhotoSphereImages) {
+    public List<Image> createMonumentImages(List<String> imageUrls, List<String> imageReferenceUrls, List<String> imageCaptions, Monument monument, boolean arePhotoSphereImages) {
         if (imageUrls == null || monument == null) {
             return null;
         }
@@ -1197,9 +1201,19 @@ public class MonumentService extends ModelService<Monument> {
             }
         }
 
+        int i = 0;
         for (String imageUrl : imageUrls) {
             if (!isNullOrEmpty(imageUrl)) {
                 Image image;
+
+                String imageReferenceUrl = "";
+                if (imageReferenceUrls != null && imageReferenceUrls.size() > i) {
+                    imageReferenceUrl = imageReferenceUrls.get(i);
+                }
+                String imageCaption = "";
+                if (imageCaptions != null && imageCaptions.size() > i) {
+                    imageCaption = imageCaptions.get(i);
+                }
 
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
@@ -1209,10 +1223,10 @@ public class MonumentService extends ModelService<Monument> {
 
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
-                    image = new Image(permanentImageUrl, isPrimary);
+                    image = new Image(permanentImageUrl, isPrimary, imageReferenceUrl, imageCaption);
                 }
                 else {
-                    image = new Image(imageUrl, false);
+                    image = new Image(imageUrl, false, imageReferenceUrl, imageCaption);
                     image.setIsPhotoSphere(true);
                 }
 
@@ -1220,6 +1234,7 @@ public class MonumentService extends ModelService<Monument> {
                 image = this.imageRepository.save(image);
                 images.add(image);
             }
+            i++;
         }
 
         return images;

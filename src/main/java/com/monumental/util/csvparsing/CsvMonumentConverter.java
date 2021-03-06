@@ -232,6 +232,20 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
                             }
                             break;
+                        case "imageReferenceUrls":
+                            if (zipFile != null) {
+                                result.getImageReferenceUrls().addAll(parseCsvArray(value));
+                            } else {
+                                result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
+                            }
+                            break;
+                        case "imageCaptions":
+                            if (zipFile != null) {
+                                result.getImageCaptions().addAll(parseCsvArray(value));
+                            } else {
+                                result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
+                            }
+                            break;
                     }
                 }
 
@@ -398,6 +412,12 @@ public class CsvMonumentConverter {
         }
         if (result.getMaterialNames() != null && result.getMaterialNames().size() > 0) {
             suggestion.setMaterialsJson(gson.toJson(result.getMaterialNames()));
+        }
+        if (result.getImageReferenceUrls() != null && result.getImageReferenceUrls().size() > 0) {
+            suggestion.setImageReferenceUrlsJson(gson.toJson(result.getImageReferenceUrls()));
+        }
+        if (result.getImageCaptions() != null && result.getImageCaptions().size() > 0) {
+            suggestion.setImageCaptionsJson(gson.toJson(result.getImageCaptions()));
         }
 
         return suggestion;

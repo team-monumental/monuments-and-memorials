@@ -2674,18 +2674,18 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonumentImages_NullImagesUrls_NonNullMonument() {
         Monument monument = new Monument();
-        assertNull(this.monumentService.createMonumentImages(null, monument, false));
+        assertNull(this.monumentService.createMonumentImages(null, null, null, monument, false));
     }
 
     @Test
     public void testMonumentService_createMonumentImages_NonNullImagesUrls_NullMonument() {
         List<String> imageUrls = new ArrayList<>();
-        assertNull(this.monumentService.createMonumentImages(imageUrls, null, false));
+        assertNull(this.monumentService.createMonumentImages(imageUrls, new ArrayList<>(), new ArrayList<>(), null, false));
     }
 
     @Test
     public void testMonumentService_createMonumentImages_NullImageUrls_NullMonument() {
-        assertNull(this.monumentService.createMonumentImages(null, null, false));
+        assertNull(this.monumentService.createMonumentImages(null, null, null, null, false));
     }
 
     @Test
@@ -2694,7 +2694,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, new ArrayList<>(), new ArrayList<>(), monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2703,11 +2703,15 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonumentImages_OneNullImageUrl() {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add(null);
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add(null);
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add(null);
 
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2716,11 +2720,15 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonumentImages_OneEmptyImageUrl() {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2730,11 +2738,17 @@ public class MonumentServiceIntegrationTests {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add(null);
         imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageReferenceUrls.add("");
 
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2743,12 +2757,16 @@ public class MonumentServiceIntegrationTests {
     public void testMonumentService_createMonumentImages_OneImageUrl() {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("test");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2757,12 +2775,18 @@ public class MonumentServiceIntegrationTests {
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
         assertFalse(image.getIsPhotoSphere());
+        assertEquals("", image.getReferenceUrl());
+        assertEquals("", image.getCaption());
     }
 
     @Test
     public void testMonumentService_createMonumentImages_OneImageUrl_MonumentAlreadyHasImages_NoPrimary() {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("test1");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2773,7 +2797,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2782,12 +2806,18 @@ public class MonumentServiceIntegrationTests {
         assertTrue(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
         assertFalse(image.getIsPhotoSphere());
+        assertEquals("", image.getReferenceUrl());
+        assertEquals("", image.getCaption());
     }
 
     @Test
     public void testMonumentService_createMonumentImages_OneImageUrl_MonumentAlreadyHasPrimaryImage() {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("test1");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2798,7 +2828,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2807,6 +2837,8 @@ public class MonumentServiceIntegrationTests {
         assertFalse(image.getIsPrimary());
         assertEquals("Monument", image.getMonument().getTitle());
         assertFalse(image.getIsPhotoSphere());
+        assertEquals("", image.getReferenceUrl());
+        assertEquals("", image.getCaption());
     }
 
     @Test
@@ -2817,12 +2849,24 @@ public class MonumentServiceIntegrationTests {
         imageUrls.add("test3");
         imageUrls.add(null);
         imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2831,18 +2875,24 @@ public class MonumentServiceIntegrationTests {
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
 
         Image image2 = result.get(1);
         assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
 
         Image image3 = result.get(2);
         assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
     }
 
     @Test
@@ -2853,6 +2903,18 @@ public class MonumentServiceIntegrationTests {
         imageUrls.add("test3");
         imageUrls.add(null);
         imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2863,7 +2925,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2872,18 +2934,24 @@ public class MonumentServiceIntegrationTests {
         assertTrue(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
 
         Image image2 = result.get(1);
         assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
 
         Image image3 = result.get(2);
         assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
     }
 
     @Test
@@ -2894,6 +2962,18 @@ public class MonumentServiceIntegrationTests {
         imageUrls.add("test3");
         imageUrls.add(null);
         imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2904,7 +2984,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2913,18 +2993,24 @@ public class MonumentServiceIntegrationTests {
         assertFalse(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
 
         Image image2 = result.get(1);
         assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
 
         Image image3 = result.get(2);
         assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
     }
 
     @Test
@@ -2935,12 +3021,24 @@ public class MonumentServiceIntegrationTests {
         imageUrls.add("test3");
         imageUrls.add(null);
         imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, monument, true);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, true);
 
         assertEquals(3, result.size());
 
@@ -2949,18 +3047,330 @@ public class MonumentServiceIntegrationTests {
         assertFalse(image1.getIsPrimary());
         assertEquals("Monument", image1.getMonument().getTitle());
         assertTrue(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
 
         Image image2 = result.get(1);
         assertEquals("test2", image2.getUrl());
         assertFalse(image2.getIsPrimary());
         assertEquals("Monument", image2.getMonument().getTitle());
         assertTrue(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
 
         Image image3 = result.get(2);
         assertEquals("test3", image3.getUrl());
         assertFalse(image3.getIsPrimary());
         assertEquals("Monument", image3.getMonument().getTitle());
         assertTrue(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreeImageUrlsWithOneNullAndOneEmpty_SomeReferenceUrls() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("reference url 1");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("reference url 3");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
+        assertTrue(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
+        assertEquals("reference url 1", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
+
+        Image image2 = result.get(1);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
+
+        Image image3 = result.get(2);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+        assertEquals("reference url 3", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreeImageUrlsWithOneNullAndOneEmpty_SomeCaptions() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("caption 2");
+        imageCaptions.add("caption 3");
+        imageCaptions.add("");
+        imageCaptions.add("");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
+        assertTrue(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
+
+        Image image2 = result.get(1);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("caption 2", image2.getCaption());
+
+        Image image3 = result.get(2);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("caption 3", image3.getCaption());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreeImageUrlsWithOneNullAndOneEmpty_NotEnoughReferenceUrls() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("reference url 2");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
+        assertTrue(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
+
+        Image image2 = result.get(1);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
+        assertEquals("reference url 2", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
+
+        Image image3 = result.get(2);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreeImageUrlsWithOneNullAndOneEmpty_NotEnoughCaptions() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("caption 2");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
+        assertTrue(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
+
+        Image image2 = result.get(1);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("caption 2", image2.getCaption());
+
+        Image image3 = result.get(2);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreeImageUrlsWithOneNullAndOneEmpty_NullReferenceUrls() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+        List<String> imageCaptions = new ArrayList<>();
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+        imageCaptions.add("");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, null, imageCaptions, monument, false);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
+        assertTrue(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
+
+        Image image2 = result.get(1);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
+
+        Image image3 = result.get(2);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
+    }
+
+    @Test
+    public void testMonumentService_createMonumentImages_ThreeImageUrlsWithOneNullAndOneEmpty_NullCaptions() {
+        List<String> imageUrls = new ArrayList<>();
+        imageUrls.add("test1");
+        imageUrls.add("test2");
+        imageUrls.add("test3");
+        imageUrls.add(null);
+        imageUrls.add("");
+        List<String> imageReferenceUrls = new ArrayList<>();
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+        imageReferenceUrls.add("");
+
+        Monument monument = new Monument();
+        monument.setTitle("Monument");
+        monument = this.monumentRepository.save(monument);
+
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, null, monument, false);
+
+        assertEquals(3, result.size());
+
+        Image image1 = result.get(0);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image1.getUrl());
+        assertTrue(image1.getIsPrimary());
+        assertEquals("Monument", image1.getMonument().getTitle());
+        assertFalse(image1.getIsPhotoSphere());
+        assertEquals("", image1.getReferenceUrl());
+        assertEquals("", image1.getCaption());
+
+        Image image2 = result.get(1);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image2.getUrl());
+        assertFalse(image2.getIsPrimary());
+        assertEquals("Monument", image2.getMonument().getTitle());
+        assertFalse(image2.getIsPhotoSphere());
+        assertEquals("", image2.getReferenceUrl());
+        assertEquals("", image2.getCaption());
+
+        Image image3 = result.get(2);
+        assertEquals("https://monuments-and-memorials.s3.us-east-2.amazonaws.com/Test+URL", image3.getUrl());
+        assertFalse(image3.getIsPrimary());
+        assertEquals("Monument", image3.getMonument().getTitle());
+        assertFalse(image3.getIsPhotoSphere());
+        assertEquals("", image3.getReferenceUrl());
+        assertEquals("", image3.getCaption());
     }
 
     /* updateMonumentTags Tests */

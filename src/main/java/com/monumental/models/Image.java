@@ -31,6 +31,12 @@ public class Image extends Model implements Serializable {
     @Column(name = "is_photo_sphere")
     private boolean isPhotoSphere = false;
 
+    @Column(name = "reference_url", length = 2048)
+    private String referenceUrl = "";
+
+    @Column(name = "caption")
+    private String caption = "";
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
@@ -47,6 +53,17 @@ public class Image extends Model implements Serializable {
 
         this.url = url;
         this.isPrimary = isPrimary;
+    }
+
+    public Image(String url, boolean isPrimary, String referenceUrl, String caption) {
+        if (isNullOrEmpty(url)) {
+            throw new IllegalArgumentException("URL must not be null or empty");
+        }
+
+        this.url = url;
+        this.isPrimary = isPrimary;
+        this.referenceUrl = referenceUrl;
+        this.caption = caption;
     }
 
     public String getUrl() {
@@ -79,5 +96,21 @@ public class Image extends Model implements Serializable {
 
     public void setIsPhotoSphere(boolean isPhotoSphere) {
         this.isPhotoSphere = isPhotoSphere;
+    }
+
+    public String getReferenceUrl() {
+        return referenceUrl;
+    }
+
+    public void setReferenceUrl(String referenceUrl) {
+        this.referenceUrl = referenceUrl;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
 }

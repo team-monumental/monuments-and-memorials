@@ -30,6 +30,10 @@ public class CsvMonumentConverterResult {
 
     private List<File> imageFiles = new ArrayList<>();
 
+    private List<String> imageReferenceUrls = new ArrayList<>();
+
+    private List<String> imageCaptions = new ArrayList<>();
+
     private List<String> errors = new ArrayList<>();
 
     private List<String> warnings = new ArrayList<>();
@@ -80,6 +84,22 @@ public class CsvMonumentConverterResult {
 
     public void setImageFiles(List<File> imageFiles) {
         this.imageFiles = imageFiles;
+    }
+
+    public List<String> getImageReferenceUrls() {
+        return imageReferenceUrls;
+    }
+
+    public void setImageReferenceUrls(List<String> imageReferenceUrls) {
+        this.imageReferenceUrls = imageReferenceUrls;
+    }
+
+    public List<String> getImageCaptions() {
+        return imageCaptions;
+    }
+
+    public void setImageCaptions(List<String> imageCaptions) {
+        this.imageCaptions = imageCaptions;
     }
 
     public List<String> getErrors() {

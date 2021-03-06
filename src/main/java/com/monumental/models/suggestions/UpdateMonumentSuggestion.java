@@ -108,6 +108,20 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_primary_image_id")
     private Integer newPrimaryImageId;
 
+    @Column(name = "new_image_reference_urls_json")
+    private String newImageReferenceUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> newImageReferenceUrls;
+
+    @Column(name = "new_image_captions_json")
+    private String newImageCaptionsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> newImageCaptions;
+
     @Column(name = "deleted_image_ids_json", length = 1024)
     private String deletedImageIdsJson;
 
@@ -128,6 +142,20 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Transient
     @JsonIgnore
     private List<String> newPhotoSphereImageUrls;
+
+    @Column(name = "new_photosphere_image_reference_urls_json")
+    private String newPhotoSphereImageReferenceUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> newPhotoSphereImageReferenceUrls;
+
+    @Column(name = "new_photosphere_image_captions_json")
+    private String newPhotoSphereImageCaptionsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> newPhotoSphereImageCaptions;
 
     @Column(name = "deleted_photosphere_image_ids_json", length = 1024)
     private String deletedPhotoSphereImageIdsJson;
@@ -393,6 +421,46 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         this.newPrimaryImageId = newPrimaryImageId;
     }
 
+    public String getNewImageReferenceUrlsJson() {
+        return newImageReferenceUrlsJson;
+    }
+
+    public void setNewImageReferenceUrlsJson(String newImageReferenceUrlsJson) {
+        this.newImageReferenceUrlsJson = newImageReferenceUrlsJson;
+    }
+
+    public List<String> getNewImageReferenceUrls() throws IndexOutOfBoundsException {
+        if (this.newImageReferenceUrls == null || (this.newImageReferenceUrlsJson != null && this.newImageReferenceUrls.isEmpty() && !this.newImageReferenceUrlsJson.isEmpty())) {
+            this.newImageReferenceUrls = this.deserializeStringList(this.newImageReferenceUrlsJson);
+        }
+
+        if (this.newImageReferenceUrls != null && this.getNewImageUrls().size() != this.newImageReferenceUrls.size()) {
+            throw new IndexOutOfBoundsException("Number of new image reference URLs must match number of new images");
+        }
+
+        return this.newImageReferenceUrls;
+    }
+
+    public String getNewImageCaptionsJson() {
+        return newImageCaptionsJson;
+    }
+
+    public void setNewImageCaptionsJson(String newImageCaptionsJson) {
+        this.newImageCaptionsJson = newImageCaptionsJson;
+    }
+
+    public List<String> getNewImageCaptions() {
+        if (this.newImageCaptions == null || (this.newImageCaptionsJson != null && this.newImageCaptions.isEmpty() && !this.newImageCaptionsJson.isEmpty())) {
+            this.newImageCaptions = this.deserializeStringList(this.newImageCaptionsJson);
+        }
+
+        if (this.newImageCaptions != null && this.getNewImageUrls().size() != this.newImageCaptions.size()) {
+            throw new IndexOutOfBoundsException("Number of new image captions must match number of new images");
+        }
+
+        return this.newImageCaptions;
+    }
+
     public String getDeletedImageIdsJson() {
         return this.deletedImageIdsJson;
     }
@@ -439,6 +507,48 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.newPhotoSphereImageUrls;
+    }
+
+    public String getNewPhotoSphereImageReferenceUrlsJson() {
+        return newPhotoSphereImageReferenceUrlsJson;
+    }
+
+    public void setNewPhotoSphereImageReferenceUrlsJson(String newPhotoSphereImageReferenceUrlsJson) {
+        this.newPhotoSphereImageReferenceUrlsJson = newPhotoSphereImageReferenceUrlsJson;
+    }
+
+    public List<String> getNewPhotoSphereImageReferenceUrls() throws IndexOutOfBoundsException {
+        if (this.newPhotoSphereImageReferenceUrls == null || (this.newPhotoSphereImageReferenceUrlsJson != null &&
+                this.newPhotoSphereImageReferenceUrls.isEmpty() && !this.newPhotoSphereImageReferenceUrlsJson.isEmpty())) {
+            this.newPhotoSphereImageReferenceUrls = this.deserializeStringList(this.newPhotoSphereImageReferenceUrlsJson);
+        }
+
+        if (this.newPhotoSphereImageReferenceUrls != null && this.getNewPhotoSphereImageUrls().size() != this.newPhotoSphereImageReferenceUrls.size()) {
+            throw new IndexOutOfBoundsException("Number of new photosphere image reference URLs must match number of new photosphere images");
+        }
+
+        return this.newPhotoSphereImageReferenceUrls;
+    }
+
+    public String getNewPhotoSphereImageCaptionsJson() {
+        return newPhotoSphereImageCaptionsJson;
+    }
+
+    public void setNewPhotoSphereImageCaptionsJson(String newPhotoSphereImageCaptionsJson) {
+        this.newPhotoSphereImageCaptionsJson = newPhotoSphereImageCaptionsJson;
+    }
+
+    public List<String> getNewPhotoSphereImageCaptions() {
+        if (this.newPhotoSphereImageCaptions == null || (this.newPhotoSphereImageCaptionsJson != null &&
+                this.newPhotoSphereImageCaptions.isEmpty() && !this.newPhotoSphereImageCaptionsJson.isEmpty())) {
+            this.newPhotoSphereImageCaptions = this.deserializeStringList(this.newPhotoSphereImageCaptionsJson);
+        }
+
+        if (this.newPhotoSphereImageCaptions != null && this.getNewPhotoSphereImageUrls().size() != this.newPhotoSphereImageCaptions.size()) {
+            throw new IndexOutOfBoundsException("Number of new photosphere image captions must match number of new photosphere images");
+        }
+
+        return this.newPhotoSphereImageCaptions;
     }
 
     public String getDeletedPhotoSphereImageIdsJson() {
