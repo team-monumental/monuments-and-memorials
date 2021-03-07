@@ -101,9 +101,17 @@ export default class CreateOrUpdateForm extends React.Component {
             },
             references: [reference],
             images: [],
+            imageReferenceUrls: [],
+            imageCaptions: [],
             photoSphereImages: [],
+            photoSphereImageReferenceUrls: [],
+            photoSphereImageCaptions: [],
             imagesForUpdate:[],
+            imageReferenceUrlsForUpdate: {},
+            imageCaptionsForUpdate: {},
             photoSphereImagesForUpdate: [],
+            photoSphereImageReferenceUrlsForUpdate: {},
+            photoSphereImageCaptionsForUpdate: {},
             imageUploaderKey: 0,
             materials: {
                 materialObjects: [],
@@ -138,8 +146,8 @@ export default class CreateOrUpdateForm extends React.Component {
     clearForm(clearValues) {
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, references, isTemporary } = this.state;
-        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, images, imageUploaderKey, materials,
-            newMaterials, tags, newTags } = this.state;
+        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, images, imageCaptions, imageReferenceUrls,
+            imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
 
         title.isValid = true;
         title.message = '';
@@ -208,6 +216,8 @@ export default class CreateOrUpdateForm extends React.Component {
             datePickerCurrentDate = null;
             deactivatedDatePickerCurrentDate = null;
             images = [];
+            imageReferenceUrls = [];
+            imageCaptions = [];
             imageUploaderKey++;
             materials.materialObjects = [];
             newMaterials = [];
@@ -222,8 +232,8 @@ export default class CreateOrUpdateForm extends React.Component {
 
         this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
             deactivatedComment, artist, description, inscription, datePickerCurrentDate,
-            deactivatedDatePickerCurrentDate, references, images, imageUploaderKey, materials, newMaterials, tags,
-            newTags, isTemporary});
+            deactivatedDatePickerCurrentDate, references, images, imageReferenceUrls, imageCaptions, imageUploaderKey,
+            materials, newMaterials, tags, newTags, isTemporary});
     }
 
     /**
@@ -234,8 +244,10 @@ export default class CreateOrUpdateForm extends React.Component {
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType } = this.state;
         let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
-            references, tags, imagesForUpdate, photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey,
-            city, state, isTemporary } = this.state;
+            references, tags, imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate,
+            photoSphereImagesForUpdate, photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate,
+            images, imageReferenceUrls, imageCaptions, photoSphereImages, photoSphereImageReferenceUrls,
+            photoSphereImageCaptions, imageUploaderKey, city, state, isTemporary } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -330,28 +342,41 @@ export default class CreateOrUpdateForm extends React.Component {
 
         if (monument.images && monument.images.length) {
             imagesForUpdate = [];
+            imageReferenceUrlsForUpdate = []
+            imageCaptionsForUpdate = []
             photoSphereImagesForUpdate = [];
+            photoSphereImageReferenceUrlsForUpdate = []
+            photoSphereImageCaptionsForUpdate = []
             for (const originalImage of monument.images) {
                 const image = Object.create(originalImage);
                 image.hasBeenDeleted = false;
                 if (image.isPhotoSphere) {
                     photoSphereImagesForUpdate.push(image);
-                }
-                else {
+                    photoSphereImageReferenceUrlsForUpdate[image.id] = image.referenceUrl;
+                    photoSphereImageCaptionsForUpdate[image.id] = image.caption;
+                } else {
                     imagesForUpdate.push(image);
+                    imageReferenceUrlsForUpdate[image.id] = image.referenceUrl;
+                    imageCaptionsForUpdate[image.id] = image.caption;
                 }
             }
         }
 
         images = [];
+        imageReferenceUrls = [];
+        imageCaptions = [];
         photoSphereImages = [];
+        photoSphereImageReferenceUrls = [];
+        photoSphereImageCaptions = [];
         imageUploaderKey++;
 
         this.setState({ title, address, latitude, longitude, artist, description, inscription, year, month,
             datePickerCurrentDate, dateSelectValue, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
             deactivatedDateSelectValue, deactivatedComment, references, materials, tags, imagesForUpdate,
-            photoSphereImagesForUpdate, images, photoSphereImages, imageUploaderKey, locationType, city, state,
-            isTemporary });
+            imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImagesForUpdate,
+            photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate, images, imageReferenceUrls,
+            imageCaptions, photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions, imageUploaderKey,
+            locationType, city, state, isTemporary });
     }
 
     convertCoordinate(coordinate){
@@ -590,8 +615,9 @@ export default class CreateOrUpdateForm extends React.Component {
     buildCreateForm() {
         const { title, address, latitude, longitude, dateSelectValue, deactivatedDateSelectValue, year, month,
             deactivatedYear, deactivatedMonth, artist, description, inscription, datePickerCurrentDate,
-            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, photoSphereImages, materials,
-            newMaterials, tags, newTags, isTemporary, city, state } = this.state;
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
+            photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions, materials, newMaterials, tags,
+            newTags, isTemporary, city, state } = this.state;
 
         let createForm = {
             title: title.value,
@@ -602,8 +628,12 @@ export default class CreateOrUpdateForm extends React.Component {
             description: description.value === '' ? null : description.value,
             inscription: inscription.value === '' ? null : inscription.value,
             references: references.map(reference => reference.value),
-            images: images,
-            photoSphereImages: photoSphereImages,
+            images,
+            imageReferenceUrls,
+            imageCaptions,
+            photoSphereImages,
+            photoSphereImageReferenceUrls,
+            photoSphereImageCaptions,
             materials: materials.materialObjects.map(material => material.name),
             newMaterials: newMaterials.map(newMaterial => newMaterial.name),
             tags: tags.map(tag => tag.name),
@@ -664,8 +694,10 @@ export default class CreateOrUpdateForm extends React.Component {
     buildUpdateForm() {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
             deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
-            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imagesForUpdate,
-            photoSphereImages, photoSphereImagesForUpdate, materials, tags, isTemporary, city, state } = this.state;
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
+            imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImages,
+            photoSphereReferenceUrls, photoSphereCaptions, photoSphereImagesForUpdate, photoSphereReferenceUrlsForUpdate,
+            photoSphereCaptionsForUpdate, materials, tags, isTemporary, city, state } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -676,15 +708,24 @@ export default class CreateOrUpdateForm extends React.Component {
             newInscription: inscription.value === '' ? undefined : inscription.value,
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
-            images: images,
+            images,
+            imageReferenceUrls,
+            imageCaptions,
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
+            photoSphereReferenceUrls,
+            photoSphereCaptions,
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
             newDateFormat: dateSelectValue,
             newDeactivatedDateFormat: deactivatedDateSelectValue,
             newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
-            imagesForUpdate: imagesForUpdate,
+            imagesForUpdate,
+            // TODO:  move these to a section below where we map them to image ids, or just make sure they are maps all along, during their value updates
+            imageReferenceUrlsForUpdate,
+            imageCaptionsForUpdate,
+            photoSphereReferenceUrlsForUpdate,
+            photoSphereCaptionsForUpdate,
             newCity: city,
             newState: state
         };
@@ -935,11 +976,11 @@ export default class CreateOrUpdateForm extends React.Component {
         const referenceFromState = references.filter(r => r.id === reference.id)[0];
         referenceFromState['deleted'] = false;
 
-        this.setState({references});
+        this.setState({ references });
     }
 
     async handleImageUploaderChange(files) {
-        await this.setState({images: files});
+        await this.setState({ images: files });
     }
 
     handleImageIsPrimaryCheckboxClick(event, image) {
@@ -1207,7 +1248,9 @@ export default class CreateOrUpdateForm extends React.Component {
             deactivatedDatePickerCurrentDate, title, address, latitude, longitude, year, deactivatedYear, month,
             deactivatedMonth, deactivatedComment, artist, description, inscription, references, imageUploaderKey,
             materials, imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
-            city, state, datePickerError, deactivatedDatePickerError } = this.state;
+            city, state, datePickerError, deactivatedDatePickerError, imageReferenceUrls, imageCaptions,
+            photoSphereImageReferenceUrls, photoSphereImageCaptions, imageReferenceUrlsForUpdate, imageCaptionsForUpdate,
+            photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
@@ -1401,20 +1444,34 @@ export default class CreateOrUpdateForm extends React.Component {
         let imagesForUpdateDisplay;
         if (imagesForUpdate.length) {
             let imageDisplays = [];
+            let i = 0;
             for (const image of imagesForUpdate) {
                 imageDisplays.push(
-                    <div
-                        className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
-                        key={image.id}
-                    >
-                        {this.renderImageDeleteButton(image)}
+                    <div>
                         <div
-                            className={image.hasBeenDeleted ? 'image-for-update deleted' : 'image-for-update'}
-                            style={{backgroundImage: `url("${image.url}")`}}
+                            className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
+                            key={image.id}
+                        >
+                            {this.renderImageDeleteButton(image)}
+                            <div
+                                className={image.hasBeenDeleted ? 'image-for-update deleted' : 'image-for-update'}
+                                style={{backgroundImage: `url("${image.url}")`}}
+                            />
+                            {this.renderImageIsPrimaryCheckbox(image)}
+                        </div>
+                        <Form.Label>Reference URL:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="year"
+                            placeholder="YYYY"
+                            value={year.value}
+                            onChange={(event) => this.handleInputChange(event)}
+                            isInvalid={!year.isValid}
+                            className="text-control-small"
                         />
-                        {this.renderImageIsPrimaryCheckbox(image)}
                     </div>
                 );
+                i++;
             }
 
             imagesForUpdateDisplay = (

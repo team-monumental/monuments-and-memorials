@@ -122,6 +122,20 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> newImageCaptions;
 
+    @Column(name = "updated_image_reference_urls_json")
+    private String updatedImageReferenceUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private Map<Integer, String> updatedImageReferenceUrlsById;
+
+    @Column(name = "updated_image_captions_json")
+    private String updatedImageCaptionsJson;
+
+    @Transient
+    @JsonIgnore
+    private Map<Integer, String> updatedImageCaptionsById;
+
     @Column(name = "deleted_image_ids_json", length = 1024)
     private String deletedImageIdsJson;
 
@@ -156,6 +170,20 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Transient
     @JsonIgnore
     private List<String> newPhotoSphereImageCaptions;
+
+    @Column(name = "updated_photosphere_image_reference_urls_json")
+    private String updatedPhotoSphereImageReferenceUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private Map<Integer, String> updatedPhotoSphereImageReferenceUrlsById;
+
+    @Column(name = "updated_photosphere_image_captions_json")
+    private String updatedPhotoSphereImageCaptionsJson;
+
+    @Transient
+    @JsonIgnore
+    private Map<Integer, String> updatedPhotoSphereImageCaptionsById;
 
     @Column(name = "deleted_photosphere_image_ids_json", length = 1024)
     private String deletedPhotoSphereImageIdsJson;
@@ -461,6 +489,38 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         return this.newImageCaptions;
     }
 
+    public String getUpdatedImageReferenceUrlsJson() {
+        return updatedImageReferenceUrlsJson;
+    }
+
+    public void setUpdatedImageReferenceUrlsJson(String updatedImageReferenceUrlsJson) {
+        this.updatedImageReferenceUrlsJson = updatedImageReferenceUrlsJson;
+    }
+
+    public Map<Integer, String> getUpdatedImageReferenceUrlsById() {
+        if (this.updatedImageReferenceUrlsById == null) {
+            this.updatedImageReferenceUrlsById = this.deserializeMap(this.updatedImageReferenceUrlsJson);
+        }
+
+        return this.updatedImageReferenceUrlsById;
+    }
+
+    public String getUpdatedImageCaptionsJson() {
+        return updatedImageCaptionsJson;
+    }
+
+    public void setUpdatedImageCaptionsJson(String updatedImageCaptionsJson) {
+        this.updatedImageCaptionsJson = updatedImageCaptionsJson;
+    }
+
+    public Map<Integer, String> getUpdatedImageCaptionsById() {
+        if (this.updatedImageCaptionsById == null) {
+            this.updatedImageCaptionsById = this.deserializeMap(this.updatedImageCaptionsJson);
+        }
+
+        return this.updatedImageCaptionsById;
+    }
+
     public String getDeletedImageIdsJson() {
         return this.deletedImageIdsJson;
     }
@@ -549,6 +609,38 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.newPhotoSphereImageCaptions;
+    }
+
+    public String getUpdatedPhotoSphereImageReferenceUrlsJson() {
+        return updatedPhotoSphereImageReferenceUrlsJson;
+    }
+
+    public void setUpdatedPhotoSphereImageReferenceUrlsJson(String updatedPhotoSphereImageReferenceUrlsJson) {
+        this.updatedPhotoSphereImageReferenceUrlsJson = updatedPhotoSphereImageReferenceUrlsJson;
+    }
+
+    public Map<Integer, String> getUpdatedPhotoSphereImageReferenceUrlsById() {
+        if (this.updatedPhotoSphereImageReferenceUrlsById == null) {
+            this.updatedPhotoSphereImageReferenceUrlsById = this.deserializeMap(this.updatedPhotoSphereImageReferenceUrlsJson);
+        }
+
+        return this.updatedPhotoSphereImageReferenceUrlsById;
+    }
+
+    public String getUpdatedPhotoSphereImageCaptionsJson() {
+        return updatedPhotoSphereImageCaptionsJson;
+    }
+
+    public void setUpdatedPhotoSphereImageCaptionsJson(String updatedPhotoSphereImageCaptionsJson) {
+        this.updatedPhotoSphereImageCaptionsJson = updatedPhotoSphereImageCaptionsJson;
+    }
+
+    public Map<Integer, String> getUpdatedPhotoSphereImageCaptionsById() {
+        if (this.updatedPhotoSphereImageCaptionsById == null) {
+            this.updatedPhotoSphereImageCaptionsById = this.deserializeMap(this.updatedPhotoSphereImageCaptionsJson);
+        }
+
+        return this.updatedPhotoSphereImageCaptionsById;
     }
 
     public String getDeletedPhotoSphereImageIdsJson() {

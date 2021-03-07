@@ -1078,6 +1078,12 @@ public class MonumentService extends ModelService<Monument> {
             currentMonument.getImages().addAll(newImages);
         }
 
+        // Update image reference URLs and captions
+        this.updateImageReferenceUrl(currentMonument, updateSuggestion.getUpdatedImageReferenceUrlsById());
+        this.updateImageCaption(currentMonument, updateSuggestion.getUpdatedImageCaptionsById());
+        this.updateImageReferenceUrl(currentMonument, updateSuggestion.getUpdatedPhotoSphereImageReferenceUrlsById());
+        this.updateImageCaption(currentMonument, updateSuggestion.getUpdatedPhotoSphereImageCaptionsById());
+
         // Update the primary Image
         this.updateMonumentPrimaryImage(currentMonument, updateSuggestion.getNewPrimaryImageId());
 
@@ -1287,6 +1293,30 @@ public class MonumentService extends ModelService<Monument> {
                 if (newReferenceUrlsById.containsKey(currentReference.getId())) {
                     currentReference.setUrl(newReferenceUrlsById.get(currentReference.getId()));
                     this.referenceRepository.save(currentReference);
+                }
+            }
+        }
+    }
+
+    public void updateImageReferenceUrl(Monument monument, Map<Integer, String> updatedImageReferenceUrlsById) {
+        if (monument != null && monument.getImages() != null && updatedImageReferenceUrlsById != null &&
+                monument.getImages().size() > 0 && updatedImageReferenceUrlsById.size() > 0) {
+            for (Image currentImage : monument.getImages()) {
+                if (updatedImageReferenceUrlsById.containsKey(currentImage.getId())) {
+                    currentImage.setReferenceUrl(updatedImageReferenceUrlsById.get(currentImage.getId()));
+                    this.imageRepository.save(currentImage);
+                }
+            }
+        }
+    }
+
+    public void updateImageCaption(Monument monument, Map<Integer, String> updatedImageCaptionsById) {
+        if (monument != null && monument.getImages() != null && updatedImageCaptionsById != null &&
+                monument.getImages().size() > 0 && updatedImageCaptionsById.size() > 0) {
+            for (Image currentImage : monument.getImages()) {
+                if (updatedImageCaptionsById.containsKey(currentImage.getId())) {
+                    currentImage.setCaption(updatedImageCaptionsById.get(currentImage.getId()));
+                    this.imageRepository.save(currentImage);
                 }
             }
         }
