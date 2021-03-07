@@ -629,11 +629,11 @@ export default class CreateOrUpdateForm extends React.Component {
             inscription: inscription.value === '' ? null : inscription.value,
             references: references.map(reference => reference.value),
             images,
-            imageReferenceUrls,
-            imageCaptions,
+            imageReferenceUrlsJson: JSON.stringify(imageReferenceUrls),
+            imageCaptionsJson: JSON.stringify(imageCaptions),
             photoSphereImages,
-            photoSphereImageReferenceUrls,
-            photoSphereImageCaptions,
+            photoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls),
+            photoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions),
             materials: materials.materialObjects.map(material => material.name),
             newMaterials: newMaterials.map(newMaterial => newMaterial.name),
             tags: tags.map(tag => tag.name),
@@ -696,8 +696,9 @@ export default class CreateOrUpdateForm extends React.Component {
             deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
             imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImages,
-            photoSphereReferenceUrls, photoSphereCaptions, photoSphereImagesForUpdate, photoSphereReferenceUrlsForUpdate,
-            photoSphereCaptionsForUpdate, materials, tags, isTemporary, city, state } = this.state;
+            photoSphereImageReferenceUrls, photoSphereImageCaptions, photoSphereImagesForUpdate,
+            photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate, materials, tags, isTemporary,
+            city, state } = this.state;
         let { newMaterials, newTags } = this.state;
 
         let updateForm = {
@@ -709,11 +710,11 @@ export default class CreateOrUpdateForm extends React.Component {
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images,
-            imageReferenceUrls,
-            imageCaptions,
+            newImageReferenceUrlsJson: JSON.stringify(imageReferenceUrls),
+            newImageCaptionsJson: JSON.stringify(imageCaptions),
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
-            photoSphereReferenceUrls,
-            photoSphereCaptions,
+            newPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls),
+            newPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions),
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
@@ -721,11 +722,10 @@ export default class CreateOrUpdateForm extends React.Component {
             newDeactivatedDateFormat: deactivatedDateSelectValue,
             newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
             imagesForUpdate,
-            // TODO:  move these to a section below where we map them to image ids, or just make sure they are maps all along, during their value updates
-            imageReferenceUrlsForUpdate,
-            imageCaptionsForUpdate,
-            photoSphereReferenceUrlsForUpdate,
-            photoSphereCaptionsForUpdate,
+            updatedImageReferenceUrlsJson: JSON.stringify(imageReferenceUrlsForUpdate),
+            updatedImageCaptionsJson: JSON.stringify(imageCaptionsForUpdate),
+            updatedPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrlsForUpdate),
+            updatedPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptionsForUpdate),
             newCity: city,
             newState: state
         };
