@@ -1,5 +1,6 @@
 import * as React from 'react';
 import '../../../TagsSearch/TagsSearch.scss';
+import './TagsFilter.scss';
 import Tags from '../../../../Tags/Tags';
 import Tag from '../../../../Tags/Tag/Tag'
 import { searchTags, clearTagSearchResults, searchMaterials, clearMaterialSearchResults } from '../../../../../actions/tagsSearch';
