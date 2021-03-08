@@ -17,6 +17,7 @@ import com.monumental.util.csvparsing.*;
 import com.monumental.util.search.SearchHelper;
 import com.monumental.util.string.StringHelper;
 import com.opencsv.CSVReader;
+import com.rollbar.notifier.Rollbar;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -83,6 +84,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     private AwsS3Service awsS3Service;
+
+    @Autowired
+    private Rollbar rollbar;
 
     /**
      * SRID for coordinates
@@ -641,6 +645,9 @@ public class MonumentService extends ModelService<Monument> {
 
         this.monumentRepository.saveAll(monuments);
         if (job != null) job.setProgress(1.0);
+
+        rollbar.info("Bulk created " + monuments.size() + " monuments!");
+
         return monuments;
     }
 
@@ -649,6 +656,7 @@ public class MonumentService extends ModelService<Monument> {
         this.updateSuggestionRepository.deleteAllByMonumentId(id);
         this.monumentTagRepository.deleteAllByMonumentId(id);
         this.monumentRepository.deleteById(id);
+        rollbar.info("Deleted monument " + id + "!");
     }
 
     @SuppressWarnings("unchecked")
@@ -949,6 +957,8 @@ public class MonumentService extends ModelService<Monument> {
         createdMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), true));
         createdMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), false));
 
+        rollbar.info("Created monument" + createdMonument.getId() + "!");
+
         return createdMonument;
     }
 
@@ -1104,6 +1114,8 @@ public class MonumentService extends ModelService<Monument> {
 
         // Update the Tags associated with the Monument
         this.updateMonumentTags(currentMonument, updateSuggestion.getNewTags(), false);
+
+        rollbar.info("Updated monument" + currentMonument.getId() + "!");
 
         return currentMonument;
     }
@@ -1677,6 +1689,7 @@ public class MonumentService extends ModelService<Monument> {
             job.setProgress(1.0);
             bulkCreateSuggestion.setCreatedBy(job.getUser());
         }
+        rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
     }
 }

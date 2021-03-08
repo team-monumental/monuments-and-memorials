@@ -13,6 +13,7 @@ import com.monumental.security.Authorization;
 import com.monumental.security.Role;
 import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
+import com.rollbar.notifier.Rollbar;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -41,6 +42,9 @@ public class MonumentController {
 
     @Autowired
     private UpdateSuggestionRepository updateSuggestionRepository;
+
+    @Autowired
+    private Rollbar rollbar;
 
     /**
      * Get a Monument with the specified ID, if it exists and is active or inactive depending on onlyActive
@@ -76,6 +80,10 @@ public class MonumentController {
         if (cascade) {
             this.monumentService.initializeAllLazyLoadedCollections(monument);
         }
+
+        // this requires committing to a rollbar paid plan because it will greatly increase out event volume.
+        // rollbar.info("Retrieved monument!");
+
         return monument;
     }
 
@@ -122,7 +130,13 @@ public class MonumentController {
     public Monument updateMonumentIsActive(@PathVariable("id") Integer id, @RequestBody ToggleIsActiveRequest request) {
         Monument monument = this.monumentRepository.getOne(id);
         monument.setIsActive(request.isActive);
-        return this.monumentRepository.save(monument);
+        Monument updatedMonument = this.monumentRepository.save(monument);
+        if (request.isActive) {
+            rollbar.info("Activated monument" + updatedMonument.getId() + "!");
+        } else {
+            rollbar.info("Deactivated monument" + updatedMonument.getId() + "!");
+        }
+        return updatedMonument;
     }
 
     /**
