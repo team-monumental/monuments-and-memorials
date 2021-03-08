@@ -19,12 +19,12 @@ export default class Tag extends React.Component {
     }
 
     render() {
-        const { name, selectable, selectedIcon, isMaterial, searchUri } = this.props;
+        const { name, selectable, selectedIcon, isMaterial } = this.props;
         const { selected } = this.state;
         const params = {};
         if (isMaterial) params.materials = name;
         else params.tags = name;
-        const link = `${searchUri}/?${QueryString.stringify(params)}`;
+        const link = `/search/?${QueryString.stringify(params)}`;
         if (selectable) {
             return (
                 <div className="tag text-truncate" onClick={() => this.handleToggleSelect()}>
