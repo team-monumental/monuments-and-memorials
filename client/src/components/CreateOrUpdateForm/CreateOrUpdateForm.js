@@ -826,17 +826,14 @@ export default class CreateOrUpdateForm extends React.Component {
     async handleImageInfoChange(event) {
         const { target: { name } } = event;
         const splitName = name.split('-')
-        let currentState = this.state[splitName[0]];
+        const stateName = splitName[0]
+        let currentState = this.state[stateName];
         if (splitName[1]) {
             if (!currentState) {
                 currentState = {}
             }
-
-            if (currentState[splitName[1]]) {
-                currentState[splitName[1]] = event.target.value;
-            } else {
-                currentState[splitName[1]] = event.target.value;
-            }
+            currentState[splitName[1]] = event.target.value;
+            await this.setState({ [stateName]: currentState })
         }
     }
 
