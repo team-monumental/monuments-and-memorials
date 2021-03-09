@@ -8,7 +8,6 @@ export default class SearchInfo extends React.Component {
 
     render() {
         const { onLimitChange, onSortChange, limit, page, count, sort, showDistanceSort, hideSortBy } = this.props;
-
         const pageEnd = Math.min((limit * (page - 1)) + limit, count);
         const pageStart = Math.min((limit * (page - 1)) + 1, pageEnd);
         return (
@@ -18,7 +17,7 @@ export default class SearchInfo extends React.Component {
                 </div>
                 <div>
                     <span>Show</span>
-                    <Form.Control as="select" className="mx-2" defaultValue={limit} onChange={event => onLimitChange(event.target.value)}>
+                    <Form.Control as="select" className="mx-2" defaultValue={25} onChange={event => onLimitChange(event.target.value)}>
                         {
                             this.limitOptions.map(opt => (
                                 <option value={opt} key={opt}>{opt}</option>

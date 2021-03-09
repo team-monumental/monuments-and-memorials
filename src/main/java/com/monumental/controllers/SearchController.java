@@ -76,7 +76,7 @@ public class SearchController {
     @GetMapping("/api/search/monuments")
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
                                           @RequestParam(required = false, defaultValue = "1") String page,
-                                          @RequestParam(required = false, defaultValue = "10") String limit,
+                                          @RequestParam(required = false, defaultValue = "25") String limit,
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
                                           @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
