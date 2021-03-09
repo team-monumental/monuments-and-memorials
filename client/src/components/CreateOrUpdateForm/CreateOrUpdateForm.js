@@ -823,6 +823,10 @@ export default class CreateOrUpdateForm extends React.Component {
         return updateForm;
     }
 
+    validateUrl(url) {
+        return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%\/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(url)
+    }
+
     async handleImageInfoChange(event) {
         const { target: { name } } = event;
         const splitName = name.split('-')
