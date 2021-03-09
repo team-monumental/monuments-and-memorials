@@ -232,6 +232,17 @@
         }
     }
 
+    .image-fields-container-spaced {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 16px;
+
+        .image-field-label {
+            margin: 4px 0 1px 0;
+        }
+    }
+
+
     .images-for-update-container {
         display: flex;
 

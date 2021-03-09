@@ -827,12 +827,35 @@ export default class CreateOrUpdateForm extends React.Component {
         const { target: { name } } = event;
         const splitName = name.split('-')
         const stateName = splitName[0]
+        const id = splitName[1]
         let currentState = this.state[stateName];
-        if (splitName[1]) {
+        if (id) {
             if (!currentState) {
                 currentState = {}
             }
-            currentState[splitName[1]] = event.target.value;
+            currentState[id] = event.target.value;
+            await this.setState({ [stateName]: currentState })
+        }
+    }
+
+    async handleArrayImageInfoChange(event) {
+        const { target: { name } } = event;
+        const splitName = name.split('-')
+        const stateName = splitName[0]
+        const id = splitName[1]
+        let currentState = this.state[stateName];
+        if (id) {
+            if (!currentState) {
+                currentState = []
+            }
+            let diff = id - currentState.length
+            if (id > -1) {
+                while (diff > -1) {
+                    currentState.push(null)
+                    diff--
+                }
+            }
+            currentState[id] = event.target.value;
             await this.setState({ [stateName]: currentState })
         }
     }
@@ -1073,7 +1096,10 @@ export default class CreateOrUpdateForm extends React.Component {
 
     handleSubmit(event) {
         const { monument, onSubmit } = this.props;
-        const { images, photoSphereImages } = this.state;
+        const { images, photoSphereImages, imageCaptions, imageReferenceUrls } = this.state;
+
+        console.log(imageReferenceUrls)
+        console.log(imageCaptions)
 
         event.preventDefault();
 
@@ -1262,7 +1288,7 @@ export default class CreateOrUpdateForm extends React.Component {
             deactivatedDatePickerCurrentDate, title, address, latitude, longitude, year, deactivatedYear, month,
             deactivatedMonth, deactivatedComment, artist, description, inscription, references, imageUploaderKey,
             materials, imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
-            city, state, datePickerError, deactivatedDatePickerError, imageReferenceUrls, imageCaptions,
+            city, state, datePickerError, deactivatedDatePickerError, images, imageReferenceUrls, imageCaptions,
             photoSphereImageReferenceUrls, photoSphereImageCaptions, imageReferenceUrlsForUpdate, imageCaptionsForUpdate,
             photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate } = this.state;
         const { monument, action } = this.props;
@@ -1460,7 +1486,7 @@ export default class CreateOrUpdateForm extends React.Component {
             let imageDisplays = [];
             for (const image of imagesForUpdate) {
                 imageDisplays.push(
-                    <div style={{width: '100%'}}>
+                    <div style={{width: '100%'}} key={image.id}>
                         <div
                             className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
                             key={image.id}
@@ -1508,6 +1534,37 @@ export default class CreateOrUpdateForm extends React.Component {
                 </div>
             );
         }
+
+        let imageFields = [];
+        if (images.length) {
+            images.forEach((image, i) => {
+                imageFields.push(
+                    <div className="image-fields-container-spaced" key={i}>
+                        <Form.Label className="image-field-label">Image {i + 1} Reference URL:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`imageReferenceUrls-${i}`}
+                            placeholder=""
+                            value={imageReferenceUrls[i]}
+                            onChange={(event) => this.handleArrayImageInfoChange(event)}
+                            className="text-control-medium"
+                            maxLength="2048"
+                        />
+                        <Form.Label className="image-field-label">Image {i + 1} Caption:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`imageCaptions-${i}`}
+                            placeholder=""
+                            value={imageCaptions[i]}
+                            onChange={(event) => this.handleArrayImageInfoChange(event)}
+                            className="text-control-medium"
+                            maxLength="2048"
+                        />
+                    </div>
+                )
+            })
+        }
+        const imageFieldsDisplay = <div style={{marginBottom: '16px'}}>{imageFields}</div>
 
         return (
             <div className="create-form">
@@ -1670,6 +1727,7 @@ export default class CreateOrUpdateForm extends React.Component {
                             key={imageUploaderKey}
                             errorClass="invalid-feedback"
                         />
+                        {imageFieldsDisplay}
                         {imagesForUpdateDisplay}
                     </Form.Group>
 
