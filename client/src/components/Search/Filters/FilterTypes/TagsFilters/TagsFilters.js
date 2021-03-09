@@ -83,6 +83,7 @@ class TagsFilter extends React.Component {
 
     async handleSearchChange(value) {
         await this.setState({searchQuery: value});
+        this.searchTags();
     }
 
     async handleKeyDown(event) {
