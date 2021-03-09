@@ -1,6 +1,7 @@
 @import "../../theme";
 
 .create-form {
+    margin: 0 auto;
     max-width: 390px;
     .h4 {
         padding-bottom: 1rem;
@@ -234,15 +235,23 @@
     .images-for-update-container {
         display: flex;
 
+        .image-fields-container {
+            display: flex;
+            flex-direction: column;
+            width: 65%;
+            margin: 0 8px;
+
+            .image-field-label {
+                margin: 4px 0 1px 0;
+            }
+        }
+
         .image-for-update-container {
             height: 130px;
-            width: 120px;
-            margin: 5% 2.5%;
             padding: 10px;
             background: #EDF2F6;
             display: flex;
             align-items: center;
-            justify-content: center;
             box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
             border: 1px solid #D0DBE4;
             position: relative;
@@ -251,13 +260,14 @@
                 position: absolute;
                 top: 10rem;
                 display: flex;
+                padding-top: 0.5rem;
 
                 .image-is-primary-message {
                     font-weight: bold;
+                    margin-top: 2px;
                 }
 
                 .image-is-primary-checkbox {
-                    padding-top: 0.5rem;
                     cursor: pointer;
                 }
             }

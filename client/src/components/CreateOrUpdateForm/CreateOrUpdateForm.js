@@ -342,11 +342,11 @@ export default class CreateOrUpdateForm extends React.Component {
 
         if (monument.images && monument.images.length) {
             imagesForUpdate = [];
-            imageReferenceUrlsForUpdate = []
-            imageCaptionsForUpdate = []
+            imageReferenceUrlsForUpdate = {};
+            imageCaptionsForUpdate = {};
             photoSphereImagesForUpdate = [];
-            photoSphereImageReferenceUrlsForUpdate = []
-            photoSphereImageCaptionsForUpdate = []
+            photoSphereImageReferenceUrlsForUpdate = {};
+            photoSphereImageCaptionsForUpdate = {};
             for (const originalImage of monument.images) {
                 const image = Object.create(originalImage);
                 image.hasBeenDeleted = false;
@@ -823,6 +823,23 @@ export default class CreateOrUpdateForm extends React.Component {
         return updateForm;
     }
 
+    async handleImageInfoChange(event) {
+        const { target: { name } } = event;
+        const splitName = name.split('-')
+        let currentState = this.state[splitName[0]];
+        if (splitName[1]) {
+            if (!currentState) {
+                currentState = {}
+            }
+
+            if (currentState[splitName[1]]) {
+                currentState[splitName[1]] = event.target.value;
+            } else {
+                currentState[splitName[1]] = event.target.value;
+            }
+        }
+    }
+
     async handleInputChange(event) {
         const { target: { name } } = event;
         const currentState = this.state[name];
@@ -1165,7 +1182,7 @@ export default class CreateOrUpdateForm extends React.Component {
             return (
                 <div className="is-primary-container">
                     <div className="image-is-primary-message">
-                        Is Primary Image:
+                        Primary Image:
                     </div>
                     {isPrimaryIcon}
                 </div>
@@ -1444,10 +1461,9 @@ export default class CreateOrUpdateForm extends React.Component {
         let imagesForUpdateDisplay;
         if (imagesForUpdate.length) {
             let imageDisplays = [];
-            let i = 0;
             for (const image of imagesForUpdate) {
                 imageDisplays.push(
-                    <div>
+                    <div style={{width: '100%'}}>
                         <div
                             className={image.hasBeenDeleted ? 'image-for-update-container deleted' : 'image-for-update-container'}
                             key={image.id}
@@ -1457,25 +1473,37 @@ export default class CreateOrUpdateForm extends React.Component {
                                 className={image.hasBeenDeleted ? 'image-for-update deleted' : 'image-for-update'}
                                 style={{backgroundImage: `url("${image.url}")`}}
                             />
+                            <div className="image-fields-container">
+                                <Form.Label className="image-field-label">Reference URL:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name={`imageReferenceUrlsForUpdate-${image.id}`}
+                                    placeholder=""
+                                    value={imageReferenceUrlsForUpdate[image.id]}
+                                    onChange={(event) => this.handleImageInfoChange(event)}
+                                    className="text-control-medium"
+                                    maxLength="2048"
+                                />
+                                <Form.Label className="image-field-label">Caption:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name={`imageCaptionsForUpdate-${image.id}`}
+                                    placeholder=""
+                                    value={imageCaptionsForUpdate[image.id]}
+                                    onChange={(event) => this.handleImageInfoChange(event)}
+                                    className="text-control-medium"
+                                    maxLength="2048"
+                                />
+                            </div>
                             {this.renderImageIsPrimaryCheckbox(image)}
                         </div>
-                        <Form.Label>Reference URL:</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="year"
-                            placeholder="YYYY"
-                            value={year.value}
-                            onChange={(event) => this.handleInputChange(event)}
-                            isInvalid={!year.isValid}
-                            className="text-control-small"
-                        />
                     </div>
                 );
-                i++;
+
             }
 
             imagesForUpdateDisplay = (
-                <div>
+                <div style={{marginBottom: '32px'}}>
                     <Form.Label>Current Images:</Form.Label>
                     <div className="images-for-update-container">
                         {imageDisplays}
