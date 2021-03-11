@@ -282,7 +282,7 @@ export default class BulkUpdateForm extends React.Component{
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our{' '}
-                    <a href='/BulkUploadTemplate.csv'>Bulk Modify CSV Template</a>!</span>
+                    <a href='/BulkUpdateTemplate.csv'>Bulk Update CSV Template</a>!</span>
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
