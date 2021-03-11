@@ -128,4 +128,4 @@ class MonumentBulkUpdatePage extends React.Component {
     }
 }
 
-export default withRouter(connect(MonumentBulkUpdatePage.mapStateToProps(MonumentBulkUpdatePage)))
+export default withRouter(connect(MonumentBulkUpdatePage.mapStateToProps)(MonumentBulkUpdatePage));
