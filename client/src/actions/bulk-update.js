@@ -1,10 +1,10 @@
 import {
-    VALIDATE_BULK_SUGGESTION_PENDING,
-    VALIDATE_BULK_SUGGESTION_SUCCESS,
-    VALIDATE_BULK_SUGGESTION_ERROR,
-    CREATE_BULK_SUGGESTION_PENDING,
-    CREATE_BULK_SUGGESTION_SUCCESS,
-    CREATE_BULK_SUGGESTION_ERROR,
+    VALIDATE_BULK_UPDATE_SUGGESTION_PENDING,
+    VALIDATE_BULK_UPDATE_SUGGESTION_SUCCESS,
+    VALIDATE_BULK_UPDATE_SUGGESTION_ERROR,
+    CREATE_BULK_UPDATE_SUGGESTION_PENDING,
+    CREATE_BULK_UPDATE_SUGGESTION_SUCCESS,
+    CREATE_BULK_UPDATE_SUGGESTION_ERROR,
     BULK_UPDATE_MONUMENTS_PENDING,
     BULK_UPDATE_MONUMENTS_SUCCESS,
     BULK_UPDATE_MONUMENTS_ERROR
@@ -14,23 +14,23 @@ import { put } from '../utils/api-util';
 
 const actions = {
     validate: {
-        pending: VALIDATE_BULK_SUGGESTION_PENDING,
-        success: VALIDATE_BULK_SUGGESTION_SUCCESS,
-        error: VALIDATE_BULK_SUGGESTION_ERROR,
-        uri: '/api/suggestion/bulk/validate'
+        pending: VALIDATE_BULK_UPDATE_SUGGESTION_PENDING,
+        success: VALIDATE_BULK_UPDATE_SUGGESTION_SUCCESS,
+        error: VALIDATE_BULK_UPDATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/bulk-update/validate'
     },
     createSuggestion: {
-        pending: CREATE_BULK_SUGGESTION_PENDING,
-        success: CREATE_BULK_SUGGESTION_SUCCESS,
-        error: CREATE_BULK_SUGGESTION_ERROR,
-        uri: '/api/suggestion/bulk'
+        pending: CREATE_BULK_UPDATE_SUGGESTION_PENDING,
+        success: CREATE_BULK_UPDATE_SUGGESTION_SUCCESS,
+        error: CREATE_BULK_UPDATE_SUGGESTION_ERROR,
+        uri: '/api/suggestion/bulk-update'
     },
     create: {
         pending: BULK_UPDATE_MONUMENTS_PENDING,
         success: BULK_UPDATE_MONUMENTS_SUCCESS,
         error: BULK_UPDATE_MONUMENTS_ERROR,
-        suggestUri: '/api/suggestion/bulk',
-        approveUri: '/api/suggestion/bulk'
+        suggestUri: '/api/suggestion/bulk-update',
+        approveUri: '/api/suggestion/bulk-update'
     }
 };
 
