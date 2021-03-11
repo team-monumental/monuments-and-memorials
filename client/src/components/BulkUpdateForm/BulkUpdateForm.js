@@ -298,7 +298,7 @@ export default class BulkUpdateForm extends React.Component{
             </p>
             <p style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Please use our{' '}
-                    <a href='/BulkUploadZipTemplate.zip'>Bulk Modify Zip Template</a>!</span>
+                    <a href='/BulkUpdateZipTemplate.zip'>Bulk Update Zip Template</a>!</span>
             </p>
             <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">
