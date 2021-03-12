@@ -3,8 +3,10 @@ import DatePicker from 'react-datepicker';
 import { Form } from 'react-bootstrap';
 import * as moment from 'moment';
 import './DateFilter.scss';
-import Slider from 'rc-slider';
+import {Range} from 'rc-slider';
 import {Mode} from './DateEnum';
+import SliderHandle  from './SliderHandle/SliderHandle';
+
 
 export default class DateFilter extends React.Component {
     
@@ -86,14 +88,18 @@ export default class DateFilter extends React.Component {
         this.handleDateFilter(Mode.RANGE, [this.state.dateFilterStart, this.state.dateFilterEnd]);
     }
 
-    async handleSliderChange(value){
+    async handleSliderSearch(value){
         await this.handleFilterChange('activeStart', value[0] )
         this.handleFilterChange('activeEnd', value[1])
     }
 
-    onSliderChange = value => {
-        this.handleSliderChange(value);
+    onSliderChange = (value) =>{
+        this.setState({sliderValues: value})
       };
+    onSliderSerach = value => {
+        console.log('hi')
+        this.handleSliderSearch(value);
+    };
 
     async removeFilter(){
         const {onRemove} = this.props
@@ -143,11 +149,7 @@ export default class DateFilter extends React.Component {
     }
 
     makeSliderFilter() {
-        const createSliderWithTooltip = Slider.createSliderWithTooltip;
-        const Range = createSliderWithTooltip(Slider.Range);
-        
         const marks = {
-
             1870: '1870\'s or Earlier',
             1900: '1900\'s',
             1930: '1930\'s',
@@ -159,9 +161,10 @@ export default class DateFilter extends React.Component {
             <div className="d-flex align-items-center">
                 <span className="mr-2">Active in</span>
                 <div className="slider">
-                    <Range value={ [this.state.params.activeStart, this.state.params.activeEnd]} allowCross={false} min={1870} max={2020} step={10} defaultValue={[1870, 1960]} marks={marks}
-                        handleStyle={{ borderColor: '#42b883', backgroundColor: '#42b883', borderRadius: '0%', width: '6px', height: '18px' }}
-                        onChange={this.onSliderChange} />
+                    <Range allowCross={false} min={1870} max={2020} step={10} value={this.state.sliderValues} marks={marks}
+                        handle={SliderHandle}
+                        dotStyle={{ height: '12px', width: '12px', top: '-4px'}}
+                        onChange={this.onSliderChange} onAfterChange={this.onSliderSerach} />
                 </div>
             </div>
         )
@@ -197,7 +200,7 @@ export default class DateFilter extends React.Component {
                         <option value={Mode.NONE}>None</option>
                         <option value={Mode.RANGE}>Created(range)</option>
                         <option value={Mode.DECADE}>Created(decade)</option>
-                        {/* <option value={Mode.SLIDER}>Active(slider)</option> */} 
+                        <option value={Mode.SLIDER}>Active(slider)</option>
                         
                        </Form.Control>
                     {dateFilter}

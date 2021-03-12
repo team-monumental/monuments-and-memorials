@@ -33,7 +33,7 @@ class Filters extends React.Component {
                 materials: {params: {materials: qMats} },
                 q: {params: { q: params.q || ''}},
             },
-            showFilters: false
+            showFilters: true //TODO: CHange back
         };
     }
 
@@ -177,7 +177,7 @@ class Filters extends React.Component {
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
                 decades={decades}
-                filterMode={filterList.date.config.filterMode}
+                filterMode={Mode.SLIDER}
                 changeMode={(mode) => this.handleDateChangeMode(mode)}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)
