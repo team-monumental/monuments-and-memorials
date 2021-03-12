@@ -106,15 +106,24 @@ export default class Gallery extends React.Component {
         const selectedImage = images[selectedImageIndex];
         const ariaLabel = this.getAltText(selectedImage)
         return (
-            <div className="image-wrapper" role="img" aria-label={ariaLabel}>
-                <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}} />
-                {this.renderAnimation()}
-                <div className="overlay" onClick={() => this.openModal(selectedImage)}>
-                    <i className="material-icons">
-                        open_in_new
-                    </i>
+            <>
+                <div className="image-wrapper" role="img" aria-label={ariaLabel}>
+                    <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}} />
+                    {this.renderAnimation()}
+                    <div className="overlay" onClick={() => this.openModal(selectedImage)}>
+                        <i className="material-icons">
+                            open_in_new
+                        </i>
+                    </div>
                 </div>
-            </div>
+                {selectedImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                    {selectedImage.caption}
+                </div>}
+                {selectedImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                    <span className="detail-label">Reference:&nbsp;</span>
+                    <a href={selectedImage.referenceUrl}>{selectedImage.referenceUrl}</a>
+                </div>}
+            </>
         )
     }
 
@@ -171,7 +180,15 @@ export default class Gallery extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <img src={selectedImage.url} alt={altText} />
-                        {/*<p className="caption">Image description...</p>*/}
+                        <div className="imageInfo">
+                            {selectedImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                                {selectedImage.caption}
+                            </div>}
+                            {selectedImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                                <span className="detail-label">Reference:&nbsp;</span>
+                                <a href={selectedImage.referenceUrl}>{selectedImage.referenceUrl}</a>
+                            </div>}
+                        </div>
                     </Modal.Body>
                     <Modal.Footer className="d-flex justify-content-center">
                         <Pagination count={images.length} page={modalImageIndex} onPage={page => {
