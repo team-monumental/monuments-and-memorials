@@ -352,12 +352,12 @@ export default class CreateOrUpdateForm extends React.Component {
                 image.hasBeenDeleted = false;
                 if (image.isPhotoSphere) {
                     photoSphereImagesForUpdate.push(image);
-                    photoSphereImageReferenceUrlsForUpdate[image.id] = image.referenceUrl;
-                    photoSphereImageCaptionsForUpdate[image.id] = image.caption;
+                    photoSphereImageReferenceUrlsForUpdate[image.id] = { value: image.referenceUrl, isValid: true };
+                    photoSphereImageCaptionsForUpdate[image.id] = { value: image.caption, isValid: true };
                 } else {
                     imagesForUpdate.push(image);
-                    imageReferenceUrlsForUpdate[image.id] = image.referenceUrl;
-                    imageCaptionsForUpdate[image.id] = image.caption;
+                    imageReferenceUrlsForUpdate[image.id] = { value: image.referenceUrl, isValid: true };
+                    imageCaptionsForUpdate[image.id] = { value: image.caption, isValid: true };
                 }
             }
         }
@@ -395,6 +395,17 @@ export default class CreateOrUpdateForm extends React.Component {
         return decimal.toFixed(6);
     }
 
+    validateReferenceUrl(referenceUrl) {
+        if (!validator.isEmpty(referenceUrl.value) && !this.validateUrl(referenceUrl.value)) {
+            referenceUrl.isValid = false
+            referenceUrl.message = 'Must be a URL'
+            return false
+        }
+        referenceUrl.isValid = true
+        referenceUrl.message = null
+        return true
+    }
+
     /**
      * Validates the Form
      * If any of the inputs are invalid, the entire Form is considered invalid
@@ -403,10 +414,38 @@ export default class CreateOrUpdateForm extends React.Component {
     validateForm() {
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             references, materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
-            datePickerError, dateSelectValue, deactivatedDateSelectValue } = this.state;
+            datePickerError, dateSelectValue, deactivatedDateSelectValue, imageReferenceUrls, imageReferenceUrlsForUpdate,
+            photoSphereImageReferenceUrls, photoSphereImageReferenceUrlsForUpdate } = this.state;
         let { deactivatedDatePickerError } = this.state
         const currentDate = new Date();
         let formIsValid = true;
+
+        imageReferenceUrls.forEach(referenceUrl => {
+            if (!this.validateReferenceUrl(referenceUrl)) {
+                formIsValid = false
+            }
+        })
+        photoSphereImageReferenceUrls.forEach(referenceUrl => {
+            if (!this.validateReferenceUrl(referenceUrl)) {
+                formIsValid = false
+            }
+        })
+        for(const prop in imageReferenceUrlsForUpdate) {
+            if(imageReferenceUrlsForUpdate.hasOwnProperty(prop) && imageReferenceUrlsForUpdate[prop].value) {
+                const referenceUrl = imageReferenceUrlsForUpdate[prop]
+                if (!this.validateReferenceUrl(referenceUrl)) {
+                    formIsValid = false
+                }
+            }
+        }
+        for(const prop in photoSphereImageReferenceUrlsForUpdate) {
+            if(photoSphereImageReferenceUrlsForUpdate.hasOwnProperty(prop) && photoSphereImageReferenceUrlsForUpdate[prop].value) {
+                const referenceUrl = photoSphereImageReferenceUrlsForUpdate[prop]
+                if (!this.validateReferenceUrl(referenceUrl)) {
+                    formIsValid = false
+                }
+            }
+        }
 
         /* Title Validation */
         /* Title is a required Form field */
@@ -629,11 +668,11 @@ export default class CreateOrUpdateForm extends React.Component {
             inscription: inscription.value === '' ? null : inscription.value,
             references: references.map(reference => reference.value),
             images,
-            imageReferenceUrlsJson: JSON.stringify(imageReferenceUrls),
-            imageCaptionsJson: JSON.stringify(imageCaptions),
+            imageReferenceUrlsJson: JSON.stringify(imageReferenceUrls.map(referenceUrl => referenceUrl.value)),
+            imageCaptionsJson: JSON.stringify(imageCaptions.map(caption => caption.value)),
             photoSphereImages,
-            photoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls),
-            photoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions),
+            photoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls.map(referenceUrl => referenceUrl.value)),
+            photoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions.map(caption => caption.value)),
             materials: materials.materialObjects.map(material => material.name),
             newMaterials: newMaterials.map(newMaterial => newMaterial.name),
             tags: tags.map(tag => tag.name),
@@ -688,6 +727,18 @@ export default class CreateOrUpdateForm extends React.Component {
         return createForm;
     }
 
+    remapObjectToValuesOnly(object) {
+        const finalObject = {}
+        for(const prop in object) {
+            if(object.hasOwnProperty(prop)) {
+                if (object[prop].value) {
+                    finalObject[prop] = object[prop].value;
+                }
+            }
+        }
+        return finalObject
+    }
+
     /**
      * Build the form object for creating an UpdateMonumentSuggestion
      */
@@ -710,11 +761,11 @@ export default class CreateOrUpdateForm extends React.Component {
             newLatitude: (latitude.value === '' && longitude.value === '') ? undefined : latitude.value,
             newLongitude: (latitude.value === '' && longitude.value === '') ? undefined : longitude.value,
             images,
-            newImageReferenceUrlsJson: JSON.stringify(imageReferenceUrls),
-            newImageCaptionsJson: JSON.stringify(imageCaptions),
+            newImageReferenceUrlsJson: JSON.stringify(imageReferenceUrls.map(referenceUrl => referenceUrl.value)),
+            newImageCaptionsJson: JSON.stringify(imageCaptions.map(caption => caption.value)),
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
-            newPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls),
-            newPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions),
+            newPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls.map(referenceUrl => referenceUrl.value)),
+            newPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions.map(caption => caption.value)),
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
@@ -722,10 +773,10 @@ export default class CreateOrUpdateForm extends React.Component {
             newDeactivatedDateFormat: deactivatedDateSelectValue,
             newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
             imagesForUpdate,
-            updatedImageReferenceUrlsJson: JSON.stringify(imageReferenceUrlsForUpdate),
-            updatedImageCaptionsJson: JSON.stringify(imageCaptionsForUpdate),
-            updatedPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrlsForUpdate),
-            updatedPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptionsForUpdate),
+            updatedImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(imageReferenceUrlsForUpdate)),
+            updatedImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(imageCaptionsForUpdate)),
+            updatedPhotoSphereImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageReferenceUrlsForUpdate)),
+            updatedPhotoSphereImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageCaptionsForUpdate)),
             newCity: city,
             newState: state
         };
@@ -837,7 +888,11 @@ export default class CreateOrUpdateForm extends React.Component {
             if (!currentState) {
                 currentState = {}
             }
-            currentState[id] = event.target.value;
+            if (!currentState[id]) {
+                currentState[id] = {}
+            }
+            currentState[id].value = event.target.value;
+            currentState[id].isValid = true;
             await this.setState({ [stateName]: currentState })
         }
     }
@@ -859,7 +914,11 @@ export default class CreateOrUpdateForm extends React.Component {
                     diff--
                 }
             }
-            currentState[id] = event.target.value;
+            if (!currentState[id]) {
+                currentState[id] = {}
+            }
+            currentState[id].value = event.target.value;
+            currentState[id].isValid = true;
             await this.setState({ [stateName]: currentState })
         }
     }
@@ -1021,7 +1080,24 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     async handleImageUploaderChange(files) {
-        await this.setState({ images: files });
+        const { images, imageReferenceUrls, imageCaptions } = this.state;
+
+        const newImageReferenceUrls = imageReferenceUrls.slice()
+        const newImageCaptions = imageCaptions.slice()
+
+        // handle image deletion
+        if (images.length > files.length) {
+            let i = 0;
+            images.forEach(image => {
+                if (!files.includes(image)) {
+                    newImageReferenceUrls.splice(i, 1);
+                    newImageCaptions.splice(i, 1);
+                }
+                i++;
+            })
+        }
+
+        await this.setState({ images: files, imageReferenceUrls: newImageReferenceUrls, imageCaptions: newImageCaptions });
     }
 
     handleImageIsPrimaryCheckboxClick(event, image) {
@@ -1101,9 +1177,6 @@ export default class CreateOrUpdateForm extends React.Component {
     handleSubmit(event) {
         const { monument, onSubmit } = this.props;
         const { images, photoSphereImages, imageCaptions, imageReferenceUrls } = this.state;
-
-        console.log(imageReferenceUrls)
-        console.log(imageCaptions)
 
         event.preventDefault();
 
@@ -1506,21 +1579,25 @@ export default class CreateOrUpdateForm extends React.Component {
                                     type="text"
                                     name={`imageReferenceUrlsForUpdate-${image.id}`}
                                     placeholder=""
-                                    value={imageReferenceUrlsForUpdate[image.id]}
+                                    value={imageReferenceUrlsForUpdate[image.id].value}
                                     onChange={(event) => this.handleImageInfoChange(event)}
+                                    isInvalid={!imageReferenceUrlsForUpdate[image.id].isValid}
                                     className="text-control-medium"
                                     maxLength="2048"
                                 />
+                                <Form.Control.Feedback type="invalid">{imageReferenceUrlsForUpdate[image.id]?.message}</Form.Control.Feedback>
                                 <Form.Label className="image-field-label">Caption:</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name={`imageCaptionsForUpdate-${image.id}`}
                                     placeholder=""
-                                    value={imageCaptionsForUpdate[image.id]}
+                                    value={imageCaptionsForUpdate[image.id].value}
                                     onChange={(event) => this.handleImageInfoChange(event)}
+                                    isInvalid={!imageCaptionsForUpdate[image.id].isValid}
                                     className="text-control-medium"
                                     maxLength="2048"
                                 />
+                                <Form.Control.Feedback type="invalid">{imageCaptionsForUpdate[image.id]?.message}</Form.Control.Feedback>
                             </div>
                             {this.renderImageIsPrimaryCheckbox(image)}
                         </div>
@@ -1549,21 +1626,25 @@ export default class CreateOrUpdateForm extends React.Component {
                             type="text"
                             name={`imageReferenceUrls-${i}`}
                             placeholder=""
-                            value={imageReferenceUrls[i]}
+                            value={imageReferenceUrls[i]?.value}
                             onChange={(event) => this.handleArrayImageInfoChange(event)}
+                            isInvalid={imageReferenceUrls[i]?.value && !imageReferenceUrls[i]?.isValid}
                             className="text-control-medium"
                             maxLength="2048"
                         />
+                        <Form.Control.Feedback type="invalid">{imageReferenceUrls[i]?.message}</Form.Control.Feedback>
                         <Form.Label className="image-field-label">Image {i + 1} Caption:</Form.Label>
                         <Form.Control
                             type="text"
                             name={`imageCaptions-${i}`}
                             placeholder=""
-                            value={imageCaptions[i]}
+                            value={imageCaptions[i]?.value}
                             onChange={(event) => this.handleArrayImageInfoChange(event)}
+                            isInvalid={imageCaptions[i]?.value && !imageCaptions[i]?.isValid}
                             className="text-control-medium"
                             maxLength="2048"
                         />
+                        <Form.Control.Feedback type="invalid">{imageCaptions[i]?.message}</Form.Control.Feedback>
                     </div>
                 )
             })
