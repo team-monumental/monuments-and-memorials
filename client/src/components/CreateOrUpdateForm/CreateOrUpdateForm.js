@@ -396,7 +396,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     validateReferenceUrl(referenceUrl) {
-        if (!validator.isEmpty(referenceUrl.value) && !this.validateUrl(referenceUrl.value)) {
+        if (referenceUrl.value && !validator.isEmpty(referenceUrl.value) && !this.validateUrl(referenceUrl.value)) {
             referenceUrl.isValid = false
             referenceUrl.message = 'Must be a URL'
             return false
@@ -1097,6 +1097,13 @@ export default class CreateOrUpdateForm extends React.Component {
             })
         }
 
+        while (newImageCaptions.length < files.length) {
+            newImageCaptions.push({ value: null, isValid: true })
+        }
+        while (newImageReferenceUrls.length < files.length) {
+            newImageReferenceUrls.push({ value: null, isValid: true })
+        }
+
         await this.setState({ images: files, imageReferenceUrls: newImageReferenceUrls, imageCaptions: newImageCaptions });
     }
 
@@ -1176,7 +1183,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
     handleSubmit(event) {
         const { monument, onSubmit } = this.props;
-        const { images, photoSphereImages, imageCaptions, imageReferenceUrls } = this.state;
+        const { images, photoSphereImages } = this.state;
 
         event.preventDefault();
 
@@ -1199,24 +1206,32 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     handleAddPhotoSphereImage(image) {
-        const { photoSphereImages } = this.state;
+        const { photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions } = this.state;
         photoSphereImages.push(image);
-        this.setState({photoSphereImages});
+        photoSphereImageReferenceUrls.push({ value: null, isValid: true })
+        photoSphereImageCaptions.push({ value: null, isValid: true })
+        this.setState({ photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions });
     }
 
     handleDeletePhotoSphereImage({image, index}) {
-        const { photoSphereImages, photoSphereImagesForUpdate } = this.state;
+        const { photoSphereImages, photoSphereImagesForUpdate, photoSphereImageReferenceUrls, photoSphereImageCaptions } = this.state;
+
+        const newPhotoSphereImageReferenceUrls = photoSphereImageReferenceUrls.slice()
+        const newPhotoSphereImageCaptions = photoSphereImageCaptions.slice()
 
         if (image) {
             photoSphereImagesForUpdate.find(i => {
                 return i.id === image.id;
-            }).hasBeenDeleted = true;
+            }).hasBeenDeleted = true
         }
         else {
             photoSphereImages.splice(index, 1);
+            newPhotoSphereImageReferenceUrls.splice(index, 1);
+            newPhotoSphereImageCaptions.splice(index, 1);
         }
 
-        this.setState({photoSphereImagesForUpdate, photoSphereImages});
+        this.setState({ photoSphereImagesForUpdate, photoSphereImages,
+            photoSphereImageReferenceUrls: newPhotoSphereImageReferenceUrls, photoSphereImageCaptions: newPhotoSphereImageCaptions });
     }
 
     handleRestorePhotoSphereImage(image) {
@@ -1651,6 +1666,73 @@ export default class CreateOrUpdateForm extends React.Component {
         }
         const imageFieldsDisplay = <div style={{marginBottom: '16px'}}>{imageFields}</div>
 
+        let photoSphereImageFields = [];
+        if (photoSphereImagesForUpdate.length) {
+            photoSphereImagesForUpdate.forEach((image, i) => {
+                photoSphereImageFields.push(
+                    <div className="image-fields-container-spaced" key={i}>
+                        <Form.Label className="image-field-label">360° Image {i + 1} Reference URL:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`photoSphereImageReferenceUrlsForUpdate-${image.id}`}
+                            placeholder=""
+                            value={photoSphereImageReferenceUrlsForUpdate[image.id]?.value}
+                            onChange={(event) => this.handleImageInfoChange(event)}
+                            isInvalid={photoSphereImageReferenceUrlsForUpdate[image.id]?.value && !photoSphereImageReferenceUrlsForUpdate[image.id]?.isValid}
+                            className="text-control-medium"
+                            maxLength="2048"
+                        />
+                        <Form.Control.Feedback type="invalid">{photoSphereImageReferenceUrlsForUpdate[image.id]?.message}</Form.Control.Feedback>
+                        <Form.Label className="image-field-label">360° Image {i + 1} Caption:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`photoSphereImageCaptionsForUpdate-${image.id}`}
+                            placeholder=""
+                            value={photoSphereImageCaptionsForUpdate[image.id]?.value}
+                            onChange={(event) => this.handleImageInfoChange(event)}
+                            isInvalid={photoSphereImageCaptionsForUpdate[image.id]?.value && !photoSphereImageCaptionsForUpdate[image.id]?.isValid}
+                            className="text-control-medium"
+                            maxLength="2048"
+                        />
+                        <Form.Control.Feedback type="invalid">{photoSphereImageCaptionsForUpdate[image.id]?.message}</Form.Control.Feedback>
+                    </div>
+                )
+            })
+        }
+        if (photoSphereImages.length) {
+            photoSphereImages.forEach((image, i) => {
+                photoSphereImageFields.push(
+                    <div className="image-fields-container-spaced" key={i}>
+                        <Form.Label className="image-field-label">360° Image {i + photoSphereImagesForUpdate.length + 1} Reference URL:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`photoSphereImageReferenceUrls-${i}`}
+                            placeholder=""
+                            value={photoSphereImageReferenceUrls[i]?.value}
+                            onChange={(event) => this.handleArrayImageInfoChange(event)}
+                            isInvalid={photoSphereImageReferenceUrls[i]?.value && !photoSphereImageReferenceUrls[i]?.isValid}
+                            className="text-control-medium"
+                            maxLength="2048"
+                        />
+                        <Form.Control.Feedback type="invalid">{photoSphereImageReferenceUrls[i]?.message}</Form.Control.Feedback>
+                        <Form.Label className="image-field-label">360° Image {i + 1} Caption:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`photoSphereImageCaptions-${i}`}
+                            placeholder=""
+                            value={photoSphereImageCaptions[i]?.value}
+                            onChange={(event) => this.handleArrayImageInfoChange(event)}
+                            isInvalid={photoSphereImageCaptions[i]?.value && !photoSphereImageCaptions[i]?.isValid}
+                            className="text-control-medium"
+                            maxLength="2048"
+                        />
+                        <Form.Control.Feedback type="invalid">{photoSphereImageCaptions[i]?.message}</Form.Control.Feedback>
+                    </div>
+                )
+            })
+        }
+        const photoSphereImageFieldsDisplay = <div style={{marginBottom: '16px'}}>{photoSphereImageFields}</div>
+
         return (
             <div className="create-form">
                 {monument
@@ -1823,6 +1905,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                                onAddImage={this.handleAddPhotoSphereImage.bind(this)}
                                                onDeleteImage={this.handleDeletePhotoSphereImage.bind(this)}
                                                onRestoreImage={this.handleRestorePhotoSphereImage.bind(this)}/>
+                            {photoSphereImageFieldsDisplay}
                             {/* Artist */}
                             <Form.Group controlId="create-form-artist">
                                 <Form.Label>Artist:</Form.Label>

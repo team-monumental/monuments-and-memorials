@@ -43,12 +43,26 @@ export default class MapPhotoSphereTabs extends React.Component {
 
         const activePhotoSphereImage = photoSphereImages.find((image, index) => index === activeImageIndex);
 
+        let referenceUrl = activePhotoSphereImage.referenceUrl
+        if (referenceUrl && !referenceUrl.startsWith('https://') && !referenceUrl.startsWith('http://')) {
+            referenceUrl = `https://${referenceUrl}`
+        }
+
         return (
             <Tabs id="map_photo_sphere_tabs" activeKey={activeTab} onSelect={key => this.setState({activeTab: key})}>
                 <Tab eventKey="images" title="360&deg; View">
                     <div className="tab-content-wrapper">
-                        {activePhotoSphereImage && (
+                        {activePhotoSphereImage && (<>
                             <iframe title="PhotoSphere" src={activePhotoSphereImage.url} frameBorder="0" allowFullScreen/>
+                            <div className="imageInfo">
+                                {activePhotoSphereImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                                    {activePhotoSphereImage.caption}
+                                </div>}
+                                {activePhotoSphereImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                                    <span className="detail-label">Reference:&nbsp;</span>
+                                    <a href={referenceUrl}>{activePhotoSphereImage.referenceUrl}</a>
+                                </div>}
+                            </div></>
                         )}
                         {photoSphereImages.length > 1 && pagination}
                     </div>

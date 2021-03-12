@@ -105,6 +105,10 @@ export default class Gallery extends React.Component {
         }
         const selectedImage = images[selectedImageIndex];
         const ariaLabel = this.getAltText(selectedImage)
+        let referenceUrl = selectedImage.referenceUrl
+        if (referenceUrl && !referenceUrl.startsWith('https://') && !referenceUrl.startsWith('http://')) {
+            referenceUrl = `https://${referenceUrl}`
+        }
         return (
             <>
                 <div className="image-wrapper" role="img" aria-label={ariaLabel}>
@@ -121,7 +125,7 @@ export default class Gallery extends React.Component {
                 </div>}
                 {selectedImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
                     <span className="detail-label">Reference:&nbsp;</span>
-                    <a href={selectedImage.referenceUrl}>{selectedImage.referenceUrl}</a>
+                    <a href={referenceUrl}>{selectedImage.referenceUrl}</a>
                 </div>}
             </>
         )
@@ -172,6 +176,10 @@ export default class Gallery extends React.Component {
         const { images } = this.props;
         const selectedImage = images[modalImageIndex];
         const altText = this.getAltText(selectedImage)
+        let referenceUrl = selectedImage.referenceUrl
+        if (referenceUrl && !referenceUrl.startsWith('https://') && !referenceUrl.startsWith('http://')) {
+            referenceUrl = `https://${referenceUrl}`
+        }
         return (
             <div onClick={e => e.stopPropagation()}>
                 <Modal show={modalOpen} onHide={() => this.closeModal()} className="image-view-modal">
@@ -186,7 +194,7 @@ export default class Gallery extends React.Component {
                             </div>}
                             {selectedImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
                                 <span className="detail-label">Reference:&nbsp;</span>
-                                <a href={selectedImage.referenceUrl}>{selectedImage.referenceUrl}</a>
+                                <a href={referenceUrl}>{selectedImage.referenceUrl}</a>
                             </div>}
                         </div>
                     </Modal.Body>
