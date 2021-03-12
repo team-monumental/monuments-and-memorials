@@ -201,6 +201,9 @@ export default class Gallery extends React.Component {
     }
 
     getAltText(image) {
+        if (image.caption) {
+            return image.caption
+        }
         const { tags } = this.props;
         const imageFileName = image ? getS3ImageNameFromObjectUrl(image.url) : 'None';
         const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
