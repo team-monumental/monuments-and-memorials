@@ -899,7 +899,7 @@ public class MonumentService extends ModelService<Monument> {
         List<Image> images = new ArrayList<>();
         if (monumentSuggestion.getImages() != null && monumentSuggestion.getImages().size() > 0) {
             images.addAll(this.createMonumentImages(monumentSuggestion.getImages(),
-                    monumentSuggestion.getImageReferenceUrls(), monumentSuggestion.getImageReferenceUrls(), createdMonument, false));
+                    monumentSuggestion.getImageReferenceUrls(), monumentSuggestion.getImageCaptions(), createdMonument, false));
         }
         if (monumentSuggestion.getPhotoSphereImages() != null && monumentSuggestion.getPhotoSphereImages().size() > 0) {
             images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(),

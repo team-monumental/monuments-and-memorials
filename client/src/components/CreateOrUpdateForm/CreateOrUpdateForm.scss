@@ -245,6 +245,7 @@
 
     .images-for-update-container {
         display: flex;
+        flex-direction: column;
 
         .image-fields-container {
             display: flex;
