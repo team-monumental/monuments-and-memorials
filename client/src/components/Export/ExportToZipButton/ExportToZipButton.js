@@ -22,7 +22,7 @@ export const ExportToZipButton = (props) => {
 
         const zip = new JSZip();
         zip.file(exportFileName, csv);
-        if (images){
+        if (images) {
             for (const image of images) {
                 await JSZipUtils.getBinaryContent(image.url, {}).then(
                     (data, err) => {
