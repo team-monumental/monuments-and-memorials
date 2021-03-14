@@ -199,7 +199,7 @@ public class CsvMonumentConverter {
                             result.getTagNames().addAll(parseCsvArray(value));
                             break;
                         case "references":
-                            result.getReferenceUrls().addAll(parseCsvArray(value));
+                            result.getReferenceUrls().addAll(parseCsvArray(value, true));
                             break;
                         case "is_temporary":
                             suggestion.setIsTemporary(Boolean.valueOf(value));
@@ -234,7 +234,7 @@ public class CsvMonumentConverter {
                             break;
                         case "imageReferenceUrls":
                             if (zipFile != null) {
-                                result.getImageReferenceUrls().addAll(parseCsvArray(value));
+                                result.getImageReferenceUrls().addAll(parseCsvArray(value, true));
                             } else {
                                 result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
                             }
@@ -352,13 +352,20 @@ public class CsvMonumentConverter {
     }
 
     private static List<String> parseCsvArray(String value) {
+        return parseCsvArray(value, false);
+    }
+
+    private static List<String> parseCsvArray(String value, boolean isUrl) {
         // Split on commas in-case there are more than one Tag in the column
         String[] valueArray = value.split(",");
 
         List<String> names = new ArrayList<>();
 
         for (String arrayValue : valueArray) {
-            String name = cleanTagName(arrayValue);
+            String name = arrayValue;
+            if (!isUrl) {
+                name = cleanTagName(arrayValue);
+            }
             if (name == null || name.equals("")) continue;
             names.add(name);
         }

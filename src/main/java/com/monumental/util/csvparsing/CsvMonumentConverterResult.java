@@ -196,5 +196,19 @@ public class CsvMonumentConverterResult {
                 }
             }
         }
+
+        /* Image Reference URL Validation */
+        /* Check that the image references are valid URLs */
+        if (this.imageReferenceUrls != null) {
+            for (String imageReferenceUrl : this.imageReferenceUrls) {
+                try {
+                    URL url = new URL(imageReferenceUrl);
+                } catch (MalformedURLException e) {
+                    if (!this.getErrors().contains("All Image References must be valid URLs")) {
+                        this.getErrors().add("All Image References must be valid URLs");
+                    }
+                }
+            }
+        }
     }
 }
