@@ -182,7 +182,7 @@ class Filters extends React.Component {
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)
         let tagsMap = (
-            <div className="filter-body border-right" >
+            <div className="filter-body" >
                 
                 <TagsFilters
                     variant="tags"
