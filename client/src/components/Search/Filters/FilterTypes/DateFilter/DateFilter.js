@@ -214,7 +214,7 @@ export default class DateFilter extends React.Component {
                 <div className="temp-monuments-toggle">
                     <div className="temp-monuments-label">
                         Show Temporary Monuments?
-                        <img className={!hideTemporary? 'temp-img' : 'temp-img-no'} src='/marker-icon-2x-green.png'/>
+                        <img className={!hideTemporary? 'temp-img' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
                     </div>
                     <ButtonGroup>
                         <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm" active={!hideTemporary}
