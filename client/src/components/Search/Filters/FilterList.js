@@ -177,7 +177,7 @@ class Filters extends React.Component {
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
                 decades={decades}
-                filterMode={Mode.SLIDER}
+                filterMode={filterList.date.config.filterMode}
                 changeMode={(mode) => this.handleDateChangeMode(mode)}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)

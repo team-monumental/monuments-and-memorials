@@ -65,7 +65,7 @@ export default class DateFilter extends React.Component {
 
     async handleModeChange(mode) {
         const { changeMode } = this.props
-        changeMode(mode);
+        changeMode({filterMode:mode});
         if (mode !== Mode.DECADE) {
             await this.handleFilterChange('decade', null);
         }
@@ -100,7 +100,6 @@ export default class DateFilter extends React.Component {
         this.setState({sliderValues: value})
       };
     onSliderSerach = value => {
-        console.log('hi')
         this.handleSliderSearch(value);
     };
 
