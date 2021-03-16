@@ -34,6 +34,12 @@ public class CsvMonumentConverterResult {
 
     private List<String> imageCaptions = new ArrayList<>();
 
+    private List<String> photoSphereImages = new ArrayList<>();
+
+    private List<String> photoSphereImageReferenceUrls = new ArrayList<>();
+
+    private List<String> photoSphereImageCaptions = new ArrayList<>();
+
     private List<String> errors = new ArrayList<>();
 
     private List<String> warnings = new ArrayList<>();
@@ -100,6 +106,30 @@ public class CsvMonumentConverterResult {
 
     public void setImageCaptions(List<String> imageCaptions) {
         this.imageCaptions = imageCaptions;
+    }
+
+    public List<String> getPhotoSphereImages() {
+        return photoSphereImages;
+    }
+
+    public void setPhotoSphereImages(List<String> photoSphereImages) {
+        this.photoSphereImages = photoSphereImages;
+    }
+
+    public List<String> getPhotoSphereImageReferenceUrls() {
+        return photoSphereImageReferenceUrls;
+    }
+
+    public void setPhotoSphereImageReferenceUrls(List<String> photoSphereImageReferenceUrls) {
+        this.photoSphereImageReferenceUrls = photoSphereImageReferenceUrls;
+    }
+
+    public List<String> getPhotoSphereImageCaptions() {
+        return photoSphereImageCaptions;
+    }
+
+    public void setPhotoSphereImageCaptions(List<String> photoSphereImageCaptions) {
+        this.photoSphereImageCaptions = photoSphereImageCaptions;
     }
 
     public List<String> getErrors() {
@@ -201,6 +231,20 @@ public class CsvMonumentConverterResult {
         /* Check that the image references are valid URLs */
         if (this.imageReferenceUrls != null) {
             for (String imageReferenceUrl : this.imageReferenceUrls) {
+                try {
+                    URL url = new URL(imageReferenceUrl);
+                } catch (MalformedURLException e) {
+                    if (!this.getErrors().contains("All Image References must be valid URLs")) {
+                        this.getErrors().add("All Image References must be valid URLs");
+                    }
+                }
+            }
+        }
+
+        /* PhotoSphere Image Reference URL Validation */
+        /* Check that the image references are valid URLs */
+        if (this.photoSphereImageReferenceUrls != null) {
+            for (String imageReferenceUrl : this.photoSphereImageReferenceUrls) {
                 try {
                     URL url = new URL(imageReferenceUrl);
                 } catch (MalformedURLException e) {
