@@ -1,10 +1,10 @@
 import * as React from 'react';
 import DatePicker from 'react-datepicker';
-import { Form } from 'react-bootstrap';
+import { Form, Button, ButtonGroup } from 'react-bootstrap';
 import * as moment from 'moment';
 import './DateFilter.scss';
-import {Range} from 'rc-slider';
-import {Mode} from './DateEnum';
+import { Range } from 'rc-slider';
+import { Mode } from './DateEnum';
 import SliderHandle  from './SliderHandle/SliderHandle';
 
 
@@ -20,8 +20,8 @@ export default class DateFilter extends React.Component {
                 start: data.params.start || null, //TODO - make date dynamic
                 end: data.params.end || null,
                 activeStart: 1870,
-                activeEnd: 1960
-
+                activeEnd: 1960,
+                hideTemporary: data.params.hideTemporary || true
             },
             sliderValues: [1870, 1960],
             //filterMode: data.config.filterMode || Mode.NONE,
@@ -65,7 +65,7 @@ export default class DateFilter extends React.Component {
 
     async handleModeChange(mode) {
         const { changeMode } = this.props
-        changeMode({filterMode: mode});
+        changeMode(mode);
         if (mode !== Mode.DECADE) {
             await this.handleFilterChange('decade', null);
         }
@@ -93,6 +93,9 @@ export default class DateFilter extends React.Component {
         this.handleFilterChange('activeEnd', value[1])
     }
 
+    async handleTempChange(value){
+        if (value !== this.state.params.hideTemporary) await this.handleFilterChange('hideTemporary', value);
+    }
     onSliderChange = (value) =>{
         this.setState({sliderValues: value})
       };
@@ -172,6 +175,7 @@ export default class DateFilter extends React.Component {
 
     render() {
         const { filterMode } = this.props;
+        const { hideTemporary } = this.state.params;
         let dateFilter = null;
         switch (filterMode){
             case Mode.RANGE: 
@@ -189,21 +193,39 @@ export default class DateFilter extends React.Component {
         }
 
         return ( 
-            <div className="filter-body" >
-                <button className="clear-button" onClick={() => this.handleModeChange(Mode.NONE)}>
-                    <i className="material-icons ">clear</i>
-                </button>
-                <div className="d-flex pt-3 pb-3 align-items-center">
-                    <Form.Control as="select" className="min-width-select mr-2"
-                                value={filterMode}
-                                onChange={event => this.handleModeChange(event.target.value)}>
-                        <option value={Mode.NONE}>None</option>
-                        <option value={Mode.RANGE}>Created(range)</option>
-                        <option value={Mode.DECADE}>Created(decade)</option>
-                        <option value={Mode.SLIDER}>Active(slider)</option>
-                        
-                       </Form.Control>
-                    {dateFilter}
+            <div>
+                <div className="filter-body" >
+                    <button className="clear-button" onClick={() => this.handleModeChange(Mode.NONE)}>
+                        <i className="material-icons ">clear</i>
+                    </button>
+                    <div className="d-flex pt-3 pb-3 align-items-center">
+                        <Form.Control as="select" className="min-width-select mr-2"
+                                    value={filterMode}
+                                    onChange={event => this.handleModeChange(event.target.value)}>
+                            <option value={Mode.NONE}>None</option>
+                            <option value={Mode.RANGE}>Created(range)</option>
+                            <option value={Mode.DECADE}>Created(decade)</option>
+                            <option value={Mode.SLIDER}>Active(slider)</option>
+                            
+                        </Form.Control>
+                        {dateFilter}
+                    </div>
+                </div>
+                <div className="temp-monuments-toggle">
+                    <div className="temp-monuments-label">
+                        Show Temporary Monuments?
+                        <img className={!hideTemporary? 'temp-img' : 'temp-img-no'} src='/marker-icon-2x-green.png'/>
+                    </div>
+                    <ButtonGroup>
+                        <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm" active={!hideTemporary}
+                                    onClick={() => this.handleTempChange(false)}>
+                            Yes
+                        </Button>
+                        <Button variant={hideTemporary ? 'perm-color' : 'outline-info'} size="sm" active={hideTemporary}
+                                    onClick={() => this.handleTempChange(true)}>
+                            No
+                        </Button>
+                    </ButtonGroup>
                 </div>
             </div>
             )

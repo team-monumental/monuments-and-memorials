@@ -2,7 +2,6 @@ import * as React from 'react';
 import './ManageMonuments.scss';
 import { withRouter } from 'react-router-dom';
 import { Button, Card } from 'react-bootstrap';
-import SearchBar from '../../Header/SearchBar/SearchBar';
 import SearchPage from '../../../pages/SearchPage/SearchPage';
 import ManageMonument from './ManageMonument/ManageMonument';
 import UpdateMonumentPage from '../../../pages/UpdateMonumentPage/UpdateMonumentPage';
@@ -24,10 +23,7 @@ class ManageMonuments extends React.Component {
                         </>}
                     </Card.Header>
                     <Card.Body>
-                        {(!mode || mode === 'search') &&
-                            <SearchBar uri="/panel/manage/monuments/search"/>
-                        }
-                        {mode === 'search' && <>
+                        {(!mode || mode === 'search') && <>
                             <SearchPage searchUri="/panel/manage/monuments/search" monumentUri="/panel/manage/monuments/monument"
                                         hideMap/>
                         </>}

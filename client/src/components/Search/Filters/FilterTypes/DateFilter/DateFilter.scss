@@ -6,3 +6,30 @@
     width: 400px;
     margin: 25px;
 }
+
+.temp-monuments-toggle{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    .btn-group{
+        float: left;
+    }
+}
+.temp-monuments-label{
+    display: flex;
+    align-content: center;
+    width: 15em;
+    
+}
+.temp-img{
+    width: 7%;
+    height: auto;
+    margin-left: .2em;
+}
+.temp-img-no{
+    width: 7%;
+    height: auto;
+    margin-left: .2em;
+    opacity: 30%;
+}
