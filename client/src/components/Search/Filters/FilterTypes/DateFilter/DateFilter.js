@@ -19,9 +19,9 @@ export default class DateFilter extends React.Component {
                 decade: data.params.decade || null,
                 start: data.params.start || null, //TODO - make date dynamic
                 end: data.params.end || null,
-                activeStart: 1870,
-                activeEnd: 1960,
-                hideTemporary: data.params.hideTemporary || true
+                activeStart: data.params.activeStart || null,
+                activeEnd: data.params.activeEnd || null,
+                hideTemporary: data.params.hideTemporary || false
             },
             sliderValues: [1870, 1960],
             //filterMode: data.config.filterMode || Mode.NONE,
