@@ -1,6 +1,7 @@
 package com.monumental.util.csvparsing;
 
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.util.string.StringHelper;
 
 import java.io.File;
@@ -19,6 +20,8 @@ import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 public class CsvMonumentConverterResult {
 
     private CreateMonumentSuggestion monumentSuggestion;
+
+    private UpdateMonumentSuggestion updateMonumentSuggestion;
 
     private List<String> contributorNames = new ArrayList<>();
 
@@ -40,6 +43,14 @@ public class CsvMonumentConverterResult {
 
     public void setMonumentSuggestion(CreateMonumentSuggestion monumentSuggestion) {
         this.monumentSuggestion = monumentSuggestion;
+    }
+
+    public UpdateMonumentSuggestion getUpdateMonumentSuggestion() {
+        return this.updateMonumentSuggestion;
+    }
+
+    public void setUpdateMonumentSuggestion(UpdateMonumentSuggestion updateMonumentSuggestion) {
+        this.updateMonumentSuggestion = updateMonumentSuggestion;
     }
 
     public List<String> getContributorNames() {
