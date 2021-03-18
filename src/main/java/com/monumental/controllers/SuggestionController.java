@@ -6,6 +6,7 @@ import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
+import com.monumental.models.suggestions.BulkUpdateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
@@ -16,6 +17,7 @@ import com.monumental.security.Authentication;
 import com.monumental.security.Authorization;
 import com.monumental.services.*;
 import com.monumental.services.suggestions.BulkCreateSuggestionService;
+import com.monumental.services.suggestions.BulkUpdateSuggestionService;
 import com.monumental.services.suggestions.CreateSuggestionService;
 import com.monumental.services.suggestions.UpdateSuggestionService;
 import com.monumental.util.async.AsyncJob;
@@ -65,6 +67,9 @@ public class SuggestionController {
 
     @Autowired
     private BulkCreateSuggestionService bulkCreateSuggestionService;
+
+    @Autowired
+    private BulkUpdateSuggestionService bulkUpdateSuggestionService;
 
     @Autowired
     private EmailService emailService;
@@ -257,6 +262,18 @@ public class SuggestionController {
     @PreAuthorize(Authorization.isPartnerOrAbove)
     public List<BulkCreateMonumentSuggestion> getBulkCreateMonumentSuggestions() throws UnauthorizedException {
         return this.bulkCreateSuggestionService.getBulkCreateMonumentSuggestions();
+    }
+
+    /**
+     * Get all BulkUpdateMonumentSuggestions created by the currently logged in User
+     * @return List<BulkUpdateMonumentSuggestion> - List of BulkUpdateMonumentSuggestions created by the currently
+     * logged in User
+     * @throws UnauthorizedException - If no User is currently logged in
+     */
+    @GetMapping("/api/suggestion/bulk-update")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public List<BulkUpdateMonumentSuggestion> getBulkUpdateMonumentSuggestions() throws UnauthorizedException {
+        return this.bulkUpdateSuggestionService.getBulkUpdateMonumentSuggestion();
     }
 
     /**
