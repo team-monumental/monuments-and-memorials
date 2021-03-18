@@ -4,6 +4,7 @@ import com.monumental.config.AppConfig;
 import com.monumental.models.User;
 import com.monumental.models.VerificationToken;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
+import com.monumental.models.suggestions.BulkUpdateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,6 +167,26 @@ public class EmailService {
         if (suggestion.getCreatedBy() != null) {
             String extraMessage = suggestion.getFileName() + ". " + this.suggestionRejectedContact;
             this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-create-suggestion.rejection", extraMessage);
+        }
+    }
+
+    /**
+     * Sent when a user has one of their BulkUpdateMonumentSuggestions approved
+     */
+    public void sendBulkUpdateSuggestionApprovalEmail(BulkUpdateMonumentSuggestion suggestion) {
+        if (suggestion.getCreatedBy() != null) {
+            String extraMessage = suggestion.getFileName() + ". " + this.suggestionApprovedEmailThankYou;
+            this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-update-suggestion.approval", extraMessage);
+        }
+    }
+
+    /**
+     * Sent when a user has one of their BulkUpdateMonumentSuggestions rejected
+     */
+    public void sendBulkUpdateSuggestionRejectionEmail(BulkUpdateMonumentSuggestion suggestion) {
+        if (suggestion.getCreatedBy() != null) {
+            String extraMessage = suggestion.getFileName() + ". " + this.suggestionRejectedContact;
+            this.sendEmail(suggestion.getCreatedBy().getEmail(), "bulk-update-suggestion.rejection", extraMessage);
         }
     }
 }
