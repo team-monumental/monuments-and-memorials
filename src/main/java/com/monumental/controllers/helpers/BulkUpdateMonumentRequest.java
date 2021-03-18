@@ -48,11 +48,11 @@ public class BulkUpdateMonumentRequest {
     }
 
     @SuppressWarnings("unchecked")
-    public BulkCreateMonumentRequest.ParseResult parse(MonumentService monumentService) throws IOException {
+    public ParseResult parse(MonumentService monumentService) throws IOException {
         String json = new String(this.getMapping().getBytes());
         ObjectMapper mapper = new ObjectMapper();
 
-        BulkCreateMonumentRequest.ParseResult result = new BulkCreateMonumentRequest.ParseResult();
+        ParseResult result = new ParseResult();
 
         result.mapping = mapper.readValue(json, Map.class);
 
