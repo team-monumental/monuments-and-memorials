@@ -77,6 +77,9 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_is_temporary")
     private Boolean newIsTemporary = false;
 
+    @Column(name = "new_contributors_json", length = 1024)
+    private String newContributorsJson;
+
     @Column(name = "updated_reference_urls_by_id_json", length = 1024)
     private String updatedReferenceUrlsByIdJson;
 
@@ -280,6 +283,14 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public void setNewDeactivatedDateFormat(DateFormat newDeactivatedDateFormat) {
         this.newDeactivatedDateFormat = newDeactivatedDateFormat;
+    }
+
+    public String getNewContributorsJson() {
+        return this.newContributorsJson;
+    }
+
+    public void setNewContributorsJson(String newContributorsJson) {
+        this.newContributorsJson = newContributorsJson;
     }
 
     public void setNewDate(String newDate) {
