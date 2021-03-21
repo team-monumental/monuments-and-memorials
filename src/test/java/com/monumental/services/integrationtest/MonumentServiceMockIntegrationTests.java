@@ -194,7 +194,6 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, validationErrors.getErrors().size());
         assertTrue(validationErrors.getErrors().contains("Title is required"));
         assertTrue(validationErrors.getErrors().contains("All References must be valid URLs (Test Reference)"));
-        assertTrue(validationErrors.getErrors().contains("All References must be valid URLs (Test Reference"));
 
         // parseMonumentBulkValidationResult
         BulkCreateMonumentSuggestion bulkCreateSuggestionResult = this.monumentServiceMock.parseMonumentBulkValidationResultSync(validationResult);

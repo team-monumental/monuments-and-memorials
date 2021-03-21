@@ -74,7 +74,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
         } else if (lowerField.includes('tag')) {
             let tagsList = '';
             if (monument.monumentTags && monument.monumentTags.length) {
-                const tagsArray = monument.monumentTags.filter(monumentTag => monument.tag && !monumentTag.tag.isMaterial)
+                const tagsArray = monument.monumentTags.filter(monumentTag => monumentTag.tag && !monumentTag.tag.isMaterial)
                     .map(monumentTag => monumentTag.tag.name);
 
                 if (pretty) {
