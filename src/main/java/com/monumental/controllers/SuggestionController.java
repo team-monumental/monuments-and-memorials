@@ -1,6 +1,7 @@
 package com.monumental.controllers;
 
 import com.monumental.controllers.helpers.BulkCreateMonumentRequest;
+import com.monumental.controllers.helpers.BulkUpdateMonumentRequest;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -11,6 +12,7 @@ import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
+import com.monumental.repositories.suggestions.BulkUpdateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.security.Authentication;
@@ -52,6 +54,9 @@ public class SuggestionController {
 
     @Autowired
     private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+
+    @Autowired
+    private BulkUpdateSuggestionRepository bulkUpdateSuggestionRepository;
 
     @Autowired
     private AsyncJobService asyncJobService;
@@ -240,6 +245,55 @@ public class SuggestionController {
     }
 
     /**
+     * Start the job to create a new Suggestion for bulk-updating Monuments
+     * @param request - BulkUpdateMonumentRequest object containing the field mapping and the file to process
+     * @return AsyncJob - Object containing the id of the job created and the current value of the Future object
+     * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
+     * @throws UnauthorizedException - If there is no current User logged in
+     */
+    @PostMapping("/api/suggestion/bulk-update")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public AsyncJob suggestBulkMonumentUpdate(@ModelAttribute BulkUpdateMonumentRequest request)
+        throws IOException, UnauthorizedException {
+        BulkUpdateMonumentRequest.ParseResult parseResult = request.parse(this.monumentService);
+        MonumentBulkValidationResult validationResult = this.monumentService.validateMonumentCSV(parseResult.csvFileName,
+                parseResult.csvContents, parseResult.mapping, parseResult.zipFile);
+
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setUser(this.userService.getCurrentUser());
+        job.setFuture(this.monumentService.parseMonumentBulkValidationResultAsync(validationResult, job));
+
+        return job;
+    }
+
+    /**
+     * Check the progress of a create BulkUpdateMonumentSuggestion job
+     * @param id - Id of the job to check
+     * @return AsyncJob - Object containing the id of the job and the current value of the Future object
+     */
+    @GetMapping("/api/suggestion/bulk-update/progress/{id}")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public AsyncJob getBulkUpdateMonumentSuggestionJob(@PathVariable Integer id) {
+        return this.asyncJobService.getJob(id);
+    }
+
+    /**
+     * Get the final result of a create BulkUpdateMonumentSuggestion job. If the job is not completed yet this will wait
+     * for it to complete, so be sure to call getBulkUpdateMonumentSuggestionJob and check the status before calling
+     * this
+     * @param id - Id of the job to get the result of
+     * @return BulkUpdateMonumentSuggestion - BulkUpdateMonumentSuggestion created by the job
+     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
+     * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
+     */
+    @GetMapping("/api/suggestion/bulk-update/result/{id}")
+    @PreAuthorize(Authorization.isPartnerOrAbove)
+    public BulkUpdateMonumentSuggestion getBulkUpdateMonumentSuggestionJobResult(@PathVariable Integer id)
+        throws ExecutionException, InterruptedException {
+        return (BulkUpdateMonumentSuggestion) this.asyncJobService.getJob(id).getFuture().get();
+    }
+
+    /**
      * Get a BulkCreateMonumentSuggestion with the specified ID, if it exists
      * @param id - ID of the BulkCreateMonumentSuggestion to get
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object with the specified ID, if it exists
@@ -344,6 +398,22 @@ public class SuggestionController {
         AsyncJob job = this.asyncJobService.createJob();
         job.setUser(this.userService.getCurrentUser());
         job.setFuture(this.monumentService.bulkCreateMonumentsAsync(bulkCreateSuggestion, job));
+
+        return job;
+    }
+
+    public AsyncJob approveBulkUpdateSuggestion(@PathVariable("id") Integer id) throws ResourceNotFoundException,
+            UnauthorizedException {
+        BulkUpdateMonumentSuggestion bulkUpdateSuggestion = this.findBulkUpdateSuggestion(id);
+
+        bulkUpdateSuggestion.setIsApproved(true);
+        bulkUpdateSuggestion = this.bulkUpdateSuggestionRepository.save(bulkUpdateSuggestion);
+
+        this.emailService.sendBulkUpdateSuggestionApprovalEmail(bulkUpdateSuggestion);
+
+        AsyncJob job = this.asyncJobService.createJob();
+        job.setUser(this.userService.getCurrentUser());
+        job.setFuture(this.monumentService.bulkUpdateMonumentsAsync(bulkUpdateSuggestion, job));
 
         return job;
     }
@@ -479,5 +549,16 @@ public class SuggestionController {
 
         bulkCreateSuggestion.setCreateSuggestions(this.createSuggestionRepository.getAllByBulkCreateSuggestionId(bulkCreateSuggestion.getId()));
         return bulkCreateSuggestion;
+    }
+
+    private BulkUpdateMonumentSuggestion findBulkUpdateSuggestion(Integer id) throws ResourceNotFoundException {
+        Optional<BulkUpdateMonumentSuggestion> optional = this.bulkUpdateSuggestionRepository.findById(id);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Suggestion does not exist");
+        }
+        BulkUpdateMonumentSuggestion bulkUpdateSuggestion = optional.get();
+
+        bulkUpdateSuggestion.setUpdateSuggestions(this.updateSuggestionRepository.getAllByBulkUpdateSuggestionId(bulkUpdateSuggestion.getId()));
+        return bulkUpdateSuggestion;
     }
 }
