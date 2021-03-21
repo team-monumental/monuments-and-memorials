@@ -24,7 +24,6 @@ export default class DateFilter extends React.Component {
                 hideTemporary: data.params.hideTemporary || false
             },
             sliderValues: [1870, 1960],
-            //filterMode: data.config.filterMode || Mode.NONE,
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
             filterList: []
@@ -134,7 +133,6 @@ export default class DateFilter extends React.Component {
     }
 
     makeDecadeFilter() {
-        const { decades } = this.props;
         const { params } = this.state;
         const decade = params.decade
         return (
@@ -228,7 +226,7 @@ export default class DateFilter extends React.Component {
                 <div className="temp-monuments-toggle">
                     <div className="temp-monuments-label">
                         Show Temporary Monuments?
-                        <img className={!hideTemporary? 'temp-img' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
+                        <img className={!hideTemporary? 'monument-pin' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
                     </div>
                     <ButtonGroup>
                         <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm" active={!hideTemporary}

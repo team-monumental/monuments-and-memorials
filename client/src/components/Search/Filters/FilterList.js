@@ -73,7 +73,7 @@ class Filters extends React.Component {
                 materials: { params: {materials: []}},
                 q: {params: {q: ''}}
             }
-            return { filterList: daFilters};
+            return { filterList: daFilters };
         })
         this.handleSearch()
     }
@@ -168,15 +168,12 @@ class Filters extends React.Component {
     }
 
     render() {
-
-        const { decades } = this.props
         const { showFilters, filterList} = this.state;
         const expandIcon = showFilters ? "remove" : "add";
         let dateMap = (
             <DateFilter 
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
-                decades={decades}
                 filterMode={filterList.date.config.filterMode}
                 changeMode={(mode) => this.handleDateChangeMode(mode)}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
