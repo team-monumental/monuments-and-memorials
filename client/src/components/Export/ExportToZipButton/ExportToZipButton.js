@@ -24,6 +24,10 @@ export const ExportToZipButton = (props) => {
         zip.file(exportFileName, csv);
         if (images) {
             for (const image of images) {
+                if (image.isPhotoSphere) {
+                    continue
+                }
+
                 // Setup the global AWS config
                 AWS.config.update({
                     region: 'us-east-2',
