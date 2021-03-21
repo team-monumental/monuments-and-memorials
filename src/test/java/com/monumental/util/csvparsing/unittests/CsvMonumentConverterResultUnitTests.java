@@ -252,7 +252,7 @@ public class CsvMonumentConverterResultUnitTests {
         result.setMonumentSuggestion(suggestion);
         result.validate();
 
-        assertEquals(1, result.getErrors().size());
+        assertEquals(2, result.getErrors().size());
         assertTrue(result.getErrors().contains("All References must be valid URLs (Test)"));
     }
 
