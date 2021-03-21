@@ -77,14 +77,14 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_is_temporary")
     private Boolean newIsTemporary = false;
 
-    @Column(name = "updated_reference_urls_by_id_json", length = 1024)
+    @Column(name = "updated_reference_urls_by_id_json", length = 2048)
     private String updatedReferenceUrlsByIdJson;
 
     @Transient
     @JsonIgnore
     private Map<Integer, String> updatedReferenceUrlsById;
 
-    @Column(name = "new_reference_urls_json", length = 1024)
+    @Column(name = "new_reference_urls_json", length = 2048)
     private String newReferenceUrlsJson;
 
     @Transient
@@ -108,28 +108,28 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "new_primary_image_id")
     private Integer newPrimaryImageId;
 
-    @Column(name = "new_image_reference_urls_json")
+    @Column(name = "new_image_reference_urls_json", length = 2048)
     private String newImageReferenceUrlsJson;
 
     @Transient
     @JsonIgnore
     private List<String> newImageReferenceUrls;
 
-    @Column(name = "new_image_captions_json")
+    @Column(name = "new_image_captions_json", length = 2048)
     private String newImageCaptionsJson;
 
     @Transient
     @JsonIgnore
     private List<String> newImageCaptions;
 
-    @Column(name = "updated_image_reference_urls_json")
+    @Column(name = "updated_image_reference_urls_json", length = 2048)
     private String updatedImageReferenceUrlsJson;
 
     @Transient
     @JsonIgnore
     private Map<Integer, String> updatedImageReferenceUrlsById;
 
-    @Column(name = "updated_image_captions_json")
+    @Column(name = "updated_image_captions_json", length = 2048)
     private String updatedImageCaptionsJson;
 
     @Transient
@@ -150,35 +150,35 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> deletedImageUrls;
 
-    @Column(name = "new_photosphere_image_urls_json", length = 1024)
+    @Column(name = "new_photosphere_image_urls_json", length = 2048)
     private String newPhotoSphereImageUrlsJson;
 
     @Transient
     @JsonIgnore
     private List<String> newPhotoSphereImageUrls;
 
-    @Column(name = "new_photosphere_image_reference_urls_json")
+    @Column(name = "new_photosphere_image_reference_urls_json", length = 2048)
     private String newPhotoSphereImageReferenceUrlsJson;
 
     @Transient
     @JsonIgnore
     private List<String> newPhotoSphereImageReferenceUrls;
 
-    @Column(name = "new_photosphere_image_captions_json")
+    @Column(name = "new_photosphere_image_captions_json", length = 2048)
     private String newPhotoSphereImageCaptionsJson;
 
     @Transient
     @JsonIgnore
     private List<String> newPhotoSphereImageCaptions;
 
-    @Column(name = "updated_photosphere_image_reference_urls_json")
+    @Column(name = "updated_photosphere_image_reference_urls_json", length = 2048)
     private String updatedPhotoSphereImageReferenceUrlsJson;
 
     @Transient
     @JsonIgnore
     private Map<Integer, String> updatedPhotoSphereImageReferenceUrlsById;
 
-    @Column(name = "updated_photosphere_image_captions_json")
+    @Column(name = "updated_photosphere_image_captions_json", length = 2048)
     private String updatedPhotoSphereImageCaptionsJson;
 
     @Transient
@@ -192,7 +192,7 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<Integer> deletedPhotoSphereImageIds;
 
-    @Column(name = "deleted_photosphere_image_urls_json", length = 1024)
+    @Column(name = "deleted_photosphere_image_urls_json", length = 2048)
     private String deletedPhotoSphereImageUrlsJson;
 
     @Transient
