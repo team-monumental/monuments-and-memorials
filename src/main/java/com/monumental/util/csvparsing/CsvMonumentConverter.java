@@ -246,6 +246,11 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Cannot add image captions without images.");
                             }
                             break;
+                        default:
+                            if (i == 0) {
+                                suggestion.setTitle(value);
+                            }
+                            break;
                     }
                 }
 
