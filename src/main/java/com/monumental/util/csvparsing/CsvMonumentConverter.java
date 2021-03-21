@@ -271,6 +271,10 @@ public class CsvMonumentConverter {
                             break;
                         case "photoSphereImageCaptions":
                             result.getPhotoSphereImageCaptions().addAll(parseCsvArray(value));
+                        default:
+                            if (i == 0) {
+                                suggestion.setTitle(value);
+                            }
                             break;
                     }
                 }
