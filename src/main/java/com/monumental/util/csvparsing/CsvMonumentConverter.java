@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -246,6 +248,29 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Cannot add image captions without images.");
                             }
                             break;
+                        case "photoSphereImages":
+                            List<String> photoSphereImages = parseCsvArray(value, true);
+                            for (int photoSphereI = 0; photoSphereI < photoSphereImages.size(); photoSphereI++) {
+                                String photoSphereImage = photoSphereImages.get(photoSphereI);
+                                Pattern srcPattern = Pattern.compile("src=\"([^\"]+)\"");
+                                Matcher m = srcPattern.matcher(photoSphereImage);
+                                try{
+                                    String photoSphereSrc = "";
+                                    while (m.find()) {
+                                        photoSphereSrc = m.group(1);
+                                    }
+                                    photoSphereImages.set(photoSphereI, photoSphereSrc);
+                                } catch (Exception e) {
+                                    result.getErrors().add("Failed to extract source URL from 360 image HTML. Please make sure it is properly formatted.");
+                                }
+                            }
+                            result.getPhotoSphereImages().addAll(photoSphereImages);
+                            break;
+                        case "photoSphereImageReferenceUrls":
+                            result.getPhotoSphereImageReferenceUrls().addAll(parseCsvArray(value, true));
+                            break;
+                        case "photoSphereImageCaptions":
+                            result.getPhotoSphereImageCaptions().addAll(parseCsvArray(value));
                         default:
                             if (i == 0) {
                                 suggestion.setTitle(value);
@@ -430,6 +455,15 @@ public class CsvMonumentConverter {
         }
         if (result.getImageCaptions() != null && result.getImageCaptions().size() > 0) {
             suggestion.setImageCaptionsJson(gson.toJson(result.getImageCaptions()));
+        }
+        if (result.getPhotoSphereImages() != null && result.getPhotoSphereImages().size() > 0) {
+            suggestion.setPhotoSphereImagesJson(gson.toJson(result.getPhotoSphereImages()));
+        }
+        if (result.getPhotoSphereImageReferenceUrls() != null && result.getPhotoSphereImageReferenceUrls().size() > 0) {
+            suggestion.setPhotoSphereImageReferenceUrlsJson(gson.toJson(result.getPhotoSphereImageReferenceUrls()));
+        }
+        if (result.getPhotoSphereImageCaptions() != null && result.getPhotoSphereImageCaptions().size() > 0) {
+            suggestion.setPhotoSphereImageCaptionsJson(gson.toJson(result.getPhotoSphereImageCaptions()));
         }
 
         return suggestion;

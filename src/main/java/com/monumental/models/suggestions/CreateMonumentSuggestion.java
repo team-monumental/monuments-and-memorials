@@ -57,7 +57,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "deactivated_date_format")
     private DateFormat deactivatedDateFormat;
 
-    @Column(name = "deactivatedComment")
+    @Column(name = "deactivatedComment", length = 2048)
     private String deactivatedComment;
 
     @Column(name = "artist")
@@ -79,7 +79,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> contributions;
 
-    @Column(name = "references_json", length = 1024)
+    @Column(name = "references_json", length = 2048)
     private String referencesJson;
 
     @Transient
@@ -121,35 +121,35 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> images;
 
-    @Column(name = "image_reference_urls_json")
+    @Column(name = "image_reference_urls_json", length = 2048)
     private String imageReferenceUrlsJson;
 
     @Transient
     @JsonIgnore
     private List<String> imageReferenceUrls;
 
-    @Column(name = "image_captions_json")
+    @Column(name = "image_captions_json", length = 2048)
     private String imageCaptionsJson;
 
     @Transient
     @JsonIgnore
     private List<String> imageCaptions;
 
-    @Column(name = "photosphere_images_json", length = 1024)
+    @Column(name = "photosphere_images_json", length = 2048)
     private String photoSphereImagesJson;
 
     @Transient
     @JsonIgnore
     private List<String> photoSphereImages;
 
-    @Column(name = "photosphere_image_reference_urls_json")
+    @Column(name = "photosphere_image_reference_urls_json", length = 2048)
     private String photoSphereImageReferenceUrlsJson;
 
     @Transient
     @JsonIgnore
     private List<String> photoSphereImageReferenceUrls;
 
-    @Column(name = "photosphere_image_captions_json")
+    @Column(name = "photosphere_image_captions_json", length = 2048)
     private String photoSphereImageCaptionsJson;
 
     @Transient

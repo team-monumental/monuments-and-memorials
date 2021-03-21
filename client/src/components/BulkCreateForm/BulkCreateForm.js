@@ -37,7 +37,10 @@ export default class BulkCreateForm extends React.Component {
                 {name: 'deactivatedComment', label: 'Un-installed Reason'}, {name: 'latitude'}, {name: 'longitude'},
                 {name: 'city'}, {name: 'state'}, {name: 'address'}, {name: 'description'}, {name: 'inscription'},
                 {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Names'},
-                {name: 'imageReferenceUrls', label: 'Image Reference Urls'}, {name: 'imageCaptions', label: 'Image Captions'},
+                {name: 'imageReferenceUrls', label: 'Image Reference URLs'}, {name: 'imageCaptions', label: 'Image Captions'},
+                {name: 'photoSphereImages', label: '360 Images HTML'},
+                {name: 'photoSphereImageReferenceUrls', label: '360 Images Reference URLs'},
+                {name: 'photoSphereImageCaptions', label: '360 Images Captions'},
                 {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'},
                 {name: 'is_temporary', label: 'Is Temporary'}
             ].map(field => {
