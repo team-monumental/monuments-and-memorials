@@ -248,8 +248,8 @@ public class CsvMonumentConverterResult {
                 try {
                     URL url = new URL(imageReferenceUrl);
                 } catch (MalformedURLException e) {
-                    if (!this.getErrors().contains("All Image References must be valid URLs")) {
-                        this.getErrors().add("All Image References must be valid URLs");
+                    if (!this.getErrors().contains("All Photosphere Image References must be valid URLs")) {
+                        this.getErrors().add("All Photosphere Image References must be valid URLs (" + imageReferenceUrl + ")");
                     }
                 }
             }
