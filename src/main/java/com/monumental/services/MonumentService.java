@@ -697,7 +697,7 @@ public class MonumentService extends ModelService<Monument> {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
         List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
-                SortType.OLDEST, null, null, null, true, null, null, null);
+                SortType.OLDEST, null, null, null, true, null, null, false);
 
         List<Object[]> allTagsAndCountsMostUsedFirst = this.tagRepository.getAllOrderByMostUsedDesc();
 
@@ -805,7 +805,7 @@ public class MonumentService extends ModelService<Monument> {
             // Search for the 9/11 Memorial so we can link to it
             List<Monument> nineElevenMemorialSearchResults = this.search("9/11 Memorial", null, null, 0.75,
                     40.4242, -74.049, 0.5, null, null, SortType.DISTANCE, null, null, null,
-                    true, null, null, null);
+                    true, null, null, false);
 
             // Only take the first result, if there are any results
             if (nineElevenMemorialSearchResults.size() > 0) {
@@ -815,7 +815,7 @@ public class MonumentService extends ModelService<Monument> {
             // Search for the Vietnam Veterans Memorial so we can link to it
             List<Monument> vietnamVeteransMemorialSearchResults = this.search("Vietnam Veterans Memorial", null, null,
                     0.75, 38.891632, -77.047809, 0.5, null, null, SortType.DISTANCE, null,
-                    null, null, true, null, null, null);
+                    null, null, true, null, null, false);
 
             // Only take the first result, if there are any results
             if (vietnamVeteransMemorialSearchResults.size() > 0) {
@@ -1605,7 +1605,7 @@ public class MonumentService extends ModelService<Monument> {
 
             if (latitude != null && longitude != null) {
                 return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
-                        null, null, onlyActive, null, null, null);
+                        null, null, onlyActive, null, null, false);
             }
         }
 
