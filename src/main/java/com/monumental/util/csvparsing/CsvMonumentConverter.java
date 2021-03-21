@@ -114,7 +114,7 @@ public class CsvMonumentConverter {
                                 if (dateForValidate != null && dateForValidate.after(parsedDate)) {
                                     if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
                                             (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
-                                            (dateForValidate.getYear() > parsedDate.getYear())) {
+                                            (dateForValidate.getYear() < parsedDate.getYear())) {
                                         result.getWarnings().add("Created date should not be after un-installed date.");
                                     }
                                 }
