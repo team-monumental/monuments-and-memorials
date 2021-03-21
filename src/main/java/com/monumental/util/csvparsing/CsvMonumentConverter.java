@@ -3,6 +3,7 @@ package com.monumental.util.csvparsing;
 import com.google.gson.Gson;
 import com.monumental.models.DateFormat;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
+import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 
 import java.io.File;
 import java.io.IOException;
@@ -398,6 +399,36 @@ public class CsvMonumentConverter {
         }
         if (result.getMaterialNames() != null && result.getMaterialNames().size() > 0) {
             suggestion.setMaterialsJson(gson.toJson(result.getMaterialNames()));
+        }
+
+        return suggestion;
+    }
+
+    /**
+     * Parse a specified CsvMonumentConverterResult into a complete UpdateMonumentSuggestion
+     * @param result - CsvMonumentConverterResult class to parse
+     * @param gson - Gson object used to convert object to JSON
+     * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object created from the specified
+     * CsvMonumentConverterResult
+     */
+    public static UpdateMonumentSuggestion parseCsvUpdateMonumentConverterResult(CsvMonumentConverterResult result, Gson gson) {
+        if (result == null || result.getMonumentSuggestion() == null || gson == null) {
+            return null;
+        }
+
+        UpdateMonumentSuggestion suggestion = result.getUpdateMonumentSuggestion();
+
+        if (result.getContributorNames() != null && result.getContributorNames().size() > 0) {
+            suggestion.setNewContributionsJson(gson.toJson(result.getContributorNames()));
+        }
+        if (result.getReferenceUrls() != null && result.getReferenceUrls().size() > 0) {
+            suggestion.setNewReferenceUrlsJson(gson.toJson(result.getReferenceUrls()));
+        }
+        if (result.getTagNames() != null && result.getTagNames().size() > 0) {
+            suggestion.setNewTagsJson(gson.toJson(result.getTagNames()));
+        }
+        if (result.getMaterialNames() != null && result.getMaterialNames().size() > 0) {
+            suggestion.setNewMaterialsJson(gson.toJson(result.getMaterialNames()));
         }
 
         return suggestion;
