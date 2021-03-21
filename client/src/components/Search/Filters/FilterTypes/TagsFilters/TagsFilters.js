@@ -1,5 +1,6 @@
 import * as React from 'react';
 import '../../../TagsSearch/TagsSearch.scss';
+import './TagsFilter.scss';
 import Tags from '../../../../Tags/Tags';
 import Tag from '../../../../Tags/Tag/Tag'
 import { searchTags, clearTagSearchResults, searchMaterials, clearMaterialSearchResults } from '../../../../../actions/tagsSearch';
@@ -74,10 +75,10 @@ class TagsFilter extends React.Component {
     async handleSelectTag(value, tag) {
         
         const { onChange, tags } = this.props
-        console.log(value, tag, tags) 
         if (!tags.includes(tag) || !value) {
             onChange(value, tag);
         }
+        this.setState({searchQuery: ''})
     }
 
     async handleSearchChange(value) {
@@ -85,8 +86,22 @@ class TagsFilter extends React.Component {
         this.searchTags();
     }
 
-    handleKeyDown(event) {
-        if (event.key === 'Enter') this.searchTags();
+    async handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            await this.searchTags().then(response => {
+                this.handleEnter()
+            })
+        }
+    }
+
+    handleEnter(){
+        const { searchResults, tags } = this.props;
+        if (searchResults.length > 0){
+            var visibleSearchResults = searchResults.filter(result => {
+                return !tags.find(tag => tag === result.name);
+            });
+            this.handleSelectTag(true, visibleSearchResults[0].name)
+        }
     }
 
     handleClear() {
@@ -99,8 +114,8 @@ class TagsFilter extends React.Component {
     searchTags() {
         const { dispatch, variant } = this.props;
         const { searchQuery } = this.state;
-        if (variant === 'materials') dispatch(searchMaterials(searchQuery));
-        else dispatch(searchTags(searchQuery));
+        if (variant === 'materials') return dispatch(searchMaterials(searchQuery));
+        else return dispatch(searchTags(searchQuery));
     }
 
 }
