@@ -1,7 +1,13 @@
 import React from 'react';
 import './CreateOrUpdateForm.scss';
 import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
-import { latitudeDecRegex, longitudeDecRegex, latitudeDegRegex, longitudeDegRegex } from '../../utils/regex-util';
+import {
+    latitudeDecRegex,
+    longitudeDecRegex,
+    latitudeDegRegex,
+    longitudeDegRegex,
+    validateUrl
+} from '../../utils/regex-util';
 import { DateFormat } from '../../utils/string-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../Search/TagsSearch/TagsSearch';
@@ -396,7 +402,7 @@ export default class CreateOrUpdateForm extends React.Component {
     }
 
     validateReferenceUrl(referenceUrl) {
-        if (referenceUrl.value && !validator.isEmpty(referenceUrl.value) && !this.validateUrl(referenceUrl.value)) {
+        if (referenceUrl.value && !validator.isEmpty(referenceUrl.value) && !validateUrl(referenceUrl.value)) {
             referenceUrl.isValid = false
             referenceUrl.message = 'Must be a URL'
             return false
@@ -872,10 +878,6 @@ export default class CreateOrUpdateForm extends React.Component {
         updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 
         return updateForm;
-    }
-
-    validateUrl(url) {
-        return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%\/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(url)
     }
 
     async handleImageInfoChange(event) {

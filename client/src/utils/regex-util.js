@@ -23,3 +23,12 @@ export function getMonumentSlug(monument) {
         }) :
         '';
 }
+
+/**
+ * url must start with http or https, may optionally include www, and end with validate suffix (.com, etc.)
+ * @param url string to be tested
+ * @returns {boolean} true if url, else false
+ */
+export function validateUrl(url) {
+    return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/.test(url)
+}
