@@ -54,7 +54,7 @@ export default class MapPhotoSphereTabs extends React.Component {
                     <div className="tab-content-wrapper">
                         {activePhotoSphereImage && (<>
                             <iframe title="PhotoSphere" src={activePhotoSphereImage.url} frameBorder="0" allowFullScreen/>
-                            <div className="imageInfo">
+                            <div className="image-info">
                                 {activePhotoSphereImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
                                     {activePhotoSphereImage.caption}
                                 </div>}

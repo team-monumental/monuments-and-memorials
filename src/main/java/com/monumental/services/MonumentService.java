@@ -1193,6 +1193,8 @@ public class MonumentService extends ModelService<Monument> {
      * If arePhotoSphereImages is false, also moves the S3 images with the specified imageUrls into the permanent S3
      * image folder
      * @param imageUrls - List of Strings for the URLs to use for the Images
+     * @param imageReferenceUrls - List of strings of reference URLs for images
+     * @param imageCaptions - List of strings of captions for images
      * @param monument - Monument to associate the new Images with
      * @param arePhotoSphereImages - True if the specified imageUrls are for PhotoSphere images, False otherwise
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument

@@ -238,14 +238,14 @@ public class CsvMonumentConverter {
                             if (zipFile != null) {
                                 result.getImageReferenceUrls().addAll(parseCsvArray(value, true));
                             } else {
-                                result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
+                                result.getWarnings().add("Cannot add image reference URLs without images");
                             }
                             break;
                         case "imageCaptions":
                             if (zipFile != null) {
                                 result.getImageCaptions().addAll(parseCsvArray(value));
                             } else {
-                                result.getWarnings().add("Cannot upload images with a .csv file. You must package your .csv and your images into a .zip file and upload it.");
+                                result.getWarnings().add("Cannot add image captions without images.");
                             }
                             break;
                         case "photoSphereImages":

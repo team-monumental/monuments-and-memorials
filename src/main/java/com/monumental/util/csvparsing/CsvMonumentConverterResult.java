@@ -221,7 +221,7 @@ public class CsvMonumentConverterResult {
                     URL url = new URL(referenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All References must be valid URLs")) {
-                        this.getErrors().add("All References must be valid URLs");
+                        this.getErrors().add("All References must be valid URLs (" + referenceUrl + ")");
                     }
                 }
             }
@@ -235,7 +235,7 @@ public class CsvMonumentConverterResult {
                     URL url = new URL(imageReferenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All Image References must be valid URLs")) {
-                        this.getErrors().add("All Image References must be valid URLs");
+                        this.getErrors().add("All Image References must be valid URLs (" + imageReferenceUrl + ")");
                     }
                 }
             }
