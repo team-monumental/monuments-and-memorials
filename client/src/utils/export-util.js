@@ -83,7 +83,6 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                     tagsList = tagsArray.join(',')
                 }
             }
-            console.log(tagsList)
             result[field] = tagsList;
         } else if (lowerField.includes('images')) {
             let imagesList = '';
