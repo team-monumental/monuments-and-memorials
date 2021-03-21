@@ -219,7 +219,7 @@ public class CsvMonumentConverterResultUnitTests {
         result.validate();
 
         assertEquals(1, result.getErrors().size());
-        assertTrue(result.getErrors().contains("All References must be valid URLs"));
+        assertTrue(result.getErrors().contains("All References must be valid URLs (Test)"));
     }
 
     @Test
@@ -253,7 +253,7 @@ public class CsvMonumentConverterResultUnitTests {
         result.validate();
 
         assertEquals(1, result.getErrors().size());
-        assertTrue(result.getErrors().contains("All References must be valid URLs"));
+        assertTrue(result.getErrors().contains("All References must be valid URLs (Test)"));
     }
 
     @Test
