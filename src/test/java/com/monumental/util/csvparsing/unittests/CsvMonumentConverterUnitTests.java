@@ -38,6 +38,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(0, result.getContributorNames().size());
         assertEquals(0, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertNull(suggestionResult.getArtist());
         assertNull(suggestionResult.getTitle());
@@ -69,6 +71,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -101,6 +105,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -134,6 +140,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -167,6 +175,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -200,6 +210,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -233,6 +245,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -266,6 +280,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -297,6 +313,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -332,6 +350,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -367,6 +387,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -402,6 +424,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -437,6 +461,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -472,6 +498,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -505,6 +533,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -540,6 +570,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -576,6 +608,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -610,6 +644,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -643,6 +679,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -676,6 +714,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -709,6 +749,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -741,6 +783,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -774,6 +818,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -807,6 +853,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -840,6 +888,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());
@@ -872,6 +922,8 @@ public class CsvMonumentConverterUnitTests {
         assertEquals(1, result.getContributorNames().size());
         assertEquals(1, result.getReferenceUrls().size());
         assertEquals(0, result.getImageFiles().size());
+        assertEquals(0, result.getImageReferenceUrls().size());
+        assertEquals(0, result.getImageCaptions().size());
 
         assertEquals("Test Artist", suggestionResult.getArtist());
         assertEquals("Test Title", suggestionResult.getTitle());

@@ -30,6 +30,10 @@ public class CsvMonumentConverterResult {
 
     private List<File> imageFiles = new ArrayList<>();
 
+    private List<String> imageReferenceUrls = new ArrayList<>();
+
+    private List<String> imageCaptions = new ArrayList<>();
+
     private List<String> errors = new ArrayList<>();
 
     private List<String> warnings = new ArrayList<>();
@@ -80,6 +84,22 @@ public class CsvMonumentConverterResult {
 
     public void setImageFiles(List<File> imageFiles) {
         this.imageFiles = imageFiles;
+    }
+
+    public List<String> getImageReferenceUrls() {
+        return imageReferenceUrls;
+    }
+
+    public void setImageReferenceUrls(List<String> imageReferenceUrls) {
+        this.imageReferenceUrls = imageReferenceUrls;
+    }
+
+    public List<String> getImageCaptions() {
+        return imageCaptions;
+    }
+
+    public void setImageCaptions(List<String> imageCaptions) {
+        this.imageCaptions = imageCaptions;
     }
 
     public List<String> getErrors() {
@@ -171,9 +191,33 @@ public class CsvMonumentConverterResult {
                     URL url = new URL(referenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All References must be valid URLs")) {
-                        this.getErrors().add("All References must be valid URLs");
+                        this.getErrors().add("All References must be valid URLs (" + referenceUrl + ")");
                     }
                 }
+            }
+        }
+
+        /* Image Reference URL Validation */
+        /* Check that the image references are valid URLs */
+        if (this.imageReferenceUrls != null) {
+            if (this.imageReferenceUrls.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image reference URLs than images");
+            }
+
+            for (String imageReferenceUrl : this.imageReferenceUrls) {
+                try {
+                    URL url = new URL(imageReferenceUrl);
+                } catch (MalformedURLException e) {
+                    if (!this.getErrors().contains("All Image References must be valid URLs")) {
+                        this.getErrors().add("All Image References must be valid URLs (" + imageReferenceUrl + ")");
+                    }
+                }
+            }
+        }
+
+        if (this.imageCaptions != null) {
+            if (this.imageCaptions.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image captions than images");
             }
         }
     }

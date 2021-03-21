@@ -74,7 +74,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
         } else if (lowerField.includes('tag')) {
             let tagsList = '';
             if (monument.monumentTags && monument.monumentTags.length) {
-                const tagsArray = monument.monumentTags.filter(monumentTag => monument.tag && !monumentTag.tag.isMaterial)
+                const tagsArray = monument.monumentTags.filter(monumentTag => monumentTag.tag && !monumentTag.tag.isMaterial)
                     .map(monumentTag => monumentTag.tag.name);
 
                 if (pretty) {
@@ -84,7 +84,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = tagsList;
-        } else if (lowerField.includes('image')) {
+        } else if (lowerField.includes('images')) {
             let imagesList = '';
             if (monument.images && monument.images.length) {
                 const imagesArray = monument.images.map(image => getS3ImageNameFromObjectUrl(image.url));
@@ -104,7 +104,47 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = imagesList;
-        } else if (lowerField.includes('address')) {
+        } else if (lowerField.includes('image reference')) {
+            let imageReferenceUrlsList = '';
+            if (monument.images && monument.images.length) {
+                const imageReferenceUrlsArray = monument.images.map(image => image.referenceUrl);
+
+                let i = 0
+                for (const imageReferenceUrl of imageReferenceUrlsArray) {
+                    if (!imageReferenceUrl) {
+                        imageReferenceUrlsArray[i] = ''
+                    }
+                    i += 1
+                }
+
+                if (pretty) {
+                    imageReferenceUrlsList = imageReferenceUrlsArray.join(', ')
+                } else {
+                    imageReferenceUrlsList = imageReferenceUrlsArray.join(',')
+                }
+            }
+            result[field] = imageReferenceUrlsList;
+        } else if (lowerField.includes('image caption')) {
+            let imageCaptionsList = '';
+            if (monument.images && monument.images.length) {
+                const imageCaptionsArray = monument.images.map(image => image.caption);
+
+                let i = 0
+                for (const imageCaption of imageCaptionsArray) {
+                    if (!imageCaption) {
+                        imageCaptionsArray[i] = ''
+                    }
+                    i += 1
+                }
+
+                if (pretty) {
+                    imageCaptionsList = imageCaptionsArray.join(', ')
+                } else {
+                    imageCaptionsList = imageCaptionsArray.join(',')
+                }
+            }
+            result[field] = imageCaptionsList;
+        }  else if (lowerField.includes('address')) {
             result[field] = monument.address || '';
         } else if (lowerField.includes('description')) {
             result[field] = monument.description || '';

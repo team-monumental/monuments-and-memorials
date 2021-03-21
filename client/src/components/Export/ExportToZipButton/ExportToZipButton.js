@@ -22,7 +22,7 @@ export const ExportToZipButton = (props) => {
 
         const zip = new JSZip();
         zip.file(exportFileName, csv);
-        if (images){
+        if (images) {
             for (const image of images) {
                 // Setup the global AWS config
                 AWS.config.update({
