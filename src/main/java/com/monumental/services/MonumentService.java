@@ -5,11 +5,13 @@ import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.*;
+import com.monumental.models.suggestions.BulkUpdateMonumentSuggestion;
 import com.monumental.repositories.*;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
+import com.monumental.repositories.suggestions.BulkUpdateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
 import com.monumental.util.async.AsyncJob;
@@ -78,6 +80,9 @@ public class MonumentService extends ModelService<Monument> {
 
     @Autowired
     private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+
+    @Autowired
+    private BulkUpdateSuggestionRepository bulkUpdateSuggestionRepository;
 
     @Autowired
     private ContributionRepository contributionRepository;
@@ -647,6 +652,80 @@ public class MonumentService extends ModelService<Monument> {
         if (job != null) job.setProgress(1.0);
 
         rollbar.info("Bulk created " + monuments.size() + " monuments!");
+
+        return monuments;
+    }
+
+    /**
+     * SYNCHRONOUSLY bulk update monuments from CSV. Since this method is synchronous, long CSVs could take
+     * a significant amount of time to process and hold up the thread or HTTP request.
+     * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk update behavior
+     * can be tested synchronously
+     * @param bulkUpdateMonumentSuggestion - BulkUpdateMonumentSuggestion to use to bulk update Monuments
+     * @return - List of updated monuments
+     */
+    public List<Monument> bulkUpdateMonumentsSync(BulkUpdateMonumentSuggestion bulkUpdateMonumentSuggestion) {
+        return this.bulkUpdateMonuments(bulkUpdateMonumentSuggestion, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY bulk update monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
+     * @param bulkUpdateMonumentSuggestion - BulkUpdateMonumentSuggestion to use to bulk update Monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - List of updated monuments
+     */
+    @Async
+    public CompletableFuture<List<Monument>> bulkUpdateMonumentsAsync(BulkUpdateMonumentSuggestion bulkUpdateMonumentSuggestion,
+                                                                      AsyncJob job){
+        return CompletableFuture.completedFuture(this.bulkUpdateMonuments(bulkUpdateMonumentSuggestion, job));
+    }
+
+    /**
+     * Bulk update monuments from CSV. If job is not null, progress will be reported as the monuments are created.
+     * This method should only be called through MonumentService.bulkUpdateMonumentsSync or
+     * AsyncMonumentService.bulkUpdateMonumentsAsync
+     * @param bulkUpdateSuggestion - BulkUpdateMonumentSuggestion to use to bulk update Monuments
+     * @param job - The AsyncJob to report progress to
+     * @return - List of updated monuments
+     */
+    private List<Monument> bulkUpdateMonuments(BulkUpdateMonumentSuggestion bulkUpdateSuggestion, AsyncJob job) {
+        if (bulkUpdateSuggestion == null || bulkUpdateSuggestion.getUpdateSuggestions() == null ||
+        !bulkUpdateSuggestion.getIsApproved()) {
+            return null;
+        }
+
+        List<Monument> monuments = new ArrayList<>();
+        List<UpdateMonumentSuggestion> updateSuggestions = bulkUpdateSuggestion.getUpdateSuggestions();
+
+        for (int i = 0; i < updateSuggestions.size(); i++) {
+            UpdateMonumentSuggestion updateSuggestion = updateSuggestions.get(i);
+
+            // Update Monument
+            Monument updatedMonument = this.updateMonument(updateSuggestion);
+
+            // Add new contributor
+            if (job != null) {
+                Contribution newContribution = new Contribution();
+
+                newContribution.setMonument(updatedMonument);
+                newContribution.setDate(new Date());
+                newContribution.setSubmittedByUser(updateSuggestion.getCreatedBy());
+
+                newContribution = this.contributionRepository.save(newContribution);
+                updatedMonument.getContributions().add(newContribution);
+            }
+            monuments.add(updatedMonument);
+
+            // Report progress
+            if (job != null && i != updateSuggestions.size() - 1) {
+                // The row number is the index plus 1 for the header row and plus 1 to be 1-based instead of zero-based
+                job.setProgress((double) (i + 2) / updateSuggestions.size());
+            }
+        }
+        this.monumentRepository.saveAll(monuments);
+        if (job != null) job.setProgress(1.0);
+
+        rollbar.info("Bulk updated " + monuments.size() + " monuments!");
 
         return monuments;
     }
@@ -1633,6 +1712,36 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
+     * SYNCHRONOUSLY parse the specified MonumentBulkValidationResult into a BulkUpdateMonumentSuggestion with
+     * corresponding UpdateMonumentSuggestions
+     * Since this method is synchronous, large MonumentBulkValidationResults could take a significant amount of time to
+     * process and hold up the thread or HTTP request
+     * This method is intended mainly for using with MonumentServiceMockIntegrationTests so that this behavior can be
+     * tested synchronously
+     * @param bulkUpdateValidationResult - MonumentBulkValidationResult object to parse
+     * @return BulkUpdateMonumentSuggestion - BulkUpdateMonumentSuggestion created using the specified
+     * MonumentBulkValidationResult
+     */
+    public BulkUpdateMonumentSuggestion parseMonumentBulkUpdateValidationResultSync(MonumentBulkValidationResult bulkUpdateValidationResult) {
+        return this.parseMonumentBulkUpdateValidationResult(bulkUpdateValidationResult, null);
+    }
+
+    /**
+     * ASYNCHRONOUSLY parse the specified MonumentBulkValidationResult into a BulkUpdateMonumentSuggestion with
+     * corresponding UpdateMonumentSuggestions
+     * This is meant to be wrapped by the AsyncJob in the job param
+     * @param bulkUpdateValidationResult - MonumentBulkValidationResult object to parse
+     * @param job - AsyncJob to report progress to
+     * @return - CompletableFuture of BulkUpdateMonumentSuggestion created using the specified
+     * MonumentBulkValidationResult
+     */
+    @Async
+    public CompletableFuture<BulkUpdateMonumentSuggestion> parseMonumentBulkUpdateValidationResultAsync(MonumentBulkValidationResult bulkUpdateValidationResult,
+                                                                                                        AsyncJob job){
+        return CompletableFuture.completedFuture(this.parseMonumentBulkUpdateValidationResult(bulkUpdateValidationResult, job));
+    }
+
+    /**
      * Parses the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with corresponding
      * CreateMonumentSuggestions
      * If job is not null, progress will be reported as CreateMonumentSuggestions are created
@@ -1691,5 +1800,63 @@ public class MonumentService extends ModelService<Monument> {
         }
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
+    }
+
+    /**
+     * Parses the specified MonumentBulkUpdateValidationResult into a BulkUpdateMonumentSuggestion with corresponding
+     * UpdateMonumentSuggestions
+     * If job is not null, progress will be reported as UpdateMonumentSuggestions are created
+     * This method should only be called through MonumentService.parseMonumentBulkUpdateValidationResultSync or
+     * MonumentService.parseMonumentBulkUpdateValidationResultAsync
+     * @param bulkUpdateValidationResult - MonumentBulkValidationResult object to parse
+     * @param job - AsyncJob to report progress to
+     * @return BulkUpdateMonumentSuggestion - BulkUpdateMonumentSuggestion created using the specified
+     * MonumentBulkUpdateValidationResult
+     */
+    private BulkUpdateMonumentSuggestion parseMonumentBulkUpdateValidationResult(MonumentBulkValidationResult bulkUpdateValidationResult,
+                                                                                 AsyncJob job) {
+        if (bulkUpdateValidationResult == null || bulkUpdateValidationResult.getValidResults() == null) {
+            return null;
+        }
+
+        List<CsvMonumentConverterResult> validResults = new ArrayList<>(bulkUpdateValidationResult.getValidResults().values());
+        if (validResults.size() == 0) {
+            return null;
+        }
+
+        List<UpdateMonumentSuggestion> updateSuggestions = new ArrayList<>();
+        BulkUpdateMonumentSuggestion bulkUpdateSuggestion = this.bulkUpdateSuggestionRepository.save(new BulkUpdateMonumentSuggestion());
+        Gson gson = new Gson();
+
+        for (int i = 0; i < validResults.size(); i++) {
+            CsvMonumentConverterResult validResult = validResults.get(i);
+            UpdateMonumentSuggestion updateSuggestion = CsvMonumentConverter.parseCsvUpdateMonumentConverterResult(validResult, gson);
+
+            if (validResult.getImageFiles().size() > 0) {
+                for (File image : validResult.getImageFiles()) {
+                    String imageObjectUrl = this.awsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
+                    updateSuggestion.getNewImageUrls().add(imageObjectUrl);
+                }
+                updateSuggestion.setNewImageUrlsJson(gson.toJson(updateSuggestion.getNewImageUrlsJson()));
+            }
+
+            if (job != null) updateSuggestion.setNewContributionsJson(job.getUser().getFirstName() + " " + job.getUser().getLastName());
+            updateSuggestion.setBulkUpdateSuggestion(bulkUpdateSuggestion);
+            updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
+            updateSuggestions.add(updateSuggestion);
+
+            if (job != null && i != validResults.size() - 1) {
+                job.setProgress((double) i / updateSuggestions.size());
+            }
+        }
+
+        bulkUpdateSuggestion.setUpdateSuggestions(updateSuggestions);
+        bulkUpdateSuggestion.setFileName(bulkUpdateValidationResult.getFileName());
+        if (job != null) {
+            job.setProgress(1.0);
+            bulkUpdateSuggestion.setCreatedBy(job.getUser());
+        }
+        rollbar.info("New bulk update suggestion:  update " + bulkUpdateSuggestion.getUpdateSuggestions().size() + "monuments.");
+        return this.bulkUpdateSuggestionRepository.saveAndFlush(bulkUpdateSuggestion);
     }
 }
