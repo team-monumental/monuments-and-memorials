@@ -230,6 +230,10 @@ public class CsvMonumentConverterResult {
         /* Image Reference URL Validation */
         /* Check that the image references are valid URLs */
         if (this.imageReferenceUrls != null) {
+            if (this.imageReferenceUrls.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image reference URLs than images");
+            }
+
             for (String imageReferenceUrl : this.imageReferenceUrls) {
                 try {
                     URL url = new URL(imageReferenceUrl);
@@ -241,9 +245,19 @@ public class CsvMonumentConverterResult {
             }
         }
 
+        if (this.imageCaptions != null) {
+            if (this.imageCaptions.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image captions than images");
+            }
+        }
+
         /* PhotoSphere Image Reference URL Validation */
         /* Check that the image references are valid URLs */
         if (this.photoSphereImageReferenceUrls != null) {
+            if (this.photoSphereImageReferenceUrls.size() > this.photoSphereImages.size()) {
+                this.getErrors().add("Cannot have more 360 image reference URLs than 360 images");
+            }
+
             for (String imageReferenceUrl : this.photoSphereImageReferenceUrls) {
                 try {
                     URL url = new URL(imageReferenceUrl);
@@ -252,6 +266,12 @@ public class CsvMonumentConverterResult {
                         this.getErrors().add("All Photosphere Image References must be valid URLs (" + imageReferenceUrl + ")");
                     }
                 }
+            }
+        }
+
+        if (this.photoSphereImageCaptions != null) {
+            if (this.photoSphereImageCaptions.size() > this.photoSphereImages.size()) {
+                this.getErrors().add("Cannot have more 360 image captions than 360 images");
             }
         }
     }
