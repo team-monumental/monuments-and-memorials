@@ -29,6 +29,7 @@ class Filters extends React.Component {
                         lon: params.lon || '',
                         d: params.d || '25'
                     }},
+                hideTemporary: {params: {hideTemporary: params.hideTemporary || false}},
                 tags: { params: {tags: qTags} },
                 materials: {params: {materials: qMats} },
                 q: {params: { q: params.q || ''}},
@@ -71,7 +72,8 @@ class Filters extends React.Component {
                 location: { params: {d: '25', address: ''} },
                 tags: { params: {tags: []}},
                 materials: { params: {materials: []}},
-                q: {params: {q: ''}}
+                q: {params: {q: ''}},
+                hideTemporary: {params: {hideTemporary: false}}
             }
             return { filterList: daFilters };
         })
@@ -167,6 +169,16 @@ class Filters extends React.Component {
         if (event.key === 'Enter') this.handleSearch();
     }
 
+    handleTempChange(value){
+        var updatedState = this.state.filterList.hideTemporary
+        updatedState.params.hideTemporary = value
+        this.setState({
+            ...this.state,
+            ...updatedState
+        })
+        this.handleSearch()
+    }
+
     render() {
         const { showFilters, filterList} = this.state;
         const expandIcon = showFilters ? "remove" : "add";
@@ -175,6 +187,8 @@ class Filters extends React.Component {
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
                 filterMode={filterList.date.config.filterMode}
+                hideTemporary={filterList.hideTemporary.params.hideTemporary}
+                onTempChange={(value) => this.handleTempChange(value)}
                 changeMode={(mode) => this.handleDateChangeMode(mode)}
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)

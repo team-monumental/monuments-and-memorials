@@ -21,7 +21,6 @@ export default class DateFilter extends React.Component {
                 end: data.params.end || null,
                 activeStart: data.params.activeStart || null,
                 activeEnd: data.params.activeEnd || null,
-                hideTemporary: data.params.hideTemporary || false
             },
             sliderValues: [1870, 1960],
             dateFilterStart: new Date(),
@@ -92,8 +91,9 @@ export default class DateFilter extends React.Component {
         this.handleFilterChange('activeEnd', value[1])
     }
 
-    async handleTempChange(value){
-        if (value !== this.state.params.hideTemporary) await this.handleFilterChange('hideTemporary', value);
+    handleTempChange(value){
+        const { hideTemporary, onTempChange } = this.props
+        if (value !== hideTemporary) onTempChange(value);
     }
     onSliderChange = (value) =>{
         this.setState({sliderValues: value})
@@ -186,8 +186,7 @@ export default class DateFilter extends React.Component {
     }
 
     render() {
-        const { filterMode } = this.props;
-        const { hideTemporary } = this.state.params;
+        const { filterMode, hideTemporary } = this.props;
         let dateFilter = null;
         switch (filterMode){
             case Mode.RANGE: 
