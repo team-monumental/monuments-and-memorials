@@ -16,6 +16,25 @@ export const ExportToZipButton = (props) => {
     const { className, data, fields, exportTitle, images } = props;
     const rollbar = useContext(RollbarContext)
 
+    const imageFromAWS = (imageUrl) => {
+        // Setup the global AWS config
+        AWS.config.update({
+            region: 'us-east-2',
+            accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+            secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
+        });
+        const s3Client = new AWS.S3();
+        const key = getS3ImageObjectKeyFromObjectUrl(imageUrl)
+        return s3Client.getObject({
+            Bucket: 'monuments-and-memorials',
+            Key: key
+        }).promise();
+    }
+
+    const imageFromUrl = (imageUrl) => {
+        return JSZipUtils.getBinaryContent(imageUrl, {})
+    }
+
     const handleClick = async () => {
 
         const csv = toCSV(data, {fields});
@@ -29,23 +48,11 @@ export const ExportToZipButton = (props) => {
                     continue
                 }
 
-                // Setup the global AWS config
-                AWS.config.update({
-                    region: 'us-east-2',
-                    accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-                    secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
-                });
-                const key = getS3ImageObjectKeyFromObjectUrl(image.url)
-                const s3Client = new AWS.S3();
-
+                let data
                 try {
-                    let data = await s3Client.getObject({
-                        Bucket: 'monuments-and-memorials',
-                        Key: key
-                    }).promise();
-
+                    data = await imageFromAWS(image.url)
                     if (!data) {
-                        await JSZipUtils.getBinaryContent(image.url, {}).then(
+                        await imageFromUrl(image.url).then(
                             (data2, err) => {
                                 if (err) {
                                     throw err
@@ -55,17 +62,30 @@ export const ExportToZipButton = (props) => {
                             }
                         )
                     }
-
-                    let name = getS3ImageNameFromObjectUrl(image.url)
-                    if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
-                        name = name + '.jpg'
-                    }
-                    zip.file(name, data.Body, {binary: true});
                 } catch (e) {
-                    alert('Problem happened when downloading img: ' + image.url);
-                    console.error('Problem happened when downloading img: ' + image.url);
-                    rollbar.error(e)
+                    try {
+                        await imageFromUrl(image.url).then(
+                            (data2, err) => {
+                                if (err) {
+                                    throw err
+                                } else {
+                                    data = data2
+                                }
+                            }
+                        )
+                    } catch (e) {
+                        alert('Problem happened when downloading img: ' + image.url);
+                        console.error('Problem happened when downloading img: ' + image.url);
+                        rollbar.error(e)
+                        continue
+                    }
                 }
+
+                let name = getS3ImageNameFromObjectUrl(image.url)
+                if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
+                    name = name + '.jpg'
+                }
+                zip.file(name, data.Body, { binary: true });
             }
         }
 
