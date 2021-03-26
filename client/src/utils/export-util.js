@@ -164,7 +164,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = imagesList;
-        } else if (lowerField.includes('image reference')) {
+        } else if (lowerField.includes('images reference')) {
             let imageReferenceUrlsList = '';
             if (monument.images && monument.images.length) {
                 const imageReferenceUrlsArray = monument.images.filter(image => image.isPhotoSphere).map(image => image.referenceUrl);
@@ -184,7 +184,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = imageReferenceUrlsList;
-        } else if (lowerField.includes('image caption')) {
+        } else if (lowerField.includes('images caption')) {
             let imageCaptionsList = '';
             if (monument.images && monument.images.length) {
                 const imageCaptionsArray = monument.images.filter(image => image.isPhotoSphere).map(image => image.caption);
