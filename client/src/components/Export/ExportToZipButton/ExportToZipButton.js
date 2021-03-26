@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import * as JSZip from 'jszip';
+import * as JSZipUtils from 'jszip-utils';
 import { saveAs } from 'file-saver';
 import { parse as toCSV } from 'json2csv';
 import { getS3ImageNameFromObjectUrl, getS3ImageObjectKeyFromObjectUrl } from '../../../utils/api-util';
@@ -42,6 +43,19 @@ export const ExportToZipButton = (props) => {
                         Bucket: 'monuments-and-memorials',
                         Key: key
                     }).promise();
+
+                    if (!data) {
+                        await JSZipUtils.getBinaryContent(image.url, {}).then(
+                            (data2, err) => {
+                                if (err) {
+                                    throw err
+                                } else {
+                                    data = data2
+                                }
+                            }
+                        )
+                    }
+
                     let name = getS3ImageNameFromObjectUrl(image.url)
                     if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
                         name = name + '.jpg'
