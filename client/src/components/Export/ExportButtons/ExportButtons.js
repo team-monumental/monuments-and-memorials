@@ -12,6 +12,15 @@ export default class ExportButtons extends React.Component {
 
     render() {
         const { monuments, title, images } = this.props;
+        let finalImages = images
+        if (!finalImages) {
+            finalImages = []
+            monuments.forEach(monument => {
+                if (monument.images) {
+                    finalImages = finalImages.concat(monument.images)
+                }
+            })
+        }
 
         return (
             <span>
@@ -26,10 +35,10 @@ export default class ExportButtons extends React.Component {
                                        exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`} />
                 </span>
                 <span style={{marginLeft: '5px'}}>
-                    <ExportToZipButton className="mt-2" fields={csvExportFields.concat(['Images', 'Image Reference URLs', 'Image Captions'])}
-                                       data={buildBulkExportData(monuments, csvExportFields.concat(['Images', 'Image Reference URLs', 'Image Captions']), true)}
+                    <ExportToZipButton className="mt-2" fields={csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions'])}
+                                       data={buildBulkExportData(monuments, csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions']), true)}
                                        exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}
-                                       images={images} />
+                                       images={finalImages} />
                 </span>
             </span>
         );
