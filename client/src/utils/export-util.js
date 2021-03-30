@@ -8,7 +8,7 @@ export const pdfExportFields = ['Title', 'ID', 'Artist', 'Date Created', 'Un-ins
     'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
 export const csvExportFields = ['ID', 'Title', 'Artist', 'Date Created', 'Materials', 'Latitude', 'Longitude', 'City',
     'State', 'Address', 'Inscription', 'Description', 'Tags', 'Contributors', 'References', 'Un-installed Date',
-    'Un-installed Reason', 'Is Temporary', 'Last Updated'];
+    'Un-installed Reason', 'Is Temporary', 'Last Updated', '360 Images URLs', '360 Images References', '360 Images Captions'];
 
 export function buildBulkExportData(monuments, fields=csvExportFields, pretty=false) {
     const data = []
@@ -84,10 +84,10 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = tagsList;
-        } else if (lowerField.includes('images')) {
+        } else if (lowerField.includes('image name')) {
             let imagesList = '';
             if (monument.images && monument.images.length) {
-                const imagesArray = monument.images.map(image => getS3ImageNameFromObjectUrl(image.url));
+                const imagesArray = monument.images.filter(image => !image.isPhotoSphere).map(image => getS3ImageNameFromObjectUrl(image.url));
 
                 let i = 0
                 for (const img of imagesArray) {
@@ -107,7 +107,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
         } else if (lowerField.includes('image reference')) {
             let imageReferenceUrlsList = '';
             if (monument.images && monument.images.length) {
-                const imageReferenceUrlsArray = monument.images.map(image => image.referenceUrl);
+                const imageReferenceUrlsArray = monument.images.filter(image => !image.isPhotoSphere).map(image => image.referenceUrl);
 
                 let i = 0
                 for (const imageReferenceUrl of imageReferenceUrlsArray) {
@@ -127,7 +127,67 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
         } else if (lowerField.includes('image caption')) {
             let imageCaptionsList = '';
             if (monument.images && monument.images.length) {
-                const imageCaptionsArray = monument.images.map(image => image.caption);
+                const imageCaptionsArray = monument.images.filter(image => !image.isPhotoSphere).map(image => image.caption);
+
+                let i = 0
+                for (const imageCaption of imageCaptionsArray) {
+                    if (!imageCaption) {
+                        imageCaptionsArray[i] = ''
+                    }
+                    i += 1
+                }
+
+                if (pretty) {
+                    imageCaptionsList = imageCaptionsArray.join(', ')
+                } else {
+                    imageCaptionsList = imageCaptionsArray.join(',')
+                }
+            }
+            result[field] = imageCaptionsList;
+        }   else if (lowerField.includes('360 images url')) {
+            let imagesList = '';
+            if (monument.images && monument.images.length) {
+                const imagesArray = monument.images.filter(image => image.isPhotoSphere).map(image => getS3ImageNameFromObjectUrl(image.url));
+
+                let i = 0
+                for (const img of imagesArray) {
+                    if (!img.endsWith('.png') && !img.endsWith('.jpg')) {
+                        imagesArray[i] = img + '.jpg'
+                    }
+                    i += 1
+                }
+
+                if (pretty) {
+                    imagesList = imagesArray.join(', ')
+                } else {
+                    imagesList = imagesArray.join(',')
+                }
+            }
+            result[field] = imagesList;
+        } else if (lowerField.includes('images reference')) {
+            let imageReferenceUrlsList = '';
+            if (monument.images && monument.images.length) {
+                const imageReferenceUrlsArray = monument.images.filter(image => image.isPhotoSphere).map(image => image.referenceUrl);
+
+                let i = 0
+                for (const imageReferenceUrl of imageReferenceUrlsArray) {
+                    if (!imageReferenceUrl) {
+                        imageReferenceUrlsArray[i] = ''
+                    }
+                    i += 1
+                }
+
+                if (pretty) {
+                    imageReferenceUrlsList = imageReferenceUrlsArray.join(', ')
+                } else {
+                    imageReferenceUrlsList = imageReferenceUrlsArray.join(',')
+                }
+            }
+            result[field] = imageReferenceUrlsList;
+        } else if (lowerField.includes('images caption')) {
+            let imageCaptionsList = '';
+            if (monument.images && monument.images.length) {
+                const imageCaptionsArray = monument.images.filter(image => image.isPhotoSphere).map(image => image.caption);
 
                 let i = 0
                 for (const imageCaption of imageCaptionsArray) {
