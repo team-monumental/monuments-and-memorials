@@ -101,18 +101,6 @@ export default class About extends React.Component {
             );
         }
 
-        let materialsList;
-        if (monument.materials && monument.materials.length) {
-            materialsList = (
-                <div>
-                    <span className="detail-label">Materials:&nbsp;</span>
-                    <ul>
-                        {monument.materials.map(material => <li key={material.id}>{material.name}</li>)}
-                    </ul>
-                </div>
-            );
-        }
-
         let tagsList;
         if (monument.monumentTags && monument.monumentTags.length) {
             tagsList = (
@@ -193,7 +181,6 @@ export default class About extends React.Component {
                         {state}
                         {address}
                         {coordinates}
-                        {materialsList}
                         {tagsList}
                         {contributorsList}
                         {referencesList}
