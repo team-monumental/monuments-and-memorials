@@ -252,11 +252,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param end - The end date to filter monuments by
      * @param decade - The decade to filter monuments by
      * @param onlyActive - If true, only active monuments will be searched. If false, both active and inactive will be searched
+     * @param hideTemporary - If true, search only permanent monuments. If false, search both temporary and permanent monuments
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                   Double threshold, Double latitude, Double longitude, Double distance,
                                   List<String> tags, List<String> materials, SortType sortType, Date start, Date end,
-                                  Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd) {
+                                  Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -264,6 +265,9 @@ public class MonumentService extends ModelService<Monument> {
             predicates.add(builder.equal(root.get("isActive"), builder.literal(true)));
         }
 
+        if (hideTemporary) {
+            predicates.add(builder.equal(root.get("isTemporary"), builder.literal(false)));
+        }
         boolean sortByRelevance = false;
         boolean sortByDistance = false;
 
@@ -327,11 +331,13 @@ public class MonumentService extends ModelService<Monument> {
      * @param end - The end date to filter monuments by
      * @param decade - The decade to filter monuments by
      * @param onlyActive - If true, only active monuments will be searched. If false, both active and inactive will be searched
+     * @param hideTemporary - If true, search only permanent monuments. If false, search both temporary and permanent monuments
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double threshold, Double latitude,
                                  Double longitude, Double distance, List<String> tags, List<String> materials,
-                                 SortType sortType, Date start, Date end, Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd) {
+                                 SortType sortType, Date start, Date end, Integer decade, boolean onlyActive,
+                                 Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
@@ -339,7 +345,7 @@ public class MonumentService extends ModelService<Monument> {
 
         this.buildSearchQuery(
             builder, query, root, searchQuery, threshold, latitude, longitude, distance, tags, materials, sortType,
-            start, end, decade, onlyActive, activeStart, activeEnd
+            start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
         List<Monument> monuments = limit != null
@@ -353,10 +359,12 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Count the total number of results for a Monument search
-     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, List, List, SortType, Date, Date, Integer, boolean, Integer, Integer)
+     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, List, List, SortType, Date,
+     * Date, Integer, boolean, Integer, Integer, Boolean)
      */
     public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
-                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd) {
+                                      List<String> tags, List<String> materials, Date start, Date end, Integer decade,
+                                      boolean onlyActive, Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
         Root<Monument> root = query.from(Monument.class);
@@ -364,7 +372,7 @@ public class MonumentService extends ModelService<Monument> {
 
         this.buildSearchQuery(
             builder, query, root, searchQuery, 0.1, latitude, longitude, distance, tags, materials, SortType.NONE,
-            start, end, decade, onlyActive, activeStart, activeEnd
+            start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
@@ -689,7 +697,7 @@ public class MonumentService extends ModelService<Monument> {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
         List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
-                SortType.OLDEST, null, null, null, true, null, null);
+                SortType.OLDEST, null, null, null, true, null, null, false);
 
         List<Object[]> allTagsAndCountsMostUsedFirst = this.tagRepository.getAllOrderByMostUsedDesc();
 
@@ -795,8 +803,9 @@ public class MonumentService extends ModelService<Monument> {
 
         if (searchForSpecificMonuments) {
             // Search for the 9/11 Memorial so we can link to it
-            List<Monument> nineElevenMemorialSearchResults = this.search("9/11 Memorial", null, null, 0.75, 40.4242,
-                    -74.049, 0.5, null, null, SortType.DISTANCE, null, null, null, true, null, null);
+            List<Monument> nineElevenMemorialSearchResults = this.search("9/11 Memorial", null, null, 0.75,
+                    40.4242, -74.049, 0.5, null, null, SortType.DISTANCE, null, null, null,
+                    true, null, null, false);
 
             // Only take the first result, if there are any results
             if (nineElevenMemorialSearchResults.size() > 0) {
@@ -805,7 +814,8 @@ public class MonumentService extends ModelService<Monument> {
 
             // Search for the Vietnam Veterans Memorial so we can link to it
             List<Monument> vietnamVeteransMemorialSearchResults = this.search("Vietnam Veterans Memorial", null, null,
-                    0.75, 38.891632, -77.047809, 0.5, null, null, SortType.DISTANCE, null, null, null, true, null, null);
+                    0.75, 38.891632, -77.047809, 0.5, null, null, SortType.DISTANCE, null,
+                    null, null, true, null, null, false);
 
             // Only take the first result, if there are any results
             if (vietnamVeteransMemorialSearchResults.size() > 0) {
@@ -906,10 +916,12 @@ public class MonumentService extends ModelService<Monument> {
         /* Images Section */
         List<Image> images = new ArrayList<>();
         if (monumentSuggestion.getImages() != null && monumentSuggestion.getImages().size() > 0) {
-            images.addAll(this.createMonumentImages(monumentSuggestion.getImages(), createdMonument, false));
+            images.addAll(this.createMonumentImages(monumentSuggestion.getImages(),
+                    monumentSuggestion.getImageReferenceUrls(), monumentSuggestion.getImageCaptions(), createdMonument, false));
         }
         if (monumentSuggestion.getPhotoSphereImages() != null && monumentSuggestion.getPhotoSphereImages().size() > 0) {
-            images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(), createdMonument, true));
+            images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(),
+                    monumentSuggestion.getPhotoSphereImageReferenceUrls(), monumentSuggestion.getPhotoSphereImageCaptions(), createdMonument, true));
         }
         createdMonument.setImages(images);
 
@@ -1066,11 +1078,13 @@ public class MonumentService extends ModelService<Monument> {
         // Add any new Images
         List<Image> newImages = new ArrayList<>();
         if (updateSuggestion.getNewImageUrls() != null && updateSuggestion.getNewImageUrls().size() > 0) {
-            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewImageUrls(), currentMonument, false));
+            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewImageUrls(),
+                    updateSuggestion.getNewImageReferenceUrls(), updateSuggestion.getNewImageCaptions(), currentMonument, false));
         }
         if (updateSuggestion.getNewPhotoSphereImageUrls() != null &&
                 updateSuggestion.getNewPhotoSphereImageUrls().size() > 0) {
-            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewPhotoSphereImageUrls(), currentMonument, true));
+            newImages.addAll(this.createMonumentImages(updateSuggestion.getNewPhotoSphereImageUrls(),
+                    updateSuggestion.getNewPhotoSphereImageReferenceUrls(), updateSuggestion.getNewPhotoSphereImageCaptions(), currentMonument, true));
         }
 
         // If the Monument does not have any Images, we can just set them
@@ -1081,6 +1095,12 @@ public class MonumentService extends ModelService<Monument> {
         else {
             currentMonument.getImages().addAll(newImages);
         }
+
+        // Update image reference URLs and captions
+        this.updateImageReferenceUrl(currentMonument, updateSuggestion.getUpdatedImageReferenceUrlsById());
+        this.updateImageCaption(currentMonument, updateSuggestion.getUpdatedImageCaptionsById());
+        this.updateImageReferenceUrl(currentMonument, updateSuggestion.getUpdatedPhotoSphereImageReferenceUrlsById());
+        this.updateImageCaption(currentMonument, updateSuggestion.getUpdatedPhotoSphereImageCaptionsById());
 
         // Update the primary Image
         this.updateMonumentPrimaryImage(currentMonument, updateSuggestion.getNewPrimaryImageId());
@@ -1183,11 +1203,13 @@ public class MonumentService extends ModelService<Monument> {
      * If arePhotoSphereImages is false, also moves the S3 images with the specified imageUrls into the permanent S3
      * image folder
      * @param imageUrls - List of Strings for the URLs to use for the Images
+     * @param imageReferenceUrls - List of strings of reference URLs for images
+     * @param imageCaptions - List of strings of captions for images
      * @param monument - Monument to associate the new Images with
      * @param arePhotoSphereImages - True if the specified imageUrls are for PhotoSphere images, False otherwise
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
      */
-    public List<Image> createMonumentImages(List<String> imageUrls, Monument monument, boolean arePhotoSphereImages) {
+    public List<Image> createMonumentImages(List<String> imageUrls, List<String> imageReferenceUrls, List<String> imageCaptions, Monument monument, boolean arePhotoSphereImages) {
         if (imageUrls == null || monument == null) {
             return null;
         }
@@ -1205,9 +1227,19 @@ public class MonumentService extends ModelService<Monument> {
             }
         }
 
+        int i = 0;
         for (String imageUrl : imageUrls) {
             if (!isNullOrEmpty(imageUrl)) {
                 Image image;
+
+                String imageReferenceUrl = "";
+                if (imageReferenceUrls != null && imageReferenceUrls.size() > i) {
+                    imageReferenceUrl = imageReferenceUrls.get(i);
+                }
+                String imageCaption = "";
+                if (imageCaptions != null && imageCaptions.size() > i) {
+                    imageCaption = imageCaptions.get(i);
+                }
 
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
@@ -1217,10 +1249,10 @@ public class MonumentService extends ModelService<Monument> {
 
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
-                    image = new Image(permanentImageUrl, isPrimary);
+                    image = new Image(permanentImageUrl, isPrimary, imageReferenceUrl, imageCaption);
                 }
                 else {
-                    image = new Image(imageUrl, false);
+                    image = new Image(imageUrl, false, imageReferenceUrl, imageCaption);
                     image.setIsPhotoSphere(true);
                 }
 
@@ -1228,6 +1260,7 @@ public class MonumentService extends ModelService<Monument> {
                 image = this.imageRepository.save(image);
                 images.add(image);
             }
+            i++;
         }
 
         return images;
@@ -1280,6 +1313,30 @@ public class MonumentService extends ModelService<Monument> {
                 if (newReferenceUrlsById.containsKey(currentReference.getId())) {
                     currentReference.setUrl(newReferenceUrlsById.get(currentReference.getId()));
                     this.referenceRepository.save(currentReference);
+                }
+            }
+        }
+    }
+
+    public void updateImageReferenceUrl(Monument monument, Map<Integer, String> updatedImageReferenceUrlsById) {
+        if (monument != null && monument.getImages() != null && updatedImageReferenceUrlsById != null &&
+                monument.getImages().size() > 0 && updatedImageReferenceUrlsById.size() > 0) {
+            for (Image currentImage : monument.getImages()) {
+                if (updatedImageReferenceUrlsById.containsKey(currentImage.getId())) {
+                    currentImage.setReferenceUrl(updatedImageReferenceUrlsById.get(currentImage.getId()));
+                    this.imageRepository.save(currentImage);
+                }
+            }
+        }
+    }
+
+    public void updateImageCaption(Monument monument, Map<Integer, String> updatedImageCaptionsById) {
+        if (monument != null && monument.getImages() != null && updatedImageCaptionsById != null &&
+                monument.getImages().size() > 0 && updatedImageCaptionsById.size() > 0) {
+            for (Image currentImage : monument.getImages()) {
+                if (updatedImageCaptionsById.containsKey(currentImage.getId())) {
+                    currentImage.setCaption(updatedImageCaptionsById.get(currentImage.getId()));
+                    this.imageRepository.save(currentImage);
                 }
             }
         }
@@ -1595,7 +1652,7 @@ public class MonumentService extends ModelService<Monument> {
 
             if (latitude != null && longitude != null) {
                 return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
-                        null, null, onlyActive, null, null);
+                        null, null, onlyActive, null, null, false);
             }
         }
 

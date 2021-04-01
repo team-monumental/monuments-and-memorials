@@ -57,7 +57,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @Column(name = "deactivated_date_format")
     private DateFormat deactivatedDateFormat;
 
-    @Column(name = "deactivatedComment")
+    @Column(name = "deactivatedComment", length = 2048)
     private String deactivatedComment;
 
     @Column(name = "artist")
@@ -79,7 +79,7 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> contributions;
 
-    @Column(name = "references_json", length = 1024)
+    @Column(name = "references_json", length = 2048)
     private String referencesJson;
 
     @Transient
@@ -121,12 +121,40 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> images;
 
-    @Column(name = "photosphere_images_json", length = 1024)
+    @Column(name = "image_reference_urls_json", length = 2048)
+    private String imageReferenceUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> imageReferenceUrls;
+
+    @Column(name = "image_captions_json", length = 2048)
+    private String imageCaptionsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> imageCaptions;
+
+    @Column(name = "photosphere_images_json", length = 2048)
     private String photoSphereImagesJson;
 
     @Transient
     @JsonIgnore
     private List<String> photoSphereImages;
+
+    @Column(name = "photosphere_image_reference_urls_json", length = 2048)
+    private String photoSphereImageReferenceUrlsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> photoSphereImageReferenceUrls;
+
+    @Column(name = "photosphere_image_captions_json", length = 2048)
+    private String photoSphereImageCaptionsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> photoSphereImageCaptions;
 
     @JsonIgnore
     @ManyToOne
@@ -401,6 +429,46 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         return this.images;
     }
 
+    public String getImageReferenceUrlsJson() {
+        return imageReferenceUrlsJson;
+    }
+
+    public void setImageReferenceUrlsJson(String imageReferenceUrlsJson) {
+        this.imageReferenceUrlsJson = imageReferenceUrlsJson;
+    }
+
+    public List<String> getImageReferenceUrls() throws IndexOutOfBoundsException {
+        if (this.imageReferenceUrls == null || (this.imageReferenceUrlsJson != null && this.imageReferenceUrls.isEmpty() && !this.imageReferenceUrlsJson.isEmpty())) {
+            this.imageReferenceUrls = this.deserializeStringList(this.imageReferenceUrlsJson);
+        }
+
+        if (this.imageReferenceUrls != null && this.getImages().size() != this.imageReferenceUrls.size()) {
+            throw new IndexOutOfBoundsException("Number of image reference URLs must match number of images");
+        }
+
+        return this.imageReferenceUrls;
+    }
+
+    public String getImageCaptionsJson() {
+        return imageCaptionsJson;
+    }
+
+    public void setImageCaptionsJson(String imageCaptionsJson) {
+        this.imageCaptionsJson = imageCaptionsJson;
+    }
+
+    public List<String> getImageCaptions() {
+        if (this.imageCaptions == null || (this.imageCaptionsJson != null && this.imageCaptions.isEmpty() && !this.imageCaptionsJson.isEmpty())) {
+            this.imageCaptions = this.deserializeStringList(this.imageCaptionsJson);
+        }
+
+        if (this.imageCaptions != null && this.getImages().size() != this.imageCaptions.size()) {
+            throw new IndexOutOfBoundsException("Number of image captions must match number of images");
+        }
+
+        return this.imageCaptions;
+    }
+
     public String getPhotoSphereImagesJson() {
         return this.photoSphereImagesJson;
     }
@@ -416,6 +484,48 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.photoSphereImages;
+    }
+
+    public String getPhotoSphereImageReferenceUrlsJson() {
+        return photoSphereImageReferenceUrlsJson;
+    }
+
+    public void setPhotoSphereImageReferenceUrlsJson(String photoSphereImageReferenceUrlsJson) {
+        this.photoSphereImageReferenceUrlsJson = photoSphereImageReferenceUrlsJson;
+    }
+
+    public List<String> getPhotoSphereImageReferenceUrls() throws IndexOutOfBoundsException {
+        if (this.photoSphereImageReferenceUrls == null || (this.photoSphereImageReferenceUrlsJson != null &&
+                this.photoSphereImageReferenceUrls.isEmpty() && !this.photoSphereImageReferenceUrlsJson.isEmpty())) {
+            this.photoSphereImageReferenceUrls = this.deserializeStringList(this.photoSphereImageReferenceUrlsJson);
+        }
+
+        if (this.photoSphereImageReferenceUrls != null && this.getPhotoSphereImages().size() != this.photoSphereImageReferenceUrls.size()) {
+            throw new IndexOutOfBoundsException("Number of photosphere image reference URLs must match number of photosphere images");
+        }
+
+        return this.photoSphereImageReferenceUrls;
+    }
+
+    public String getPhotoSphereImageCaptionsJson() {
+        return photoSphereImageCaptionsJson;
+    }
+
+    public void setPhotoSphereImageCaptionsJson(String photoSphereImageCaptionsJson) {
+        this.photoSphereImageCaptionsJson = photoSphereImageCaptionsJson;
+    }
+
+    public List<String> getPhotoSphereImageCaptions() {
+        if (this.photoSphereImageCaptions == null || (this.photoSphereImageCaptionsJson != null &&
+                this.photoSphereImageCaptions.isEmpty() && !this.photoSphereImageCaptionsJson.isEmpty())) {
+            this.photoSphereImageCaptions = this.deserializeStringList(this.photoSphereImageCaptionsJson);
+        }
+
+        if (this.photoSphereImageCaptions != null && this.getPhotoSphereImages().size() != this.photoSphereImageCaptions.size()) {
+            throw new IndexOutOfBoundsException("Number of photosphere image captions must match number of photosphere images");
+        }
+
+        return this.photoSphereImageCaptions;
     }
 
     public BulkCreateMonumentSuggestion getBulkCreateSuggestion() {

@@ -10,7 +10,7 @@ import DateFilter from './FilterTypes/DateFilter/DateFilter';
 import TextFilter from './FilterTypes/TextFilter/TextFilter';
 import * as QueryString from 'query-string';
 import { Link } from 'react-router-dom';
-import {Mode} from './FilterTypes/DateFilter/DateEnum';
+import { Mode } from './FilterTypes/DateFilter/DateEnum';
 
 class Filters extends React.Component {
 
@@ -22,7 +22,7 @@ class Filters extends React.Component {
         const qMats = (params.materials) ? params.materials.split(',') : [];
         this.state = {
             filterList: {
-                date: { config: {}, params: {} },
+                date: { config: {filterMode: Mode.NONE}, params: {} },
                 location: { params: {
                         address: params.address || '',
                         lat: params.lat || '',
@@ -33,7 +33,7 @@ class Filters extends React.Component {
                 materials: {params: {materials: qMats} },
                 q: {params: { q: params.q || ''}},
             },
-            showFilters: false
+            showFilters: false,
         };
     }
 
@@ -182,7 +182,7 @@ class Filters extends React.Component {
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)
         let tagsMap = (
-            <div className="filter-body border-right" >
+            <div className="filter-body" >
                 
                 <TagsFilters
                     variant="tags"

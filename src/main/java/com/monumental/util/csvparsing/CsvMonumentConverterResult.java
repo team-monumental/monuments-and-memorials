@@ -30,6 +30,16 @@ public class CsvMonumentConverterResult {
 
     private List<File> imageFiles = new ArrayList<>();
 
+    private List<String> imageReferenceUrls = new ArrayList<>();
+
+    private List<String> imageCaptions = new ArrayList<>();
+
+    private List<String> photoSphereImages = new ArrayList<>();
+
+    private List<String> photoSphereImageReferenceUrls = new ArrayList<>();
+
+    private List<String> photoSphereImageCaptions = new ArrayList<>();
+
     private List<String> errors = new ArrayList<>();
 
     private List<String> warnings = new ArrayList<>();
@@ -80,6 +90,46 @@ public class CsvMonumentConverterResult {
 
     public void setImageFiles(List<File> imageFiles) {
         this.imageFiles = imageFiles;
+    }
+
+    public List<String> getImageReferenceUrls() {
+        return imageReferenceUrls;
+    }
+
+    public void setImageReferenceUrls(List<String> imageReferenceUrls) {
+        this.imageReferenceUrls = imageReferenceUrls;
+    }
+
+    public List<String> getImageCaptions() {
+        return imageCaptions;
+    }
+
+    public void setImageCaptions(List<String> imageCaptions) {
+        this.imageCaptions = imageCaptions;
+    }
+
+    public List<String> getPhotoSphereImages() {
+        return photoSphereImages;
+    }
+
+    public void setPhotoSphereImages(List<String> photoSphereImages) {
+        this.photoSphereImages = photoSphereImages;
+    }
+
+    public List<String> getPhotoSphereImageReferenceUrls() {
+        return photoSphereImageReferenceUrls;
+    }
+
+    public void setPhotoSphereImageReferenceUrls(List<String> photoSphereImageReferenceUrls) {
+        this.photoSphereImageReferenceUrls = photoSphereImageReferenceUrls;
+    }
+
+    public List<String> getPhotoSphereImageCaptions() {
+        return photoSphereImageCaptions;
+    }
+
+    public void setPhotoSphereImageCaptions(List<String> photoSphereImageCaptions) {
+        this.photoSphereImageCaptions = photoSphereImageCaptions;
     }
 
     public List<String> getErrors() {
@@ -171,9 +221,57 @@ public class CsvMonumentConverterResult {
                     URL url = new URL(referenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All References must be valid URLs")) {
-                        this.getErrors().add("All References must be valid URLs");
+                        this.getErrors().add("All References must be valid URLs (" + referenceUrl + ")");
                     }
                 }
+            }
+        }
+
+        /* Image Reference URL Validation */
+        /* Check that the image references are valid URLs */
+        if (this.imageReferenceUrls != null) {
+            if (this.imageReferenceUrls.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image reference URLs than images");
+            }
+
+            for (String imageReferenceUrl : this.imageReferenceUrls) {
+                try {
+                    URL url = new URL(imageReferenceUrl);
+                } catch (MalformedURLException e) {
+                    if (!this.getErrors().contains("All Image References must be valid URLs")) {
+                        this.getErrors().add("All Image References must be valid URLs (" + imageReferenceUrl + ")");
+                    }
+                }
+            }
+        }
+
+        if (this.imageCaptions != null) {
+            if (this.imageCaptions.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image captions than images");
+            }
+        }
+
+        /* PhotoSphere Image Reference URL Validation */
+        /* Check that the image references are valid URLs */
+        if (this.photoSphereImageReferenceUrls != null) {
+            if (this.photoSphereImageReferenceUrls.size() > this.photoSphereImages.size()) {
+                this.getErrors().add("Cannot have more 360 image reference URLs than 360 images");
+            }
+
+            for (String imageReferenceUrl : this.photoSphereImageReferenceUrls) {
+                try {
+                    URL url = new URL(imageReferenceUrl);
+                } catch (MalformedURLException e) {
+                    if (!this.getErrors().contains("All Photosphere Image References must be valid URLs")) {
+                        this.getErrors().add("All Photosphere Image References must be valid URLs (" + imageReferenceUrl + ")");
+                    }
+                }
+            }
+        }
+
+        if (this.photoSphereImageCaptions != null) {
+            if (this.photoSphereImageCaptions.size() > this.photoSphereImages.size()) {
+                this.getErrors().add("Cannot have more 360 image captions than 360 images");
             }
         }
     }

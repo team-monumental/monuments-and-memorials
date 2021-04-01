@@ -49,6 +49,7 @@ export default class UpdateReviewModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <p>Please review the updates you have made for correctness and completeness!</p>
+                    <p>Note:  Image fields (Reference URL, Caption, Primary Image) do not show here.</p>
                     <div className="attributes-update-container">
                         <MonumentUpdate oldMonument={oldMonument} update={this.buildUpdate()}/>
                     </div>

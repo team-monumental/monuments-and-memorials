@@ -31,7 +31,11 @@ public class CsvFileHelper {
     public static Map<Integer, String> getFieldPositions(String[] headers, Map<String, String> mapping) {
         Map<Integer, String> map = new HashMap<>();
         for (int i = 0; i < headers.length; i++) {
-            map.put(i, mapping.get(headers[i]));
+            if (mapping.get(headers[i]) == null) {
+                map.put(i, headers[i].toLowerCase());
+            } else {
+                map.put(i, mapping.get(headers[i]));
+            }
         }
         return map;
     }

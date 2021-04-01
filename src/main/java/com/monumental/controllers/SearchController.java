@@ -76,7 +76,7 @@ public class SearchController {
     @GetMapping("/api/search/monuments")
     public List<Monument> searchMonuments(@RequestParam(required = false, value = "q") String searchQuery,
                                           @RequestParam(required = false, defaultValue = "1") String page,
-                                          @RequestParam(required = false, defaultValue = "10") String limit,
+                                          @RequestParam(required = false, defaultValue = "25") String limit,
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
                                           @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
@@ -89,6 +89,7 @@ public class SearchController {
                                           @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
                                           @RequestParam(required = false) Integer activeStart,
                                           @RequestParam(required = false) Integer activeEnd,
+                                          @RequestParam(required = false, defaultValue = "false") Boolean hideTemporary,
                                           @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
@@ -99,7 +100,7 @@ public class SearchController {
         List<Monument> monuments = this.monumentService.search(
                 searchQuery, page, limit, 0.1, latitude, longitude, distance, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
-                startDate, endDate, decade, onlyActive, activeStart, activeEnd
+                startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
         if (cascade) {
@@ -124,7 +125,8 @@ public class SearchController {
                                        @RequestParam(required = false) Integer decade,
                                        @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
                                        @RequestParam(required = false) Integer activeStart,
-                                       @RequestParam(required = false) Integer activeEnd)
+                                       @RequestParam(required = false) Integer activeEnd,
+                                       @RequestParam(required = false, defaultValue = "false") Boolean hideTemporary)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
             this.userService.requireUserIsInRoles(Role.PARTNER_OR_ABOVE);
@@ -134,7 +136,7 @@ public class SearchController {
 
         return this.monumentService.countSearchResults(
             searchQuery, latitude, longitude, distance, tags, materials,
-            startDate, endDate, decade, onlyActive, activeStart, activeEnd
+            startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
     }
 
