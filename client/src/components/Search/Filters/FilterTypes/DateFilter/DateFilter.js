@@ -87,8 +87,17 @@ export default class DateFilter extends React.Component {
     }
 
     async handleSliderSearch(value){
-        await this.handleFilterChange('activeStart', value[0] )
-        this.handleFilterChange('activeEnd', value[1])
+        const updatedState = {};
+        const {onChange} = this.props;
+        if(value[0] !== 1870) updatedState.activeStart = value[0];
+        updatedState.activeEnd = value[1];
+        await this.setState({
+            params:{
+                ...this.state.params,
+                ...updatedState
+            }
+        });
+        onChange(this.state.params);
     }
 
     handleTempChange(value){
@@ -98,7 +107,7 @@ export default class DateFilter extends React.Component {
     onSliderChange = (value) =>{
         this.setState({sliderValues: value})
       };
-    onSliderSerach = value => {
+    onSliderSearch = value => {
         this.handleSliderSearch(value);
     };
 
@@ -140,7 +149,7 @@ export default class DateFilter extends React.Component {
                 <span className="mr-2">Monuments or memorials created in the</span>
                 <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter(Mode.DECADE, event.target.value)} value={decade}>
                     <option value="null">None</option>
-                    <option value="1850">1850s</option>
+                    <option value="-1">1850s or Earlier</option>
                     <option value="1860">1860s</option>
                     <option value="1870">1870s</option>
                     <option value="1880">1880s</option>
@@ -179,7 +188,7 @@ export default class DateFilter extends React.Component {
                     <Range allowCross={false} min={1870} max={2020} step={10} value={this.state.sliderValues} marks={marks}
                         handle={SliderHandle}
                         dotStyle={{ height: '12px', width: '12px', top: '-4px'}}
-                        onChange={this.onSliderChange} onAfterChange={this.onSliderSerach} />
+                        onChange={this.onSliderChange} onAfterChange={this.onSliderSearch} />
                 </div>
             </div>
         )
