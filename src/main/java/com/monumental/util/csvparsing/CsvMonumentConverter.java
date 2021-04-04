@@ -208,7 +208,7 @@ public class CsvMonumentConverter {
                             break;
                         case "images":
                             if (zipFile != null) {
-                                String[] valueArray = value.split(",");
+                                String[] valueArray = value.split(", ");
                                 for (String imageValue : valueArray) {
                                     try {
                                         ZipEntry imageZipEntry = zipFile.getEntry(imageValue);
@@ -387,7 +387,7 @@ public class CsvMonumentConverter {
 
     private static List<String> parseCsvArray(String value, boolean isUrl) {
         // Split on commas in-case there are more than one Tag in the column
-        String[] valueArray = value.split(",");
+        String[] valueArray = value.split(", ");
 
         List<String> names = new ArrayList<>();
 

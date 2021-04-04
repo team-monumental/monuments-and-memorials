@@ -129,7 +129,7 @@ export default class BulkUpdateForm extends React.Component{
 
             for (let i = 0; i < fileUpload.images.length; i++) {
                 const image = fileUpload.images[i]
-                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')){
+                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg') && !image.name.endsWith('.PNG') && !image.name.endsWith('.JPG') && !image.name.endsWith('.jpeg') && !image.name.endsWith('.JPEG')){
                     fileUpload.errorMessages.push('Your zip file contains unsupported file types. Please check that there are only .csv, .jpg, and' +
                         ' .png files in your .zip file.');
                     fileUpload.csv = null;
