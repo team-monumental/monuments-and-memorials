@@ -218,6 +218,9 @@ public class CsvMonumentConverterResult {
         if (this.referenceUrls != null) {
             for (String referenceUrl : this.referenceUrls) {
                 try {
+                    if (referenceUrl.contains(" ")) {
+                        throw new MalformedURLException();
+                    }
                     URL url = new URL(referenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All References must be valid URLs")) {
@@ -236,6 +239,9 @@ public class CsvMonumentConverterResult {
 
             for (String imageReferenceUrl : this.imageReferenceUrls) {
                 try {
+                    if (imageReferenceUrl.contains(" ")) {
+                        throw new MalformedURLException();
+                    }
                     URL url = new URL(imageReferenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All Image References must be valid URLs")) {
@@ -260,6 +266,9 @@ public class CsvMonumentConverterResult {
 
             for (String imageReferenceUrl : this.photoSphereImageReferenceUrls) {
                 try {
+                    if (imageReferenceUrl.contains(" ")) {
+                        throw new MalformedURLException();
+                    }
                     URL url = new URL(imageReferenceUrl);
                 } catch (MalformedURLException e) {
                     if (!this.getErrors().contains("All Photosphere Image References must be valid URLs")) {
