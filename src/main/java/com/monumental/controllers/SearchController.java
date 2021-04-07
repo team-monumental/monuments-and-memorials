@@ -80,6 +80,7 @@ public class SearchController {
                                           @RequestParam(required = false, value = "lat") Double latitude,
                                           @RequestParam(required = false, value = "lon") Double longitude,
                                           @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
+                                          @RequestParam(required = false, value = "state") String state,
                                           @RequestParam(required = false) List<String> tags,
                                           @RequestParam(required = false) List<String> materials,
                                           @RequestParam(required = false, value = "sort", defaultValue = "relevance") String sortType,
@@ -98,7 +99,7 @@ public class SearchController {
         Date startDate = StringHelper.parseNullableDate(start);
         Date endDate = StringHelper.parseNullableDate(end);
         List<Monument> monuments = this.monumentService.search(
-                searchQuery, page, limit, 0.1, latitude, longitude, distance, tags, materials,
+                searchQuery, page, limit, 0.1, latitude, longitude, distance, state, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
                 startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
@@ -118,6 +119,7 @@ public class SearchController {
                                        @RequestParam(required = false, value = "lat") Double latitude,
                                        @RequestParam(required = false, value = "lon") Double longitude,
                                        @RequestParam(required = false, value = "d", defaultValue = "25.0") Double distance,
+                                       @RequestParam(required = false) String state,
                                        @RequestParam(required = false) List<String> tags,
                                        @RequestParam(required = false) List<String> materials,
                                        @RequestParam(required = false) String start,
@@ -135,7 +137,7 @@ public class SearchController {
         Date endDate = StringHelper.parseNullableDate(end); 
 
         return this.monumentService.countSearchResults(
-            searchQuery, latitude, longitude, distance, tags, materials,
+            searchQuery, latitude, longitude, distance, state, tags, materials,
             startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
     }

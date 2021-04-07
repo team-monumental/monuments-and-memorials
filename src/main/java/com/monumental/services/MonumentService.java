@@ -255,7 +255,7 @@ public class MonumentService extends ModelService<Monument> {
      * @param hideTemporary - If true, search only permanent monuments. If false, search both temporary and permanent monuments
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
-                                  Double threshold, Double latitude, Double longitude, Double distance,
+                                  Double threshold, Double latitude, Double longitude, Double distance, String state,
                                   List<String> tags, List<String> materials, SortType sortType, Date start, Date end,
                                   Integer decade, boolean onlyActive, Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
 
@@ -290,7 +290,9 @@ public class MonumentService extends ModelService<Monument> {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, threshold, sortByRelevance));
         }
 
-        if (latitude != null && longitude != null && distance != null) {
+        if(state != null) {
+            predicates.add(builder.equal(root.get("state"), state));
+        } else if (latitude != null && longitude != null && distance != null) {
             predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance, sortByDistance));
         }
 
@@ -335,16 +337,16 @@ public class MonumentService extends ModelService<Monument> {
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
     public List<Monument> search(String searchQuery, String page, String limit, Double threshold, Double latitude,
-                                 Double longitude, Double distance, List<String> tags, List<String> materials,
-                                 SortType sortType, Date start, Date end, Integer decade, boolean onlyActive,
-                                 Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
+                                 Double longitude, Double distance, String state, List<String> tags,
+                                 List<String> materials, SortType sortType, Date start, Date end, Integer decade,
+                                 boolean onlyActive, Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
         CriteriaQuery<Monument> query = this.createCriteriaQuery(builder, false);
         Root<Monument> root = this.createRoot(query);
         query.select(root);
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, threshold, latitude, longitude, distance, tags, materials, sortType,
+            builder, query, root, searchQuery, threshold, latitude, longitude, distance, state, tags, materials, sortType,
             start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
@@ -359,10 +361,10 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Count the total number of results for a Monument search
-     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, List, List, SortType, Date,
+     * @see MonumentService#search(String, String, String, Double, Double, Double, Double, String, List, List, SortType, Date,
      * Date, Integer, boolean, Integer, Integer, Boolean)
      */
-    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance,
+    public Integer countSearchResults(String searchQuery, Double latitude, Double longitude, Double distance, String state,
                                       List<String> tags, List<String> materials, Date start, Date end, Integer decade,
                                       boolean onlyActive, Integer activeStart, Integer activeEnd, Boolean hideTemporary) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
@@ -371,7 +373,7 @@ public class MonumentService extends ModelService<Monument> {
         query.select(builder.countDistinct(root));
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, 0.1, latitude, longitude, distance, tags, materials, SortType.NONE,
+            builder, query, root, searchQuery, 0.1, latitude, longitude, distance, state, tags, materials, SortType.NONE,
             start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
@@ -709,7 +711,7 @@ public class MonumentService extends ModelService<Monument> {
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics(boolean searchForSpecificMonuments) {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
-        List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,
+        List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,null,
                 SortType.OLDEST, null, null, null, true, null, null, false);
 
         List<Object[]> allTagsAndCountsMostUsedFirst = this.tagRepository.getAllOrderByMostUsedDesc();
@@ -817,7 +819,7 @@ public class MonumentService extends ModelService<Monument> {
         if (searchForSpecificMonuments) {
             // Search for the 9/11 Memorial so we can link to it
             List<Monument> nineElevenMemorialSearchResults = this.search("9/11 Memorial", null, null, 0.75,
-                    40.4242, -74.049, 0.5, null, null, SortType.DISTANCE, null, null, null,
+                    40.4242, -74.049, 0.5, null, null,null, SortType.DISTANCE, null, null, null,
                     true, null, null, false);
 
             // Only take the first result, if there are any results
@@ -827,7 +829,7 @@ public class MonumentService extends ModelService<Monument> {
 
             // Search for the Vietnam Veterans Memorial so we can link to it
             List<Monument> vietnamVeteransMemorialSearchResults = this.search("Vietnam Veterans Memorial", null, null,
-                    0.75, 38.891632, -77.047809, 0.5, null, null, SortType.DISTANCE, null,
+                    0.75, 38.891632, -77.047809, 0.5, null, null,null, SortType.DISTANCE, null,
                     null, null, true, null, null, false);
 
             // Only take the first result, if there are any results
@@ -1664,7 +1666,7 @@ public class MonumentService extends ModelService<Monument> {
             }
 
             if (latitude != null && longitude != null) {
-                return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, SortType.DISTANCE, null,
+                return this.search(title, "1", "25", 0.9, latitude, longitude, .1, null, null, null, SortType.DISTANCE, null,
                         null, null, onlyActive, null, null, false);
             }
         }

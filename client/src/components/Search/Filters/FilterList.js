@@ -135,9 +135,9 @@ class Filters extends React.Component {
         this.handleSearch()
     }
 
-    async handleLocationSearchSelect(lat, lon, address) {
+    async handleLocationSearchSelect(lat, lon, address, state) {
         var updatedState = this.state.filterList.location
-        updatedState.params = { lat: lat, lon: lon, address: address, d: '25' }
+        updatedState.params = { lat: lat, lon: lon, address: address, state: state }
         this.setState({
             ...this.state,
             ...updatedState
@@ -148,6 +148,7 @@ class Filters extends React.Component {
     async handleChangeDistance(value) {
         var updatedState = this.state.filterList.location
         updatedState.params.d = value
+        if(value >= 0) updatedState.params.state = '';
         this.setState({
             ...this.state,
             ...updatedState
@@ -234,7 +235,7 @@ class Filters extends React.Component {
                 <div className="location-row">
                     <LocationSearch value={filterList.location.params.address}
                         distance={filterList.location.params.d}
-                        onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}
+                        onSuggestionSelect={(lat, lon, address, state) => this.handleLocationSearchSelect(lat, lon, address, state)}
                         onClear={()=> this.clearLocation()}
                         changeDistance={(distance) => this.handleChangeDistance(distance)}>
                     </LocationSearch>

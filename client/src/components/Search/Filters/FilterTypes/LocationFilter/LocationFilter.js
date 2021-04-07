@@ -17,7 +17,7 @@ export default class LocationSearch extends React.Component {
         this.state = {
             searchQuery: props.value,
             sessionToken: '',
-            showDistance: true,
+            showDistance: true
         };
     }
 
@@ -51,12 +51,19 @@ export default class LocationSearch extends React.Component {
     }
 
     async handleSelect(address) {
-        const { onSuggestionSelect } = this.props;
-
+        const { onSuggestionSelect, distance } = this.props;
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
-        onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, results[0]);
-
+        const addressComponents = results[0].address_components;
+        var state = '';
+        if(distance < 0){
+            for(const val of addressComponents){
+                if (val.types.includes("administrative_area_level_1")){
+                    state = val.short_name
+                }
+            }
+        }
+        onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, state);
         this.setState({showDistance: true, address: address, searchQuery: address})
     }
 
@@ -114,6 +121,7 @@ export default class LocationSearch extends React.Component {
                 <option value="50">Within 50 miles</option>
                 <option value="100">Within 100 miles</option>
                 <option value="250">Within 250 miles</option>
+                <option value="-1">By State</option>
             </Form.Control>
         ) : null;
 
