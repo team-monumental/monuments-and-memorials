@@ -800,10 +800,15 @@ export default class CreateOrUpdateForm extends React.Component {
     async reverseGeocode() {
         const { latitude, longitude, previousCoordinates } = this.state;
         let coordinates = {};
-        if (longitude.value.includes('°')) {
-            coordinates = {lat: parseFloat(this.convertCoordinate(latitude)), lng: parseFloat(this.convertCoordinate(longitude))};
+        if (latitude.value.includes('°')) {
+            coordinates.lat = parseFloat(this.convertCoordinate(latitude));
         } else {
-            coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+            coordinates.lat = parseFloat(latitude.value);
+        }
+        if (longitude.value.includes('°')) {
+            coordinates.lng = parseFloat(this.convertCoordinate(longitude));
+        } else {
+            coordinates.lng = parseFloat(longitude.value);
         }
         // Avoid doing duplicate requests
         if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
