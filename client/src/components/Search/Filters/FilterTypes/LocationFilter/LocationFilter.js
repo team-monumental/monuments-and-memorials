@@ -17,7 +17,8 @@ export default class LocationSearch extends React.Component {
         this.state = {
             searchQuery: props.value,
             sessionToken: '',
-            showDistance: true
+            showDistance: true,
+            badLocationState: false
         };
     }
 
@@ -51,7 +52,7 @@ export default class LocationSearch extends React.Component {
     }
 
     async handleSelect(address) {
-        const { onSuggestionSelect } = this.props;
+        const { onSuggestionSelect, distance } = this.props;
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
         const addressComponents = results[0].address_components;
@@ -60,6 +61,9 @@ export default class LocationSearch extends React.Component {
             if (val.types.includes("administrative_area_level_1")){
                 state = val.short_name
             }
+        }
+        if(distance < 0 && !state){
+            
         }
         onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, state);
         this.setState({showDistance: true, address: address, searchQuery: address})
@@ -73,7 +77,7 @@ export default class LocationSearch extends React.Component {
     }
 
     render() {
-        const { searchQuery, showDistance } = this.state;
+        const { searchQuery, showDistance, badLocationState } = this.state;
         const { className, placeholder, isInvalid, distance } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -139,6 +143,8 @@ export default class LocationSearch extends React.Component {
                                     onClick={() => this.handleClear()}>clear</i></div>}
                 </div>
                 {distanceFilter}
+                {badLocationState && 
+                <p>Address must contain a state</p>}
             </div>
         )
     }

@@ -292,7 +292,7 @@ public class MonumentService extends ModelService<Monument> {
 
         if(state != null && distance < 0) {
             predicates.add(builder.equal(root.get("state"), state));
-        } else if (latitude != null && longitude != null && distance != null) {
+        } else if (latitude != null && longitude != null && distance != null && distance > 0) {
             predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance, sortByDistance));
         }
 

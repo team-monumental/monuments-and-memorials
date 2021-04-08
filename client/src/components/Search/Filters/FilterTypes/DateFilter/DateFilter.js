@@ -16,7 +16,7 @@ export default class DateFilter extends React.Component {
         
         this.state = {
             params:{
-                decade: data.params.decade || null,
+                decade: data.params.decade || "",
                 start: data.params.start || null, //TODO - make date dynamic
                 end: data.params.end || null,
                 activeStart: data.params.activeStart || null,
@@ -63,7 +63,7 @@ export default class DateFilter extends React.Component {
 
     async handleModeChange(mode) {
         const { changeMode } = this.props
-        changeMode({filterMode:mode});
+        changeMode(mode);
         if (mode !== Mode.DECADE) {
             await this.handleFilterChange('decade', null);
         }
@@ -148,7 +148,7 @@ export default class DateFilter extends React.Component {
             <div className="d-flex align-items-center">
                 <span className="mr-2">Monuments or memorials created in the</span>
                 <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter(Mode.DECADE, event.target.value)} value={decade}>
-                    <option value="null">None</option>
+                    <option value="">None</option>
                     <option value="-1">1850s or Earlier</option>
                     <option value="1860">1860s</option>
                     <option value="1870">1870s</option>
