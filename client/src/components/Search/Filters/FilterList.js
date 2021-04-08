@@ -22,7 +22,7 @@ class Filters extends React.Component {
         const qMats = (params.materials) ? params.materials.split(',') : [];
         this.state = {
             filterList: {
-                date: { config: {filterMode: Mode.NONE}, params: {} },
+                date: { config: {filterMode: Mode.RANGE}, params: {} },
                 location: { params: {
                         address: params.address || '',
                         lat: params.lat || '',

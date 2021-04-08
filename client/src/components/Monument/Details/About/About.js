@@ -11,7 +11,6 @@ export default class About extends React.Component {
 
     render() {
         const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle, images } = this.props;
-
         let title;
         if (!hideTitle && monument.title) {
             title = (
@@ -102,25 +101,13 @@ export default class About extends React.Component {
             );
         }
 
-        let materialsList;
-        if (monument.materials && monument.materials.length) {
-            materialsList = (
-                <div>
-                    <span className="detail-label">Materials:&nbsp;</span>
-                    <ul>
-                        {monument.materials.map(material => <li key={material.id}>{material.name}</li>)}
-                    </ul>
-                </div>
-            );
-        }
-
         let tagsList;
-        if (monument.tags && monument.tags.length) {
+        if (monument.monumentTags && monument.monumentTags.length) {
             tagsList = (
                 <div>
                     <span className="detail-label">Tags:&nbsp;</span>
                     <ul>
-                        {monument.tags.map(tag => <li key={tag.id}>{tag.name}</li>)}
+                        {monument.monumentTags.map(tag => <li key={tag.tag.id}>{tag.tag.name}</li>)}
                     </ul>
                 </div>
             );
@@ -194,7 +181,6 @@ export default class About extends React.Component {
                         {state}
                         {address}
                         {coordinates}
-                        {materialsList}
                         {tagsList}
                         {contributorsList}
                         {referencesList}
