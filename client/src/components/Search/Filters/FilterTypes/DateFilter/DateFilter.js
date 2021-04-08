@@ -21,10 +21,8 @@ export default class DateFilter extends React.Component {
                 end: data.params.end || null,
                 activeStart: data.params.activeStart || null,
                 activeEnd: data.params.activeEnd || null,
-                hideTemporary: data.params.hideTemporary || false
             },
             sliderValues: [1870, 1960],
-            //filterMode: data.config.filterMode || Mode.NONE,
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
             filterList: []
@@ -93,8 +91,9 @@ export default class DateFilter extends React.Component {
         this.handleFilterChange('activeEnd', value[1])
     }
 
-    async handleTempChange(value){
-        if (value !== this.state.params.hideTemporary) await this.handleFilterChange('hideTemporary', value);
+    handleTempChange(value){
+        const { hideTemporary, onTempChange } = this.props
+        if (value !== hideTemporary) onTempChange(value);
     }
     onSliderChange = (value) =>{
         this.setState({sliderValues: value})
@@ -134,7 +133,6 @@ export default class DateFilter extends React.Component {
     }
 
     makeDecadeFilter() {
-        const { decades } = this.props;
         const { params } = this.state;
         const decade = params.decade
         return (
@@ -188,8 +186,7 @@ export default class DateFilter extends React.Component {
     }
 
     render() {
-        const { filterMode } = this.props;
-        const { hideTemporary } = this.state.params;
+        const { filterMode, hideTemporary } = this.props;
         let dateFilter = null;
         switch (filterMode){
             case Mode.RANGE: 
@@ -228,7 +225,7 @@ export default class DateFilter extends React.Component {
                 <div className="temp-monuments-toggle">
                     <div className="temp-monuments-label">
                         Show Temporary Monuments?
-                        <img className={!hideTemporary? 'temp-img' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
+                        <img className={!hideTemporary? 'monument-pin' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
                     </div>
                     <ButtonGroup>
                         <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm" active={!hideTemporary}

@@ -266,7 +266,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (hideTemporary) {
-            predicates.add(builder.equal(root.get("isTemporary"), builder.literal(false)));
+            predicates.add(builder.or(builder.isFalse(root.get("isTemporary")), builder.isNull(root.get("isTemporary"))));
         }
         boolean sortByRelevance = false;
         boolean sortByDistance = false;
