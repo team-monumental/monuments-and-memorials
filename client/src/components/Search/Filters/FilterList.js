@@ -148,7 +148,6 @@ class Filters extends React.Component {
     async handleChangeDistance(value) {
         var updatedState = this.state.filterList.location
         updatedState.params.d = value
-        if(value >= 0) updatedState.params.state = '';
         this.setState({
             ...this.state,
             ...updatedState

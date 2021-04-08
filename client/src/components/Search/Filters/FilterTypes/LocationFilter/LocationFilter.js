@@ -51,16 +51,14 @@ export default class LocationSearch extends React.Component {
     }
 
     async handleSelect(address) {
-        const { onSuggestionSelect, distance } = this.props;
+        const { onSuggestionSelect } = this.props;
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
         const addressComponents = results[0].address_components;
         var state = '';
-        if(distance < 0){
-            for(const val of addressComponents){
-                if (val.types.includes("administrative_area_level_1")){
-                    state = val.short_name
-                }
+        for(const val of addressComponents){
+            if (val.types.includes("administrative_area_level_1")){
+                state = val.short_name
             }
         }
         onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, state);

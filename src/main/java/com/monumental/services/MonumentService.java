@@ -290,7 +290,7 @@ public class MonumentService extends ModelService<Monument> {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, threshold, sortByRelevance));
         }
 
-        if(state != null) {
+        if(state != null && distance < 0) {
             predicates.add(builder.equal(root.get("state"), state));
         } else if (latitude != null && longitude != null && distance != null) {
             predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance, sortByDistance));
