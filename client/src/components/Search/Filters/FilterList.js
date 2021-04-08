@@ -139,12 +139,9 @@ class Filters extends React.Component {
     }
 
     async handleLocationSearchSelect(lat, lon, address, state) {
-        var updatedState = this.state.filterList.location
-        if(!state && updatedState.params.d < 0){
-            updatedState.badLocationState = true; 
-        }else{
-            updatedState.badLocationState = false; 
-        }
+        var updatedState = this.state.filterList.location;
+        (!state && updatedState.params.d < 0) ? updatedState.badLocationState = true :
+            updatedState.badLocationState = false;
         updatedState.params = { ...updatedState.params, lat: lat, lon: lon, address: address, state: state }
         this.setState({
             ...this.state,
