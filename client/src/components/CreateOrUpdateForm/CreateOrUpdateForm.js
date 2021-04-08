@@ -1886,7 +1886,7 @@ export default class CreateOrUpdateForm extends React.Component {
                         <Form.Label>{monument ? 'Add More Images:' : 'Images:'}</Form.Label>
                         <ImageUploader
                             withIcon={false}
-                            imgExtension={['.jpg', '.png']}
+                            imgExtension={['.jpg', '.png', 'JPG', 'PNG', 'jpeg', 'JPEG']}
                             maxFileSize={5000000}
                             label=""
                             fileSizeError="- File is too large. The maximum file size is 5MB"

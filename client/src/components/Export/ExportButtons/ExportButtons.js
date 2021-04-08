@@ -26,7 +26,7 @@ export default class ExportButtons extends React.Component {
             <span>
                 <span>
                     <ExportToCsvButton className="mt-2" fields={csvExportFields}
-                                       data={buildBulkExportData(monuments, csvExportFields, false)}
+                                       data={buildBulkExportData(monuments, csvExportFields, true)}
                                        exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`} />
                 </span>
                 <span style={{marginLeft: '5px'}}>
@@ -36,7 +36,7 @@ export default class ExportButtons extends React.Component {
                 </span>
                 <span style={{marginLeft: '5px'}}>
                     <ExportToZipButton className="mt-2" fields={csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions'])}
-                                       data={buildBulkExportData(monuments, csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions']), false)}
+                                       data={buildBulkExportData(monuments, csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions']), true)}
                                        exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}
                                        images={finalImages} />
                 </span>
