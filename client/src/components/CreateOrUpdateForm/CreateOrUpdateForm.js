@@ -55,6 +55,7 @@ export default class CreateOrUpdateForm extends React.Component {
                 isValid: true,
                 message: ''
             },
+            country: '',
             latitude: {
                 value: '',
                 isValid: true,
@@ -391,7 +392,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const min = parseFloat(values[1]);
         const sec = parseFloat(values[2]);
 
-        //decimal = degrees + (minutes/60) + (seconds/3600)
+        /* decimal = degrees + (minutes/60) + (seconds/3600) */
         let decimal = Math.abs(degree) + (min/60) + (sec/3600);
         if ((coordinate.value.includes('W'))||(coordinate.value.includes('w'))
             ||(coordinate.value.includes('S'))||(coordinate.value.includes('s'))
@@ -471,12 +472,19 @@ export default class CreateOrUpdateForm extends React.Component {
             formIsValid = false;
         }
 
+        /* US and territories, '' if Google Maps goes down */
+        const valid_countries = ['US', 'PR', 'VI', 'AS', 'GU', 'MP', '']
+
         /* Address or Coordinates Validation */
         /* An Address OR Coordinates must be specified */
         if (locationType.value === 'address') {
             if (validator.isEmpty(address.value)) {
                 address.isValid = false;
                 address.message = 'Address must be selected from the dropdown';
+                formIsValid = false;
+            } else if (!valid_countries.includes(this.state.country)) {
+                address.isValid = false;
+                address.message = 'Address is not in the United States';
                 formIsValid = false;
             }
         } else if (locationType.value === 'coordinates') {
@@ -498,15 +506,10 @@ export default class CreateOrUpdateForm extends React.Component {
                 latitude.isValid = false;
                 latitude.message = 'Latitude must be valid';
                 formIsValid = false;
-            } else {
-                const latAsDouble = parseFloat(latitude.value);
-                // Alaska is the furthest north location and its latitude is approximately 71
-                // The American Samoa is the furthest south location and its latitude is approximately -14
-                if (latAsDouble > 72 || latAsDouble < -15) {
-                    latitude.isValid = false;
-                    latitude.message = 'Latitude is not near the United States';
-                    formIsValid = false;
-                }
+            } else if (!valid_countries.includes(this.state.country)) {
+                latitude.isValid = false;
+                latitude.message = 'Latitude is not in the United States';
+                formIsValid = false;
             }
 
             if (longitude.value.includes('°')) {
@@ -527,15 +530,10 @@ export default class CreateOrUpdateForm extends React.Component {
                 longitude.isValid = false;
                 longitude.message = 'Longitude must be valid';
                 formIsValid = false;
-            } else {
-                const lonAsDouble = parseFloat(longitude.value);
-                // Guam is the furthest west location and its longitude is approximately 144
-                // Puerto Rico is the furthest east location and its longitude is approximately -65
-                if (lonAsDouble > -64 && !(lonAsDouble < 180 && lonAsDouble > 143)) {
-                    longitude.isValid = false;
-                    longitude.message = 'Longitude is not near the United States';
-                    formIsValid = false;
-                }
+            } else if (!valid_countries.includes(this.state.country)) {
+                longitude.isValid = false;
+                longitude.message = 'Longitude is not in the United States';
+                formIsValid = false;
             }
         } else {
             locationType.isValid = false;
@@ -945,10 +943,15 @@ export default class CreateOrUpdateForm extends React.Component {
     async reverseGeocode() {
         const { latitude, longitude, previousCoordinates } = this.state;
         let coordinates = {};
-        if (longitude.value.includes('°')) {
-            coordinates = {lat: parseFloat(this.convertCoordinate(latitude)), lng: parseFloat(this.convertCoordinate(longitude))};
+        if (latitude.value.includes('°')) {
+            coordinates.lat = parseFloat(this.convertCoordinate(latitude));
         } else {
-            coordinates = {lat: parseFloat(latitude.value), lng: parseFloat(longitude.value)};
+            coordinates.lat = parseFloat(latitude.value);
+        }
+        if (longitude.value.includes('°')) {
+            coordinates.lng = parseFloat(this.convertCoordinate(longitude));
+        } else {
+            coordinates.lng = parseFloat(longitude.value);
         }
         // Avoid doing duplicate requests
         if (previousCoordinates && coordinates.lat === previousCoordinates.lat && coordinates.lng === previousCoordinates.lng) {
@@ -1011,7 +1014,7 @@ export default class CreateOrUpdateForm extends React.Component {
             state = undefined;
         }
         address = result ? result.formatted_address : '';
-        this.setState({city, state, address: {...this.state.address, value: address}});
+        this.setState({city, state, address: {...this.state.address, value: address}, country: country});
     }
 
     handleAdvancedInformationClick() {
