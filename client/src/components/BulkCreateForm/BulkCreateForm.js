@@ -108,7 +108,6 @@ export default class BulkCreateForm extends React.Component {
         else if (validator.matches(event.target.value, zipFileRegex)) {
             fileUpload.zip = event.target.files[0];
             let content = await JSZip.loadAsync(fileUpload.zip);
-
             for (let fileName in content.files) {
                 if (!content.files.hasOwnProperty(fileName) || fileName.startsWith('__MACOSX')) continue;
                 if (fileName.endsWith('.csv')) {
@@ -136,7 +135,8 @@ export default class BulkCreateForm extends React.Component {
                 const image = fileUpload.images[i]
                 if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')) {
                     if (image.name.endsWith('/')) {
-                        fileUpload.errorMessages.push('Files must be zipped directly. Do not include folders in your zip file.');
+                        continue
+                        // fileUpload.errorMessages.push('Files must be zipped directly. Do not include folders in your zip file.');
                     } else {
                         fileUpload.errorMessages.push('Your zip file contains unsupported file types. Only .csv, .jpg, and' +
                             ' .png files are supported. Unsupported file: "' + image.name + '"');
