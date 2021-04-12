@@ -59,6 +59,7 @@ public class BulkCreateMonumentRequest {
         if (this.getZip() != null) {
             result.zipFile = ZipFileHelper.convertMultipartFileToZipFile(this.getZip());
             result.csvContents = monumentService.readCSVFromZip(result.zipFile);
+            result.csvFileName = this.getZip().getOriginalFilename();
         } else {
             result.csvContents = monumentService.readCSV(this.getCsv());
         }
