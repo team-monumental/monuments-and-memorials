@@ -266,7 +266,7 @@ public class MonumentService extends ModelService<Monument> {
         }
 
         if (hideTemporary) {
-            predicates.add(builder.equal(root.get("isTemporary"), builder.literal(false)));
+            predicates.add(builder.or(builder.isFalse(root.get("isTemporary")), builder.isNull(root.get("isTemporary"))));
         }
         boolean sortByRelevance = false;
         boolean sortByDistance = false;
@@ -306,7 +306,7 @@ public class MonumentService extends ModelService<Monument> {
             predicates.add(this.buildDateRangeQuery(builder, root, start, end));
         } else if (decade != null) {
             predicates.add(this.buildDecadeQuery(builder, root, decade));
-        } else if (activeStart != null && activeEnd != null) {
+        } else if (activeEnd != null) {
             predicates.add(this.buildActiveDateRangeQuery(builder, root, activeStart, activeEnd));
         }
 
@@ -674,16 +674,29 @@ public class MonumentService extends ModelService<Monument> {
 
     @SuppressWarnings("unchecked")
     private Predicate buildDecadeQuery(CriteriaBuilder builder, Root root, Integer decade) {
-        Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
-        Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
-        return builder.between(root.get("date"), start, end);
+        if (decade > 0) {
+            Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
+            Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
+            return builder.between(root.get("date"), start, end);
+        }
+        else {
+            Date end = new GregorianCalendar(1860, Calendar.JANUARY, 31 ).getTime();
+            return builder.lessThan(root.get("date"), end);
+        }
     }
 
     @SuppressWarnings("unchecked")
     private Predicate buildActiveDateRangeQuery(CriteriaBuilder builder, Root root, Integer start, Integer end) {
-        Date dStart = new GregorianCalendar(start, Calendar.JANUARY, 1).getTime();
         Date dEnd = new GregorianCalendar(end + 9, Calendar.DECEMBER, 31).getTime();
-        return builder.between(root.get("date"), dStart, dEnd);
+        Predicate endQuery = builder.lessThanOrEqualTo(root.get("date"), dEnd);
+        if (start != null){
+            Date dStart = new GregorianCalendar(start, Calendar.JANUARY, 1).getTime();
+            return builder.and(builder.or(builder.isNull(root.get("deactivatedDate")),
+                    builder.greaterThanOrEqualTo(root.get("deactivatedDate"), dStart)), endQuery);
+        }
+        else {
+            return endQuery;
+        }
     }
     /**
      * Gathers the various statistics related to Monuments for the About Page

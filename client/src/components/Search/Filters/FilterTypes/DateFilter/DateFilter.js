@@ -21,10 +21,8 @@ export default class DateFilter extends React.Component {
                 end: data.params.end || null,
                 activeStart: data.params.activeStart || null,
                 activeEnd: data.params.activeEnd || null,
-                hideTemporary: data.params.hideTemporary || false
             },
             sliderValues: [1870, 1960],
-            //filterMode: data.config.filterMode || Mode.NONE,
             dateFilterStart: new Date(),
             dateFilterEnd: new Date(),
             filterList: []
@@ -89,17 +87,27 @@ export default class DateFilter extends React.Component {
     }
 
     async handleSliderSearch(value){
-        await this.handleFilterChange('activeStart', value[0] )
-        this.handleFilterChange('activeEnd', value[1])
+        const updatedState = {};
+        const {onChange} = this.props;
+        if(value[0] !== 1870) updatedState.activeStart = value[0];
+        updatedState.activeEnd = value[1];
+        await this.setState({
+            params:{
+                ...this.state.params,
+                ...updatedState
+            }
+        });
+        onChange(this.state.params);
     }
 
-    async handleTempChange(value){
-        if (value !== this.state.params.hideTemporary) await this.handleFilterChange('hideTemporary', value);
+    handleTempChange(value){
+        const { hideTemporary, onTempChange } = this.props
+        if (value !== hideTemporary) onTempChange(value);
     }
     onSliderChange = (value) =>{
         this.setState({sliderValues: value})
       };
-    onSliderSerach = value => {
+    onSliderSearch = value => {
         this.handleSliderSearch(value);
     };
 
@@ -134,7 +142,6 @@ export default class DateFilter extends React.Component {
     }
 
     makeDecadeFilter() {
-        const { decades } = this.props;
         const { params } = this.state;
         const decade = params.decade
         return (
@@ -142,7 +149,7 @@ export default class DateFilter extends React.Component {
                 <span className="mr-2">Monuments or memorials created in the</span>
                 <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter(Mode.DECADE, event.target.value)} value={decade}>
                     <option value="null">None</option>
-                    <option value="1850">1850s</option>
+                    <option value="-1">1850s or Earlier</option>
                     <option value="1860">1860s</option>
                     <option value="1870">1870s</option>
                     <option value="1880">1880s</option>
@@ -181,15 +188,14 @@ export default class DateFilter extends React.Component {
                     <Range allowCross={false} min={1870} max={2020} step={10} value={this.state.sliderValues} marks={marks}
                         handle={SliderHandle}
                         dotStyle={{ height: '12px', width: '12px', top: '-4px'}}
-                        onChange={this.onSliderChange} onAfterChange={this.onSliderSerach} />
+                        onChange={this.onSliderChange} onAfterChange={this.onSliderSearch} />
                 </div>
             </div>
         )
     }
 
     render() {
-        const { filterMode } = this.props;
-        const { hideTemporary } = this.state.params;
+        const { filterMode, hideTemporary } = this.props;
         let dateFilter = null;
         switch (filterMode){
             case Mode.RANGE: 
@@ -228,7 +234,7 @@ export default class DateFilter extends React.Component {
                 <div className="temp-monuments-toggle">
                     <div className="temp-monuments-label">
                         Show Temporary Monuments?
-                        <img className={!hideTemporary? 'temp-img' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
+                        <img className={!hideTemporary? 'monument-pin' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
                     </div>
                     <ButtonGroup>
                         <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm" active={!hideTemporary}
