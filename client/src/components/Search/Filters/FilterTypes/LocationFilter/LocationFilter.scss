@@ -85,3 +85,13 @@
     }
 
 }
+
+.bad-location{
+    color: $danger;
+    align-items: center;
+    display: flex;
+    float: left;
+    p{
+        margin: auto;
+    }
+}
