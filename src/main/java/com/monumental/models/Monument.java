@@ -151,7 +151,7 @@ public class Monument extends Model implements Serializable {
             return null;
         }
 
-        return Double.parseDouble(String.format("%.6g%n", this.coordinates.getY()));
+        return this.coordinates.getY();
     }
 
     public Double getLon() {
@@ -159,7 +159,7 @@ public class Monument extends Model implements Serializable {
             return null;
         }
 
-        return Double.parseDouble(String.format("%.6g%n", this.coordinates.getX()));
+        return this.coordinates.getX();
     }
 
     public String getCity() {
