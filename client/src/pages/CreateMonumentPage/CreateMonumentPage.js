@@ -57,7 +57,7 @@ class CreateMonumentPage extends React.Component {
         }
         // Redirects
         if (this.props.user && Role.RESEARCHER_OR_ABOVE.includes(this.props.user.role.toUpperCase())) {
-            if (this.props.createMonumentError === null && this.props.monument.id !== undefined) {
+            if (this.props.createMonumentError === null && this.props.monument.id !== undefined && this.props.monument.title === this.state.form.title) {
                 this.props.history.push(`/monuments/${this.props.monument.id}`);
             }
         }
