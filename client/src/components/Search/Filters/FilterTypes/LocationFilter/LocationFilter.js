@@ -139,7 +139,7 @@ export default class LocationSearch extends React.Component {
                                     onClick={() => this.handleClear()}>clear</i></div>}
                 </div>
                 {distanceFilter}
-                {!badLocationState && 
+                {badLocationState && 
                     <div className="bad-location">
                         <i className="material-icons">error_outline</i>
                         <p className="bad-location">No State Found</p>
