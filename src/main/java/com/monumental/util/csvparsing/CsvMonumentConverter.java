@@ -81,22 +81,26 @@ public class CsvMonumentConverter {
                                     parsedDate = parseDate(value, dateFormatString);
                                 } catch (ParseException e) {
                                     result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                    break;
                                 }
                                 dateForValidate = parsedDate;
                                 if (isDateInFuture(parsedDate)) {
                                     result.getWarnings().add("Date should not be in the future.");
+                                    break;
                                 }
                                 if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
                                     if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
                                             (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
                                             (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
                                         result.getWarnings().add("Created date should not be after un-installed date.");
+                                        break;
                                     }
                                 }
                                 suggestion.setDate(convertDateFormat(value, dateFormatString));
                                 suggestion.setDateFormat(dateFormat);
                             } else {
                                 result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                break;
                             }
                             break;
                         case "deactivatedDate":
@@ -108,22 +112,26 @@ public class CsvMonumentConverter {
                                     parsedDate = parseDate(value, deactivatedDateFormatString);
                                 } catch (ParseException e) {
                                     result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                    break;
                                 }
                                 deactivatedDateForValidate = parsedDate;
                                 if (isDateInFuture(parsedDate)) {
                                     result.getWarnings().add("Un-installed date should not be in the future.");
+                                    break;
                                 }
                                 if (dateForValidate != null && dateForValidate.after(parsedDate)) {
                                     if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
                                             (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
                                             (dateForValidate.getYear() < parsedDate.getYear())) {
                                         result.getWarnings().add("Created date should not be after un-installed date.");
+                                        break;
                                     }
                                 }
                                 suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
                                 suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
                             } else {
                                 result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                break;
                             }
                             break;
                         case "deactivatedComment":
@@ -140,6 +148,7 @@ public class CsvMonumentConverter {
                                 if (value.contains("°")) {
                                     if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
                                         result.getWarnings().add(coordinatesDMSFormatWarning);
+                                        break;
                                     }
                                 } else {
                                     latitude = Double.parseDouble(value);
@@ -148,6 +157,7 @@ public class CsvMonumentConverter {
                                     // The American Samoa is the furthest south location and its latitude is approximately -14
                                     if (latitude > 72 || latitude < -15) {
                                         result.getErrors().add("Latitude is not near the United States");
+                                        break;
                                     }
                                     // If not a valid latitude, set it to null because extremely large values can break everything
                                     if (latitude > 90 || latitude < -90) {
@@ -156,6 +166,7 @@ public class CsvMonumentConverter {
                                 }
                             } catch (NumberFormatException e) {
                                 result.getWarnings().add(latitudeNumberFormatExceptionWarning);
+                                break;
                             } finally {
                                 suggestion.setLatitude(latitude);
                             }
@@ -165,6 +176,7 @@ public class CsvMonumentConverter {
                                 if (value.contains("°")) {
                                     if (!result.getWarnings().contains(coordinatesDMSFormatWarning)) {
                                         result.getWarnings().add(coordinatesDMSFormatWarning);
+                                        break;
                                     }
                                 } else {
                                     longitude = Double.parseDouble(value);
@@ -173,6 +185,7 @@ public class CsvMonumentConverter {
                                     // Puerto Rico is the furthest east location and its longitude is approximately -65
                                     if (longitude > -64 && !(longitude < 180 && longitude > 143)) {
                                         result.getErrors().add("Longitude is not near the United States");
+                                        break;
                                     }
                                     // If not a valid longitude, set it to null because extremely large values can break everything
                                     if (longitude > 180 || longitude < -180) {
@@ -181,6 +194,7 @@ public class CsvMonumentConverter {
                                 }
                             } catch (NumberFormatException e) {
                                 result.getWarnings().add(longitudeNumberFormatExceptionWarning);
+                                break;
                             } finally {
                                 suggestion.setLongitude(longitude);
                             }
@@ -208,7 +222,7 @@ public class CsvMonumentConverter {
                             break;
                         case "images":
                             if (zipFile != null) {
-                                String[] valueArray = value.split(",");
+                                String[] valueArray = value.split(", ");
                                 for (String imageValue : valueArray) {
                                     try {
                                         ZipEntry imageZipEntry = zipFile.getEntry(imageValue);
@@ -271,6 +285,7 @@ public class CsvMonumentConverter {
                             break;
                         case "photoSphereImageCaptions":
                             result.getPhotoSphereImageCaptions().addAll(parseCsvArray(value));
+                            break;
                         default:
                             if (i == 0) {
                                 suggestion.setTitle(value);
@@ -306,6 +321,8 @@ public class CsvMonumentConverter {
     private static String getDateFormat(String value) {
         if (value.toLowerCase().matches("^\\d{1,2}/\\d{1,2}/\\d{4}$")) {
             return "MM/dd/yyyy";
+        } else if (value.toLowerCase().matches("^\\d{1,2}/\\d{1,2}/\\d{2}$")) {
+            return "MM/dd/yy";
         } else if (value.toLowerCase().matches("^\\d{1,2}/\\d{4}$")) {
             return "MM/yyyy";
         } else if (value.toLowerCase().matches("^\\d{1,2}-\\d{1,2}-\\d{4}$")) {
@@ -357,6 +374,7 @@ public class CsvMonumentConverter {
     public static DateFormat stringToDateFormat(String dateFormatString) {
         switch (dateFormatString) {
             case "MM/dd/yyyy":
+            case "MM/dd/yy":
             case "dd-MM-yyyy":
                 return DateFormat.EXACT_DATE;
             case "MM/yyyy":
@@ -387,7 +405,7 @@ public class CsvMonumentConverter {
 
     private static List<String> parseCsvArray(String value, boolean isUrl) {
         // Split on commas in-case there are more than one Tag in the column
-        String[] valueArray = value.split(",");
+        String[] valueArray = value.split(", ");
 
         List<String> names = new ArrayList<>();
 
