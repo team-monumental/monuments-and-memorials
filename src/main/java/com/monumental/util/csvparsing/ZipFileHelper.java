@@ -75,7 +75,7 @@ public class ZipFileHelper {
                 || tempDirectoryPath.endsWith("/") || tempDirectoryPath.endsWith("\\")) {
             pathName += name;
         } else {
-        pathName += "/" + name;
+            pathName += "/" + name;
         }
 
         // In case the application left an unusual state, delete the temp image if it exists

@@ -133,14 +133,9 @@ export default class BulkCreateForm extends React.Component {
 
             for (let i = 0; i < fileUpload.images.length; i++) {
                 const image = fileUpload.images[i]
-                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg')) {
-                    if (image.name.endsWith('/')) {
-                        continue
-                        // fileUpload.errorMessages.push('Files must be zipped directly. Do not include folders in your zip file.');
-                    } else {
-                        fileUpload.errorMessages.push('Your zip file contains unsupported file types. Only .csv, .jpg, and' +
-                            ' .png files are supported. Unsupported file: "' + image.name + '"');
-                    }
+                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg') && !image.name.endsWith('/')) {
+                    fileUpload.errorMessages.push('Your zip file contains unsupported file types. Only .csv, .jpg, and' +
+                        ' .png files are supported. Unsupported file: "' + image.name + '"');
                     fileUpload.csv = null;
                     fileUpload.zip = null;
                     fileUpload.images = [];
