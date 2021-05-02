@@ -309,6 +309,15 @@ export default class BulkCreateForm extends React.Component {
                 <span className="font-weight-bold">Please use our{' '}
                 <a href='/BulkUploadZipTemplate.zip'>Bulk Upload Zip Template</a>!</span>
             </p>
+            <p style={{marginLeft: '16px'}}>
+                <span className='font-weight-bold'>If you need help, check out our{' '}
+                    <a target='_blank' rel='noopener noreferrer'
+                       href='https://docs.google.com/document/d/1ysxUCa0dko4iASpHwnJbVagS8SRz8s0iBZ7TtLETXGs/edit?usp=sharing'>
+                        detailed instructions
+                    </a>
+                    .
+                </span>
+            </p>
             <Form>
                 <Form.Group className="d-flex flex-column align-items-center mb-0">
                     <label htmlFor="file-upload-input" className="file-upload-input-label btn btn-outline-primary mb-0">
