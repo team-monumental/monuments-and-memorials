@@ -151,7 +151,7 @@ public class CsvMonumentConverter {
                                         break;
                                     }
                                 } else {
-                                    latitude = Double.parseDouble(String.format("%.6g%n", value));
+                                    latitude = Double.parseDouble(String.format("%.6f", value));
 
                                     // Alaska is the furthest north location and its latitude is approximately 71
                                     // The American Samoa is the furthest south location and its latitude is approximately -14
@@ -179,7 +179,7 @@ public class CsvMonumentConverter {
                                         break;
                                     }
                                 } else {
-                                    longitude = Double.parseDouble(String.format("%.6g%n", value));
+                                    longitude = Double.parseDouble(String.format("%.6f", value));
 
                                     // Guam is the furthest west location and its longitude is approximately 144
                                     // Puerto Rico is the furthest east location and its longitude is approximately -65
