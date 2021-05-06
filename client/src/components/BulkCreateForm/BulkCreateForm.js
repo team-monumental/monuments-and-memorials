@@ -295,7 +295,7 @@ export default class BulkCreateForm extends React.Component {
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
                 <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
-                Example:  <code>"Limestone,Steel,Bronze"</code>.
+                Example:  <code>"Limestone, Steel, Bronze"</code>.
             </p>
             <Card.Subtitle>
                 Zip Upload
