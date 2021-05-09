@@ -37,6 +37,7 @@ public class CsvMonumentConverter {
      * @param csvRows - List of String Arrays of cells in a CSV
      * @param mapping - The field mapping between the CSV's headers and our fields, provided by the user
      * @param zipFile - The zip file containing the images to be uploaded, or null if a csv was uploaded directly
+     * @param csvFileName - name of csv file
      * @return The conversion results, with any warnings or errors
      */
     public static List<CsvMonumentConverterResult> convertCsvRows(List<String[]> csvRows, Map<String, String> mapping,
@@ -224,6 +225,14 @@ public class CsvMonumentConverter {
                             if (zipFile != null) {
                                 String[] valueArray = value.split(", ");
                                 for (String imageValue : valueArray) {
+                                    Enumeration zipEntries = zipFile.entries();
+                                    while (zipEntries.hasMoreElements()) {
+                                        String fileName = ((ZipEntry) zipEntries.nextElement()).getName();
+                                        if (fileName.contains(imageValue)) {
+                                            imageValue = fileName;
+                                            break;
+                                        }
+                                    }
                                     try {
                                         ZipEntry imageZipEntry = zipFile.getEntry(imageValue);
                                         if (imageZipEntry == null) {
