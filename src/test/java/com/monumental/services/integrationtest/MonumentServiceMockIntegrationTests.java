@@ -338,8 +338,7 @@ public class MonumentServiceMockIntegrationTests {
         assertEquals(2, validationResult.getInvalidResults().size());
 
         CsvMonumentConverterResult validationErrorsRow2 = validationResult.getInvalidResults().get(2);
-        assertEquals(3, validationErrorsRow2.getErrors().size());
-        assertTrue(validationErrorsRow2.getErrors().contains("Address OR Coordinates are required"));
+        assertEquals(4, validationErrorsRow2.getErrors().size());
         assertTrue(validationErrorsRow2.getErrors().contains("Latitude is not near the United States"));
         assertTrue(validationErrorsRow2.getErrors().contains("Longitude is not near the United States"));
 

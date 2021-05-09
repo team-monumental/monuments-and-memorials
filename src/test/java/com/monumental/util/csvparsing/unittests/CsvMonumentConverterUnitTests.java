@@ -540,8 +540,6 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test Title", suggestionResult.getTitle());
         assertEquals("1997-03-12T00:00:00", suggestionResult.getDate());
         assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDateFormat());
-        assertEquals("1997-03-11T00:00:00", suggestionResult.getDeactivatedDate());
-        assertEquals(DateFormat.EXACT_DATE, suggestionResult.getDeactivatedDateFormat());
         assertEquals("Test Inscription", suggestionResult.getInscription());
         assertEquals("Test City", suggestionResult.getCity());
         assertEquals("Test State", suggestionResult.getState());
