@@ -22,19 +22,22 @@ class Filters extends React.Component {
         const qMats = (params.materials) ? params.materials.split(',') : [];
         this.state = {
             filterList: {
-                date: { config: {filterMode: Mode.RANGE}, params: {} },
+                date: { filterMode: Mode.RANGE, params: {} },
                 location: { params: {
                         address: params.address || '',
                         lat: params.lat || '',
                         lon: params.lon || '',
                         d: params.d || '25'
-                    }},
+                    },
+                    badLocationState: false,
+                },
                 hideTemporary: {params: {hideTemporary: params.hideTemporary || false}},
                 tags: { params: {tags: qTags} },
                 materials: {params: {materials: qMats} },
                 q: {params: { q: params.q || ''}},
             },
             showFilters: false,
+            
         };
     }
 
@@ -68,8 +71,8 @@ class Filters extends React.Component {
     async clearFilters() {
         await this.setState(state => {
             const daFilters = {
-                date: { config: {filterMode: Mode.NONE}, params: {} },
-                location: { params: {d: '25', address: ''} },
+                date: { filterMode: Mode.NONE, params: {} },
+                location: { params: {d: '25', address: ''}, badLocationState: false },
                 tags: { params: {tags: []}},
                 materials: { params: {materials: []}},
                 q: {params: {q: ''}},
@@ -102,7 +105,7 @@ class Filters extends React.Component {
     async handleDateChangeMode(mode){
         await this.setState(state => {
             const daFilters = state.filterList;
-            daFilters.date.config = mode;
+            daFilters.date.filterMode = mode;
             return { filterList: daFilters };
         })
     }
@@ -135,24 +138,32 @@ class Filters extends React.Component {
         this.handleSearch()
     }
 
-    async handleLocationSearchSelect(lat, lon, address) {
-        var updatedState = this.state.filterList.location
-        updatedState.params = { lat: lat, lon: lon, address: address, d: '25' }
+    async handleLocationSearchSelect(lat, lon, address, state) {
+        var updatedState = this.state.filterList.location;
+        (!state && updatedState.params.d < 0) ? updatedState.badLocationState = true :
+            updatedState.badLocationState = false;
+        updatedState.params = { ...updatedState.params, lat: lat, lon: lon, address: address, state: state }
         this.setState({
             ...this.state,
             ...updatedState
         })
-        this.handleSearch()
+        if (!updatedState.badLocationState) this.handleSearch()
     }
 
     async handleChangeDistance(value) {
         var updatedState = this.state.filterList.location
         updatedState.params.d = value
+        if( value < 0 &&  updatedState.params.state === ''){
+            updatedState.badLocationState = true;
+        }
+        else updatedState.badLocationState = false;
         this.setState({
             ...this.state,
             ...updatedState
         })
-        this.handleSearch()
+        if(updatedState.params.lat && updatedState.params.lon && !updatedState.badLocationState){
+            this.handleSearch();
+        }
     }
 
     handleTextSearchChange(textSearchQuery) {
@@ -180,13 +191,13 @@ class Filters extends React.Component {
     }
 
     render() {
-        const { showFilters, filterList} = this.state;
+        const { showFilters, filterList } = this.state;
         const expandIcon = showFilters ? "remove" : "add";
         let dateMap = (
             <DateFilter 
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
-                filterMode={filterList.date.config.filterMode}
+                filterMode={filterList.date.filterMode}
                 hideTemporary={filterList.hideTemporary.params.hideTemporary}
                 onTempChange={(value) => this.handleTempChange(value)}
                 changeMode={(mode) => this.handleDateChangeMode(mode)}
@@ -234,7 +245,8 @@ class Filters extends React.Component {
                 <div className="location-row">
                     <LocationSearch value={filterList.location.params.address}
                         distance={filterList.location.params.d}
-                        onSuggestionSelect={(lat, lon, address) => this.handleLocationSearchSelect(lat, lon, address)}
+                        badLocationState={filterList.location.badLocationState}
+                        onSuggestionSelect={(lat, lon, address, state) => this.handleLocationSearchSelect(lat, lon, address, state)}
                         onClear={()=> this.clearLocation()}
                         changeDistance={(distance) => this.handleChangeDistance(distance)}>
                     </LocationSearch>

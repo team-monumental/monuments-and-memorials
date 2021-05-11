@@ -52,11 +52,16 @@ export default class LocationSearch extends React.Component {
 
     async handleSelect(address) {
         const { onSuggestionSelect } = this.props;
-
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
-        onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, results[0]);
-
+        const addressComponents = results[0].address_components;
+        var state = '';
+        for(const val of addressComponents){
+            if (val.types.includes("administrative_area_level_1")){
+                state = val.short_name
+            }
+        }
+        onSuggestionSelect(latLon.lat.toFixed(6), latLon.lng.toFixed(6), address, state);
         this.setState({showDistance: true, address: address, searchQuery: address})
     }
 
@@ -69,7 +74,7 @@ export default class LocationSearch extends React.Component {
 
     render() {
         const { searchQuery, showDistance } = this.state;
-        const { className, placeholder, isInvalid, distance } = this.props;
+        const { className, placeholder, isInvalid, distance, badLocationState } = this.props;
 
         const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div className="autocomplete-container-filter">
@@ -114,6 +119,7 @@ export default class LocationSearch extends React.Component {
                 <option value="50">Within 50 miles</option>
                 <option value="100">Within 100 miles</option>
                 <option value="250">Within 250 miles</option>
+                <option value="-1">By State</option>
             </Form.Control>
         ) : null;
 
@@ -133,6 +139,12 @@ export default class LocationSearch extends React.Component {
                                     onClick={() => this.handleClear()}>clear</i></div>}
                 </div>
                 {distanceFilter}
+                {badLocationState && 
+                    <div className="bad-location">
+                        <i className="material-icons">error_outline</i>
+                        <p className="bad-location">No State Found</p>
+                    </div>
+                }
             </div>
         )
     }
