@@ -1,37 +1,33 @@
-## Welcome to GitHub Pages
+# Monuments and Memorials 
 
-You can use the [editor on GitHub](https://github.com/team-monumental/monuments-and-memorials/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Project Description  
+TBD
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+## The Team
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+**Asha Harris-Battles** - (axb9332@rit.edu)  
+**Sean Coyne** - (stc3245@rit.edu)  
+**Henry Larson** - (hxl1116@rit.edu)  
+**Timothy Miner** - (tdm4018@rit.edu)    
+**Juilee Decker** - Project Sponsor - (jdgsh@rit.edu)  
+**Thiagarajah Arujunan** - Faculty Coach - (txavse@rit.edu)  
 
-```markdown
-Syntax highlighted code block
+## Artifacts  
 
-# Header 1
-## Header 2
-### Header 3
+[Four Ups](https://drive.google.com/drive/u/0/folders/1nMTjdnSO7JyEyW3uU1BIxUilTcM-b5gB)  
+> Weekly reports on completed activities, ongoing activities, risks, and needs from our project sponsor  
 
-- Bulleted
-- List
+[Project Plan](https://drive.google.com/drive/u/0/folders/1KCwbW11gEEBcSAZMJtf-BRIRVP1_-9ma) 
+> Outlines the process methodology that will guide the team through the project  
 
-1. Numbered
-2. List
+[Domain Model](https://drive.google.com/drive/u/0/folders/1tBrH-Ukqzxo8tmMryqi4Fv1o7W6PDz3y)  
+> Highlights the key players and interactions within the project's domain  
 
-**Bold** and _Italic_ and `Code` text
+[Development Process](https://drive.google.com/drive/u/0/folders/1sKv6CaAbJxltbuXHSsWuxF3inR2WpGBb)  
+> Documents the team's development, testing, and source control practices  
 
-[Link](url) and ![Image](src)
-```
+[Time Tracking Document](https://drive.google.com/drive/u/0/folders/1nMTjdnSO7JyEyW3uU1BIxUilTcM-b5gB)  
+> Tracks time spent weekly on the project by team members  
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/team-monumental/monuments-and-memorials/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
