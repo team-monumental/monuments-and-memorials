@@ -6,12 +6,12 @@ TBD
 
 ## The Team
 
-**Asha Harris-Battles** - (axb9332@rit.edu)  
-**Sean Coyne** - (stc3245@rit.edu)  
-**Henry Larson** - (hxl1116@rit.edu)  
-**Timothy Miner** - (tdm4018@rit.edu)    
-**Juilee Decker** - Project Sponsor - (jdgsh@rit.edu)  
-**Thiagarajah Arujunan** - Faculty Coach - (txavse@rit.edu)  
+**Asha Harris-Battles** - [axb9332@rit.edu](mailto:axb9332@rit.edu)  
+**Sean Coyne** - [stc3245@rit.edu](mailto:stc3245@rit.edu)  
+**Henry Larson** - [hxl1116@rit.edu](mailto:hxl1116@rit.edu)  
+**Timothy Miner** - [tdm4018@rit.edu](mailto:tdm4018@rit.edu)  
+**Juilee Decker** - Project Sponsor - [jdgsh@rit.edu](mailto:jdgsh@rit.edu)  
+**Thiagarajah Arujunan** - Faculty Coach - [txavse@rit.edu](mailto:txavse@rit.edu)  
 
 ## Artifacts  
 
