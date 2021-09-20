@@ -26,13 +26,13 @@ This year our team is planning on making enhancements to the site. The first enh
 [Four Ups](https://drive.google.com/drive/u/0/folders/1Sj91SY_0iRdQe53psYC91cC4u3GUfLzX)  
 > Weekly reports on completed activities, ongoing activities, risks, and needs from our project sponsor  
 
-[Project Plan](https://drive.google.com/drive/u/0/folders/1KCwbW11gEEBcSAZMJtf-BRIRVP1_-9ma) 
+[Project Plan](https://drive.google.com/drive/u/0/folders/1PN6OfD8-Ev1F1Gj0LXBuP7F1F_qn3m1G) 
 > Outlines the process methodology that will guide the team through the project  
 
 [Domain Model](https://drive.google.com/drive/u/0/folders/1tBrH-Ukqzxo8tmMryqi4Fv1o7W6PDz3y)  
 > Highlights the key players and interactions within the project's domain  
 
-[Development Process](https://drive.google.com/drive/u/0/folders/1sKv6CaAbJxltbuXHSsWuxF3inR2WpGBb)  
+[Development Process](https://docs.google.com/document/d/12qovN_ixVBfh3acT8MY1_OcAh9v061_kVUnil8zK5AI/edit)  
 > Documents the team's development, testing, and source control practices  
 
 [Time Tracking Document](https://drive.google.com/drive/u/0/folders/1nMTjdnSO7JyEyW3uU1BIxUilTcM-b5gB)  
