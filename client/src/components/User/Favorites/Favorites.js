@@ -18,7 +18,7 @@ export default class Favorites extends React.Component {
                         Your Favorites{favorites && favorites.length ? ` (${favorites.length})` : ''}
                         {favorites && <span className="export-buttons-favorites">
                             <ExportButtons className="mt-2"
-                                           monuments={favorites}
+                                           monuments={favorites.map(a => a.monument)}
                                            title="Favorites"/>
                         </span>}
                     </Card.Title>
