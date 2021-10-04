@@ -32,7 +32,15 @@ export default class About extends React.Component {
         }
 
         let date;
-        if (monument.date) {
+        if (monument.date == null) {
+            date = (
+                <div>
+                    <span className="detail-label">Date:&nbsp;</span>
+                    {String("Unknown")}
+                </div>
+            );
+        }
+        else if (monument.date) {
             date = (
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
