@@ -531,6 +531,7 @@ export default class BulkCreateForm extends React.Component {
                                             <div key={index} dangerouslySetInnerHTML={{__html: warning}} className="bulk-warning" />
                                         ))}</td>
                                         <td>{result.errors.map((error, index) => (
+                                            // TODO: Add tooltip to clarify error
                                             <div key={index} className="bulk-warning">{error}</div>
                                         ))}</td>
                                     </tr>
