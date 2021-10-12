@@ -515,6 +515,12 @@ export default class BulkCreateForm extends React.Component {
 
         results = results.filter(result => result.errors.length > 0 || result.warnings.length > 0);
 
+        /**
+         * Get the tooltip message based on the error/warning message
+         *
+         * @param msg error/warning message
+         * @returns {string} the tooltip message
+         */
         const getTooltip = (msg) => {
             // console.log(msg)
             switch (msg) {
@@ -526,6 +532,18 @@ export default class BulkCreateForm extends React.Component {
             }
         }
 
+        /**
+         * Helper function for composing the tooltip
+         *
+         * @param props OverlayTrigger properties
+         * @returns {JSX.Element} the Tooltip
+         */
+        const renderTooltip = (props) => (
+            <Tooltip id={'error-tooltip'} {...props}>
+                Test tooltip
+            </Tooltip>
+        )
+
         return (<>
             <Card.Body>
                 <div>
@@ -533,6 +551,7 @@ export default class BulkCreateForm extends React.Component {
                     Please review them below. You may fix issues within your {fileString} file and re-upload it here.
                 </div>
                 <div className="validation-table-wrapper mt-4 mb-1">
+                    {/* TODO: Add descriptive result data to table records */}
                     <table className="table validation-table">
                         <thead>
                         <tr>
@@ -542,34 +561,27 @@ export default class BulkCreateForm extends React.Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {
-                            results.map(result => (
-                                <tr key={result.index}>
-                                    <td>{result.index}</td>
-                                    <td>{result.warnings.map((warning, index) => (
-                                        <div key={index} dangerouslySetInnerHTML={{__html: warning}}
-                                             className="bulk-warning"/>
-                                    ))}</td>
-                                    <td>{result.errors.map((error, index) => (
-                                        /**
-                                         * FIXME: Tooltip activation blows up the webpage,
-                                         *  possibly due to mounting within a mapping function
-                                         */
-                                        <div key={index} className="bulk-warning">
-                                            {error}
-                                            {/*<OverlayTrigger placement="right" overlay={props => (*/}
-                                            {/*    <Tooltip {...props} show={props.show ? 'show' : ''}>*/}
-                                            {/*        {console.log(props)}*/}
-                                            {/*        {getTooltip(error)}*/}
-                                            {/*    </Tooltip>*/}
-                                            {/*)}>*/}
-                                            {/*    <i className="material-icons">help</i>*/}
-                                            {/*</OverlayTrigger>*/}
-                                        </div>
-                                    ))}</td>
-                                </tr>
-                            ))
-                        }
+                        {results.map(result => (
+                            <tr key={result.index}>
+                                <td>{result.index}</td>
+                                <td>{result.warnings.map((warning, index) => (
+                                    <div key={index} dangerouslySetInnerHTML={{__html: warning}}
+                                         className="bulk-warning"/>
+                                ))}</td>
+                                <td>{result.errors.map((error, index) => (
+                                    // FIXME: Tooltip blows up the webpage
+                                    <div key={index} className="bulk-warning">
+                                        {error}
+                                        {/*<OverlayTrigger*/}
+                                        {/*    placement="right"*/}
+                                        {/*    delay={{show: 150, hide: 400}}*/}
+                                        {/*    overlay={renderTooltip}>*/}
+                                        {/*    <i className="material-icons">help</i>*/}
+                                        {/*</OverlayTrigger>*/}
+                                    </div>
+                                ))}</td>
+                            </tr>
+                        ))}
                         </tbody>
                     </table>
                 </div>
