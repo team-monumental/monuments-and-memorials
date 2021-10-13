@@ -578,19 +578,18 @@ export default class BulkCreateForm extends React.Component {
                                         <div key={index} dangerouslySetInnerHTML={{__html: warning}}
                                              className="bulk-warning"/>
                                     ))}</td>
-                                    <td>{result.errors.map((error, index) => (
-                                        // FIXME: Tooltip blows up the webpage
+                                    <td>{result.errors.map((error, index) => (<>
+                                        {/* FIXME: Tooltip blows up the webpage */}
                                         <div key={index} className="bulk-warning">
                                             {error}
-                                            {/*<OverlayTrigger*/}
-                                            {/*    placement="right"*/}
-                                            {/*    delay={{show: 150, hide: 400}}*/}
-                                            {/*    overlay={renderTooltip}>*/}
-                                            {/*    <i className="material-icons">help</i>*/}
-                                            {/*</OverlayTrigger>*/}
-                                            <i className="material-icons">info</i>
                                         </div>
-                                    ))}</td>
+                                        {/*<OverlayTrigger*/}
+                                        {/*    placement="right"*/}
+                                        {/*    delay={{show: 150, hide: 400}}*/}
+                                        {/*    overlay={renderTooltip}>*/}
+                                        {/*    <i className="material-icons">help</i>*/}
+                                        {/*</OverlayTrigger>*/}
+                                    </>))}</td>
                                 </tr>
                             )
                         })}
