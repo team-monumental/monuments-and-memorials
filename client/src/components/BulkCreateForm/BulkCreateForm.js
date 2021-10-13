@@ -1,6 +1,6 @@
 import React from 'react';
 import './BulkCreateForm.scss';
-import {Button, Card, Form, OverlayTrigger} from 'react-bootstrap';
+import {Button, Card, Form} from 'react-bootstrap';
 import validator from 'validator';
 import {csvFileRegex, zipFileRegex} from '../../utils/regex-util';
 import * as JSZip from 'jszip';
@@ -521,16 +521,20 @@ export default class BulkCreateForm extends React.Component {
          * @param msg error/warning message
          * @returns {string} the tooltip message
          */
+            // eslint-disable-next-line
         const getTooltip = (msg) => {
-            // console.log(msg)
-            switch (msg) {
-                case 'Address OR Coordinates are required':
-                    return 'Valid coordinate formats are:\n' +
-                        '43.084670, -77.674357\n' +
-                        '43°05\'04.8", -77°40\'27.7"\n' +
-                        '43°05\'04.8"N, 77°40\'27.7"W'
+                // console.log(msg)
+                switch (msg) {
+                    case 'Address OR Coordinates are required':
+                        return 'Valid coordinate formats are:\n' +
+                            '43.084670, -77.674357\n' +
+                            '43°05\'04.8", -77°40\'27.7"\n' +
+                            '43°05\'04.8"N, 77°40\'27.7"W'
+
+                    default:
+                        return ''
+                }
             }
-        }
 
         /**
          * Helper function for composing the tooltip
@@ -538,11 +542,12 @@ export default class BulkCreateForm extends React.Component {
          * @param props OverlayTrigger properties
          * @returns {JSX.Element} the Tooltip
          */
+            // eslint-disable-next-line
         const renderTooltip = (props) => (
-            <Tooltip id={'error-tooltip'} {...props}>
-                Test tooltip
-            </Tooltip>
-        )
+                <Tooltip id={'error-tooltip'} {...props}>
+                    Test tooltip
+                </Tooltip>
+            )
 
         return (<>
             <Card.Body>
@@ -570,10 +575,10 @@ export default class BulkCreateForm extends React.Component {
                             return (
                                 <tr key={result.index}>
                                     <td>{result.index}</td>
-                                    <td>{suggestion.title}</td>
-                                    <td>{suggestion.artist}</td>
-                                    <td>{suggestion.address}</td>
-                                    <td>{suggestion.date.split('T')[0]}</td>
+                                    <td>{suggestion.title || ''}</td>
+                                    <td>{suggestion.artist || ''}</td>
+                                    <td>{suggestion.address || ''}</td>
+                                    <td>{suggestion.date && suggestion.date.split('T')[0] || ''}</td>
                                     <td>{result.warnings.map((warning, index) => (
                                         <div key={index} dangerouslySetInnerHTML={{__html: warning}}
                                              className="bulk-warning"/>
