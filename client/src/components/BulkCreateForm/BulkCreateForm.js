@@ -588,6 +588,7 @@ export default class BulkCreateForm extends React.Component {
                                             {/*    overlay={renderTooltip}>*/}
                                             {/*    <i className="material-icons">help</i>*/}
                                             {/*</OverlayTrigger>*/}
+                                            <i className="material-icons">info</i>
                                         </div>
                                     ))}</td>
                                 </tr>
