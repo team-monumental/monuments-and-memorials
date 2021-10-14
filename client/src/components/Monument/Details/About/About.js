@@ -22,7 +22,15 @@ export default class About extends React.Component {
         }
 
         let artist;
-        if (monument.artist) {
+        if (monument.artist == null) {
+            artist = (
+                <div>
+                    <span className="detail-label">Artist:&nbsp;</span>
+                    {String("Not Provided")}
+                </div>
+            );
+        }
+        else if (monument.artist) {
             artist = (
                 <div>
                     <span className="detail-label">Artist:&nbsp;</span>
@@ -32,7 +40,15 @@ export default class About extends React.Component {
         }
 
         let date;
-        if (monument.date) {
+        if (monument.date == null) {
+            date = (
+                <div>
+                    <span className="detail-label">Date:&nbsp;</span>
+                    {String("Not Provided")}
+                </div>
+            );
+        }
+        else if (monument.date) {
             date = (
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
