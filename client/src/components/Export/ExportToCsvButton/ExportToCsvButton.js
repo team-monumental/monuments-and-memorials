@@ -13,16 +13,21 @@ export const ExportToCsvButton = (props) => {
 
     const handleClick = () => {
         const csv = exportToCsv(fields, data);
-        const encodedUri = encodeURI(csv);
-
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-
         const exportFileName = exportTitle.endsWith('.csv') ? exportTitle : exportTitle + '.csv';
-        link.setAttribute('download', exportFileName);
+        const blob = new Blob([csv]);
 
-        document.body.appendChild(link);
-        link.click();
+        if (navigator.msSaveBlob) { // For Microsoft Edge
+            navigator.msSaveBlob(blob, exportFileName);
+        } else {
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", exportFileName);
+                document.body.appendChild(link);
+                link.click();
+            }
+        }
         rollbar.info(`Exported monuments (${data.length}) to CSV`);
     }
 

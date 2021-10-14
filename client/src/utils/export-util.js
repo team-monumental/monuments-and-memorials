@@ -245,7 +245,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
  * @param data - Array of data representing the rows of the CSV
  */
 export function exportToCsv(fields, data) {
-    return 'data:text/csv;charset=utf-8,' + toCSV(data, {fields});
+    return toCSV(data, {fields});
 }
 
 /**
