@@ -2,7 +2,7 @@ import React from 'react'
 import BulkEditSearchBar from "./BulkEditSearchBar";
 import BulkEditSearchResults from "./BulkEditSearchResults";
 
-const testSearchResults = [
+const placeholderResults = [
     {
         artist: 'John Doe',
         date: '01/01/2021',
@@ -39,7 +39,7 @@ const BulkEditSearchPanel = () => {
     return (
         <div>
             <BulkEditSearchBar/>
-            <BulkEditSearchResults searchResults={testSearchResults}/>
+            <BulkEditSearchResults searchResults={placeholderResults}/>
         </div>
     )
 }

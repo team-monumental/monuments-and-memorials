@@ -1,11 +1,12 @@
 import React from "react";
-import {FormControl, InputGroup} from "react-bootstrap";
+import {Button, FormControl, InputGroup} from "react-bootstrap";
 
+// FIXME: Search button centering is a bit off
 const BulkEditSearchBar = (props) => {
     return (
-        <InputGroup>
+        <InputGroup className="search-bar">
             <FormControl placeholder="Search"/>
-            <InputGroup.Text className="search-bar"/>
+            <Button><i className="material-icons">search</i></Button>
         </InputGroup>
     )
 }

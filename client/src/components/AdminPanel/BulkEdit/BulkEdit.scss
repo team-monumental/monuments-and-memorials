@@ -1,5 +1,53 @@
 .bulk-edit {
-  // TODO: Make classes for search panel components
+  display: flex;
+  justify-content: center;
+
+  .card {
+    margin: 0;
+    justify-self: center;
+
+    .card-header {
+      align-self: center;
+    }
+
+    .search-bar {
+      margin-bottom: 25px;
+    }
+
+    .results-header p {
+      text-align: center;
+    }
+
+    .list-group-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px;
+      //margin-bottom: 15px;
+      //border-radius: 5px;
+
+      p {
+        width: 200px;
+        margin: 0;
+        padding: 0 20px;
+      }
+
+      span {
+        max-width: 26px;
+        justify-content: center;
+      }
+
+      .tags-list {
+        display: flex;
+        flex-direction: row;
+
+        a {
+          margin: 0 5px;
+        }
+      }
+    }
+  }
 }
 
 //.admin .panel .manage-monuments {

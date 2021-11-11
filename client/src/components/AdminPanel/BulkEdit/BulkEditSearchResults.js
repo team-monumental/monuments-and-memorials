@@ -5,7 +5,13 @@ import BulkEditSearchResult from "./BulkEditSearchResult";
 const BulkEditSearchResults = ({searchResults}) => {
     return (
         <div>
-            <ListGroup>
+            <ListGroup as="ol" variant="flush">
+                <ListGroup.Item className="results-header" as="li">
+                    <p>NAME</p>
+                    <p>ARTIST</p>
+                    <p>DATE CREATED</p>
+                    <p>TAGS</p>
+                </ListGroup.Item>
                 {searchResults.map(result => (
                     <BulkEditSearchResult
                         title={result.title}
