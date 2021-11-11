@@ -14,16 +14,7 @@ const BulkEditPanel = (props) => {
                     </Card.Title>
                 </Card.Header>
                 <Card.Body>
-                    <Container>
-                        <Row>
-                            <Col>
-                                <BulkEditSearchPanel/>
-                            </Col>
-                            <Col>
-                                {/* TODO: Queue panel component here */}
-                            </Col>
-                        </Row>
-                    </Container>
+                    <BulkEditSearchPanel/>
                 </Card.Body>
             </Card>
         </div>
