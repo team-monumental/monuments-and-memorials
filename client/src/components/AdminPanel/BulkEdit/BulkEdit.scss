@@ -1,25 +1,29 @@
-.admin .panel .manage-monuments {
-  display: flex;
-  justify-content: center;
-
-  .card-title {
-    padding: 0;
-  }
-
-  .card-header {
-    padding: 2rem 1.25rem 0.75rem 1.25rem;
-  }
-
-  .search-bar {
-    margin-bottom: 1rem;
-  }
-
-  .text-search, .location-search {
-    flex-grow: 2;
-    padding-right: 0.5rem;
-    input {
-      width: 100%;
-    }
-  }
-
+.bulk-edit {
+  // TODO: Make classes for search panel components
 }
+
+//.admin .panel .manage-monuments {
+//  display: flex;
+//  justify-content: center;
+//
+//  .card-title {
+//    padding: 0;
+//  }
+//
+//  .card-header {
+//    padding: 2rem 1.25rem 0.75rem 1.25rem;
+//  }
+//
+//  .search-bar {
+//    width: 75%;
+//  }
+//
+//  .text-search, .location-search {
+//    flex-grow: 2;
+//    padding-right: 0.5rem;
+//
+//    input {
+//      width: 100%;
+//    }
+//  }
+//}

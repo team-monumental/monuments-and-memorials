@@ -1,13 +1,13 @@
 import * as React from 'react';
 import './BulkEdit.scss';
-import { withRouter } from 'react-router-dom';
-import { Button, Card } from "react-bootstrap";
+import {withRouter} from 'react-router-dom';
+import {Button, Card} from "react-bootstrap";
 import SearchPage from "../../../pages/SearchPage/SearchPage";
 
 
 class BulkEdit extends React.Component {
     render() {
-        const { mode, history } = this.props;
+        const {mode, history} = this.props;
 
         return (
             <div className="bulk-edit">
@@ -22,7 +22,8 @@ class BulkEdit extends React.Component {
                     </Card.Header>
                     <Card.Body>
                         {(!mode || mode === 'search') && <>
-                            <SearchPage searchUri="/panel/manage/monuments/search" monumentUri="/panel/manage/monuments/monument"
+                            <SearchPage searchUri="/panel/manage/monuments/search"
+                                        monumentUri="/panel/manage/monuments/monument"
                                         hideMap/>
                         </>}
                     </Card.Body>
