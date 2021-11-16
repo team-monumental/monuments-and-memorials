@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Helmet} from 'react-helmet';
 
 import BulkEditPanel from "../../../components/AdminPanel/BulkEdit/BulkEditPanel";
+import BulkEditUpdateForm from "../../../components/AdminPanel/BulkEdit/BulkEditUpdateFormQueueView/BulkEditUpdateForm";
 
 class BulkEditPage extends React.Component {
     render() {
@@ -12,6 +13,7 @@ class BulkEditPage extends React.Component {
             <Helmet title={`Bulk Edit | Monuments and Memorials`}/>
             {/*<BulkEdit/>*/}
             <BulkEditPanel/>
+            <BulkEditUpdateForm/>
         </>);
     }
 }
