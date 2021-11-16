@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Helmet} from 'react-helmet';
 
 import BulkEditPanel from "../../../components/AdminPanel/BulkEdit/BulkEditPanel";
-import BulkEditUpdateForm from "../../../components/AdminPanel/BulkEdit/BulkEditUpdateFormQueueView/BulkEditUpdateForm";
+import BulkEditUpdateForm from "../../../components/AdminPanel/BulkEdit/Queue/BulkEditUpdateForm";
 
 class BulkEditPage extends React.Component {
     render() {
