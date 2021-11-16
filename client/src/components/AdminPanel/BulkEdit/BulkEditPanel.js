@@ -7,16 +7,27 @@ import './BulkEdit.scss'
 const BulkEditPanel = (props) => {
     return (
         <div className="bulk-edit">
-            <Card>
-                <Card.Header>
-                    <Card.Title>
-                        Bulk Edit Monuments and Memorials
-                    </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                    <BulkEditSearchPanel/>
-                </Card.Body>
-            </Card>
+            <Container>
+                <Row>
+                    <Col>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>
+                                    Bulk Edit Monuments and Memorials
+                                </Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                <BulkEditSearchPanel/>
+                            </Card.Body>
+                        </Card>
+                        {/* TODO: Search panel buttons here */}
+                    </Col>
+                    <Col>
+                        {/* TODO: Queue panel component here */}
+                        {/* TODO: Queue panel buttons here */}
+                    </Col>
+                </Row>
+            </Container>
         </div>
     )
 }
