@@ -11,7 +11,7 @@ const BulkEditSearchResult = ({title, artist, date, tags}) => {
             <p>{artist}</p>
             <p>{date}</p>
             <div className="tags-list">{tags.map(tag => (<Tag name={tag} selectable={false} selectedIcon={null} isMaterial={false}/>))}</div>
-            {/* TODO: Display title, artist, date, and tags */}
+            <span><i className="material-icons">more_horiz</i></span>
         </ListGroup.Item>
     )
 }

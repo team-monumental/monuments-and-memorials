@@ -2,6 +2,8 @@ import React from 'react'
 import BulkEditSearchBar from "./SearchPanelSearchbar";
 import BulkEditSearchResults from "./SearchPanelResults";
 
+import "./Search.scss"
+
 const placeholderResults = [
     {
         artist: 'John Doe',
