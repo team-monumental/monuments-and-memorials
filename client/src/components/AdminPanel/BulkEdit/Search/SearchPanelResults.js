@@ -1,6 +1,6 @@
 import React from 'react';
 import {ListGroup} from "react-bootstrap";
-import BulkEditSearchResult from "./BulkEditSearchResult";
+import BulkEditSearchResult from "./SearchPanelResult";
 
 const BulkEditSearchResults = ({searchResults}) => {
     return (

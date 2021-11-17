@@ -1,6 +1,6 @@
 import React from 'react'
-import BulkEditSearchBar from "./BulkEditSearchBar";
-import BulkEditSearchResults from "./BulkEditSearchResults";
+import BulkEditSearchBar from "./SearchPanelSearchbar";
+import BulkEditSearchResults from "./SearchPanelResults";
 
 const placeholderResults = [
     {
@@ -33,36 +33,6 @@ const placeholderResults = [
         tags: ['fake', 'real', 'yes'],
         title: 'Unknown'
     },
-    // {
-    //     artist: 'John Doe',
-    //     date: '01/01/2021',
-    //     tags: ['fake', 'real', 'yes'],
-    //     title: 'Unknown'
-    // },
-    // {
-    //     artist: 'John Doe',
-    //     date: '01/01/2021',
-    //     tags: ['fake', 'real', 'yes'],
-    //     title: 'Unknown'
-    // },
-    // {
-    //     artist: 'John Doe',
-    //     date: '01/01/2021',
-    //     tags: ['fake', 'real', 'yes'],
-    //     title: 'Unknown'
-    // },
-    // {
-    //     artist: 'John Doe',
-    //     date: '01/01/2021',
-    //     tags: ['fake', 'real', 'yes'],
-    //     title: 'Unknown'
-    // },
-    // {
-    //     artist: 'John Doe',
-    //     date: '01/01/2021',
-    //     tags: ['fake', 'real', 'yes'],
-    //     title: 'Unknown'
-    // }
 ]
 
 const BulkEditSearchPanel = () => {

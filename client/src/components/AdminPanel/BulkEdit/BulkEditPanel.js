@@ -1,8 +1,9 @@
 import React from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
-import BulkEditSearchPanel from "./BulkEditSearchPanel";
+import BulkEditSearchPanel from "./Search/SearchPanel";
 
 import './BulkEdit.scss'
+import SearchPanelButtons from "./Search/SearchPanelButtons";
 
 const BulkEditPanel = (props) => {
     return (
@@ -20,7 +21,7 @@ const BulkEditPanel = (props) => {
                                 <BulkEditSearchPanel/>
                             </Card.Body>
                         </Card>
-                        {/* TODO: Search panel buttons here */}
+                        <SearchPanelButtons/>
                     </Col>
                     <Col>
                         {/* TODO: Queue panel component here */}

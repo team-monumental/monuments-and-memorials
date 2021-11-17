@@ -1,6 +1,6 @@
 import React from 'react'
 import {InputGroup, ListGroup} from "react-bootstrap";
-import Tag from "../../Tags/Tag/Tag";
+import Tag from "../../../Tags/Tag/Tag";
 
 // TODO: Apply CSS classes to format
 const BulkEditSearchResult = ({title, artist, date, tags}) => {
