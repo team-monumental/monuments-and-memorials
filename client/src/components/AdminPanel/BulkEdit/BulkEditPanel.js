@@ -1,9 +1,10 @@
 import React from 'react'
-import {Card, CardGroup, Col, Container, Row} from "react-bootstrap";
-import BulkEditSearchPanel from "./BulkEditSearchPanel";
+import {Card, Col, Container, Row} from "react-bootstrap";
 
 import './BulkEdit.scss'
 import BulkEditUpdateForm from "./Queue/BulkEditUpdateForm";
+import SearchPanelButtons from "./Search/SearchPanelButtons";
+import BulkEditSearchPanel from "./Search/SearchPanel";
 
 const BulkEditPanel = (props) => {
     return (
@@ -21,7 +22,7 @@ const BulkEditPanel = (props) => {
                                 <BulkEditSearchPanel/>
                             </Card.Body>
                         </Card>
-                        {/* TODO: Search panel buttons here */}
+                        <SearchPanelButtons/>
                     </Col>
                     <Col lg={6}>
                         <Card>
