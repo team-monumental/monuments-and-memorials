@@ -4,23 +4,21 @@ import BulkEditSearchResult from "./BulkEditSearchResult";
 
 const BulkEditSearchResults = ({results}) => {
     return (
-        <div>
-            <ListGroup as="ol" variant="flush">
-                <ListGroup.Item className="results-header" as="li">
-                    <p>NAME</p>
-                    <p>ARTIST</p>
-                    <p>DATE CREATED</p>
-                    <p>TAGS</p>
-                </ListGroup.Item>
-                {results.map(result => (
-                    <BulkEditSearchResult
-                        title={result.title}
-                        artist={result.artist}
-                        date={result.date}
-                        tags={result.tags}/>
-                ))}
-            </ListGroup>
-        </div>
+        <ListGroup as="ol" variant="flush">
+            <ListGroup.Item className="results-header" as="li">
+                <p>NAME</p>
+                <p>ARTIST</p>
+                <p>DATE CREATED</p>
+                <p>TAGS</p>
+            </ListGroup.Item>
+            {results.map(result => (
+                <BulkEditSearchResult
+                    title={result.title}
+                    artist={result.artist}
+                    date={result.date}
+                    tags={result.tags}/>
+            ))}
+        </ListGroup>
     )
 }
 

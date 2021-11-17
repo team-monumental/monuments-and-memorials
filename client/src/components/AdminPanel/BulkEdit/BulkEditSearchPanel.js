@@ -4,10 +4,10 @@ import BulkEditSearchResults from "./BulkEditSearchResults";
 
 const BulkEditSearchPanel = ({results, handleSearch}) => {
     return (
-        <div>
+        <>
             <BulkEditSearchBar handleSearch={handleSearch}/>
             <BulkEditSearchResults results={results}/>
-        </div>
+        </>
     )
 }
 
