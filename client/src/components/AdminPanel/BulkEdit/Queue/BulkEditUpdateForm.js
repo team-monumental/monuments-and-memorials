@@ -1,22 +1,22 @@
 import React from 'react';
 import './BulkEditUpdateForm.scss';
-import { Form, Button, ButtonToolbar, Collapse, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap';
+import {Button, ButtonGroup, ButtonToolbar, Collapse, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {
     latitudeDecRegex,
-    longitudeDecRegex,
     latitudeDegRegex,
-    longitudeDegRegex,
     latitudeLongDegRegex,
+    longitudeDecRegex,
+    longitudeDegRegex,
     longitudeLongDegRegex,
     validateUrl
 } from '../../../../utils/regex-util';
-import { DateFormat } from '../../../../utils/string-util';
+import {DateFormat} from '../../../../utils/string-util';
 import ImageUploader from 'react-images-upload';
 import TagsSearch from '../../../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
-import { isEmptyObject } from '../../../../utils/object-util';
+import {isEmptyObject} from '../../../../utils/object-util';
 import LocationSearch from '../../../Header/SearchBar/LocationSearch/LocationSearch';
 import PhotoSphereImages from '../../../CreateOrUpdateForm/PhotoSphereImages/PhotoSphereImages';
 
@@ -26,7 +26,6 @@ import PhotoSphereImages from '../../../CreateOrUpdateForm/PhotoSphereImages/Pho
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
  */
 export default class BulkEditUpdateForm extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -115,7 +114,7 @@ export default class BulkEditUpdateForm extends React.Component {
             photoSphereImages: [],
             photoSphereImageReferenceUrls: [],
             photoSphereImageCaptions: [],
-            imagesForUpdate:[],
+            imagesForUpdate: [],
             imageReferenceUrlsForUpdate: {},
             imageCaptionsForUpdate: {},
             photoSphereImagesForUpdate: [],
@@ -153,10 +152,14 @@ export default class BulkEditUpdateForm extends React.Component {
      * @param clearValues - If true, also clears the values inside the inputs
      */
     clearForm(clearValues) {
-        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
-            artist, description, inscription, references, isTemporary } = this.state;
-        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, images, imageCaptions, imageReferenceUrls,
-            imageUploaderKey, materials, newMaterials, tags, newTags } = this.state;
+        const {
+            title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            artist, description, inscription, references, isTemporary
+        } = this.state;
+        let {
+            datePickerCurrentDate, deactivatedDatePickerCurrentDate, images, imageCaptions, imageReferenceUrls,
+            imageUploaderKey, materials, newMaterials, tags, newTags
+        } = this.state;
 
         title.isValid = true;
         title.message = '';
@@ -239,24 +242,30 @@ export default class BulkEditUpdateForm extends React.Component {
             isTemporary.value = false;
         }
 
-        this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
+        this.setState({
+            title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
             deactivatedComment, artist, description, inscription, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, references, images, imageReferenceUrls, imageCaptions, imageUploaderKey,
-            materials, newMaterials, tags, newTags, isTemporary});
+            materials, newMaterials, tags, newTags, isTemporary
+        });
     }
 
     /**
      * Sets the values of Form fields to be the values of the Monument that is being updated
      */
     setFormFieldValuesForUpdate() {
-        const { monument } = this.props;
-        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
-            artist, description, inscription, materials, locationType } = this.state;
-        let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
+        const {monument} = this.props;
+        const {
+            title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
+            artist, description, inscription, materials, locationType
+        } = this.state;
+        let {
+            datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
             references, tags, imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate,
             photoSphereImagesForUpdate, photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate,
             images, imageReferenceUrls, imageCaptions, photoSphereImages, photoSphereImageReferenceUrls,
-            photoSphereImageCaptions, imageUploaderKey, city, state, isTemporary } = this.state;
+            photoSphereImageCaptions, imageUploaderKey, city, state, isTemporary
+        } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
 
@@ -332,8 +341,7 @@ export default class BulkEditUpdateForm extends React.Component {
 
                 if (monumentTag.tag.isMaterial) {
                     associatedMaterials.push(monumentTag.tag);
-                }
-                else {
+                } else {
                     associatedTags.push(monumentTag.tag);
                 }
             }
@@ -361,12 +369,12 @@ export default class BulkEditUpdateForm extends React.Component {
                 image.hasBeenDeleted = false;
                 if (image.isPhotoSphere) {
                     photoSphereImagesForUpdate.push(image);
-                    photoSphereImageReferenceUrlsForUpdate[image.id] = { value: image.referenceUrl, isValid: true };
-                    photoSphereImageCaptionsForUpdate[image.id] = { value: image.caption, isValid: true };
+                    photoSphereImageReferenceUrlsForUpdate[image.id] = {value: image.referenceUrl, isValid: true};
+                    photoSphereImageCaptionsForUpdate[image.id] = {value: image.caption, isValid: true};
                 } else {
                     imagesForUpdate.push(image);
-                    imageReferenceUrlsForUpdate[image.id] = { value: image.referenceUrl, isValid: true };
-                    imageCaptionsForUpdate[image.id] = { value: image.caption, isValid: true };
+                    imageReferenceUrlsForUpdate[image.id] = {value: image.referenceUrl, isValid: true};
+                    imageCaptionsForUpdate[image.id] = {value: image.caption, isValid: true};
                 }
             }
         }
@@ -379,35 +387,37 @@ export default class BulkEditUpdateForm extends React.Component {
         photoSphereImageCaptions = [];
         imageUploaderKey++;
 
-        this.setState({ title, address, latitude, longitude, artist, description, inscription, year, month,
+        this.setState({
+            title, address, latitude, longitude, artist, description, inscription, year, month,
             datePickerCurrentDate, dateSelectValue, deactivatedYear, deactivatedMonth, deactivatedDatePickerCurrentDate,
             deactivatedDateSelectValue, deactivatedComment, references, materials, tags, imagesForUpdate,
             imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImagesForUpdate,
             photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate, images, imageReferenceUrls,
             imageCaptions, photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions, imageUploaderKey,
-            locationType, city, state, isTemporary });
+            locationType, city, state, isTemporary
+        });
     }
 
-    convertCoordinate(coordinate){
+    convertCoordinate(coordinate) {
         const values = coordinate.value.split(/[°'"]/g);
         let decimal = 0;
         let degree = 0;
 
-        if(validator.matches(coordinate.value, latitudeDegRegex) || validator.matches(coordinate.value, longitudeDegRegex)){
+        if (validator.matches(coordinate.value, latitudeDegRegex) || validator.matches(coordinate.value, longitudeDegRegex)) {
             degree = parseFloat(values[0]);
             const min = parseFloat(values[1]);
             const sec = parseFloat(values[2]);
 
             /* decimal = degrees + (minutes/60) + (seconds/3600) */
-            decimal = Math.abs(degree) + (min/60) + (sec/3600);
-        }else if (validator.matches(coordinate.value, latitudeLongDegRegex) || validator.matches(coordinate.value, longitudeLongDegRegex)){
+            decimal = Math.abs(degree) + (min / 60) + (sec / 3600);
+        } else if (validator.matches(coordinate.value, latitudeLongDegRegex) || validator.matches(coordinate.value, longitudeLongDegRegex)) {
             const vals = values[0].split(/[NnEeSsWw]/g);
             degree = parseFloat(vals[1]);
-            decimal = Math.abs(degree) + (parseFloat(values[1])/60);
+            decimal = Math.abs(degree) + (parseFloat(values[1]) / 60);
         }
-        if ((coordinate.value.includes('W'))||(coordinate.value.includes('w'))
-            ||(coordinate.value.includes('S'))||(coordinate.value.includes('s'))
-            ||(degree<0)) {
+        if ((coordinate.value.includes('W')) || (coordinate.value.includes('w'))
+            || (coordinate.value.includes('S')) || (coordinate.value.includes('s'))
+            || (degree < 0)) {
             decimal *= -1;
         }
         console.log(decimal);
@@ -431,11 +441,31 @@ export default class BulkEditUpdateForm extends React.Component {
      * @returns {boolean} - True if the Form is valid, False otherwise
      */
     validateForm() {
-        const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
-            references, materials, newMaterials, locationType, datePickerCurrentDate, deactivatedDatePickerCurrentDate,
-            datePickerError, dateSelectValue, deactivatedDateSelectValue, imageReferenceUrls, imageReferenceUrlsForUpdate,
-            photoSphereImageReferenceUrls, photoSphereImageReferenceUrlsForUpdate } = this.state;
-        let { deactivatedDatePickerError } = this.state
+        const {
+            title,
+            address,
+            latitude,
+            longitude,
+            year,
+            month,
+            deactivatedYear,
+            deactivatedMonth,
+            deactivatedComment,
+            references,
+            materials,
+            newMaterials,
+            locationType,
+            datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate,
+            datePickerError,
+            dateSelectValue,
+            deactivatedDateSelectValue,
+            imageReferenceUrls,
+            imageReferenceUrlsForUpdate,
+            photoSphereImageReferenceUrls,
+            photoSphereImageReferenceUrlsForUpdate
+        } = this.state;
+        let {deactivatedDatePickerError} = this.state
         const currentDate = new Date();
         let formIsValid = true;
 
@@ -449,16 +479,16 @@ export default class BulkEditUpdateForm extends React.Component {
                 formIsValid = false
             }
         })
-        for(const prop in imageReferenceUrlsForUpdate) {
-            if(imageReferenceUrlsForUpdate.hasOwnProperty(prop) && imageReferenceUrlsForUpdate[prop].value) {
+        for (const prop in imageReferenceUrlsForUpdate) {
+            if (imageReferenceUrlsForUpdate.hasOwnProperty(prop) && imageReferenceUrlsForUpdate[prop].value) {
                 const referenceUrl = imageReferenceUrlsForUpdate[prop]
                 if (!this.validateReferenceUrl(referenceUrl)) {
                     formIsValid = false
                 }
             }
         }
-        for(const prop in photoSphereImageReferenceUrlsForUpdate) {
-            if(photoSphereImageReferenceUrlsForUpdate.hasOwnProperty(prop) && photoSphereImageReferenceUrlsForUpdate[prop].value) {
+        for (const prop in photoSphereImageReferenceUrlsForUpdate) {
+            if (photoSphereImageReferenceUrlsForUpdate.hasOwnProperty(prop) && photoSphereImageReferenceUrlsForUpdate[prop].value) {
                 const referenceUrl = photoSphereImageReferenceUrlsForUpdate[prop]
                 if (!this.validateReferenceUrl(referenceUrl)) {
                     formIsValid = false
@@ -477,8 +507,7 @@ export default class BulkEditUpdateForm extends React.Component {
         /* Materials Validation */
         /* Materials is a required Form field */
         if ((!materials.materialObjects || !materials.materialObjects.length)
-            && (!newMaterials || !newMaterials.length))
-        {
+            && (!newMaterials || !newMaterials.length)) {
             materials.isValid = false;
             materials.message = 'At least one Material is required';
             formIsValid = false;
@@ -563,13 +592,11 @@ export default class BulkEditUpdateForm extends React.Component {
                 year.isValid = false;
                 year.message = 'Year must be valid';
                 formIsValid = false;
-            }
-            else if (yearInt > currentDate.getFullYear()) {
+            } else if (yearInt > currentDate.getFullYear()) {
                 year.isValid = false;
                 year.message = 'Year must be valid';
                 formIsValid = false;
-            }
-            else {
+            } else {
                 if (yearInt === currentDate.getFullYear()) {
                     if (monthInt > currentDate.getMonth()) {
                         month.isValid = false;
@@ -590,13 +617,11 @@ export default class BulkEditUpdateForm extends React.Component {
                 deactivatedYear.isValid = false;
                 deactivatedYear.message = 'Un-installed year must be valid';
                 formIsValid = false;
-            }
-            else if (deactivatedYearInt > currentDate.getFullYear()) {
+            } else if (deactivatedYearInt > currentDate.getFullYear()) {
                 deactivatedYear.isValid = false;
                 deactivatedYear.message = 'Un-installed year must be valid';
                 formIsValid = false;
-            }
-            else {
+            } else {
                 if (deactivatedYearInt === currentDate.getFullYear()) {
                     if (deactivatedMonthInt > currentDate.getMonth()) {
                         deactivatedMonth.isValid = false;
@@ -657,8 +682,10 @@ export default class BulkEditUpdateForm extends React.Component {
         }
 
         if (!formIsValid) {
-            this.setState({title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
-                references, datePickerError, deactivatedDatePickerError});
+            this.setState({
+                title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth,
+                references, datePickerError, deactivatedDatePickerError
+            });
         }
 
         return formIsValid;
@@ -668,11 +695,13 @@ export default class BulkEditUpdateForm extends React.Component {
      * Build the form object for creating a new CreateMonumentSuggestion
      */
     buildCreateForm() {
-        const { title, address, latitude, longitude, dateSelectValue, deactivatedDateSelectValue, year, month,
+        const {
+            title, address, latitude, longitude, dateSelectValue, deactivatedDateSelectValue, year, month,
             deactivatedYear, deactivatedMonth, artist, description, inscription, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
             photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions, materials, newMaterials, tags,
-            newTags, isTemporary, city, state } = this.state;
+            newTags, isTemporary, city, state
+        } = this.state;
 
         let createForm = {
             title: title.value,
@@ -745,8 +774,8 @@ export default class BulkEditUpdateForm extends React.Component {
 
     remapObjectToValuesOnly(object) {
         const finalObject = {}
-        for(const prop in object) {
-            if(object.hasOwnProperty(prop)) {
+        for (const prop in object) {
+            if (object.hasOwnProperty(prop)) {
                 if (object[prop].value) {
                     finalObject[prop] = object[prop].value;
                 }
@@ -759,14 +788,16 @@ export default class BulkEditUpdateForm extends React.Component {
      * Build the form object for creating an UpdateMonumentSuggestion
      */
     buildUpdateForm() {
-        const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
+        const {
+            title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
             deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
             imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImages,
             photoSphereImageReferenceUrls, photoSphereImageCaptions, photoSphereImagesForUpdate,
             photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate, materials, tags, isTemporary,
-            city, state } = this.state;
-        let { newMaterials, newTags } = this.state;
+            city, state
+        } = this.state;
+        let {newMaterials, newTags} = this.state;
 
         let updateForm = {
             newTitle: title.value,
@@ -843,12 +874,10 @@ export default class BulkEditUpdateForm extends React.Component {
             if (reference.id) {
                 if (reference.deleted === true) {
                     updateForm.deletedReferenceIds.push(reference.id);
-                }
-                else {
+                } else {
                     updateForm.updatedReferenceUrlsById[reference.id] = reference.value;
                 }
-            }
-            else {
+            } else {
                 updateForm.newReferenceUrls.push(reference.value);
             }
         }
@@ -891,7 +920,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     async handleImageInfoChange(event) {
-        const { target: { name } } = event;
+        const {target: {name}} = event;
         const splitName = name.split('-')
         const stateName = splitName[0]
         const id = splitName[1]
@@ -905,12 +934,12 @@ export default class BulkEditUpdateForm extends React.Component {
             }
             currentState[id].value = event.target.value;
             currentState[id].isValid = true;
-            await this.setState({ [stateName]: currentState })
+            await this.setState({[stateName]: currentState})
         }
     }
 
     async handleArrayImageInfoChange(event) {
-        const { target: { name } } = event;
+        const {target: {name}} = event;
         const splitName = name.split('-')
         const stateName = splitName[0]
         const id = splitName[1]
@@ -931,29 +960,29 @@ export default class BulkEditUpdateForm extends React.Component {
             }
             currentState[id].value = event.target.value;
             currentState[id].isValid = true;
-            await this.setState({ [stateName]: currentState })
+            await this.setState({[stateName]: currentState})
         }
     }
 
     async handleInputChange(event) {
-        const { target: { name } } = event;
+        const {target: {name}} = event;
         const currentState = this.state[name];
         currentState.value = event.target.value;
 
         await this.setState({[name]: currentState});
 
         if (name === 'latitude' || name === 'longitude') {
-            const { latitude, longitude } = this.state;
+            const {latitude, longitude} = this.state;
             if (!validator.isEmpty(latitude.value) && !validator.isEmpty(longitude.value) &&
-                (validator.matches(latitude.value, latitudeDecRegex)||validator.matches(latitude.value, latitudeDegRegex) || validator.matches(latitude.value, latitudeLongDegRegex)) &&
-                (validator.matches(longitude.value, longitudeDecRegex)||validator.matches(longitude.value, longitudeDegRegex) || validator.matches(longitude.value, longitudeLongDegRegex))) {
+                (validator.matches(latitude.value, latitudeDecRegex) || validator.matches(latitude.value, latitudeDegRegex) || validator.matches(latitude.value, latitudeLongDegRegex)) &&
+                (validator.matches(longitude.value, longitudeDecRegex) || validator.matches(longitude.value, longitudeDegRegex) || validator.matches(longitude.value, longitudeLongDegRegex))) {
                 this.reverseGeocode();
             }
         }
     }
 
     async reverseGeocode() {
-        const { latitude, longitude, previousCoordinates } = this.state;
+        const {latitude, longitude, previousCoordinates} = this.state;
         let coordinates = {};
         if (latitude.value.includes('°')) {
             coordinates.lat = parseFloat(this.convertCoordinate(latitude));
@@ -970,7 +999,10 @@ export default class BulkEditUpdateForm extends React.Component {
             return;
         }
         const geocoder = new google.maps.Geocoder();
-        const result = await new Promise(resolve => geocoder.geocode({location: coordinates}, (results, status) => resolve({results, status})));
+        const result = await new Promise(resolve => geocoder.geocode({location: coordinates}, (results, status) => resolve({
+            results,
+            status
+        })));
         if (result.status !== 'OK' || !result.results || result.results.length === 0) {
             return;
         }
@@ -1030,7 +1062,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleAdvancedInformationClick() {
-        const { showingAdvancedInformation } = this.state;
+        const {showingAdvancedInformation} = this.state;
 
         this.setState({showingAdvancedInformation: !showingAdvancedInformation});
     }
@@ -1066,7 +1098,7 @@ export default class BulkEditUpdateForm extends React.Component {
             isValid: true,
             message: ''
         };
-        const { references } = this.state;
+        const {references} = this.state;
 
         references.push(newReference);
 
@@ -1074,13 +1106,12 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleReferenceDeleteButtonClick(event, reference, index) {
-        const { references } = this.state;
+        const {references} = this.state;
 
         if (reference.id) {
             const referenceFromState = references.filter(r => r.id === reference.id)[0];
             referenceFromState['deleted'] = true;
-        }
-        else {
+        } else {
             references.splice(index, 1);
         }
 
@@ -1088,16 +1119,16 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleReferenceUndoDeleteButtonClick(event, reference) {
-        const { references } = this.state;
+        const {references} = this.state;
 
         const referenceFromState = references.filter(r => r.id === reference.id)[0];
         referenceFromState['deleted'] = false;
 
-        this.setState({ references });
+        this.setState({references});
     }
 
     async handleImageUploaderChange(files) {
-        const { images, imageReferenceUrls, imageCaptions } = this.state;
+        const {images, imageReferenceUrls, imageCaptions} = this.state;
 
         const newImageReferenceUrls = imageReferenceUrls.slice()
         const newImageCaptions = imageCaptions.slice()
@@ -1115,22 +1146,25 @@ export default class BulkEditUpdateForm extends React.Component {
         }
 
         while (newImageCaptions.length < files.length) {
-            newImageCaptions.push({ value: null, isValid: true })
+            newImageCaptions.push({value: null, isValid: true})
         }
         while (newImageReferenceUrls.length < files.length) {
-            newImageReferenceUrls.push({ value: null, isValid: true })
+            newImageReferenceUrls.push({value: null, isValid: true})
         }
 
-        await this.setState({ images: files, imageReferenceUrls: newImageReferenceUrls, imageCaptions: newImageCaptions });
+        await this.setState({
+            images: files,
+            imageReferenceUrls: newImageReferenceUrls,
+            imageCaptions: newImageCaptions
+        });
     }
 
     handleImageIsPrimaryCheckboxClick(event, image) {
-        const { images, imagesForUpdate } = this.state;
+        const {images, imagesForUpdate} = this.state;
 
         if (image.isPrimary) {
             image.isPrimary = false;
-        }
-        else {
+        } else {
             image.isPrimary = true;
 
             for (const i of images) {
@@ -1150,7 +1184,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleImageForUpdateDeleteButtonClick(event, image) {
-        const { imagesForUpdate } = this.state;
+        const {imagesForUpdate} = this.state;
 
         let imageForUpdateFromState;
         for (const imageForUpdate of imagesForUpdate) {
@@ -1168,7 +1202,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleImageForUpdateUndoDeleteButtonClick(event, image) {
-        const { imagesForUpdate } = this.state;
+        const {imagesForUpdate} = this.state;
 
         let imageForUpdateFromState;
         for (const imageForUpdate of imagesForUpdate) {
@@ -1186,8 +1220,8 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleMaterialSelect(variant, selectedMaterials, createdMaterials) {
-        const { materials } = this.state;
-        let { newMaterials } = this.state;
+        const {materials} = this.state;
+        let {newMaterials} = this.state;
 
         materials.materialObjects = selectedMaterials;
         newMaterials = createdMaterials;
@@ -1199,8 +1233,8 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     handleSubmit(event) {
-        const { monument, onSubmit } = this.props;
-        const { images, photoSphereImages } = this.state;
+        const {monument, onSubmit} = this.props;
+        const {images, photoSphereImages} = this.state;
 
         event.preventDefault();
 
@@ -1209,29 +1243,33 @@ export default class BulkEditUpdateForm extends React.Component {
         if (this.validateForm()) {
             if (!monument) {
                 onSubmit(this.buildCreateForm());
-            }
-            else {
+            } else {
                 onSubmit(monument, this.buildUpdateForm(), images, photoSphereImages);
             }
         }
     }
 
     handleCancelButtonClick() {
-        const { onCancelButtonClick } = this.props;
+        const {onCancelButtonClick} = this.props;
 
         onCancelButtonClick();
     }
 
     handleAddPhotoSphereImage(image) {
-        const { photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions } = this.state;
+        const {photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions} = this.state;
         photoSphereImages.push(image);
-        photoSphereImageReferenceUrls.push({ value: null, isValid: true })
-        photoSphereImageCaptions.push({ value: null, isValid: true })
-        this.setState({ photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions });
+        photoSphereImageReferenceUrls.push({value: null, isValid: true})
+        photoSphereImageCaptions.push({value: null, isValid: true})
+        this.setState({photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions});
     }
 
     handleDeletePhotoSphereImage({image, index}) {
-        const { photoSphereImages, photoSphereImagesForUpdate, photoSphereImageReferenceUrls, photoSphereImageCaptions } = this.state;
+        const {
+            photoSphereImages,
+            photoSphereImagesForUpdate,
+            photoSphereImageReferenceUrls,
+            photoSphereImageCaptions
+        } = this.state;
 
         const newPhotoSphereImageReferenceUrls = photoSphereImageReferenceUrls.slice()
         const newPhotoSphereImageCaptions = photoSphereImageCaptions.slice()
@@ -1240,19 +1278,22 @@ export default class BulkEditUpdateForm extends React.Component {
             photoSphereImagesForUpdate.find(i => {
                 return i.id === image.id;
             }).hasBeenDeleted = true
-        }
-        else {
+        } else {
             photoSphereImages.splice(index, 1);
             newPhotoSphereImageReferenceUrls.splice(index, 1);
             newPhotoSphereImageCaptions.splice(index, 1);
         }
 
-        this.setState({ photoSphereImagesForUpdate, photoSphereImages,
-            photoSphereImageReferenceUrls: newPhotoSphereImageReferenceUrls, photoSphereImageCaptions: newPhotoSphereImageCaptions });
+        this.setState({
+            photoSphereImagesForUpdate,
+            photoSphereImages,
+            photoSphereImageReferenceUrls: newPhotoSphereImageReferenceUrls,
+            photoSphereImageCaptions: newPhotoSphereImageCaptions
+        });
     }
 
     handleRestorePhotoSphereImage(image) {
-        const { photoSphereImagesForUpdate } = this.state;
+        const {photoSphereImagesForUpdate} = this.state;
 
         photoSphereImagesForUpdate.find(i => {
             return i.id === image.id;
@@ -1271,8 +1312,7 @@ export default class BulkEditUpdateForm extends React.Component {
                     X
                 </div>
             );
-        }
-        else {
+        } else {
             return (
                 <i
                     className="material-icons delete-button undo reference"
@@ -1285,7 +1325,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     renderImageIsPrimaryCheckbox(image) {
-        const { monument } = this.props;
+        const {monument} = this.props;
 
         if (monument) {
             let isPrimaryIcon;
@@ -1299,8 +1339,7 @@ export default class BulkEditUpdateForm extends React.Component {
                         check_box
                     </i>
                 );
-            }
-            else {
+            } else {
                 isPrimaryIcon = (
                     <i
                         className="material-icons image-is-primary-checkbox"
@@ -1319,8 +1358,7 @@ export default class BulkEditUpdateForm extends React.Component {
                     {isPrimaryIcon}
                 </div>
             );
-        }
-        else {
+        } else {
             return (
                 <div/>
             );
@@ -1337,8 +1375,7 @@ export default class BulkEditUpdateForm extends React.Component {
                     undo
                 </i>
             );
-        }
-        else {
+        } else {
             return (
                 <div
                     className="delete-button"
@@ -1351,7 +1388,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     renderClearButton() {
-        const { monument } = this.props;
+        const {monument} = this.props;
 
         if (!monument) {
             return (
@@ -1363,8 +1400,7 @@ export default class BulkEditUpdateForm extends React.Component {
                     Clear
                 </Button>
             );
-        }
-        else {
+        } else {
             return (
                 <div/>
             );
@@ -1372,7 +1408,7 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     renderResetButton() {
-        const { monument } = this.props;
+        const {monument} = this.props;
 
         if (monument) {
             return (
@@ -1384,8 +1420,7 @@ export default class BulkEditUpdateForm extends React.Component {
                     Reset
                 </Button>
             );
-        }
-        else {
+        } else {
             return (
                 <div/>
             );
@@ -1393,21 +1428,56 @@ export default class BulkEditUpdateForm extends React.Component {
     }
 
     render() {
-        const { showingAdvancedInformation, dateSelectValue, deactivatedDateSelectValue, datePickerCurrentDate,
-            deactivatedDatePickerCurrentDate, title, address, latitude, longitude, year, deactivatedYear, month,
-            deactivatedMonth, deactivatedComment, artist, description, inscription, references, imageUploaderKey,
-            materials, imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
-            city, state, datePickerError, deactivatedDatePickerError, images, imageReferenceUrls, imageCaptions,
-            photoSphereImageReferenceUrls, photoSphereImageCaptions, imageReferenceUrlsForUpdate, imageCaptionsForUpdate,
-            photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate } = this.state;
-        const { monument, action } = this.props;
+        const {
+            showingAdvancedInformation,
+            dateSelectValue,
+            deactivatedDateSelectValue,
+            datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate,
+            title,
+            address,
+            latitude,
+            longitude,
+            year,
+            deactivatedYear,
+            month,
+            deactivatedMonth,
+            deactivatedComment,
+            artist,
+            description,
+            inscription,
+            references,
+            imageUploaderKey,
+            materials,
+            imagesForUpdate,
+            isTemporary,
+            locationType,
+            photoSphereImagesForUpdate,
+            photoSphereImages,
+            city,
+            state,
+            datePickerError,
+            deactivatedDatePickerError,
+            images,
+            imageReferenceUrls,
+            imageCaptions,
+            photoSphereImageReferenceUrls,
+            photoSphereImageCaptions,
+            imageReferenceUrlsForUpdate,
+            imageCaptionsForUpdate,
+            photoSphereImageReferenceUrlsForUpdate,
+            photoSphereImageCaptionsForUpdate
+        } = this.state;
+        const {monument, action} = this.props;
 
         const advancedInformationLink = (
-            <div className="advanced-information-link more-link" onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
+            <div className="advanced-information-link more-link"
+                 onClick={() => this.handleAdvancedInformationClick()}>Want to tell us more?</div>
         );
 
         const hideAdvancedInformationLink = (
-            <div className="advanced-information-link hide-link" onClick={() => this.handleAdvancedInformationClick()}>Hide More Information</div>
+            <div className="advanced-information-link hide-link"
+                 onClick={() => this.handleAdvancedInformationClick()}>Hide More Information</div>
         );
 
         let dateInput;
@@ -1617,7 +1687,8 @@ export default class BulkEditUpdateForm extends React.Component {
                                     className="text-control-medium"
                                     maxLength="2048"
                                 />
-                                <Form.Control.Feedback type="invalid">{imageReferenceUrlsForUpdate[image.id]?.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback
+                                    type="invalid">{imageReferenceUrlsForUpdate[image.id]?.message}</Form.Control.Feedback>
                                 <Form.Label className="image-field-label">Caption:</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -1629,7 +1700,8 @@ export default class BulkEditUpdateForm extends React.Component {
                                     className="text-control-medium"
                                     maxLength="2048"
                                 />
-                                <Form.Control.Feedback type="invalid">{imageCaptionsForUpdate[image.id]?.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback
+                                    type="invalid">{imageCaptionsForUpdate[image.id]?.message}</Form.Control.Feedback>
                             </div>
                             {this.renderImageIsPrimaryCheckbox(image)}
                         </div>
@@ -1699,7 +1771,8 @@ export default class BulkEditUpdateForm extends React.Component {
                             className="text-control-medium"
                             maxLength="2048"
                         />
-                        <Form.Control.Feedback type="invalid">{photoSphereImageReferenceUrlsForUpdate[image.id]?.message}</Form.Control.Feedback>
+                        <Form.Control.Feedback
+                            type="invalid">{photoSphereImageReferenceUrlsForUpdate[image.id]?.message}</Form.Control.Feedback>
                         <Form.Label className="image-field-label">360° Image {i + 1} Caption:</Form.Label>
                         <Form.Control
                             type="text"
@@ -1711,7 +1784,8 @@ export default class BulkEditUpdateForm extends React.Component {
                             className="text-control-medium"
                             maxLength="2048"
                         />
-                        <Form.Control.Feedback type="invalid">{photoSphereImageCaptionsForUpdate[image.id]?.message}</Form.Control.Feedback>
+                        <Form.Control.Feedback
+                            type="invalid">{photoSphereImageCaptionsForUpdate[image.id]?.message}</Form.Control.Feedback>
                     </div>
                 )
             })
@@ -1720,7 +1794,8 @@ export default class BulkEditUpdateForm extends React.Component {
             photoSphereImages.forEach((image, i) => {
                 photoSphereImageFields.push(
                     <div className="image-fields-container-spaced" key={i}>
-                        <Form.Label className="image-field-label">360° Image {i + photoSphereImagesForUpdate.length + 1} Reference URL:</Form.Label>
+                        <Form.Label className="image-field-label">360°
+                            Image {i + photoSphereImagesForUpdate.length + 1} Reference URL:</Form.Label>
                         <Form.Control
                             type="text"
                             name={`photoSphereImageReferenceUrls-${i}`}
@@ -1731,7 +1806,8 @@ export default class BulkEditUpdateForm extends React.Component {
                             className="text-control-medium"
                             maxLength="2048"
                         />
-                        <Form.Control.Feedback type="invalid">{photoSphereImageReferenceUrls[i]?.message}</Form.Control.Feedback>
+                        <Form.Control.Feedback
+                            type="invalid">{photoSphereImageReferenceUrls[i]?.message}</Form.Control.Feedback>
                         <Form.Label className="image-field-label">360° Image {i + 1} Caption:</Form.Label>
                         <Form.Control
                             type="text"
@@ -1743,7 +1819,8 @@ export default class BulkEditUpdateForm extends React.Component {
                             className="text-control-medium"
                             maxLength="2048"
                         />
-                        <Form.Control.Feedback type="invalid">{photoSphereImageCaptions[i]?.message}</Form.Control.Feedback>
+                        <Form.Control.Feedback
+                            type="invalid">{photoSphereImageCaptions[i]?.message}</Form.Control.Feedback>
                     </div>
                 )
             })
@@ -1780,7 +1857,8 @@ export default class BulkEditUpdateForm extends React.Component {
                                 placement="top"
                                 overlay={props => (
                                     <Tooltip {...props} show={props.show ? 'show' : ''}>
-                                        Temporary monuments or memorials are those that are not built from permanent materials
+                                        Temporary monuments or memorials are those that are not built from permanent
+                                        materials
                                     </Tooltip>
                                 )}>
                                 <i className="material-icons">
@@ -1789,11 +1867,13 @@ export default class BulkEditUpdateForm extends React.Component {
                             </OverlayTrigger>:
                         </Form.Label>
                         <ButtonGroup>
-                            <Button variant={isTemporary.value ? 'primary' : 'outline-primary'} size="sm" active={isTemporary.value}
+                            <Button variant={isTemporary.value ? 'primary' : 'outline-primary'} size="sm"
+                                    active={isTemporary.value}
                                     onClick={() => this.setState({isTemporary: {...isTemporary, value: true}})}>
                                 Yes
                             </Button>
-                            <Button variant={!isTemporary.value ? 'primary' : 'outline-primary'} size="sm" active={!isTemporary.value}
+                            <Button variant={!isTemporary.value ? 'primary' : 'outline-primary'} size="sm"
+                                    active={!isTemporary.value}
                                     onClick={() => this.setState({isTemporary: {...isTemporary, value: false}})}>
                                 No
                             </Button>
@@ -1820,7 +1900,13 @@ export default class BulkEditUpdateForm extends React.Component {
                             <Form.Control as="select"
                                           value={locationType.value}
                                           isInvalid={!locationType.isValid}
-                                          onChange={event => this.setState({locationType: {isValid: true, message: '', value: event.target.value}})}>
+                                          onChange={event => this.setState({
+                                              locationType: {
+                                                  isValid: true,
+                                                  message: '',
+                                                  value: event.target.value
+                                              }
+                                          })}>
                                 <option value="">Select a Location Type</option>
                                 <option value="address">Street Address</option>
                                 <option value="coordinates">Geographic Coordinates</option>
@@ -1836,11 +1922,13 @@ export default class BulkEditUpdateForm extends React.Component {
                                                 isInvalid={!address.isValid}
                                                 className="form-control text-control w-100"
                                                 onSuggestionSelect={this.handleLocationSearchSelect.bind(this)}/>
-                                {!address.isValid && <div className="invalid-feedback d-inline-block">{address.message}</div>}
+                                {!address.isValid &&
+                                <div className="invalid-feedback d-inline-block">{address.message}</div>}
                             </Form.Group>
                             {latitude.value && longitude.value && <div className="coordinates-geocode-group">
                                 <div className="coordinates-geocode-row">
-                                    <span className="coordinates-geocode-row-label">Coordinates:</span> {latitude.value}, {longitude.value}
+                                    <span
+                                        className="coordinates-geocode-row-label">Coordinates:</span> {latitude.value}, {longitude.value}
                                 </div>
                                 <div className="coordinates-geocode-row">
                                     <span className="coordinates-geocode-row-label">City:</span> {city}
@@ -1852,47 +1940,47 @@ export default class BulkEditUpdateForm extends React.Component {
                         </>}
 
                         {locationType.value === 'coordinates' &&
-                            <Form.Group controlId="create-form-coordinates" className="mt-3">
-                                <Form.Label>Coordinates:</Form.Label>
-                                <div className="coordinates-group">
-                                    <div className="coordinate-field">
-                                        <Form.Control
-                                            type="text"
-                                            name="latitude"
-                                            placeholder="Latitude"
-                                            value={latitude.value}
-                                            onChange={(event) => this.handleInputChange(event)}
-                                            isInvalid={!latitude.isValid}
-                                            className="text-control-small"
-                                        />
-                                        <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
-                                    </div>
-                                    <div className="coordinate-field">
-                                        <Form.Control
-                                            type="text"
-                                            name="longitude"
-                                            placeholder="Longitude"
-                                            value={longitude.value}
-                                            onChange={(event) => this.handleInputChange(event)}
-                                            isInvalid={!longitude.isValid}
-                                            className="text-control-small"
-                                        />
-                                        <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
-                                    </div>
+                        <Form.Group controlId="create-form-coordinates" className="mt-3">
+                            <Form.Label>Coordinates:</Form.Label>
+                            <div className="coordinates-group">
+                                <div className="coordinate-field">
+                                    <Form.Control
+                                        type="text"
+                                        name="latitude"
+                                        placeholder="Latitude"
+                                        value={latitude.value}
+                                        onChange={(event) => this.handleInputChange(event)}
+                                        isInvalid={!latitude.isValid}
+                                        className="text-control-small"
+                                    />
+                                    <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
                                 </div>
-                                <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W \nN47°37.298,  W122°20.916`}</Form.Label>
-                                {address.value && <div className="coordinates-geocode-group">
-                                    <div className="coordinates-geocode-row">
-                                        <span className="coordinates-geocode-row-label">Address:</span> {address.value}
-                                    </div>
-                                    <div className="coordinates-geocode-row">
-                                        <span className="coordinates-geocode-row-label">City:</span> {city}
-                                    </div>
-                                    <div className="coordinates-geocode-row">
-                                        <span className="coordinates-geocode-row-label">State:</span> {state}
-                                    </div>
-                                </div>}
-                            </Form.Group>
+                                <div className="coordinate-field">
+                                    <Form.Control
+                                        type="text"
+                                        name="longitude"
+                                        placeholder="Longitude"
+                                        value={longitude.value}
+                                        onChange={(event) => this.handleInputChange(event)}
+                                        isInvalid={!longitude.isValid}
+                                        className="text-control-small"
+                                    />
+                                    <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
+                                </div>
+                            </div>
+                            <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W \nN47°37.298,  W122°20.916`}</Form.Label>
+                            {address.value && <div className="coordinates-geocode-group">
+                                <div className="coordinates-geocode-row">
+                                    <span className="coordinates-geocode-row-label">Address:</span> {address.value}
+                                </div>
+                                <div className="coordinates-geocode-row">
+                                    <span className="coordinates-geocode-row-label">City:</span> {city}
+                                </div>
+                                <div className="coordinates-geocode-row">
+                                    <span className="coordinates-geocode-row-label">State:</span> {state}
+                                </div>
+                            </div>}
+                        </Form.Group>
                         }
                     </div>
 
@@ -1991,7 +2079,8 @@ export default class BulkEditUpdateForm extends React.Component {
                                     isInvalid={!deactivatedComment.isValid}
                                     className="multi-line-text-control"
                                 />
-                                <Form.Control.Feedback type="invalid">{deactivatedComment.message}</Form.Control.Feedback>
+                                <Form.Control.Feedback
+                                    type="invalid">{deactivatedComment.message}</Form.Control.Feedback>
                             </Form.Group>
 
                             {/* Description */}
@@ -2044,7 +2133,9 @@ export default class BulkEditUpdateForm extends React.Component {
                                     {referenceInputs}
                                 </Form.Group>
 
-                                <div className="add-reference-link" onClick={() => this.handleAddAnotherReferenceLinkClick()}>+ Add Another Reference</div>
+                                <div className="add-reference-link"
+                                     onClick={() => this.handleAddAnotherReferenceLinkClick()}>+ Add Another Reference
+                                </div>
                             </div>
                         </div>
                     </Collapse>

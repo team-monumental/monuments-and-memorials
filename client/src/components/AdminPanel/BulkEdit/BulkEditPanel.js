@@ -1,16 +1,16 @@
 import React from 'react'
-import {Card, Col, Container, Row} from "react-bootstrap";
-import BulkEditSearchPanel from "./Search/SearchPanel";
+import {Card, CardGroup, Col, Container, Row} from "react-bootstrap";
+import BulkEditSearchPanel from "./BulkEditSearchPanel";
 
 import './BulkEdit.scss'
-import SearchPanelButtons from "./Search/SearchPanelButtons";
+import BulkEditUpdateForm from "./Queue/BulkEditUpdateForm";
 
 const BulkEditPanel = (props) => {
     return (
         <div className="bulk-edit">
             <Container>
                 <Row>
-                    <Col>
+                    <Col lg={6}>
                         <Card>
                             <Card.Header>
                                 <Card.Title>
@@ -21,10 +21,20 @@ const BulkEditPanel = (props) => {
                                 <BulkEditSearchPanel/>
                             </Card.Body>
                         </Card>
-                        <SearchPanelButtons/>
+                        {/* TODO: Search panel buttons here */}
                     </Col>
-                    <Col>
-                        {/* TODO: Queue panel component here */}
+                    <Col lg={6}>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>
+                                    Editing Queue
+                                </Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                {/* TODO: Will need to create a new component with less bloat */}
+                                <BulkEditUpdateForm/>
+                            </Card.Body>
+                        </Card>
                         {/* TODO: Queue panel buttons here */}
                     </Col>
                 </Row>
