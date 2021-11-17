@@ -2,7 +2,7 @@ import React from 'react';
 import {ListGroup} from "react-bootstrap";
 import BulkEditSearchResult from "./BulkEditSearchResult";
 
-const BulkEditSearchResults = ({searchResults}) => {
+const BulkEditSearchResults = ({results}) => {
     return (
         <div>
             <ListGroup as="ol" variant="flush">
@@ -12,7 +12,7 @@ const BulkEditSearchResults = ({searchResults}) => {
                     <p>DATE CREATED</p>
                     <p>TAGS</p>
                 </ListGroup.Item>
-                {searchResults.map(result => (
+                {results.map(result => (
                     <BulkEditSearchResult
                         title={result.title}
                         artist={result.artist}
