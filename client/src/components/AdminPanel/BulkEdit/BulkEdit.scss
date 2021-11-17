@@ -3,7 +3,6 @@
   justify-content: left;
 
   .card {
-    margin: 0;
     justify-self: center;
 
     .card-header {
@@ -49,29 +48,3 @@
     }
   }
 }
-
-//.admin .panel .manage-monuments {
-//  display: flex;
-//  justify-content: center;
-//
-//  .card-title {
-//    padding: 0;
-//  }
-//
-//  .card-header {
-//    padding: 2rem 1.25rem 0.75rem 1.25rem;
-//  }
-//
-//  .search-bar {
-//    width: 75%;
-//  }
-//
-//  .text-search, .location-search {
-//    flex-grow: 2;
-//    padding-right: 0.5rem;
-//
-//    input {
-//      width: 100%;
-//    }
-//  }
-//}
