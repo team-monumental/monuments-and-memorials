@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 
 import BulkEditUpdateForm from "./Queue/BulkEditUpdateForm";
@@ -12,25 +12,25 @@ const placeholderResults = [
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
@@ -73,11 +73,20 @@ const placeholderResults = [
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
-    const [searchResults, setSearchResults] = useState(placeholderResults)
+    const [searchResults, setSearchResults] = useState([])
+
+    useEffect(() => {
+        handleSearch()
+    }, []);
 
     const handleSearch = () => {
         // TODO: Search with filters and update state
-        setSearchResults([])
+        async function fetchMonuments() {
+            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1");
+            const json = await response.json();
+            setSearchResults(json);
+        }
+        fetchMonuments()
     }
 
     return (

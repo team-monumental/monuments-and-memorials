@@ -20,7 +20,7 @@ const SearchResultList = ({results}) => {
                     title={result.title}
                     artist={result.artist}
                     date={result.date}
-                    tags={result.tags}/>
+                    tags={result.monumentTags.slice(0, 2).map(monumentTag => monumentTag.tag.name)}/>
             ))}
         </ListGroup>
     )
