@@ -14,12 +14,6 @@ const BulkEditSearchBar = ({handleSearch}) => {
                 <i className="material-icons">search</i>
             </Button>
         </Form>
-        // <InputGroup className="search-bar">
-        //     <FormControl placeholder="Search"/>
-        //     <Button className="align-content-center" onClick={handleClick}>
-        //         <i className="material-icons">search</i>
-        //     </Button>
-        // </InputGroup>
     )
 }
 
