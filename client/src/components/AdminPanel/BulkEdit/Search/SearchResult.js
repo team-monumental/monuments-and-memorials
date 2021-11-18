@@ -2,9 +2,10 @@ import React from 'react'
 import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 import Tag from "../../../Tags/Tag/Tag";
 import './Search.scss'
+import SearchResultBtns from "./SearchResultBtns";
 
 // TODO: Apply CSS classes to format
-const BulkEditSearchResult = ({title, artist, date, tags}) => {
+const SearchResult = ({title, artist, date, tags}) => {
     return (
         <ListGroup.Item as="li">
             <Container fluid>
@@ -20,9 +21,8 @@ const BulkEditSearchResult = ({title, artist, date, tags}) => {
                         </div>
                     </Col>
                     <Col lg={2}><span>{date}</span></Col>
-                    <Col lg={true}>
-                        {/* TODO: Convert to 'edit', 'delete', and 'open in new tab' buttons*/}
-                        <span className="result-opts-btn"><i className="material-icons">more_horiz</i></span>
+                    <Col lg={1}>
+                        <SearchResultBtns/>
                     </Col>
                 </Row>
             </Container>
@@ -30,4 +30,4 @@ const BulkEditSearchResult = ({title, artist, date, tags}) => {
     )
 }
 
-export default BulkEditSearchResult
+export default SearchResult

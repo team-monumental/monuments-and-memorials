@@ -7,7 +7,7 @@ const exportOptions = [
     ".ZIP"
 ]
 
-const SearchPanelButtons = (props) => {
+const SearchPanelBtns = (props) => {
     return (
         <ButtonGroup>
             <Dropdown as={ButtonGroup} title="Export Format">
@@ -24,4 +24,4 @@ const SearchPanelButtons = (props) => {
     )
 }
 
-export default SearchPanelButtons
+export default SearchPanelBtns

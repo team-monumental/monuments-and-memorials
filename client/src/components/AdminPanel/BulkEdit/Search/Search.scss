@@ -12,6 +12,7 @@
 
   .list-group {
     padding: 0 5%;
+    overflow-y: auto;
   }
 
   .list-group-item {
@@ -31,7 +32,7 @@
 
       transition: background-color ease-in-out .1s;
 
-      span:last-child {
+      .result-opts {
         visibility: visible;
       }
     }
@@ -50,7 +51,11 @@
       }
     }
 
-    .result-opts-btn {
+    .result-opts {
+      display: flex;
+      flex-direction: row;
+      margin: 0;
+      padding: 0;
       visibility: hidden;
 
       i {

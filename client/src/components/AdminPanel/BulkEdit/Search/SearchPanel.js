@@ -1,14 +1,14 @@
 import React from 'react'
-import BulkEditSearchBar from "./SearchPanelSearchbar";
-import BulkEditSearchResults from "./SearchPanelResults";
+import Searchbar from "./Searchbar";
+import SearchResultList from "./SearchResultList";
 
-const BulkEditSearchPanel = ({results, handleSearch}) => {
+const SearchPanel = ({results, handleSearch}) => {
     return (
         <>
-            <BulkEditSearchBar handleSearch={handleSearch}/>
-            <BulkEditSearchResults results={results}/>
+            <Searchbar handleSearch={handleSearch}/>
+            <SearchResultList results={results}/>
         </>
     )
 }
 
-export default BulkEditSearchPanel
+export default SearchPanel

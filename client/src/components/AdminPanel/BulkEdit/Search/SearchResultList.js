@@ -1,8 +1,8 @@
 import React from 'react';
 import {Col, Container, ListGroup, Row} from "react-bootstrap";
-import BulkEditSearchResult from "./SearchPanelResult";
+import SearchResult from "./SearchResult";
 
-const BulkEditSearchResults = ({results}) => {
+const SearchResultList = ({results}) => {
     return (
         <ListGroup as="ol" variant="flush">
             <ListGroup.Item as="li">
@@ -16,7 +16,7 @@ const BulkEditSearchResults = ({results}) => {
                 </Container>
             </ListGroup.Item>
             {results.map(result => (
-                <BulkEditSearchResult
+                <SearchResult
                     title={result.title}
                     artist={result.artist}
                     date={result.date}
@@ -26,4 +26,4 @@ const BulkEditSearchResults = ({results}) => {
     )
 }
 
-export default BulkEditSearchResults
+export default SearchResultList
