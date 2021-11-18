@@ -21,6 +21,7 @@ const BulkEditSearchResult = ({title, artist, date, tags}) => {
                     </Col>
                     <Col lg={2}><span>{date}</span></Col>
                     <Col lg={true}>
+                        {/* TODO: Convert to 'edit', 'delete', and 'open in new tab' buttons*/}
                         <span className="result-opts-btn"><i className="material-icons">more_horiz</i></span>
                     </Col>
                 </Row>
