@@ -1,48 +1,61 @@
-.list-group-item {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 10px;
-  border: none;
-  border-radius: 3px;
-
-  &:hover{
-    background-color: lightgrey;
-
-    transition: background-color ease-in-out .1s;
-
-    span:last-child {
-      visibility: visible;
-    }
-  }
-
-  p {
-    width: 200px;
-    margin: 0;
-    padding: 0 20px;
-  }
-
-  span:first-child {
-    max-width: 26px;
-    justify-content: center;
-  }
-
-  span:last-child {
-    margin-left: 15px;
-    visibility: hidden;
-
-    i {
-      cursor: pointer;
-    }
-  }
-
-  .tags-list {
+.bulk-edit {
+  .search-bar {
     display: flex;
-    flex-direction: row;
+    justify-content: center;
+    margin: 20px 30px;
 
-    a {
-      margin: 0 5px;
+    input {
+      width: 50%;
+      margin-right: 15px;
+    }
+  }
+
+  .list-group {
+    padding: 0 5%;
+  }
+
+  .list-group-item {
+    padding: 15px 0;
+
+    .row {
+      width: 100%;
+    }
+  }
+
+  .list-group-item:not(:first-child) {
+    border: none;
+    border-radius: 3px;
+
+    &:hover {
+      background-color: lightgrey;
+
+      transition: background-color ease-in-out .1s;
+
+      span:last-child {
+        visibility: visible;
+      }
+    }
+
+    span:first-child {
+      background: none;
+      border: none;
+    }
+
+    .tags-list {
+      display: flex;
+      flex-direction: row;
+
+      a {
+        margin: 0 5px;
+      }
+    }
+
+    .result-opts-btn {
+      visibility: hidden;
+
+      i {
+        cursor: pointer;
+      }
     }
   }
 }

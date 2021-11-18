@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, ButtonGroup, Dropdown, DropdownButton} from "react-bootstrap";
+import {Button, ButtonGroup, Dropdown} from "react-bootstrap";
 
 const exportOptions = [
     ".CSV",

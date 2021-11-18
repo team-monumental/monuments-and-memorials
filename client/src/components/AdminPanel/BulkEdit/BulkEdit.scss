@@ -8,41 +8,10 @@
 
   .card {
     justify-self: center;
+    height: 50vh;
 
     .card-header {
       align-self: center;
-    }
-
-    .search-bar {
-      display: flex;
-      justify-content: center;
-
-      padding: 5%;
-
-      input {
-        width: 50%;
-        margin-right: 25px;
-      }
-    }
-
-    .list-group {
-      padding: 0 5%;
-    }
-
-    .list-group-item:not(:first-child) {
-      span:first-child {
-        background: none;
-        border: none;
-      }
-
-      .tags-list {
-        display: flex;
-        flex-direction: row;
-
-        a {
-          margin: 0 5px;
-        }
-      }
     }
   }
 }
