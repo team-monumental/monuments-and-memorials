@@ -25,31 +25,14 @@
       }
     }
 
-    .results-header p {
-      text-align: center;
-    }
-
     .list-group {
       padding: 0 5%;
     }
 
-    // TODO: Display as grid, setup col spacing to align with headers
-    .list-group-item {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 10px;
-
-      p {
-        width: 200px;
-        margin: 0;
-        padding: 0 20px;
-      }
-
-      span {
-        max-width: 26px;
-        justify-content: center;
+    .list-group-item:not(:first-child) {
+      span:first-child {
+        background: none;
+        border: none;
       }
 
       .tags-list {

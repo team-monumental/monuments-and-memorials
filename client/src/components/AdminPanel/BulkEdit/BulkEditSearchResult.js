@@ -1,17 +1,26 @@
 import React from 'react'
-import {InputGroup, ListGroup} from "react-bootstrap";
+import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 import Tag from "../../Tags/Tag/Tag";
 
 // TODO: Apply CSS classes to format
 const BulkEditSearchResult = ({title, artist, date, tags}) => {
     return (
         <ListGroup.Item as="li">
-            <InputGroup.Checkbox/>
-            <p>{title}</p>
-            <p>{artist}</p>
-            <p>{date}</p>
-            <div className="tags-list">{tags.map(tag => (<Tag name={tag} selectable={false} selectedIcon={null} isMaterial={false}/>))}</div>
-            {/* TODO: Display title, artist, date, and tags */}
+            <Container>
+                <Row>
+                    <Col lg={1}><InputGroup.Checkbox/></Col>
+                    <Col lg={3}><span>{title}</span></Col>
+                    <Col lg={2}><span>{artist}</span></Col>
+                    <Col lg={3}>
+                        <div className="tags-list">
+                            {tags.map(tag => (
+                                <Tag name={tag} selectable={false} selectedIcon={null} isMaterial={false}/>
+                            ))}
+                        </div>
+                    </Col>
+                    <Col lg={2}><span>{date}</span></Col>
+                </Row>
+            </Container>
         </ListGroup.Item>
     )
 }
