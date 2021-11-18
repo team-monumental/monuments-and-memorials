@@ -59,21 +59,23 @@ const placeholderResults = [
     }
 ]
 
-const searchEndpoint = '/api/search/monuments/?cascade=true&d=25&limit=10&page=1'
-
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])
 
-    useEffect(async () => {
-        await handleSearch()
+    useEffect(() => {
+        handleSearch()
     }, []);
 
-    const handleSearch = async () => {
+    const handleSearch = () => {
         // TODO: Search with filters and update state
-        const response = await fetch(window.location.origin + searchEndpoint);
-        const json = await response.json();
-        setSearchResults(json);
+        async function fetchMonuments() {
+            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1");
+            const json = await response.json();
+            setSearchResults(json);
+        }
+
+        fetchMonuments().finally()
     }
 
     return (
