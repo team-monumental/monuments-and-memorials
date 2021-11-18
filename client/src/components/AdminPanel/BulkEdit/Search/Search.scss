@@ -33,8 +33,13 @@
   .list-group-item {
     padding: 15px 0;
 
+    .container-fluid {
+      padding: 0;
+    }
+
     .row {
       width: 100%;
+      margin: 0;
     }
 
     &:not(:first-child) {
@@ -70,8 +75,6 @@
   .result-opts {
     display: flex;
     flex-direction: row;
-    margin: 0;
-    padding: 0;
     visibility: hidden;
 
     i {

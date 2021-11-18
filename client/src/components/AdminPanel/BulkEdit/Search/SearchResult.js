@@ -16,7 +16,7 @@ const SearchResult = ({title, artist, date, tags}) => {
                     <Col lg={1}><InputGroup.Checkbox/></Col>
                     <Col lg={3}><span>{title}</span></Col>
                     <Col lg={2}><span>{artist}</span></Col>
-                    <Col lg={3}>
+                    <Col lg={2}>
                         <div className="tags-list">
                             {tags.map(tag => (
                                 <Tag name={tag} selectable={false} selectedIcon={null} isMaterial={false}/>
@@ -24,7 +24,7 @@ const SearchResult = ({title, artist, date, tags}) => {
                         </div>
                     </Col>
                     <Col lg={2}><span>{moment(date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
-                    <Col lg={1}>
+                    <Col lg={2} >
                         <SearchResultBtns/>
                     </Col>
                 </Row>
