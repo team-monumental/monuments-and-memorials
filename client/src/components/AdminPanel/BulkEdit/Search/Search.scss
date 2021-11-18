@@ -11,8 +11,23 @@
   }
 
   .list-group {
-    padding: 0 5%;
+    height: 85%;
+    padding: 0 5% 5% 5%;
     overflow-y: auto;
+
+    &:after {
+      position: absolute;
+      bottom: 0;
+      left: 5%;
+      height: 100%;
+      width: 90%;
+      content: "";
+      background: linear-gradient(to top,
+        rgba(255, 255, 255, 1) 5%,
+        rgba(255, 255, 255, 0) 15%
+      );
+      pointer-events: none;
+    }
   }
 
   .list-group-item {
@@ -21,46 +36,46 @@
     .row {
       width: 100%;
     }
+
+    &:not(:first-child) {
+      border: none;
+      border-radius: 3px;
+
+      &:hover {
+        background-color: lightgrey;
+
+        transition: background-color ease-in-out .1s;
+
+        .result-opts {
+          visibility: visible;
+        }
+      }
+
+      span:first-child {
+        background: none;
+        border: none;
+      }
+    }
   }
 
-  .list-group-item:not(:first-child) {
-    border: none;
-    border-radius: 3px;
+  .tags-list {
+    display: flex;
+    flex-direction: row;
 
-    &:hover {
-      background-color: lightgrey;
-
-      transition: background-color ease-in-out .1s;
-
-      .result-opts {
-        visibility: visible;
-      }
+    a {
+      margin: 0 5px;
     }
+  }
 
-    span:first-child {
-      background: none;
-      border: none;
-    }
+  .result-opts {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
 
-    .tags-list {
-      display: flex;
-      flex-direction: row;
-
-      a {
-        margin: 0 5px;
-      }
-    }
-
-    .result-opts {
-      display: flex;
-      flex-direction: row;
-      margin: 0;
-      padding: 0;
-      visibility: hidden;
-
-      i {
-        cursor: pointer;
-      }
+    i {
+      cursor: pointer;
     }
   }
 }

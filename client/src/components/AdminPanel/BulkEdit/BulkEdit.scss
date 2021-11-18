@@ -9,7 +9,10 @@
   .card {
     justify-self: center;
     height: 50vh;
-    overflow-y: auto;
+
+    &:last-child {
+      overflow-y: auto;
+    }
 
     .card-header {
       align-self: center;

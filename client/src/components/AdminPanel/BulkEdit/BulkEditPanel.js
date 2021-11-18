@@ -38,6 +38,36 @@ const placeholderResults = [
         date: '01/01/2021',
         tags: ['fake', 'real', 'yes'],
         title: 'Unknown'
+    },
+    {
+        artist: 'John Doe',
+        date: '01/01/2021',
+        tags: ['fake', 'real', 'yes'],
+        title: 'Unknown'
+    },
+    {
+        artist: 'John Doe',
+        date: '01/01/2021',
+        tags: ['fake', 'real', 'yes'],
+        title: 'Unknown'
+    },
+    {
+        artist: 'John Doe',
+        date: '01/01/2021',
+        tags: ['fake', 'real', 'yes'],
+        title: 'Unknown'
+    },
+    {
+        artist: 'John Doe',
+        date: '01/01/2021',
+        tags: ['fake', 'real', 'yes'],
+        title: 'Unknown'
+    },
+    {
+        artist: 'John Doe',
+        date: '01/01/2021',
+        tags: ['fake', 'real', 'yes'],
+        title: 'Unknown'
     }
 ]
 
