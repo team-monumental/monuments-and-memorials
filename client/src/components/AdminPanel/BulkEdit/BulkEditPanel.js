@@ -11,49 +11,49 @@ import './BulkEdit.scss'
 const placeholderResults = [
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
-        date: '01/01/2021',
+        createdDate: '01/01/2021',
         monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     }
