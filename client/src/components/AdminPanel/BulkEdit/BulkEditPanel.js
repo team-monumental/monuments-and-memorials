@@ -45,6 +45,7 @@ const BulkEditPanel = (props) => {
 
     const handleSearch = () => {
         // TODO: Search with filters and update state
+        setSearchResults([])
     }
 
     return (
