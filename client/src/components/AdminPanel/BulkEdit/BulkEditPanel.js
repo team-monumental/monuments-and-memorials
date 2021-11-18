@@ -36,57 +36,44 @@ const placeholderResults = [
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     },
     {
         artist: 'John Doe',
         date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        tags: ['fake', 'real', 'yes'],
+        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
         title: 'Unknown'
     }
 ]
+
+const searchEndpoint = '/api/search/monuments/?cascade=true&d=25&limit=10&page=1'
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])
 
-    useEffect(() => {
-        handleSearch()
+    useEffect(async () => {
+        await handleSearch()
     }, []);
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         // TODO: Search with filters and update state
-        async function fetchMonuments() {
-            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1");
-            const json = await response.json();
-            setSearchResults(json);
-        }
-        fetchMonuments()
+        const response = await fetch(window.location.origin + searchEndpoint);
+        const json = await response.json();
+        setSearchResults(json);
     }
 
     return (

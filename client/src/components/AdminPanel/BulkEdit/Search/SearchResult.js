@@ -1,8 +1,11 @@
 import React from 'react'
+import moment from "moment";
 import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
-import Tag from "../../../Tags/Tag/Tag";
-import './Search.scss'
+
 import SearchResultBtns from "./SearchResultBtns";
+import Tag from "../../../Tags/Tag/Tag";
+
+import './Search.scss'
 
 // TODO: Apply CSS classes to format
 const SearchResult = ({title, artist, date, tags}) => {
@@ -20,7 +23,7 @@ const SearchResult = ({title, artist, date, tags}) => {
                             ))}
                         </div>
                     </Col>
-                    <Col lg={2}><span>{date}</span></Col>
+                    <Col lg={2}><span>{moment(date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
                     <Col lg={1}>
                         <SearchResultBtns/>
                     </Col>
