@@ -1,6 +1,10 @@
 .bulk-edit {
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
+
+  .row {
+    width: 100%;
+  }
 
   .card {
     justify-self: center;
@@ -10,11 +14,35 @@
     }
 
     .search-bar {
-      margin-bottom: 25px;
+      display: flex;
+      justify-content: center;
+
+      padding: 5%;
+
+      input {
+        width: 50%;
+        margin-right: 25px;
+      }
     }
 
-    .results-header p {
-      text-align: center;
+    .list-group {
+      padding: 0 5%;
+    }
+
+    .list-group-item:not(:first-child) {
+      span:first-child {
+        background: none;
+        border: none;
+      }
+
+      .tags-list {
+        display: flex;
+        flex-direction: row;
+
+        a {
+          margin: 0 5px;
+        }
+      }
     }
   }
 }
