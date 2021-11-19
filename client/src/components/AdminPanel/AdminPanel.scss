@@ -21,16 +21,7 @@
         }
     }
 
-    // The right section is used to properly center the viewport contents on large screens
-    .left, .right {
+    .left {
         flex-basis: 250px;
-    }
-
-    // When under 1400px, the viewport card will start to shrink (if width is 600px) so it starts to look weird
-    // By hiding the right section under this width it looks better
-    @media only screen and (max-width: calc(1400px)) {
-        .right {
-            display: none;
-        }
     }
 }

@@ -38,7 +38,6 @@ export default class AdminPanel extends React.Component {
                     <ProtectedRoute exact path="/panel/manage/suggestions/search" component={ManageSuggestionsPage} customProps={{mode: 'search'}} roles={Role.RESEARCHER_OR_ABOVE}/>
                     <ProtectedRoute exact path="/panel/manage/suggestions/suggestion/:suggestionId" component={ManageSuggestionsPage} customProps={{mode: 'suggestion'}} roles={Role.RESEARCHER_OR_ABOVE}/>
                 </div>
-                <div className="right"/>
             </div>
         );
     }
