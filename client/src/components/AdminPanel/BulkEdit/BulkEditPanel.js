@@ -7,58 +7,6 @@ import SearchPanelBtns from "./Search/SearchPanelBtns";
 
 import './BulkEdit.scss'
 
-// Placeholder search results
-const placeholderResults = [
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    },
-    {
-        artist: 'John Doe',
-        date: '01/01/2021',
-        monumentTags: [{tag: {name: "Fake"}}, {tag: {name: "Real"}}, {tag: {name: "Yes"}}],
-        title: 'Unknown'
-    }
-]
-
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])

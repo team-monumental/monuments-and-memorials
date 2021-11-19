@@ -24,7 +24,7 @@ const SearchResult = ({title, artist, date, tags}) => {
                         </div>
                     </Col>
                     <Col lg={2}><span>{moment(date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
-                    <Col lg={2} >
+                    <Col lg={2}>
                         <SearchResultBtns/>
                     </Col>
                 </Row>
