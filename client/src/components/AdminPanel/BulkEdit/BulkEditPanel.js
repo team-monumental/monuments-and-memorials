@@ -10,6 +10,7 @@ import './BulkEdit.scss'
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])
+    const [queueList, setQueueList] = useState([])
 
     useEffect(() => {
         handleSearch()
@@ -54,7 +55,7 @@ const BulkEditPanel = (props) => {
                         <Card.Body>
                             {/* TODO: Will need to create a new component with less bloat */}
                             {/* TODO: Pass search results to queue panel component */}
-                            <BulkEditUpdateForm/>
+                            <BulkEditUpdateForm queue={queueList}/>
                         </Card.Body>
                     </Card>
                     {/* TODO: Queue panel buttons here */}
