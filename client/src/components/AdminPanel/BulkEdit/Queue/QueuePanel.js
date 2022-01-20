@@ -1,5 +1,5 @@
 import React from 'react';
-import './BulkEditUpdateForm.scss';
+import './QueuePanel.scss';
 import {Button, ButtonGroup, ButtonToolbar, Collapse, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {
     latitudeDecRegex,
@@ -25,7 +25,7 @@ import PhotoSphereImages from '../../../CreateOrUpdateForm/PhotoSphereImages/Pho
 /**
  * Presentational component for the Form for creating a new Monument or updating an existing Monument
  */
-export default class BulkEditUpdateForm extends React.Component {
+export default class QueuePanel extends React.Component {
     constructor(props) {
         super(props);
 

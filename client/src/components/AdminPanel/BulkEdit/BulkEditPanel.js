@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 
-import BulkEditUpdateForm from "./Queue/BulkEditUpdateForm";
+import QueuePanel from "./Queue/QueuePanel";
 import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
 
@@ -55,7 +55,7 @@ const BulkEditPanel = (props) => {
                         <Card.Body>
                             {/* TODO: Will need to create a new component with less bloat */}
                             {/* TODO: Pass search results to queue panel component */}
-                            <BulkEditUpdateForm queue={queueList}/>
+                            <QueuePanel queue={queueList}/>
                         </Card.Body>
                     </Card>
                     {/* TODO: Queue panel buttons here */}
