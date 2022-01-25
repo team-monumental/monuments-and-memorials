@@ -11,6 +11,7 @@ const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])
     const [queueList, setQueueList] = useState([])
+    const [searchTerm, setSearchTerm] = useState([])
 
     useEffect(() => {
         handleSearch()
@@ -19,7 +20,7 @@ const BulkEditPanel = (props) => {
     const handleSearch = () => {
         // TODO: Search with filters and update state
         async function fetchMonuments() {
-            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1");
+            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1&q=" + searchTerm);
             const json = await response.json();
             setSearchResults(json);
         }
@@ -39,7 +40,7 @@ const BulkEditPanel = (props) => {
                             </Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <SearchPanel results={searchResults} handleSearch={handleSearch}/>
+                            <SearchPanel results={searchResults} handleSearch={handleSearch} onChange={e => setSearchTerm(e.target.value)} />
                         </Card.Body>
                     </Card>
                     <SearchPanelBtns/>
