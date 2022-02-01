@@ -24,7 +24,7 @@ import java.io.IOException;
 public class ApiExceptionHandler {
 
     // Handler for ResourceNotFoundExceptions
-    @ExceptionHandler({ ResourceNotFoundException.class })
+    @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException exception) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
@@ -44,12 +44,12 @@ public class ApiExceptionHandler {
     }
 
     // Handler for InvalidEmailOrPasswordExceptions
-    @ExceptionHandler({ InvalidEmailOrPasswordException.class })
+    @ExceptionHandler({InvalidEmailOrPasswordException.class})
     public ResponseEntity<Object> handleInvalidEmailOrPasswordException(InvalidEmailOrPasswordException exception) {
         return handleLoginException(exception);
     }
 
-    @ExceptionHandler({ ValidationException.class })
+    @ExceptionHandler({ValidationException.class})
     public ResponseEntity<Object> handleValidationException(ValidationException exception) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
@@ -59,18 +59,18 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({ UsernameNotFoundException.class })
+    @ExceptionHandler({UsernameNotFoundException.class})
     public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception) {
         return handleLoginException(exception);
     }
 
-    @ExceptionHandler({ BadCredentialsException.class })
+    @ExceptionHandler({BadCredentialsException.class})
     public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException exception) {
         return handleLoginException(exception);
     }
 
     // Handler for UnauthorizedException
-    @ExceptionHandler({ UnauthorizedException.class })
+    @ExceptionHandler({UnauthorizedException.class})
     public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException exception) {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
@@ -80,7 +80,7 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({ AccessDeniedException.class })
+    @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException exception) {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN,
                 StringHelper.isNullOrEmpty(exception.getMessage()) ?
@@ -91,35 +91,35 @@ public class ApiExceptionHandler {
     }
 
     // Handler for InvalidZipExceptions
-    @ExceptionHandler({ InvalidZipException.class })
+    @ExceptionHandler({InvalidZipException.class})
     public ResponseEntity<Object> handleIllegalArgumentException(InvalidZipException exception) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     // Handler for IOExceptions
-    @ExceptionHandler({ IOException.class })
+    @ExceptionHandler({IOException.class})
     public ResponseEntity<Object> handleIOException(IOException exception) {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process file");
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     // Handler for MaxUploadSizeExceededExceptions
-    @ExceptionHandler({ MaxUploadSizeExceededException.class })
+    @ExceptionHandler({MaxUploadSizeExceededException.class})
     public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "The uploaded file is too large. The largest file upload size supported is 500MB");
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     // Handler for IllegalArgumentExceptions
-    @ExceptionHandler({ IllegalArgumentException.class })
+    @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException exception) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     // Handler for all other Exceptions
-    @ExceptionHandler({ Exception.class })
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handle(Exception ex) {
         ex.printStackTrace();
 

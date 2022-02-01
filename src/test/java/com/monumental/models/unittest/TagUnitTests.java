@@ -18,7 +18,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TagUnitTests {
 
-    /** addMonument Tests **/
+    /**
+     * addMonument Tests
+     **/
     @Test
     public void testTag_addMonument_NullMonuments_NullMonument() {
         Tag tag = new Tag();

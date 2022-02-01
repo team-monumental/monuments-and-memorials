@@ -1,10 +1,10 @@
 import * as React from 'react';
 import './Login.scss';
-import { Card, Form } from 'react-bootstrap';
+import {Card, Form} from 'react-bootstrap';
 import Logo from '../Logo/Logo';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
-import { validEmailRegex } from '../../utils/string-util';
+import {Link} from 'react-router-dom';
+import {validEmailRegex} from '../../utils/string-util';
 
 export default class Login extends React.Component {
 
@@ -39,8 +39,8 @@ export default class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        const { onLogin } = this.props;
-        const { errors, email, password } = this.state;
+        const {onLogin} = this.props;
+        const {errors, email, password} = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
             onLogin({email, password});
@@ -48,8 +48,8 @@ export default class Login extends React.Component {
     }
 
     handleChange(event) {
-        const { errors } = this.state;
-        const { name, value } = event.target;
+        const {errors} = this.state;
+        const {name, value} = event.target;
         if (event.preventDefault) event.preventDefault();
 
         switch (name) {
@@ -71,8 +71,8 @@ export default class Login extends React.Component {
     }
 
     render() {
-        const { email, password, validated, errors } = this.state;
-        const { error, warn } = this.props;
+        const {email, password, validated, errors} = this.state;
+        const {error, warn} = this.props;
 
         return (
             <Card className="login">
@@ -135,8 +135,8 @@ export default class Login extends React.Component {
                     </div>
                     <div className="text-center">
                         Not a member? <Link to="/signup">
-                            Sign up now
-                        </Link>
+                        Sign up now
+                    </Link>
                     </div>
                 </Card.Body>
             </Card>

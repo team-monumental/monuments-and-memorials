@@ -7,7 +7,7 @@ import './ErrorScreen.scss';
 export default class ErrorScreen extends React.Component {
 
     render() {
-        const { errors } = this.props;
+        const {errors} = this.props;
 
         return (
             <div className="error-screen-container">

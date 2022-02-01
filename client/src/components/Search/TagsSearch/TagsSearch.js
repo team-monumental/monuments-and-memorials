@@ -1,8 +1,15 @@
 import * as React from 'react';
 import './TagsSearch.scss';
 import Tags from '../../Tags/Tags';
-import { searchTags, loadTags, clearTagSearchResults, loadMaterials, searchMaterials, clearMaterialSearchResults } from '../../../actions/tagsSearch';
-import { connect } from 'react-redux';
+import {
+    clearMaterialSearchResults,
+    clearTagSearchResults,
+    loadMaterials,
+    loadTags,
+    searchMaterials,
+    searchTags
+} from '../../../actions/tagsSearch';
+import {connect} from 'react-redux';
 
 class TagsSearch extends React.Component {
 
@@ -51,14 +58,14 @@ class TagsSearch extends React.Component {
     }
 
     render() {
-        const { searchQuery, selectedTags, createdTags, createdTagsKey } = this.state;
-        const { searchResults, variant, className, allowTagCreation } = this.props;
+        const {searchQuery, selectedTags, createdTags, createdTagsKey} = this.state;
+        const {searchResults, variant, className, allowTagCreation} = this.props;
         const visibleSearchResults = searchResults.filter(result => {
             return !selectedTags.find(tag => tag.id === result.id);
         });
 
         let createNewTagDisplay = (
-          <div/>
+            <div/>
         );
 
         if (allowTagCreation && searchQuery !== ''
@@ -88,8 +95,10 @@ class TagsSearch extends React.Component {
         return (
             <div className={className !== undefined ? "tags-search " + className : "tags-search"}>
                 <div className="selected-tags">
-                    <Tags selectable onSelect={this.handleSelectTag.bind(this)} tags={selectedTags} selectedIcon="clear"/>
-                    <Tags selectable onSelect={this.handleNewTagSelect.bind(this)} tags={createdTags} selectedIcon="clear"/>
+                    <Tags selectable onSelect={this.handleSelectTag.bind(this)} tags={selectedTags}
+                          selectedIcon="clear"/>
+                    <Tags selectable onSelect={this.handleNewTagSelect.bind(this)} tags={createdTags}
+                          selectedIcon="clear"/>
                 </div>
                 <div className="search">
                     <input type="text"
@@ -100,7 +109,8 @@ class TagsSearch extends React.Component {
                            className="form-control"
                            onKeyDown={(event) => this.handleKeyDown(event)}
                            autoComplete="off"/>
-                    {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
+                    {searchQuery &&
+                        <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
                 </div>
                 <div className="search-results">
                     <Tags selectable onSelect={this.handleSelectTag.bind(this)} tags={visibleSearchResults}/>
@@ -111,9 +121,9 @@ class TagsSearch extends React.Component {
     }
 
     async handleSelectTag(value, tag) {
-        let { selectedTags } = this.state;
-        const { createdTags } = this.state;
-        const { variant, onChange } = this.props;
+        let {selectedTags} = this.state;
+        const {createdTags} = this.state;
+        const {variant, onChange} = this.props;
         // If the tag is being selected, add it to the selected tags and sort them alphabetically
         if (value) {
             tag.selected = true;
@@ -123,7 +133,7 @@ class TagsSearch extends React.Component {
         } else {
             const index = selectedTags.findIndex(t => t.name === tag.name);
             if (index >= 0) {
-                [ tag ] = selectedTags.splice(index, 1);
+                [tag] = selectedTags.splice(index, 1);
                 tag.selected = false;
             }
         }
@@ -134,9 +144,9 @@ class TagsSearch extends React.Component {
     }
 
     async handleNewTagSelect(value, tag) {
-        let { createdTags, createdTagsKey } = this.state;
-        const { selectedTags } = this.state;
-        const { variant, onChange } = this.props;
+        let {createdTags, createdTagsKey} = this.state;
+        const {selectedTags} = this.state;
+        const {variant, onChange} = this.props;
 
         // If the Tag is being selected, add it to the created Tags and sort them alphabetically
         if (value) {
@@ -149,7 +159,7 @@ class TagsSearch extends React.Component {
         else {
             const index = createdTags.findIndex(t => t.name === tag.name);
             if (index >= 0) {
-                [ tag ] = createdTags.splice(index, 1);
+                [tag] = createdTags.splice(index, 1);
                 tag.selected = false;
             }
         }
@@ -169,7 +179,7 @@ class TagsSearch extends React.Component {
     }
 
     handleClear() {
-        const { dispatch, variant } = this.props;
+        const {dispatch, variant} = this.props;
         if (variant === 'materials') dispatch(clearMaterialSearchResults());
         else dispatch(clearTagSearchResults());
         this.setState({searchQuery: ''});
@@ -180,15 +190,15 @@ class TagsSearch extends React.Component {
     }
 
     searchTags() {
-        const { dispatch, variant } = this.props;
-        const { searchQuery } = this.state;
+        const {dispatch, variant} = this.props;
+        const {searchQuery} = this.state;
         if (variant === 'materials') dispatch(searchMaterials(searchQuery));
         else dispatch(searchTags(searchQuery));
     }
 
     // Loads specific tags by name, which were already selected at page load but need to have the full record loaded in
     loadTags() {
-        const { dispatch, tags, variant } = this.props;
+        const {dispatch, tags, variant} = this.props;
         if (variant === 'materials') dispatch(loadMaterials(tags));
         else dispatch(loadTags(tags));
     }

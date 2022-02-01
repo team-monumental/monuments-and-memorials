@@ -18,39 +18,25 @@ public abstract class Model {
 
     /* Bean Validation Groups */
 
-    // Use this group to signify validation that occurs on record creation
-    public interface New {
-
-    }
-
-    // Use this group to signify validation that occurs after record creation
-    public interface Existing {
-
-    }
-
+    @LastModifiedBy
+    @ManyToOne
+    @JsonIgnore
+    User lastModifiedBy;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false)
     @Null(groups = New.class, message = "ID can not be specified on insert")
     @NotNull(groups = Existing.class, message = "ID can not be null on update")
     private Integer id;
-
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
     private Date createdDate;
-
     @LastModifiedDate
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
-
     @CreatedBy
     @ManyToOne
     private User createdBy;
-
-    @LastModifiedBy
-    @ManyToOne
-    @JsonIgnore
-    User lastModifiedBy;
 
     public Integer getId() {
         return this.id;
@@ -90,5 +76,15 @@ public abstract class Model {
 
     public void setLastModifiedBy(User user) {
         this.lastModifiedBy = user;
+    }
+
+    // Use this group to signify validation that occurs on record creation
+    public interface New {
+
+    }
+
+    // Use this group to signify validation that occurs after record creation
+    public interface Existing {
+
     }
 }

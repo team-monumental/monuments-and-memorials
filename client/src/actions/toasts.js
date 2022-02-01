@@ -1,5 +1,5 @@
-import { createToast } from '../factories';
-import { ADD_TOAST, REMOVE_TOAST, TOAST_FADE_IN, TOAST_FADE_OUT } from '../constants';
+import {createToast} from '../factories';
+import {ADD_TOAST, REMOVE_TOAST, TOAST_FADE_IN, TOAST_FADE_OUT} from '../constants';
 
 /**
  * Adds a toast to the queue, to be displayed for a set time

@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.scss';
 import './theme.scss';
-import { Route } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
+import {Route} from 'react-router-dom';
+import {Helmet} from 'react-helmet';
+import {connect} from 'react-redux';
+import {ConnectedRouter} from 'connected-react-router';
 import Rollbar from 'rollbar';
 
 import Header from './components/Header/Header';
@@ -22,7 +22,7 @@ import UpdateMonumentPage from './pages/UpdateMonumentPage/UpdateMonumentPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import SignupPage from './pages/SignupPage/SignupPage';
 import ProtectedRoute from './containers/ProtectedRoute/ProtectedRoute';
-import { getUserSession, logout } from './actions/authentication';
+import {getUserSession, logout} from './actions/authentication';
 import ConfirmSignupPage from './pages/ConfirmSignupPage/ConfirmSignupPage';
 import BeginPasswordResetPage from './pages/BeginPasswordResetPage/BeginPasswordResetPage';
 import FinishPasswordResetPage from './pages/FinishPasswordResetPage/FinishPasswordResetPage';
@@ -30,7 +30,7 @@ import UserPage from './pages/UserPage/UserPage';
 import UpdateUserPage from './pages/UpdateUserPage/UpdateUserPage';
 import ConfirmEmailChangePage from './pages/ConfirmEmailChangePage/ConfirmEmailChangePage';
 import AdminPage from './pages/AdminPage/AdminPage';
-import { Role } from './utils/authentication-util';
+import {Role} from './utils/authentication-util';
 import SuggestionCreatedPage from './pages/SuggestionCreatedPage/SuggestionCreatedPage';
 
 export const RollbarContext = React.createContext({});
@@ -53,24 +53,25 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         dispatch(getUserSession());
     }
 
     async clearUserSession() {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         dispatch(logout());
     }
 
     render() {
-        const { history } = this.props;
-        const { headerHeight, rollbar } = this.state;
+        const {history} = this.props;
+        const {headerHeight, rollbar} = this.state;
         return (
             <div className="App">
                 <Helmet title="Monuments and Memorials"/>
                 <Toaster/>
                 <ConnectedRouter history={history}>
-                    <Header onRender={headerHeight => this.setState({headerHeight})} onLogout={() => this.clearUserSession()}/>
+                    <Header onRender={headerHeight => this.setState({headerHeight})}
+                            onLogout={() => this.clearUserSession()}/>
                     <div style={{height: `calc(100vh - ${headerHeight}px)`}}>
                         <RollbarContext.Provider value={rollbar}>
                             <ErrorHandler>
@@ -84,7 +85,8 @@ class App extends React.Component {
                                 <Route exact path="/tag-directory" component={TagDirectoryPage}/>
                                 <Route exact path="/about" component={AboutPage}/>
                                 <Route exact path="/resources" component={ResourcePage}/>
-                                <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage} verifyEmail={true}/>
+                                <ProtectedRoute path="/update-monument/:monumentId" component={UpdateMonumentPage}
+                                                verifyEmail={true}/>
                                 <Route exact path="/signup/confirm" component={ConfirmSignupPage}/>
                                 <Route exact path="/password-reset" component={BeginPasswordResetPage}/>
                                 <Route exact path="/password-reset/confirm" component={FinishPasswordResetPage}/>

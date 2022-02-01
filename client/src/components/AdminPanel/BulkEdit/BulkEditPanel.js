@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 
 import QueuePanel from "./Queue/QueuePanel";
@@ -40,6 +40,10 @@ const BulkEditPanel = (props) => {
         handleSearch()
     }, []);
 
+    useEffect(() => {
+        console.log(queueList)
+    }, [queueList])
+
     return (
         <QueueContext.Provider value={{list: queueList, nq: enqueue, dq: dequeue}}>
             <Container className="bulk-edit" fluid>
@@ -53,7 +57,10 @@ const BulkEditPanel = (props) => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <SearchPanel results={searchResults} handleSearch={handleSearch}
+                                <SearchPanel results={searchResults}
+                                             enqueue={enqueue}
+                                             dequeue={dequeue}
+                                             handleSearch={handleSearch}
                                              onChange={e => setSearchTerm(e.target.value)}/>
                             </Card.Body>
                         </Card>
@@ -69,8 +76,7 @@ const BulkEditPanel = (props) => {
                             </Card.Header>
                             <Card.Body>
                                 {/* TODO: Will need to create a new component with less bloat */}
-                                {/* TODO: Pass search results to queue panel component */}
-                                <QueuePanel queue={queueList}/>
+                                <QueuePanel queue={queueList} dequeue={dequeue}/>
                             </Card.Body>
                         </Card>
                         {/* TODO: Queue panel buttons here */}

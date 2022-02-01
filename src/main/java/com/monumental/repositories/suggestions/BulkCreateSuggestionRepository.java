@@ -14,6 +14,7 @@ public interface BulkCreateSuggestionRepository extends JpaRepository<BulkCreate
 
     /**
      * Get all BulkCreateMonumentSuggestions created by the specified createdBy
+     *
      * @param createdBy - User object to get all of the BulkCreateMonumentSuggestions that were created by it
      * @return List<BulkCreateMonumentSuggestions> - List of BulkCreateMonumentSuggestions created by the specified
      * createdBy

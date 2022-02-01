@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './MapPage.scss';
 import MapResults from '../../components/Search/MapResults/MapResults';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import fetchMonuments from '../../actions/map';
-import { Helmet } from 'react-helmet';
+import {Helmet} from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
 
 class MapPage extends React.Component {
@@ -13,17 +13,8 @@ class MapPage extends React.Component {
         this.state = {
             zoomSize: '5'
         };
-        const { dispatch } = props;
+        const {dispatch} = props;
         dispatch(fetchMonuments());
-    }
-
-    componentDidMount() {
-        if (window.innerWidth < 700) {
-            this.setState({zoomSize: 3});
-        }
-        else if (window.innerWidth >= 700 && window.innerWidth < 1600) {
-            this.setState({zoomSize: 4});
-        }
     }
 
     static mapStateToProps(state) {
@@ -34,8 +25,16 @@ class MapPage extends React.Component {
         return state.mapPage;
     }
 
+    componentDidMount() {
+        if (window.innerWidth < 700) {
+            this.setState({zoomSize: 3});
+        } else if (window.innerWidth >= 700 && window.innerWidth < 1600) {
+            this.setState({zoomSize: 4});
+        }
+    }
+
     render() {
-        const { monuments, pending } = this.props;
+        const {monuments, pending} = this.props;
         return (
             <div className="map-page">
                 <Helmet title="Map | Monuments and Memorials"/>

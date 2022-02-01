@@ -22,9 +22,10 @@ public class TagController {
      * If a name is specified, gets all of the Tags with that name
      * If names are specified, gets all of the Tags with any of those names
      * If none of the request parameters are specified, gets all of the Tags
+     *
      * @param monumentId - Integer ID of the Monument to get all the Tags for
-     * @param name - String for the name of the Tag to get
-     * @param names - List<String> for all of the names of the Tags to get
+     * @param name       - String for the name of the Tag to get
+     * @param names      - List<String> for all of the names of the Tags to get
      * @return List<Tag> - The appropriate Tags based on the request
      */
     @GetMapping("/api/tags")

@@ -7,7 +7,7 @@ import './StatisticCard.scss';
 export default class StatisticCard extends React.Component {
 
     render() {
-        const { statistic, description, statisticFontSize, link, iconName } = this.props;
+        const {statistic, description, statisticFontSize, link, iconName} = this.props;
 
         let statisticFontSizeClassName = 'large';
 

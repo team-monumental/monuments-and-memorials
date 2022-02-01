@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
-import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
+import {Card} from 'react-bootstrap';
+import {getUserFullName, prettyPrintDate} from '../../../../utils/string-util';
 import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
 
 /**
@@ -10,7 +10,16 @@ import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
 export default class About extends React.Component {
 
     render() {
-        const { monument, contributions, references, header, showHiddenFields, hideExport, hideTitle, images } = this.props;
+        const {
+            monument,
+            contributions,
+            references,
+            header,
+            showHiddenFields,
+            hideExport,
+            hideTitle,
+            images
+        } = this.props;
         let title;
         if (!hideTitle && monument.title) {
             title = (
@@ -29,8 +38,7 @@ export default class About extends React.Component {
                     {String("Not Provided")}
                 </div>
             );
-        }
-        else if (monument.artist) {
+        } else if (monument.artist) {
             artist = (
                 <div>
                     <span className="detail-label">Artist:&nbsp;</span>
@@ -47,8 +55,7 @@ export default class About extends React.Component {
                     {String("Not Provided")}
                 </div>
             );
-        }
-        else if (monument.date) {
+        } else if (monument.date) {
             date = (
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
@@ -165,7 +172,9 @@ export default class About extends React.Component {
                 <div>
                     <span className="detail-label">References:&nbsp;</span>
                     <ul>
-                        {references.map(reference => <li key={reference.id}><a className="text-break" href={reference.url}>{reference.url}</a></li>)}
+                        {references.map(reference => <li key={reference.id}><a className="text-break"
+                                                                               href={reference.url}>{reference.url}</a>
+                        </li>)}
                     </ul>
                 </div>
             )

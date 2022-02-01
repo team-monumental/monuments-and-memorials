@@ -1,7 +1,7 @@
 import React from 'react';
 import './SearchBar.scss';
-import { Button, Form } from 'react-bootstrap';
-import { withRouter } from 'react-router-dom';
+import {Button, Form} from 'react-bootstrap';
+import {withRouter} from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from './TextSearch/TextSearch';
 import LocationSearch from './LocationSearch/LocationSearch';
@@ -55,8 +55,8 @@ class SearchBar extends React.Component {
     }
 
     search() {
-        const { history, onCloseModal, uri } = this.props;
-        let { textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter } = this.state;
+        const {history, onCloseModal, uri} = this.props;
+        let {textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter} = this.state;
         search({
             q: textSearchQuery,
             lat: locationLat,
@@ -70,7 +70,7 @@ class SearchBar extends React.Component {
     }
 
     render() {
-        const { textSearchQuery, locationAddress } = this.state;
+        const {textSearchQuery, locationAddress} = this.state;
         return (
             <Form inline className="search-bar">
                 <TextSearch value={textSearchQuery}

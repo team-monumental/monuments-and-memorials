@@ -8,7 +8,7 @@ import Thumbnails from '../../../Images/Thumbnails/Thumbnails';
 export default class AddedImages extends React.Component {
 
     render() {
-        let { images } = this.props;
+        let {images} = this.props;
 
         let addedImagesDisplay = <span className="font-weight-bold">NONE</span>;
 
@@ -24,8 +24,7 @@ export default class AddedImages extends React.Component {
                 }
 
                 addedImagesDisplay = <ul>{addedImagesList}</ul>;
-            }
-            else if (imagesWithUrls.length) {
+            } else if (imagesWithUrls.length) {
                 addedImagesDisplay = <Thumbnails imageUrls={imagesWithUrls.map(image => image.url)}/>
             }
         }

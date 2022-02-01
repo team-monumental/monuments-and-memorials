@@ -6,7 +6,7 @@ import * as React from 'react';
 export default class UnchangedTags extends React.Component {
 
     render() {
-        const { tags, areMaterials } = this.props;
+        const {tags, areMaterials} = this.props;
 
         let unchangedTagsDisplay = <span className="font-weight-bold">NONE</span>;
 
@@ -20,7 +20,8 @@ export default class UnchangedTags extends React.Component {
 
         return (
             <div>
-                <span className="font-weight-bold">{areMaterials ? 'Unchanged Materials' : 'Unchanged Tags'}&nbsp;</span>
+                <span
+                    className="font-weight-bold">{areMaterials ? 'Unchanged Materials' : 'Unchanged Tags'}&nbsp;</span>
                 {unchangedTagsDisplay}
             </div>
         );

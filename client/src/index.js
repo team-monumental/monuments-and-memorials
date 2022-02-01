@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Provider } from 'react-redux';
-import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
+import {Provider} from 'react-redux';
+import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
 import ReduxThunk from 'redux-thunk';
 import Reducers from './reducers';
-import { createBrowserHistory } from 'history';
-import { routerMiddleware, connectRouter } from 'connected-react-router';
+import {createBrowserHistory} from 'history';
+import {connectRouter, routerMiddleware} from 'connected-react-router';
 
 const history = createBrowserHistory();
 

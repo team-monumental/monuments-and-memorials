@@ -14,10 +14,11 @@ public class SearchHelper {
     /**
      * Build a pg_tgrm similarity function Expression for the given searchQuery and fieldName
      * Utilizes a JPA Criteria Root to execute the query
-     * @param builder - CriteriaBuilder to use to build the similarity Expression
-     * @param root - Root to use to build the similarity Expression
+     *
+     * @param builder     - CriteriaBuilder to use to build the similarity Expression
+     * @param root        - Root to use to build the similarity Expression
      * @param searchQuery - String for the search query to use in the similarity function
-     * @param fieldName - String for the field name to query against
+     * @param fieldName   - String for the field name to query against
      * @return Expression<Number> - Expression representing the pg_tgrm similarity function expression using the
      * specified searchQuery and fieldName
      */
@@ -32,11 +33,11 @@ public class SearchHelper {
         return builder.sum(
                 builder.coalesce(builder.function("similarity", Number.class, root.get(fieldName), builder.literal(searchQuery)), 0),
                 builder.prod(
-                    builder.coalesce(
-                        builder.function("word_similarity", Number.class, root.get(fieldName), builder.literal(searchQuery)),
-                        0
-                    ),
-                    5
+                        builder.coalesce(
+                                builder.function("word_similarity", Number.class, root.get(fieldName), builder.literal(searchQuery)),
+                                0
+                        ),
+                        5
                 )
         );
     }
@@ -44,10 +45,11 @@ public class SearchHelper {
     /**
      * Build a pg_tgrm similarity function Expression for the given searchQuery and fieldName
      * Utilizes a JPA Criteria Join to execute the query
-     * @param builder - CriteriaBuilder to use to build the similarity Expression
-     * @param join - Join to use to build the similarity Expression
+     *
+     * @param builder     - CriteriaBuilder to use to build the similarity Expression
+     * @param join        - Join to use to build the similarity Expression
      * @param searchQuery - String for the search query to use in the similarity function
-     * @param fieldName - String for the field name to query against
+     * @param fieldName   - String for the field name to query against
      * @return Expression<Number> - Expression representing the pg_tgrm similarity function expression using the
      * specified searchQuery and fieldName
      */
@@ -58,9 +60,10 @@ public class SearchHelper {
 
     /**
      * Build a Predicate for the specified pg_tgrm similarity expression
-     * @param builder - CriteriaBuilder to use to build the similarity Predicate
+     *
+     * @param builder    - CriteriaBuilder to use to build the similarity Predicate
      * @param expression - pg_tgrm similarity Expression to use to build the Predicate
-     * @param threshold - The threshold (0-1) to limit the results by. You can learn about this score at: https://www.postgresql.org/docs/9.6/pgtrgm.html
+     * @param threshold  - The threshold (0-1) to limit the results by. You can learn about this score at: https://www.postgresql.org/docs/9.6/pgtrgm.html
      * @return Predicate - Predicate built using the specified builder and expression
      */
     public static Predicate buildSimilarityPredicate(CriteriaBuilder builder, Expression<Number> expression,
@@ -70,17 +73,17 @@ public class SearchHelper {
 
     /**
      * Order search results by the sum of the pg_tgrm similarity scores used to search for them
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the ordering logic to
+     *
+     * @param builder     - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query       - The CriteriaQuery to add the ordering logic to
      * @param expressions - The pg_tgrm similarity query expressions that were used for the search
      */
     public static void orderSimilarityResults(CriteriaBuilder builder, CriteriaQuery query,
-                                                   List<Expression<Number>> expressions) {
+                                              List<Expression<Number>> expressions) {
         Expression<Number> sum;
         if (expressions.size() == 1) {
             sum = expressions.get(0);
-        }
-        else {
+        } else {
             // Dynamically sum up all the expressions
             sum = builder.sum(expressions.remove(0), expressions.remove(0));
             while (expressions.size() > 0) {
@@ -92,13 +95,14 @@ public class SearchHelper {
 
     /**
      * Execute the specified query using the specified predicates
-     * @param builder - The CriteriaBuilder used to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to execute using the specified predicates
+     *
+     * @param builder    - The CriteriaBuilder used to help build the CriteriaQuery
+     * @param query      - The CriteriaQuery to execute using the specified predicates
      * @param predicates - List of Predicates to execute using the specified CriteriaQuery
      */
     public static void executeQueryWithPredicates(CriteriaBuilder builder, CriteriaQuery query,
                                                   List<Predicate> predicates) {
-        switch(predicates.size()) {
+        switch (predicates.size()) {
             case 0:
                 return;
             case 1:
@@ -113,17 +117,18 @@ public class SearchHelper {
 
     /**
      * Creates a search query on various fields of MonumentSuggestion and adds it to the specified CriteriaQuery
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param root - The Root to use with the CriteriaQuery
-     * @param userJoin - The Join between the target Suggestion table and the User table to utilize for searching
-     * @param searchQuery - The search query String that will be used to search against Users names and emails using
-     * pg_tgrm
-     * @param isApproved - True to filter to only approved MonumentSuggestions, False otherwise
-     * @param isRejected - True to filter to only rejected MonumentSuggestions, False otherwise
-     * @param orderBySimilarity - True to order the results based on the pg_tgrm similarity score, False otherwise
+     *
+     * @param builder            - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query              - The CriteriaQuery to add the searching logic to
+     * @param root               - The Root to use with the CriteriaQuery
+     * @param userJoin           - The Join between the target Suggestion table and the User table to utilize for searching
+     * @param searchQuery        - The search query String that will be used to search against Users names and emails using
+     *                           pg_tgrm
+     * @param isApproved         - True to filter to only approved MonumentSuggestions, False otherwise
+     * @param isRejected         - True to filter to only rejected MonumentSuggestions, False otherwise
+     * @param orderBySimilarity  - True to order the results based on the pg_tgrm similarity score, False otherwise
      * @param isCreateSuggestion - True if the MonumentSuggestion search query that is being built is for
-     * CreateMonumentSuggestions, False otherwise
+     *                           CreateMonumentSuggestions, False otherwise
      */
     public static void buildSuggestionSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Join userJoin,
                                                   String searchQuery, boolean isApproved, boolean isRejected,
@@ -148,11 +153,12 @@ public class SearchHelper {
     /**
      * Uses the specified Join to the User table to create a filter on MonumentSuggestions so that only those with a
      * created by User that has a similar first name, last name or email to the specified searchQuery are returned
-     * @param builder - The CriteriaBuilder to use to help build the query
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param userJoin - The Join from the target Suggestion table to the User table to use for searching created by
-     * Users names and emails
-     * @param searchQuery - The search query String to filter Users names and emails by
+     *
+     * @param builder           - The CriteriaBuilder to use to help build the query
+     * @param query             - The CriteriaQuery to add the searching logic to
+     * @param userJoin          - The Join from the target Suggestion table to the User table to use for searching created by
+     *                          Users names and emails
+     * @param searchQuery       - The search query String to filter Users names and emails by
      * @param orderBySimilarity - True to order the results by the pg_tgrm similarity score, False otherwise
      * @return Predicate - Predicate for the user search filter using the specified builder, query, root and searchQuery
      */
@@ -175,9 +181,9 @@ public class SearchHelper {
         // Select the MonumentSuggestions where the User's first name, last name or email are similar to the specified
         // searchQuery
         return builder.or(
-            buildSimilarityPredicate(builder, firstNameExpression, 0.1),
-            buildSimilarityPredicate(builder, lastNameExpression, 0.1),
-            buildSimilarityPredicate(builder, emailExpression, 0.1)
+                buildSimilarityPredicate(builder, firstNameExpression, 0.1),
+                buildSimilarityPredicate(builder, lastNameExpression, 0.1),
+                buildSimilarityPredicate(builder, emailExpression, 0.1)
         );
     }
 }

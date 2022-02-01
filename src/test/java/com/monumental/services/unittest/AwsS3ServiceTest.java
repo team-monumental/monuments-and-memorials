@@ -6,10 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import static org.junit.Assert.*;
 
 /**
@@ -19,7 +15,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AwsS3ServiceTest {
 
-    /** getObjectURL Tests **/
+    /**
+     * getObjectURL Tests
+     **/
 
     @Test
     public void testAwsS3Service_getObjectUrl_NoFolderInObjectKey() {
@@ -42,7 +40,9 @@ public class AwsS3ServiceTest {
         }
     }
 
-    /** getObjectKey Tests **/
+    /**
+     * getObjectKey Tests
+     **/
 
     @Test
     public void testAwsS3Service_getObjectKey_NullObjectUrl() {

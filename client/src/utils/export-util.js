@@ -1,8 +1,8 @@
-import { parse as toCSV } from 'json2csv';
-import { jsPDF } from 'jspdf';
+import {parse as toCSV} from 'json2csv';
+import {jsPDF} from 'jspdf';
 import 'jspdf-autotable';
-import { getUserFullName, simplePrintDate } from './string-util';
-import { getS3ImageNameFromObjectUrl } from './api-util';
+import {getUserFullName, simplePrintDate} from './string-util';
+import {getS3ImageNameFromObjectUrl} from './api-util';
 
 export const pdfExportFields = ['Title', 'ID', 'Artist', 'Date Created', 'Un-installed Date', 'City', 'State', 'Address',
     'Coordinates', 'Materials', 'Tags', 'Description', 'Inscription', 'Contributors', 'References', 'Last Updated'];
@@ -10,7 +10,7 @@ export const csvExportFields = ['ID', 'Title', 'Artist', 'Date Created', 'Materi
     'State', 'Address', 'Inscription', 'Description', 'Tags', 'Contributors', 'References', 'Un-installed Date',
     'Un-installed Reason', 'Is Temporary', 'Last Updated', '360 Images URLs', '360 Images References', '360 Images Captions'];
 
-export function buildBulkExportData(monuments, fields=csvExportFields, pretty=false) {
+export function buildBulkExportData(monuments, fields = csvExportFields, pretty = false) {
     const data = []
     monuments.forEach(monument => {
         data.push(buildExportData(monument, fields, pretty))
@@ -18,9 +18,9 @@ export function buildBulkExportData(monuments, fields=csvExportFields, pretty=fa
     return data
 }
 
-export function buildExportData(monument, fields=csvExportFields, pretty=false, contributions=monument.contributions || [],
-                                references=monument.references || []) {
-    const prepareArray = (array=[], field) => {
+export function buildExportData(monument, fields = csvExportFields, pretty = false, contributions = monument.contributions || [],
+                                references = monument.references || []) {
+    const prepareArray = (array = [], field) => {
         let arr = array.map(it => it[field]);
         const set = arr.filter((item, index) => arr.indexOf(item) === index);
         if (pretty) {
@@ -144,7 +144,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = imageCaptionsList;
-        }   else if (lowerField.includes('360 images url')) {
+        } else if (lowerField.includes('360 images url')) {
             let imagesList = '';
             if (monument.images && monument.images.length) {
                 const imagesArray = monument.images.filter(image => image.isPhotoSphere).map(image => getS3ImageNameFromObjectUrl(image.url));
@@ -204,7 +204,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
                 }
             }
             result[field] = imageCaptionsList;
-        }  else if (lowerField.includes('address')) {
+        } else if (lowerField.includes('address')) {
             result[field] = monument.address || '';
         } else if (lowerField.includes('description')) {
             result[field] = monument.description || '';
@@ -222,7 +222,7 @@ export function buildExportData(monument, fields=csvExportFields, pretty=false, 
 
             result[field] = prepareArray(contributionsFormatted, 'submittedBy');
         } else if (lowerField.includes('updated')) {
-            const dateFromContributions = (contributions=[]) => {
+            const dateFromContributions = (contributions = []) => {
                 if (contributions && contributions.length > 0) {
                     return simplePrintDate(contributions[contributions.length - 1].createdDate)
                 }

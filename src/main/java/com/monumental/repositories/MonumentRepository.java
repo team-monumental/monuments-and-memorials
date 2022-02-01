@@ -16,6 +16,7 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
 
     /**
      * Get all monuments with the specified tag
+     *
      * @param id Id of the tag to get the monuments for
      */
     @Query("select m from Monument m join m.monumentTags monumentTag where monumentTag.tag.id = :id")
@@ -23,9 +24,10 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
 
     /**
      * Searches for monuments with matching tags by name, returning those with the most matching tags
-     * @param names - The tag names to match against
+     *
+     * @param names      - The tag names to match against
      * @param monumentId - The monument to exclude from search results
-     * @param pageable - Used to give the search a limit
+     * @param pageable   - Used to give the search a limit
      * @return Tuples of monuments with their count of matching tags
      */
     @Query("select m, count(t.id) as c from Monument m join m.monumentTags mt join mt.tag t where t.name in :names and m.id <> :id and m.isActive = true group by m.id order by c desc")
@@ -33,7 +35,8 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
 
     /**
      * Find a monument, only if it is active/inactive
-     * @param id Id of the monument to find
+     *
+     * @param id       Id of the monument to find
      * @param isActive If true only active monuments will be returned, or vice versa
      * @return Option containing the found monument or nothing
      */
@@ -41,6 +44,7 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
 
     /**
      * Get all monuments that are active or inactive
+     *
      * @param isActive If true only active monuments will be returned, or vice versa
      * @return The found monuments
      */

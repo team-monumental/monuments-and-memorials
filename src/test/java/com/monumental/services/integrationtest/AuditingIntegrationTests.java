@@ -1,7 +1,6 @@
 package com.monumental.services.integrationtest;
 
 import com.monumental.models.Monument;
-import com.monumental.models.User;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.UserRepository;
@@ -26,12 +25,10 @@ import org.springframework.test.context.web.ServletTestExecutionListener;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-
 import java.util.Date;
-import java.util.List;
 
-import static org.junit.Assert.*;
 import static com.monumental.services.integrationtest.UserServiceIntegrationTests.*;
+import static org.junit.Assert.*;
 
 /**
  * This is a unique integration test, not specifically linked to any service, but it uses MonumentService as a concrete
@@ -40,7 +37,7 @@ import static com.monumental.services.integrationtest.UserServiceIntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ContextConfiguration
-@TestExecutionListeners(listeners={ServletTestExecutionListener.class,
+@TestExecutionListeners(listeners = {ServletTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
@@ -110,7 +107,7 @@ public class AuditingIntegrationTests {
     public void updateMonument_correctLastModifiedBy() {
         Monument monument = createMonument();
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-            new UserAwareUserDetails(partner), password
+                new UserAwareUserDetails(partner), password
         ));
         monument = updateMonument(monument);
         assertNotNull(monument.getLastModifiedBy());

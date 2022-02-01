@@ -1,12 +1,23 @@
 import {
-    FETCH_MONUMENT_UPDATE_PENDING, FETCH_MONUMENT_UPDATE_SUCCESS, FETCH_MONUMENT_UPDATE_ERROR, CREATE_UPDATE_SUGGESTION_PENDING,
-    CREATE_UPDATE_SUGGESTION_SUCCESS, CREATE_UPDATE_SUGGESTION_ERROR, TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
-    TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS, TOGGLE_MONUMENT_IS_ACTIVE_ERROR, DELETE_MONUMENT_PENDING, DELETE_MONUMENT_SUCCESS,
-    DELETE_MONUMENT_ERROR, UPDATE_MONUMENT_PENDING, UPDATE_MONUMENT_SUCCESS, UPDATE_MONUMENT_ERROR
+    CREATE_UPDATE_SUGGESTION_ERROR,
+    CREATE_UPDATE_SUGGESTION_PENDING,
+    CREATE_UPDATE_SUGGESTION_SUCCESS,
+    DELETE_MONUMENT_ERROR,
+    DELETE_MONUMENT_PENDING,
+    DELETE_MONUMENT_SUCCESS,
+    FETCH_MONUMENT_UPDATE_ERROR,
+    FETCH_MONUMENT_UPDATE_PENDING,
+    FETCH_MONUMENT_UPDATE_SUCCESS,
+    TOGGLE_MONUMENT_IS_ACTIVE_ERROR,
+    TOGGLE_MONUMENT_IS_ACTIVE_PENDING,
+    TOGGLE_MONUMENT_IS_ACTIVE_SUCCESS,
+    UPDATE_MONUMENT_ERROR,
+    UPDATE_MONUMENT_PENDING,
+    UPDATE_MONUMENT_SUCCESS
 } from '../constants';
-import { addError } from './errors';
-import { get, post, put, del } from '../utils/api-util';
-import { pending, success, error } from '../utils/action-util';
+import {addError} from './errors';
+import {del, get, post, put} from '../utils/api-util';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     fetch: {
@@ -46,7 +57,7 @@ export function fetchMonumentForUpdate(id) {
         try {
             const monument = await get(`/api/monument/${id}?cascade=true`);
             dispatch(success(actions.fetch, monument));
-        } catch(err) {
+        } catch (err) {
             dispatch(error(actions.fetch, err));
             dispatch(addError({
                 message: err.message

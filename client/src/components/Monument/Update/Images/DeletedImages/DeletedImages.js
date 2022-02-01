@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './DeletedImages.scss';
-import { getS3ImageNameFromObjectUrl } from '../../../../../utils/api-util';
+import {getS3ImageNameFromObjectUrl} from '../../../../../utils/api-util';
 import Thumbnails from '../../../Images/Thumbnails/Thumbnails';
 
 /**
@@ -9,7 +9,7 @@ import Thumbnails from '../../../Images/Thumbnails/Thumbnails';
 export default class DeletedImages extends React.Component {
 
     render() {
-        const { deletedImageUrls, displayImageNames } = this.props;
+        const {deletedImageUrls, displayImageNames} = this.props;
 
         let deletedImagesDisplay = <span className="font-weight-bold">NONE</span>;
 
@@ -18,12 +18,12 @@ export default class DeletedImages extends React.Component {
 
             if (displayImageNames) {
                 for (const deletedImageUrl of deletedImageUrls) {
-                    deletedImagesList.push(<li className="removed" key={deletedImageUrl}>{getS3ImageNameFromObjectUrl(deletedImageUrl)}</li>);
+                    deletedImagesList.push(<li className="removed"
+                                               key={deletedImageUrl}>{getS3ImageNameFromObjectUrl(deletedImageUrl)}</li>);
                 }
 
                 deletedImagesDisplay = <ul>{deletedImagesList}</ul>;
-            }
-            else {
+            } else {
                 deletedImagesDisplay = <Thumbnails imageUrls={deletedImageUrls}/>
             }
         }

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './SignupPage.scss';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Signup from '../../components/Signup/Signup';
-import { signup } from '../../actions/authentication';
+import {signup} from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
-import { withRouter } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import {withRouter} from 'react-router-dom';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
 
 class SignupPage extends React.Component {
@@ -15,12 +15,12 @@ class SignupPage extends React.Component {
     }
 
     signup(data) {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         dispatch(signup(data));
     }
 
     render() {
-        const { pending, error, result } = this.props;
+        const {pending, error, result} = this.props;
         return (
             <div className="page-container">
                 <div className="page d-flex justify-content-center mt-5">

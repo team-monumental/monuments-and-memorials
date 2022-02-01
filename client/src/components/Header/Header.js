@@ -1,13 +1,12 @@
 import React from 'react';
 import './Header.scss';
-import { NavLink } from 'react-router-dom';
+import {Link, NavLink, withRouter} from 'react-router-dom';
 import {Button, Modal} from 'react-bootstrap';
 import SearchBar from './SearchBar/SearchBar';
 import CheeseburgerMenu from 'cheeseburger-menu'
 import Logo from '../Logo/Logo';
-import { withRouter, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Role } from '../../utils/authentication-util';
+import {connect} from 'react-redux';
+import {Role} from '../../utils/authentication-util';
 
 class Header extends React.Component {
 
@@ -44,17 +43,17 @@ class Header extends React.Component {
     }
 
     handleLogout() {
-        const { onLogout, history } = this.props;
+        const {onLogout, history} = this.props;
         // If the user is currently on an authenticated route, tell ProtectedRoute not to show the unauthorized banner
         history.push({
             pathname: history.location.pathname,
-            state: { suppressAuthenticationBanner: true }
+            state: {suppressAuthenticationBanner: true}
         });
         onLogout();
     }
 
     render() {
-        const { session } = this.props;
+        const {session} = this.props;
         const navLinks = this.links.map(link => {
             return {
                 ...link,
@@ -88,12 +87,14 @@ class Header extends React.Component {
                     {window.innerWidth >= 768 && !this.props.location.pathname.includes('/search') ?
                         <div className="search-bar-container">
                             <SearchBar/>
-                        </div>:<>
-                    </>}
+                        </div> : <>
+                        </>}
 
                     {/* Mobile */}
                     {window.innerWidth < 768 && <>
-                        <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {this.setState({isSearchModalOpen: false})}} animation={false}>
+                        <Modal className="mobile-search-modal" show={this.state.isSearchModalOpen} onHide={() => {
+                            this.setState({isSearchModalOpen: false})
+                        }} animation={false}>
                             <Modal.Header closeButton>
                                 <Logo/>
                             </Modal.Header>
@@ -119,14 +120,16 @@ class Header extends React.Component {
                                 </div>
                             }
                             {!session.user && <>
-                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap nav-link mr-2">Log in</Link>
+                                <Link to="/login" className="btn btn-sm btn-link-secondary text-nowrap nav-link mr-2">Log
+                                    in</Link>
                                 <Link to="/signup" className="btn btn-sm btn-primary text-nowrap">Sign up</Link>
                             </>}
                         </>}
                     </div>}
                     {/* Mobile */}
                     {window.innerWidth < 768 && <>
-                        <Button variant="link-secondary" className="search-icon" onClick={() => this.setState({isSearchModalOpen: true})}>
+                        <Button variant="link-secondary" className="search-icon"
+                                onClick={() => this.setState({isSearchModalOpen: true})}>
                             <i className="material-icons">
                                 search
                             </i>
@@ -134,12 +137,15 @@ class Header extends React.Component {
                     </>}
                     {/* Tablet and Mobile */}
                     {window.innerWidth < 992 && <>
-                        <Button variant="link-secondary" className="menu-icon" onClick={() => this.setState({isMenuOpen: true})}>
+                        <Button variant="link-secondary" className="menu-icon"
+                                onClick={() => this.setState({isMenuOpen: true})}>
                             <i className="material-icons">
                                 menu
                             </i>
                         </Button>
-                        <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {this.setState({isMenuOpen: false})}}>
+                        <CheeseburgerMenu isOpen={this.state.isMenuOpen} closeCallback={() => {
+                            this.setState({isMenuOpen: false})
+                        }}>
                             <ul onClick={event => {
                                 this.setState({isMenuOpen: false});
                                 return true;
@@ -150,15 +156,18 @@ class Header extends React.Component {
                                 <hr/>
                                 {session.user && <>
                                     <li>
-                                        <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary" className="p-0 nav-link">Log out</Button>
+                                        <Button onClick={() => this.handleLogout()} size="sm" variant="link-secondary"
+                                                className="p-0 nav-link">Log out</Button>
                                     </li>
                                 </>}
                                 {!session.user && <>
                                     <li>
-                                        <Link to="/login" className="btn btn-sm btn-link-secondary p-0 nav-link">Log in</Link>
+                                        <Link to="/login" className="btn btn-sm btn-link-secondary p-0 nav-link">Log
+                                            in</Link>
                                     </li>
                                     <li>
-                                        <Link to="/signup" className="btn btn-sm btn-link-secondary p-0 nav-link">Sign up</Link>
+                                        <Link to="/signup" className="btn btn-sm btn-link-secondary p-0 nav-link">Sign
+                                            up</Link>
                                     </li>
                                 </>}
                             </ul>

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Done in an explicit Entity because it allows for more control over queries, insertions, updates and deletions
  */
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "monument_id", "tag_id" })})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"monument_id", "tag_id"})})
 public class MonumentTag extends Model implements Serializable {
 
     @JsonIgnore

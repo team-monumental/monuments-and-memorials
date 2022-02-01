@@ -1,10 +1,10 @@
 import * as React from 'react';
 import './Signup.scss';
-import { Card, Form } from 'react-bootstrap';
+import {Card, Form} from 'react-bootstrap';
 import Logo from '../Logo/Logo';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
-import { validEmailRegex } from '../../utils/string-util';
+import {Link} from 'react-router-dom';
+import {validEmailRegex} from '../../utils/string-util';
 
 export default class Signup extends React.Component {
 
@@ -45,8 +45,8 @@ export default class Signup extends React.Component {
     }
 
     handleSubmit(event) {
-        const { onSignup } = this.props;
-        const { errors, email, password, matchingPassword, firstName, lastName } = this.state;
+        const {onSignup} = this.props;
+        const {errors, email, password, matchingPassword, firstName, lastName} = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
             onSignup({email, password, matchingPassword, firstName, lastName});
@@ -54,8 +54,8 @@ export default class Signup extends React.Component {
     }
 
     handleChange(event) {
-        const { errors, password } = this.state;
-        const { name, value } = event.target;
+        const {errors, password} = this.state;
+        const {name, value} = event.target;
         if (event.preventDefault) event.preventDefault();
 
         switch (name) {
@@ -92,8 +92,8 @@ export default class Signup extends React.Component {
     }
 
     render() {
-        const { email, password, matchingPassword, firstName, lastName, errors, validated } = this.state;
-        const { error, result } = this.props;
+        const {email, password, matchingPassword, firstName, lastName, errors, validated} = this.state;
+        const {error, result} = this.props;
 
         return (
             <Card className="signup">

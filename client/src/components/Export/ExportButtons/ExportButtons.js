@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
-import { buildBulkExportData, csvExportFields, pdfExportFields } from '../../../utils/export-util';
-import { ExportToCsvButton } from '../ExportToCsvButton/ExportToCsvButton';
-import { ExportToPdfButton } from '../ExportToPdfButton/ExportToPdfButton';
-import { ExportToZipButton } from '../ExportToZipButton/ExportToZipButton';
+import {buildBulkExportData, csvExportFields, pdfExportFields} from '../../../utils/export-util';
+import {ExportToCsvButton} from '../ExportToCsvButton/ExportToCsvButton';
+import {ExportToPdfButton} from '../ExportToPdfButton/ExportToPdfButton';
+import {ExportToZipButton} from '../ExportToZipButton/ExportToZipButton';
 
 /**
  * Presentational component for a button that exports data to CSV
@@ -11,7 +11,7 @@ import { ExportToZipButton } from '../ExportToZipButton/ExportToZipButton';
 export default class ExportButtons extends React.Component {
 
     render() {
-        const { monuments, title, images } = this.props;
+        const {monuments, title, images} = this.props;
         let finalImages = images
         if (!finalImages) {
             finalImages = []
@@ -27,18 +27,19 @@ export default class ExportButtons extends React.Component {
                 <span>
                     <ExportToCsvButton className="mt-2" fields={csvExportFields}
                                        data={buildBulkExportData(monuments, csvExportFields, true)}
-                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`} />
+                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 </span>
                 <span style={{marginLeft: '5px'}}>
                     <ExportToPdfButton className="mt-2" fields={pdfExportFields}
                                        data={buildBulkExportData(monuments, pdfExportFields, true)}
-                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`} />
+                                       exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 </span>
                 <span style={{marginLeft: '5px'}}>
-                    <ExportToZipButton className="mt-2" fields={csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions'])}
+                    <ExportToZipButton className="mt-2"
+                                       fields={csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions'])}
                                        data={buildBulkExportData(monuments, csvExportFields.concat(['Image Names', 'Image Reference URLs', 'Image Captions']), true)}
                                        exportTitle={`${title} Data ${moment().format('YYYY-MM-DD hh:mm')}`}
-                                       images={finalImages} />
+                                       images={finalImages}/>
                 </span>
             </span>
         );

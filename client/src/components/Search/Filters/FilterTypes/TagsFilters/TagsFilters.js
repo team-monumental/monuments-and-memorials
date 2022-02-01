@@ -3,8 +3,13 @@ import '../../../TagsSearch/TagsSearch.scss';
 import './TagsFilter.scss';
 import Tags from '../../../../Tags/Tags';
 import Tag from '../../../../Tags/Tag/Tag'
-import { searchTags, clearTagSearchResults, searchMaterials, clearMaterialSearchResults } from '../../../../../actions/tagsSearch';
-import { connect } from 'react-redux';
+import {
+    clearMaterialSearchResults,
+    clearTagSearchResults,
+    searchMaterials,
+    searchTags
+} from '../../../../../actions/tagsSearch';
+import {connect} from 'react-redux';
 
 class TagsFilter extends React.Component {
 
@@ -29,29 +34,31 @@ class TagsFilter extends React.Component {
             };
         }
     }
-    
+
 
     render() {
-        const { searchQuery } = this.state;
-        const { searchResults, variant, className, searchUri, tags} = this.props;
+        const {searchQuery} = this.state;
+        const {searchResults, variant, className, searchUri, tags} = this.props;
         const visibleSearchResults = searchResults.filter(result => {
             return !tags.find(tag => tag === result.name);
         });
 
         let createNewTagDisplay = (
-          <div/>
+            <div/>
         );
 
         return (
             <div className={className !== undefined ? "tags-search " + className : "tags-search"}>
                 <div className="selected-tags">
                     <div className="tags">
-                {tags.map((tag) => {
-                    return (
-                        <Tag key={tag} name={tag} isMaterial={variant} selectable={true} onSelect={(value) => this.handleSelectTag(value, tag)} selectedIcon={"clear"} selected={true} searchUri={searchUri}/>
-                    );
-                })}
-            </div>
+                        {tags.map((tag) => {
+                            return (
+                                <Tag key={tag} name={tag} isMaterial={variant} selectable={true}
+                                     onSelect={(value) => this.handleSelectTag(value, tag)} selectedIcon={"clear"}
+                                     selected={true} searchUri={searchUri}/>
+                            );
+                        })}
+                    </div>
                 </div>
                 <div className="search">
                     <input type="text"
@@ -62,10 +69,12 @@ class TagsFilter extends React.Component {
                            className="form-control"
                            onKeyDown={(event) => this.handleKeyDown(event)}
                            autoComplete="off"/>
-                    {searchQuery && <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
+                    {searchQuery &&
+                        <i className="material-icons search-clear" onClick={() => this.handleClear()}>clear</i>}
                 </div>
                 <div className="search-results">
-                    <Tags selectable onSelect={(value, tag) => this.handleSelectTag(value, tag.name)} tags={visibleSearchResults}/>
+                    <Tags selectable onSelect={(value, tag) => this.handleSelectTag(value, tag.name)}
+                          tags={visibleSearchResults}/>
                     {createNewTagDisplay}
                 </div>
             </div>
@@ -73,8 +82,8 @@ class TagsFilter extends React.Component {
     }
 
     async handleSelectTag(value, tag) {
-        
-        const { onChange, tags } = this.props
+
+        const {onChange, tags} = this.props
         if (!tags.includes(tag) || !value) {
             onChange(value, tag);
         }
@@ -94,9 +103,9 @@ class TagsFilter extends React.Component {
         }
     }
 
-    handleEnter(){
-        const { searchResults, tags } = this.props;
-        if (searchResults.length > 0){
+    handleEnter() {
+        const {searchResults, tags} = this.props;
+        if (searchResults.length > 0) {
             var visibleSearchResults = searchResults.filter(result => {
                 return !tags.find(tag => tag === result.name);
             });
@@ -105,15 +114,15 @@ class TagsFilter extends React.Component {
     }
 
     handleClear() {
-        const { dispatch, variant } = this.props;
+        const {dispatch, variant} = this.props;
         if (variant === 'materials') dispatch(clearMaterialSearchResults());
         else dispatch(clearTagSearchResults());
         this.setState({searchQuery: ''});
     }
 
     searchTags() {
-        const { dispatch, variant } = this.props;
-        const { searchQuery } = this.state;
+        const {dispatch, variant} = this.props;
+        const {searchQuery} = this.state;
         if (variant === 'materials') return dispatch(searchMaterials(searchQuery));
         else return dispatch(searchTags(searchQuery));
     }

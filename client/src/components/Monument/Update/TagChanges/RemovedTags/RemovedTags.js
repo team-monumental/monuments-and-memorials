@@ -7,7 +7,7 @@ import './RemovedTags.scss';
 export default class RemovedTags extends React.Component {
 
     render() {
-        const { tags, areMaterials } = this.props;
+        const {tags, areMaterials} = this.props;
 
         let removedTagsDisplay = <span className="font-weight-bold">NONE</span>;
 

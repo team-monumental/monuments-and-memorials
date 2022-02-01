@@ -68,7 +68,7 @@ public class TagServiceIntegrationTests {
     public void testTagService_createTag_NewMaterialCreated() {
         Monument monument = this.makeTestMonument("Monument 1");
 
-        List<Monument> monuments  = new ArrayList<>();
+        List<Monument> monuments = new ArrayList<>();
         monuments.add(monument);
 
         monument = this.monumentRepository.save(monument);
@@ -188,7 +188,9 @@ public class TagServiceIntegrationTests {
         assertEquals(2, this.tagRepository.getAllByMonumentId(monument.getId()).size());
     }
 
-    /** removeTagFromMonument Tests **/
+    /**
+     * removeTagFromMonument Tests
+     **/
 
     @Test
     public void testTagService_removeTagFromMonument_NullTag_NullMonument() {
@@ -366,6 +368,7 @@ public class TagServiceIntegrationTests {
 
     /**
      * Helper function to make a test Monument object with the specified title
+     *
      * @param title - String for the title to use to make the Monument
      * @return Monument - Monument test object
      */

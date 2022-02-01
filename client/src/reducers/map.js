@@ -1,4 +1,4 @@
-import { FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS, FETCH_MAP_MONUMENTS_ERROR } from '../constants';
+import {FETCH_MAP_MONUMENTS_ERROR, FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS} from '../constants';
 import basicReducer from '../utils/basic-reducer';
 
 const initialState = {

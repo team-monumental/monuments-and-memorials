@@ -5,19 +5,23 @@
   flex-direction: column;
   margin-left: .3em;
   margin-right: auto;
+
   .search {
     position: relative;
     max-width: 100%;
     margin-top: 0.5rem;
+
     input {
       border: none;
-      background-color: rgba(0,0,0,0);
+      background-color: rgba(0, 0, 0, 0);
+
       &:focus {
         border: none;
         box-shadow: none;
       }
     }
   }
+
   .tags {
     border: none;
   }
@@ -37,6 +41,7 @@
 
   .search-results {
     flex: 100%;
+
     .tags {
       padding: 0.5rem 0.75rem 0.75rem;
     }

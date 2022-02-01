@@ -1,42 +1,44 @@
 @import "../../theme";
 
 .tag-directory.page {
-    .alphanumeric-filter {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: 100%;
-        margin-bottom: 4rem;
+  .alphanumeric-filter {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 4rem;
 
-        .character {
-            &.selected .btn-link {
-                background-color: $primary;
-                color: white;
-                font-weight: 500;
-                border-radius: 3px;
-            }
-            &:not(:last-child):after {
-                content: '|';
-                margin: 0 0.25rem;
-                cursor: default;
-            }
-            .btn-link {
-                padding: 0 0.25rem;
-            }
-        }
-    }
+    .character {
+      &.selected .btn-link {
+        background-color: $primary;
+        color: white;
+        font-weight: 500;
+        border-radius: 3px;
+      }
 
-    .static-page-body > .row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
+      &:not(:last-child):after {
+        content: '|';
+        margin: 0 0.25rem;
+        cursor: default;
+      }
 
-    .tags {
-        padding-top: 1rem;
-        max-height: 600px;
-        overflow-y: auto;
-        @include media-breakpoint-down(sm) {
-            max-height: 300px;
-        }
+      .btn-link {
+        padding: 0 0.25rem;
+      }
     }
+  }
+
+  .static-page-body > .row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .tags {
+    padding-top: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+    @include media-breakpoint-down(sm) {
+      max-height: 300px;
+    }
+  }
 }

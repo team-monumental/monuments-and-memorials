@@ -1,16 +1,16 @@
 import React from 'react';
 import './UpdateMonumentPage.scss';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { fetchMonumentForUpdate, createUpdateSuggestion, updateMonument } from '../../actions/update-monument';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+import {createUpdateSuggestion, fetchMonumentForUpdate, updateMonument} from '../../actions/update-monument';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
-import { uploadImagesToS3 } from '../../utils/api-util';
-import { Helmet } from 'react-helmet';
+import {uploadImagesToS3} from '../../utils/api-util';
+import {Helmet} from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
-import { isEmptyObject } from '../../utils/object-util';
-import { Role } from '../../utils/authentication-util';
+import {isEmptyObject} from '../../utils/object-util';
+import {Role} from '../../utils/authentication-util';
 import Footer from '../../components/Footer/Footer';
 
 /**
@@ -40,7 +40,7 @@ class UpdateMonumentPage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, match: { params: { monumentId } } } = this.props;
+        const {dispatch, match: {params: {monumentId}}} = this.props;
         dispatch(fetchMonumentForUpdate(monumentId));
     }
 
@@ -49,8 +49,7 @@ class UpdateMonumentPage extends React.Component {
             if (this.props.updateError === null && !isEmptyObject(this.props.updatedMonument)) {
                 this.props.history.push(`/monuments/${this.props.updatedMonument.id}`);
             }
-        }
-        else {
+        } else {
             if (this.props.error === null && this.props.updateSuggestion.id !== undefined) {
                 this.props.history.push('/suggestion-created?type=update');
             }
@@ -58,7 +57,7 @@ class UpdateMonumentPage extends React.Component {
     }
 
     validateImages() {
-        const { form, addedImages, addedPhotoSphereImages, monument } = this.state;
+        const {form, addedImages, addedPhotoSphereImages, monument} = this.state;
 
         const imagesWereAdded = (addedImages && addedImages.length) || (addedPhotoSphereImages && addedPhotoSphereImages.length);
 
@@ -72,8 +71,8 @@ class UpdateMonumentPage extends React.Component {
     }
 
     async submitUpdateForm() {
-        const { dispatch, user } = this.props;
-        const { form, monument } = this.state;
+        const {dispatch, user} = this.props;
+        const {form, monument} = this.state;
 
         // First, upload the new images to the temporary S3 folder and save the URLs in the form
         const newImageObjectUrls = await uploadImagesToS3(form.images, true);
@@ -106,8 +105,7 @@ class UpdateMonumentPage extends React.Component {
 
         if (!this.validateImages()) {
             this.setState({showingNoImageModal: true});
-        }
-        else {
+        } else {
             this.setState({showingReviewModal: true});
         }
     }
@@ -125,7 +123,7 @@ class UpdateMonumentPage extends React.Component {
     }
 
     renderNoImageModal() {
-        const { showingNoImageModal } = this.state;
+        const {showingNoImageModal} = this.state;
 
         return (
             <NoImageModal
@@ -138,7 +136,7 @@ class UpdateMonumentPage extends React.Component {
     }
 
     renderReviewModal() {
-        const { showingReviewModal, monument, form, addedImages, addedPhotoSphereImages } = this.state;
+        const {showingReviewModal, monument, form, addedImages, addedPhotoSphereImages} = this.state;
 
         if (form) {
             form.addedImages = addedImages;
@@ -157,7 +155,7 @@ class UpdateMonumentPage extends React.Component {
     }
 
     render() {
-        const { fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, user } = this.props;
+        const {fetchMonumentForUpdatePending, createUpdateSuggestionPending, monument, user} = this.props;
 
         let action = 'Suggest an update to';
         if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {

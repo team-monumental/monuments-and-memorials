@@ -20,7 +20,9 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CsvMonumentConverterResultUnitTests {
 
-    /** validate Tests **/
+    /**
+     * validate Tests
+     **/
 
     @Test
     public void testCsvMonumentConverterResult_validate_AllNullFields() {

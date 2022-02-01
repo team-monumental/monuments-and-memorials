@@ -16,7 +16,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MonumentSuggestionUnitTests {
 
-    /** deserializeStringList Tests **/
+    /**
+     * deserializeStringList Tests
+     **/
 
     @Test
     public void testMonumentSuggestion_deserializeStringList_NullJson() {
@@ -43,7 +45,9 @@ public class MonumentSuggestionUnitTests {
         assertTrue(suggestion.getNewReferenceUrls().contains("String 3"));
     }
 
-    /** deserializeIntegerList Tests **/
+    /**
+     * deserializeIntegerList Tests
+     **/
 
     @Test
     public void testMonumentSuggestion_deserializeIntegerList_NullJson() {
@@ -70,7 +74,9 @@ public class MonumentSuggestionUnitTests {
         assertTrue(suggestion.getDeletedReferenceIds().contains(3));
     }
 
-    /** deserializeMap Tests **/
+    /**
+     * deserializeMap Tests
+     **/
 
     @Test
     public void testMonumentSuggestion_deserializeMap_NullJson() {
