@@ -2,7 +2,7 @@ import React from 'react';
 import {Col, Container, ListGroup, Row} from "react-bootstrap";
 import SearchResult from "./SearchResult";
 
-const SearchResultList = ({results, enqueue, dequeue}) => {
+const SearchResultList = ({results, enqueue, dequeue, onDelete}) => {
     return (
         <ListGroup as="ol" variant="flush">
             <ListGroup.Item as="li">
@@ -25,6 +25,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     nq={enqueue}
                     dq={dequeue}
                     id={result.id}
+                    del={onDelete}
                 />
             ))}
         </ListGroup>

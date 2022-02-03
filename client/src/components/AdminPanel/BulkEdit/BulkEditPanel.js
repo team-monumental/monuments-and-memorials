@@ -65,7 +65,9 @@ const BulkEditPanel = (props) => {
                                              enqueue={enqueue}
                                              dequeue={dequeue}
                                              handleSearch={handleSearch}
-                                             onChange={e => setSearchTerm(e.target.value)}/>
+                                             onChange={e => setSearchTerm(e.target.value)}
+                                             onDelete={removeSearchResult}
+                                />
                             </Card.Body>
                         </Card>
                         <SearchPanelBtns/>

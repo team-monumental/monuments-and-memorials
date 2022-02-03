@@ -5,14 +5,15 @@ import {deleteMonument} from "../../../../actions/update-monument";
 import {useDispatch} from "react-redux";
 
 
-const SearchResultBtns = ({monumentId}) => {
+
+const SearchResultBtns = ({monumentId, del}) => {
 
     const [show, setshow] = useState(false)
     const dispatch = useDispatch()
 
     const confirmDelete = () => {
         dispatch(deleteMonument(monumentId));
-        //removeSearchResult(monumentId);
+        del(monumentId);
         setshow(false);
     }
 
