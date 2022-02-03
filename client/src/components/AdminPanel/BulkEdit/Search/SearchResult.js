@@ -8,7 +8,7 @@ import Tag from "../../../Tags/Tag/Tag";
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({data, title, artist, date, tags, nq, dq, del}) => {
+const SearchResult = ({data, id, title, artist, date, tags, nq, dq}) => {
     const [checked, setChecked] = useState(false)
 
     const toggleChecked = () => {
