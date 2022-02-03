@@ -8,7 +8,7 @@ import Tag from "../../../Tags/Tag/Tag";
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({title, artist, date, tags}) => {
+const SearchResult = ({title, artist, date, tags, id}) => {
     return (
         <ListGroup.Item as="li">
             <Container fluid>
@@ -25,7 +25,7 @@ const SearchResult = ({title, artist, date, tags}) => {
                     </Col>
                     <Col lg={2}><span>{moment(date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
                     <Col lg={2}>
-                        <SearchResultBtns/>
+                        <SearchResultBtns monumentId={id}/>
                     </Col>
                 </Row>
             </Container>
