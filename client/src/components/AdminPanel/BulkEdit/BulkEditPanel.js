@@ -36,6 +36,10 @@ const BulkEditPanel = (props) => {
         setQueueList(queueList.filter(record => record.id !== recordId))
     }
 
+    const removeSearchResult = (recordId) => {
+        setSearchResults(searchResults.filter(record => record.id !== recordId))
+    }
+
     useEffect(() => {
         handleSearch()
     }, []);
