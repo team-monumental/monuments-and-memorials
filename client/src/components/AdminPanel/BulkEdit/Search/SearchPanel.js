@@ -6,7 +6,7 @@ const SearchPanel = ({results, enqueue, dequeue, handleSearch, onChange, onDelet
     return (
         <>
             <Searchbar handleSearch={handleSearch} onChange={onChange}/>
-            <SearchResultList results={results} enqueue={enqueue} dequeue={dequeue} onDelete={onDelete} />
+            <SearchResultList results={results} enqueue={enqueue} dequeue={dequeue} onDelete={onDelete}/>
         </>
     )
 }

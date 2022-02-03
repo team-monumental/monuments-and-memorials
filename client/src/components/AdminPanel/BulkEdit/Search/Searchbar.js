@@ -8,7 +8,7 @@ const Searchbar = ({handleSearch, onChange}) => {
     }
 
     const handleEnterPress = (event) => {
-        if(event.key === 'Enter'){
+        if (event.key === 'Enter') {
             event.preventDefault()
             handleClick()
         }

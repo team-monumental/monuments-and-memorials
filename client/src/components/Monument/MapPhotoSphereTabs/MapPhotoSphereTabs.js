@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './MapPhotoSphereTabs.scss';
 import Map from './Map/Map';
-import { Tab, Tabs } from 'react-bootstrap';
+import {Tab, Tabs} from 'react-bootstrap';
 
 export default class MapPhotoSphereTabs extends React.Component {
 
@@ -14,8 +14,8 @@ export default class MapPhotoSphereTabs extends React.Component {
     }
 
     render() {
-        const { monument } = this.props;
-        const { activeTab, activeImageIndex } = this.state;
+        const {monument} = this.props;
+        const {activeTab, activeImageIndex} = this.state;
         const photoSphereImages = (monument.images || []).filter(image => image.isPhotoSphere);
 
         const map = (<Map monument={monument}/>);
@@ -53,16 +53,20 @@ export default class MapPhotoSphereTabs extends React.Component {
                 <Tab eventKey="images" title="360&deg; View">
                     <div className="tab-content-wrapper">
                         {activePhotoSphereImage && (<>
-                            <iframe title="PhotoSphere" src={activePhotoSphereImage.url} frameBorder="0" allowFullScreen/>
-                            <div className="image-info">
-                                {activePhotoSphereImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
-                                    {activePhotoSphereImage.caption}
-                                </div>}
-                                {activePhotoSphereImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
-                                    <span className="detail-label">Reference:&nbsp;</span>
-                                    <a href={referenceUrl}>{activePhotoSphereImage.referenceUrl}</a>
-                                </div>}
-                            </div></>
+                                <iframe title="PhotoSphere" src={activePhotoSphereImage.url} frameBorder="0"
+                                        allowFullScreen/>
+                                <div className="image-info">
+                                    {activePhotoSphereImage.caption &&
+                                        <div style={{margin: '0 auto', textAlign: 'center'}}>
+                                            {activePhotoSphereImage.caption}
+                                        </div>}
+                                    {activePhotoSphereImage.referenceUrl &&
+                                        <div style={{margin: '0 auto', textAlign: 'center'}}>
+                                            <span className="detail-label">Reference:&nbsp;</span>
+                                            <a href={referenceUrl}>{activePhotoSphereImage.referenceUrl}</a>
+                                        </div>}
+                                </div>
+                            </>
                         )}
                         {photoSphereImages.length > 1 && pagination}
                     </div>

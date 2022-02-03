@@ -1923,7 +1923,7 @@ export default class QueuePanel extends React.Component {
                                                 className="form-control text-control w-100"
                                                 onSuggestionSelect={this.handleLocationSearchSelect.bind(this)}/>
                                 {!address.isValid &&
-                                <div className="invalid-feedback d-inline-block">{address.message}</div>}
+                                    <div className="invalid-feedback d-inline-block">{address.message}</div>}
                             </Form.Group>
                             {latitude.value && longitude.value && <div className="coordinates-geocode-group">
                                 <div className="coordinates-geocode-row">
@@ -1940,47 +1940,48 @@ export default class QueuePanel extends React.Component {
                         </>}
 
                         {locationType.value === 'coordinates' &&
-                        <Form.Group controlId="create-form-coordinates" className="mt-3">
-                            <Form.Label>Coordinates:</Form.Label>
-                            <div className="coordinates-group">
-                                <div className="coordinate-field">
-                                    <Form.Control
-                                        type="text"
-                                        name="latitude"
-                                        placeholder="Latitude"
-                                        value={latitude.value}
-                                        onChange={(event) => this.handleInputChange(event)}
-                                        isInvalid={!latitude.isValid}
-                                        className="text-control-small"
-                                    />
-                                    <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
+                            <Form.Group controlId="create-form-coordinates" className="mt-3">
+                                <Form.Label>Coordinates:</Form.Label>
+                                <div className="coordinates-group">
+                                    <div className="coordinate-field">
+                                        <Form.Control
+                                            type="text"
+                                            name="latitude"
+                                            placeholder="Latitude"
+                                            value={latitude.value}
+                                            onChange={(event) => this.handleInputChange(event)}
+                                            isInvalid={!latitude.isValid}
+                                            className="text-control-small"
+                                        />
+                                        <Form.Control.Feedback type="invalid">{latitude.message}</Form.Control.Feedback>
+                                    </div>
+                                    <div className="coordinate-field">
+                                        <Form.Control
+                                            type="text"
+                                            name="longitude"
+                                            placeholder="Longitude"
+                                            value={longitude.value}
+                                            onChange={(event) => this.handleInputChange(event)}
+                                            isInvalid={!longitude.isValid}
+                                            className="text-control-small"
+                                        />
+                                        <Form.Control.Feedback
+                                            type="invalid">{longitude.message}</Form.Control.Feedback>
+                                    </div>
                                 </div>
-                                <div className="coordinate-field">
-                                    <Form.Control
-                                        type="text"
-                                        name="longitude"
-                                        placeholder="Longitude"
-                                        value={longitude.value}
-                                        onChange={(event) => this.handleInputChange(event)}
-                                        isInvalid={!longitude.isValid}
-                                        className="text-control-small"
-                                    />
-                                    <Form.Control.Feedback type="invalid">{longitude.message}</Form.Control.Feedback>
-                                </div>
-                            </div>
-                            <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W \nN47°37.298,  W122°20.916`}</Form.Label>
-                            {address.value && <div className="coordinates-geocode-group">
-                                <div className="coordinates-geocode-row">
-                                    <span className="coordinates-geocode-row-label">Address:</span> {address.value}
-                                </div>
-                                <div className="coordinates-geocode-row">
-                                    <span className="coordinates-geocode-row-label">City:</span> {city}
-                                </div>
-                                <div className="coordinates-geocode-row">
-                                    <span className="coordinates-geocode-row-label">State:</span> {state}
-                                </div>
-                            </div>}
-                        </Form.Group>
+                                <Form.Label>{`Valid Formats:\n43.084670,   -77.674357\n43°05'04.8",  -77°40'27.7"\n43°05'04.8"N, 77°40'27.7"W \nN47°37.298,  W122°20.916`}</Form.Label>
+                                {address.value && <div className="coordinates-geocode-group">
+                                    <div className="coordinates-geocode-row">
+                                        <span className="coordinates-geocode-row-label">Address:</span> {address.value}
+                                    </div>
+                                    <div className="coordinates-geocode-row">
+                                        <span className="coordinates-geocode-row-label">City:</span> {city}
+                                    </div>
+                                    <div className="coordinates-geocode-row">
+                                        <span className="coordinates-geocode-row-label">State:</span> {state}
+                                    </div>
+                                </div>}
+                            </Form.Group>
                         }
                     </div>
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './BeginPasswordReset.scss';
-import { validEmailRegex } from '../../utils/string-util';
-import { Card, Form } from 'react-bootstrap';
+import {validEmailRegex} from '../../utils/string-util';
+import {Card, Form} from 'react-bootstrap';
 import Logo from '../Logo/Logo';
 import Button from 'react-bootstrap/Button';
 
@@ -31,8 +31,8 @@ export default class BeginPasswordReset extends React.Component {
     }
 
     handleSubmit(event) {
-        const { onResetPassword } = this.props;
-        const { errors, email } = this.state;
+        const {onResetPassword} = this.props;
+        const {errors, email} = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
             onResetPassword(email);
@@ -40,8 +40,8 @@ export default class BeginPasswordReset extends React.Component {
     }
 
     handleChange(event) {
-        const { errors } = this.state;
-        const { value } = event.target;
+        const {errors} = this.state;
+        const {value} = event.target;
         if (event.preventDefault) event.preventDefault();
 
         errors.email = validEmailRegex.test(value)
@@ -52,8 +52,8 @@ export default class BeginPasswordReset extends React.Component {
     }
 
     render() {
-        const { email, validated, errors } = this.state;
-        const { error, success } = this.props;
+        const {email, validated, errors} = this.state;
+        const {error, success} = this.props;
 
         return (
             <Card className="password-reset pb-2">
@@ -94,7 +94,8 @@ export default class BeginPasswordReset extends React.Component {
                     }
                     {success &&
                         <div>
-                            An email has been sent to your email address with instructions on how to reset your password.
+                            An email has been sent to your email address with instructions on how to reset your
+                            password.
                         </div>
                     }
                 </Card.Body>

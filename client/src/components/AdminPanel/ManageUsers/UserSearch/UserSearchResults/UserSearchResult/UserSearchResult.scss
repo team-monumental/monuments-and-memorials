@@ -1,39 +1,41 @@
 @import "../../../../../../theme";
 
 .user-search-result {
-    display: flex;
-    padding: 0.5rem;
+  display: flex;
+  padding: 0.5rem;
 
-    .card {
-        box-shadow: none !important;
-        width: 100%;
-        background-color: white;
+  .card {
+    box-shadow: none !important;
+    width: 100%;
+    background-color: white;
 
-        .card-body {
-            padding: 0.25rem 0 0 1.25rem;
-            font-size: 0.9em;
+    .card-body {
+      padding: 0.25rem 0 0 1.25rem;
+      font-size: 0.9em;
 
-            .address-container {
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        .card-title.h5 {
-            font-size: 1.25rem;
-            padding: 0;
-            a {
-                color: $secondary;
-            }
-        }
+      .address-container {
+        margin-bottom: 0.5rem;
+      }
     }
-    .monument-thumbnail {
-        $size: 96px;
-        min-width: $size;
-        width: $size;
-        height: $size;
-        border-radius: 14px;
-        background-position: center;
-        background-size: cover;
-        margin-right: 1rem;
+
+    .card-title.h5 {
+      font-size: 1.25rem;
+      padding: 0;
+
+      a {
+        color: $secondary;
+      }
     }
+  }
+
+  .monument-thumbnail {
+    $size: 96px;
+    min-width: $size;
+    width: $size;
+    height: $size;
+    border-radius: 14px;
+    background-position: center;
+    background-size: cover;
+    margin-right: 1rem;
+  }
 }

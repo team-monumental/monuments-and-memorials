@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, Redirect, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import {Redirect, Route, withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 /**
  * Wraps React Router's Route component with some permissions checking, allowing routes
@@ -14,7 +14,7 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-        const { session, roles, component: Component, path, history, exact, customProps, verifyEmail } = this.props;
+        const {session, roles, component: Component, path, history, exact, customProps, verifyEmail} = this.props;
 
         // Wait until we've finished getting the user session before making any redirects
         if (session.pending) {
@@ -56,7 +56,7 @@ class ProtectedRoute extends React.Component {
         else if (roles && !roles.includes(session.user.role)) {
             render = () => noAccessRedirect('You do not have sufficient privileges to view that page.');
         }
-        // If the user has not verified their email and email verification is required for the route,
+            // If the user has not verified their email and email verification is required for the route,
         // redirect them
         else if (verifyEmail && session.user && !session.user.isEmailVerified) {
             render = () => unverifiedEmailRedirect('You must verify your email address to view that page.');

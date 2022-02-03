@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './PhotoSphereImages.scss';
-import { Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { validUrlRegex } from '../../../utils/string-util';
+import {Button, Form, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {validUrlRegex} from '../../../utils/string-util';
 
 /**
  * Presentational component for displaying an input to add and delete PhotoSphere Images on the CreateOrUpdateForm
@@ -26,24 +26,27 @@ export default class PhotoSphereImages extends React.Component {
         const match = /src="([^"]+)"/.exec(value);
         const url = match ? match[1] : undefined;
         if (url && validUrlRegex.test(url)) {
-            this.setState({linkInput: {
-                value: url,
-                isValid: true,
-                message: ''
-            }});
-        }
-        else {
-            this.setState({linkInput: {
-                value,
-                isValid: false,
-                message: 'Invalid embed HTML. Click the "How do I find 360° images?" link above for instructions on how to copy the correct embed HTML.'
-            }});
+            this.setState({
+                linkInput: {
+                    value: url,
+                    isValid: true,
+                    message: ''
+                }
+            });
+        } else {
+            this.setState({
+                linkInput: {
+                    value,
+                    isValid: false,
+                    message: 'Invalid embed HTML. Click the "How do I find 360° images?" link above for instructions on how to copy the correct embed HTML.'
+                }
+            });
         }
     }
 
     handleAddImage() {
-        const { onAddImage } = this.props;
-        const { linkInput: { value } } = this.state;
+        const {onAddImage} = this.props;
+        const {linkInput: {value}} = this.state;
         const image = {url: value, isPhotoSphere: true, id: null};
         this.setState({
             linkInput: {
@@ -56,22 +59,21 @@ export default class PhotoSphereImages extends React.Component {
     }
 
     handleDeleteImage(image, index) {
-        const { onDeleteImage } = this.props;
+        const {onDeleteImage} = this.props;
         if (image.id) {
             onDeleteImage({image});
-        }
-        else {
+        } else {
             onDeleteImage({index});
         }
     }
 
     handleRestoreImage(image) {
-        const { onRestoreImage } = this.props;
+        const {onRestoreImage} = this.props;
         onRestoreImage(image);
     }
 
     renderModal() {
-        const { modalShowing } = this.state;
+        const {modalShowing} = this.state;
 
         const googleMapsLink = (
             <a href="https://google.com/maps">Google Maps</a>
@@ -138,8 +140,8 @@ export default class PhotoSphereImages extends React.Component {
     }
 
     render() {
-        const { images } = this.props;
-        const { linkInput } = this.state;
+        const {images} = this.props;
+        const {linkInput} = this.state;
 
         return (
             <Form.Group controlId="photo-sphere-images" className="photosphere-input">
@@ -157,7 +159,8 @@ export default class PhotoSphereImages extends React.Component {
                 {images.map((image, index) => (
                     <div key={image.id || image.url} className="photosphere-preview fileContainer">
                         {image.hasBeenDeleted ? (
-                            <i className="material-icons delete-button undo" onClick={() => this.handleRestoreImage(image)}>undo</i>
+                            <i className="material-icons delete-button undo"
+                               onClick={() => this.handleRestoreImage(image)}>undo</i>
                         ) : (
                             <div className="deleteImage" onClick={() => this.handleDeleteImage(image, index)}>X</div>
                         )}

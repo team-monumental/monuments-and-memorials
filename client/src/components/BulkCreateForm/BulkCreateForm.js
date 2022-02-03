@@ -602,23 +602,23 @@ export default class BulkCreateForm extends React.Component {
                     </table>
                 </div>
                 {warningCount > 0 && errorCount === 0 &&
-                <div>
-                    If you choose to continue with warnings, the affected rows will still be&nbsp;
-                    {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
-                    updates later.
-                </div>
+                    <div>
+                        If you choose to continue with warnings, the affected rows will still be&nbsp;
+                        {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
+                        updates later.
+                    </div>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                <div>
-                    If you choose to continue with errors, any rows with errors
-                    will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
-                    {warningCount > 0 &&
-                    <span>
+                    <div>
+                        If you choose to continue with errors, any rows with errors
+                        will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
+                        {warningCount > 0 &&
+                            <span>
                                 &nbsp;Any rows with warnings will still be {pastTenseTerm.toLowerCase()}, but may have
                                 non-critical issues that should be addressed with updates later.
                             </span>
-                    }
-                </div>
+                        }
+                    </div>
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
@@ -626,14 +626,14 @@ export default class BulkCreateForm extends React.Component {
                                    data={this.buildCsvExportData(results)}
                                    exportTitle={`Validation Results ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 {warningCount > 0 && errorCount === 0 &&
-                <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
-                    Continue With Warnings
-                </Button>
+                    <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
+                        Continue With Warnings
+                    </Button>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
-                    Continue With Errors
-                </Button>
+                    <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
+                        Continue With Errors
+                    </Button>
                 }
 
                 <Button onClick={() => this.resetForm(true)}>

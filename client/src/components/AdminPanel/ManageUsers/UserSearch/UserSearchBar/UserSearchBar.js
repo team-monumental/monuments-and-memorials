@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './UserSearchBar.scss';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import * as QueryString from 'query-string';
 import TextSearch from '../../../../Header/SearchBar/TextSearch/TextSearch';
-import { Button, Form } from 'react-bootstrap';
+import {Button, Form} from 'react-bootstrap';
 import search from '../../../../../utils/search';
 
 class UserSearchBar extends React.Component {
@@ -23,8 +23,8 @@ class UserSearchBar extends React.Component {
     }
 
     search() {
-        const { history } = this.props;
-        let { nameSearchQuery, emailSearchQuery, roleFilter } = this.state;
+        const {history} = this.props;
+        let {nameSearchQuery, emailSearchQuery, roleFilter} = this.state;
         search({
             name: nameSearchQuery,
             email: emailSearchQuery,
@@ -56,7 +56,7 @@ class UserSearchBar extends React.Component {
     }
 
     render() {
-        const { nameSearchQuery, emailSearchQuery, roleFilter } = this.state;
+        const {nameSearchQuery, emailSearchQuery, roleFilter} = this.state;
         return (
             <div className="user-search-bar">
                 <div className="d-flex">

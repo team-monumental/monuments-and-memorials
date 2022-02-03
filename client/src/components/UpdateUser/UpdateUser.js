@@ -1,15 +1,15 @@
 import * as React from 'react';
 import './UpdateUser.scss';
-import { Card, Form } from 'react-bootstrap';
-import { validEmailRegex } from '../../utils/string-util';
+import {Card, Form} from 'react-bootstrap';
+import {validEmailRegex} from '../../utils/string-util';
 import Button from 'react-bootstrap/Button';
-import { withRouter, Link } from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 
 export class UpdateUser extends React.Component {
 
     constructor(props) {
         super(props);
-        const { user } = props;
+        const {user} = props;
         this.state = {
             validated: false,
             firstName: user.firstName,
@@ -41,8 +41,8 @@ export class UpdateUser extends React.Component {
     }
 
     handleSubmit(event) {
-        const { onSubmit } = this.props;
-        const { errors, email, firstName, lastName } = this.state;
+        const {onSubmit} = this.props;
+        const {errors, email, firstName, lastName} = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
             onSubmit({email, firstName, lastName});
@@ -50,8 +50,8 @@ export class UpdateUser extends React.Component {
     }
 
     handleChange(event) {
-        const { errors } = this.state;
-        const { name, value } = event.target;
+        const {errors} = this.state;
+        const {name, value} = event.target;
         if (event.preventDefault) event.preventDefault();
 
         switch (name) {
@@ -78,8 +78,8 @@ export class UpdateUser extends React.Component {
     }
 
     render() {
-        const { email, firstName, lastName, errors, validated } = this.state;
-        const { error, success, needsConfirmation, history, user } = this.props;
+        const {email, firstName, lastName, errors, validated} = this.state;
+        const {error, success, needsConfirmation, history, user} = this.props;
 
         const hasChanges = (email !== user.email) || (firstName !== user.firstName) || (lastName !== user.lastName);
 
@@ -91,7 +91,8 @@ export class UpdateUser extends React.Component {
                     </Card.Header>
                     <Card.Body>
                         {!success &&
-                            <Form className="update-account-form" noValidate onSubmit={event => this.handleSubmit(event)}>
+                            <Form className="update-account-form" noValidate
+                                  onSubmit={event => this.handleSubmit(event)}>
                                 <Form.Group>
                                     <Form.Label>First Name</Form.Label>
                                     <Form.Control
@@ -150,7 +151,9 @@ export class UpdateUser extends React.Component {
                                 Your information has been updated successfully.
                             </div>
                             {needsConfirmation && <>
-                                <div className="my-2 needs-confirmation-text">An email has been sent to your new email address with instructions on how to finish changing your email address.</div>
+                                <div className="my-2 needs-confirmation-text">An email has been sent to your new email
+                                    address with instructions on how to finish changing your email address.
+                                </div>
                                 <div>You will now need to log in again with your new email address.</div>
                             </>}
                         </>}

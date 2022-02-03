@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './UpdateMonumentSuggestion.scss';
-import { connect } from 'react-redux';
-import { Card } from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {Card} from 'react-bootstrap';
 import MonumentUpdate from '../../../Monument/Update/MonumentUpdate';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {DateFormat, getUserFullName} from '../../../../utils/string-util';
-import { Role } from '../../../../utils/authentication-util';
+import {Role} from '../../../../utils/authentication-util';
 
 class UpdateMonumentSuggestion extends React.Component {
 
@@ -16,7 +16,7 @@ class UpdateMonumentSuggestion extends React.Component {
     }
 
     determineDateTypeForUpdate() {
-        const { suggestion } = this.props;
+        const {suggestion} = this.props;
 
         if (suggestion.newDate) {
             return DateFormat.EXACT_DATE;
@@ -30,7 +30,7 @@ class UpdateMonumentSuggestion extends React.Component {
     }
 
     determineDeactivatedDateTypeForUpdate() {
-        const { suggestion } = this.props;
+        const {suggestion} = this.props;
 
         if (suggestion.newDeactivatedDate) {
             return DateFormat.EXACT_DATE;
@@ -44,7 +44,7 @@ class UpdateMonumentSuggestion extends React.Component {
     }
 
     buildUpdate() {
-        const { suggestion } = this.props;
+        const {suggestion} = this.props;
 
         return {
             ...suggestion,
@@ -63,7 +63,7 @@ class UpdateMonumentSuggestion extends React.Component {
             newLatitude: (suggestion.newLatitude || '').toString(),
             newLongitude: (suggestion.newLongitude || '').toString(),
             newMaterials: suggestion.newMaterialsJson && JSON.parse(suggestion.newMaterialsJson),
-            newTags : suggestion.newTagsJson && JSON.parse(suggestion.newTagsJson),
+            newTags: suggestion.newTagsJson && JSON.parse(suggestion.newTagsJson),
             deletedReferenceIds: suggestion.deletedReferenceIdsJson && JSON.parse(suggestion.deletedReferenceIdsJson),
             updatedReferenceUrlsById: suggestion.updatedReferenceUrlsByIdJson && JSON.parse(suggestion.updatedReferenceUrlsByIdJson),
             newReferenceUrls: suggestion.newReferenceUrlsJson && JSON.parse(suggestion.newReferenceUrlsJson),
@@ -76,8 +76,10 @@ class UpdateMonumentSuggestion extends React.Component {
     }
 
     render() {
-        const { suggestion, index, showTitleAsLink, showIndex=true, expandedByDefault, showCollapseLinks,
-            showCreatedBy, session } = this.props;
+        const {
+            suggestion, index, showTitleAsLink, showIndex = true, expandedByDefault, showCollapseLinks,
+            showCreatedBy, session
+        } = this.props;
 
         let titleText;
         if (suggestion && suggestion.monument && suggestion.monument.title) {
@@ -103,14 +105,16 @@ class UpdateMonumentSuggestion extends React.Component {
                         <span className="pr-3">
                             {
                                 showTitleAsLink ?
-                                    <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=update`}>{titleText}</Link> :
+                                    <Link
+                                        to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=update`}>{titleText}</Link> :
                                     titleText
                             }
                         </span>
                         {showCreatedBy &&
                             <div className="created-by-container">
                                 Created By:&nbsp;
-                                {manageUserLink} (<a href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>)
+                                {manageUserLink} (<a
+                                href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>)
                             </div>
                         }
                     </Card.Title>

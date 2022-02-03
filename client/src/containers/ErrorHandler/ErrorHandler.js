@@ -1,6 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { removeError } from '../../actions/errors';
+import {connect} from 'react-redux';
+import {removeError} from '../../actions/errors';
 import ErrorScreen from '../../components/Error/ErrorScreen/ErrorScreen';
 
 /**
@@ -18,7 +18,7 @@ class ErrorHandler extends React.Component {
 
     render() {
 
-        const { errors, children, dispatch } = this.props;
+        const {errors, children, dispatch} = this.props;
 
         if (errors.length > 1) {
             const oldErrors = errors.splice(1);

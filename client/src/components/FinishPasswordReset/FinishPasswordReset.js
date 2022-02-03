@@ -1,10 +1,10 @@
 import * as React from 'react';
 import './FinishPasswordReset.scss';
-import { Card, Form } from 'react-bootstrap';
+import {Card, Form} from 'react-bootstrap';
 import Logo from '../Logo/Logo';
 import Button from 'react-bootstrap/Button';
 import * as QueryString from 'query-string';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 
 export class FinishPasswordReset extends React.Component {
 
@@ -28,7 +28,7 @@ export class FinishPasswordReset extends React.Component {
     }
 
     initialize() {
-        const { location: { search } } = this.props;
+        const {location: {search}} = this.props;
         const token = QueryString.parse(search).token;
 
         if (!token) {
@@ -57,8 +57,8 @@ export class FinishPasswordReset extends React.Component {
     }
 
     handleSubmit(event) {
-        const { onResetPassword } = this.props;
-        const { errors, token, newPassword, matchingNewPassword } = this.state;
+        const {onResetPassword} = this.props;
+        const {errors, token, newPassword, matchingNewPassword} = this.state;
         event.preventDefault();
         if (this.validateForm(errors)) {
             onResetPassword({token, newPassword, matchingNewPassword});
@@ -66,8 +66,8 @@ export class FinishPasswordReset extends React.Component {
     }
 
     handleChange(event) {
-        const { errors, newPassword } = this.state;
-        const { name, value } = event.target;
+        const {errors, newPassword} = this.state;
+        const {name, value} = event.target;
         if (event.preventDefault) event.preventDefault();
 
         switch (name) {
@@ -89,8 +89,8 @@ export class FinishPasswordReset extends React.Component {
     }
 
     render() {
-        const { newPassword, matchingNewPassword, validated, errors } = this.state;
-        const { error, success } = this.props;
+        const {newPassword, matchingNewPassword, validated, errors} = this.state;
+        const {error, success} = this.props;
 
         return (
             <Card className="password-reset pb-2">
@@ -134,7 +134,8 @@ export class FinishPasswordReset extends React.Component {
                                     noValidate
                                     isInvalid={errors.matchingNewPassword && validated}
                                 />
-                                <Form.Control.Feedback type="invalid">{errors.matchingNewPassword}</Form.Control.Feedback>
+                                <Form.Control.Feedback
+                                    type="invalid">{errors.matchingNewPassword}</Form.Control.Feedback>
                             </Form.Group>
                             {error && <div className="error-message mb-3">
                                 {error}

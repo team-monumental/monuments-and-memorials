@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './CreateMonumentSuggestions.scss';
 import CreateMonumentSuggestion from './CreateMonumentSuggestion/CreateMonumentSuggestion';
-import { Collapse } from 'react-bootstrap';
+import {Collapse} from 'react-bootstrap';
 
 export default class CreateMonumentSuggestions extends React.Component {
 
@@ -14,7 +14,7 @@ export default class CreateMonumentSuggestions extends React.Component {
     }
 
     handleCollapseLinkClick() {
-        const { expanded } = this.state;
+        const {expanded} = this.state;
         this.setState({expanded: !expanded});
     }
 
@@ -35,10 +35,12 @@ export default class CreateMonumentSuggestions extends React.Component {
     }
 
     render() {
-        const { suggestions, hideMoreThan, showSuggestionCollapses=true, showTitlesAsLinks,
-            showCollapseLinks=true, displayStatuses, areFromBulk, showSuggestionCollapseLinks=true,
-            showCreatedBys } = this.props;
-        const { expanded } = this.state;
+        const {
+            suggestions, hideMoreThan, showSuggestionCollapses = true, showTitlesAsLinks,
+            showCollapseLinks = true, displayStatuses, areFromBulk, showSuggestionCollapseLinks = true,
+            showCreatedBys
+        } = this.props;
+        const {expanded} = this.state;
 
         let showingSuggestions = suggestions;
         let hiddenSuggestions;

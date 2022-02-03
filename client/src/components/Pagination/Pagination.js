@@ -1,6 +1,6 @@
 import React from 'react';
 import './Pagination.scss';
-import { Pagination as BootstrapPagination } from 'react-bootstrap';
+import {Pagination as BootstrapPagination} from 'react-bootstrap';
 
 /**
  * Builds a pagination for the specified number of pages/current page number,
@@ -15,12 +15,11 @@ export default class Pagination extends React.Component {
                 count: props.count || 0,
                 page: props.page || 0
             };
-        }
-        else this.state = {count: 0, page: 0};
+        } else this.state = {count: 0, page: 0};
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { count, page } = this.props;
+        const {count, page} = this.props;
         if (count !== prevProps.count && !isNaN(count)) {
             this.setState({count});
         }
@@ -30,12 +29,12 @@ export default class Pagination extends React.Component {
     }
 
     handlePage(index) {
-        const { onPage } = this.props;
+        const {onPage} = this.props;
         if (onPage && onPage instanceof Function) onPage(index);
     }
 
     render() {
-        const { count, page } = this.state;
+        const {count, page} = this.state;
 
         let pagination = [];
         let paginationIndices = [];
@@ -52,8 +51,8 @@ export default class Pagination extends React.Component {
 
                 pagination.push((
                     <BootstrapPagination.Item key={pagination.length + 1}
-                                     active={page === index}
-                                     onClick={() => this.handlePage(index)}>{index + 1}
+                                              active={page === index}
+                                              onClick={() => this.handlePage(index)}>{index + 1}
                     </BootstrapPagination.Item>
                 ));
                 paginationIndices.push(index);

@@ -3,8 +3,8 @@ $secondary: #35495e;
 $danger: #da6060;
 $light: #e0e1e2;
 
-$theme-colors:(
-    "perm-color": #2b82cb
+$theme-colors: (
+        "perm-color": #2b82cb
 );
 
 @import "../node_modules/bootstrap/scss/bootstrap";

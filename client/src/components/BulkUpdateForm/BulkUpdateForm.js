@@ -1,19 +1,19 @@
 import React from 'react';
 import './BulkUpdateForm.scss';
-import { Form, Card, Button } from 'react-bootstrap';
+import {Button, Card, Form} from 'react-bootstrap';
 import validator from 'validator';
-import { csvFileRegex, zipFileRegex } from '../../utils/regex-util';
+import {csvFileRegex, zipFileRegex} from '../../utils/regex-util';
 import * as JSZip from 'jszip';
 import * as CSVParser from 'csvtojson';
 import moment from 'moment';
 import ExportToCsvButton from '../Export/ExportToCsvButton/ExportToCsvButton';
-import { capitalize } from '../../utils/string-util';
-import { Link } from 'react-router-dom';
+import {capitalize} from '../../utils/string-util';
+import {Link} from 'react-router-dom';
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk updating Monuments.
  */
-export default class BulkUpdateForm extends React.Component{
+export default class BulkUpdateForm extends React.Component {
 
     csvExportFields = ['Row Number', 'Warnings', 'Errors'];
 
@@ -37,11 +37,14 @@ export default class BulkUpdateForm extends React.Component{
                 {name: 'deactivatedComment', label: 'Deactivation Reason'}, {name: 'latitude'}, {name: 'longitude'},
                 {name: 'city'}, {name: 'state'}, {name: 'address'}, {name: 'description'}, {name: 'inscription'},
                 {name: 'tags'}, {name: 'materials'}, {name: 'images', label: 'Image File Name'},
-                {name: 'references'}, {name: 'contributions', label: 'Submitted By/Contributors'}, {name: 'is_temporary'}
+                {name: 'references'}, {
+                    name: 'contributions',
+                    label: 'Submitted By/Contributors'
+                }, {name: 'is_temporary'}
             ].map(field => {
                 return {
                     label: capitalize(field.name.replace(/_/g, ' ')),
-                    ... field
+                    ...field
                 }
             })
         };
@@ -51,7 +54,7 @@ export default class BulkUpdateForm extends React.Component{
      * Build the form object to send to the onSubmit handler
      */
     buildForm() {
-        const { fileUpload, mapping } = this.state;
+        const {fileUpload, mapping} = this.state;
 
         // Reformat the mapping into the Map<String, String> format the backend uses
         let map = {};
@@ -76,12 +79,12 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     submitForValidation() {
-        const { onValidationSubmit } = this.props;
+        const {onValidationSubmit} = this.props;
         onValidationSubmit(this.buildForm());
     }
 
     submitCreate() {
-        const { onCreateSubmit } = this.props;
+        const {onCreateSubmit} = this.props;
         onCreateSubmit(this.buildForm());
         this.resetForm(true)
     }
@@ -91,7 +94,7 @@ export default class BulkUpdateForm extends React.Component{
      * @param event - The upload event fired by the input
      */
     async handleFileUploadChange(event) {
-        const { fileUpload } = this.state;
+        const {fileUpload} = this.state;
 
         this.resetForm(false);
 
@@ -99,8 +102,7 @@ export default class BulkUpdateForm extends React.Component{
             fileUpload.csv = event.target.files[0];
             this.setState({fileUpload});
             this.readCSVHeaders();
-        }
-        else if (validator.matches(event.target.value, zipFileRegex)) {
+        } else if (validator.matches(event.target.value, zipFileRegex)) {
             fileUpload.zip = event.target.files[0];
             let content = await JSZip.loadAsync(fileUpload.zip);
 
@@ -129,7 +131,7 @@ export default class BulkUpdateForm extends React.Component{
 
             for (let i = 0; i < fileUpload.images.length; i++) {
                 const image = fileUpload.images[i]
-                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg') && !image.name.endsWith('.PNG') && !image.name.endsWith('.JPG') && !image.name.endsWith('.jpeg') && !image.name.endsWith('.JPEG')){
+                if (!image.name.endsWith('.png') && !image.name.endsWith('.jpg') && !image.name.endsWith('.PNG') && !image.name.endsWith('.JPG') && !image.name.endsWith('.jpeg') && !image.name.endsWith('.JPEG')) {
                     fileUpload.errorMessages.push('Your zip file contains unsupported file types. Please check that there are only .csv, .jpg, and' +
                         ' .png files in your .zip file.');
                     fileUpload.csv = null;
@@ -142,15 +144,14 @@ export default class BulkUpdateForm extends React.Component{
 
             this.setState({fileUpload});
             this.readCSVHeaders();
-        }
-        else {
+        } else {
             event.target.value = '';
             alert('Invalid file type submitted');
         }
     }
 
     async readCSVHeaders() {
-        const { fields, fileUpload: { csv, zip } } = this.state;
+        const {fields, fileUpload: {csv, zip}} = this.state;
         if (!csv) return;
 
         let headersString;
@@ -189,8 +190,8 @@ export default class BulkUpdateForm extends React.Component{
                         let label = field.label.toLowerCase().trim();
                         let trimmedHeader = header.toLowerCase().trim();
                         if ((name === trimmedHeader || label === trimmedHeader ||
-                            name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
-                            trimmedHeader.includes(name) || trimmedHeader.includes(label)) &&
+                                name.includes(trimmedHeader) || label.includes(trimmedHeader) ||
+                                trimmedHeader.includes(name) || trimmedHeader.includes(label)) &&
                             !field.selected && trimmedHeader) {
                             field.selected = true;
                             mappedField = field.name;
@@ -211,9 +212,9 @@ export default class BulkUpdateForm extends React.Component{
      * @param resetValue - If true, also resets the values of the inputs
      */
     resetForm(resetValue) {
-        const { fileUpload, fields } = this.state;
-        const { onResetForm } = this.props;
-        let { fileUploadInputKey } = this.state;
+        const {fileUpload, fields} = this.state;
+        const {onResetForm} = this.props;
+        let {fileUploadInputKey} = this.state;
 
         fileUpload.isValid = true;
         fileUpload.errorMessages = [];
@@ -239,16 +240,18 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     buildCsvExportData(results) {
-        return results.map(result => {return {
-            'Row Number': result.index,
-            'Warnings': result.warnings.join('\n'),
-            'Errors': result.errors.join('\n')
-        }});
+        return results.map(result => {
+            return {
+                'Row Number': result.index,
+                'Warnings': result.warnings.join('\n'),
+                'Errors': result.errors.join('\n')
+            }
+        });
     }
 
     render() {
-        const { fileUpload, showFieldMapping } = this.state;
-        const { showValidationResults, showCreateResults, term } = this.props;
+        const {fileUpload, showFieldMapping} = this.state;
+        const {showValidationResults, showCreateResults, term} = this.props;
 
         return (
             <Card className="bulk-create-form-container">
@@ -269,8 +272,8 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     renderFileUpload() {
-        const { fileUpload, fileUploadInputKey } = this.state;
-        const { term } = this.props;
+        const {fileUpload, fileUploadInputKey} = this.state;
+        const {term} = this.props;
 
         return (<Card.Body>
             <Card.Subtitle className="mt-2">
@@ -285,8 +288,9 @@ export default class BulkUpdateForm extends React.Component{
                     <a href='/BulkUploadTemplate.csv'>Bulk Upload CSV Template</a>!</span>
             </p>
             <p className="mb-4" style={{marginLeft: "16px"}}>
-                <span className="font-weight-bold">Note</span>:  If not using Excel, surround fields with multiple values in quotes.
-                Example:  <code>"Limestone,Steel,Bronze"</code>.
+                <span className="font-weight-bold">Note</span>: If not using Excel, surround fields with multiple values
+                in quotes.
+                Example: <code>"Limestone,Steel,Bronze"</code>.
             </p>
             <Card.Subtitle>
                 Zip Upload
@@ -323,7 +327,7 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     renderUploadedFiles() {
-        const { fileUpload } = this.state;
+        const {fileUpload} = this.state;
         return (<>
             <Card.Body>
                 <div className="zip-list-wrapper">
@@ -363,7 +367,7 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     renderFieldMapping() {
-        const { mapping, fields } = this.state;
+        const {mapping, fields} = this.state;
 
         return (<>
             <Card.Body>
@@ -430,8 +434,8 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     renderValidationResults() {
-        const { fileUpload } = this.state;
-        const { validationResult, actionHappeningTerm, pastTenseTerm } = this.props;
+        const {fileUpload} = this.state;
+        const {validationResult, actionHappeningTerm, pastTenseTerm} = this.props;
 
         // TODO: Handle general errors
         // const { error } = validationResult;
@@ -450,10 +454,11 @@ export default class BulkUpdateForm extends React.Component{
         const errorCount = results.filter(result => result.errors.length > 0).length;
         const warningCount = results.filter(result => result.warnings.length > 0).length;
 
-        if (results.length === 0){
+        if (results.length === 0) {
             return (<>
                 <Card.Body>
-                    During validation of your <code>{fileUpload.zip ? '.zip' : '.csv'}</code>, an unexpected error occurred.
+                    During validation of your <code>{fileUpload.zip ? '.zip' : '.csv'}</code>, an unexpected error
+                    occurred.
                     Please check your file for any issues.
                 </Card.Body>
 
@@ -468,8 +473,10 @@ export default class BulkUpdateForm extends React.Component{
         if (errorCount === 0 && warningCount === 0) {
             return (<>
                 <Card.Body>
-                    We've validated your <code>{fileUpload.zip ? '.zip' : '.csv'}</code> and have found no errors or warnings.
-                    You may now proceed with {actionHappeningTerm.toLowerCase()} {results.length} monuments or memorials.
+                    We've validated your <code>{fileUpload.zip ? '.zip' : '.csv'}</code> and have found no errors or
+                    warnings.
+                    You may now proceed with {actionHappeningTerm.toLowerCase()} {results.length} monuments or
+                    memorials.
                 </Card.Body>
 
                 <Card.Footer className="d-flex justify-content-end">
@@ -513,7 +520,8 @@ export default class BulkUpdateForm extends React.Component{
                                 <tr key={result.index}>
                                     <td>{result.index}</td>
                                     <td>{result.warnings.map((warning, index) => (
-                                        <div key={index} dangerouslySetInnerHTML={{__html: warning}} className="bulk-warning" />
+                                        <div key={index} dangerouslySetInnerHTML={{__html: warning}}
+                                             className="bulk-warning"/>
                                     ))}</td>
                                     <td>{result.errors.map((error, index) => (
                                         <div key={index} className="bulk-warning">{error}</div>
@@ -525,37 +533,38 @@ export default class BulkUpdateForm extends React.Component{
                     </table>
                 </div>
                 {warningCount > 0 && errorCount === 0 &&
-                <div>
-                    If you choose to continue with warnings, the affected rows will still be&nbsp;
-                    {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
-                    updates later.
-                </div>
+                    <div>
+                        If you choose to continue with warnings, the affected rows will still be&nbsp;
+                        {pastTenseTerm.toLowerCase()}, but may have non-critical issues that should be addressed with
+                        updates later.
+                    </div>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                <div>
-                    If you choose to continue with errors, any rows with errors
-                    will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
-                    {warningCount > 0 &&
-                    <span>
+                    <div>
+                        If you choose to continue with errors, any rows with errors
+                        will <span className="font-weight-bold">not</span> be {pastTenseTerm.toLowerCase()}.
+                        {warningCount > 0 &&
+                            <span>
                                 &nbsp;Any rows with warnings will still be {pastTenseTerm.toLowerCase()}, but may have
                                 non-critical issues that should be addressed with updates later.
                             </span>
-                    }
-                </div>
+                        }
+                    </div>
                 }
             </Card.Body>
             <Card.Footer className="d-flex justify-content-end">
-                <ExportToCsvButton className="mr-2" fields={this.csvExportFields} data={this.buildCsvExportData(results)}
+                <ExportToCsvButton className="mr-2" fields={this.csvExportFields}
+                                   data={this.buildCsvExportData(results)}
                                    exportTitle={`Validation Results ${moment().format('YYYY-MM-DD hh:mm')}`}/>
                 {warningCount > 0 && errorCount === 0 &&
-                <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
-                    Continue With Warnings
-                </Button>
+                    <Button variant="warning" className="mr-2" onClick={() => this.submitCreate()}>
+                        Continue With Warnings
+                    </Button>
                 }
                 {errorCount > 0 && errorCount !== rowCount &&
-                <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
-                    Continue With Errors
-                </Button>
+                    <Button variant="danger" className="mr-2" onClick={() => this.submitCreate()}>
+                        Continue With Errors
+                    </Button>
                 }
 
                 <Button onClick={() => this.resetForm(true)}>
@@ -566,7 +575,7 @@ export default class BulkUpdateForm extends React.Component{
     }
 
     renderCreateResults() {
-        const { createResult } = this.props;
+        const {createResult} = this.props;
 
         return (
             <Card.Body>

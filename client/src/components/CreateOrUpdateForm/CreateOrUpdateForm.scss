@@ -1,377 +1,378 @@
 @import "../../theme";
 
 .create-form {
-    margin: 0 auto;
-    max-width: 390px;
-    .h4 {
-        padding-bottom: 1rem;
-        text-align: center;
+  margin: 0 auto;
+  max-width: 390px;
+
+  .h4 {
+    padding-bottom: 1rem;
+    text-align: center;
+  }
+
+  .form-label {
+    font-weight: bold;
+    white-space: pre-wrap;
+  }
+
+  .text-control {
+    width: 25rem;
+  }
+
+  .text-control-small {
+    width: 10rem;
+  }
+
+  .select-control {
+    width: 10rem;
+  }
+
+  .multi-line-text-control {
+    width: 25rem;
+  }
+
+  .btn-toolbar {
+    padding-left: 5.25rem;
+    padding-bottom: 4rem;
+
+    &.update {
+      padding-left: 5.5rem;
+    }
+
+    .btn {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-family: "Open Sans", sans-serif;
+    }
+  }
+
+  .reset-button {
+    background-color: #E3E6E8;
+    border-color: #E3E6E8;
+    color: black;
+
+    &:hover {
+      background-color: #B4B6B8;
+      border-color: #B4B6B8;
+      color: black;
+    }
+  }
+
+  .advanced-information-link {
+    cursor: pointer;
+    color: $primary;
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
+    text-decoration: underline;
+    text-align: center;
+  }
+
+  .address-coordinates-container {
+    border: 1px solid lightgray;
+    padding: 1.0rem 1.5rem 1.5rem 1.5rem;
+    width: 30rem;
+    margin-bottom: 1rem;
+
+    span {
+      padding-bottom: 0.5rem;
+      display: flex;
+    }
+
+    .form-group {
+      margin: 0;
+    }
+
+    .coordinates-group {
+      display: flex;
+
+      .coordinate-field {
+        flex-basis: 50%;
+        display: flex;
+        flex-direction: column;
+
+        &:first-child {
+          margin-right: 0.5rem;
+        }
+
+        .form-control {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .date-container {
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+    width: 30rem;
+    margin-bottom: 1rem;
+
+    .form-row {
+      padding-left: 0.5rem;
     }
 
     .form-label {
+      display: flex;
+    }
+
+    .react-datepicker__input-container input {
+      color: #495057;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      height: calc(1.5em + 0.75rem + 2px);
+      padding: 0.375rem 0.75rem;
+    }
+
+    .react-datepicker__day--selected {
+      background-color: $primary;
+    }
+  }
+
+  .fileUploader {
+
+    .fileContainer {
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
+
+      .chooseFileButton {
+        background: $primary;
         font-weight: bold;
-        white-space: pre-wrap;
-    }
-
-    .text-control {
-        width: 25rem;
-    }
-
-    .text-control-small {
-        width: 10rem;
-    }
-
-    .select-control {
-        width: 10rem;
-    }
-
-    .multi-line-text-control {
-        width: 25rem;
-    }
-
-    .btn-toolbar {
-        padding-left: 5.25rem;
-        padding-bottom: 4rem;
-
-        &.update {
-            padding-left: 5.5rem;
-        }
-
-        .btn {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-family: "Open Sans", sans-serif;
-        }
-    }
-
-    .reset-button {
-        background-color: #E3E6E8;
-        border-color: #E3E6E8;
-        color: black;
+        text-transform: uppercase;
+        font-family: "Open Sans", sans-serif;
+        margin: 0;
 
         &:hover {
-            background-color: #B4B6B8;
-            border-color: #B4B6B8;
-            color: black;
-        }
-    }
-
-    .advanced-information-link {
-        cursor: pointer;
-        color: $primary;
-        padding-top: 1.5rem;
-        padding-bottom: 1rem;
-        font-weight: bold;
-        text-decoration: underline;
-        text-align: center;
-    }
-
-    .address-coordinates-container {
-        border: 1px solid lightgray;
-        padding: 1.0rem 1.5rem 1.5rem 1.5rem;
-        width: 30rem;
-        margin-bottom: 1rem;
-
-        span {
-            padding-bottom: 0.5rem;
-            display: flex;
+          background-color: #389c6f;
+          border-color: #359268;
         }
 
-        .form-group {
-            margin: 0;
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba(94, 195, 150, 0.5);
         }
+      }
 
-        .coordinates-group {
-            display: flex;
-
-            .coordinate-field {
-                flex-basis: 50%;
-                display: flex;
-                flex-direction: column;
-
-                &:first-child {
-                    margin-right: 0.5rem;
-                }
-
-                .form-control {
-                    width: 100%;
-                }
-            }
-        }
-    }
-
-    .date-container {
-        border-style: solid;
-        border-color: lightgray;
-        border-width: thin;
-        padding: 0.5rem 0 0.5rem 0.5rem;
-        width: 30rem;
-        margin-bottom: 1rem;
-
-        .form-row {
-            padding-left: 0.5rem;
-        }
-
-        .form-label {
-            display: flex;
-        }
-
-        .react-datepicker__input-container input {
-            color: #495057;
-            background-clip: padding-box;
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-            height: calc(1.5em + 0.75rem + 2px);
-            padding: 0.375rem 0.75rem;
-        }
-
-        .react-datepicker__day--selected {
-            background-color: $primary;
-        }
-    }
-
-    .fileUploader {
-
-        .fileContainer {
-            box-shadow: none;
-            margin: 0;
-            padding: 0;
-
-            .chooseFileButton {
-                background: $primary;
-                font-weight: bold;
-                text-transform: uppercase;
-                font-family: "Open Sans", sans-serif;
-                margin: 0;
-
-                &:hover {
-                    background-color: #389c6f;
-                    border-color: #359268;
-                }
-
-                &:focus {
-                    box-shadow: 0 0 0 0.2rem rgba(94, 195, 150, 0.5);
-                }
-            }
-
-            .deleteImage {
-                background: $danger;
-            }
-        }
-
-        .errorMessage {
-            display: block;
-        }
-    }
-
-    div.deleteImage {
+      .deleteImage {
         background: $danger;
-
-        &:hover {
-            background: darken($danger, 10%);
-        }
+      }
     }
 
-    .invalid-feedback {
-        font-size: medium;
+    .errorMessage {
+      display: block;
+    }
+  }
 
-        &.materials {
-            display: block;
-        }
+  div.deleteImage {
+    background: $danger;
+
+    &:hover {
+      background: darken($danger, 10%);
+    }
+  }
+
+  .invalid-feedback {
+    font-size: medium;
+
+    &.materials {
+      display: block;
+    }
+  }
+
+  .tags-search {
+    width: 30rem;
+    min-height: 7rem;
+
+    &:focus-within {
+      border-color: #9ddcc0;
+      box-shadow: 0 0 0 0.2rem rgba(66, 184, 131, 0.25);
     }
 
-    .tags-search {
-        width: 30rem;
-        min-height: 7rem;
-
-        &:focus-within {
-            border-color: #9ddcc0;
-            box-shadow: 0 0 0 0.2rem rgba(66, 184, 131, 0.25);
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
-
-        &.is-invalid {
-            border-color: #da6060;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23da6060' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23da6060' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
-            background-repeat: no-repeat;
-            background-position: center right calc(0.375em + 0.1875rem);
-            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-
-            &:focus-within {
-                box-shadow: 0 0 0 0.2rem rgba(218, 96, 96, 0.25);
-            }
-        }
+    &:last-child {
+      margin-right: 0;
     }
 
-    .references-container {
-        div {
-            padding-bottom: 1rem;
-        }
+    &.is-invalid {
+      border-color: #da6060;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23da6060' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23da6060' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center right calc(0.375em + 0.1875rem);
+      background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 
-        .reference-container {
-            position: relative;
+      &:focus-within {
+        box-shadow: 0 0 0 0.2rem rgba(218, 96, 96, 0.25);
+      }
+    }
+  }
 
-            .deleted-reference {
-                background-color: lightgray;
-                text-decoration: line-through;
-            }
-        }
-
-        .reference-container:last-child {
-            padding-bottom: 0;
-        }
-
-        .add-reference-link {
-            cursor: pointer;
-            color: $primary;
-            font-weight: bold;
-            text-decoration: underline;
-        }
+  .references-container {
+    div {
+      padding-bottom: 1rem;
     }
 
-    .image-fields-container-spaced {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 16px;
+    .reference-container {
+      position: relative;
 
-        .image-field-label {
-            margin: 4px 0 1px 0;
-        }
+      .deleted-reference {
+        background-color: lightgray;
+        text-decoration: line-through;
+      }
     }
 
-
-    .images-for-update-container {
-        display: flex;
-        flex-direction: column;
-
-        .image-fields-container {
-            display: flex;
-            flex-direction: column;
-            width: 65%;
-            margin: 0 8px;
-
-            .image-field-label {
-                margin: 4px 0 1px 0;
-            }
-        }
-
-        .image-for-update-container {
-            margin-top: 16px;
-            height: 175px;
-            padding: 10px;
-            background: #EDF2F6;
-            display: flex;
-            box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
-            border: 1px solid #D0DBE4;
-            position: relative;
-
-            .is-primary-container {
-                position: absolute;
-                top: 10rem;
-                display: flex;
-                padding-top: 0.5rem;
-
-                .image-is-primary-message {
-                    font-weight: bold;
-                    margin-top: 2px;
-                }
-
-                .image-is-primary-checkbox {
-                    cursor: pointer;
-                }
-            }
-
-            &.deleted {
-                background: gray;
-            }
-        }
-
-        .image-for-update {
-            height: 120px;
-            width: 110px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-
-            &.deleted {
-                filter: brightness(50%);
-            }
-        }
+    .reference-container:last-child {
+      padding-bottom: 0;
     }
 
-    .delete-button {
+    .add-reference-link {
+      cursor: pointer;
+      color: $primary;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+
+  .image-fields-container-spaced {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+
+    .image-field-label {
+      margin: 4px 0 1px 0;
+    }
+  }
+
+
+  .images-for-update-container {
+    display: flex;
+    flex-direction: column;
+
+    .image-fields-container {
+      display: flex;
+      flex-direction: column;
+      width: 65%;
+      margin: 0 8px;
+
+      .image-field-label {
+        margin: 4px 0 1px 0;
+      }
+    }
+
+    .image-for-update-container {
+      margin-top: 16px;
+      height: 175px;
+      padding: 10px;
+      background: #EDF2F6;
+      display: flex;
+      box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
+      border: 1px solid #D0DBE4;
+      position: relative;
+
+      .is-primary-container {
         position: absolute;
-        top: -9px;
-        right: -9px;
-        color: #FFF;
-        background: #DA6060;
-        border-radius: 50%;
-        text-align: center;
-        cursor: pointer;
-        font-size: 26px;
-        font-weight: bold;
-        line-height: 30px;
-        width: 30px;
-        height: 30px;
+        top: 10rem;
+        display: flex;
+        padding-top: 0.5rem;
 
-        &.reference {
-            top: 2.5rem;
-            right: -24px;
-            width: 20px;
-            height: 20px;
-            font-size: 16px;
-            line-height: 20px;
+        .image-is-primary-message {
+          font-weight: bold;
+          margin-top: 2px;
         }
 
-        &.undo {
-            background: $secondary;
-            z-index: 2;
+        .image-is-primary-checkbox {
+          cursor: pointer;
         }
+      }
+
+      &.deleted {
+        background: gray;
+      }
     }
 
-    .coordinates-geocode-group {
-        border: 1px solid lightgray;
-        background-color: rgba(10, 20, 50, 0.01);
-        padding: 1rem;
-        margin-top: 1rem;
+    .image-for-update {
+      height: 120px;
+      width: 110px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
 
-        .coordinates-geocode-row-label {
-            display: inline;
-            font-weight: 500;
-        }
+      &.deleted {
+        filter: brightness(50%);
+      }
+    }
+  }
+
+  .delete-button {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    color: #FFF;
+    background: #DA6060;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 30px;
+    width: 30px;
+    height: 30px;
+
+    &.reference {
+      top: 2.5rem;
+      right: -24px;
+      width: 20px;
+      height: 20px;
+      font-size: 16px;
+      line-height: 20px;
     }
 
-    .form-label i {
-        font-size: 110%;
+    &.undo {
+      background: $secondary;
+      z-index: 2;
     }
+  }
+
+  .coordinates-geocode-group {
+    border: 1px solid lightgray;
+    background-color: rgba(10, 20, 50, 0.01);
+    padding: 1rem;
+    margin-top: 1rem;
+
+    .coordinates-geocode-row-label {
+      display: inline;
+      font-weight: 500;
+    }
+  }
+
+  .form-label i {
+    font-size: 110%;
+  }
 }
 
 div.photosphere-preview {
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 0;
-    margin: 0;
-    width: min-content;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  width: min-content;
 
-    &:not(:first-of-type) {
-        margin-top: 2rem;
-    }
+  &:not(:first-of-type) {
+    margin-top: 2rem;
+  }
 
-    iframe {
-        width: 500px;
-        max-width: 90vw;
-        height: 300px;
-        max-height: 60vh;
-        box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
-        border: 1px solid #d0dbe4;
-        border-radius: 12px;
-    }
+  iframe {
+    width: 500px;
+    max-width: 90vw;
+    height: 300px;
+    max-height: 60vh;
+    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d0dbe4;
+    border-radius: 12px;
+  }
 }
 
 .deleteImage {
-    user-select: none;
+  user-select: none;
 }

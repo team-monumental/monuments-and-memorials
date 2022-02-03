@@ -10,7 +10,7 @@ import {DateFormat, prettyPrintDate} from '../../../utils/string-util';
 export default class CreateReviewModal extends React.Component {
 
     render() {
-        const { showing, onCancel, onConfirm, form } = this.props;
+        const {showing, onCancel, onConfirm, form} = this.props;
 
         if (!form) {
             return <div/>;
@@ -91,10 +91,10 @@ export default class CreateReviewModal extends React.Component {
         if (form.references) {
             let referenceList = [];
             form.references.map((reference) => {
-               if (reference !== '') {
-                   referenceList.push(reference);
-               }
-               return referenceList;
+                if (reference !== '') {
+                    referenceList.push(reference);
+                }
+                return referenceList;
             });
 
             if (referenceList.length > 0) {
@@ -123,7 +123,10 @@ export default class CreateReviewModal extends React.Component {
         if (form.photoSphereImages && form.photoSphereImages.length) {
             photoSphereImages = (
                 <ul className="mt-2 d-flex justify-content-center flex-column pl-0">
-                    {form.photoSphereImages.map(photoSphereImage => <iframe title="PhotoSphere" src={photoSphereImage.url} key={photoSphereImage.url} frameBorder="0" allowFullScreen/>)}
+                    {form.photoSphereImages.map(photoSphereImage => <iframe title="PhotoSphere"
+                                                                            src={photoSphereImage.url}
+                                                                            key={photoSphereImage.url} frameBorder="0"
+                                                                            allowFullScreen/>)}
                 </ul>
             );
         }

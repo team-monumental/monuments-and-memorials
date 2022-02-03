@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './UpdateMonumentSuggestions.scss';
 import UpdateMonumentSuggestion from './UpdateMonumentSuggestion/UpdateMonumentSuggestion';
-import { Collapse } from 'react-bootstrap';
+import {Collapse} from 'react-bootstrap';
 
 export default class UpdateMonumentSuggestions extends React.Component {
 
@@ -14,7 +14,7 @@ export default class UpdateMonumentSuggestions extends React.Component {
     }
 
     handleCollapseLinkClick() {
-        const { expanded } = this.state;
+        const {expanded} = this.state;
         this.setState({expanded: !expanded});
     }
 
@@ -35,8 +35,8 @@ export default class UpdateMonumentSuggestions extends React.Component {
     }
 
     render() {
-        const { suggestions, hideMoreThan, showTitlesAsLinks } = this.props;
-        const { expanded } = this.state;
+        const {suggestions, hideMoreThan, showTitlesAsLinks} = this.props;
+        const {expanded} = this.state;
 
         let showingSuggestions = suggestions;
         let hiddenSuggestions;

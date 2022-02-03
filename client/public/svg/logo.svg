@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 612 612" style="enable-background:new 0 0 612 612;" xml:space="preserve">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+     viewBox="0 0 612 612" style="enable-background:new 0 0 612 612;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#00A258;}
 	.st1{fill:#2E358C;}
 	.st2{fill:#FFFFFF;}
 </style>
-<g id="Green">
+    <g id="Green">
 	<circle id="XMLID_1_" class="st0" cx="306" cy="306" r="297.3"/>
 </g>
-<g id="Blue">
+    <g id="Blue">
 	<path id="XMLID_4_" class="st1" d="M306.5,8.7v594.6C470.5,603,603.3,470,603.3,306S470.5,9,306.5,8.7z"/>
 </g>
-<g id="White">
+    <g id="White">
 	<circle id="XMLID_2_" class="st2" cx="306" cy="306" r="275"/>
 </g>
-<g id="Green_M">
+    <g id="Green_M">
 	<g id="XMLID_6_">
 		<path id="XMLID_10_" class="st0" d="M107.4,394.8V217.2h62.3l37.4,121.1l37-121.1h62.4v177.6h-38.7V255l-40.9,139.8h-40.1L146,255
 			v139.8H107.4z"/>
 	</g>
 </g>
-<g id="Blue_M">
+    <g id="Blue_M">
 	<g id="XMLID_3_">
 		<path id="XMLID_12_" class="st1" d="M306.4,394.8V217.2h62.3l37.4,121.1l37-121.1h62.4v177.6h-38.7V255l-40.9,139.8h-40.1L345,255
 			v139.8H306.4z"/>
 	</g>
 </g>
-<g id="plus">
+    <g id="plus">
 	<g id="XMLID_7_">
-		<path id="XMLID_8_" class="st2" d="M295.3,348.5v-31.6h-31.9v-21.8h31.9v-31.6h21.3v31.6h32v21.8h-32v31.6H295.3z"/>
+		<path id="XMLID_8_" class="st2"
+              d="M295.3,348.5v-31.6h-31.9v-21.8h31.9v-31.6h21.3v31.6h32v21.8h-32v31.6H295.3z"/>
 	</g>
 </g>
 </svg>
