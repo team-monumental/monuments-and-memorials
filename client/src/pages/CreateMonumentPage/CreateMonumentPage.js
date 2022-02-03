@@ -1,19 +1,19 @@
 import React from 'react';
 import './CreateMonumentPage.scss';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
-import { createCreateSuggestion, createMonument } from '../../actions/create';
-import { uploadImagesToS3 } from '../../utils/api-util';
-import { Helmet } from 'react-helmet';
+import {createCreateSuggestion, createMonument} from '../../actions/create';
+import {uploadImagesToS3} from '../../utils/api-util';
+import {Helmet} from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import fetchDuplicates from '../../actions/duplicates';
 import DuplicateMonuments from '../../components/Monument/DuplicateMonuments/DuplicateMonuments';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
 import CreateReviewModal from '../../components/ReviewModal/CreateReviewModal/CreateReviewModal';
-import { Role } from '../../utils/authentication-util';
+import {Role} from '../../utils/authentication-util';
 import Footer from '../../components/Footer/Footer';
-import { copyObject } from '../../utils/object-util';
+import {copyObject} from '../../utils/object-util';
 
 /**
  * Root container for the page to create a new CreateMonumentSuggestion
@@ -45,12 +45,10 @@ class CreateMonumentPage extends React.Component {
         if (!prevProps.duplicates && this.props.duplicates) {
             if (this.props.duplicates.length) {
                 this.setState({showingDuplicateMonuments: true});
-            }
-            else {
+            } else {
                 if (!this.validateImages()) {
                     this.setState({showingNoImageModal: true});
-                }
-                else {
+                } else {
                     this.setState({showingReviewModal: true});
                 }
             }
@@ -60,8 +58,7 @@ class CreateMonumentPage extends React.Component {
             if (this.props.createMonumentError === null && this.props.monument.id !== undefined && this.props.monument.title === this.state.form.title) {
                 this.props.history.push(`/monuments/${this.props.monument.id}`);
             }
-        }
-        else {
+        } else {
             if (this.props.createError === null && this.props.createSuggestion.id !== undefined) {
                 this.props.history.push('/suggestion-created?type=create');
             }
@@ -69,7 +66,7 @@ class CreateMonumentPage extends React.Component {
     }
 
     validateImages() {
-        const { form } = this.state;
+        const {form} = this.state;
 
         if (!form) {
             return false;
@@ -80,8 +77,8 @@ class CreateMonumentPage extends React.Component {
     }
 
     async submitCreateForm() {
-        const { dispatch, user } = this.props;
-        const { form } = this.state;
+        const {dispatch, user} = this.props;
+        const {form} = this.state;
 
         // First, upload the images to the temporary S3 folder and save the URLs in the form
         const imageObjectUrls = await uploadImagesToS3(form.images, true);
@@ -109,7 +106,7 @@ class CreateMonumentPage extends React.Component {
     }
 
     handleCreateFormSubmit(form) {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         this.setState({form: form});
         dispatch(fetchDuplicates(form.title, form.latitude, form.longitude, form.address));
     }
@@ -123,8 +120,7 @@ class CreateMonumentPage extends React.Component {
 
         if (!this.validateImages()) {
             this.setState({showingNoImageModal: true});
-        }
-        else {
+        } else {
             this.setState({showingReviewModal: true});
         }
     }
@@ -142,8 +138,8 @@ class CreateMonumentPage extends React.Component {
     }
 
     renderDuplicateMonuments() {
-        const { duplicates } = this.props;
-        const { showingDuplicateMonuments } = this.state;
+        const {duplicates} = this.props;
+        const {showingDuplicateMonuments} = this.state;
 
         return (
             <DuplicateMonuments duplicates={duplicates}
@@ -155,7 +151,7 @@ class CreateMonumentPage extends React.Component {
     }
 
     renderNoImageModal() {
-        const { showingNoImageModal } = this.state;
+        const {showingNoImageModal} = this.state;
 
         return (
             <NoImageModal
@@ -168,7 +164,7 @@ class CreateMonumentPage extends React.Component {
     }
 
     renderReviewModal() {
-        const { showingReviewModal, form } = this.state;
+        const {showingReviewModal, form} = this.state;
 
         return (
             <CreateReviewModal
@@ -181,8 +177,10 @@ class CreateMonumentPage extends React.Component {
     }
 
     render() {
-        const { createCreateSuggestionPending, fetchDuplicatesPending, pending, createMonumentPending,
-            user } = this.props;
+        const {
+            createCreateSuggestionPending, fetchDuplicatesPending, pending, createMonumentPending,
+            user
+        } = this.props;
 
         let action = 'Suggest';
         if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {
@@ -193,7 +191,8 @@ class CreateMonumentPage extends React.Component {
             <div className="page-container">
                 <div className="create page">
                     <Helmet title="Create | Monuments and Memorials"/>
-                    <Spinner show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
+                    <Spinner
+                        show={createCreateSuggestionPending || fetchDuplicatesPending || pending || createMonumentPending}/>
                     <div className="create-form-container">
                         <CreateOrUpdateForm
                             onCancelButtonClick={() => this.handleCreateFormCancelButtonClick()}

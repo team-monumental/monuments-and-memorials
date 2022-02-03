@@ -2,11 +2,11 @@ package com.monumental.controllers;
 
 import com.monumental.models.Monument;
 import com.monumental.repositories.MonumentRepository;
+import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.redfin.sitemapgenerator.WebSitemapGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,10 +33,10 @@ public class SitemapController {
         WebSitemapGenerator sitemap = new WebSitemapGenerator(this.publicUrl);
 
         sitemap.addUrls(
-            this.publicUrl + "/",
-            this.publicUrl + "/about",
-            this.publicUrl + "/map",
-            this.publicUrl + "/search"
+                this.publicUrl + "/",
+                this.publicUrl + "/about",
+                this.publicUrl + "/map",
+                this.publicUrl + "/search"
         );
 
         for (Monument monument : this.monumentRepository.findAllByIsActive(true)) {

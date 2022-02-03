@@ -12,15 +12,15 @@ export default class Tag extends React.Component {
     }
 
     handleToggleSelect() {
-        const { onSelect } = this.props;
+        const {onSelect} = this.props;
         const value = !this.state.selected;
         this.setState({selected: value});
         onSelect(value);
     }
 
     render() {
-        const { name, selectable, selectedIcon, isMaterial } = this.props;
-        const { selected } = this.state;
+        const {name, selectable, selectedIcon, isMaterial} = this.props;
+        const {selected} = this.state;
         const params = {};
         if (isMaterial) params.materials = name;
         else params.tags = name;

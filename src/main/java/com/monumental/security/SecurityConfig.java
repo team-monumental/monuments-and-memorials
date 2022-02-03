@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-            .formLogin()
+                .formLogin()
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -59,17 +59,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/api/login")
                 .permitAll()
                 .and()
-            .httpBasic()
-            .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                @Override
-                public void commence(HttpServletRequest request, HttpServletResponse response,
-                                     AuthenticationException authException) throws IOException, ServletException {
-                    response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
-                }
-            })
-            .and()
-            .csrf().disable()
-            .logout()
+                .httpBasic()
+                .authenticationEntryPoint(new AuthenticationEntryPoint() {
+                    @Override
+                    public void commence(HttpServletRequest request, HttpServletResponse response,
+                                         AuthenticationException authException) throws IOException, ServletException {
+                        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+                    }
+                })
+                .and()
+                .csrf().disable()
+                .logout()
                 .logoutUrl("/api/logout")
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)

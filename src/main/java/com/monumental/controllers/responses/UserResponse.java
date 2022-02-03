@@ -1,6 +1,5 @@
 package com.monumental.controllers.responses;
 
-import com.monumental.models.Contribution;
 import com.monumental.models.User;
 
 import java.util.List;

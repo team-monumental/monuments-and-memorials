@@ -1,10 +1,10 @@
 import React from 'react';
 import './UpdateUserPage.scss';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import UpdateUser from '../../components/UpdateUser/UpdateUser';
-import { updateUser, clearUpdateUser } from '../../actions/user';
-import { Helmet } from 'react-helmet';
+import {clearUpdateUser, updateUser} from '../../actions/user';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
 
 class UpdateUserPage extends React.Component {
@@ -17,12 +17,12 @@ class UpdateUserPage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         dispatch(clearUpdateUser());
     }
 
     updateUser(user) {
-        const { dispatch, session } = this.props;
+        const {dispatch, session} = this.props;
         dispatch(updateUser({
             ...session.user,
             ...user
@@ -30,7 +30,7 @@ class UpdateUserPage extends React.Component {
     }
 
     render() {
-        const { pending, success, error, needsConfirmation, session } = this.props;
+        const {pending, success, error, needsConfirmation, session} = this.props;
         return (
             <div className="page-container">
                 <div className="update-user page">

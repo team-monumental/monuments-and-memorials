@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './LoginPage.scss';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Login from '../../components/Login/Login';
-import { login } from '../../actions/authentication';
+import {login} from '../../actions/authentication';
 import * as QueryString from 'query-string';
-import { withRouter, Redirect } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import {Redirect, withRouter} from 'react-router-dom';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
 
 class LoginPage extends React.Component {
@@ -22,7 +22,7 @@ class LoginPage extends React.Component {
     }
 
     onLogin(data) {
-        const { dispatch, history } = this.props;
+        const {dispatch, history} = this.props;
         const redirect = QueryString.parse(this.props.location.search).redirect;
         dispatch(login(data, () => {
             if (redirect) {
@@ -34,8 +34,8 @@ class LoginPage extends React.Component {
     }
 
     render() {
-        const { error, result } = this.props;
-        const { redirect } = this.state;
+        const {error, result} = this.props;
+        const {redirect} = this.state;
         const warn = QueryString.parse(this.props.location.search).warn === 'true';
         if (redirect) {
             return (<Redirect to={redirect}/>);

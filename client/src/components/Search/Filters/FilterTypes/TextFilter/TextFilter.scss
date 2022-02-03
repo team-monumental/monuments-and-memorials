@@ -1,17 +1,18 @@
 .text-filter {
-    margin-top: .5em;
-    margin-bottom: .5em;
-    margin-right: auto;
-    flex-grow: 1;
-    max-width: 800px;
-    max-height: 50px;
-    input {
-        width: 100%;
-        min-width: 120px;
-        display: inline-flex !important;
-        position: static;
-        right: '0.5em';
-        height: 2.5rem;
-        font-size: 15px;
-    }
+  margin-top: .5em;
+  margin-bottom: .5em;
+  margin-right: auto;
+  flex-grow: 1;
+  max-width: 800px;
+  max-height: 50px;
+
+  input {
+    width: 100%;
+    min-width: 120px;
+    display: inline-flex !important;
+    position: static;
+    right: '0.5em';
+    height: 2.5rem;
+    font-size: 15px;
+  }
 }

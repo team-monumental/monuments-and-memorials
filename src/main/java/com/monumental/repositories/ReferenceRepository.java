@@ -17,6 +17,7 @@ public interface ReferenceRepository extends JpaRepository<Reference, Integer> {
 
     /**
      * Get all References associated with the specified Monument ID
+     *
      * @param id - ID of the Monument to get the References for
      */
     @Query("select r from Reference r where monument_id = :id")

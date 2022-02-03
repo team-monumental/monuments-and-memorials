@@ -15,7 +15,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class StringHelperUnitTests {
 
-    /** isNullOrEmpty Tests **/
+    /**
+     * isNullOrEmpty Tests
+     **/
 
     @Test
     public void testStringHelper_isNullOrEmpty_NullString() {
@@ -31,13 +33,16 @@ public class StringHelperUnitTests {
         assertTrue(StringHelper.isNullOrEmpty(string));
     }
 
-    @Test public void testStringHelper_isNullOrEmpty_NotNullOrEmptyString() {
+    @Test
+    public void testStringHelper_isNullOrEmpty_NotNullOrEmptyString() {
         String string = "string";
 
         assertFalse(StringHelper.isNullOrEmpty(string));
     }
 
-    /** removeBeginningAndEndingQuotes Tests **/
+    /**
+     * removeBeginningAndEndingQuotes Tests
+     **/
 
     @Test
     public void testStringHelper_removeBeginningAndEndingQuotes_NullString() {
@@ -98,7 +103,9 @@ public class StringHelperUnitTests {
         assertEquals("Te\"st", result);
     }
 
-    /** parseState Tests **/
+    /**
+     * parseState Tests
+     **/
 
     @Test
     public void testStringHelper_parseState_NullPassed() {

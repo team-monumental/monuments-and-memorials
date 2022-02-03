@@ -40,13 +40,6 @@ public class BulkCreateMonumentRequest {
         this.mapping = mapping;
     }
 
-    public static class ParseResult {
-        public String csvFileName;
-        public List<String[]> csvContents;
-        public Map<String, String> mapping;
-        public ZipFile zipFile;
-    }
-
     @SuppressWarnings("unchecked")
     public ParseResult parse(MonumentService monumentService) throws IOException {
         String json = new String(this.getMapping().getBytes());
@@ -69,6 +62,13 @@ public class BulkCreateMonumentRequest {
         }
 
         return result;
+    }
+
+    public static class ParseResult {
+        public String csvFileName;
+        public List<String[]> csvContents;
+        public Map<String, String> mapping;
+        public ZipFile zipFile;
     }
 
 }

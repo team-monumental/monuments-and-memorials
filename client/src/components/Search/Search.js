@@ -13,7 +13,7 @@ import ExportButtons from '../Export/ExportButtons/ExportButtons';
  */
 export default class Search extends React.Component {
     handlePageChange(page) {
-        const { onPageChange } = this.props;
+        const {onPageChange} = this.props;
         onPageChange(page);
     }
 
@@ -44,7 +44,7 @@ export default class Search extends React.Component {
             monuments, onLimitChange, onSortChange, lat, lon, sort, d: distance, decade,
             onFilterChange, tags, materials, start, end, hideMap, hideImages, searchUri, monumentUri
         } = this.props;
-        const [ count, page, limit ] = [ this.props.count, this.props.page, this.props.limit ]
+        const [count, page, limit] = [this.props.count, this.props.page, this.props.limit]
             .map(value => parseInt(value) || 0);
 
         const pageCount = Math.ceil(count / limit);
@@ -60,15 +60,16 @@ export default class Search extends React.Component {
             <div className="search-results-page">
                 {!hideMap &&
                     <div className="map-column d-none d-md-flex">
-                        <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4} center={lat && lon ? [lat, lon] : null}/>
+                        <MapResults monuments={monuments} zoom={lat && lon ? 10 : 4}
+                                    center={lat && lon ? [lat, lon] : null}/>
                     </div>
                 }
                 <div className="search-column">
                     <div className="search-header">
                         <FilterList onChange={filters => onFilterChange(filters)}
-                                     showDistance={lat && lon} distance={distance}
-                                     tags={tags} materials={materials} decades={decades} decade={decade}
-                                     start={start} end={end} uri={searchUri}/>
+                                    showDistance={lat && lon} distance={distance}
+                                    tags={tags} materials={materials} decades={decades} decade={decade}
+                                    start={start} end={end} uri={searchUri}/>
                         <SearchInfo count={count} page={page} limit={limit} sort={sort}
                                     onLimitChange={onLimitChange}
                                     onSortChange={onSortChange}
@@ -80,7 +81,8 @@ export default class Search extends React.Component {
                                            monuments={monuments}
                                            title="Search"/>
                         </div>
-                        <SearchResults monuments={monuments} limit={limit} page={page} hideImages={hideImages} searchUri={searchUri || '/search'} monumentUri={monumentUri || '/monuments'}/>
+                        <SearchResults monuments={monuments} limit={limit} page={page} hideImages={hideImages}
+                                       searchUri={searchUri || '/search'} monumentUri={monumentUri || '/monuments'}/>
                     </div>
                     <div className="pagination-container">
                         <Pagination count={pageCount}

@@ -1,12 +1,12 @@
 import React from 'react';
 import './TagDirectoryPage.scss';
 import fetchTags from '../../actions/tagDirectory';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import Tags from '../../components/Tags/Tags';
-import { Helmet } from 'react-helmet';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
-import { Button } from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 
 /**
  * Root container component for the Tag Directory Page
@@ -20,18 +20,18 @@ class TagDirectoryPage extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch(fetchTags());
-    }
-
     static mapStateToProps(state) {
         return state.tagDirectoryPage;
     }
 
+    componentDidMount() {
+        const {dispatch} = this.props;
+        dispatch(fetchTags());
+    }
+
     render() {
-        const { alphanumericFilter } = this.state;
-        let { tags, fetchTagsPending } = this.props;
+        const {alphanumericFilter} = this.state;
+        let {tags, fetchTagsPending} = this.props;
 
         tags = tags.filter(tag => tag.name.toLowerCase().startsWith(alphanumericFilter));
         const allTags = tags.filter(tag => !tag.isMaterial);
@@ -84,8 +84,8 @@ class TagDirectoryPage extends React.Component {
     }
 
     renderAlphanumericFilter() {
-        const { tags } = this.props;
-        const { alphanumericFilter } = this.state;
+        const {tags} = this.props;
+        const {alphanumericFilter} = this.state;
         const characters = '012345679abcdefghijklmnopqrstuvwxyz'.split('')
             .filter(character => {
                 return tags.find(tag => tag.name.toLowerCase().startsWith(character));

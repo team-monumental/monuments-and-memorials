@@ -1,10 +1,16 @@
 import {
-    VALIDATE_BULK_SUGGESTION_PENDING, VALIDATE_BULK_SUGGESTION_SUCCESS, VALIDATE_BULK_SUGGESTION_ERROR,
-    CREATE_BULK_SUGGESTION_PENDING, CREATE_BULK_SUGGESTION_SUCCESS, CREATE_BULK_SUGGESTION_ERROR,
-    BULK_CREATE_MONUMENTS_PENDING, BULK_CREATE_MONUMENTS_SUCCESS, BULK_CREATE_MONUMENTS_ERROR
+    BULK_CREATE_MONUMENTS_ERROR,
+    BULK_CREATE_MONUMENTS_PENDING,
+    BULK_CREATE_MONUMENTS_SUCCESS,
+    CREATE_BULK_SUGGESTION_ERROR,
+    CREATE_BULK_SUGGESTION_PENDING,
+    CREATE_BULK_SUGGESTION_SUCCESS,
+    VALIDATE_BULK_SUGGESTION_ERROR,
+    VALIDATE_BULK_SUGGESTION_PENDING,
+    VALIDATE_BULK_SUGGESTION_SUCCESS
 } from '../constants';
-import { pending, success, error } from '../utils/action-util';
-import { put } from '../utils/api-util';
+import {error, pending, success} from '../utils/action-util';
+import {put} from '../utils/api-util';
 
 const actions = {
     validate: {
@@ -43,7 +49,7 @@ function buildFormData(form) {
     return formData;
 }
 
-function doAction(action, form, isAsyncJob=false) {
+function doAction(action, form, isAsyncJob = false) {
     return async dispatch => {
         dispatch(pending(action));
         try {

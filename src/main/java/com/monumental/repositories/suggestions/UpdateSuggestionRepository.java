@@ -14,6 +14,7 @@ public interface UpdateSuggestionRepository extends JpaRepository<UpdateMonument
 
     /**
      * Get all UpdateMonumentSuggestions created by the specified createdBy
+     *
      * @param createdBy - User object to get all of the UpdateMonumentSuggestions that were created by it
      * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestions created by the specified createdBy
      */

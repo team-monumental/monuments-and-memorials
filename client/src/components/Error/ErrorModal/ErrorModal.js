@@ -9,12 +9,12 @@ import Button from 'react-bootstrap/Button';
 export default class ErrorModal extends React.Component {
 
     handleClose() {
-        const { onClose } = this.props;
+        const {onClose} = this.props;
         onClose();
     }
 
     render() {
-        const { showing, errorMessage } = this.props;
+        const {showing, errorMessage} = this.props;
 
         let errorMessageDisplay = (
             <div/>

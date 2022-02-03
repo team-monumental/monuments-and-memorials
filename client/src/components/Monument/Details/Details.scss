@@ -4,50 +4,59 @@
 @import "../../../theme";
 
 .main-column {
-    width: 100%;
+  width: 100%;
 }
+
 .details {
-    width: 100%;
-    @include media-breakpoint-up(md) {
-        min-width: 500px;
-        width: auto;
+  width: 100%;
+  @include media-breakpoint-up(md) {
+    min-width: 500px;
+    width: auto;
+  }
+
+  .favorite-icon {
+    transform: translateY(-14px);
+    cursor: pointer;
+    height: 0;
+
+    &:focus {
+      box-shadow: none;
     }
-    .favorite-icon {
-        transform: translateY(-14px);
-        cursor: pointer;
-        height: 0;
-        &:focus {
-            box-shadow: none;
-        }
-        i {
-            font-size: 24px;
-            color: $primary;
-            position: absolute;
-            transition: all 0.075s ease-in;
-            &:not(.hover) {
-                opacity: 1;
-            }
-            &.hover {
-                opacity: 0;
-            }
-        }
-        &:hover {
-            i {
-                &:not(.hover) {
-                    opacity: 0;
-                }
-                &.hover {
-                    opacity: 1;
-                    transform: scale(1.15) translate(-2px, 3px);
-                }
-            }
-        }
-        &.favorited:hover i.hover {
-            color: darken($primary, 10%);
-        }
+
+    i {
+      font-size: 24px;
+      color: $primary;
+      position: absolute;
+      transition: all 0.075s ease-in;
+
+      &:not(.hover) {
+        opacity: 1;
+      }
+
+      &.hover {
+        opacity: 0;
+      }
     }
+
+    &:hover {
+      i {
+        &:not(.hover) {
+          opacity: 0;
+        }
+
+        &.hover {
+          opacity: 1;
+          transform: scale(1.15) translate(-2px, 3px);
+        }
+      }
+    }
+
+    &.favorited:hover i.hover {
+      color: darken($primary, 10%);
+    }
+  }
 }
 
 .favorite-tooltip {
-    left: 10px !important;
+  left: 10px !important;
 }

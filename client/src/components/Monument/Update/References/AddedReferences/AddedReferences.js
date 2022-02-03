@@ -7,7 +7,7 @@ import './AddedReferences.scss';
 export default class AddedReferences extends React.Component {
 
     render() {
-        const { references } = this.props;
+        const {references} = this.props;
 
         let addedReferenceDisplay = [];
 

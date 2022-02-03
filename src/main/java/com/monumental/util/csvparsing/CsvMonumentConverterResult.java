@@ -6,9 +6,10 @@ import com.monumental.util.string.StringHelper;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.monumental.util.csvparsing.CsvMonumentConverter.*;
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
@@ -178,8 +179,8 @@ public class CsvMonumentConverterResult {
             if (warnings.contains(coordinatesDMSFormatWarning)) {
                 warnings.remove(coordinatesDMSFormatWarning);
                 errors.add(coordinatesDMSFormatWarning);
-            // This isn't a particularly pretty check but if we use if-else here and they're both invalid, one will be a
-            // warning while the other will be an error, which is strange
+                // This isn't a particularly pretty check but if we use if-else here and they're both invalid, one will be a
+                // warning while the other will be an error, which is strange
             } else if (warnings.contains(latitudeNumberFormatExceptionWarning) || warnings.contains(longitudeNumberFormatExceptionWarning)) {
                 if (warnings.contains(latitudeNumberFormatExceptionWarning)) {
                     warnings.remove(latitudeNumberFormatExceptionWarning);
@@ -189,7 +190,7 @@ public class CsvMonumentConverterResult {
                     warnings.remove(longitudeNumberFormatExceptionWarning);
                     errors.add(longitudeNumberFormatExceptionWarning);
                 }
-            // Otherwise, the data is actually missing, so add that as an error
+                // Otherwise, the data is actually missing, so add that as an error
             } else {
                 this.getErrors().add("Address OR Coordinates are required");
             }

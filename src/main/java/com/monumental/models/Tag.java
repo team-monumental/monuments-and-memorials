@@ -95,6 +95,7 @@ public class Tag extends Model implements Serializable {
      * Will do nothing if the specified Monument is null
      * Note that this only creates an association in-memory
      * The association still needs to be persisted to the database
+     *
      * @param monument - Monument to associate with this Tag
      */
     public void addMonument(Monument monument) {

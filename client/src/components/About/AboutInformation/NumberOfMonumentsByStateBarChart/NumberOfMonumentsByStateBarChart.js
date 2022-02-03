@@ -12,7 +12,7 @@ export default class NumberOfMonumentsByStateBarChart extends React.Component {
      * Returns null if numberOfMonumentsByState is null
      */
     buildChartData() {
-        const { numberOfMonumentsByState } = this.props;
+        const {numberOfMonumentsByState} = this.props;
 
         if (!numberOfMonumentsByState) {
             return null;
@@ -42,7 +42,7 @@ export default class NumberOfMonumentsByStateBarChart extends React.Component {
     }
 
     render() {
-        const { numberOfMonumentsByState } = this.props;
+        const {numberOfMonumentsByState} = this.props;
 
         const chartData = this.buildChartData();
         const chartOptions = {

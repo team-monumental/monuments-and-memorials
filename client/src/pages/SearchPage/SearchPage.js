@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { searchMonuments } from '../../actions/search';
+import {connect} from 'react-redux';
+import {searchMonuments} from '../../actions/search';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import * as QueryString from 'query-string';
 import search from '../../utils/search';
-import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import {Helmet} from 'react-helmet';
+import {withRouter} from 'react-router-dom';
 
 /**
  * Root container component for the search page which handles retrieving the search results
@@ -23,14 +23,14 @@ class SearchPage extends React.Component {
 
     static mapStateToProps(state) {
         if (state.searchPage) {
-            const { monuments, count } = state.searchPage;
+            const {monuments, count} = state.searchPage;
             if (monuments.error || count.error || monuments.errors || count.errors) return {};
         }
         return state.searchPage;
     }
 
     componentDidMount() {
-        const { dispatch, location: { search } } = this.props;
+        const {dispatch, location: {search}} = this.props;
         const params = QueryString.parse(search);
         dispatch(searchMonuments(params));
         this.setState({
@@ -42,7 +42,7 @@ class SearchPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, location: { search } } = this.props;
+        const {dispatch, location: {search}} = this.props;
         if (prevProps.location.search !== search) {
             const params = QueryString.parse(search);
             dispatch(searchMonuments(params));
@@ -53,13 +53,15 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { monuments, count, pending, hideMap, hideImages, searchUri, monumentUri } = this.props;
+        const {monuments, count, pending, hideMap, hideImages, searchUri, monumentUri} = this.props;
         return (
             <div className="h-100">
                 <Helmet title="Search | Monuments and Memorials"/>
                 <Spinner show={pending}/>
-                <Search monuments={monuments} {...this.getQueryParams()} count={count} hideMap={hideMap} hideImages={hideImages} searchUri={searchUri} monumentUri={monumentUri}
-                        onLimitChange={this.handleLimitChange.bind(this)} onPageChange={this.handlePageChange.bind(this)}
+                <Search monuments={monuments} {...this.getQueryParams()} count={count} hideMap={hideMap}
+                        hideImages={hideImages} searchUri={searchUri} monumentUri={monumentUri}
+                        onLimitChange={this.handleLimitChange.bind(this)}
+                        onPageChange={this.handlePageChange.bind(this)}
                         onSortChange={this.handleSortChange.bind(this)}/>
             </div>
         );
@@ -89,7 +91,7 @@ class SearchPage extends React.Component {
     }
 
     async search(changedState) {
-        const { uri } = this.props;
+        const {uri} = this.props;
         await this.setState(changedState);
         search(this.state, this.props.history, uri);
     }

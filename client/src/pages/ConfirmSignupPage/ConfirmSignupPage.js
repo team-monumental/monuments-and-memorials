@@ -1,12 +1,12 @@
 import React from 'react';
 import './ConfirmSignupPage.scss';
-import { connect } from 'react-redux';
-import { withRouter, Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Redirect, withRouter} from 'react-router-dom';
 import * as QueryString from 'query-string';
-import { Button, Card } from 'react-bootstrap';
-import { confirmSignup, resendConfirmation } from '../../actions/authentication';
+import {Button, Card} from 'react-bootstrap';
+import {confirmSignup, resendConfirmation} from '../../actions/authentication';
 import Spinner from '../../components/Spinner/Spinner';
-import { Helmet } from 'react-helmet';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
 
 class ConfirmSignupPage extends React.Component {
@@ -20,12 +20,20 @@ class ConfirmSignupPage extends React.Component {
         };
     }
 
+    static mapStateToProps(state) {
+        return {
+            confirmSignup: state.confirmSignup,
+            resendConfirmation: state.resendConfirmation,
+            session: state.session
+        };
+    }
+
     componentDidMount() {
         this.initialize();
     }
 
     initialize() {
-        const { dispatch, location: { search }, session } = this.props;
+        const {dispatch, location: {search}, session} = this.props;
         const params = search && QueryString.parse(search);
 
         const token = params.token;
@@ -48,22 +56,14 @@ class ConfirmSignupPage extends React.Component {
         return this.setState({redirect: '/'});
     }
 
-    static mapStateToProps(state) {
-        return {
-            confirmSignup: state.confirmSignup,
-            resendConfirmation: state.resendConfirmation,
-            session: state.session
-        };
-    }
-
     async beginResendConfirmation() {
         await this.setState({redirect: '/signup/confirm?resend=true&signup=true'});
         this.initialize();
     }
 
     resendConfirmation() {
-        const { dispatch, session: { user } } = this.props;
-        const { signup } = this.state;
+        const {dispatch, session: {user}} = this.props;
+        const {signup} = this.state;
         dispatch(resendConfirmation(user, signup));
     }
 
@@ -75,8 +75,8 @@ class ConfirmSignupPage extends React.Component {
     }
 
     renderPage() {
-        const { confirmSignup, resendConfirmation, session } = this.props;
-        const { resend, redirect } = this.state;
+        const {confirmSignup, resendConfirmation, session} = this.props;
+        const {resend, redirect} = this.state;
 
         if (redirect) {
             return (<Redirect to={redirect} push/>)
@@ -99,21 +99,19 @@ class ConfirmSignupPage extends React.Component {
                 'Something went wrong while resending your email confirmation.',
                 'A confirmation email has been sent to your email address.'
             );
-        }
-        else if (confirmSignup.error || confirmSignup.success || confirmSignup.pending) {
+        } else if (confirmSignup.error || confirmSignup.success || confirmSignup.pending) {
             return this.renderResult(
                 confirmSignup,
                 'Something went wrong while confirming your email address.',
                 'Your email address has been confirmed successfully.',
                 true);
-        }
-        else {
+        } else {
             return (<></>);
         }
     }
 
     renderResult({error, success, pending}, errorMessage, successMessage, allowResend = false) {
-        const { session } = this.props;
+        const {session} = this.props;
 
         errorMessage = typeof error === 'string' ? error : errorMessage;
 
@@ -130,13 +128,13 @@ class ConfirmSignupPage extends React.Component {
                         <Card.Body>
                             {error && <>
                                 {errorMessage} {session.user && allowResend &&
-                                    <Button
-                                       variant="link"
-                                       className="p-0"
-                                       onClick={() => this.beginResendConfirmation()}>
-                                        Try sending a new one.
-                                    </Button>
-                                }
+                                <Button
+                                    variant="link"
+                                    className="p-0"
+                                    onClick={() => this.beginResendConfirmation()}>
+                                    Try sending a new one.
+                                </Button>
+                            }
                             </>}
                             {success && successMessage}
                         </Card.Body>

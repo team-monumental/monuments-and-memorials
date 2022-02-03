@@ -1,5 +1,5 @@
-import { createError } from '../factories';
-import { ADD_ERROR, REMOVE_ERROR } from '../constants';
+import {createError} from '../factories';
+import {ADD_ERROR, REMOVE_ERROR} from '../constants';
 
 /**
  * Adds an error to the error queue, to be displayed on the page

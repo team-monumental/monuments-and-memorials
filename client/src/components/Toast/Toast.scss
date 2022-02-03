@@ -1,19 +1,22 @@
 @import "../../theme.scss";
 
 .toast {
-    &.success, &.primary, &.danger {
-        .toast-header {
-            color: white;
-            button.close {
-                color: white;
-                opacity: 1;
-            }
-        }
+  &.success, &.primary, &.danger {
+    .toast-header {
+      color: white;
+
+      button.close {
+        color: white;
+        opacity: 1;
+      }
     }
-    &.danger .toast-header {
-        background-color: $danger;
-    }
-    &.success .toast-header, &.primary .toast-header {
-        background-color: $primary;
-    }
+  }
+
+  &.danger .toast-header {
+    background-color: $danger;
+  }
+
+  &.success .toast-header, &.primary .toast-header {
+    background-color: $primary;
+  }
 }

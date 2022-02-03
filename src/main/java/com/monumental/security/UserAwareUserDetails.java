@@ -12,8 +12,8 @@ import java.util.Collection;
  */
 public class UserAwareUserDetails implements UserDetails {
 
-    private User user;
     private final Collection<? extends GrantedAuthority> grantedAuthorities;
+    private User user;
 
     public UserAwareUserDetails(User user) {
         this(user, new ArrayList<>());

@@ -1,97 +1,101 @@
 @import "../../../../../theme";
 
 .autocomplete-container-filter {
-    display: inline-flex;
-    position: relative;
+  display: inline-flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  input {
     width: 100%;
-    height: 100%;
-    input{
-        width:100%;
-        height: 2.5rem;
-        border: 1px solid #CED4DA;
-        border-radius:  0.2rem;
-        margin-right: .2em;
-        font-size: 15px;
-        padding-left: .4em;
-    }
+    height: 2.5rem;
+    border: 1px solid #CED4DA;
+    border-radius: 0.2rem;
+    margin-right: .2em;
+    font-size: 15px;
+    padding-left: .4em;
+  }
 }
 
 .autocomplete-dropdown-container {
-    position: absolute;
-    top: 30px;
-    background-color: #ffffff;
-    border: none;
-    // This has to be absurdly large due to the leaflet map's absurdly large z-index
-    z-index: 1000;
-    margin-right: 0.5rem;
-    padding: 0.25rem 0;
-    width: calc(100% - 0.5rem);
-    left: 0;
-    border-radius: 0 0 0.5rem 0.5rem;
+  position: absolute;
+  top: 30px;
+  background-color: #ffffff;
+  border: none;
+  // This has to be absurdly large due to the leaflet map's absurdly large z-index
+  z-index: 1000;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0;
+  width: calc(100% - 0.5rem);
+  left: 0;
+  border-radius: 0 0 0.5rem 0.5rem;
 }
 
 .suggestion-item {
-    cursor: pointer;
-    background-color: #ffffff;
-    display: flex;
-    padding: 0.25rem;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: flex;
+  padding: 0.25rem;
 
-    &.active {
-        background-color: #fafafa;
-        font-weight: bold;
-    }
-    i {
-        color: $primary;
-    }
+  &.active {
+    background-color: #fafafa;
+    font-weight: bold;
+  }
+
+  i {
+    color: $primary;
+  }
 }
 
 .location-filter {
-    margin-bottom: .5em;
-    margin-right: auto;
-    flex-grow: 1;
-    max-width: 800px;
-    max-height: 50px;
-    display: inline-flex;
-    
-    select.form-control {
-        width: 100%;
-        min-width: 120px;
-        display: inline-flex !important;
-        position: static;
-        right: '0.5em';
-    }
+  margin-bottom: .5em;
+  margin-right: auto;
+  flex-grow: 1;
+  max-width: 800px;
+  max-height: 50px;
+  display: inline-flex;
+
+  select.form-control {
+    width: 100%;
+    min-width: 120px;
+    display: inline-flex !important;
+    position: static;
+    right: '0.5em';
+  }
 }
 
-.location-box{
-    width: 50%;
-    position: relative;
+.location-box {
+  width: 50%;
+  position: relative;
 }
 
 .loc-clear {
-    max-width: 24px;
-    z-index: 1;
-    position: absolute;
-    font-size: 1.5em;
-    right: .2em;
-    top: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    transition: opacity 0.2s ease-in;
-    opacity: 0.5;
-    cursor: pointer;
-    &:hover {
-        opacity: 1;
-    }
+  max-width: 24px;
+  z-index: 1;
+  position: absolute;
+  font-size: 1.5em;
+  right: .2em;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s ease-in;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
 
 }
 
-.bad-location{
-    color: $danger;
-    align-items: center;
-    display: flex;
-    float: left;
-    p{
-        margin: auto;
-    }
+.bad-location {
+  color: $danger;
+  align-items: center;
+  display: flex;
+  float: left;
+
+  p {
+    margin: auto;
+  }
 }

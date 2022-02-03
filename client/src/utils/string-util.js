@@ -11,10 +11,10 @@ export const DateFormat = Object.freeze({YEAR: 'YEAR', MONTH_YEAR: 'MONTH_YEAR',
  * @param date - Date to format into a user-friendly string
  * @param dateFormat describes format to output
  */
-export function prettyPrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
+export function prettyPrintDate(date, dateFormat = DateFormat.EXACT_DATE) {
     if (!date) return;
     date = new Date(date);
-    date = moment(new Date( date.getTime() + Math.abs(date.getTimezoneOffset()*60000)))
+    date = moment(new Date(date.getTime() + Math.abs(date.getTimezoneOffset() * 60000)))
 
     switch (dateFormat) {
         case DateFormat.YEAR:
@@ -34,10 +34,10 @@ export function prettyPrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
  * @param date - Date to format into a user-friendly string
  * @param dateFormat describes format to output
  */
-export function simplePrintDate(date, dateFormat=DateFormat.EXACT_DATE) {
+export function simplePrintDate(date, dateFormat = DateFormat.EXACT_DATE) {
     if (!date) return;
     date = new Date(date);
-    date = moment(new Date( date.getTime() + Math.abs(date.getTimezoneOffset()*60000)))
+    date = moment(new Date(date.getTime() + Math.abs(date.getTimezoneOffset() * 60000)))
 
     switch (dateFormat) {
         case DateFormat.YEAR:

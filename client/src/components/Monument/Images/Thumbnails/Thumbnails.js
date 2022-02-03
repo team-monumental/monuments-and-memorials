@@ -5,7 +5,7 @@ import Thumbnail from './Thumbnail/Thumbnail';
 export default class Thumbnails extends React.Component {
 
     render() {
-        const { imageUrls } = this.props;
+        const {imageUrls} = this.props;
 
         return (<>
             {imageUrls && <div className="thumbnail-images">

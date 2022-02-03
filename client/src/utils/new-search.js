@@ -1,4 +1,5 @@
 import * as QueryString from 'query-string';
+
 export default function search(changedParams, history, uri = '/search') {
     const params = {
         ...changedParams

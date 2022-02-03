@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.monumental.util.string.StringHelper;
-import org.locationtech.jts.geom.Point;
 import org.hibernate.LazyInitializationException;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -177,7 +177,7 @@ public class Monument extends Model implements Serializable {
     public void setState(String state) {
         this.state = state;
     }
-  
+
     public String getAddress() {
         return this.address;
     }
@@ -253,7 +253,8 @@ public class Monument extends Model implements Serializable {
             for (MonumentTag monumentTag : this.monumentTags) {
                 if (!monumentTag.getTag().getIsMaterial()) tags.add(monumentTag.getTag());
             }
-        } catch (LazyInitializationException | NullPointerException e) {}
+        } catch (LazyInitializationException | NullPointerException e) {
+        }
         return tags;
     }
 
@@ -286,7 +287,8 @@ public class Monument extends Model implements Serializable {
             for (MonumentTag monumentTag : this.monumentTags) {
                 if (monumentTag.getTag().getIsMaterial()) materials.add(monumentTag.getTag());
             }
-        } catch (LazyInitializationException | NullPointerException e) {}
+        } catch (LazyInitializationException | NullPointerException e) {
+        }
         return materials;
     }
 
@@ -337,7 +339,7 @@ public class Monument extends Model implements Serializable {
     public String toString() {
         return "Artist: " + this.artist + ", Title: " + this.title + ", Date: "
                 + this.date + ", Point: " + (this.coordinates != null ? this.coordinates.toString() : null)
-                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address +", Description: "
+                + ", City: " + this.city + ", State: " + this.state + ", Address: " + this.address + ", Description: "
                 + this.description;
     }
 
@@ -345,6 +347,7 @@ public class Monument extends Model implements Serializable {
      * Generates a description of this Monument based on some of its state
      * If the Monument does not have a title, no description is generated
      * since Monuments should never have no title
+     *
      * @return String - the description of this Monument
      */
     private String generateDescription() {
@@ -362,11 +365,9 @@ public class Monument extends Model implements Serializable {
 
         if (!StringHelper.isNullOrEmpty(this.city) && !StringHelper.isNullOrEmpty(this.state)) {
             description += " in " + this.city + ", " + this.state;
-        }
-        else if (!StringHelper.isNullOrEmpty(this.city) && StringHelper.isNullOrEmpty(this.state)) {
+        } else if (!StringHelper.isNullOrEmpty(this.city) && StringHelper.isNullOrEmpty(this.state)) {
             description += " in " + this.city;
-        }
-        else if (StringHelper.isNullOrEmpty(this.city) && !StringHelper.isNullOrEmpty(this.state)) {
+        } else if (StringHelper.isNullOrEmpty(this.city) && !StringHelper.isNullOrEmpty(this.state)) {
             description += " in " + this.state;
         }
 

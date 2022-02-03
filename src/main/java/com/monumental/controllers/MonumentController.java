@@ -48,20 +48,21 @@ public class MonumentController {
 
     /**
      * Get a Monument with the specified ID, if it exists and is active or inactive depending on onlyActive
-     * @param id - ID of the Monument to get
-     * @param cascade - If true, loads all of the lazy-loaded collections associated with the Monument
+     *
+     * @param id         - ID of the Monument to get
+     * @param cascade    - If true, loads all of the lazy-loaded collections associated with the Monument
      * @param onlyActive - If true, a 404 will be returned if the specified Monument is inactive. If false, the monument
-     *                 will be returned regardless of whether it's active or inactive.
-     *                 If this is false then the user must be a partner or above to view
+     *                   will be returned regardless of whether it's active or inactive.
+     *                   If this is false then the user must be a partner or above to view
      * @return Monument - The Monument with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a Monument with the specified ID does not exist or onlyActive is true and isActive is false
-     * @throws AccessDeniedException - If trying to get an inactive monument without being a partner or above
-     * @throws UnauthorizedException - If trying to get an inactive monument and not logged in
+     * @throws AccessDeniedException     - If trying to get an inactive monument without being a partner or above
+     * @throws UnauthorizedException     - If trying to get an inactive monument and not logged in
      */
     @GetMapping("/api/monument/{id}")
     public Monument getMonument(@PathVariable("id") Integer id,
-                                      @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade,
-                                      @RequestParam(defaultValue = "true") Boolean onlyActive)
+                                @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade,
+                                @RequestParam(defaultValue = "true") Boolean onlyActive)
             throws ResourceNotFoundException, AccessDeniedException, UnauthorizedException {
         Optional<Monument> optional;
         try {
@@ -74,7 +75,8 @@ public class MonumentController {
         } catch (EntityNotFoundException e) {
             optional = Optional.empty();
         }
-        if (optional.isEmpty()) throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        if (optional.isEmpty())
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         Monument monument = optional.get();
 
         if (cascade) {
@@ -89,16 +91,17 @@ public class MonumentController {
 
     /**
      * Get all of the Monuments and is active or inactive depending on onlyActive
+     *
      * @param onlyActive - If true, only active monuments will be returned. If false, monuments
-     *                 will be returned regardless of whether they're active or inactive.
-     *                 If this is false then the user must be a partner or above to view
+     *                   will be returned regardless of whether they're active or inactive.
+     *                   If this is false then the user must be a partner or above to view
      * @return List<Monument> - List of all of the Monuments
      * @throws AccessDeniedException - If trying to get inactive monuments without being a partner or above
      * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
     @GetMapping("/api/monuments")
     public List<Monument> getAllMonuments(@RequestParam(defaultValue = "true") Boolean onlyActive,
-                                      @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade
+                                          @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade
     ) throws UnauthorizedException {
         List<Monument> monuments;
         if (onlyActive) {
@@ -115,13 +118,10 @@ public class MonumentController {
         return monuments;
     }
 
-    private static class ToggleIsActiveRequest {
-        public boolean isActive;
-    }
-
     /**
      * Change the value of isActive on a Monument
-     * @param id - ID of the Monument to update
+     *
+     * @param id      - ID of the Monument to update
      * @param request - ToggleIsActiveRequest containing the new value for isActive
      * @return Monument - The updated Monument
      */
@@ -141,6 +141,7 @@ public class MonumentController {
 
     /**
      * Permanently delete a Monument with the specified ID
+     *
      * @param id - ID of the Monument to delete
      */
     @DeleteMapping("/api/monument/{id}")
@@ -164,6 +165,7 @@ public class MonumentController {
 
     /**
      * Get the statistics related to Monuments for the About Page
+     *
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
      * About Page
      */
@@ -174,6 +176,7 @@ public class MonumentController {
 
     /**
      * Create a Monument using the specified createSuggestion
+     *
      * @param createSuggestion - CreateMonumentSuggestion to use to create the new Monument
      * @return Monument - The created Monument based on the specified createSuggestion
      */
@@ -188,7 +191,8 @@ public class MonumentController {
     /**
      * Update the Monument with the specified monumentId to have the new attributes defined by the specified
      * updateSuggestion
-     * @param monumentId - Integer ID of the Monument to update
+     *
+     * @param monumentId       - Integer ID of the Monument to update
      * @param updateSuggestion - UpdateMonumentSuggestion defining the new attributes for the Monument
      * @return Monument - The updated Monument with the specified monumentId based on the attributes defined in the
      * specified updateSuggestion
@@ -209,5 +213,9 @@ public class MonumentController {
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
         return this.monumentService.updateMonument(updateSuggestion);
+    }
+
+    private static class ToggleIsActiveRequest {
+        public boolean isActive;
     }
 }

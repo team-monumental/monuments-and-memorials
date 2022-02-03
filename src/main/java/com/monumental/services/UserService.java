@@ -27,7 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 
@@ -52,6 +55,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Gets our custom Spring Security session object (UserAwareUserDetails) which includes our User.
+     *
      * @return UserAwareUserDetails - Custom Spring Security session object
      * @throws UnauthorizedException - If the current user is not logged in
      */
@@ -65,6 +69,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Gets our User object for the currently logged in user
+     *
      * @return User - The logged in User
      * @throws UnauthorizedException - If the current user is not logged in
      */
@@ -76,6 +81,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Force the session to use an updated version of the user record
+     *
      * @param user - The updated user record
      * @throws UnauthorizedException - If the current user is not logged in
      */
@@ -86,10 +92,11 @@ public class UserService extends ModelService<User> {
     /**
      * Begins the signup process by creating the User with the submitted information. The User will receive
      * an email with a verification link so that we know the user owns the provided email address,
+     *
      * @param userRequest - The form data from the user including name, email, and password
      * @return User - The created User object
      * @throws InvalidEmailOrPasswordException - If the email address is already in use
-     * @throws ValidationException - If the supplied password and matchingPassword do not match
+     * @throws ValidationException             - If the supplied password and matchingPassword do not match
      */
     @Transactional
     public User signup(CreateUserRequest userRequest) throws InvalidEmailOrPasswordException, ValidationException {
@@ -121,6 +128,7 @@ public class UserService extends ModelService<User> {
      * already verified, we want to make sure that they still own the email address and their account is not compromised.
      * If the email address does not match any user, NO indication is given as this would expose which email addresses
      * are registered to the site.
+     *
      * @param email - The email address to verify
      */
     @Transactional
@@ -143,7 +151,8 @@ public class UserService extends ModelService<User> {
      * the JSESSIONID cookie. This is used specifically when the user's username is changed, as the Spring Security
      * session does not handle this well at all, and using the logout endpoint would redirect react to the homepage
      * which isn't desirable. Instead, this endpoint is used to silently log the user out.
-     * @param request - The HTTP Request object, used to get the existing session cookie
+     *
+     * @param request  - The HTTP Request object, used to get the existing session cookie
      * @param response - The HTTP Response object, used to set the expired session cookie
      */
     public void invalidateSession(HttpServletRequest request, HttpServletResponse response) {
@@ -160,7 +169,7 @@ public class UserService extends ModelService<User> {
      * Generates a verification token of the specified type for the user, usually used to verify an email address
      * Any tokens of the same type for that user are deleted upon creation of a new one, so be sure to use types
      * that do not intersect with other flows as they could invalidate each other if they share the same type.
-     *
+     * <p>
      * NOTE that this methods must be called from transactional controller methods, as it calls the tokenRepository
      *
      * @param user - The user that the verification token is intended for
@@ -183,16 +192,16 @@ public class UserService extends ModelService<User> {
      * Verify that a token string matches a valid VerificationToken object in the database.
      * This confirms that the user specifying the token string received it through whatever means it was given to them,
      * normally email, therefore verifying that they do own the email address.
-     *
+     * <p>
      * Once the token is verified it is immediately deleted from the database so that it cannot be used again.
      *
      * @param token - The VerificationToken token string
      * @return - The matching VerificationToken, if it was a match
      * @throws ResourceNotFoundException - If there was no matching VerificationToken. Note that this often simply means
-     *                                     that a newer token has been generated in the mean time, causing this one to be
-     *                                     deleted from the database.
+     *                                   that a newer token has been generated in the mean time, causing this one to be
+     *                                   deleted from the database.
      */
-    public VerificationToken verifyToken(String token) throws ResourceNotFoundException{
+    public VerificationToken verifyToken(String token) throws ResourceNotFoundException {
         VerificationToken verificationToken = this.tokenRepository.getByToken(token);
 
         if (verificationToken == null) {
@@ -208,6 +217,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Require that the current user has a specific Role, otherwise throw AccessDeniedException
+     *
      * @param role - The Role to check for
      * @throws AccessDeniedException - If the running User does not have the specified Role
      * @throws UnauthorizedException - If there is no User in the session, i.e. logged out
@@ -220,6 +230,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Require that the current user have one of the desired Roles, otherwise throw AccessDeniedException
+     *
      * @param desiredRoles - The Roles to check for
      * @throws AccessDeniedException - If the running User has none of the specified Roles
      * @throws UnauthorizedException - If there is no User in the session, i.e. logged out
@@ -241,6 +252,7 @@ public class UserService extends ModelService<User> {
     /**
      * Throw a ResourceNotFoundException if the specified userId does not match any User, if the userId is not null
      * If the userId is null no exception will be thrown
+     *
      * @param userId - The userId to look for
      * @throws ResourceNotFoundException - If there is no matching User
      */
@@ -257,6 +269,7 @@ public class UserService extends ModelService<User> {
     /**
      * Get the Roles for the running User. This should only ever be one currently, but Spring Security
      * allows for multiple Roles per User so we allow for it here
+     *
      * @return - The Roles of the running User
      * @throws UnauthorizedException - If there is no running User, i.e. not logged in
      */
@@ -266,6 +279,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Get the Roles for the User of a given session.
+     *
      * @param session - The session to check against
      * @return - The Roles the User of the session has
      * @throws UnauthorizedException - If the session doesn't have a logged in User
@@ -281,10 +295,11 @@ public class UserService extends ModelService<User> {
     /**
      * Generates a search for Users based on matching the specified parameters
      * May make use of the pg_trgm similarity function
-     * @param name - The string to search names against, using pg_trgm similarity
+     *
+     * @param name  - The string to search names against, using pg_trgm similarity
      * @param email - The string to search email addresses against, using pg_trgm similarity
-     * @param role - The role to filter by exactly (can be null if not filtering by role)
-     * @param page - The page number of User results to return
+     * @param role  - The role to filter by exactly (can be null if not filtering by role)
+     * @param page  - The page number of User results to return
      * @param limit - The maximum number of User results to return
      * @return List<User> - List of User results based on the specified search parameters
      */
@@ -297,20 +312,21 @@ public class UserService extends ModelService<User> {
         this.buildSearchQuery(builder, query, root, name, email, role, true);
 
         return limit != null
-            ? page != null
+                ? page != null
                 ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
                 : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-            : this.getWithCriteriaQuery(query);
+                : this.getWithCriteriaQuery(query);
     }
 
     /**
      * Creates a search query on various fields of the User and adds it to the specified CriteriaQuery
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param root - The Root to use with the CriteriaQuery
-     * @param name - The string to search names against, using pg_trgm similarity
-     * @param email - The string to search email addresses against, using pg_trgm similarity
-     * @param roleName - The role to filter by exactly (can be null if not filtering by role)
+     *
+     * @param builder           - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query             - The CriteriaQuery to add the searching logic to
+     * @param root              - The Root to use with the CriteriaQuery
+     * @param name              - The string to search names against, using pg_trgm similarity
+     * @param email             - The string to search email addresses against, using pg_trgm similarity
+     * @param roleName          - The role to filter by exactly (can be null if not filtering by role)
      * @param orderBySimilarity - If true, the results will be ordered by their similarity scores for any similarity
      *                          queries that were used
      */
@@ -347,6 +363,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Count the total number of results for a User search
+     *
      * @see UserService#search(String, String, String, String, String)
      */
     public Integer countSearchResults(String name, String email, String role) {
@@ -361,6 +378,7 @@ public class UserService extends ModelService<User> {
 
     /**
      * Get a User by id and initialize all of its lazy loaded collections
+     *
      * @param id - The id of the User to get
      * @return User - The matching User, if one exists
      * @throws ResourceNotFoundException - If there is no User with that id

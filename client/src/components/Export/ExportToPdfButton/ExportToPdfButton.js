@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import Button from 'react-bootstrap/Button';
 import {exportToPdf} from '../../../utils/export-util';
-import { RollbarContext } from '../../../App';
+import {RollbarContext} from '../../../App';
 
 /**
  * Presentational component for a button that exports data to PDF
  */
 export const ExportToPdfButton = (props) => {
 
-    const { fields, data, exportTitle, className } = props;
+    const {fields, data, exportTitle, className} = props;
     const rollbar = useContext(RollbarContext);
 
     const handleClick = () => {

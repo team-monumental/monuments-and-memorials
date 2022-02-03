@@ -1,9 +1,9 @@
 import React from 'react';
 import './MapResults.scss';
-import { Map, CircleMarker, Popup, TileLayer, Marker } from 'react-leaflet';
+import {CircleMarker, Map, Marker, Popup, TileLayer} from 'react-leaflet';
 import Address from '../../Monument/Details/Address/Address';
 import * as Leaflet from 'leaflet';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {getMonumentSlug} from "../../../utils/regex-util";
 
 // Coordinates of the geographic center of the US, so that the map is centered on the US
@@ -12,7 +12,7 @@ const US_GEOGRAPHIC_CENTER = [39.8283, -98.5795];
 export default class MapResults extends React.Component {
 
     render() {
-        const { monuments, useCircleMarkers, zoom, center } = this.props;
+        const {monuments, useCircleMarkers, zoom, center} = this.props;
         const markers = [];
         const bounds = {
             north: null,

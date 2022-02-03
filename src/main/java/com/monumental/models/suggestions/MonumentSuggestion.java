@@ -57,7 +57,8 @@ public abstract class MonumentSuggestion extends Model {
             this.gson = new Gson();
         }
 
-        return this.gson.fromJson(json, new TypeToken<List<String>>(){}.getType());
+        return this.gson.fromJson(json, new TypeToken<List<String>>() {
+        }.getType());
     }
 
     List<Integer> deserializeIntegerList(String json) {
@@ -69,7 +70,8 @@ public abstract class MonumentSuggestion extends Model {
             this.gson = new Gson();
         }
 
-        return this.gson.fromJson(json, new TypeToken<List<Integer>>(){}.getType());
+        return this.gson.fromJson(json, new TypeToken<List<Integer>>() {
+        }.getType());
     }
 
     Map<Integer, String> deserializeMap(String json) {
@@ -81,6 +83,7 @@ public abstract class MonumentSuggestion extends Model {
             this.gson = new Gson();
         }
 
-        return this.gson.fromJson(json, new TypeToken<Map<Integer, String>>(){}.getType());
+        return this.gson.fromJson(json, new TypeToken<Map<Integer, String>>() {
+        }.getType());
     }
 }

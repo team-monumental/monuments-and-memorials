@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Model class to represent a user favorite monuments
  */
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "monument_id", "user_id" })})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"monument_id", "user_id"})})
 public class Favorite extends Model implements Serializable {
 
     @ManyToOne

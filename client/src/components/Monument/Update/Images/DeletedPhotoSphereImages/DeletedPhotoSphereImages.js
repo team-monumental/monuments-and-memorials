@@ -7,7 +7,7 @@ import './DeletedPhotoSphereImages.scss';
 export default class DeletedPhotoSphereImages extends React.Component {
 
     render() {
-        const { deletedImageUrls } = this.props;
+        const {deletedImageUrls} = this.props;
 
         let deletedImagesDisplay = <span className="font-weight-bold">NONE</span>;
 
@@ -16,7 +16,7 @@ export default class DeletedPhotoSphereImages extends React.Component {
 
             for (const deletedImageUrl of deletedImageUrls) {
                 deletedImagesList.push(<div className="d-flex justify-content-center" key={deletedImageUrl}>
-                        <iframe title="PhotoSphere" src={deletedImageUrl} frameBorder="0" allowFullScreen/>
+                    <iframe title="PhotoSphere" src={deletedImageUrl} frameBorder="0" allowFullScreen/>
                 </div>);
             }
 

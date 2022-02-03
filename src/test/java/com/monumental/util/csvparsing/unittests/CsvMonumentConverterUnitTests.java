@@ -24,7 +24,9 @@ public class CsvMonumentConverterUnitTests {
 
     private Map<String, String> mapping = MonumentServiceMockIntegrationTests.mapping;
 
-    /** convertCsvRow Tests **/
+    /**
+     * convertCsvRow Tests
+     **/
 
     @Test
     public void testCsvMonumentConverter_convertCsvRow_AllEmptyValues() {
@@ -976,7 +978,9 @@ public class CsvMonumentConverterUnitTests {
         assertEquals("Test", result);
     }
 
-    /** parseCsvMonumentConverterResult Tests **/
+    /**
+     * parseCsvMonumentConverterResult Tests
+     **/
 
     @Test
     public void testCsvMonumentConverter_parseCsvMonumentConverterResult_NullCsvMonumentConverterResult() {

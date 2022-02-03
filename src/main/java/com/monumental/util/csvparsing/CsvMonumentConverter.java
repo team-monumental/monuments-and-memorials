@@ -34,9 +34,10 @@ public class CsvMonumentConverter {
 
     /**
      * Convert CSV rows into CsvMonumentConverterResults
-     * @param csvRows - List of String Arrays of cells in a CSV
-     * @param mapping - The field mapping between the CSV's headers and our fields, provided by the user
-     * @param zipFile - The zip file containing the images to be uploaded, or null if a csv was uploaded directly
+     *
+     * @param csvRows     - List of String Arrays of cells in a CSV
+     * @param mapping     - The field mapping between the CSV's headers and our fields, provided by the user
+     * @param zipFile     - The zip file containing the images to be uploaded, or null if a csv was uploaded directly
      * @param csvFileName - name of csv file
      * @return The conversion results, with any warnings or errors
      */
@@ -277,7 +278,7 @@ public class CsvMonumentConverter {
                                 String photoSphereImage = photoSphereImages.get(photoSphereI);
                                 Pattern srcPattern = Pattern.compile("src=\"([^\"]+)\"");
                                 Matcher m = srcPattern.matcher(photoSphereImage);
-                                try{
+                                try {
                                     String photoSphereSrc = "";
                                     while (m.find()) {
                                         photoSphereSrc = m.group(1);
@@ -324,6 +325,7 @@ public class CsvMonumentConverter {
      * Determine if the specified value can be parsed into a valid Date
      * Dates must be in one of the following formats: dd-MM-yyyy, MM/dd/yyyy, MM-yyyy, MM/yyyy, yyyy
      * Any other format is considered invalid
+     *
      * @param value - String to determine if it can be parsed into a valid Date
      * @return - String date format if valid, null otherwise
      */
@@ -350,6 +352,7 @@ public class CsvMonumentConverter {
      * Dates must be in the following format: dd-MM-yyyy
      * If the day and month are unknown, then the date can also be in yyyy format
      * Any other format is considered invalid
+     *
      * @param value - String to parse into a Date
      * @return Date - Date object created from parsing the specified value
      * @throws DateTimeParseException - If the specified value can not be parsed into a Date
@@ -361,6 +364,7 @@ public class CsvMonumentConverter {
 
     /**
      * Converts date from dd-mm-yyyy to yyyy-mm-dd
+     *
      * @param jsonDate - String date to convert
      * @return String - converted date
      */
@@ -389,13 +393,16 @@ public class CsvMonumentConverter {
             case "MM/yyyy":
             case "MM-yyyy":
                 return DateFormat.MONTH_YEAR;
-            case "yyyy": return DateFormat.YEAR;
-            default: return null;
+            case "yyyy":
+                return DateFormat.YEAR;
+            default:
+                return null;
         }
     }
 
     /**
      * Determine if the specified date is in the future
+     *
      * @param date - Date object to determine if it is in the future
      * @return - True if the specified date is in the future, False otherwise
      */
@@ -432,6 +439,7 @@ public class CsvMonumentConverter {
     /**
      * Cleans a CSV Tag name
      * Removes any whitespace and capitalizes the first letter to attempt to avoid duplicates
+     *
      * @param tagName - String of the CSV Tag name to clean
      * @return String - The cleaned Tag name
      */
@@ -453,8 +461,9 @@ public class CsvMonumentConverter {
 
     /**
      * Parse a specified CsvMonumentConverterResult into a complete CreateMonumentSuggestion
+     *
      * @param result - CsvMonumentConverterResult class to parse
-     * @param gson - Gson object used to convert object to JSON
+     * @param gson   - Gson object used to convert object to JSON
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object created from the specified
      * CsvMonumentConverterResult
      */

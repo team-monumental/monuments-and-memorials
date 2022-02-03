@@ -16,6 +16,7 @@ public interface CreateSuggestionRepository extends JpaRepository<CreateMonument
 
     /**
      * Get all CreateMonumentSuggestions associated with the specified BulkCreateMonumentSuggestion ID
+     *
      * @param id - ID of the BulkCreateMonumentSuggestion to get the CreateMonumentSuggestions for
      */
     @Query("select cms from CreateMonumentSuggestion cms where bulk_create_suggestion_id = :id")
@@ -24,6 +25,7 @@ public interface CreateSuggestionRepository extends JpaRepository<CreateMonument
     /**
      * Get all CreateMonumentSuggestions created by the specified createdBy that are not part of a
      * BulkCreateMonumentSuggestion
+     *
      * @param createdBy - User object to get all of the CreateMonumentSuggestions that were created by it
      * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the specified createdBy
      * that are not part of a BulkCreateMonumentSuggestion
