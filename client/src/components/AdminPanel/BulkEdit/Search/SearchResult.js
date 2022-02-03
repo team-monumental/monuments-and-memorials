@@ -8,12 +8,11 @@ import Tag from "../../../Tags/Tag/Tag";
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({data, id, title, artist, date, tags, nq, dq, onDelete}) => {
+const SearchResult = ({data, nq, dq}) => {
     const [checked, setChecked] = useState(false)
 
     const toggleChecked = () => {
         setChecked(!checked)
-
         checked ? nq(data) : dq(data.id)
     }
 
@@ -21,23 +20,24 @@ const SearchResult = ({data, id, title, artist, date, tags, nq, dq, onDelete}) =
         checked ? nq(data) : dq(data.id)
     }, [checked])
 
+    // noinspection JSUnresolvedVariable
     return (
         <ListGroup.Item as="li">
             <Container fluid>
                 <Row>
                     <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
-                    <Col lg={3}><span>{title}</span></Col>
-                    <Col lg={2}><span>{artist}</span></Col>
+                    <Col lg={3}><span>{data.title}</span></Col>
+                    <Col lg={2}><span>{data.artist}</span></Col>
                     <Col lg={2}>
                         <div className="tags-list">
-                            {tags.map(tag => (
+                            {data.monumentTags.slice(0, 2).map(monumentTag => monumentTag.tag.name).map(tag => (
                                 <Tag name={tag} selectable={false} selectedIcon={null} isMaterial={false}/>
                             ))}
                         </div>
                     </Col>
-                    <Col lg={2}><span>{moment(date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
+                    <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
                     <Col lg={2}>
-                        <SearchResultBtns monumentId={id} onDelete={onDelete}/>
+                        <SearchResultBtns monumentId={data.id}/>
                     </Col>
                 </Row>
             </Container>

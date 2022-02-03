@@ -1,16 +1,20 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
+import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import {Button, Modal} from "react-bootstrap";
-import {deleteMonument} from "../../../../actions/update-monument";
-import {useDispatch} from "react-redux";
 
-const SearchResultBtns = ({monumentId, del}) => {
+import {deleteMonument} from "../../../../actions/update-monument";
+import SearchResultContext from "../../../../contexts";
+
+const SearchResultBtns = ({monumentId}) => {
     const [show, setShow] = useState(false)
+    const del = useContext(SearchResultContext)
     const dispatch = useDispatch()
 
     const confirmDelete = () => {
         dispatch(deleteMonument(monumentId));
         del(monumentId);
+
         setShow(false);
     }
 
