@@ -6,14 +6,14 @@ import {useDispatch} from "react-redux";
 
 
 
-const SearchResultBtns = ({monumentId, del}) => {
+const SearchResultBtns = ({monumentId, onDelete}) => {
 
     const [show, setshow] = useState(false)
     const dispatch = useDispatch()
 
     const confirmDelete = () => {
         dispatch(deleteMonument(monumentId));
-        del(monumentId);
+        onDelete(monumentId);
         setshow(false);
     }
 
