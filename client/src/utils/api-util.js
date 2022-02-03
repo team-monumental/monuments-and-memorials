@@ -81,8 +81,10 @@ export async function del(url, data, options) {
  * @param contentType - The ContentType header, defaults to 'application/json'
  * @param returnFullError - If true, the full error object will be returned instead of just error text
  */
-async function sendRequest(url, {methodType='GET', data=undefined, file=undefined,
-    contentType = 'application/json', returnFullError = false}) {
+async function sendRequest(url, {
+    methodType = 'GET', data = undefined, file = undefined,
+    contentType = 'application/json', returnFullError = false
+}) {
     if (httpMethodTypes.includes(methodType) && url) {
         let error = null;
 
@@ -96,8 +98,7 @@ async function sendRequest(url, {methodType='GET', data=undefined, file=undefine
                 'Content-Type': contentType,
                 credentials: 'include'
             };
-        }
-        else if (file) {
+        } else if (file) {
             const formData = new FormData();
             formData.append('file', file);
 
@@ -112,7 +113,8 @@ async function sendRequest(url, {methodType='GET', data=undefined, file=undefine
 
                     try {
                         errorMessage = JSON.parse(errorMessage);
-                    } catch (error) {}
+                    } catch (error) {
+                    }
 
                     throw Error(errorMessage.message);
                 }
@@ -243,7 +245,7 @@ async function isUniqueKey(objectKey) {
 
     try {
         try {
-            await s3Client.headObject({ Bucket: s3ImageBucketName, Key: objectKey }).promise();
+            await s3Client.headObject({Bucket: s3ImageBucketName, Key: objectKey}).promise();
             return false
         } catch (headErr) {
             if (headErr.code === 'NotFound') {

@@ -19,6 +19,7 @@ public class StringHelper {
 
     /**
      * Method to determine if a specified String is null or empty
+     *
      * @param string - String to check for null or empty
      * @return boolean - True if the String is null or empty, false otherwise
      */
@@ -32,6 +33,7 @@ public class StringHelper {
     /**
      * Method to remove beginning and ending quotes from a specified string
      * Does nothing if there are not both beginning and ending quotes
+     *
      * @param string - the String to remove the quotes from
      * @return String - the updated String, with removed quotes if applicable
      */
@@ -64,6 +66,7 @@ public class StringHelper {
 
     /**
      * Method to parse a state abbreviation or full name into a common format
+     *
      * @param state - State String to parse into common format
      * @return String - The name of the State in a common format
      */

@@ -1,30 +1,30 @@
 import {
-    FETCH_MONUMENT_PENDING,
-    FETCH_MONUMENT_ERROR,
-    FETCH_MONUMENT_SUCCESS,
-    FETCH_NEARBY_MONUMENTS_PENDING,
-    FETCH_NEARBY_MONUMENTS_SUCCESS,
-    FETCH_NEARBY_MONUMENTS_ERROR,
-    FETCH_RELATED_MONUMENTS_PENDING,
-    FETCH_RELATED_MONUMENTS_SUCCESS,
-    FETCH_RELATED_MONUMENTS_ERROR,
-    FETCH_FAVORITE_PENDING,
-    FETCH_FAVORITE_SUCCESS,
-    FETCH_FAVORITE_ERROR,
     CREATE_FAVORITE_ERROR,
     CREATE_FAVORITE_PENDING,
     CREATE_FAVORITE_SUCCESS,
     DELETE_FAVORITE_ERROR,
     DELETE_FAVORITE_PENDING,
     DELETE_FAVORITE_SUCCESS,
+    FETCH_ALL_MONUMENTS_ERROR,
     FETCH_ALL_MONUMENTS_PENDING,
     FETCH_ALL_MONUMENTS_SUCCESS,
-    FETCH_ALL_MONUMENTS_ERROR
+    FETCH_FAVORITE_ERROR,
+    FETCH_FAVORITE_PENDING,
+    FETCH_FAVORITE_SUCCESS,
+    FETCH_MONUMENT_ERROR,
+    FETCH_MONUMENT_PENDING,
+    FETCH_MONUMENT_SUCCESS,
+    FETCH_NEARBY_MONUMENTS_ERROR,
+    FETCH_NEARBY_MONUMENTS_PENDING,
+    FETCH_NEARBY_MONUMENTS_SUCCESS,
+    FETCH_RELATED_MONUMENTS_ERROR,
+    FETCH_RELATED_MONUMENTS_PENDING,
+    FETCH_RELATED_MONUMENTS_SUCCESS
 } from '../constants';
 import * as QueryString from 'query-string';
-import { get, post, del } from '../utils/api-util';
-import { addError } from './errors';
-import { pending, success, error } from '../utils/action-util';
+import {del, get, post} from '../utils/api-util';
+import {addError} from './errors';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     single: {
@@ -93,7 +93,7 @@ export default function fetchMonument(id, onlyActive) {
     }
 }
 
-export function fetchAllMonuments(dispatch, onlyActive=true) {
+export function fetchAllMonuments(dispatch, onlyActive = true) {
     return async dispatch => {
         dispatch(pending(actions.all));
 

@@ -77,6 +77,7 @@ public class SuggestionController {
 
     /**
      * Create a new Suggestion for creating a Monument
+     *
      * @param createSuggestion - CreateMonumentSuggestion object representing the new Monument suggestion
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object just saved
      */
@@ -90,7 +91,8 @@ public class SuggestionController {
 
     /**
      * Create a new Suggestion for updating a Monument, if it exists
-     * @param monumentId - Integer ID of the Monument to suggest the update for
+     *
+     * @param monumentId       - Integer ID of the Monument to suggest the update for
      * @param updateSuggestion - UpdateMonumentSuggestion object representing the updated Monument
      * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object just saved
      * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
@@ -98,7 +100,7 @@ public class SuggestionController {
     @PostMapping("/api/suggestion/update/{id}")
     @PreAuthorize(Authentication.isAuthenticated)
     public UpdateMonumentSuggestion suggestMonumentUpdate(@PathVariable("id") Integer monumentId,
-                                                      @RequestBody UpdateMonumentSuggestion updateSuggestion) {
+                                                          @RequestBody UpdateMonumentSuggestion updateSuggestion) {
         Optional<Monument> optional = this.monumentRepository.findById(monumentId);
         if (optional.isEmpty()) {
             throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
@@ -113,6 +115,7 @@ public class SuggestionController {
 
     /**
      * Determine which rows in the specified .csv (or .csv within .zip) file are valid
+     *
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return BulkCreateResult - Object representing the results of the Bulk Monument Validate operation
      */
@@ -132,9 +135,10 @@ public class SuggestionController {
 
     /**
      * Start the job to create a new Suggestion for bulk-creating Monuments
+     *
      * @param request - BulkCreateMonumentRequest object containing the field mapping and the file to process
      * @return AsyncJob - Object containing the id of the job created and the current value of the Future object
-     * @throws IOException - If an exception occurs during parsing of the .csv and/or .zip file
+     * @throws IOException           - If an exception occurs during parsing of the .csv and/or .zip file
      * @throws UnauthorizedException - If there is no current User logged in
      */
     @PostMapping("/api/suggestion/bulk")
@@ -158,6 +162,7 @@ public class SuggestionController {
 
     /**
      * Check the progress of a create BulkCreateMonumentSuggestion job
+     *
      * @param id - Id of the job to check
      * @return AsyncJob - Object containing the id of the job and the current value of the Future object
      */
@@ -171,9 +176,10 @@ public class SuggestionController {
      * Get the final result of a create BulkCreateMonumentSuggestion job. If the job is not completed yet this will wait
      * for it to complete, so be sure to call getBulkCreateMonumentSuggestionJob and check the status before calling
      * this
+     *
      * @param id - Id of the job to get the result of
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created by the job
-     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
+     * @throws ExecutionException   - Can be thrown by Java if the future encountered an exception
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
     @GetMapping("/api/suggestion/bulk/result/{id}")
@@ -185,6 +191,7 @@ public class SuggestionController {
 
     /**
      * Get a CreateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the CreateMonumentSuggestion to get
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
@@ -199,6 +206,7 @@ public class SuggestionController {
     /**
      * Get all CreateMonumentSuggestions created by the currently logged in User that are not part of a
      * BulkCreateMonumentSuggestion
+     *
      * @return List<CreateMonumentSuggestion> - List of CreateMonumentSuggestions created by the currently logged in
      * User that are not part of a BulkCreateMonumentSuggestion
      * @throws UnauthorizedException - If no User is currently logged in
@@ -211,6 +219,7 @@ public class SuggestionController {
 
     /**
      * Get an UpdateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the UpdateMonumentSuggestion to get
      * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
@@ -224,6 +233,7 @@ public class SuggestionController {
 
     /**
      * Get all UpdateMonumentSuggestions created by the currently logged in User
+     *
      * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestions created by the currently logged in
      * User
      * @throws UnauthorizedException - If no User is currently logged in
@@ -236,6 +246,7 @@ public class SuggestionController {
 
     /**
      * Get a BulkCreateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the BulkCreateMonumentSuggestion to get
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
@@ -249,6 +260,7 @@ public class SuggestionController {
 
     /**
      * Get all BulkCreateMonumentSuggestions created by the currently logged in User
+     *
      * @return List<BulkCreateMonumentSuggestion> - List of BulkCreateMonumentSuggestions created by the currently
      * logged in User
      * @throws UnauthorizedException - If no User is currently logged in
@@ -261,6 +273,7 @@ public class SuggestionController {
 
     /**
      * Approve a CreateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the CreateMonumentSuggestion to approve
      * @return CreateMonumentSuggestion - The approved CreateMonumentSuggestion
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
@@ -282,6 +295,7 @@ public class SuggestionController {
 
     /**
      * Approve an UpdateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the UpdateMonumentSuggestion to approve
      * @return UpdateMonumentSuggestion - The approved UpdateMonumentSuggestion
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
@@ -304,10 +318,11 @@ public class SuggestionController {
     /**
      * Approve a BulkCreateMonumentSuggestion with the specified ID, if it exists
      * Starts the job to create Monuments asynchronously
+     *
      * @param id - ID of the BulkCreateMonumentSuggestion to approve
      * @return AsyncJob - Object containing the ID of the job created and the current value of the Future object
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
-     * @throws UnauthorizedException - If there is no current User logged in
+     * @throws UnauthorizedException     - If there is no current User logged in
      */
     @PutMapping("/api/suggestion/bulk/{id}/approve")
     @PreAuthorize(Authorization.isResearcherOrAbove)
@@ -321,9 +336,9 @@ public class SuggestionController {
         this.emailService.sendBulkCreateSuggestionApprovalEmail(bulkCreateSuggestion);
 
         /* TODO: This is not a particularly easy way of creating AsyncJobs, I can't think of a way to abstract
-        *  it away currently because the AsyncJob must be passed to the CompletableFuture method and the CompletableFuture
-        * must be passed to the AsyncJob, making it difficult to do so dynamically
-        */
+         *  it away currently because the AsyncJob must be passed to the CompletableFuture method and the CompletableFuture
+         * must be passed to the AsyncJob, making it difficult to do so dynamically
+         */
         AsyncJob job = this.asyncJobService.createJob();
         job.setUser(this.userService.getCurrentUser());
         job.setFuture(this.monumentService.bulkCreateMonumentsAsync(bulkCreateSuggestion, job));
@@ -333,6 +348,7 @@ public class SuggestionController {
 
     /**
      * Check the progress of an approve BulkCreateMonumentSuggestion job
+     *
      * @param id - Id of the job to check
      * @return AsyncJob - Object containing the id of the job and the current value of the Future object
      */
@@ -346,9 +362,10 @@ public class SuggestionController {
      * Get the final result of an approve BulkCreateMonumentSuggestion job. If the job is not completed yet this will
      * wait for it to complete, so be sure to call getApproveBulkCreateMonumentSuggestionJob and check the status before
      * calling this
+     *
      * @param id - Id of the job to get the result of
      * @return List<Monument> - The Monuments created from the approve BulkCreateMonumentSuggestion job
-     * @throws ExecutionException - Can be thrown by Java if the future encountered an exception
+     * @throws ExecutionException   - Can be thrown by Java if the future encountered an exception
      * @throws InterruptedException - Can be thrown by Java if the future encountered an exception
      */
     @GetMapping("/api/suggestion/bulk/approve/result/{id}")
@@ -361,6 +378,7 @@ public class SuggestionController {
 
     /**
      * Reject a CreateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the CreateMonumentSuggestion to reject
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion with the specified ID does not exist
@@ -376,6 +394,7 @@ public class SuggestionController {
 
     /**
      * Reject an UpdateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the UpdateMonumentSuggestion to reject
      * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion with the specified ID does not exist
@@ -391,6 +410,7 @@ public class SuggestionController {
 
     /**
      * Reject a BulkCreateMonumentSuggestion with the specified ID, if it exists
+     *
      * @param id - ID of the BulkCreateMonumentSuggestion to reject
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object that was rejected
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion with the specified ID does not exist
@@ -421,6 +441,7 @@ public class SuggestionController {
 
     /**
      * Helper function to find a CreateMonumentSuggestion object with the specified ID, if it exists
+     *
      * @param id - ID of the CreateMonumentSuggestion object to find
      * @return CreateMonumentSuggestion - CreateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a CreateMonumentSuggestion does not exist with the specified ID
@@ -435,6 +456,7 @@ public class SuggestionController {
 
     /**
      * Helper function to find an UpdateMonumentSuggestion object with the specified ID, if it exists
+     *
      * @param id - ID of the UpdateMonumentSuggestion object to find
      * @return UpdateMonumentSuggestion - UpdateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If an UpdateMonumentSuggestion does not exist with the specified ID
@@ -449,6 +471,7 @@ public class SuggestionController {
 
     /**
      * Helper function to find a BulkCreateMonumentSuggestion object with the specified ID, if it exists
+     *
      * @param id - ID of the BulkCreateMonumentSuggestion object to find
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion object with the specified ID, if it exists
      * @throws ResourceNotFoundException - If a BulkCreateMonumentSuggestion does not exist with the specified ID

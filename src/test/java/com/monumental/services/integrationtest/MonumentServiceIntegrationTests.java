@@ -11,10 +11,10 @@ import com.monumental.services.AwsS3Service;
 import com.monumental.services.GoogleMapsService;
 import com.monumental.services.MonumentService;
 import com.monumental.services.TagService;
-import org.locationtech.jts.geom.Point;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.locationtech.jts.geom.Point;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -435,7 +435,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals(monument4.getTitle(), monument1SecondRelatedMonument.getTitle());
     }
 
-    /** getMonumentAboutPageStatistics Tests **/
+    /**
+     * getMonumentAboutPageStatistics Tests
+     **/
 
     @Test
     public void testMonumentService_getMonumentAboutPageStatistics_NoMonuments() {
@@ -4856,8 +4858,7 @@ public class MonumentServiceIntegrationTests {
         for (Image image : monument.getImages()) {
             if (image.getUrl().equals("Image URL 1")) {
                 assertTrue(image.getIsPrimary());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPrimary());
             }
         }
@@ -5002,8 +5003,7 @@ public class MonumentServiceIntegrationTests {
         for (Image image : monument.getImages()) {
             if (image.getUrl().equals("Image URL 2")) {
                 assertTrue(image.getIsPrimary());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPrimary());
             }
         }
@@ -5153,8 +5153,7 @@ public class MonumentServiceIntegrationTests {
         for (Image image : monument.getImages()) {
             if (image.getUrl().equals("Image URL 2")) {
                 assertTrue(image.getIsPrimary());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPrimary());
             }
         }
@@ -5601,15 +5600,13 @@ public class MonumentServiceIntegrationTests {
         for (Image image : monument.getImages()) {
             if (image.getUrl().equals("Image URL 1")) {
                 assertTrue(image.getIsPrimary());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPrimary());
             }
 
             if (image.getUrl().contains("PhotoSphere")) {
                 assertTrue(image.getIsPhotoSphere());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPhotoSphere());
             }
         }
@@ -5780,15 +5777,13 @@ public class MonumentServiceIntegrationTests {
         for (Image image : monument.getImages()) {
             if (image.getUrl().equals("Image URL 2")) {
                 assertTrue(image.getIsPrimary());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPrimary());
             }
 
             if (image.getUrl().contains("PhotoSphere")) {
                 assertTrue(image.getIsPhotoSphere());
-            }
-            else {
+            } else {
                 assertFalse(image.getIsPhotoSphere());
             }
         }
@@ -7037,7 +7032,9 @@ public class MonumentServiceIntegrationTests {
         assertEquals(1, this.contributionRepository.getAllByMonumentId(updatedMonument.getId()).size());
     }
 
-    /** createMonumentContributions Tests **/
+    /**
+     * createMonumentContributions Tests
+     **/
 
     @Test
     public void testMonumentService_createMonumentContributions_NullContributors() {

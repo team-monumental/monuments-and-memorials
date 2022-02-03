@@ -1,10 +1,9 @@
 import React from 'react';
 import './SuggestionCreatedPage.scss';
 import Helmet from 'react-helmet';
-import { Card } from 'react-bootstrap';
-import { Link, withRouter } from 'react-router-dom';
+import {Button, Card} from 'react-bootstrap';
+import {Link, withRouter} from 'react-router-dom';
 import * as QueryString from 'query-string';
-import { Button } from 'react-bootstrap';
 import Footer from '../../components/Footer/Footer';
 
 /**
@@ -13,7 +12,7 @@ import Footer from '../../components/Footer/Footer';
 class SuggestionCreatedPage extends React.Component {
 
     handleButtonClick() {
-        const { location: { search }, history } = this.props;
+        const {location: {search}, history} = this.props;
         const type = QueryString.parse(search).type;
 
         switch (type) {
@@ -29,7 +28,7 @@ class SuggestionCreatedPage extends React.Component {
     }
 
     render() {
-        const { location: { search } } = this.props;
+        const {location: {search}} = this.props;
         const type = QueryString.parse(search).type;
 
         const accountPageLink = (
@@ -53,7 +52,7 @@ class SuggestionCreatedPage extends React.Component {
                                 Suggestion is approved. You can view all of your Suggestions by {accountPageLink} and
                                 scrolling down to the <strong>Your Suggestions</strong> section.
                             </p>
-                            {type && (type === 'create' || type === 'bulk')  &&
+                            {type && (type === 'create' || type === 'bulk') &&
                                 <Button variant="primary" onClick={() => this.handleButtonClick()}>
                                     {
                                         type === 'bulk' ? 'SUGGEST MORE CHANGEs' : 'SUGGEST ANOTHER CHANGE'

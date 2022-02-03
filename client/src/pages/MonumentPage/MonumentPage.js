@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import Monument from '../../components/Monument/Monument';
 import Spinner from '../../components/Spinner/Spinner';
-import fetchMonument, { createFavorite, deleteFavorite, fetchFavorite } from '../../actions/monument';
-import { Helmet } from 'react-helmet';
+import fetchMonument, {createFavorite, deleteFavorite, fetchFavorite} from '../../actions/monument';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
-import { getMonumentSlug } from '../../utils/regex-util';
+import {getMonumentSlug} from '../../utils/regex-util';
 
 /**
  * Root container component for the monument record page which handles retrieving the monument
@@ -24,7 +24,7 @@ class MonumentPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, session, match: { params: { monumentId, slug } } } = this.props;
+        const {dispatch, session, match: {params: {monumentId, slug}}} = this.props;
         if (this.props.monument.title && !slug) {
             // Change the url to include the slug if it's not present
             this.redirectToSlug();
@@ -39,7 +39,7 @@ class MonumentPage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, match: { params: { monumentId } } } = this.props;
+        const {dispatch, match: {params: {monumentId}}} = this.props;
         dispatch(fetchMonument(monumentId));
     }
 
@@ -47,7 +47,7 @@ class MonumentPage extends React.Component {
      * This function encapsulates the logic to add the slug at the end of the url if it's not present
      */
     redirectToSlug() {
-        const { monument, match, history } = this.props;
+        const {monument, match, history} = this.props;
         const slug = match.params.slug;
         // Wait for the monument to be loaded in from the API
         // If there's no title, slugify will throw an error, so only proceed if there's a title
@@ -61,7 +61,7 @@ class MonumentPage extends React.Component {
     }
 
     handleToggleFavorite() {
-        const { favorite, monument, dispatch } = this.props;
+        const {favorite, monument, dispatch} = this.props;
         if (favorite) {
             dispatch(deleteFavorite(monument));
         } else {
@@ -70,7 +70,7 @@ class MonumentPage extends React.Component {
     }
 
     handleSuggestChangesButtonClick() {
-        const { monument, history } = this.props;
+        const {monument, history} = this.props;
         history.push(`/update-monument/${monument.id}`);
     }
 

@@ -1,27 +1,28 @@
 @import "../../../theme";
 
 .search-result {
-    display: flex;
-    padding: 0.5rem;
+  display: flex;
+  padding: 0.5rem;
 
-    .card {
-        width: 100%;
-        background-color: white;
+  .card {
+    width: 100%;
+    background-color: white;
 
-        .card-body {
-            padding: 0.25rem 0 0;
+    .card-body {
+      padding: 0.25rem 0 0;
 
-            .address-container {
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        .card-title.h5 {
-            font-size: 1.25rem;
-            padding: 0;
-            a {
-                color: $secondary;
-            }
-        }
+      .address-container {
+        margin-bottom: 0.5rem;
+      }
     }
+
+    .card-title.h5 {
+      font-size: 1.25rem;
+      padding: 0;
+
+      a {
+        color: $secondary;
+      }
+    }
+  }
 }

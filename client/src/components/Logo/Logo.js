@@ -3,7 +3,7 @@ import './Logo.scss';
 
 export default class Logo extends React.Component {
     render() {
-        let { size, className } = this.props;
+        let {size, className} = this.props;
         size = size || '35px';
         const filename = size.includes('px') && parseInt(size.replace('px', '')) > 64 ?
             'svg/logo.svg' : 'logo128.png';

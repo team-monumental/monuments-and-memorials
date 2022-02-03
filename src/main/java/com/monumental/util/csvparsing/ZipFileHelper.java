@@ -20,6 +20,7 @@ public class ZipFileHelper {
      * Converts a Spring MultipartFile to a ZipFile
      * The easiest way to accomplish this is by creating a temporary file and using the temp file
      * to create the ZipFile
+     *
      * @param multipartFile - MultipartFile to convert to a ZipFile
      * @return ZipFile - ZipFile representation of the MultipartFile
      * @throws IOException - If any I/O errors occur while converting the MultipartFile
@@ -38,7 +39,8 @@ public class ZipFileHelper {
 
     /**
      * Read all of the contents of a CSV file ZipEntry into a List of Strings split on newline characters
-     * @param zipFile - ZipFile that the csvFileZipEntry belongs to
+     *
+     * @param zipFile         - ZipFile that the csvFileZipEntry belongs to
      * @param csvFileZipEntry - ZipEntry for the CSV file to read into a List of Strings
      * @return List<String> - Entire contents of the CSV file ZipEntry, split on newlines
      */
@@ -58,7 +60,8 @@ public class ZipFileHelper {
      * Convert a specified ZipEntry to a File object
      * The easiest way to accomplish this is to use a temp File and transfer the contents of the ZipEntry
      * into the temp File
-     * @param zipFile - The ZipFile that the ZipEntry belongs to
+     *
+     * @param zipFile  - The ZipFile that the ZipEntry belongs to
      * @param zipEntry - The ZipEntry to convert to a File
      * @return File - File object representation of the ZipEntry
      * @throws IOException - If any I/O errors occur when reading from the ZipFile or ZipEntry
@@ -93,6 +96,7 @@ public class ZipFileHelper {
 
     /**
      * Determine if the specified filePath points to a .zip file
+     *
      * @param filePath - The path to the file to check, as a String
      * @return boolean - True if the file extension of the filePath is ".zip", false otherwise
      */

@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
-import { fetchFavorites } from '../../actions/user';
-import { Helmet } from 'react-helmet';
-import { fetchBulkCreateSuggestions, fetchCreateSuggestions, fetchUpdateSuggestions } from '../../actions/suggestions';
-import { Role } from '../../utils/authentication-util';
-import { Alert } from 'react-bootstrap';
+import {fetchFavorites} from '../../actions/user';
+import {Helmet} from 'react-helmet';
+import {fetchBulkCreateSuggestions, fetchCreateSuggestions, fetchUpdateSuggestions} from '../../actions/suggestions';
+import {Role} from '../../utils/authentication-util';
+import {Alert} from 'react-bootstrap';
 import Footer from '../../components/Footer/Footer';
 
 class UserPage extends React.Component {
@@ -19,17 +19,6 @@ class UserPage extends React.Component {
         };
     }
 
-    componentDidMount() {
-        const { dispatch, session } = this.props;
-        dispatch(fetchFavorites());
-        dispatch(fetchCreateSuggestions());
-        dispatch(fetchUpdateSuggestions());
-
-        if (session && session.user && session.user.role.toUpperCase() === Role.PARTNER) {
-            dispatch(fetchBulkCreateSuggestions());
-        }
-    }
-
     static mapStateToProps(state) {
         return {
             session: state.session,
@@ -40,9 +29,20 @@ class UserPage extends React.Component {
         };
     }
 
+    componentDidMount() {
+        const {dispatch, session} = this.props;
+        dispatch(fetchFavorites());
+        dispatch(fetchCreateSuggestions());
+        dispatch(fetchUpdateSuggestions());
+
+        if (session && session.user && session.user.role.toUpperCase() === Role.PARTNER) {
+            dispatch(fetchBulkCreateSuggestions());
+        }
+    }
+
     render() {
-        const { createSuggestions, updateSuggestions, bulkCreateSuggestions, session, favorites } = this.props;
-        const { dismissAlert } = this.state;
+        const {createSuggestions, updateSuggestions, bulkCreateSuggestions, session, favorites} = this.props;
+        const {dismissAlert} = this.state;
 
         const alert = this.props.location.state ? this.props.location.state.alert : undefined;
 
@@ -66,7 +66,8 @@ class UserPage extends React.Component {
                 <div className="account page">
                     <Spinner show={session.pending}/>
                     {session.user &&
-                        <User user={session.user} favorites={favorites} suggestions={suggestions} role={session.user.role}/>
+                        <User user={session.user} favorites={favorites} suggestions={suggestions}
+                              role={session.user.role}/>
                     }
                 </div>
                 <Footer/>

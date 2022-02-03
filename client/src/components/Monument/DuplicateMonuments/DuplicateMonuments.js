@@ -10,7 +10,7 @@ import SearchResults from '../../Search/SearchResults/SearchResults';
 export default class DuplicateMonuments extends React.Component {
 
     render() {
-        const { duplicates, onCancel, onConfirm, showing } = this.props;
+        const {duplicates, onCancel, onConfirm, showing} = this.props;
 
         return (
             <Modal show={showing} onHide={onCancel}>

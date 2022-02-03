@@ -20,8 +20,7 @@ export default class Address extends React.Component {
                     <span className="address">{address}</span>
                 </div>
             );
-        }
-        else {
+        } else {
             return (
                 <div/>
             );

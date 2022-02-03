@@ -1,10 +1,14 @@
 import {
-    CREATE_CREATE_SUGGESTION_PENDING, CREATE_CREATE_SUGGESTION_SUCCESS, CREATE_CREATE_SUGGESTION_ERROR,
-    CREATE_MONUMENT_PENDING, CREATE_MONUMENT_SUCCESS, CREATE_MONUMENT_ERROR
+    CREATE_CREATE_SUGGESTION_ERROR,
+    CREATE_CREATE_SUGGESTION_PENDING,
+    CREATE_CREATE_SUGGESTION_SUCCESS,
+    CREATE_MONUMENT_ERROR,
+    CREATE_MONUMENT_PENDING,
+    CREATE_MONUMENT_SUCCESS
 } from '../constants';
-import { post } from '../utils/api-util';
-import { addError } from './errors';
-import { pending, success, error } from '../utils/action-util';
+import {post} from '../utils/api-util';
+import {addError} from './errors';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     createCreateSuggestion: {

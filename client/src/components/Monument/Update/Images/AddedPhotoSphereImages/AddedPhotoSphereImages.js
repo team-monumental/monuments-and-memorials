@@ -7,7 +7,7 @@ import './AddedPhotoSphereImages.scss';
 export default class AddedPhotoSphereImages extends React.Component {
 
     render() {
-        const { images } = this.props;
+        const {images} = this.props;
 
         let addedImagesDisplay = <span className="font-weight-bold">NONE</span>;
 
@@ -16,7 +16,7 @@ export default class AddedPhotoSphereImages extends React.Component {
 
             for (const addedImage of images) {
                 addedImagesList.push(<div className="d-flex justify-content-center" key={addedImage.url}>
-                        <iframe title="PhotoSphere" src={addedImage.url} frameBorder="0" allowFullScreen/>
+                    <iframe title="PhotoSphere" src={addedImage.url} frameBorder="0" allowFullScreen/>
                 </div>);
             }
 

@@ -125,8 +125,8 @@ public class UserController {
         if (!user.getEmail().equals(existingUser.getEmail())) {
             existingUser.setIsEmailVerified(false);
             this.emailService.sendEmailChangeVerificationEmail(
-                user,
-                this.userService.generateVerificationToken(user, VerificationToken.Type.EMAIL)
+                    user,
+                    this.userService.generateVerificationToken(user, VerificationToken.Type.EMAIL)
             );
             needsConfirmation = true;
             if (selfUpdate) {
@@ -154,10 +154,11 @@ public class UserController {
 
     /**
      * Get a User record. This is NOT the same as getting the logged in user. For that,
-     * @see UserController#getSession()
+     *
      * @param id - The id of the User to get
      * @return - The matching User
      * @throws ResourceNotFoundException - When there is no User with a matching id
+     * @see UserController#getSession()
      */
     @GetMapping("/api/user/{id}")
     @PreAuthorize(Authorization.isAdmin)

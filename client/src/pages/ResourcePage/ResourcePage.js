@@ -1,9 +1,9 @@
 import React from 'react';
 import './ResourcePage.scss';
-import { Collapse, Button } from 'react-bootstrap';
+import {Button, Collapse} from 'react-bootstrap';
 import TextSearch from '../../components/Header/SearchBar/TextSearch/TextSearch';
 import Footer from '../../components/Footer/Footer';
-import { capitalize } from '../../utils/string-util';
+import {capitalize} from '../../utils/string-util';
 
 export default class ResourcePage extends React.Component {
 
@@ -19,108 +19,16 @@ export default class ResourcePage extends React.Component {
         };
     }
 
-    toggleCollapseField(field) {
-        const { fields } = this.state;
-        fields[field.name].collapsed = !fields[field.name].collapsed;
-        this.setState({fields});
-    }
-
-    toggleCollapseAllFields() {
-        const { fields, collapseAll } = this.state;
-        for (const fieldName in fields) {
-            if (!fields.hasOwnProperty(fieldName)) continue;
-            fields[fieldName].collapsed = !collapseAll;
-        }
-        this.setState({
-            fields,
-            collapseAll: !collapseAll
-        });
-    }
-
-    render() {
-        const { collapseAll, search } = this.state;
-        return (
-            <div className="page-container">
-                <div className="resources page static">
-                    <div className="static-page-body">
-                        <div className="row">
-                            <div className="col">
-                                <div className="static-page-title">
-                                    <h1>Resources and Glossary</h1>
-                                </div>
-                                <div className="static-page-text">
-                                    <p>
-                                        This page provides descriptions, formats, and examples of our system's fields for monuments and memorials, to assist you in submitting changes to our database.
-                                    </p>
-                                    <div className="collapse-all-search-container">
-                                        <div className="d-flex">
-                                            <TextSearch disableAnimation
-                                                        placeholder="Search fields..."
-                                                        value={search}
-                                                        className="form-control"
-                                                        onSearchChange={search => this.setState({search})}
-                                                        onClear={() => this.setState({search: ''})}/>
-                                            <Button variant="light" className="btn-sm collapse-btn"
-                                                    onClick={() => this.toggleCollapseAllFields()}>
-                                                {collapseAll ? 'Show All' : 'Collapse All'}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {this.renderFields()}
-                    </div>
-                </div>
-                <Footer/>
-            </div>
-        );
-    }
-
-    renderFields() {
-        const { search } = this.state;
-
-        const fields = [];
-        for (const fieldName in this.state.fields) {
-            if (!this.state.fields.hasOwnProperty(fieldName)) continue;
-            const field = this.state.fields[fieldName];
-            field.content = this.fieldContent[fieldName];
-            field.name = fieldName;
-            field.prettyName = capitalize(fieldName.replace(/([A-Z])/g, ' $1').trim());
-            fields.push(field);
-        }
-
-        return fields.filter(field => field.name.includes(search) || field.prettyName.includes(search))
-            .map(field => (
-            <div className="row" key={field.name}>
-                <div className="col">
-                    <div className="static-page-text">
-                        <div className="field-name">
-                            <i className="material-icons"
-                               onClick={() => this.toggleCollapseField(field)}>
-                                {field.collapsed ? 'add' : 'remove'}
-                            </i>
-                            <h5>{field.prettyName}</h5>
-                        </div>
-                        <Collapse in={!field.collapsed}>
-                            <div className="field-content">
-                                {field.content}
-                            </div>
-                        </Collapse>
-                    </div>
-                </div>
-            </div>
-        ));
-    }
-
     get fieldContent() {
         return {
             submittedBy: (<>
                 <p>
-                    The person who provided information about this monument or memorial. Any updates to this record will add name of new contributor to an already existing record.
+                    The person who provided information about this monument or memorial. Any updates to this record will
+                    add name of new contributor to an already existing record.
                 </p>
                 <p>
-                    <span className="important">Format:</span> Inputted from monuments.us.org account holder information.
+                    <span className="important">Format:</span> Inputted from monuments.us.org account holder
+                    information.
                 </p>
                 <p>
                     <span className="important">Example:</span> Juilee Decker
@@ -143,7 +51,8 @@ export default class ResourcePage extends React.Component {
                     Use proper capitalization.
                 </p>
                 <p>
-                    In the case where more than one artist contributed to the work, use only the primary artist’s name here. Other names may be included in the “Description” field.
+                    In the case where more than one artist contributed to the work, use only the primary artist’s name
+                    here. Other names may be included in the “Description” field.
                 </p>
             </>),
             title: (<>
@@ -160,7 +69,8 @@ export default class ResourcePage extends React.Component {
                     Do not use any punctuation in this field.
                 </p>
                 <p>
-                    If more than one name is given for this work, use the most common name in this field. Other titles may be included in the “Description” field.
+                    If more than one name is given for this work, use the most common name in this field. Other titles
+                    may be included in the “Description” field.
                 </p>
             </>),
             date: (<>
@@ -185,10 +95,13 @@ export default class ResourcePage extends React.Component {
                     One sentence summary about this monument or memorial.
                 </p>
                 <p>
-                    <span className="important">Format:</span> The Name of Monument in City was created by Artist in Year. You may find further information about this monument or memorial at: URL.
+                    <span className="important">Format:</span> The Name of Monument in City was created by Artist in
+                    Year. You may find further information about this monument or memorial at: URL.
                 </p>
                 <p>
-                    <span className="important">Example:</span> The Carrie Brown Bajnotti Memorial Fountain was created by Enid Yandell in 1901. You may find further information about this monument or memorial at <a href="https://www.brown.edu/Departments/Joukowsky_Institute/courses/architectureandmemory/8145.html">https://www.brown.edu/Departments/Joukowsky_Institute/courses/architectureandmemory/8145.html</a>.
+                    <span className="important">Example:</span> The Carrie Brown Bajnotti Memorial Fountain was created
+                    by Enid Yandell in 1901. You may find further information about this monument or memorial at <a
+                    href="https://www.brown.edu/Departments/Joukowsky_Institute/courses/architectureandmemory/8145.html">https://www.brown.edu/Departments/Joukowsky_Institute/courses/architectureandmemory/8145.html</a>.
                 </p>
             </>),
             material: (<>
@@ -202,7 +115,8 @@ export default class ResourcePage extends React.Component {
                     <span className="important">Example:</span> Bronze
                 </p>
                 <p>
-                    If more than one material was used in the creation of this work, select all relevant materials from the list provided.
+                    If more than one material was used in the creation of this work, select all relevant materials from
+                    the list provided.
                 </p>
             </>),
             inscription: (<>
@@ -213,7 +127,9 @@ export default class ResourcePage extends React.Component {
                     <span className="important">Format:</span> Type exactly as words appear on the monument or memorial.
                 </p>
                 <p>
-                    <span className="important">Example:</span> Enid Yandell S. ERECTED AD MDCCCC A GIFT TO HONOR THE MEMORY OF CARRIE MATHILDE DAUGHTER OF THE LATE NICHOLAS BROWN OF PROVIDENCE FROM HER HUSBAND PAUL BAJNOTTI OF TURIN ITALY
+                    <span className="important">Example:</span> Enid Yandell S. ERECTED AD MDCCCC A GIFT TO HONOR THE
+                    MEMORY OF CARRIE MATHILDE DAUGHTER OF THE LATE NICHOLAS BROWN OF PROVIDENCE FROM HER HUSBAND PAUL
+                    BAJNOTTI OF TURIN ITALY
                 </p>
                 <p>
                     Use whatever punctuation is in the original.
@@ -224,7 +140,8 @@ export default class ResourcePage extends React.Component {
                     The longitude and latitude coordinates of the monument or memorial's location.
                 </p>
                 <p>
-                    <span className="important">Format:</span> decimal or degrees minutes seconds, using + for Northern Hemisphere, relative to the equator - for Western Hemisphere, relative to the Greenwich Meridian
+                    <span className="important">Format:</span> decimal or degrees minutes seconds, using + for Northern
+                    Hemisphere, relative to the equator - for Western Hemisphere, relative to the Greenwich Meridian
                 </p>
                 <p>
                     <span className="important">Examples:</span>
@@ -261,7 +178,8 @@ export default class ResourcePage extends React.Component {
                     The state or territory where the monument or memorial is located.
                 </p>
                 <p>
-                    <span className="important">Format:</span> Use common abbreviation of state – two letters, no punctuation
+                    <span className="important">Format:</span> Use common abbreviation of state – two letters, no
+                    punctuation
                 </p>
                 <p>
                     <span className="important">Example:</span> RI
@@ -286,7 +204,8 @@ export default class ResourcePage extends React.Component {
                     <span className="important">Format:</span> URL
                 </p>
                 <p>
-                    <span className="important">Example:</span> <a href="https://siris-artinventories.si.edu/ipac20/ipac.jsp?&profile=ariall&source=~!siartinventories&uri=full=3100001~!12792~!0#focus">https://siris-artinventories.si.edu/ipac20/ipac.jsp?&profile=ariall&source=~!siartinventories&uri=full=3100001~!12792~!0#focus</a>
+                    <span className="important">Example:</span> <a
+                    href="https://siris-artinventories.si.edu/ipac20/ipac.jsp?&profile=ariall&source=~!siartinventories&uri=full=3100001~!12792~!0#focus">https://siris-artinventories.si.edu/ipac20/ipac.jsp?&profile=ariall&source=~!siartinventories&uri=full=3100001~!12792~!0#focus</a>
                 </p>
             </>),
             images: (<>
@@ -303,5 +222,101 @@ export default class ResourcePage extends React.Component {
                 </p>
             </>)
         };
+    }
+
+    toggleCollapseField(field) {
+        const {fields} = this.state;
+        fields[field.name].collapsed = !fields[field.name].collapsed;
+        this.setState({fields});
+    }
+
+    toggleCollapseAllFields() {
+        const {fields, collapseAll} = this.state;
+        for (const fieldName in fields) {
+            if (!fields.hasOwnProperty(fieldName)) continue;
+            fields[fieldName].collapsed = !collapseAll;
+        }
+        this.setState({
+            fields,
+            collapseAll: !collapseAll
+        });
+    }
+
+    render() {
+        const {collapseAll, search} = this.state;
+        return (
+            <div className="page-container">
+                <div className="resources page static">
+                    <div className="static-page-body">
+                        <div className="row">
+                            <div className="col">
+                                <div className="static-page-title">
+                                    <h1>Resources and Glossary</h1>
+                                </div>
+                                <div className="static-page-text">
+                                    <p>
+                                        This page provides descriptions, formats, and examples of our system's fields
+                                        for monuments and memorials, to assist you in submitting changes to our
+                                        database.
+                                    </p>
+                                    <div className="collapse-all-search-container">
+                                        <div className="d-flex">
+                                            <TextSearch disableAnimation
+                                                        placeholder="Search fields..."
+                                                        value={search}
+                                                        className="form-control"
+                                                        onSearchChange={search => this.setState({search})}
+                                                        onClear={() => this.setState({search: ''})}/>
+                                            <Button variant="light" className="btn-sm collapse-btn"
+                                                    onClick={() => this.toggleCollapseAllFields()}>
+                                                {collapseAll ? 'Show All' : 'Collapse All'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {this.renderFields()}
+                    </div>
+                </div>
+                <Footer/>
+            </div>
+        );
+    }
+
+    renderFields() {
+        const {search} = this.state;
+
+        const fields = [];
+        for (const fieldName in this.state.fields) {
+            if (!this.state.fields.hasOwnProperty(fieldName)) continue;
+            const field = this.state.fields[fieldName];
+            field.content = this.fieldContent[fieldName];
+            field.name = fieldName;
+            field.prettyName = capitalize(fieldName.replace(/([A-Z])/g, ' $1').trim());
+            fields.push(field);
+        }
+
+        return fields.filter(field => field.name.includes(search) || field.prettyName.includes(search))
+            .map(field => (
+                <div className="row" key={field.name}>
+                    <div className="col">
+                        <div className="static-page-text">
+                            <div className="field-name">
+                                <i className="material-icons"
+                                   onClick={() => this.toggleCollapseField(field)}>
+                                    {field.collapsed ? 'add' : 'remove'}
+                                </i>
+                                <h5>{field.prettyName}</h5>
+                            </div>
+                            <Collapse in={!field.collapsed}>
+                                <div className="field-content">
+                                    {field.content}
+                                </div>
+                            </Collapse>
+                        </div>
+                    </div>
+                </div>
+            ));
     }
 }

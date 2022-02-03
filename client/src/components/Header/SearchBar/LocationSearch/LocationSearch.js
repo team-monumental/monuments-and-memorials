@@ -1,9 +1,6 @@
 import React from 'react';
 import './LocationSearch.scss';
-import PlacesAutocomplete, {
-    geocodeByAddress,
-    getLatLng
-} from 'react-places-autocomplete';
+import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 /* global google */
 
 /**
@@ -44,7 +41,7 @@ export default class LocationSearch extends React.Component {
     }
 
     async handleSelect(address) {
-        const { onSuggestionSelect } = this.props;
+        const {onSuggestionSelect} = this.props;
 
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
@@ -56,10 +53,10 @@ export default class LocationSearch extends React.Component {
     }
 
     render() {
-        const { searchQuery } = this.state;
-        const { className, placeholder, isInvalid } = this.props;
+        const {searchQuery} = this.state;
+        const {className, placeholder, isInvalid} = this.props;
 
-        const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+        const renderFunc = ({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
             <div className="autocomplete-container">
                 <input
                     {...getInputProps({
@@ -67,7 +64,8 @@ export default class LocationSearch extends React.Component {
                         className: [className, isInvalid ? 'is-invalid' : undefined].join(' ')
                     })}
                 />
-                <div className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>
+                <div
+                    className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>
                     {loading && <div>Loading...</div>}
                     {suggestions.map(suggestion => {
                         const className = 'suggestion-item ' + (suggestion.active

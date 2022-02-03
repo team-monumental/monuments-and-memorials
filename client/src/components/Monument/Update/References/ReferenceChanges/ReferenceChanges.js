@@ -22,7 +22,7 @@ export default class ReferenceChanges extends React.Component {
     }
 
     renderChangedReferences() {
-        const { changedReferences } = this.props;
+        const {changedReferences} = this.props;
 
         let changedReferenceDisplays = [];
 
@@ -39,7 +39,7 @@ export default class ReferenceChanges extends React.Component {
     }
 
     renderUnchangedReferences() {
-        const { unchangedReferences } = this.props;
+        const {unchangedReferences} = this.props;
 
         let unchangedReferenceDisplays = [];
 
@@ -56,7 +56,7 @@ export default class ReferenceChanges extends React.Component {
     }
 
     render() {
-        const { didChange=true } = this.props;
+        const {didChange = true} = this.props;
 
         return didChange ? this.renderChangedReferences() : this.renderUnchangedReferences();
     }

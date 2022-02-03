@@ -31,8 +31,9 @@ public class TagService extends ModelService<Tag> {
 
     /**
      * Search for tags by name, allowing for some fuzziness and ordering by how closely they match
+     *
      * @param searchQuery The term to search tag names by
-     * @param isMaterial If true, only materials will be returned. If false, NO materials will be returned
+     * @param isMaterial  If true, only materials will be returned. If false, NO materials will be returned
      */
     public List<Tag> search(String searchQuery, Boolean isMaterial) {
         CriteriaBuilder builder = this.getCriteriaBuilder();
@@ -44,10 +45,10 @@ public class TagService extends ModelService<Tag> {
         Expression<Number> wordSimilarity = builder.function("word_similarity", Number.class, root.get("name"), builder.literal(searchQuery));
 
         query.where(
-            builder.and(
-                builder.gt(wordSimilarity, 0.25),
-                builder.equal(root.get("isMaterial"), isMaterial)
-            )
+                builder.and(
+                        builder.gt(wordSimilarity, 0.25),
+                        builder.equal(root.get("isMaterial"), isMaterial)
+                )
         );
         query.orderBy(builder.desc(builder.sum(wordSimilarity, similarity)));
 
@@ -57,9 +58,10 @@ public class TagService extends ModelService<Tag> {
     /**
      * Safely create a new tag without duplication
      * This method should be used ANYTIME you wish to associate a Tag with a Monument
-     * @param name          The name of the tag to create
-     * @param monuments     The list of monuments to associate it with
-     * @param isMaterial    Whether or not the tag is a material
+     *
+     * @param name       The name of the tag to create
+     * @param monuments  The list of monuments to associate it with
+     * @param isMaterial Whether or not the tag is a material
      */
     public Tag createTag(String name, List<Monument> monuments, Boolean isMaterial) {
         if (isNullOrEmpty(name) || monuments == null) {
@@ -89,7 +91,8 @@ public class TagService extends ModelService<Tag> {
     /**
      * Remove the specified Tag from the specified Monument
      * This method should be used ANYTIME you want to remove an association between a Monument and a Tag
-     * @param tag - Tag to remove from the specified Monument
+     *
+     * @param tag      - Tag to remove from the specified Monument
      * @param monument - Monument to remove the specified Tag from
      * @return Tag - The updated Tag with the specified Monument removed
      */
@@ -106,8 +109,7 @@ public class TagService extends ModelService<Tag> {
                 if (monumentTag.getMonument().getId() != null) {
                     if (monumentTag.getMonument().getId().equals(monument.getId())) {
                         this.monumentTagRepository.delete(monumentTag);
-                    }
-                    else {
+                    } else {
                         newMonumentTags.add(monumentTag);
                     }
                 }

@@ -16,7 +16,9 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ZipFileHelperUnitTests {
 
-    /** isZipFile Tests **/
+    /**
+     * isZipFile Tests
+     **/
 
     @Test
     public void testZipFileHelper_isZipFile_ZipFilePassed() {

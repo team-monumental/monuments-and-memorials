@@ -3,16 +3,16 @@
 @import "../../../node_modules/bootstrap/scss/mixins";
 
 .account.page {
-    .card {
-        @include media-breakpoint-up(md) {
-            min-width: 450px;
-            max-width: 600px;
-        }
+  .card {
+    @include media-breakpoint-up(md) {
+      min-width: 450px;
+      max-width: 600px;
     }
+  }
 
-    .verified-icon {
-        font-size: 1.25em;
-        transform: translate(2px, 3px);
-        margin-top: -5px;
-    }
+  .verified-icon {
+    font-size: 1.25em;
+    transform: translate(2px, 3px);
+    margin-top: -5px;
+  }
 }

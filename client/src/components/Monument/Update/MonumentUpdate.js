@@ -12,7 +12,7 @@ import AddedImages from './Images/AddedImages/AddedImages';
 import DeletedImages from './Images/DeletedImages/DeletedImages';
 import AddedPhotoSphereImages from './Images/AddedPhotoSphereImages/AddedPhotoSphereImages';
 import DeletedPhotoSphereImages from './Images/DeletedPhotoSphereImages/DeletedPhotoSphereImages';
-import { Collapse } from 'react-bootstrap';
+import {Collapse} from 'react-bootstrap';
 
 /**
  * Presentational component for displaying changes to a Monument
@@ -52,7 +52,7 @@ export default class MonumentUpdate extends React.Component {
     }
 
     determineNewDate() {
-        const { update } = this.props;
+        const {update} = this.props;
 
         switch (update.date.type) {
             case DateFormat.YEAR:
@@ -74,7 +74,7 @@ export default class MonumentUpdate extends React.Component {
     }
 
     determineNewDeactivatedDate() {
-        const { update } = this.props;
+        const {update} = this.props;
 
         switch (update.deactivatedDate.type) {
             case DateFormat.YEAR:
@@ -103,7 +103,7 @@ export default class MonumentUpdate extends React.Component {
      * Stores the changes in an object to return
      */
     collectTagChanges() {
-        const { oldMonument, update } = this.props;
+        const {oldMonument, update} = this.props;
 
         const unchangedMaterials = [];
         const addedMaterials = [];
@@ -121,8 +121,7 @@ export default class MonumentUpdate extends React.Component {
                 if (monumentTag.tag) {
                     if (monumentTag.tag.isMaterial) {
                         oldMonumentMaterialNames.push(monumentTag.tag.name);
-                    }
-                    else {
+                    } else {
                         oldMonumentTagNames.push(monumentTag.tag.name);
                     }
                 }
@@ -133,8 +132,7 @@ export default class MonumentUpdate extends React.Component {
                 for (const newMaterialName of update.newMaterials) {
                     if (!oldMonumentMaterialNames.includes(newMaterialName)) {
                         addedMaterials.push(newMaterialName);
-                    }
-                    else {
+                    } else {
                         unchangedMaterials.push(newMaterialName);
                     }
                 }
@@ -152,8 +150,7 @@ export default class MonumentUpdate extends React.Component {
                 for (const newTagName of update.newTags) {
                     if (!oldMonumentTagNames.includes(newTagName)) {
                         addedTags.push(newTagName);
-                    }
-                    else {
+                    } else {
                         unchangedTags.push(newTagName);
                     }
                 }
@@ -185,7 +182,7 @@ export default class MonumentUpdate extends React.Component {
      * Stores the changes in an object to return
      */
     collectReferenceChanges() {
-        const { oldMonument, update } = this.props;
+        const {oldMonument, update} = this.props;
 
         let deletedReferences = [];
         let changedReferences = [];
@@ -198,8 +195,7 @@ export default class MonumentUpdate extends React.Component {
                 // Deleted
                 if (update.deletedReferenceIds.includes(reference.id)) {
                     deletedReferences.push(reference.url);
-                }
-                else {
+                } else {
                     const newReferenceValue = update.updatedReferenceUrlsById[reference.id];
 
                     // Changed
@@ -237,12 +233,12 @@ export default class MonumentUpdate extends React.Component {
     }
 
     handleShowUnchangedAttributesLinkClick() {
-        const { showingUnchangedAttributes } = this.state;
+        const {showingUnchangedAttributes} = this.state;
         this.setState({showingUnchangedAttributes: !showingUnchangedAttributes});
     }
 
     handleShowAllChangedAttributesLinkClick() {
-        const { showingAllChangedAttributes } = this.state;
+        const {showingAllChangedAttributes} = this.state;
         this.setState({showingAllChangedAttributes: !showingAllChangedAttributes});
     }
 
@@ -279,9 +275,11 @@ export default class MonumentUpdate extends React.Component {
     }
 
     render() {
-        const { showingAllChangedAttributes, showingUnchangedAttributes } = this.state;
-        const { oldMonument, update, showUnchangedAttributes=true, showAllChangedAttributes=true,
-            showCollapseLinks=true } = this.props;
+        const {showingAllChangedAttributes, showingUnchangedAttributes} = this.state;
+        const {
+            oldMonument, update, showUnchangedAttributes = true, showAllChangedAttributes = true,
+            showCollapseLinks = true
+        } = this.props;
 
         let changedAttributes = [];
         let unchangedAttributes = [];
@@ -289,98 +287,152 @@ export default class MonumentUpdate extends React.Component {
         if (oldMonument && update) {
             /* Title */
             (this.didAttributeChange(oldMonument.title, update.newTitle)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={update.newTitle} key="title"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title} newAttribute={update.newTitle} didChange={false} key="title"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title}
+                                                        newAttribute={update.newTitle} key="title"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Title" oldAttribute={oldMonument.title}
+                                                          newAttribute={update.newTitle} didChange={false}
+                                                          key="title"/>);
 
             /* IsTemporary */
             (this.didBooleanChange(oldMonument.isTemporary, update.newIsTemporary)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldMonument.isTemporary} newAttribute={update.newIsTemporary} isBoolean={true} key="isTemporary"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary" oldAttribute={oldMonument.isTemporary} newAttribute={update.newIsTemporary} didChange={false} isBoolean={true} key="isTemporary"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Is Temporary"
+                                                        oldAttribute={oldMonument.isTemporary}
+                                                        newAttribute={update.newIsTemporary} isBoolean={true}
+                                                        key="isTemporary"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Is Temporary"
+                                                          oldAttribute={oldMonument.isTemporary}
+                                                          newAttribute={update.newIsTemporary} didChange={false}
+                                                          isBoolean={true} key="isTemporary"/>);
 
             /* Artist */
             (this.didAttributeChange(oldMonument.artist, update.newArtist)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={update.newArtist} key="artist"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist} newAttribute={update.newArtist} didChange={false} key="artist"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist}
+                                                        newAttribute={update.newArtist} key="artist"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Artist" oldAttribute={oldMonument.artist}
+                                                          newAttribute={update.newArtist} didChange={false}
+                                                          key="artist"/>);
 
             /* Date */
             const oldDate = prettyPrintDate(oldMonument.date, oldMonument.dateFormat);
             const newDate = this.determineNewDate();
             (this.didAttributeChange(oldDate, newDate)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} key="date"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate} newAttribute={newDate} didChange={false} key="date"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate}
+                                                        newAttribute={newDate} key="date"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Date" oldAttribute={oldDate}
+                                                          newAttribute={newDate} didChange={false} key="date"/>);
 
             /* Un-installed Date */
             const oldDeactivatedDate = prettyPrintDate(oldMonument.deactivatedDate, oldMonument.deactivatedDateFormat);
             const newDeactivatedDate = this.determineNewDeactivatedDate();
             (this.didAttributeChange(oldDeactivatedDate, newDeactivatedDate)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Un-installed Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} key="deactivatedDate"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Un-installed Date" oldAttribute={oldDeactivatedDate} newAttribute={newDeactivatedDate} didChange={false} key="deactivatedDate"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Un-installed Date"
+                                                        oldAttribute={oldDeactivatedDate}
+                                                        newAttribute={newDeactivatedDate} key="deactivatedDate"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Un-installed Date"
+                                                          oldAttribute={oldDeactivatedDate}
+                                                          newAttribute={newDeactivatedDate} didChange={false}
+                                                          key="deactivatedDate"/>);
 
             /* Un-installed Comment */
             (this.didAttributeChange(oldMonument.deactivatedComment, update.newDeactivatedComment)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Un-installed Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} key="deactivatedComment"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Un-installed Reason" oldAttribute={oldMonument.deactivatedComment} newAttribute={update.newDeactivatedComment} didChange={false} key="deactivatedComment"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Un-installed Reason"
+                                                        oldAttribute={oldMonument.deactivatedComment}
+                                                        newAttribute={update.newDeactivatedComment}
+                                                        key="deactivatedComment"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Un-installed Reason"
+                                                          oldAttribute={oldMonument.deactivatedComment}
+                                                          newAttribute={update.newDeactivatedComment} didChange={false}
+                                                          key="deactivatedComment"/>);
 
             /* Address */
             (this.didAttributeChange(oldMonument.address, update.newAddress)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} key="address"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address} newAttribute={update.newAddress} didChange={false} key="address"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address}
+                                                        newAttribute={update.newAddress} key="address"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Address" oldAttribute={oldMonument.address}
+                                                          newAttribute={update.newAddress} didChange={false}
+                                                          key="address"/>);
 
             /* City */
             (this.didAttributeChange(oldMonument.city, update.newCity)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="City" oldAttribute={oldMonument.city} newAttribute={update.newCity} key="city"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="City" oldAttribute={oldMonument.city} newAttribute={update.newCity} didChange={false} key="city"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="City" oldAttribute={oldMonument.city}
+                                                        newAttribute={update.newCity} key="city"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="City" oldAttribute={oldMonument.city}
+                                                          newAttribute={update.newCity} didChange={false} key="city"/>);
 
             /* State */
             (this.didAttributeChange(oldMonument.state, update.newState)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="State" oldAttribute={oldMonument.state} newAttribute={update.newState} key="state"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="State" oldAttribute={oldMonument.state} newAttribute={update.newState} didChange={false} key="state"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="State" oldAttribute={oldMonument.state}
+                                                        newAttribute={update.newState} key="state"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="State" oldAttribute={oldMonument.state}
+                                                          newAttribute={update.newState} didChange={false}
+                                                          key="state"/>);
 
             /* Latitude */
             let oldLatitude = oldMonument.lat ? oldMonument.lat.toString() : '';
             (this.didAttributeChange(oldLatitude, update.newLatitude)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={update.newLatitude} key="latitude"/> ) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude} newAttribute={update.newLatitude} didChange={false} key="latitude"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude}
+                                                        newAttribute={update.newLatitude} key="latitude"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Latitude" oldAttribute={oldLatitude}
+                                                          newAttribute={update.newLatitude} didChange={false}
+                                                          key="latitude"/>);
 
             /* Longitude */
             let oldLongitude = oldMonument.lon ? oldMonument.lon.toString() : '';
             (this.didAttributeChange(oldLongitude, update.newLongitude)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={update.newLongitude} key="longitude"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude} newAttribute={update.newLongitude} didChange={false} key="longitude"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude}
+                                                        newAttribute={update.newLongitude} key="longitude"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Longitude" oldAttribute={oldLongitude}
+                                                          newAttribute={update.newLongitude} didChange={false}
+                                                          key="longitude"/>);
 
             /* Description */
             (this.didAttributeChange(oldMonument.description, update.newDescription)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldMonument.description} newAttribute={update.newDescription} key="description"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Description" oldAttribute={oldMonument.description} newAttribute={update.newDescription} didChange={false} key="description"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Description"
+                                                        oldAttribute={oldMonument.description}
+                                                        newAttribute={update.newDescription} key="description"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Description"
+                                                          oldAttribute={oldMonument.description}
+                                                          newAttribute={update.newDescription} didChange={false}
+                                                          key="description"/>);
 
             /* Inscription */
             (this.didAttributeChange(oldMonument.inscription, update.newInscription)) ?
-                changedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldMonument.inscription} newAttribute={update.newInscription} key="inscription"/>) :
-                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription" oldAttribute={oldMonument.inscription} newAttribute={update.newInscription} didChange={false} key="inscription"/>);
+                changedAttributes.push(<AttributeChange attributeLabel="Inscription"
+                                                        oldAttribute={oldMonument.inscription}
+                                                        newAttribute={update.newInscription} key="inscription"/>) :
+                unchangedAttributes.push(<AttributeChange attributeLabel="Inscription"
+                                                          oldAttribute={oldMonument.inscription}
+                                                          newAttribute={update.newInscription} didChange={false}
+                                                          key="inscription"/>);
 
             /* Materials and Tags */
             const tagChanges = this.collectTagChanges();
 
-            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedMaterials} areMaterials={true} key="unchangedMaterials"/>);
+            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedMaterials} areMaterials={true}
+                                                    key="unchangedMaterials"/>);
 
-            let addedMaterialsDisplay = <AddedTags tags={tagChanges.addedMaterials} areMaterials={true} key="addedMaterials"/>;
+            let addedMaterialsDisplay = <AddedTags tags={tagChanges.addedMaterials} areMaterials={true}
+                                                   key="addedMaterials"/>;
             tagChanges.addedMaterials.length ?
                 changedAttributes.push(addedMaterialsDisplay) :
                 unchangedAttributes.push(addedMaterialsDisplay);
 
-            let removedMaterialsDisplay = <RemovedTags tags={tagChanges.removedMaterials} areMaterials={true} key="removedMaterials"/>;
+            let removedMaterialsDisplay = <RemovedTags tags={tagChanges.removedMaterials} areMaterials={true}
+                                                       key="removedMaterials"/>;
             tagChanges.removedMaterials.length ?
                 changedAttributes.push(removedMaterialsDisplay) :
                 unchangedAttributes.push(removedMaterialsDisplay);
 
-            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedTags} areMaterials={false} key="unchangedTags"/>);
+            unchangedAttributes.push(<UnchangedTags tags={tagChanges.unchangedTags} areMaterials={false}
+                                                    key="unchangedTags"/>);
 
             let addedTagsDisplay = <AddedTags tags={tagChanges.addedTags} areMaterials={false} key="addedTags"/>;
             tagChanges.addedTags.length ?
                 changedAttributes.push(addedTagsDisplay) :
                 unchangedAttributes.push(addedTagsDisplay);
 
-            let removedTagsDisplay = <RemovedTags tags={tagChanges.removedTags} areMaterials={false} key="removedTags"/>;
+            let removedTagsDisplay = <RemovedTags tags={tagChanges.removedTags} areMaterials={false}
+                                                  key="removedTags"/>;
             tagChanges.removedTags.length ?
                 changedAttributes.push(removedTagsDisplay) :
                 unchangedAttributes.push(removedTagsDisplay);
@@ -389,19 +441,23 @@ export default class MonumentUpdate extends React.Component {
             const referenceChanges = this.collectReferenceChanges();
 
             if (referenceChanges.unchangedReferences.length) {
-                unchangedAttributes.push(<ReferenceChanges unchangedReferences={referenceChanges.unchangedReferences} didChange={false} key="unchangedReferences"/>);
+                unchangedAttributes.push(<ReferenceChanges unchangedReferences={referenceChanges.unchangedReferences}
+                                                           didChange={false} key="unchangedReferences"/>);
             }
 
             if (referenceChanges.changedReferences.length) {
-                changedAttributes.push(<ReferenceChanges changedReferences={referenceChanges.changedReferences} key="changedReferences"/>);
+                changedAttributes.push(<ReferenceChanges changedReferences={referenceChanges.changedReferences}
+                                                         key="changedReferences"/>);
             }
 
-            let addedReferencesDisplay = <AddedReferences references={referenceChanges.addedReferences} key="addedReferences"/>;
+            let addedReferencesDisplay = <AddedReferences references={referenceChanges.addedReferences}
+                                                          key="addedReferences"/>;
             referenceChanges.addedReferences.length ?
                 changedAttributes.push(addedReferencesDisplay) :
                 unchangedAttributes.push(addedReferencesDisplay);
 
-            let deletedReferencesDisplay = <DeletedReferences references={referenceChanges.deletedReferences} key="deletedReferences"/>;
+            let deletedReferencesDisplay = <DeletedReferences references={referenceChanges.deletedReferences}
+                                                              key="deletedReferences"/>;
             referenceChanges.deletedReferences.length ?
                 changedAttributes.push(deletedReferencesDisplay) :
                 unchangedAttributes.push(deletedReferencesDisplay);
@@ -413,17 +469,21 @@ export default class MonumentUpdate extends React.Component {
                 changedAttributes.push(addedImagesDisplay) :
                 unchangedAttributes.push(addedImagesDisplay);
 
-            let deletedImagesDisplay = <DeletedImages deletedImageUrls={update.deletedImageUrls} displayImageNames={update.displayDeletedImageNames} key="deletedImages"/>;
+            let deletedImagesDisplay = <DeletedImages deletedImageUrls={update.deletedImageUrls}
+                                                      displayImageNames={update.displayDeletedImageNames}
+                                                      key="deletedImages"/>;
             (update.deletedImageUrls && update.deletedImageUrls.length) ?
                 changedAttributes.push(deletedImagesDisplay) :
                 unchangedAttributes.push(deletedImagesDisplay);
 
-            let addedPhotoSphereImagesDisplay = <AddedPhotoSphereImages images={update.addedPhotoSphereImages} key="addedPhotoSphereImages"/>;
+            let addedPhotoSphereImagesDisplay = <AddedPhotoSphereImages images={update.addedPhotoSphereImages}
+                                                                        key="addedPhotoSphereImages"/>;
             (update.addedPhotoSphereImages && update.addedPhotoSphereImages.length) ?
                 changedAttributes.push(addedPhotoSphereImagesDisplay) :
                 unchangedAttributes.push(addedPhotoSphereImagesDisplay);
 
-            let deletedPhotoSphereImagesDisplay = <DeletedPhotoSphereImages deletedImageUrls={update.deletedPhotoSphereImageUrls} key="deletedPhotoSphereImages"/>;
+            let deletedPhotoSphereImagesDisplay = <DeletedPhotoSphereImages
+                deletedImageUrls={update.deletedPhotoSphereImageUrls} key="deletedPhotoSphereImages"/>;
             (update.deletedPhotoSphereImageUrls && update.deletedPhotoSphereImageUrls.length) ?
                 changedAttributes.push(deletedPhotoSphereImagesDisplay) :
                 unchangedAttributes.push(deletedPhotoSphereImagesDisplay);

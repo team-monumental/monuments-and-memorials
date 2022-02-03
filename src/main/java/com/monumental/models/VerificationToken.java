@@ -7,21 +7,14 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class VerificationToken extends Model {
 
-    public enum Type {
-        EMAIL,
-        PASSWORD_RESET
-    }
-
     @Column(name = "token")
     @NotNull
     @NotEmpty
     private String token;
-
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     @NotNull
     private User user;
-
     @Column(name = "type")
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -49,5 +42,10 @@ public class VerificationToken extends Model {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public enum Type {
+        EMAIL,
+        PASSWORD_RESET
     }
 }

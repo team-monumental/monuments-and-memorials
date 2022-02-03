@@ -23,7 +23,7 @@ export default class TextFilter extends React.Component {
     }
 
     handleChange(event) {
-        const { onSearchChange } = this.props;
+        const {onSearchChange} = this.props;
         const newSearchQuery = event.target.value;
 
         this.setState({searchQuery: newSearchQuery});
@@ -31,14 +31,14 @@ export default class TextFilter extends React.Component {
     }
 
     handleClear() {
-        const { onClear } = this.props;
+        const {onClear} = this.props;
         this.setState({searchQuery: ''});
         onClear();
     }
 
     render() {
-        const { searchPlaceholder, searchQuery } = this.state;
-        const { className, onKeyDown } = this.props;
+        const {searchPlaceholder, searchQuery} = this.state;
+        const {className, onKeyDown} = this.props;
         return (
             <div className="text-filter position-relative">
                 <input type="text"

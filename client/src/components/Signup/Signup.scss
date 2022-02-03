@@ -1,15 +1,16 @@
 .signup {
-    .card-body {
-        min-width: calc(300px + 2.5rem);
-    }
-    .signup-form {
-        input, button {
-            margin-bottom: 1rem;
-        }
-    }
+  .card-body {
+    min-width: calc(300px + 2.5rem);
+  }
 
-    .logo {
-        position: absolute;
-        transform: translate(-40px, -5px);
+  .signup-form {
+    input, button {
+      margin-bottom: 1rem;
     }
+  }
+
+  .logo {
+    position: absolute;
+    transform: translate(-40px, -5px);
+  }
 }

@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ContextConfiguration
-@TestExecutionListeners(listeners={ServletTestExecutionListener.class,
+@TestExecutionListeners(listeners = {ServletTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
@@ -36,26 +36,17 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class UserServiceIntegrationTests {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
-
     public static final String RESEARCHER = "researcher@monuments.us.org";
     public static final String PARTNER = "partner@monuments.us.org";
     public static final String COLLABORATOR = "collaborator@monuments.us.org";
+    public static final String password = "password";
     public static User researcher = new User();
     public static User partner = new User();
     public static User collaborator = new User();
-    public static final String password = "password";
-
-    // This uses @PostConstruct instead of @Before so that it runs before the @WithUserDetails annotations do
-    // See this answer: https://stackoverflow.com/a/56803892/10044594
-    @PostConstruct
-    public void setup() {
-        createUsers(this.userRepository);
-    }
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     public static void createUsers(UserRepository userRepository) {
         // Clear any users that may be left over from other tests
@@ -80,6 +71,13 @@ public class UserServiceIntegrationTests {
             user.setPassword(password);
             userRepository.save(user);
         }
+    }
+
+    // This uses @PostConstruct instead of @Before so that it runs before the @WithUserDetails annotations do
+    // See this answer: https://stackoverflow.com/a/56803892/10044594
+    @PostConstruct
+    public void setup() {
+        createUsers(this.userRepository);
     }
 
     @Test

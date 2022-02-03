@@ -1,6 +1,6 @@
 import React from 'react';
 import './AboutInformation.scss';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import ContributorsList from './ContributorsList/ContributorsList';
 import StatisticCard from './StatisticCard/StatisticCard';
 import NumberOfMonumentsByStateBarChart from './NumberOfMonumentsByStateBarChart/NumberOfMonumentsByStateBarChart';
@@ -19,13 +19,13 @@ export default class AboutInformation extends React.Component {
     }
 
     handleMoreContributorsClick() {
-        const { showingAllContributors } = this.state;
+        const {showingAllContributors} = this.state;
         this.setState({showingAllContributors: !showingAllContributors});
     }
 
     render() {
-        const { contributors, monumentStatistics } = this.props;
-        const { showingAllContributors } = this.state;
+        const {contributors, monumentStatistics} = this.props;
+        const {showingAllContributors} = this.state;
 
         const mapLink = (
             <Link to="/map">click here</Link>
@@ -52,7 +52,7 @@ export default class AboutInformation extends React.Component {
         );
 
         let signupLink = (
-            <Link  to="/signup" key="signup">click here to create an account</Link>
+            <Link to="/signup" key="signup">click here to create an account</Link>
         );
 
         const readMoreContributorsLink = contributors && contributors.length > 5 ? (
@@ -80,20 +80,30 @@ export default class AboutInformation extends React.Component {
                         </div>
                         <div className="static-page-text">
                             <p>
-                                <span className="font-italic">Monuments + Memorials</span> is a crowd-sourced initiative developed at
-                                the Rochester Institute of Technology under the direction of Dr. Juilee Decker. Students in her spring
-                                2019 history course <span className="font-italic">Monuments + Memory</span> began data collection by
-                                examining 26 states or territories of the US. The following fall, software engineering students in the
-                                Golisano College of Computer and Information Sciences built this web application to house data and to
-                                generate further interest and data collection. The spring 2020 history course added to the existing
-                                data by contributing 900 additional monuments + memorials, so that all states are represented, as
+                                <span className="font-italic">Monuments + Memorials</span> is a crowd-sourced initiative
+                                developed at
+                                the Rochester Institute of Technology under the direction of Dr. Juilee Decker. Students
+                                in her spring
+                                2019 history course <span className="font-italic">Monuments + Memory</span> began data
+                                collection by
+                                examining 26 states or territories of the US. The following fall, software engineering
+                                students in the
+                                Golisano College of Computer and Information Sciences built this web application to
+                                house data and to
+                                generate further interest and data collection. The spring 2020 history course added to
+                                the existing
+                                data by contributing 900 additional monuments + memorials, so that all states are
+                                represented, as
                                 are two territories (Guam and Puerto Rico).
                             </p>
                             <p>
-                                Our goal is to document all temporary and permanent monuments + memorials throughout the United
-                                States and territories. We are looking for contributors to add information, please join us by
+                                Our goal is to document all temporary and permanent monuments + memorials throughout the
+                                United
+                                States and territories. We are looking for contributors to add information, please join
+                                us by
                                 creating an account ({signupLink}) or by contacting the organizers&nbsp;
-                                <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>. To view monuments
+                                <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>. To view
+                                monuments
                                 and memorials, {mapLink}.
                             </p>
                         </div>
@@ -109,21 +119,33 @@ export default class AboutInformation extends React.Component {
                             </div>
                             <div className="static-page-text">
                                 <p>
-                                    Monuments and memorials offer insight into a community's values. They offer tribute to a person,
-                                    idea, or event and/or honor an individual or group who have passed away or have been, in the case
-                                    of veterans, killed in action. Across the United States, thousands of such work exists. While some
-                                    familiar outdoor memorials include the {vietnamVeteransMemorialLink} in Washington, D.C. and the&nbsp;
-                                    {nineElevenMemorialLink} and Museum in NYC -- and such works are deemed part of our national
-                                    treasures -- no method exists to enable someone to research and locate public monuments and memorials
-                                    throughout the United States. In short, our nation's vast collection of publicly-accessible art,
-                                    however, is largely uncatalogued and thus remains undocumented for the public. This project aims to
+                                    Monuments and memorials offer insight into a community's values. They offer tribute
+                                    to a person,
+                                    idea, or event and/or honor an individual or group who have passed away or have
+                                    been, in the case
+                                    of veterans, killed in action. Across the United States, thousands of such work
+                                    exists. While some
+                                    familiar outdoor memorials include the {vietnamVeteransMemorialLink} in Washington,
+                                    D.C. and the&nbsp;
+                                    {nineElevenMemorialLink} and Museum in NYC -- and such works are deemed part of our
+                                    national
+                                    treasures -- no method exists to enable someone to research and locate public
+                                    monuments and memorials
+                                    throughout the United States. In short, our nation's vast collection of
+                                    publicly-accessible art,
+                                    however, is largely uncatalogued and thus remains undocumented for the public. This
+                                    project aims to
                                     remedy that gap in documentation and access.
                                 </p>
                                 <p>
-                                    Our goal is to map every monument or memorial in the United States and its inhabited territories
-                                    (American Samoa, Guam, Puerto Rico, the North Mariana Islands, and U.S. Virgin Islands). We invite
-                                    anyone to contribute information and an image of temporary and permanent monuments and memorials in
-                                    these areas. If you have any questions, please contact the project coordinator, Juilee Decker&nbsp;
+                                    Our goal is to map every monument or memorial in the United States and its inhabited
+                                    territories
+                                    (American Samoa, Guam, Puerto Rico, the North Mariana Islands, and U.S. Virgin
+                                    Islands). We invite
+                                    anyone to contribute information and an image of temporary and permanent monuments
+                                    and memorials in
+                                    these areas. If you have any questions, please contact the project coordinator,
+                                    Juilee Decker&nbsp;
                                     <a href="mailto:contact@monuments.us.org">contact@monuments.us.org</a>.
                                 </p>
                             </div>
@@ -140,7 +162,8 @@ export default class AboutInformation extends React.Component {
                         </div>
                         <div className="static-page-text">
                             <p>
-                                We invite contributions from anyone. If you are interested in contributing, please {suggestionLink}. Your
+                                We invite contributions from anyone. If you are interested in contributing,
+                                please {suggestionLink}. Your
                                 submissions will be recognized in our list of contributors:
                             </p>
 
@@ -163,11 +186,15 @@ export default class AboutInformation extends React.Component {
                         </div>
                         <div className="static-page-text">
                             <p>
-                                <span className="font-weight-bold">Software engineering students:</span> AJ Delposen, Nick Deyette, Ben Smith, Ben Vogler, Ren Chauret, William Schultheis, Dan Wang, Samik Mitra, Brendan Cail<br/>
-                                <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky, Jim Vallino, and Tom Reichlmayr<br/>
+                                <span className="font-weight-bold">Software engineering students:</span> AJ Delposen,
+                                Nick Deyette, Ben Smith, Ben Vogler, Ren Chauret, William Schultheis, Dan Wang, Samik
+                                Mitra, Brendan Cail<br/>
+                                <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky,
+                                Jim Vallino, and Tom Reichlmayr<br/>
                                 Lizzy Carr and Landyn Hatch, research assistants<br/>
                                 Connie Froass, graphic design<br/>
-                                Students in HIS 322 course, <span className="font-italic">Monuments & Memory</span>, spring 2019 and
+                                Students in HIS 322 course, <span className="font-italic">Monuments & Memory</span>,
+                                spring 2019 and
                                 spring 2020
                             </p>
                         </div>

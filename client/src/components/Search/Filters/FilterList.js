@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './Filters.scss';
-import { withRouter } from 'react-router-dom';
-import { Collapse, Button } from 'react-bootstrap';
+import {Link, withRouter} from 'react-router-dom';
+import {Button, Collapse} from 'react-bootstrap';
 import 'rc-slider/assets/index.css';
 import LocationSearch from './FilterTypes/LocationFilter/LocationFilter';
 import search from '../../../utils/new-search';
@@ -9,8 +9,7 @@ import TagsFilters from './FilterTypes/TagsFilters/TagsFilters';
 import DateFilter from './FilterTypes/DateFilter/DateFilter';
 import TextFilter from './FilterTypes/TextFilter/TextFilter';
 import * as QueryString from 'query-string';
-import { Link } from 'react-router-dom';
-import { Mode } from './FilterTypes/DateFilter/DateEnum';
+import {Mode} from './FilterTypes/DateFilter/DateEnum';
 
 class Filters extends React.Component {
 
@@ -22,8 +21,9 @@ class Filters extends React.Component {
         const qMats = (params.materials) ? params.materials.split(',') : [];
         this.state = {
             filterList: {
-                date: { filterMode: Mode.RANGE, params: {} },
-                location: { params: {
+                date: {filterMode: Mode.RANGE, params: {}},
+                location: {
+                    params: {
                         address: params.address || '',
                         lat: params.lat || '',
                         lon: params.lon || '',
@@ -32,12 +32,12 @@ class Filters extends React.Component {
                     badLocationState: false,
                 },
                 hideTemporary: {params: {hideTemporary: params.hideTemporary || false}},
-                tags: { params: {tags: qTags} },
-                materials: {params: {materials: qMats} },
-                q: {params: { q: params.q || ''}},
+                tags: {params: {tags: qTags}},
+                materials: {params: {materials: qMats}},
+                q: {params: {q: params.q || ''}},
             },
             showFilters: false,
-            
+
         };
     }
 
@@ -45,7 +45,7 @@ class Filters extends React.Component {
         await this.setState(state => {
             const daFilters = state.filterList;
             daFilters[type].params = {};
-            return { filterList: daFilters };
+            return {filterList: daFilters};
         })
         this.handleSearch()
     }
@@ -54,7 +54,7 @@ class Filters extends React.Component {
         await this.setState(state => {
             const daFilters = state.filterList;
             daFilters[type].params[type] = [];
-            return { filterList: daFilters };
+            return {filterList: daFilters};
         })
         this.handleSearch()
     }
@@ -63,7 +63,7 @@ class Filters extends React.Component {
         await this.setState(state => {
             const daFilters = state.filterList;
             daFilters.location.params = {d: '25', address: ''};
-            return { filterList: daFilters };
+            return {filterList: daFilters};
         })
         this.handleSearch()
     }
@@ -71,26 +71,26 @@ class Filters extends React.Component {
     async clearFilters() {
         await this.setState(state => {
             const daFilters = {
-                date: { filterMode: Mode.NONE, params: {} },
-                location: { params: {d: '25', address: ''}, badLocationState: false },
-                tags: { params: {tags: []}},
-                materials: { params: {materials: []}},
+                date: {filterMode: Mode.NONE, params: {}},
+                location: {params: {d: '25', address: ''}, badLocationState: false},
+                tags: {params: {tags: []}},
+                materials: {params: {materials: []}},
                 q: {params: {q: ''}},
                 hideTemporary: {params: {hideTemporary: false}}
             }
-            return { filterList: daFilters };
+            return {filterList: daFilters};
         })
         this.handleSearch()
     }
 
     async expand() {
         this.setState(state => {
-            return { showFilters: !state.showFilters }
+            return {showFilters: !state.showFilters}
         })
     }
 
     async handleSearch() {
-        const { uri } = this.props;
+        const {uri} = this.props;
         const try1 = {}
         for (var filterType in this.state.filterList) {
             var curPar = this.state.filterList[filterType]
@@ -102,11 +102,11 @@ class Filters extends React.Component {
 
     }
 
-    async handleDateChangeMode(mode){
+    async handleDateChangeMode(mode) {
         await this.setState(state => {
             const daFilters = state.filterList;
             daFilters.date.filterMode = mode;
-            return { filterList: daFilters };
+            return {filterList: daFilters};
         })
     }
 
@@ -142,7 +142,7 @@ class Filters extends React.Component {
         var updatedState = this.state.filterList.location;
         (!state && updatedState.params.d < 0) ? updatedState.badLocationState = true :
             updatedState.badLocationState = false;
-        updatedState.params = { ...updatedState.params, lat: lat, lon: lon, address: address, state: state }
+        updatedState.params = {...updatedState.params, lat: lat, lon: lon, address: address, state: state}
         this.setState({
             ...this.state,
             ...updatedState
@@ -153,15 +153,14 @@ class Filters extends React.Component {
     async handleChangeDistance(value) {
         var updatedState = this.state.filterList.location
         updatedState.params.d = value
-        if( value < 0 &&  updatedState.params.state === ''){
+        if (value < 0 && updatedState.params.state === '') {
             updatedState.badLocationState = true;
-        }
-        else updatedState.badLocationState = false;
+        } else updatedState.badLocationState = false;
         this.setState({
             ...this.state,
             ...updatedState
         })
-        if(updatedState.params.lat && updatedState.params.lon && !updatedState.badLocationState){
+        if (updatedState.params.lat && updatedState.params.lon && !updatedState.badLocationState) {
             this.handleSearch();
         }
     }
@@ -180,7 +179,7 @@ class Filters extends React.Component {
         if (event.key === 'Enter') this.handleSearch();
     }
 
-    handleTempChange(value){
+    handleTempChange(value) {
         var updatedState = this.state.filterList.hideTemporary
         updatedState.params.hideTemporary = value
         this.setState({
@@ -191,10 +190,10 @@ class Filters extends React.Component {
     }
 
     render() {
-        const { showFilters, filterList } = this.state;
+        const {showFilters, filterList} = this.state;
         const expandIcon = showFilters ? "remove" : "add";
         let dateMap = (
-            <DateFilter 
+            <DateFilter
                 onRemove={() => this.clearTags('date')}
                 data={filterList.date}
                 filterMode={filterList.date.filterMode}
@@ -204,8 +203,8 @@ class Filters extends React.Component {
                 onChange={(dateParams) => this.handleDateSearchSelect(dateParams)}>
             </DateFilter>)
         let tagsMap = (
-            <div className="filter-body" >
-                
+            <div className="filter-body">
+
                 <TagsFilters
                     variant="tags"
                     tags={filterList.tags.params.tags}
@@ -219,7 +218,7 @@ class Filters extends React.Component {
 
         let materialsMap = (
             <div className="filter-body">
-                
+
                 <TagsFilters
                     variant="materials"
                     tags={filterList.materials.params.materials}
@@ -236,19 +235,20 @@ class Filters extends React.Component {
             <div className="filters">
                 <div className="text-search-header">
                     <TextFilter value={filterList.q.params.q}
-                        onKeyDown={event => this.handleKeyDown(event)}
-                        className="form-control form-control-sm"
-                        onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
-                        onClear={() => this.clearFilter('q')} />
-                    <Button variant="primary btn-sm" className="search-button" onClick={() => this.handleSearch()}><span>Search  <i className="material-icons ">search</i></span></Button>
+                                onKeyDown={event => this.handleKeyDown(event)}
+                                className="form-control form-control-sm"
+                                onSearchChange={(searchQuery) => this.handleTextSearchChange(searchQuery)}
+                                onClear={() => this.clearFilter('q')}/>
+                    <Button variant="primary btn-sm" className="search-button"
+                            onClick={() => this.handleSearch()}><span>Search  <i className="material-icons ">search</i></span></Button>
                 </div>
                 <div className="location-row">
                     <LocationSearch value={filterList.location.params.address}
-                        distance={filterList.location.params.d}
-                        badLocationState={filterList.location.badLocationState}
-                        onSuggestionSelect={(lat, lon, address, state) => this.handleLocationSearchSelect(lat, lon, address, state)}
-                        onClear={()=> this.clearLocation()}
-                        changeDistance={(distance) => this.handleChangeDistance(distance)}>
+                                    distance={filterList.location.params.d}
+                                    badLocationState={filterList.location.badLocationState}
+                                    onSuggestionSelect={(lat, lon, address, state) => this.handleLocationSearchSelect(lat, lon, address, state)}
+                                    onClear={() => this.clearLocation()}
+                                    changeDistance={(distance) => this.handleChangeDistance(distance)}>
                     </LocationSearch>
                     <div className="clear-filters">
                         <button className="bg-danger" onClick={() => this.clearFilters()}>
@@ -282,7 +282,7 @@ class Filters extends React.Component {
                                 </div>
                                 {materialsMap}
                             </div>
-                            
+
                         </div>
                         <div className="tag-link">
                             <Link to="/tag-directory" target="_blank">List of Tags/Materials</Link>

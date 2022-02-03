@@ -49,32 +49,6 @@ import static org.mockito.ArgumentMatchers.isNull;
 @Transactional
 public class MonumentServiceMockIntegrationTests {
 
-    @SpyBean
-    private MonumentService monumentServiceMock;
-
-    @MockBean
-    private AwsS3Service awsS3ServiceMock;
-
-    @Autowired
-    private CreateSuggestionRepository createSuggestionRepository;
-
-    @Autowired
-    private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
-
-    @Autowired
-    private MonumentRepository monumentRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private ReferenceRepository referenceRepository;
-
-    @Autowired
-    private ContributionRepository contributionRepository;
-
-    private static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images,deactivatedDate,deactivatedComment";
-
     public static Map<String, String> mapping = Map.ofEntries(
             Map.entry("contributions", "contributions"),
             Map.entry("artist", "artist"),
@@ -93,6 +67,23 @@ public class MonumentServiceMockIntegrationTests {
             Map.entry("deactivatedDate", "deactivatedDate"),
             Map.entry("deactivatedComment", "deactivatedComment")
     );
+    private static String headers = "contributions,artist,title,date,materials,inscription,latitude,longitude,city,state,address,tags,references,images,deactivatedDate,deactivatedComment";
+    @SpyBean
+    private MonumentService monumentServiceMock;
+    @MockBean
+    private AwsS3Service awsS3ServiceMock;
+    @Autowired
+    private CreateSuggestionRepository createSuggestionRepository;
+    @Autowired
+    private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+    @Autowired
+    private MonumentRepository monumentRepository;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private ReferenceRepository referenceRepository;
+    @Autowired
+    private ContributionRepository contributionRepository;
 
     public static List<String[]> parseCSVString(String csvRows) {
         try {

@@ -1,13 +1,21 @@
 import {
-    TAGS_SEARCH_PENDING, TAGS_SEARCH_ERROR, TAGS_SEARCH_SUCCESS,
-    TAGS_LOAD_ERROR, TAGS_LOAD_SUCCESS, TAGS_LOAD_PENDING,
-    MATERIALS_SEARCH_PENDING, MATERIALS_SEARCH_SUCCESS, MATERIALS_LOAD_PENDING,
-    MATERIALS_LOAD_SUCCESS, MATERIALS_LOAD_ERROR, MATERIALS_SEARCH_ERROR
+    MATERIALS_LOAD_ERROR,
+    MATERIALS_LOAD_PENDING,
+    MATERIALS_LOAD_SUCCESS,
+    MATERIALS_SEARCH_ERROR,
+    MATERIALS_SEARCH_PENDING,
+    MATERIALS_SEARCH_SUCCESS,
+    TAGS_LOAD_ERROR,
+    TAGS_LOAD_PENDING,
+    TAGS_LOAD_SUCCESS,
+    TAGS_SEARCH_ERROR,
+    TAGS_SEARCH_PENDING,
+    TAGS_SEARCH_SUCCESS
 } from '../constants';
 import * as QueryString from 'query-string';
-import { get } from '../utils/api-util';
-import { addError } from './errors';
-import { pending, success, error } from '../utils/action-util';
+import {get} from '../utils/api-util';
+import {addError} from './errors';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     materials: {

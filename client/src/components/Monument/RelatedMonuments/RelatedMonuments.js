@@ -25,8 +25,8 @@ export default class RelatedMonuments extends React.Component {
     }
 
     render() {
-        const { title, monuments, pending } = this.props;
-        const { showingExtraMonuments } = this.state;
+        const {title, monuments, pending} = this.props;
+        const {showingExtraMonuments} = this.state;
 
         const monumentsToShow = (monuments && monuments.length) ? monuments.slice(0, 2) : [];
         const extraMonuments = (monuments && monuments.length && monuments.length > 2) ? monuments.slice(2) : [];
@@ -38,7 +38,7 @@ export default class RelatedMonuments extends React.Component {
         );
 
         const spinner = (
-          <Spinner show={pending}/>
+            <Spinner show={pending}/>
         );
 
         const moreLink = (
@@ -87,7 +87,7 @@ export default class RelatedMonuments extends React.Component {
             );
         }
         return (
-          <div/>
+            <div/>
         );
     }
 }

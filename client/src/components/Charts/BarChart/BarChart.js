@@ -12,7 +12,7 @@ export default class BarChart extends React.Component {
     chartRef = React.createRef();
 
     componentDidMount() {
-        const { data, options } = this.props;
+        const {data, options} = this.props;
         const myChartRef = this.chartRef.current.getContext('2d');
 
         new Chart(myChartRef, {

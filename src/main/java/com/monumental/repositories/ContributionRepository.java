@@ -17,6 +17,7 @@ public interface ContributionRepository extends JpaRepository<Contribution, Inte
 
     /**
      * Get all Contributions associated with the specified Monument ID
+     *
      * @param id - ID of the Monument to get the Contributions for
      */
     @Query("select c from Contribution c where monument_id = :id")

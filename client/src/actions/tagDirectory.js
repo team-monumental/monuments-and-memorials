@@ -1,8 +1,10 @@
 import {
-    TAG_DIRECTORY_FETCH_TAGS_PENDING, TAG_DIRECTORY_FETCH_TAGS_SUCCESS, TAG_DIRECTORY_FETCH_TAGS_ERROR
+    TAG_DIRECTORY_FETCH_TAGS_ERROR,
+    TAG_DIRECTORY_FETCH_TAGS_PENDING,
+    TAG_DIRECTORY_FETCH_TAGS_SUCCESS
 } from '../constants';
-import { get } from '../utils/api-util';
-import { pending, success, error } from '../utils/action-util';
+import {get} from '../utils/api-util';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     fetch: {

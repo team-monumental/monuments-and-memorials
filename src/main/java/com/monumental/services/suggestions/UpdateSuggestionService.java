@@ -1,7 +1,6 @@
 package com.monumental.services.suggestions;
 
 import com.monumental.exceptions.UnauthorizedException;
-import com.monumental.models.Monument;
 import com.monumental.models.User;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
@@ -30,6 +29,7 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
 
     /**
      * Get all UpdateMonumentSuggestions created by the currently logged in User
+     *
      * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestions created by the currently logged in
      * User
      * @throws UnauthorizedException - If no User is currently logged in
@@ -42,11 +42,12 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
     /**
      * Generates a search for UpdateMonumentSuggestions based on the matching specified parameters
      * May make use of the pg_tgrm similarity function
+     *
      * @param searchQuery - The search query String that will be used to search against Users names and emails
-     * @param isApproved - True to filter the UpdateMonumentSuggestions to only ones that are approved, False otherwise
-     * @param isRejected - True to filter the UpdateMonumentSuggestions to only ones that are rejected, False otherwise
-     * @param page - The page number of UpdateMonumentSuggestion results to return
-     * @param limit - The maximum number of UpdateMonumentSuggestion results to return
+     * @param isApproved  - True to filter the UpdateMonumentSuggestions to only ones that are approved, False otherwise
+     * @param isRejected  - True to filter the UpdateMonumentSuggestions to only ones that are rejected, False otherwise
+     * @param page        - The page number of UpdateMonumentSuggestion results to return
+     * @param limit       - The maximum number of UpdateMonumentSuggestion results to return
      * @return List<UpdateMonumentSuggestion> - List of UpdateMonumentSuggestion results based on the specified search
      * parameters
      */
@@ -67,14 +68,15 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
                 true, false);
 
         return limit != null
-            ? page != null
+                ? page != null
                 ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
                 : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-            : this.getWithCriteriaQuery(query);
+                : this.getWithCriteriaQuery(query);
     }
 
     /**
      * Count the total number of results for an UpdateMonumentSuggestion search
+     *
      * @see UpdateSuggestionService#search(String, boolean, boolean, String, String)
      */
     public Integer countSearchResults(String searchQuery, boolean isApproved, boolean isRejected) {
@@ -97,6 +99,7 @@ public class UpdateSuggestionService extends ModelService<UpdateMonumentSuggesti
 
     /**
      * Get the pending UpdateMonumentSuggestions for the Monument with the specified monumentId
+     *
      * @param monumentId - Integer ID of the Monument to get the pending UpdateMonumentSuggestions for
      * @return List<UpdateMonumentSuggestion> - List of pending UpdateMonumentSuggestions for the Monument with the
      * specified monumentId

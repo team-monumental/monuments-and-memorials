@@ -1,7 +1,7 @@
-import { FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS, FETCH_MAP_MONUMENTS_ERROR } from '../constants';
-import { get } from '../utils/api-util';
-import { addError } from './errors';
-import { success, pending, error } from '../utils/action-util';
+import {FETCH_MAP_MONUMENTS_ERROR, FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS} from '../constants';
+import {get} from '../utils/api-util';
+import {addError} from './errors';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     fetchMonuments: {

@@ -22,7 +22,9 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MonumentUnitTests {
 
-    /** getDescription Tests **/
+    /**
+     * getDescription Tests
+     **/
 
     @Test
     public void testMonument_getDescription_NullTitle() {
@@ -219,11 +221,12 @@ public class MonumentUnitTests {
 
     /**
      * Helper function to make a test Monument based on the specified parameters
-     * @param title - String to set the Monument's title to
-     * @param city - String to set the Monument's city to
-     * @param state - String to set the Monument's state to
-     * @param artist - String to set the Monument's artist to
-     * @param date - Date to set the Monument's date to
+     *
+     * @param title      - String to set the Monument's title to
+     * @param city       - String to set the Monument's city to
+     * @param state      - String to set the Monument's state to
+     * @param artist     - String to set the Monument's artist to
+     * @param date       - Date to set the Monument's date to
      * @param references - List of References to set the Monument's references to
      * @return Monument - the Monument represented by the specified parameters
      */

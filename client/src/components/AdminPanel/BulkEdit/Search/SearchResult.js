@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import moment from "moment";
 import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
@@ -8,12 +8,24 @@ import Tag from "../../../Tags/Tag/Tag";
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({title, artist, date, tags, id}) => {
+const SearchResult = ({data, title, artist, date, tags, nq, dq}) => {
+    const [checked, setChecked] = useState(false)
+
+    const toggleChecked = () => {
+        setChecked(!checked)
+
+        checked ? nq(data) : dq(data.id)
+    }
+
+    useEffect(() => {
+        checked ? nq(data) : dq(data.id)
+    }, [checked])
+
     return (
         <ListGroup.Item as="li">
             <Container fluid>
                 <Row>
-                    <Col lg={1}><InputGroup.Checkbox/></Col>
+                    <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
                     <Col lg={3}><span>{title}</span></Col>
                     <Col lg={2}><span>{artist}</span></Col>
                     <Col lg={2}>

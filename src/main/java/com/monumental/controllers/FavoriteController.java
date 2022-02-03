@@ -68,11 +68,6 @@ public class FavoriteController {
         return favorites;
     }
 
-    private static class FavoriteRequest {
-        public Integer userId;
-        public Integer monumentId;
-    }
-
     @PostMapping("/api/favorite")
     @PreAuthorize(Authentication.isAuthenticated)
     public Favorite createFavorite(@RequestBody FavoriteRequest request) throws UnauthorizedException {
@@ -85,5 +80,10 @@ public class FavoriteController {
             throws ResourceNotFoundException, UnauthorizedException {
         this.favoriteService.deleteFavorite(request.monumentId, request.userId);
         return Map.of("success", true);
+    }
+
+    private static class FavoriteRequest {
+        public Integer userId;
+        public Integer monumentId;
     }
 }

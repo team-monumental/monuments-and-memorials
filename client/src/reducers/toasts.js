@@ -1,8 +1,8 @@
-import { ADD_TOAST, REMOVE_TOAST, TOAST_FADE_IN, TOAST_FADE_OUT } from '../constants';
+import {ADD_TOAST, REMOVE_TOAST, TOAST_FADE_IN, TOAST_FADE_OUT} from '../constants';
 
 // Maintains a global toast queue to be used by the Toaster
 export default function toasts(state = [], action) {
-    const { payload, type } = action;
+    const {payload, type} = action;
     switch (type) {
         case ADD_TOAST:
             payload.hide = true;

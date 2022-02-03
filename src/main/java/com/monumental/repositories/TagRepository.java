@@ -22,6 +22,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * Get all tags for the specified monument
+     *
      * @param id Id of the monument to get the tags for
      */
     @Query("select t from Tag t join t.monumentTags monumentTag where monumentTag.monument.id = :id")
@@ -29,7 +30,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * Get all Tags or Materials associated with the Monument with the specified ID
-     * @param id - ID of the Monument to get the associated Tags for
+     *
+     * @param id         - ID of the Monument to get the associated Tags for
      * @param isMaterial - True to fetch associated Materials, False to fetch associated Tags
      */
     @Query("select t from Tag t join t.monumentTags monumentTag where monumentTag.monument.id = :id and t.isMaterial = :isMaterial")
