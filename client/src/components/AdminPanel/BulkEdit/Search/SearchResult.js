@@ -8,7 +8,7 @@ import Tag from "../../../Tags/Tag/Tag";
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({data, id, title, artist, date, tags, nq, dq}) => {
+const SearchResult = ({data, id, title, artist, date, tags, nq, dq, onDelete}) => {
     const [checked, setChecked] = useState(false)
 
     const toggleChecked = () => {
@@ -37,7 +37,7 @@ const SearchResult = ({data, id, title, artist, date, tags, nq, dq}) => {
                     </Col>
                     <Col lg={2}><span>{moment(date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
                     <Col lg={2}>
-                        <SearchResultBtns monumentId={id} onDelete={del}/>
+                        <SearchResultBtns monumentId={id} onDelete={onDelete}/>
                     </Col>
                 </Row>
             </Container>

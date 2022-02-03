@@ -25,7 +25,7 @@ const SearchResultList = ({results, enqueue, dequeue, onDelete}) => {
                     nq={enqueue}
                     dq={dequeue}
                     id={result.id}
-                    del={onDelete}
+                    onDelete={onDelete}
                 />
             ))}
         </ListGroup>
