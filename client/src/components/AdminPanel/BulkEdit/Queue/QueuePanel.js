@@ -144,7 +144,9 @@ export default class QueuePanel extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+        //if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+        console.log(this.queue);
+        if(this.queueSize > 0){
             this.setFormFieldValuesForUpdate(); //todo this should be this.queue[queueIndex] IF this.queue[Size] !=0
         }
     }
@@ -258,7 +260,7 @@ export default class QueuePanel extends React.Component {
      */
     setFormFieldValuesForUpdate() {
 
-        const {monument} = this.prop; {/* TODO: should be this.queue[i] where i is what page you currently on /num in queueList */}
+        const {monument} = this.queue[this.queueIndex]; {/* TODO: should be this.queue[i] where i is what page you currently on /num in queueList */}
         const {
             title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType
