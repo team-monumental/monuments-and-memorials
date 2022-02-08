@@ -1,14 +1,14 @@
 import React from 'react';
 import './MonumentBulkCreatePage.scss';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import BulkCreateForm from '../../../components/BulkCreateForm/BulkCreateForm';
-import { bulkValidateSuggestions, bulkCreateSuggestions, bulkCreateMonuments } from '../../../actions/bulk';
+import {bulkCreateMonuments, bulkCreateSuggestions, bulkValidateSuggestions} from '../../../actions/bulk';
 import Spinner from '../../../components/Spinner/Spinner';
 import ErrorModal from '../../../components/Error/ErrorModal/ErrorModal';
-import { Modal, ProgressBar } from 'react-bootstrap';
-import { Helmet } from 'react-helmet';
-import { Role } from '../../../utils/authentication-util'
+import {Modal, ProgressBar} from 'react-bootstrap';
+import {Helmet} from 'react-helmet';
+import {Role} from '../../../utils/authentication-util'
 
 /**
  * Root container for the page to bulk suggest Monument creations
@@ -26,20 +26,6 @@ class MonumentBulkCreatePage extends React.Component {
         };
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.error && !prevState.showingErrorModal) {
-            this.setState({showingErrorModal: true});
-        }
-        else if (this.props.createSuggestionResult && !this.props.bulkSuggestionCreatePending) {
-            this.props.history.push('/panel/suggestion-created?type=bulk');
-        }
-        else if (this.props.createResult && !this.props.bulkCreatePending && !prevProps.createResult) {
-            this.setState({showCreateResults: true})
-        } else if (prevState.showCreateResults) {
-            this.setState({showCreateResults: false})
-        }
-    }
-
     static mapStateToProps(state) {
         return {
             ...state.session,
@@ -47,8 +33,20 @@ class MonumentBulkCreatePage extends React.Component {
         };
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.error && !prevState.showingErrorModal) {
+            this.setState({showingErrorModal: true});
+        } else if (this.props.createSuggestionResult && !this.props.bulkSuggestionCreatePending) {
+            this.props.history.push('/panel/suggestion-created?type=bulk');
+        } else if (this.props.createResult && !this.props.bulkCreatePending && !prevProps.createResult) {
+            this.setState({showCreateResults: true})
+        } else if (prevState.showCreateResults) {
+            this.setState({showCreateResults: false})
+        }
+    }
+
     handleValidationSubmit(form) {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
 
         // Send the .zip or .csv file and the mapping to the server to be processed
         dispatch(bulkValidateSuggestions(form));
@@ -56,7 +54,7 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     handleCreateSubmit(form) {
-        const { dispatch, user } = this.props;
+        const {dispatch, user} = this.props;
 
         // Make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly bulk-create new Monuments
@@ -76,10 +74,12 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     render() {
-        let { showingErrorModal, showValidationResults, term, showCreateResults } = this.state;
-        const { bulkSuggestionCreatePending, bulkSuggestionValidatePending, bulkCreatePending, validationResult,
+        let {showingErrorModal, showValidationResults, term, showCreateResults} = this.state;
+        const {
+            bulkSuggestionCreatePending, bulkSuggestionValidatePending, bulkCreatePending, validationResult,
             validationError, createSuggestionResult, createSuggestionError, createSuggestionProgress,
-            createProgress, createResult, createError } = this.props;
+            createProgress, createResult, createError
+        } = this.props;
 
         showCreateResults = showCreateResults && createResult
         showValidationResults = showValidationResults && !bulkSuggestionValidatePending && !showCreateResults;
@@ -92,8 +92,15 @@ class MonumentBulkCreatePage extends React.Component {
                     onValidationSubmit={(form) => this.handleValidationSubmit(form)}
                     onCreateSubmit={(form) => this.handleCreateSubmit(form)}
                     onResetForm={() => this.setState({showValidationResults: false, showCreateResults: false})}
-                    term={term} pastTenseTerm={this.getTermPastTense()} actionHappeningTerm={this.getTermActionHappening()}
-                    {...{validationResult, createSuggestionResult, showValidationResults, showCreateResults, createResult}}
+                    term={term} pastTenseTerm={this.getTermPastTense()}
+                    actionHappeningTerm={this.getTermActionHappening()}
+                    {...{
+                        validationResult,
+                        createSuggestionResult,
+                        showValidationResults,
+                        showCreateResults,
+                        createResult
+                    }}
                 />
                 <Modal show={bulkSuggestionCreatePending || bulkCreatePending}>
                     <Modal.Header className="pb-0">
@@ -118,12 +125,12 @@ class MonumentBulkCreatePage extends React.Component {
     }
 
     getTermPastTense() {
-        const { term } = this.state;
+        const {term} = this.state;
         return term === 'Suggest' ? term + 'ed' : term + 'd';
     }
 
     getTermActionHappening() {
-        const { term } = this.state;
+        const {term} = this.state;
         return term === 'Suggest' ? term + 'ing' : 'Creating';
     }
 }

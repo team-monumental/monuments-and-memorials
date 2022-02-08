@@ -16,7 +16,9 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ImageFileHelperUnitTests {
 
-    /** isSupportedImageFile Tests **/
+    /**
+     * isSupportedImageFile Tests
+     **/
 
     @Test
     public void testImageFileHelper_isSupportedImageFile_JPGFilePassed_Lowercase() {

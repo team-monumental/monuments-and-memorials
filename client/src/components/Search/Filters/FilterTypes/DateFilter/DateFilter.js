@@ -1,21 +1,21 @@
 import * as React from 'react';
 import DatePicker from 'react-datepicker';
-import { Form, Button, ButtonGroup } from 'react-bootstrap';
+import {Button, ButtonGroup, Form} from 'react-bootstrap';
 import * as moment from 'moment';
 import './DateFilter.scss';
-import { Range } from 'rc-slider';
-import { Mode } from './DateEnum';
-import SliderHandle  from './SliderHandle/SliderHandle';
+import {Range} from 'rc-slider';
+import {Mode} from './DateEnum';
+import SliderHandle from './SliderHandle/SliderHandle';
 
 
 export default class DateFilter extends React.Component {
-    
+
     constructor(props) {
         super(props)
-        const { data } = props;
-        
+        const {data} = props;
+
         this.state = {
-            params:{
+            params: {
                 decade: data.params.decade || "",
                 start: data.params.start || null, //TODO - make date dynamic
                 end: data.params.end || null,
@@ -35,7 +35,7 @@ export default class DateFilter extends React.Component {
         const {onChange} = this.props;
         updatedState[name] = value;
         await this.setState({
-            params:{
+            params: {
                 ...this.state.params,
                 ...updatedState
             }
@@ -52,7 +52,7 @@ export default class DateFilter extends React.Component {
                 break;
             case Mode.RANGE:
                 if (value === 'null') value = null;
-                const [ startDate, endDate ] = value;
+                const [startDate, endDate] = value;
                 await this.handleFilterChange('start', moment(startDate).format('YYYY-MM-DD'));
                 this.handleFilterChange('end', moment(endDate).format('YYYY-MM-DD'));
                 break;
@@ -62,7 +62,7 @@ export default class DateFilter extends React.Component {
     }
 
     async handleModeChange(mode) {
-        const { changeMode } = this.props
+        const {changeMode} = this.props
         changeMode(mode);
         if (mode !== Mode.DECADE) {
             await this.handleFilterChange('decade', null);
@@ -86,13 +86,13 @@ export default class DateFilter extends React.Component {
         this.handleDateFilter(Mode.RANGE, [this.state.dateFilterStart, this.state.dateFilterEnd]);
     }
 
-    async handleSliderSearch(value){
+    async handleSliderSearch(value) {
         const updatedState = {};
         const {onChange} = this.props;
-        if(value[0] !== 1870) updatedState.activeStart = value[0];
+        if (value[0] !== 1870) updatedState.activeStart = value[0];
         updatedState.activeEnd = value[1];
         await this.setState({
-            params:{
+            params: {
                 ...this.state.params,
                 ...updatedState
             }
@@ -100,24 +100,25 @@ export default class DateFilter extends React.Component {
         onChange(this.state.params);
     }
 
-    handleTempChange(value){
-        const { hideTemporary, onTempChange } = this.props
+    handleTempChange(value) {
+        const {hideTemporary, onTempChange} = this.props
         if (value !== hideTemporary) onTempChange(value);
     }
-    onSliderChange = (value) =>{
+
+    onSliderChange = (value) => {
         this.setState({sliderValues: value})
-      };
+    };
     onSliderSearch = value => {
         this.handleSliderSearch(value);
     };
 
-    async removeFilter(){
+    async removeFilter() {
         const {onRemove} = this.props
         onRemove()
     }
 
     makeRangeFilter() {
-        const{ dateFilterStart, dateFilterEnd } = this.state;
+        const {dateFilterStart, dateFilterEnd} = this.state;
         const minimumDate = new Date(1, 0);
         minimumDate.setFullYear(1);
         const currentDate = new Date();
@@ -142,12 +143,13 @@ export default class DateFilter extends React.Component {
     }
 
     makeDecadeFilter() {
-        const { params } = this.state;
+        const {params} = this.state;
         const decade = params.decade
         return (
             <div className="d-flex align-items-center">
                 <span className="mr-2">Monuments or memorials created in the</span>
-                <Form.Control as="select" className="min-width-select" onChange={event => this.handleDateFilter(Mode.DECADE, event.target.value)} value={decade}>
+                <Form.Control as="select" className="min-width-select"
+                              onChange={event => this.handleDateFilter(Mode.DECADE, event.target.value)} value={decade}>
                     <option value="">None</option>
                     <option value="-1">1850s or Earlier</option>
                     <option value="1860">1860s</option>
@@ -185,26 +187,27 @@ export default class DateFilter extends React.Component {
             <div className="d-flex align-items-center">
                 <span className="mr-2">Active in</span>
                 <div className="slider">
-                    <Range allowCross={false} min={1870} max={2020} step={10} value={this.state.sliderValues} marks={marks}
-                        handle={SliderHandle}
-                        dotStyle={{ height: '12px', width: '12px', top: '-4px'}}
-                        onChange={this.onSliderChange} onAfterChange={this.onSliderSearch} />
+                    <Range allowCross={false} min={1870} max={2020} step={10} value={this.state.sliderValues}
+                           marks={marks}
+                           handle={SliderHandle}
+                           dotStyle={{height: '12px', width: '12px', top: '-4px'}}
+                           onChange={this.onSliderChange} onAfterChange={this.onSliderSearch}/>
                 </div>
             </div>
         )
     }
 
     render() {
-        const { filterMode, hideTemporary } = this.props;
+        const {filterMode, hideTemporary} = this.props;
         let dateFilter = null;
-        switch (filterMode){
-            case Mode.RANGE: 
+        switch (filterMode) {
+            case Mode.RANGE:
                 dateFilter = this.makeRangeFilter();
                 break;
             case Mode.DECADE:
                 dateFilter = this.makeDecadeFilter();
                 break;
-            case Mode.SLIDER: 
+            case Mode.SLIDER:
                 dateFilter = this.makeSliderFilter();
                 break;
             default:
@@ -212,21 +215,21 @@ export default class DateFilter extends React.Component {
                 break;
         }
 
-        return ( 
+        return (
             <div>
-                <div className="filter-body" >
+                <div className="filter-body">
                     <button className="clear-button" onClick={() => this.handleModeChange(Mode.NONE)}>
                         <i className="material-icons ">clear</i>
                     </button>
                     <div className="d-flex pt-3 pb-3 align-items-center">
                         <Form.Control as="select" className="min-width-select mr-2"
-                                    value={filterMode}
-                                    onChange={event => this.handleModeChange(event.target.value)}>
+                                      value={filterMode}
+                                      onChange={event => this.handleModeChange(event.target.value)}>
                             <option value={Mode.NONE}>None</option>
                             <option value={Mode.RANGE}>Created(range)</option>
                             <option value={Mode.DECADE}>Created(decade)</option>
                             <option value={Mode.SLIDER}>Active(slider)</option>
-                            
+
                         </Form.Control>
                         {dateFilter}
                     </div>
@@ -234,20 +237,22 @@ export default class DateFilter extends React.Component {
                 <div className="temp-monuments-toggle">
                     <div className="temp-monuments-label">
                         Show Temporary Monuments?
-                        <img className={!hideTemporary? 'monument-pin' : 'temp-img-no'} src='/marker-icon-2x-green.png' alt="Temporary monument pin"/>
+                        <img className={!hideTemporary ? 'monument-pin' : 'temp-img-no'} src='/marker-icon-2x-green.png'
+                             alt="Temporary monument pin"/>
                     </div>
                     <ButtonGroup>
-                        <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm" active={!hideTemporary}
-                                    onClick={() => this.handleTempChange(false)}>
+                        <Button variant={!hideTemporary ? 'primary' : 'outline-primary'} size="sm"
+                                active={!hideTemporary}
+                                onClick={() => this.handleTempChange(false)}>
                             Yes
                         </Button>
                         <Button variant={hideTemporary ? 'perm-color' : 'outline-info'} size="sm" active={hideTemporary}
-                                    onClick={() => this.handleTempChange(true)}>
+                                onClick={() => this.handleTempChange(true)}>
                             No
                         </Button>
                     </ButtonGroup>
                 </div>
             </div>
-            )
+        )
     }
 }

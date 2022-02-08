@@ -16,15 +16,9 @@ public class GoogleMapsService {
     @Value("${GOOGLE_API_KEY:default}")
     private String GOOGLE_API_KEY;
 
-    public static class AddressBundle {
-        public String address;
-        public String city;
-        public String state;
-        public Geometry geometry;
-    }
-
     /**
      * Get an address along with city and state from the specified coordinates using Google Maps
+     *
      * @param lat - latitude
      * @param lon - longitude
      * @return AddressBundle - Bundle including address, city, and state
@@ -49,6 +43,7 @@ public class GoogleMapsService {
 
     /**
      * Get a set of coordinates along with city and state from the specified address using Google Maps
+     *
      * @param address - String for the address to geocode
      * @return AddressBundle - Bundle including Google Maps Geometry containing the location data for the address
      */
@@ -78,6 +73,7 @@ public class GoogleMapsService {
     /**
      * Takes a GeocodingResult and parses it for address, city, state, and geometry data, then packages it in
      * an AddressBundle
+     *
      * @param result - GeocodingResult from a Google Maps Geocoding or Reverse-Geocoding request
      * @return AddressBundle - The bundle of address, geometry, city, and state data
      */
@@ -122,6 +118,7 @@ public class GoogleMapsService {
     /**
      * Helper function to build a Google Maps GeoApiContext
      * Returns null if the GOOGLE_API_KEY is equal to "default"
+     *
      * @return GeoApiContext - new GeoApiContext, null if the GOOGLE_API_KEY is "default"
      */
     private GeoApiContext buildGeoApiContext() {
@@ -132,5 +129,12 @@ public class GoogleMapsService {
         return new GeoApiContext.Builder()
                 .apiKey(this.GOOGLE_API_KEY)
                 .build();
+    }
+
+    public static class AddressBundle {
+        public String address;
+        public String city;
+        public String state;
+        public Geometry geometry;
     }
 }

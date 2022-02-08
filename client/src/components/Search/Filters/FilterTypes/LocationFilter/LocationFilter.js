@@ -1,10 +1,7 @@
 import React from 'react';
 import './LocationFilter.scss';
-import PlacesAutocomplete, {
-    geocodeByAddress,
-    getLatLng
-} from 'react-places-autocomplete';
-import { Form }from 'react-bootstrap';
+import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
+import {Form} from 'react-bootstrap';
 /* global google */
 
 /**
@@ -27,7 +24,7 @@ export default class LocationSearch extends React.Component {
         }
     }
 
-    handleFilterChange(value){
+    handleFilterChange(value) {
         const {changeDistance} = this.props;
         changeDistance(value);
     }
@@ -51,13 +48,13 @@ export default class LocationSearch extends React.Component {
     }
 
     async handleSelect(address) {
-        const { onSuggestionSelect } = this.props;
+        const {onSuggestionSelect} = this.props;
         const results = await geocodeByAddress(address);
         const latLon = await getLatLng(results[0]);
         const addressComponents = results[0].address_components;
         var state = '';
-        for(const val of addressComponents){
-            if (val.types.includes("administrative_area_level_1")){
+        for (const val of addressComponents) {
+            if (val.types.includes("administrative_area_level_1")) {
                 state = val.short_name
             }
         }
@@ -69,14 +66,14 @@ export default class LocationSearch extends React.Component {
         const {onClear} = this.props;
         this.setState({searchQuery: ''});
         onClear();
-        
+
     }
 
     render() {
-        const { searchQuery, showDistance } = this.state;
-        const { className, placeholder, isInvalid, distance, badLocationState } = this.props;
+        const {searchQuery, showDistance} = this.state;
+        const {className, placeholder, isInvalid, distance, badLocationState} = this.props;
 
-        const renderFunc = ({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+        const renderFunc = ({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
             <div className="autocomplete-container-filter">
                 <input
                     {...getInputProps({
@@ -84,7 +81,8 @@ export default class LocationSearch extends React.Component {
                         className: [className, isInvalid ? 'is-invalid' : undefined].join(' ')
                     })}
                 />
-                <div className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>
+                <div
+                    className={'autocomplete-dropdown-container' + (suggestions && suggestions.length ? ' d-block' : ' d-none')}>
                     {loading && <div>Loading...</div>}
                     {suggestions.map(suggestion => {
                         const className = 'suggestion-item ' + (suggestion.active
@@ -108,11 +106,11 @@ export default class LocationSearch extends React.Component {
         };
 
         const distanceFilter = showDistance ? (
-            <Form.Control onChange={event => 
-                this.handleFilterChange(event.target.value)} 
-                as="select" 
-                className="min-width-select dist-drop" 
-                value={distance}>
+            <Form.Control onChange={event =>
+                this.handleFilterChange(event.target.value)}
+                          as="select"
+                          className="min-width-select dist-drop"
+                          value={distance}>
                 <option value="10">Within 10 miles</option>
                 <option value="15">Within 15 miles</option>
                 <option value="25">Within 25 miles</option>
@@ -136,10 +134,10 @@ export default class LocationSearch extends React.Component {
                         {renderFunc}
                     </PlacesAutocomplete>
                     {searchQuery && <div className="loc-clear"><i className="material-icons"
-                                    onClick={() => this.handleClear()}>clear</i></div>}
+                                                                  onClick={() => this.handleClear()}>clear</i></div>}
                 </div>
                 {distanceFilter}
-                {badLocationState && 
+                {badLocationState &&
                     <div className="bad-location">
                         <i className="material-icons">error_outline</i>
                         <p className="bad-location">No State Found</p>

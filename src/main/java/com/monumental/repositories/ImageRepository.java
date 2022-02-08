@@ -15,6 +15,7 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
 
     /**
      * Get all Images associated with the specified Monument ID
+     *
      * @param id - ID of the Monument to get the Images for
      */
     @Query("select i from Image i where monument_id = :id")

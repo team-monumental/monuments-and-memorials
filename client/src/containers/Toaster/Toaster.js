@@ -1,7 +1,7 @@
 import React from 'react';
 import './Toaster.scss';
-import { connect } from 'react-redux';
-import { removeToast } from '../../actions/toasts';
+import {connect} from 'react-redux';
+import {removeToast} from '../../actions/toasts';
 import Toast from '../../components/Toast/Toast';
 
 /**
@@ -16,7 +16,7 @@ class Toaster extends React.Component {
     }
 
     render() {
-        const { toasts, dispatch } = this.props;
+        const {toasts, dispatch} = this.props;
         return (
             <div className="toasts">
                 {toasts.map(toast => (

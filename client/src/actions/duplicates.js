@@ -1,7 +1,7 @@
-import { FETCH_DUPLICATES_PENDING, FETCH_DUPLICATES_SUCCESS, FETCH_DUPLICATES_ERROR } from '../constants';
-import { get } from '../utils/api-util';
+import {FETCH_DUPLICATES_ERROR, FETCH_DUPLICATES_PENDING, FETCH_DUPLICATES_SUCCESS} from '../constants';
+import {get} from '../utils/api-util';
 import * as QueryString from 'query-string';
-import { pending, success, error } from '../utils/action-util';
+import {error, pending, success} from '../utils/action-util';
 
 const actions = {
     duplicates: {

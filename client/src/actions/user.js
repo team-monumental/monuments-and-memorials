@@ -1,11 +1,21 @@
 import {
-    UPDATE_USER_ERROR, UPDATE_USER_PENDING, UPDATE_USER_SUCCESS, UPDATE_USER_RESET, UPDATE_EMAIL_ERROR,
-    UPDATE_EMAIL_PENDING, UPDATE_EMAIL_SUCCESS, FETCH_FAVORITES_PENDING, FETCH_FAVORITES_SUCCESS,
-    FETCH_FAVORITES_ERROR, FETCH_USER_PENDING, FETCH_USER_SUCCESS, FETCH_USER_ERROR
+    FETCH_FAVORITES_ERROR,
+    FETCH_FAVORITES_PENDING,
+    FETCH_FAVORITES_SUCCESS,
+    FETCH_USER_ERROR,
+    FETCH_USER_PENDING,
+    FETCH_USER_SUCCESS,
+    UPDATE_EMAIL_ERROR,
+    UPDATE_EMAIL_PENDING,
+    UPDATE_EMAIL_SUCCESS,
+    UPDATE_USER_ERROR,
+    UPDATE_USER_PENDING,
+    UPDATE_USER_RESET,
+    UPDATE_USER_SUCCESS
 } from '../constants';
-import { reset, error, pending, success } from '../utils/action-util';
-import { get, post, put } from '../utils/api-util';
-import { getUserSession } from './authentication';
+import {error, pending, reset, success} from '../utils/action-util';
+import {get, post, put} from '../utils/api-util';
+import {getUserSession} from './authentication';
 
 const actions = {
     update: {

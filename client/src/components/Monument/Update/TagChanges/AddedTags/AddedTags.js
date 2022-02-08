@@ -7,7 +7,7 @@ import './AddedTags.scss';
 export default class AddedTags extends React.Component {
 
     render() {
-        const { tags, areMaterials } = this.props;
+        const {tags, areMaterials} = this.props;
 
         let addedTagsDisplay = <span className="font-weight-bold">NONE</span>;
 

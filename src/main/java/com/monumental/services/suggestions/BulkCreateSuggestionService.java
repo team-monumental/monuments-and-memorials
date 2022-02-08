@@ -36,6 +36,7 @@ public class BulkCreateSuggestionService extends ModelService<BulkCreateMonument
     /**
      * Get all BulkCreateMonumentSuggestions created by the currently logged in User
      * Also loads the corresponding CreateMonumentSuggestions onto each BulkCreateMonumentSuggestion
+     *
      * @return List<BulkCreateMonumentSuggestion> - List of BulkCreateMonumentSuggestions created by the currently
      * logged in User
      * @throws UnauthorizedException - If no User is currently logged in
@@ -54,13 +55,14 @@ public class BulkCreateSuggestionService extends ModelService<BulkCreateMonument
     /**
      * Generates a search for BulkCreateMonumentSuggestions based on the matching specified parameters
      * May make use of the pg_tgrm similarity function
+     *
      * @param searchQuery - The search query String that will be used to search against Users names and emails
-     * @param isApproved - True to filter the BulkCreateMonumentSuggestions to only ones that are approved,
-     * False otherwise
-     * @param isRejected - True to filter the BulkCreateMonumentSuggestions to only ones that are rejected,
-     * False otherwise
-     * @param page - The page number of BulkCreateMonumentSuggestion results to return
-     * @param limit - The maximum number of BulkCreateMonumentSuggestion results to return
+     * @param isApproved  - True to filter the BulkCreateMonumentSuggestions to only ones that are approved,
+     *                    False otherwise
+     * @param isRejected  - True to filter the BulkCreateMonumentSuggestions to only ones that are rejected,
+     *                    False otherwise
+     * @param page        - The page number of BulkCreateMonumentSuggestion results to return
+     * @param limit       - The maximum number of BulkCreateMonumentSuggestion results to return
      * @return List<BulkCreateMonumentSuggestion> - List of BulkCreateMonumentSuggestion results based on the specified
      * search parameters
      */
@@ -82,13 +84,14 @@ public class BulkCreateSuggestionService extends ModelService<BulkCreateMonument
 
         return limit != null
                 ? page != null
-                    ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
-                    : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
+                ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
+                : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
                 : this.getWithCriteriaQuery(query);
     }
 
     /**
      * Count the total number of results for a BulkCreateMonumentSuggestion search
+     *
      * @see BulkCreateSuggestionService#search(String, boolean, boolean, String, String)
      */
     public Integer countSearchResults(String searchQuery, boolean isApproved, boolean isRejected) {

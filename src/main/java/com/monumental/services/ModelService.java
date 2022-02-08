@@ -36,11 +36,11 @@ public abstract class ModelService<T extends Model> {
      * At some points we also need the name of the table, which is accessible from the Class
      * This method retrieves the Class at runtime, avoiding type erasure
      * https://stackoverflow.com/questions/6624113/get-type-name-for-generic-parameter-of-generic-class
+     *
      * @return Class of the Model associated with this ModelService
      */
     @SuppressWarnings("unchecked")
-    private Class<T> getModelClass()
-    {
+    private Class<T> getModelClass() {
         return ((Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0]);
     }
@@ -66,11 +66,12 @@ public abstract class ModelService<T extends Model> {
 
     /**
      * Creates a CriteriaQuery and optionally creates its Root for you and sets it to distinct mode (no duplicates)
-     * @param builder   Your CriteriaBuilder, from getCriteriaBuilder()
-     * @param setRoot   If true, a Root will be created for you and set on the CriteriaQuery
-     *                  You may choose to leave this false if you need a reference to the Root in order to do things
-     *                  such as root.fetch("collectionName", FetchType.LEFT) if you want to include a lazy-loaded
-     *                  collection in your query results
+     *
+     * @param builder Your CriteriaBuilder, from getCriteriaBuilder()
+     * @param setRoot If true, a Root will be created for you and set on the CriteriaQuery
+     *                You may choose to leave this false if you need a reference to the Root in order to do things
+     *                such as root.fetch("collectionName", FetchType.LEFT) if you want to include a lazy-loaded
+     *                collection in your query results
      */
     public CriteriaQuery<T> createCriteriaQuery(CriteriaBuilder builder, boolean setRoot) {
         CriteriaQuery<T> query = builder.createQuery(this.getModelClass());
@@ -86,6 +87,7 @@ public abstract class ModelService<T extends Model> {
      * be used to .fetch lazily loaded collections
      * Only call this if you have a need for the reference to the Root, such as for calling .fetch, otherwise
      * just let createCriteriaQuery create the Root for you with createCriteriaQuery(builder, true)
+     *
      * @param query Your CriteriaQuery from createCriteriaQuery(builder, false)
      */
     public Root<T> createRoot(CriteriaQuery<T> query) {
@@ -123,7 +125,7 @@ public abstract class ModelService<T extends Model> {
                 String methodName = method.getName();
 
                 // check Getters exclusively
-                if (methodName.length() < 3 || !"get" .equals(methodName.substring(0, 3))) {
+                if (methodName.length() < 3 || !"get".equals(methodName.substring(0, 3))) {
                     continue;
                 }
 
@@ -148,7 +150,7 @@ public abstract class ModelService<T extends Model> {
                     if (r != null) {
                         Hibernate.initialize(r);
                     }
-                } catch ( InvocationTargetException | IllegalArgumentException | IllegalAccessException e ) {
+                } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
                     e.printStackTrace();
                     return;
                 }

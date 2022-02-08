@@ -2,37 +2,37 @@
 
 .about.page {
 
-    .contributors-list-container {
-        background-color: rgba(10, 20, 50, 0.01);
-        border: 1px solid rgba(10, 20, 50, 0.05);
-        box-shadow: rgba(10, 20, 50, 0.1) 2px 2px 6px;
-        padding: 1rem 1rem;
-        font-weight: bold;
-        text-align: center;
-        font-size: large;
-        color: $secondary;
-        max-height: 300px;
-        overflow-y: auto;
+  .contributors-list-container {
+    background-color: rgba(10, 20, 50, 0.01);
+    border: 1px solid rgba(10, 20, 50, 0.05);
+    box-shadow: rgba(10, 20, 50, 0.1) 2px 2px 6px;
+    padding: 1rem 1rem;
+    font-weight: bold;
+    text-align: center;
+    font-size: large;
+    color: $secondary;
+    max-height: 300px;
+    overflow-y: auto;
 
-        .more-contributors-link {
-            cursor: pointer;
-            color: $primary;
-            text-decoration: underline;
-            font-size: medium;
-        }
+    .more-contributors-link {
+      cursor: pointer;
+      color: $primary;
+      text-decoration: underline;
+      font-size: medium;
     }
+  }
 
-    .stats {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
+  .stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 
-        margin: -10px;
-        padding-top: 1rem;
-    }
+    margin: -10px;
+    padding-top: 1rem;
+  }
 
-    .static-page-body > .row:last-child {
-        border-bottom: none;
-    }
+  .static-page-body > .row:last-child {
+    border-bottom: none;
+  }
 }

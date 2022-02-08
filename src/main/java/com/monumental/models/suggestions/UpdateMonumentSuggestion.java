@@ -317,6 +317,10 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         return this.newDate;
     }
 
+    public void setNewDate(String newDate) {
+        this.newDate = newDate;
+    }
+
     public DateFormat getNewDateFormat() {
         return newDateFormat;
     }
@@ -331,10 +335,6 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
 
     public void setNewDeactivatedDateFormat(DateFormat newDeactivatedDateFormat) {
         this.newDeactivatedDateFormat = newDeactivatedDateFormat;
-    }
-
-    public void setNewDate(String newDate) {
-        this.newDate = newDate;
     }
 
     public Boolean getNewIsTemporary() {

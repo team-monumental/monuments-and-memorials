@@ -7,7 +7,7 @@ import './DeletedReferences.scss';
 export default class DeletedReferences extends React.Component {
 
     render() {
-        const { references } = this.props;
+        const {references} = this.props;
 
         let deletedReferenceDisplays = [];
 

@@ -7,8 +7,8 @@ import './AttributeChange.scss';
 export default class AttributeChange extends React.Component {
 
     render() {
-        const { attributeLabel, didChange=true, isBoolean=false } = this.props;
-        let { oldAttribute, newAttribute } = this.props;
+        const {attributeLabel, didChange = true, isBoolean = false} = this.props;
+        let {oldAttribute, newAttribute} = this.props;
 
         oldAttribute = oldAttribute ? oldAttribute : '';
         newAttribute = newAttribute ? newAttribute : '';

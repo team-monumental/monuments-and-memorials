@@ -22,7 +22,7 @@ export default class TextSearch extends React.Component {
     }
 
     handleChange(event) {
-        const { onSearchChange } = this.props;
+        const {onSearchChange} = this.props;
         const newSearchQuery = event.target.value;
 
         this.setState({searchQuery: newSearchQuery});
@@ -30,14 +30,14 @@ export default class TextSearch extends React.Component {
     }
 
     handleClear() {
-        const { onClear } = this.props;
+        const {onClear} = this.props;
         this.setState({searchQuery: ''});
         onClear();
     }
 
     render() {
-        const { searchPlaceholder, searchQuery } = this.state;
-        const { className, onKeyDown } = this.props;
+        const {searchPlaceholder, searchQuery} = this.state;
+        const {className, onKeyDown} = this.props;
         return (
             <div className="text-search position-relative">
                 <input type="text"
@@ -57,7 +57,7 @@ export default class TextSearch extends React.Component {
     async animateSearchPlaceholder() {
         const placeholderBase = 'Search';
         const placeholderExamples = ['monuments', 'memorials', 'artists'];
-        for (let i = 0; i < 2; i ++) {
+        for (let i = 0; i < 2; i++) {
             for (let exampleIndex = 0; exampleIndex < placeholderExamples.length; exampleIndex++) {
                 let placeholderAddition = ' ' + placeholderExamples[exampleIndex] + '...';
                 // Type in the current example
@@ -84,7 +84,7 @@ export default class TextSearch extends React.Component {
                 // There is some slight randomness to the typing speed to make it feel a little more natural
                 let timeout = Math.max(100, Math.random() * 200);
                 // For the ellipsis the same 100ms is always used since you would be typing it quickly
-                if (placeholderAddition.substring(i, i +1) === '.') timeout = 100;
+                if (placeholderAddition.substring(i, i + 1) === '.') timeout = 100;
                 // Calling the resolve function says that our promise has succeeded and anything awaiting it can move forward
                 window.setTimeout(() => {
                     this.setState({searchPlaceholder: placeholderBase + placeholderAddition.substring(0, i + 1)});

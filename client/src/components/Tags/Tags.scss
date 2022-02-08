@@ -1,10 +1,10 @@
 .tags {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: -0.5rem;
-    margin-top: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: -0.5rem;
+  margin-top: 2px;
 
-    .tag:last-child {
-        margin-right: 0;
-    }
+  .tag:last-child {
+    margin-right: 0;
+  }
 }

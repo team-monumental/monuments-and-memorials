@@ -2,7 +2,7 @@ import React from 'react';
 import {Col, Container, ListGroup, Row} from "react-bootstrap";
 import SearchResult from "./SearchResult";
 
-const SearchResultList = ({results}) => {
+const SearchResultList = ({results, enqueue, dequeue}) => {
     return (
         <ListGroup as="ol" variant="flush">
             <ListGroup.Item as="li">
@@ -17,10 +17,10 @@ const SearchResultList = ({results}) => {
             </ListGroup.Item>
             {results.map(result => (
                 <SearchResult
-                    title={result.title}
-                    artist={result.artist}
-                    date={result.date}
-                    tags={result.monumentTags.slice(0, 2).map(monumentTag => monumentTag.tag.name)}/>
+                    data={result}
+                    nq={enqueue}
+                    dq={dequeue}
+                />
             ))}
         </ListGroup>
     )

@@ -4,4 +4,4 @@ os: linux
 dist: trusty
 jdk: openjdk12
 script:
-- "./gradlew build -s"
+  - "./gradlew build -s"

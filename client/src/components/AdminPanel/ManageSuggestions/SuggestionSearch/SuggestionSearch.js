@@ -7,7 +7,7 @@ import Pagination from '../../../Pagination/Pagination';
 export default class SuggestionSearch extends React.Component {
 
     render() {
-        const { showSearchResults, onLimitChange, onPageChange, limit, page, count, suggestions } = this.props;
+        const {showSearchResults, onLimitChange, onPageChange, limit, page, count, suggestions} = this.props;
         const pageCount = Math.ceil(count / limit);
 
         return (
@@ -16,7 +16,8 @@ export default class SuggestionSearch extends React.Component {
                     <SuggestionSearchBar page={page} limit={limit}/>
                     {showSearchResults &&
                         <div className="mt-2">
-                            <SearchInfo onLimitChange={onLimitChange} limit={limit} page={page} count={count} hideSortBy/>
+                            <SearchInfo onLimitChange={onLimitChange} limit={limit} page={page} count={count}
+                                        hideSortBy/>
                         </div>
                     }
                 </div>

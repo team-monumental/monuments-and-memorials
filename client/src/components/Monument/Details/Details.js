@@ -4,7 +4,7 @@ import Tags from '../../Tags/Tags';
 import Gallery from '../Images/Gallery/Gallery';
 import About from './About/About';
 import Address from './Address/Address';
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 /**
  * Displays all the main info about a Monument, for the Monument's record page
@@ -12,7 +12,7 @@ import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 export default class Details extends React.Component {
 
     render() {
-        const { monument, favorite, fetchFavoritePending, onToggleFavorite, showFavorite } = this.props;
+        const {monument, favorite, fetchFavoritePending, onToggleFavorite, showFavorite} = this.props;
 
         let inscription;
         if (monument.inscription) {
@@ -48,7 +48,8 @@ export default class Details extends React.Component {
                                 <OverlayTrigger
                                     placement="top"
                                     overlay={props => (
-                                        <Tooltip {...props} show={props.show ? 'show' : ''} className={'favorite-tooltip'}>
+                                        <Tooltip {...props} show={props.show ? 'show' : ''}
+                                                 className={'favorite-tooltip'}>
                                             {favorite ? 'Unfavorite' : 'Favorite'}
                                         </Tooltip>
                                     )}>
@@ -68,7 +69,8 @@ export default class Details extends React.Component {
                     </div>
                     <div>
                         <div className="fields">
-                            <div className={'field font-italic' + (monument.isTemporary ? ' mb-0' : '')}><Address monument={monument}/></div>
+                            <div className={'field font-italic' + (monument.isTemporary ? ' mb-0' : '')}><Address
+                                monument={monument}/></div>
                             {monument.isTemporary &&
                                 <div className="field font-italic">Temporary Monument or Memorial</div>
                             }
@@ -77,12 +79,12 @@ export default class Details extends React.Component {
                         <Tags tags={tags} searchUri="/search"/>
                     </div>
                 </div>
-                <Gallery images={images} tags={tags} />
+                <Gallery images={images} tags={tags}/>
                 <div className="inscription">
                     {inscription}
                 </div>
                 <About monument={monument} contributions={monument.contributions} references={monument.references}
-                       images={images} />
+                       images={images}/>
             </div>
         )
     }

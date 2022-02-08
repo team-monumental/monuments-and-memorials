@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @ComponentScan({
-    "com.monumental.config",
-    "com.rollbar.spring"
+        "com.monumental.config",
+        "com.rollbar.spring"
 })
 public class RollbarConfig {
 

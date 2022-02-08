@@ -1,8 +1,8 @@
 import React from 'react';
 import './Gallery.scss';
-import { Modal } from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 import Pagination from '../../../Pagination/Pagination';
-import { getS3ImageNameFromObjectUrl } from '../../../../utils/api-util';
+import {getS3ImageNameFromObjectUrl} from '../../../../utils/api-util';
 
 export default class Gallery extends React.Component {
 
@@ -39,7 +39,7 @@ export default class Gallery extends React.Component {
     }
 
     animate(index) {
-        const { images } = this.props;
+        const {images} = this.props;
         if (images.length <= 1) {
             this.setState({animating: false});
             return;
@@ -49,7 +49,7 @@ export default class Gallery extends React.Component {
             animationIndex: index,
             animating: true
         });
-        const { imageTimeout, imageRotationAnimationLength } = this.state;
+        const {imageTimeout, imageRotationAnimationLength} = this.state;
         window.setTimeout(() => {
             if (imageTimeout !== this.state.imageTimeout) return;
             this.setState({
@@ -81,12 +81,11 @@ export default class Gallery extends React.Component {
     }
 
     render() {
-        const { images } = this.props;
+        const {images} = this.props;
 
         if (!images || !images.length) {
             return (<div style={{marginBottom: '0'}}/>);
-        }
-        else {
+        } else {
             return (
                 <div className="gallery">
                     {this.renderModal()}
@@ -98,8 +97,8 @@ export default class Gallery extends React.Component {
     }
 
     renderSelectedImage() {
-        const { selectedImageIndex } = this.state;
-        const { images } = this.props;
+        const {selectedImageIndex} = this.state;
+        const {images} = this.props;
         if (!images || !images.length || images.length <= selectedImageIndex) {
             return;
         }
@@ -112,7 +111,7 @@ export default class Gallery extends React.Component {
         return (
             <>
                 <div className="image-wrapper" role="img" aria-label={ariaLabel}>
-                    <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}} />
+                    <div className="image" style={{backgroundImage: `url("${selectedImage.url}")`}}/>
                     {this.renderAnimation()}
                     <div className="overlay" onClick={() => this.openModal(selectedImage)}>
                         <i className="material-icons">
@@ -120,10 +119,10 @@ export default class Gallery extends React.Component {
                         </i>
                     </div>
                 </div>
-                {selectedImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                {selectedImage.caption && <div style={{margin: '0 auto', textAlign: 'center'}}>
                     {selectedImage.caption}
                 </div>}
-                {selectedImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                {selectedImage.referenceUrl && <div style={{margin: '0 auto', textAlign: 'center'}}>
                     <span className="detail-label">Reference:&nbsp;</span>
                     <a href={referenceUrl}>{selectedImage.referenceUrl}</a>
                 </div>}
@@ -132,8 +131,8 @@ export default class Gallery extends React.Component {
     }
 
     renderCarousel() {
-        const { selectedImageIndex, animating, animationIndex } = this.state;
-        const { images } = this.props;
+        const {selectedImageIndex, animating, animationIndex} = this.state;
+        const {images} = this.props;
         if (!images || images.length <= 1) return;
         return (
             <div className="image-selection">
@@ -158,8 +157,8 @@ export default class Gallery extends React.Component {
     }
 
     renderAnimation() {
-        const { animating, animationIndex } = this.state;
-        const { images } = this.props;
+        const {animating, animationIndex} = this.state;
+        const {images} = this.props;
         const animationImage = animating ? images[animationIndex] : null;
         return (
             <div className="animation image" style={{
@@ -172,8 +171,8 @@ export default class Gallery extends React.Component {
     }
 
     renderModal() {
-        const { modalOpen, modalImageIndex } = this.state;
-        const { images } = this.props;
+        const {modalOpen, modalImageIndex} = this.state;
+        const {images} = this.props;
         const selectedImage = images[modalImageIndex];
         const altText = this.getAltText(selectedImage)
         let referenceUrl = selectedImage.referenceUrl
@@ -187,12 +186,12 @@ export default class Gallery extends React.Component {
                         Image {modalImageIndex + 1} of {images.length}
                     </Modal.Header>
                     <Modal.Body>
-                        <img src={selectedImage.url} alt={altText} />
+                        <img src={selectedImage.url} alt={altText}/>
                         <div className="imageInfo">
-                            {selectedImage.caption && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                            {selectedImage.caption && <div style={{margin: '0 auto', textAlign: 'center'}}>
                                 {selectedImage.caption}
                             </div>}
-                            {selectedImage.referenceUrl && <div style={{ margin: '0 auto', textAlign: 'center' }}>
+                            {selectedImage.referenceUrl && <div style={{margin: '0 auto', textAlign: 'center'}}>
                                 <span className="detail-label">Reference:&nbsp;</span>
                                 <a href={referenceUrl}>{selectedImage.referenceUrl}</a>
                             </div>}
@@ -212,7 +211,7 @@ export default class Gallery extends React.Component {
         if (image.caption) {
             return image.caption
         }
-        const { tags } = this.props;
+        const {tags} = this.props;
         const imageFileName = image ? getS3ImageNameFromObjectUrl(image.url) : 'None';
         const imageName = imageFileName ? imageFileName.split('.')[0] : 'None';
         let tagsStrings = tags.map(tag => tag.name)

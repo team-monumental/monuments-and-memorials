@@ -38,7 +38,9 @@ public class ContributionServiceIntegrationTests {
     @Autowired
     private MonumentRepository monumentRepository;
 
-    /** getAllContributors Tests **/
+    /**
+     * getAllContributors Tests
+     **/
 
     @Test
     public void testContributionService_getAllContributors_NoContributions() {
@@ -175,8 +177,9 @@ public class ContributionServiceIntegrationTests {
 
     /**
      * Make a test Contribution using the specified submitted by
+     *
      * @param submittedBy - String of the name to use as the submittedBy for the test Contribution
-     * @param monument - Monument to associate the Contribution with
+     * @param monument    - Monument to associate the Contribution with
      * @return Contribution - Contribution object with the specified submitted by set and associated with the specified
      * Monument
      */

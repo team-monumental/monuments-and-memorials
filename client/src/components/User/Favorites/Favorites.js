@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './Favorites.scss';
-import { Card } from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 import Spinner from '../../Spinner/Spinner';
 import SearchResult from '../../Search/SearchResult/SearchResult';
 import ExportButtons from "../../Export/ExportButtons/ExportButtons";
@@ -8,7 +8,7 @@ import ExportButtons from "../../Export/ExportButtons/ExportButtons";
 export default class Favorites extends React.Component {
 
     render() {
-        const { favorites, pending, error } = this.props;
+        const {favorites, pending, error} = this.props;
 
         return (<>
             <Spinner show={pending}/>
@@ -30,7 +30,8 @@ export default class Favorites extends React.Component {
                         ))}
                     </>}
                     {(!favorites || !favorites.length) && !error && <>
-                        You don't have any favorites yet. You can favorite monuments and memorials by clicking the star on their page.
+                        You don't have any favorites yet. You can favorite monuments and memorials by clicking the star
+                        on their page.
                     </>}
                     {error && <>
                         Oops! Something went wrong while getting your favorites.

@@ -1,12 +1,12 @@
 import React from 'react';
 import './ConfirmEmailChangePage.scss';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import * as QueryString from 'query-string';
-import { confirmEmailChange } from '../../actions/user';
-import { Card } from 'react-bootstrap';
-import { withRouter } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import {confirmEmailChange} from '../../actions/user';
+import {Card} from 'react-bootstrap';
+import {withRouter} from 'react-router-dom';
+import {Helmet} from 'react-helmet';
 import Footer from '../../components/Footer/Footer';
 
 class ConfirmEmailChangePage extends React.Component {
@@ -20,7 +20,7 @@ class ConfirmEmailChangePage extends React.Component {
     }
 
     initialize() {
-        const { dispatch, location: { search } } = this.props;
+        const {dispatch, location: {search}} = this.props;
         const token = search && QueryString.parse(search).token;
 
         if (token) {
@@ -30,7 +30,7 @@ class ConfirmEmailChangePage extends React.Component {
     }
 
     render() {
-        const { pending, success, error } = this.props;
+        const {pending, success, error} = this.props;
         return (
             <div className="page-container">
                 <div className="change-email-confirmation page d-flex flex-column align-items-center">

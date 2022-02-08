@@ -1,15 +1,16 @@
 import * as React from 'react';
 import './ManageSuggestions.scss';
-import { withRouter } from 'react-router-dom';
-import { Button, Card } from 'react-bootstrap';
-import SuggestionSearchPage from '../../../pages/AdminPage/ManageSuggestionsPage/SuggestionSearchPage/SuggestionSearchPage';
+import {withRouter} from 'react-router-dom';
+import {Button, Card} from 'react-bootstrap';
+import SuggestionSearchPage
+    from '../../../pages/AdminPage/ManageSuggestionsPage/SuggestionSearchPage/SuggestionSearchPage';
 import ManageSuggestion from './ManageSuggestion/ManageSuggestion';
 import UpdateMonumentSuggestions from '../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
 
 class ManageSuggestions extends React.Component {
 
     render() {
-        const { mode, history, suggestion, onApproveClick, onRejectClick, type } = this.props;
+        const {mode, history, suggestion, onApproveClick, onRejectClick, type} = this.props;
 
         let otherPendingForMonument;
         if (type === 'update' && suggestion && suggestion.allPendingForMonument) {
@@ -45,7 +46,7 @@ class ManageSuggestions extends React.Component {
                         <UpdateMonumentSuggestions suggestions={otherPendingForMonument} showTitlesAsLinks={true}/>
                     </div>
                 }
-        </div>);
+            </div>);
     }
 }
 

@@ -5,10 +5,10 @@ import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
 import com.monumental.models.*;
-import com.monumental.repositories.*;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
+import com.monumental.repositories.*;
 import com.monumental.repositories.suggestions.BulkCreateSuggestionRepository;
 import com.monumental.repositories.suggestions.CreateSuggestionRepository;
 import com.monumental.repositories.suggestions.UpdateSuggestionRepository;
@@ -43,112 +43,192 @@ import static com.monumental.util.string.StringHelper.isNullOrEmpty;
 @Service
 public class MonumentService extends ModelService<Monument> {
 
-    @Autowired
-    private MonumentRepository monumentRepository;
-
-    @Autowired
-    private TagService tagService;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private ReferenceRepository referenceRepository;
-
-    @Autowired
-    private ImageRepository imageRepository;
-
-    @Autowired
-    private MonumentTagRepository monumentTagRepository;
-
-    @Autowired
-    private FavoriteRepository favoriteRepository;
-
-    @Autowired
-    private UpdateSuggestionRepository updateSuggestionRepository;
-
-    @Autowired
-    private GoogleMapsService googleMapsService;
-
-    @Autowired
-    private AppConfig appConfig;
-
-    @Autowired
-    private CreateSuggestionRepository createSuggestionRepository;
-
-    @Autowired
-    private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
-
-    @Autowired
-    private ContributionRepository contributionRepository;
-
-    @Autowired
-    private AwsS3Service awsS3Service;
-
-    @Autowired
-    private Rollbar rollbar;
-
     /**
      * SRID for coordinates
      * Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
      * And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
      */
     public static final int coordinateSrid = 4326;
-
     /**
      * SRID for feet
      * Find more info here: https://epsg.io/2877
      * And here: https://gis.stackexchange.com/questions/131363/choosing-srid-and-what-is-its-meaning
      */
     public static final int feetSrid = 2877;
+    @Autowired
+    private MonumentRepository monumentRepository;
+    @Autowired
+    private TagService tagService;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private ReferenceRepository referenceRepository;
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
+    private MonumentTagRepository monumentTagRepository;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+    @Autowired
+    private UpdateSuggestionRepository updateSuggestionRepository;
+    @Autowired
+    private GoogleMapsService googleMapsService;
+    @Autowired
+    private AppConfig appConfig;
+    @Autowired
+    private CreateSuggestionRepository createSuggestionRepository;
+    @Autowired
+    private BulkCreateSuggestionRepository bulkCreateSuggestionRepository;
+    @Autowired
+    private ContributionRepository contributionRepository;
+    @Autowired
+    private AwsS3Service awsS3Service;
+    @Autowired
+    private Rollbar rollbar;
 
     /**
-     * This enum is used when choosing how to sort search results
+     * Create a Point object for a Monument from the specified longitude and latitude
+     *
+     * @param longitude - Double for the longitude of the Point
+     * @param latitude  - Double for the latitude of the Point
+     * @return Point - The Point object created using the specified longitude and latitude
      */
-    public enum SortType {
-        RELEVANCE, DISTANCE, NEWEST, OLDEST, NONE;
+    public static Point createMonumentPoint(Double longitude, Double latitude) {
+        if (longitude == null || latitude == null) {
+            return null;
+        }
+
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude, 0));
+        point.setSRID(coordinateSrid);
+
+        return point;
+    }
+
+    /**
+     * Create a Date object for a Monument using the specified year
+     * Sets the month to January and the day to the 1st
+     *
+     * @param year - String for the year to use to create the Date
+     *             Must be in "yyyy" format
+     * @return Date - Date object created using the specified year
+     */
+    public static Date createMonumentDate(String year) {
+        return MonumentService.createMonumentDate(year, "0", "1");
+    }
+
+    /**
+     * Create a Date object for a Monument using the specified year and month
+     * Sets the day to the 1st
+     *
+     * @param year  - String for the year to use to create the Date
+     *              Must be in "yyyy" format
+     * @param month - String for the month to use to create the Date
+     *              Must be in "MM" format
+     * @return Date - Date object created using the specified year and month
+     */
+    public static Date createMonumentDate(String year, String month) {
+        return MonumentService.createMonumentDate(year, month, "1");
+    }
+
+    /**
+     * Create a Date object for a Monument using the specified year, month and day
+     *
+     * @param year  - String for the year to use to create the Date
+     *              Must be in "yyyy" format
+     * @param month - String for the month to use to create the Date
+     *              Assumed to be zero-based
+     *              Must be in "M" format
+     * @param day   - String for the day to use to create the Date
+     *              Must be in "d" format
+     * @return Date - Date object created using the specified year, month and day
+     */
+    public static Date createMonumentDate(String year, String month, String day) {
+        if (isNullOrEmpty(year)) {
+            return null;
+        }
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        int yearInt = Integer.parseInt(year);
+
+        int monthInt = 0;
+        if (!isNullOrEmpty(month)) {
+            monthInt = Integer.parseInt(month);
+        }
+
+        int dayInt = 1;
+        if (!isNullOrEmpty(day)) {
+            dayInt = Integer.parseInt(day);
+        }
+
+        calendar.set(yearInt, monthInt, dayInt);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * Create a Date object for a Monument using a JSON date-string
+     *
+     * @param jsonDate - String for the JSON date to use to create the Date
+     * @return Date - Date object created using the specified JSON date-string
+     */
+    public static Date createMonumentDateFromJsonDate(String jsonDate) {
+        if (isNullOrEmpty(jsonDate)) {
+            return null;
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+            return simpleDateFormat.parse(jsonDate);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     /**
      * Builds a similarity query on the Monument's title, artist and description fields, and adds them to your CriteriaQuery
-     * @param builder           Your CriteriaBuilder
-     * @param query             Your CriteriaQuery
-     * @param root              The root associated with your CriteriaQuery
-     * @param searchQuery       The string to search the fields for
-     * @param threshold         The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
-     * @param orderByResults    If true, your results will be ordered by their similarity to the search query
+     *
+     * @param builder        Your CriteriaBuilder
+     * @param query          Your CriteriaQuery
+     * @param root           The root associated with your CriteriaQuery
+     * @param searchQuery    The string to search the fields for
+     * @param threshold      The threshold (0-1) to limit the results by. You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
+     * @param orderByResults If true, your results will be ordered by their similarity to the search query
      */
     private Predicate buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
-                                      Double threshold, Boolean orderByResults) {
+                                           Double threshold, Boolean orderByResults) {
         if (orderByResults) {
             query.orderBy(
-                builder.desc(
-                    builder.sum(
-                        builder.sum(
-                            builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), 3),
-                            SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist")
-                        ),
-                        SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description")
+                    builder.desc(
+                            builder.sum(
+                                    builder.sum(
+                                            builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), 3),
+                                            SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist")
+                                    ),
+                                    SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description")
+                            )
                     )
-                )
             );
         }
 
         return builder.or(
-            SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), threshold),
-            SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist"), threshold),
-            SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description"), threshold)
+                SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), threshold),
+                SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist"), threshold),
+                SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description"), threshold)
         );
     }
 
     /**
      * Creates a PostGIS ST_DWithin query on the Monument's point field and adds it to the specified CriteriaQuery
-     * @param builder The CriteriaBuilder for the query
-     * @param query The CriteriaQuery being created
-     * @param root The Root associated with the CriteriaQuery
-     * @param latitude The latitude of the point to compare to
-     * @param longitude The longitude of the point to compare to
-     * @param miles The number of miles from the comparison point to check
+     *
+     * @param builder         The CriteriaBuilder for the query
+     * @param query           The CriteriaQuery being created
+     * @param root            The Root associated with the CriteriaQuery
+     * @param latitude        The latitude of the point to compare to
+     * @param longitude       The longitude of the point to compare to
+     * @param miles           The number of miles from the comparison point to check
      * @param orderByDistance If true, results will be ordered by distance ascending
      */
     private Predicate buildDWithinQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, Double latitude, Double longitude,
@@ -157,43 +237,44 @@ public class MonumentService extends ModelService<Monument> {
         Double feet = miles * 5280;
 
         Expression monumentCoordinates = builder.function("ST_Transform", Geometry.class, root.get("coordinates"),
-            builder.literal(feetSrid)
+                builder.literal(feetSrid)
         );
 
         Expression comparisonCoordinates = builder.function("ST_Transform", Geometry.class,
-            builder.function("ST_GeometryFromText", Geometry.class,
-                builder.literal(comparisonPointAsString),
-                builder.literal(coordinateSrid)
-            ),
-            builder.literal(feetSrid)
+                builder.function("ST_GeometryFromText", Geometry.class,
+                        builder.literal(comparisonPointAsString),
+                        builder.literal(coordinateSrid)
+                ),
+                builder.literal(feetSrid)
         );
 
         Expression radius = builder.literal(feet);
 
         if (orderByDistance) {
             query.orderBy(
-                builder.asc(
-                    builder.function("ST_Distance", Long.class,
-                        monumentCoordinates, comparisonCoordinates
+                    builder.asc(
+                            builder.function("ST_Distance", Long.class,
+                                    monumentCoordinates, comparisonCoordinates
+                            )
                     )
-                )
             );
         }
 
         return builder.equal(
-            builder.function("ST_DWithin", Boolean.class,
-                monumentCoordinates, comparisonCoordinates, radius
-            ),
-     true);
+                builder.function("ST_DWithin", Boolean.class,
+                        monumentCoordinates, comparisonCoordinates, radius
+                ),
+                true);
     }
 
     /**
      * Uses a sub-query on tags to create a filter on monuments so that only monuments with all the specified
      * tag names are returned
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param root - The Root to use with the CriteriaQuery
-     * @param tagNames - The list of tag names to filter by
+     *
+     * @param builder    - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query      - The CriteriaQuery to add the searching logic to
+     * @param root       - The Root to use with the CriteriaQuery
+     * @param tagNames   - The list of tag names to filter by
      * @param isMaterial - If true, only materials will be returned. If false, NO materials will be returned
      */
     @SuppressWarnings("unchecked")
@@ -212,13 +293,13 @@ public class MonumentService extends ModelService<Monument> {
         // Where their associated Tags' name is one of the filtered names
         // And its isMaterial matches the specified isMaterial
         tagSubQuery.where(
-            builder.and(
-                builder.equal(root.get("id"), monuments.get("id")),
                 builder.and(
-                    tagRoot.get("name").in(tagNames),
-                    builder.equal(tagRoot.get("isMaterial"), isMaterial)
+                        builder.equal(root.get("id"), monuments.get("id")),
+                        builder.and(
+                                tagRoot.get("name").in(tagNames),
+                                builder.equal(tagRoot.get("isMaterial"), isMaterial)
+                        )
                 )
-            )
         );
 
         if (isMaterial) {
@@ -236,22 +317,23 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Creates a search query on various fields of the Monument and adds it to the specified CriteriaQuery
-     * @param builder - The CriteriaBuilder to use to help build the CriteriaQuery
-     * @param query - The CriteriaQuery to add the searching logic to
-     * @param root - The Root to use with the CriteriaQuery
-     * @param searchQuery - The String search query that will get passed into the pg_tgrm similarity function
-     * @param threshold - The threshold (0-1) to limit the results by in the pg_tgrm similary function.
-     *                  You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
-     * @param latitude - The latitude of the comparison point
-     * @param longitude - The longitude of the comparison point
-     * @param distance - The distance from the comparison point to search in, units of miles
-     * @param tags - List of tag names to search by
-     * @param materials - List of material tag names to search by
-     * @param sortType - The way in which to sort the results by
-     * @param start - The start date to filter monuments by
-     * @param end - The end date to filter monuments by
-     * @param decade - The decade to filter monuments by
-     * @param onlyActive - If true, only active monuments will be searched. If false, both active and inactive will be searched
+     *
+     * @param builder       - The CriteriaBuilder to use to help build the CriteriaQuery
+     * @param query         - The CriteriaQuery to add the searching logic to
+     * @param root          - The Root to use with the CriteriaQuery
+     * @param searchQuery   - The String search query that will get passed into the pg_tgrm similarity function
+     * @param threshold     - The threshold (0-1) to limit the results by in the pg_tgrm similary function.
+     *                      You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
+     * @param latitude      - The latitude of the comparison point
+     * @param longitude     - The longitude of the comparison point
+     * @param distance      - The distance from the comparison point to search in, units of miles
+     * @param tags          - List of tag names to search by
+     * @param materials     - List of material tag names to search by
+     * @param sortType      - The way in which to sort the results by
+     * @param start         - The start date to filter monuments by
+     * @param end           - The end date to filter monuments by
+     * @param decade        - The decade to filter monuments by
+     * @param onlyActive    - If true, only active monuments will be searched. If false, both active and inactive will be searched
      * @param hideTemporary - If true, search only permanent monuments. If false, search both temporary and permanent monuments
      */
     private void buildSearchQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
@@ -290,7 +372,7 @@ public class MonumentService extends ModelService<Monument> {
             predicates.add(this.buildSimilarityQuery(builder, query, root, searchQuery, threshold, sortByRelevance));
         }
 
-        if(state != null && distance < 0) {
+        if (state != null && distance < 0) {
             predicates.add(builder.equal(root.get("state"), state));
         } else if (latitude != null && longitude != null && distance != null && distance > 0) {
             predicates.add(this.buildDWithinQuery(builder, query, root, latitude, longitude, distance, sortByDistance));
@@ -318,21 +400,22 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Generates a search for Monuments based on matching the specified parameters
      * May make use of the pg_trgm similarity or postgis ST_DWithin functions
-     * @param searchQuery - The string search query that will get passed into the pg_tgrm similarity function
-     * @param page - The page number of Monument results to return
-     * @param limit - The maximum number of Monument results to return
-     * @param threshold - The threshold (0-1) to limit the results by for th pg_tgrm similarity function
-     *                  You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
-     * @param latitude - The latitude of the comparison point
-     * @param longitude - The longitude of the comparison point
-     * @param distance - The distance from the comparison point to search in, units of miles
-     * @param tags - List of tag names to search by
-     * @param materials - List of material tag names to search by
-     * @param sortType - The way in which to sort the results by
-     * @param start - The start date to filter monuments by
-     * @param end - The end date to filter monuments by
-     * @param decade - The decade to filter monuments by
-     * @param onlyActive - If true, only active monuments will be searched. If false, both active and inactive will be searched
+     *
+     * @param searchQuery   - The string search query that will get passed into the pg_tgrm similarity function
+     * @param page          - The page number of Monument results to return
+     * @param limit         - The maximum number of Monument results to return
+     * @param threshold     - The threshold (0-1) to limit the results by for th pg_tgrm similarity function
+     *                      You can learn about this score at https://www.postgresql.org/docs/9.6/pgtrgm.html
+     * @param latitude      - The latitude of the comparison point
+     * @param longitude     - The longitude of the comparison point
+     * @param distance      - The distance from the comparison point to search in, units of miles
+     * @param tags          - List of tag names to search by
+     * @param materials     - List of material tag names to search by
+     * @param sortType      - The way in which to sort the results by
+     * @param start         - The start date to filter monuments by
+     * @param end           - The end date to filter monuments by
+     * @param decade        - The decade to filter monuments by
+     * @param onlyActive    - If true, only active monuments will be searched. If false, both active and inactive will be searched
      * @param hideTemporary - If true, search only permanent monuments. If false, search both temporary and permanent monuments
      * @return List<Monument> - List of Monument results based on the specified search parameters
      */
@@ -346,21 +429,22 @@ public class MonumentService extends ModelService<Monument> {
         query.select(root);
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, threshold, latitude, longitude, distance, state, tags, materials, sortType,
-            start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
+                builder, query, root, searchQuery, threshold, latitude, longitude, distance, state, tags, materials, sortType,
+                start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
         List<Monument> monuments = limit != null
-            ? page != null
+                ? page != null
                 ? this.getWithCriteriaQuery(query, Integer.parseInt(limit), (Integer.parseInt(page)) - 1)
                 : this.getWithCriteriaQuery(query, Integer.parseInt(limit))
-            : this.getWithCriteriaQuery(query);
+                : this.getWithCriteriaQuery(query);
         this.loadLazyLoadedCollections(monuments);
         return monuments;
     }
 
     /**
      * Count the total number of results for a Monument search
+     *
      * @see MonumentService#search(String, String, String, Double, Double, Double, Double, String, List, List, SortType, Date,
      * Date, Integer, boolean, Integer, Integer, Boolean)
      */
@@ -373,8 +457,8 @@ public class MonumentService extends ModelService<Monument> {
         query.select(builder.countDistinct(root));
 
         this.buildSearchQuery(
-            builder, query, root, searchQuery, 0.1, latitude, longitude, distance, state, tags, materials, SortType.NONE,
-            start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
+                builder, query, root, searchQuery, 0.1, latitude, longitude, distance, state, tags, materials, SortType.NONE,
+                start, end, decade, onlyActive, activeStart, activeEnd, hideTemporary
         );
 
         return this.getEntityManager().createQuery(query).getSingleResult().intValue();
@@ -382,10 +466,11 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Get up to 10 monuments with the most matching tags/materials
-     * @param tags - The list of tag names to match by
+     *
+     * @param tags       - The list of tag names to match by
      * @param monumentId - The id of the monument that is being searched for related monuments of. It will be excluded
-     *                     from results.
-     * @param limit - The number of results to return
+     *                   from results.
+     * @param limit      - The number of results to return
      * @return List<Monument> - The List of Monuments with matching Tags/Materials, ordered by number matching Tags/Materials
      */
     public List<Monument> getRelatedMonumentsByTags(List<String> tags, Integer monumentId, Integer limit) {
@@ -402,113 +487,18 @@ public class MonumentService extends ModelService<Monument> {
     }
 
     /**
-     * Create a Point object for a Monument from the specified longitude and latitude
-     * @param longitude - Double for the longitude of the Point
-     * @param latitude - Double for the latitude of the Point
-     * @return Point - The Point object created using the specified longitude and latitude
-     */
-    public static Point createMonumentPoint(Double longitude, Double latitude) {
-        if (longitude == null || latitude == null) {
-            return null;
-        }
-
-        GeometryFactory geometryFactory = new GeometryFactory();
-
-        Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude, 0));
-        point.setSRID(coordinateSrid);
-
-        return point;
-    }
-
-    /**
-     * Create a Date object for a Monument using the specified year
-     * Sets the month to January and the day to the 1st
-     * @param year - String for the year to use to create the Date
-     *             Must be in "yyyy" format
-     * @return Date - Date object created using the specified year
-     */
-    public static Date createMonumentDate(String year) {
-        return MonumentService.createMonumentDate(year, "0", "1");
-    }
-
-    /**
-     * Create a Date object for a Monument using the specified year and month
-     * Sets the day to the 1st
-     * @param year - String for the year to use to create the Date
-     *             Must be in "yyyy" format
-     * @param month - String for the month to use to create the Date
-     *              Must be in "MM" format
-     * @return Date - Date object created using the specified year and month
-     */
-    public static Date createMonumentDate(String year, String month) {
-        return MonumentService.createMonumentDate(year, month, "1");
-    }
-
-    /**
-     * Create a Date object for a Monument using the specified year, month and day
-     * @param year - String for the year to use to create the Date
-     *             Must be in "yyyy" format
-     * @param month - String for the month to use to create the Date
-     *              Assumed to be zero-based
-     *              Must be in "M" format
-     * @param day - String for the day to use to create the Date
-     *            Must be in "d" format
-     * @return Date - Date object created using the specified year, month and day
-     */
-    public static Date createMonumentDate(String year, String month, String day) {
-        if (isNullOrEmpty(year)) {
-            return null;
-        }
-
-        GregorianCalendar calendar = new GregorianCalendar();
-        int yearInt = Integer.parseInt(year);
-
-        int monthInt = 0;
-        if (!isNullOrEmpty(month)) {
-            monthInt = Integer.parseInt(month);
-        }
-
-        int dayInt = 1;
-        if (!isNullOrEmpty(day)) {
-            dayInt = Integer.parseInt(day);
-        }
-
-        calendar.set(yearInt, monthInt, dayInt);
-
-        return calendar.getTime();
-    }
-
-    /**
-     * Create a Date object for a Monument using a JSON date-string
-     * @param jsonDate - String for the JSON date to use to create the Date
-     * @return Date - Date object created using the specified JSON date-string
-     */
-    public static Date createMonumentDateFromJsonDate(String jsonDate) {
-        if (isNullOrEmpty(jsonDate)) {
-            return null;
-        }
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-        try {
-            return simpleDateFormat.parse(jsonDate);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    /**
      * Sort the query by the monuments' date field
-     * @param builder The CriteriaBuilder for the query
-     * @param query The CriteriaQuery being created
-     * @param root The Root associated with the CriteriaQuery
+     *
+     * @param builder     The CriteriaBuilder for the query
+     * @param query       The CriteriaQuery being created
+     * @param root        The Root associated with the CriteriaQuery
      * @param newestFirst If true, the results will be sorted in descending order
      */
     private void sortByDate(CriteriaBuilder builder, CriteriaQuery query, Root root, Boolean newestFirst) {
         query.orderBy(
-            newestFirst ?
-                builder.desc(root.get("date")) :
-                builder.asc(root.get("date"))
+                newestFirst ?
+                        builder.desc(root.get("date")) :
+                        builder.asc(root.get("date"))
         );
     }
 
@@ -521,10 +511,11 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create Monument records from a specified ZipFile containing a CSV file and images
+     *
      * @param zipFile - ZipFile representation of the .zip file
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      * @throws InvalidZipException - If there is not exactly 1 CSV file in the .zip file
-     * @throws IOException - If there are any I/O errors while processing the ZipFile
+     * @throws IOException         - If there are any I/O errors while processing the ZipFile
      */
     public List<String[]> readCSVFromZip(ZipFile zipFile) throws InvalidZipException, IOException {
         // Search for CSV files in the .zip file
@@ -532,7 +523,7 @@ public class MonumentService extends ModelService<Monument> {
         int csvFileCount = 0;
         ZipEntry csvEntry = null;
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
-        while(zipEntries.hasMoreElements()) {
+        while (zipEntries.hasMoreElements()) {
             ZipEntry zipEntry = zipEntries.nextElement();
             if (zipEntry.getName().contains("__MACOSX")) continue;
 
@@ -552,10 +543,11 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create Monument records from the specified List of CSV Strings
+     *
      * @param csvFileName - String for the filename of the CSV file
-     * @param csvList - List of Strings containing the CSV rows to use to create the new Monuments
-     * @param mapping - Map of the CSV file's fields to our fields
-     * @param zipFile - ZipFile containing the image files to use for image pre-processing
+     * @param csvList     - List of Strings containing the CSV rows to use to create the new Monuments
+     * @param mapping     - Map of the CSV file's fields to our fields
+     * @param zipFile     - ZipFile containing the image files to use for image pre-processing
      * @return BulkCreateResult - Object containing information about the Bulk Monument Create operation
      */
     public MonumentBulkValidationResult validateMonumentCSV(String csvFileName, List<String[]> csvList,
@@ -602,6 +594,7 @@ public class MonumentService extends ModelService<Monument> {
      * a significant amount of time to process and hold up the thread or HTTP request.
      * This method is intended mainly for use within MonumentServiceIntegrationTest so that the bulk create behavior
      * can be tested synchronously
+     *
      * @param bulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion to use to bulk create Monuments
      * @return - List of inserted monuments
      */
@@ -611,8 +604,9 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * ASYNCHRONOUSLY bulk create monuments from CSV. This is meant to be wrapped by the AsyncJob in the job param.
+     *
      * @param bulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion to use to bulk create Monuments
-     * @param job - The AsyncJob to report progress to
+     * @param job                          - The AsyncJob to report progress to
      * @return - CompletableFuture of List of inserted monuments
      */
     @Async
@@ -625,8 +619,9 @@ public class MonumentService extends ModelService<Monument> {
      * Bulk create monuments from CSV. If job is not null, progress will be reported as the monuments are created.
      * This method should only be called through MonumentService.bulkCreateMonumentsSync or
      * AsyncMonumentService.bulkCreateMonumentsAsync
+     *
      * @param bulkCreateSuggestion - BulkCreateMonumentSuggestion to use to bulk create Monuments
-     * @param job - The AsyncJob to report progress to
+     * @param job                  - The AsyncJob to report progress to
      * @return - List of inserted monuments
      */
     private List<Monument> bulkCreateMonuments(BulkCreateMonumentSuggestion bulkCreateSuggestion, AsyncJob job) {
@@ -680,9 +675,8 @@ public class MonumentService extends ModelService<Monument> {
             Date start = new GregorianCalendar(decade, Calendar.JANUARY, 1).getTime();
             Date end = new GregorianCalendar(decade + 9, Calendar.DECEMBER, 31).getTime();
             return builder.between(root.get("date"), start, end);
-        }
-        else {
-            Date end = new GregorianCalendar(1860, Calendar.JANUARY, 31 ).getTime();
+        } else {
+            Date end = new GregorianCalendar(1860, Calendar.JANUARY, 31).getTime();
             return builder.lessThan(root.get("date"), end);
         }
     }
@@ -691,27 +685,28 @@ public class MonumentService extends ModelService<Monument> {
     private Predicate buildActiveDateRangeQuery(CriteriaBuilder builder, Root root, Integer start, Integer end) {
         Date dEnd = new GregorianCalendar(end + 9, Calendar.DECEMBER, 31).getTime();
         Predicate endQuery = builder.lessThanOrEqualTo(root.get("date"), dEnd);
-        if (start != null){
+        if (start != null) {
             Date dStart = new GregorianCalendar(start, Calendar.JANUARY, 1).getTime();
             return builder.and(builder.or(builder.isNull(root.get("deactivatedDate")),
                     builder.greaterThanOrEqualTo(root.get("deactivatedDate"), dStart)), endQuery);
-        }
-        else {
+        } else {
             return endQuery;
         }
     }
+
     /**
      * Gathers the various statistics related to Monuments for the About Page
+     *
      * @param searchForSpecificMonuments - True to also include searching for the specific Monuments we display links
-     * to on the About Page, such as the 9/11 Memorial, False otherwise. This flag exists mainly to overcome a
-     * limitation with H2 (pg_tgrm functions do not work in H2)
+     *                                   to on the About Page, such as the 9/11 Memorial, False otherwise. This flag exists mainly to overcome a
+     *                                   limitation with H2 (pg_tgrm functions do not work in H2)
      * @return MonumentAboutPageStatistics - Object containing the various statistics relating to Monuments for the
      * About Page
      */
     public MonumentAboutPageStatistics getMonumentAboutPageStatistics(boolean searchForSpecificMonuments) {
         MonumentAboutPageStatistics statistics = new MonumentAboutPageStatistics();
 
-        List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null,null,
+        List<Monument> allMonumentOldestFirst = this.search(null, null, null, 0.1, null, null, null, null, null, null,
                 SortType.OLDEST, null, null, null, true, null, null, false);
 
         List<Object[]> allTagsAndCountsMostUsedFirst = this.tagRepository.getAllOrderByMostUsedDesc();
@@ -747,8 +742,7 @@ public class MonumentService extends ModelService<Monument> {
                 if (parsedState != null) {
                     if (!numberOfMonumentsByState.containsKey(parsedState)) {
                         numberOfMonumentsByState.put(parsedState, 1);
-                    }
-                    else {
+                    } else {
                         Integer currentValue = numberOfMonumentsByState.get(parsedState);
                         numberOfMonumentsByState.replace(parsedState, (currentValue + 1));
                     }
@@ -794,8 +788,7 @@ public class MonumentService extends ModelService<Monument> {
             if (resultTag.getIsMaterial() && mostPopularMaterial == null) {
                 mostPopularMaterial = resultTag;
                 mostPopularMaterialCount = (long) result[1];
-            }
-            else if (!resultTag.getIsMaterial() && mostPopularTag == null) {
+            } else if (!resultTag.getIsMaterial() && mostPopularTag == null) {
                 mostPopularTag = resultTag;
                 mostPopularTagCount = (long) result[1];
             }
@@ -819,7 +812,7 @@ public class MonumentService extends ModelService<Monument> {
         if (searchForSpecificMonuments) {
             // Search for the 9/11 Memorial so we can link to it
             List<Monument> nineElevenMemorialSearchResults = this.search("9/11 Memorial", null, null, 0.75,
-                    40.4242, -74.049, 0.5, null, null,null, SortType.DISTANCE, null, null, null,
+                    40.4242, -74.049, 0.5, null, null, null, SortType.DISTANCE, null, null, null,
                     true, null, null, false);
 
             // Only take the first result, if there are any results
@@ -829,7 +822,7 @@ public class MonumentService extends ModelService<Monument> {
 
             // Search for the Vietnam Veterans Memorial so we can link to it
             List<Monument> vietnamVeteransMemorialSearchResults = this.search("Vietnam Veterans Memorial", null, null,
-                    0.75, 38.891632, -77.047809, 0.5, null, null,null, SortType.DISTANCE, null,
+                    0.75, 38.891632, -77.047809, 0.5, null, null, null, SortType.DISTANCE, null,
                     null, null, true, null, null, false);
 
             // Only take the first result, if there are any results
@@ -843,6 +836,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create a new Monument based on the attributes in the specified CreateMonumentSuggestion object
+     *
      * @param monumentSuggestion - The CreateMonumentSuggestion object to use to create the new Monument
      * @return Monument - The newly created Monument based on the specified CreateMonumentSuggestion
      */
@@ -879,8 +873,7 @@ public class MonumentService extends ModelService<Monument> {
 
         if (!isNullOrEmpty(monumentSuggestion.getDate())) {
             date = MonumentService.createMonumentDateFromJsonDate(monumentSuggestion.getDate());
-        }
-        else {
+        } else {
             date = MonumentService.createMonumentDate(monumentSuggestion.getYear(), monumentSuggestion.getMonth());
         }
 
@@ -891,8 +884,7 @@ public class MonumentService extends ModelService<Monument> {
 
         if (!isNullOrEmpty(monumentSuggestion.getDeactivatedDate())) {
             deactivatedDate = MonumentService.createMonumentDateFromJsonDate(monumentSuggestion.getDeactivatedDate());
-        }
-        else {
+        } else {
             deactivatedDate = MonumentService.createMonumentDate(monumentSuggestion.getDeactivatedYear(), monumentSuggestion.getDeactivatedMonth());
         }
 
@@ -991,6 +983,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Update a Monument using the attributes specified in the UpdateMonumentSuggestion
+     *
      * @param updateSuggestion - UpdateMonumentSuggestion object containing the new attributes for the Monument
      * @return Monument - The Monument with the updated attributes
      */
@@ -1032,8 +1025,7 @@ public class MonumentService extends ModelService<Monument> {
 
         if (!isNullOrEmpty(updateSuggestion.getNewDate())) {
             date = MonumentService.createMonumentDateFromJsonDate(updateSuggestion.getNewDate());
-        }
-        else {
+        } else {
             date = MonumentService.createMonumentDate(updateSuggestion.getNewYear(), updateSuggestion.getNewMonth());
         }
 
@@ -1044,8 +1036,7 @@ public class MonumentService extends ModelService<Monument> {
 
         if (!isNullOrEmpty(updateSuggestion.getNewDeactivatedDate())) {
             deactivatedDate = MonumentService.createMonumentDateFromJsonDate(updateSuggestion.getNewDeactivatedDate());
-        }
-        else {
+        } else {
             deactivatedDate = MonumentService.createMonumentDate(updateSuggestion.getNewDeactivatedYear(), updateSuggestion.getNewDeactivatedMonth());
         }
 
@@ -1157,8 +1148,9 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create Contributions using the specified contributors and associate them with the specified Monument
+     *
      * @param contributors - List of Strings for the names of the contributors to use for the Contributions
-     * @param monument - Monument to associate the new Contributions with
+     * @param monument     - Monument to associate the new Contributions with
      * @return List<Contribution> - List of new Contributions with the specified contributors and associated with the
      * specified Monument
      */
@@ -1187,8 +1179,9 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Create References using the specified referenceUrls and associate them with the specified Monument
+     *
      * @param referenceUrls - List of Strings for the URLs to use for the References
-     * @param monument - Monument to associate the new References with
+     * @param monument      - Monument to associate the new References with
      * @return List<Reference> - List of new References with the specified referenceUrls and associated with the
      * specified Monument
      */
@@ -1217,10 +1210,11 @@ public class MonumentService extends ModelService<Monument> {
      * Create Images using the specified imageUrls and associate them with the specified Monument
      * If arePhotoSphereImages is false, also moves the S3 images with the specified imageUrls into the permanent S3
      * image folder
-     * @param imageUrls - List of Strings for the URLs to use for the Images
-     * @param imageReferenceUrls - List of strings of reference URLs for images
-     * @param imageCaptions - List of strings of captions for images
-     * @param monument - Monument to associate the new Images with
+     *
+     * @param imageUrls            - List of Strings for the URLs to use for the Images
+     * @param imageReferenceUrls   - List of strings of reference URLs for images
+     * @param imageCaptions        - List of strings of captions for images
+     * @param monument             - Monument to associate the new Images with
      * @param arePhotoSphereImages - True if the specified imageUrls are for PhotoSphere images, False otherwise
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
      */
@@ -1265,8 +1259,7 @@ public class MonumentService extends ModelService<Monument> {
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
                     image = new Image(permanentImageUrl, isPrimary, imageReferenceUrl, imageCaption);
-                }
-                else {
+                } else {
                     image = new Image(imageUrl, false, imageReferenceUrl, imageCaption);
                     image.setIsPhotoSphere(true);
                 }
@@ -1283,14 +1276,15 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Sets the basic String fields on a specified Monument to the specified values
-     * @param monument - The Monument object to set the fields on
-     * @param title - String for the title of the Monument. Cannot be null or empty
-     * @param address - String for the address of the Monument
-     * @param artist - String for the artist of the Monument
-     * @param description - String for the description of the Monument
-     * @param inscription - String for the inscription of the Monument
-     * @param city - String for the city of the Monument
-     * @param state - String for the state of the Monument
+     *
+     * @param monument           - The Monument object to set the fields on
+     * @param title              - String for the title of the Monument. Cannot be null or empty
+     * @param address            - String for the address of the Monument
+     * @param artist             - String for the artist of the Monument
+     * @param description        - String for the description of the Monument
+     * @param inscription        - String for the inscription of the Monument
+     * @param city               - String for the city of the Monument
+     * @param state              - String for the state of the Monument
      * @param deactivatedComment - String describing why a Monument was deactivated
      * @throws IllegalArgumentException - If the specified title is null or empty
      */
@@ -1318,7 +1312,8 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Update the specified Monument's References to have the new Reference URLs specified
-     * @param monument - Monument to update the associated References on
+     *
+     * @param monument             - Monument to update the associated References on
      * @param newReferenceUrlsById - Map of Reference ID to new Reference URL to use for updating
      */
     public void updateMonumentReferences(Monument monument, Map<Integer, String> newReferenceUrlsById) {
@@ -1359,7 +1354,8 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Delete the specified Monument's References based on the specified IDs
-     * @param monument - Monument whose associated References to delete
+     *
+     * @param monument            - Monument whose associated References to delete
      * @param deletedReferenceIds - List of Reference IDs to delete and remove from the Monument
      */
     public void deleteMonumentReferences(Monument monument, List<Integer> deletedReferenceIds) {
@@ -1383,7 +1379,8 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Updates the specified Monument's primary Image to be the Image with the specified ID
-     * @param monument - Monument whose primary Image to update
+     *
+     * @param monument          - Monument whose primary Image to update
      * @param newPrimaryImageId - ID of the Image to make the primary Image
      */
     public void updateMonumentPrimaryImage(Monument monument, Integer newPrimaryImageId) {
@@ -1410,7 +1407,8 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Delete the specified Monument's Images based on the specified Image IDs
-     * @param monument - Monument whose Images are to be deleted
+     *
+     * @param monument        - Monument whose Images are to be deleted
      * @param deletedImageIds - List of IDs of the Images to delete
      */
     public void deleteMonumentImages(Monument monument, List<Integer> deletedImageIds) {
@@ -1430,6 +1428,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Delete the specified images from the image repo
+     *
      * @param deletedImageIds - List of IDs of the Images to delete
      */
     public void deleteImagesFromRepository(List<Integer> deletedImageIds) {
@@ -1442,6 +1441,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Sets the primary Image for the Monument to the first Image if it doesn't have a primary Image
+     *
      * @param monument - Monument to reset the primary Image for
      */
     public void resetMonumentPrimaryImage(Monument monument) {
@@ -1473,8 +1473,9 @@ public class MonumentService extends ModelService<Monument> {
      * names
      * Note that any Tags/Materials that were previously associated with the Monument and are NOT in the newTagNames
      * List will be un-associated from the Monument
-     * @param monument - Monument to update the associated Tags/Materials for
-     * @param newTagNames - List of the new Tag/Material names to associate with the Monument
+     *
+     * @param monument     - Monument to update the associated Tags/Materials for
+     * @param newTagNames  - List of the new Tag/Material names to associate with the Monument
      * @param areMaterials - True if the newTagNames holds a list of Material names, False otherwise
      */
     public void updateMonumentTags(Monument monument, List<String> newTagNames, boolean areMaterials) {
@@ -1502,16 +1503,14 @@ public class MonumentService extends ModelService<Monument> {
             for (Tag currentTag : currentTags) {
                 if (!newTagNames.contains(currentTag.getName())) {
                     this.tagService.removeTagFromMonument(currentTag, monument);
-                }
-                else {
+                } else {
                     newTags.add(currentTag);
                 }
             }
 
             if (areMaterials) {
                 monument.setMaterials(newTags);
-            }
-            else {
+            } else {
                 monument.setTags(newTags);
             }
         }
@@ -1520,6 +1519,7 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Populates the address or coordinates for the specified Monument, if necessary
      * We always want Monument records to have coordinates and an address
+     *
      * @param monument - Monument to populate the location fields for
      */
     public void populateNewMonumentLocation(Monument monument) {
@@ -1546,8 +1546,9 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Populates the address and coordinates field on a Monument being updated, if necessary
      * We always want Monument records to have coordinates and an address
-     * @param newMonument - Monument containing the new, updated fields
-     * @param oldAddress - String containing the Monument's old address
+     *
+     * @param newMonument    - Monument containing the new, updated fields
+     * @param oldAddress     - String containing the Monument's old address
      * @param oldCoordinates - Point containing the Monument's old coordinates
      */
     public void populateUpdatedMonumentLocation(Monument newMonument, String oldAddress, Point oldCoordinates) {
@@ -1557,6 +1558,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Cause hibernate to load in the related records
+     *
      * @param monuments - The Monuments to force load lazy loaded collections on
      */
     public void loadLazyLoadedCollections(List<Monument> monuments) {
@@ -1567,6 +1569,7 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Cause hibernate to load in the related records
+     *
      * @param monument - The Monument to force load lazy loaded collections on
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -1578,8 +1581,9 @@ public class MonumentService extends ModelService<Monument> {
 
     /**
      * Populates the address field on a Monument being updated, if necessary
-     * @param newMonument - Monument containing the new, updated fields
-     * @param oldAddress - String containing the Monument's old address
+     *
+     * @param newMonument    - Monument containing the new, updated fields
+     * @param oldAddress     - String containing the Monument's old address
      * @param oldCoordinates - Point containing the Monument's old coordinates
      */
     private void populateUpdatedMonumentAddress(Monument newMonument, String oldAddress, Point oldCoordinates) {
@@ -1611,9 +1615,10 @@ public class MonumentService extends ModelService<Monument> {
     /**
      * Populates the coordinates field on a Monument being updated, if necessary
      * We always want Monument records to have coordinates and an address
-     * @param newMonument - Monument containing the new, updated fields
+     *
+     * @param newMonument    - Monument containing the new, updated fields
      * @param oldCoordinates - Point containing the Monument's old coordinates
-     * @param oldAddress - String containing the Monument's old address
+     * @param oldAddress     - String containing the Monument's old address
      */
     private void populateUpdatedMonumentCoordinates(Monument newMonument, Point oldCoordinates, String oldAddress) {
         // If the new Monument has coordinates, no need to geocode
@@ -1647,10 +1652,11 @@ public class MonumentService extends ModelService<Monument> {
      * AND has a similar name
      * If no coordinates are specified but an address is, it will be reverse-geocoded into coordinates to compare
      * against
-     * @param title - Title of the Monument to search against
-     * @param latitude - Latitude of the Monument to search against
-     * @param longitude - Longitude of the Monument to search against
-     * @param address - Address of the Monument to search against
+     *
+     * @param title      - Title of the Monument to search against
+     * @param latitude   - Latitude of the Monument to search against
+     * @param longitude  - Longitude of the Monument to search against
+     * @param address    - Address of the Monument to search against
      * @param onlyActive - If true, only active monuments will be searched. If false, both inactive and active will be searched
      * @return List<Monument> - List of potential duplicate Monuments given the specified title and coordinates
      */
@@ -1681,6 +1687,7 @@ public class MonumentService extends ModelService<Monument> {
      * process and hold up the thread or HTTP request
      * This method is intended mainly for using with MonumentServiceMockIntegrationTests so that this behavior can be
      * tested synchronously
+     *
      * @param bulkValidationResult - MonumentBulkValidationResult object to parse
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
      * MonumentBulkValidationResult
@@ -1693,8 +1700,9 @@ public class MonumentService extends ModelService<Monument> {
      * ASYNCHRONOUSLY parse the specified MonumentBulkValidationResult into a BulkCreateMonumentSuggestion with
      * corresponding CreateMonumentSuggestions
      * This is meant to be wrapped by the AsyncJob in the job param
+     *
      * @param bulkValidationResult - MonumentBulkValidationResult object to parse
-     * @param job - AsyncJob to report progress to
+     * @param job                  - AsyncJob to report progress to
      * @return - CompletableFuture of BulkCreateMonumentSuggestion created using the specified
      * MonumentBulkValidationResult
      */
@@ -1710,8 +1718,9 @@ public class MonumentService extends ModelService<Monument> {
      * If job is not null, progress will be reported as CreateMonumentSuggestions are created
      * This method should only be called through MonumentService.parseMonumentBulkValidationResultSync or
      * MonumentService.parseMonumentBulkValidationResultAsync
+     *
      * @param bulkValidationResult - MonumentBulkValidationResult object to parse
-     * @param job - AsyncJob to report progress to
+     * @param job                  - AsyncJob to report progress to
      * @return BulkCreateMonumentSuggestion - BulkCreateMonumentSuggestion created using the specified
      * MonumentBulkValidationResult
      */
@@ -1763,5 +1772,12 @@ public class MonumentService extends ModelService<Monument> {
         }
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
+    }
+
+    /**
+     * This enum is used when choosing how to sort search results
+     */
+    public enum SortType {
+        RELEVANCE, DISTANCE, NEWEST, OLDEST, NONE;
     }
 }

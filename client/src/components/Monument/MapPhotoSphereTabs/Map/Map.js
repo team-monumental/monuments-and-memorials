@@ -10,8 +10,8 @@ export default class Map extends React.Component {
 
         let q = monument.address;
         if ((monument.address &&
-            (monument.address.includes('Unnamed Road') ||
-            monument.address.startsWith([monument.city, monument.state].join(', ')))) ||
+                (monument.address.includes('Unnamed Road') ||
+                    monument.address.startsWith([monument.city, monument.state].join(', ')))) ||
             (!q && monument.lat && monument.lon)) {
             q = [monument.lat, monument.lon].join(',');
         }

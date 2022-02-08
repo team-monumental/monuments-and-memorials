@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import Button from 'react-bootstrap/Button';
 import {exportToCsv} from '../../../utils/export-util';
-import { RollbarContext } from '../../../App';
+import {RollbarContext} from '../../../App';
 
 /**
  * Presentational component for a button that exports data to CSV
  */
 export const ExportToCsvButton = (props) => {
 
-    const { fields, data, exportTitle, className } = props;
+    const {fields, data, exportTitle, className} = props;
     const rollbar = useContext(RollbarContext);
 
     const handleClick = () => {

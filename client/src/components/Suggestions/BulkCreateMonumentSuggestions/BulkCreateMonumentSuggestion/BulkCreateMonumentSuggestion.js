@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './BulkCreateMonumentSuggestion.scss';
-import { connect } from 'react-redux';
-import { Card } from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {Card} from 'react-bootstrap';
 import CreateMonumentSuggestions from '../../CreateMonumentSuggestions/CreateMonumentSuggestions';
-import { Link } from 'react-router-dom';
-import { getUserFullName } from '../../../../utils/string-util';
-import { Role } from '../../../../utils/authentication-util';
+import {Link} from 'react-router-dom';
+import {getUserFullName} from '../../../../utils/string-util';
+import {Role} from '../../../../utils/authentication-util';
 
 /**
  * Presentational component for displaying a BulkCreateMonumentSuggestion
@@ -19,8 +19,10 @@ class BulkCreateMonumentSuggestion extends React.Component {
     }
 
     render() {
-        const { suggestion, index, showTitleAsLink, showIndex=true, displayCreateMonumentStatuses,
-            showCreateTitlesAsLinks, showCreatedBy, session } = this.props;
+        const {
+            suggestion, index, showTitleAsLink, showIndex = true, displayCreateMonumentStatuses,
+            showCreateTitlesAsLinks, showCreatedBy, session
+        } = this.props;
 
         const titleText = showIndex ?
             `${index}. ${suggestion.fileName}` :
@@ -43,14 +45,16 @@ class BulkCreateMonumentSuggestion extends React.Component {
                         <span className="pr-3">
                             {
                                 showTitleAsLink ?
-                                    <Link to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=bulk`}>{titleText}</Link> :
+                                    <Link
+                                        to={`/panel/manage/suggestions/suggestion/${suggestion.id}?type=bulk`}>{titleText}</Link> :
                                     titleText
                             }
                         </span>
                         {showCreatedBy &&
                             <div className="created-by-container">
                                 Created By:&nbsp;
-                                {manageUserLink} ({suggestion.createdBy && <a href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>})
+                                {manageUserLink} ({suggestion.createdBy &&
+                                <a href={`mailto:${suggestion.createdBy.email}`}>{suggestion.createdBy.email}</a>})
                             </div>
                         }
                     </Card.Title>

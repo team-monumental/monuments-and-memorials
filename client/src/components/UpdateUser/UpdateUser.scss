@@ -1,11 +1,13 @@
 .update-user.page {
-    .card {
-        width: min-content;
-    }
-    .card-body {
-        min-width: calc(300px + 2.5rem);
-    }
-    .needs-confirmation-text {
-        min-width: 450px;
-    }
+  .card {
+    width: min-content;
+  }
+
+  .card-body {
+    min-width: calc(300px + 2.5rem);
+  }
+
+  .needs-confirmation-text {
+    min-width: 450px;
+  }
 }

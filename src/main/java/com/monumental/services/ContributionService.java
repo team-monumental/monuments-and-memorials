@@ -18,6 +18,7 @@ public class ContributionService {
 
     /**
      * Get all of the unique Contributors (right now just a name as a String)
+     *
      * @return List<String> - The names of all of the Contributors
      */
     public List<String> getAllContributors() {

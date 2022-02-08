@@ -1,13 +1,21 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { approveCreateSuggestion, approveUpdateSuggestion, fetchBulkCreateSuggestion, fetchCreateSuggestion,
-    fetchUpdateSuggestion, rejectCreateSuggestion, rejectUpdateSuggestion, rejectBulkCreateSuggestion,
-    approveBulkCreateSuggestion } from '../../../actions/suggestions';
+import {connect} from 'react-redux';
+import {
+    approveBulkCreateSuggestion,
+    approveCreateSuggestion,
+    approveUpdateSuggestion,
+    fetchBulkCreateSuggestion,
+    fetchCreateSuggestion,
+    fetchUpdateSuggestion,
+    rejectBulkCreateSuggestion,
+    rejectCreateSuggestion,
+    rejectUpdateSuggestion
+} from '../../../actions/suggestions';
 import Spinner from '../../../components/Spinner/Spinner';
 import ManageSuggestions from '../../../components/AdminPanel/ManageSuggestions/ManageSuggestions';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import * as QueryString from 'query-string';
-import { Modal, ProgressBar } from 'react-bootstrap';
+import {Modal, ProgressBar} from 'react-bootstrap';
 
 class ManageSuggestionsPage extends React.Component {
 
@@ -30,7 +38,7 @@ class ManageSuggestionsPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, match: { params: { suggestionId } } } = this.props;
+        const {dispatch, match: {params: {suggestionId}}} = this.props;
 
         if (prevProps.approveBulkCreateSuggestion.pending && !this.props.approveBulkCreateSuggestion.pending &&
             Array.isArray(this.props.approveBulkCreateSuggestion.result)) {
@@ -39,7 +47,7 @@ class ManageSuggestionsPage extends React.Component {
     }
 
     dispatchSuggestionActions(actions) {
-        const { dispatch, match: { params: { suggestionId } }, location: { search } } = this.props;
+        const {dispatch, match: {params: {suggestionId}}, location: {search}} = this.props;
         const type = QueryString.parse(search).type;
 
         if (suggestionId && type) {
@@ -59,26 +67,41 @@ class ManageSuggestionsPage extends React.Component {
                             return;
                     }
                 }
-            } catch (err) {}
+            } catch (err) {
+            }
         }
     }
 
     fetchSuggestionIfIdAndTypeExist() {
-        this.dispatchSuggestionActions({create: fetchCreateSuggestion, update: fetchUpdateSuggestion, bulk: fetchBulkCreateSuggestion});
+        this.dispatchSuggestionActions({
+            create: fetchCreateSuggestion,
+            update: fetchUpdateSuggestion,
+            bulk: fetchBulkCreateSuggestion
+        });
     }
 
     handleSuggestionApproveButtonClick() {
-        this.dispatchSuggestionActions({create: approveCreateSuggestion, update: approveUpdateSuggestion, bulk: approveBulkCreateSuggestion});
+        this.dispatchSuggestionActions({
+            create: approveCreateSuggestion,
+            update: approveUpdateSuggestion,
+            bulk: approveBulkCreateSuggestion
+        });
     }
 
     handleSuggestionRejectButtonClick() {
-        this.dispatchSuggestionActions({create: rejectCreateSuggestion, update: rejectUpdateSuggestion, bulk: rejectBulkCreateSuggestion});
+        this.dispatchSuggestionActions({
+            create: rejectCreateSuggestion,
+            update: rejectUpdateSuggestion,
+            bulk: rejectBulkCreateSuggestion
+        });
     }
 
     render() {
-        const { mode, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
+        const {
+            mode, fetchCreateSuggestion, fetchUpdateSuggestion, fetchBulkCreateSuggestion,
             approveCreateSuggestion, rejectCreateSuggestion, approveUpdateSuggestion, rejectUpdateSuggestion,
-            location: { search }, rejectBulkCreateSuggestion, approveBulkCreateSuggestion } = this.props;
+            location: {search}, rejectBulkCreateSuggestion, approveBulkCreateSuggestion
+        } = this.props;
         const type = QueryString.parse(search).type;
 
         const reducers = [
@@ -105,19 +128,19 @@ class ManageSuggestionsPage extends React.Component {
             <ManageSuggestions type={type} mode={mode} suggestion={suggestion}
                                onApproveClick={() => this.handleSuggestionApproveButtonClick()}
                                onRejectClick={() => this.handleSuggestionRejectButtonClick()}/>
-           <Modal show={approveBulkCreateSuggestion.pending}>
-               <Modal.Header>
-                   <Modal.Title>
-                       Bulk Creating Monuments or Memorials
-                   </Modal.Title>
-               </Modal.Header>
-               <Modal.Body>
-                   <div>
-                       Please wait while the monuments or memorials are being created...
-                   </div>
-                   <ProgressBar now={approveBulkCreateSuggestion.progress * 100}/>
-               </Modal.Body>
-           </Modal>
+            <Modal show={approveBulkCreateSuggestion.pending}>
+                <Modal.Header>
+                    <Modal.Title>
+                        Bulk Creating Monuments or Memorials
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        Please wait while the monuments or memorials are being created...
+                    </div>
+                    <ProgressBar now={approveBulkCreateSuggestion.progress * 100}/>
+                </Modal.Body>
+            </Modal>
         </>);
     }
 }

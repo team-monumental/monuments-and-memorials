@@ -1,14 +1,15 @@
 .favorites {
-    .search-result .card {
-        background-color: rgba(0,0,0,0);
-        min-width: 0;
-    }
-    & > .card-body {
-        max-height: 411px;
-        overflow-y: auto;
-    }
+  .search-result .card {
+    background-color: rgba(0, 0, 0, 0);
+    min-width: 0;
+  }
+
+  & > .card-body {
+    max-height: 411px;
+    overflow-y: auto;
+  }
 }
 
 .export-buttons-favorites {
-    float: right;
+  float: right;
 }

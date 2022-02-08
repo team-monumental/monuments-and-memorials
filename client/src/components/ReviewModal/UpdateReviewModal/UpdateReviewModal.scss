@@ -1,50 +1,50 @@
 @import "../../../theme";
 
 .update-review-modal-dialog {
-    width: 60vw;
-    max-width: 60vw !important;
+  width: 60vw;
+  max-width: 60vw !important;
 
-    .modal-header {
-        padding-bottom: 0;
-        border-bottom: 2px solid #DEE2E6;
+  .modal-header {
+    padding-bottom: 0;
+    border-bottom: 2px solid #DEE2E6;
 
-        .modal-title {
-            color: #61616D;
-            font-size: x-large;
-        }
+    .modal-title {
+      color: #61616D;
+      font-size: x-large;
+    }
+  }
+
+  .modal-body {
+    padding: 0.25rem 1rem 0.5rem 1rem;
+    overflow: hidden;
+    white-space: normal;
+
+    p {
+      padding-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      font-size: 14px;
     }
 
-    .modal-body {
-        padding: 0.25rem 1rem 0.5rem 1rem;
-        overflow: hidden;
-        white-space: normal;
+    .attributes-update-container {
+      border: thin solid;
+      background-color: lightgray;
+      padding: 0.5rem;
+      font-size: medium;
 
-        p {
-            padding-top: 0.5rem;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .attributes-update-container {
-            border: thin solid;
-            background-color: lightgray;
-            padding: 0.5rem;
-            font-size: medium;
-
-            i {
-                font-size: 36px;
-            }
-        }
+      i {
+        font-size: 36px;
+      }
     }
+  }
 
-    .modal-footer {
-        border-top: 2px solid #DEE2E6;
+  .modal-footer {
+    border-top: 2px solid #DEE2E6;
 
-        .btn {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-family: "Open Sans", sans-serif;
-        }
+    .btn {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-family: "Open Sans", sans-serif;
     }
+  }
 }

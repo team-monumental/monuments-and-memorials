@@ -77,7 +77,9 @@ public class TagRepositoryIntegrationTests {
         assertEquals(3, this.tagRepository.getAllByMonumentId(monument.getId()).size());
     }
 
-    /** getAllByName Tests **/
+    /**
+     * getAllByName Tests
+     **/
 
     @Test
     public void testTagRepository_getAllByName_SingleRecordReturned() {
@@ -182,7 +184,9 @@ public class TagRepositoryIntegrationTests {
         assertEquals(3, this.tagRepository.getAllByMonumentIdAndIsMaterial(monument.getId(), true).size());
     }
 
-    /** getAllOrderByMostUsedDesc Tests **/
+    /**
+     * getAllOrderByMostUsedDesc Tests
+     **/
 
     @Test
     public void testTagRepository_getAllOrderByMostUsedDesc_NoTags() {

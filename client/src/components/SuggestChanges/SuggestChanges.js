@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Card } from 'react-bootstrap';
-import { Role } from '../../utils/authentication-util';
+import {Button, Card} from 'react-bootstrap';
+import {Role} from '../../utils/authentication-util';
 
 /**
  * Prompts users to suggest changes to a Monument on its record page
@@ -8,14 +8,14 @@ import { Role } from '../../utils/authentication-util';
 export default class SuggestChanges extends React.Component {
 
     handleButtonClick() {
-        const { onButtonClick } = this.props;
+        const {onButtonClick} = this.props;
         if (onButtonClick) {
             onButtonClick();
         }
     }
 
     render() {
-        const { mode = 'update', userRole } = this.props;
+        const {mode = 'update', userRole} = this.props;
         const isUpdate = mode === 'update';
         const researcherOrAbove = userRole && Role.RESEARCHER_OR_ABOVE.includes(userRole.toUpperCase())
         const createText = researcherOrAbove ? (isUpdate ? 'Make' : 'Create') : 'Suggest'
@@ -38,11 +38,14 @@ export default class SuggestChanges extends React.Component {
                                 If your change is approved we'll send you an email to let you know, and you will be
                                 listed as a contributor on this page!</p>
                         }
-                        <Button variant="primary" onClick={() => this.handleButtonClick()}>{createText} A Change</Button>
+                        <Button variant="primary" onClick={() => this.handleButtonClick()}>{createText} A
+                            Change</Button>
                     </>}
                     {!isUpdate && <>
                         <p>Contributions help us to expand our database of Monuments and Memorials.</p>
-                        <p>Your suggestion will be {!researcherOrAbove && 'viewed by our team and then '} published for the public to see. Your contribution will be credited on the monument or memorial's page.</p>
+                        <p>Your suggestion will be {!researcherOrAbove && 'viewed by our team and then '} published for
+                            the public to see. Your contribution will be credited on the monument or memorial's
+                            page.</p>
                         <Button variant="primary" onClick={() => this.handleButtonClick()}>{createText} New</Button>
                     </>}
                 </Card.Body>

@@ -8,7 +8,7 @@ import Collapse from 'react-bootstrap/Collapse';
 export default class ContributorsList extends React.Component {
 
     render() {
-        const { contributors, showingAllContributors } = this.props;
+        const {contributors, showingAllContributors} = this.props;
 
         if (contributors && contributors.length) {
             const contributorsToDisplay = contributors.slice(0, 5);
@@ -35,8 +35,7 @@ export default class ContributorsList extends React.Component {
                     </Collapse>
                 </div>
             );
-        }
-        else {
+        } else {
             return (
                 <div/>
             );

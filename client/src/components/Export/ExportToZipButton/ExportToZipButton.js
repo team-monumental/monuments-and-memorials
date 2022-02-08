@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import Button from 'react-bootstrap/Button';
 import * as JSZip from 'jszip';
 import * as JSZipUtils from 'jszip-utils';
-import { saveAs } from 'file-saver';
-import { parse as toCSV } from 'json2csv';
-import { getS3ImageNameFromObjectUrl, getS3ImageObjectKeyFromObjectUrl } from '../../../utils/api-util';
-import { RollbarContext } from '../../../App';
+import {saveAs} from 'file-saver';
+import {parse as toCSV} from 'json2csv';
+import {getS3ImageNameFromObjectUrl, getS3ImageObjectKeyFromObjectUrl} from '../../../utils/api-util';
+import {RollbarContext} from '../../../App';
 import * as AWS from 'aws-sdk';
 
 /**
@@ -13,7 +13,7 @@ import * as AWS from 'aws-sdk';
  */
 export const ExportToZipButton = (props) => {
 
-    const { className, data, fields, exportTitle, images } = props;
+    const {className, data, fields, exportTitle, images} = props;
     const rollbar = useContext(RollbarContext)
 
     const imageFromAWS = (imageUrl) => {
@@ -85,12 +85,12 @@ export const ExportToZipButton = (props) => {
                 if (!name.endsWith('.png') && !name.endsWith('.jpg')) {
                     name = name + '.jpg'
                 }
-                zip.file(name, data.Body, { binary: true });
+                zip.file(name, data.Body, {binary: true});
             }
         }
 
-        zip.generateAsync({ type: "blob" })
-            .then(function(content) {
+        zip.generateAsync({type: "blob"})
+            .then(function (content) {
                 saveAs(content, "monuments.zip");
                 rollbar.info(`Exported monuments (${data.length}) to Zip`);
             });

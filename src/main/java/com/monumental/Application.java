@@ -12,7 +12,7 @@ public class Application {
     // MessageSource object used for resolving error code messages
     @Autowired
     private MessageSource messageSource;
-    
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

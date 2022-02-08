@@ -1,6 +1,6 @@
 import React from 'react';
 import './UpdateReviewModal.scss';
-import { Modal, Button } from 'react-bootstrap';
+import {Button, Modal} from 'react-bootstrap';
 import MonumentUpdate from '../../Monument/Update/MonumentUpdate';
 
 /**
@@ -9,7 +9,7 @@ import MonumentUpdate from '../../Monument/Update/MonumentUpdate';
 export default class UpdateReviewModal extends React.Component {
 
     buildUpdate() {
-        const { newMonument } = this.props;
+        const {newMonument} = this.props;
 
         if (!newMonument) {
             return {};
@@ -34,7 +34,7 @@ export default class UpdateReviewModal extends React.Component {
     }
 
     render() {
-        const { showing, onCancel, onConfirm, oldMonument } = this.props;
+        const {showing, onCancel, onConfirm, oldMonument} = this.props;
 
         return (
             <Modal
@@ -49,7 +49,7 @@ export default class UpdateReviewModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <p>Please review the updates you have made for correctness and completeness!</p>
-                    <p>Note:  Image fields (Reference URL, Caption, Primary Image) do not show here.</p>
+                    <p>Note: Image fields (Reference URL, Caption, Primary Image) do not show here.</p>
                     <div className="attributes-update-container">
                         <MonumentUpdate oldMonument={oldMonument} update={this.buildUpdate()}/>
                     </div>

@@ -1,9 +1,9 @@
 import React from 'react';
 import './SearchResult.scss';
-import { Card } from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 import Tags from '../../Tags/Tags';
 import Address from '../../Monument/Details/Address/Address';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Thumbnail from '../../Monument/Images/Thumbnails/Thumbnail/Thumbnail';
 import {getMonumentSlug} from "../../../utils/regex-util";
 
@@ -13,9 +13,9 @@ import {getMonumentSlug} from "../../../utils/regex-util";
 export default class SearchResult extends React.Component {
 
     render() {
-        const { monument, index, includeIndexInTitle, hideImages, searchUri, monumentUri='/monuments' } = this.props;
+        const {monument, index, includeIndexInTitle, hideImages, searchUri, monumentUri = '/monuments'} = this.props;
         const image = monument && monument.images ? monument.images.find(monument => monument.isPrimary) : null;
-        const title = includeIndexInTitle ?  (index + 1) + ". " + monument.title : monument.title;
+        const title = includeIndexInTitle ? (index + 1) + ". " + monument.title : monument.title;
 
         let tags = [];
         if (monument.monumentTags) {
@@ -28,7 +28,7 @@ export default class SearchResult extends React.Component {
         return (
             <div className="search-result">
                 {!hideImages &&
-                    <Thumbnail imageUrl={image && image.url} />
+                    <Thumbnail imageUrl={image && image.url}/>
                 }
                 <Card>
                     <Card.Title>
@@ -38,7 +38,7 @@ export default class SearchResult extends React.Component {
                     </Card.Title>
                     <Card.Body>
                         <Address monument={monument}/>
-                        <Tags tags={tags} searchUri={searchUri} />
+                        <Tags tags={tags} searchUri={searchUri}/>
                     </Card.Body>
                 </Card>
             </div>

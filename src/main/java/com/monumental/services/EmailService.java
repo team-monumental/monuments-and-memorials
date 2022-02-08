@@ -44,8 +44,9 @@ public class EmailService {
     /**
      * Sends an email to the specified address using the stored email template name
      * TODO: Replace with HTML email templates with proper templating where user data can be filled in automatically
+     *
      * @param recipientAddress - The email address to send to
-     * @param templateName - The email template name
+     * @param templateName     - The email template name
      */
     public void sendEmail(String recipientAddress, String templateName) {
         this.sendEmail(recipientAddress, templateName, "");
@@ -55,9 +56,10 @@ public class EmailService {
      * Sends an email to the specified address using the stored email template name, adding the extraMessage onto the
      * end of the email template
      * TODO: This is a lazy way of not having to write email templating yet. Replace this with true templating
+     *
      * @param recipientAddress - The email address to send to
-     * @param templateName - The email template name
-     * @param extraMessage - The extra content to add to the end of the template
+     * @param templateName     - The email template name
+     * @param extraMessage     - The extra content to add to the end of the template
      */
     public void sendEmail(String recipientAddress, String templateName, String extraMessage) {
         SimpleMailMessage email = new SimpleMailMessage();
@@ -106,7 +108,7 @@ public class EmailService {
         this.sendEmail(
                 user.getEmail(),
                 "password-reset.begin",
-                "\n\n" +     this.appConfig.publicUrl + "/password-reset/confirm?token=" + token.getToken()
+                "\n\n" + this.appConfig.publicUrl + "/password-reset/confirm?token=" + token.getToken()
         );
     }
 

@@ -7,14 +7,16 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column-reverse;
+
   > div {
-      flex: 33%;
-      &.map-column {
-          flex: 10%;
-          @include media-breakpoint-up(lg) {
-              flex: 33%;
-          }
+    flex: 33%;
+
+    &.map-column {
+      flex: 10%;
+      @include media-breakpoint-up(lg) {
+        flex: 33%;
       }
+    }
   }
 
   @include media-breakpoint-up(lg) {
@@ -34,6 +36,7 @@
     flex-wrap: wrap;
     align-self: flex-end;
   }
+
   .leaflet-container {
     height: 100%;
   }
@@ -70,7 +73,7 @@
   .search-result {
     margin-bottom: 1.5rem;
   }
-  
+
 }
 
 .search-header {
@@ -86,36 +89,38 @@
 }
 
 .spinner-container {
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0,0,0,0.5);
-    top: 0;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .pagination-container {
-    position: sticky;
-    bottom: 1rem;
-    display: flex;
-    justify-content: center;
-    z-index: 1;
-    .pagination {
-        background-color: white;
-        .page-link {
-            border: 0 !important;
-        }
+  position: sticky;
+  bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+
+  .pagination {
+    background-color: white;
+
+    .page-link {
+      border: 0 !important;
     }
+  }
 }
 
 .export-buttons-search {
   margin-bottom: 16px;
 }
 
-.search-results, .search-info{
+.search-results, .search-info {
   padding: 0 4em;
 }

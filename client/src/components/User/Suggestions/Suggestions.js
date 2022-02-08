@@ -1,12 +1,13 @@
 import * as React from 'react';
 import './Suggestions.scss';
 import Spinner from '../../Spinner/Spinner';
-import { Card, Tab, Tabs } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { Role } from '../../../utils/authentication-util';
+import {Card, Tab, Tabs} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
+import {Role} from '../../../utils/authentication-util';
 import CreateMonumentSuggestions from '../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 import UpdateMonumentSuggestions from '../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
-import BulkCreateMonumentSuggestions from '../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
+import BulkCreateMonumentSuggestions
+    from '../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
 
 /**
  * Presentational component for displaying a list of Suggestions on the User page
@@ -14,7 +15,7 @@ import BulkCreateMonumentSuggestions from '../../Suggestions/BulkCreateMonumentS
 export default class Suggestions extends React.Component {
 
     filterPendingSuggestions() {
-        const { suggestions } = this.props;
+        const {suggestions} = this.props;
         const pendingSuggestions = {};
 
         if (suggestions && suggestions.createSuggestions) {
@@ -33,7 +34,7 @@ export default class Suggestions extends React.Component {
     }
 
     filterApprovedSuggestions() {
-        const { suggestions } = this.props;
+        const {suggestions} = this.props;
         const approvedSuggestions = {};
 
         if (suggestions && suggestions.createSuggestions) {
@@ -52,7 +53,7 @@ export default class Suggestions extends React.Component {
     }
 
     filterRejectedSuggestions() {
-        const { suggestions } = this.props;
+        const {suggestions} = this.props;
         const rejectedSuggestions = {};
 
         if (suggestions && suggestions.createSuggestions) {
@@ -71,7 +72,7 @@ export default class Suggestions extends React.Component {
     }
 
     renderSuggestions(suggestions, type, researcherOrAbove) {
-        const { role, error } = this.props;
+        const {role, error} = this.props;
         const createText = researcherOrAbove ? 'create' : 'suggest'
         const updateText = researcherOrAbove ? 'make' : 'suggest'
 
@@ -86,7 +87,8 @@ export default class Suggestions extends React.Component {
         return (<>
             <h6>New Monument or Memorial Suggestions</h6>
             {(!suggestions.create || suggestions.create.length === 0) && !error && <>
-                You don't have any {type} new monument or memorial suggestions yet. You can {createText} a new monument or
+                You don't have any {type} new monument or memorial suggestions yet. You can {createText} a new monument
+                or
                 memorial by {createPageLink}.
             </>}
             {suggestions.create && suggestions.create.length > 0 && <>
@@ -94,9 +96,11 @@ export default class Suggestions extends React.Component {
             </>}
             <h6 className="mt-4">Update Monument or Memorial Suggestions</h6>
             {(!suggestions.update || suggestions.update.length === 0) && !error && <>
-                You don't have any {type} update monument or memorial suggestions yet. You can {updateText} an update to an
+                You don't have any {type} update monument or memorial suggestions yet. You can {updateText} an update to
+                an
                 existing monument or memorial by clicking
-                the "<span className="font-weight-bold">{updateText.toUpperCase()} A CHANGE</span>" button while viewing the
+                the "<span className="font-weight-bold">{updateText.toUpperCase()} A CHANGE</span>" button while viewing
+                the
                 monument or memorial page you want to update.
             </>}
             {suggestions.update && suggestions.update.length > 0 && <>
@@ -119,7 +123,7 @@ export default class Suggestions extends React.Component {
     }
 
     render() {
-        const { pending, role } = this.props;
+        const {pending, role} = this.props;
         const researcherOrAbove = role && Role.RESEARCHER_OR_ABOVE.includes(role.toUpperCase())
 
         return (<>
@@ -130,13 +134,13 @@ export default class Suggestions extends React.Component {
                 </Card.Header>
                 <Card.Body>
                     {researcherOrAbove &&
-                    <>
-                        <p>
-                            <span className="font-weight-bold">NOTE:</span>  Because your role is{' '}
-                            <span className="font-weight-bold red">{role.toLowerCase()}</span>,
-                            your suggestions are automatically approved.
-                        </p>
-                    </>
+                        <>
+                            <p>
+                                <span className="font-weight-bold">NOTE:</span> Because your role is{' '}
+                                <span className="font-weight-bold red">{role.toLowerCase()}</span>,
+                                your suggestions are automatically approved.
+                            </p>
+                        </>
                     }
                     <Tabs defaultActiveKey="approved" id="suggestions-tabs">
                         <Tab title="Approved" eventKey="approved">
