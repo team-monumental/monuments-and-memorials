@@ -18,4 +18,10 @@
       align-self: center;
     }
   }
+
+  .material-icons:hover {
+    filter: brightness(85%);
+    text-decoration: none;
+  }
+
 }

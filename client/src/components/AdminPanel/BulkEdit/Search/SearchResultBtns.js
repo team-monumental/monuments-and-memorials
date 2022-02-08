@@ -20,10 +20,9 @@ const SearchResultBtns = ({monumentId}) => {
 
     return (
         <div className="result-opts">
-            <span><i><Link to={`/panel/manage/monuments/monument/update/${monumentId}`} target="_blank"
-                           className="material-icons">edit</Link></i></span>
-            <span><i className="material-icons" onClick={() => setShow(true)}>delete</i></span>
-            <span><i><Link to={`/monuments/${monumentId}`} target="_blank" className="material-icons">open_in_new</Link></i></span>
+            <span><i><Link to={`/panel/manage/monuments/monument/update/${monumentId}`} target="_blank" className="material-icons">edit</Link></i></span>
+            <span><i className="material-icons" style={{color: "#da6060"}} onClick={() => setShow(true)}>delete</i></span>
+            <span><i><Link to={`/monuments/${monumentId}`} style={{color: "#17a2b8"}} target="_blank" className="material-icons">open_in_new</Link></i></span>
 
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
