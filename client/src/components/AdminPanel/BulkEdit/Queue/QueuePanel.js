@@ -138,16 +138,25 @@ export default class QueuePanel extends React.Component {
 
         this.materialsSelectRef = React.createRef();
         this.tagsSelectRef = React.createRef();
-        this.queue = props.queue;
-        this.queueSize = this.queue.length;
-        this.queueIndex = this.queueSize - 1;
+        this.queue = null;
+        this.queueSize = 0;
+        this.queueIndex = -1; //this.queueSize - 1;
+        this.current = null;
     }
+
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         //if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
-        console.log(this.queue);
-        if(this.queueSize > 0){
-            this.setFormFieldValuesForUpdate(); //todo this should be this.queue[queueIndex] IF this.queue[Size] !=0
+        if(this.queueSize != this.props.queue.length){
+            this.queue = this.props.queue;
+            this.current = null;
+            this.queueSize = this.props.queue.length;
+            this.queueIndex = this.queueSize - 1;
+        }
+
+        if(this.queueSize > 0 && this.current == null){
+            console.log("---constructor---");
+            this.setFormFieldValuesForUpdate(); //todo my change
         }
     }
 
@@ -259,8 +268,7 @@ export default class QueuePanel extends React.Component {
      * Sets the values of Form fields to be the values of the Monument that is being updated
      */
     setFormFieldValuesForUpdate() {
-
-        const {monument} = this.queue[this.queueIndex]; {/* TODO: should be this.queue[i] where i is what page you currently on /num in queueList */}
+        this.current = this.queue[this.queueIndex]; //todo my changes
         const {
             title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType
@@ -275,9 +283,8 @@ export default class QueuePanel extends React.Component {
 
         let monumentYear, monumentMonth, monumentExactDate;
 
-
-        if (monument.date) {
-            const monumentDateArray = monument.date.split('-');
+        if (this.current.date) {
+            const monumentDateArray = this.current.date.split('-');
 
             monumentYear = monumentDateArray[0];
 
@@ -289,8 +296,8 @@ export default class QueuePanel extends React.Component {
 
         let monumentDeactivatedYear, monumentDeactivatedMonth, monumentExactDeactivatedDate;
 
-        if (monument.deactivatedDate) {
-            const monumentDeactivatedDateArray = monument.deactivatedDate.split('-');
+        if (this.current.deactivatedDate) {
+            const monumentDeactivatedDateArray = this.current.deactivatedDate.split('-');
 
             monumentDeactivatedYear = monumentDeactivatedDateArray[0];
 
@@ -300,32 +307,32 @@ export default class QueuePanel extends React.Component {
             monumentExactDeactivatedDate = new Date(parseInt(monumentDeactivatedYear), monumentDeactivatedMonthInt, monumentDeactivatedDateArray[2]);
         }
 
-        title.value = monument.title ? monument.title : '';
-        address.value = monument.address ? monument.address : '';
-        latitude.value = monument.lat ? monument.lat.toString() : '';
-        longitude.value = monument.lon ? monument.lon.toString() : '';
-        artist.value = monument.artist ? monument.artist : '';
-        description.value = monument.description ? monument.description : '';
-        inscription.value = monument.inscription ? monument.inscription : '';
+        title.value = this.current.title ? this.current.title : '';
+        address.value = this.current.address ? this.current.address : '';
+        latitude.value = this.current.lat ? this.current.lat.toString() : '';
+        longitude.value = this.current.lon ? this.current.lon.toString() : '';
+        artist.value = this.current.artist ? this.current.artist : '';
+        description.value = this.current.description ? this.current.description : '';
+        inscription.value = this.current.inscription ? this.current.inscription : '';
         year.value = monumentYear ? monumentYear : '';
         month.value = monumentMonth ? monumentMonth : '';
-        dateSelectValue = monument.dateFormat ? monument.dateFormat : DateFormat.EXACT_DATE;
+        dateSelectValue = this.current.dateFormat ? this.current.dateFormat : DateFormat.EXACT_DATE;
         datePickerCurrentDate = monumentExactDate && dateSelectValue === DateFormat.EXACT_DATE ? monumentExactDate : null;
-        deactivatedDateSelectValue = monument.deactivatedDateFormat ? monument.deactivatedDateFormat : DateFormat.EXACT_DATE;
+        deactivatedDateSelectValue = this.current.deactivatedDateFormat ? this.current.deactivatedDateFormat : DateFormat.EXACT_DATE;
         deactivatedYear.value = monumentDeactivatedYear ? monumentDeactivatedYear : '';
         deactivatedMonth.value = monumentDeactivatedMonth ? monumentDeactivatedMonth : '';
         deactivatedDatePickerCurrentDate = monumentExactDeactivatedDate && deactivatedDateSelectValue === DateFormat.EXACT_DATE ? monumentExactDeactivatedDate : null;
-        deactivatedComment.value = monument.deactivatedComment ? monument.deactivatedComment : '';
-        city = monument.city;
-        state = monument.state;
-        isTemporary.value = monument.isTemporary ? monument.isTemporary : false;
+        deactivatedComment.value = this.current.deactivatedComment ? this.current.deactivatedComment : '';
+        city = this.current.city;
+        state = this.current.state;
+        isTemporary.value = this.current.isTemporary ? this.current.isTemporary : false;
 
         if (address.value) locationType.value = 'address';
         else if (latitude.value && longitude.value) locationType.value = 'coordinates';
 
-        if (monument.references && monument.references.length) {
+        if (this.current.references && this.current.references.length) {
             let monumentReferences = [];
-            for (const reference of monument.references) {
+            for (const reference of this.current.references) {
                 let monumentReference = {
                     id: reference.id,
                     value: reference.url,
@@ -339,11 +346,11 @@ export default class QueuePanel extends React.Component {
             references = monumentReferences.length ? monumentReferences : references;
         }
 
-        if (monument.monumentTags && monument.monumentTags.length) {
+        if (this.current.monumentTags && this.current.monumentTags.length) {
             let associatedMaterials = [];
             let associatedTags = [];
 
-            for (const monumentTag of monument.monumentTags) {
+            for (const monumentTag of this.current.monumentTags) {
                 monumentTag.tag.selected = true;
 
                 if (monumentTag.tag.isMaterial) {
@@ -364,14 +371,14 @@ export default class QueuePanel extends React.Component {
             }
         }
 
-        if (monument.images && monument.images.length) {
+        if (this.current.images && this.current.images.length) {
             imagesForUpdate = [];
             imageReferenceUrlsForUpdate = {};
             imageCaptionsForUpdate = {};
             photoSphereImagesForUpdate = [];
             photoSphereImageReferenceUrlsForUpdate = {};
             photoSphereImageCaptionsForUpdate = {};
-            for (const originalImage of monument.images) {
+            for (const originalImage of this.current.images) {
                 const image = Object.create(originalImage);
                 image.hasBeenDeleted = false;
                 if (image.isPhotoSphere) {
@@ -1241,6 +1248,7 @@ export default class QueuePanel extends React.Component {
 
     handleSubmit(event) {
         const {monument, onSubmit} = this.props;
+        const{current} =  this.current;
         const {images, photoSphereImages} = this.state;
 
         event.preventDefault();
@@ -1248,16 +1256,16 @@ export default class QueuePanel extends React.Component {
         this.clearForm(false);
 
         if (this.validateForm()) {
-            if (!monument) {
-                onSubmit(this.buildCreateForm());
+            if (!this.current) {
+                console.log("---create onsubmit--")
+                //onSubmit(this.buildCreateForm());
             } else {
-                onSubmit(monument, this.buildUpdateForm(), images, photoSphereImages);
+                onSubmit(current, this.buildUpdateForm(), images, photoSphereImages);
             }
         }
     }
 
-    handleDequeueButtonClick() { //todo idk if this is completly right
-
+    handleDequeueButtonClick() { //todo call function
         if(this.queueSize !=0){
             const {onDequeueButtonClick} = this.props;
             this.queueSize -= 1;
@@ -1269,17 +1277,17 @@ export default class QueuePanel extends React.Component {
 
     handlePreviousButtonClick() {
         if (this.queueSize != 0){
-            this.queueIndex-=1;
-            this.queueIndex += this.queueIndex%this.queueSize;
+            this.queueIndex -= 1;
+            this.queueIndex = ((this.queueIndex % this.queueSize) + this.queueSize) % this.queueSize;
+            this.setFormFieldValuesForUpdate();
         }
     }
 
     handleNextButtonClick() {
-       console.log(this.queueIndex);
         if (this.queueSize != 0){
             this.queueIndex+=1;
-            this.queueIndex += this.queueIndex%this.queueSize;
-            console.log(this.queueIndex);
+            this.queueIndex = ((this.queueIndex % this.queueSize) + this.queueSize) % this.queueSize;
+            this.setFormFieldValuesForUpdate();
         }
     }
 
@@ -1353,9 +1361,9 @@ export default class QueuePanel extends React.Component {
     }
 
     renderImageIsPrimaryCheckbox(image) {
-        const {monument} = this.props;
+        //const {monument} = this.props;
 
-        if (monument) {
+        if (this.current) {
             let isPrimaryIcon;
 
             if (image.isPrimary) {
@@ -1436,9 +1444,9 @@ export default class QueuePanel extends React.Component {
     }
 
     renderResetButton() {
-        const {monument} = this.props; //todo this might need to change to
+       // const {monument} = this.props; //todo my changes
 
-        if (monument) {
+        if (this.current) {
             return (
                 <Button
                     type="button"
@@ -1456,9 +1464,9 @@ export default class QueuePanel extends React.Component {
     }
 
     renderDequeueButton(){
-        const {monument} = this.props; //todo this might need to change to
+        //const {monument} = this.props; //todo my changes
 
-        if (monument) {
+        if (this.current) {
             return (
                 <Button
                     variant="danger"
@@ -1477,9 +1485,9 @@ export default class QueuePanel extends React.Component {
     }
 
     renderPreButton(){
-        const {monument} = this.props; //todo this might need to change to
+        //const {monument} = this.props; //todo my changes
 
-        if (monument) {
+        if (this.current) {
             return (
                 <Button
                     variant = "primary"
@@ -1498,9 +1506,9 @@ export default class QueuePanel extends React.Component {
     }
 
     renderNextButton(){
-        const {monument} = this.props; //todo this might need to change to
+        //const {monument} = this.props; //todo my changes
 
-        if (monument) {
+        if (this.current) {
             return (
                 <Button
                     variant = "primary"
@@ -1509,6 +1517,26 @@ export default class QueuePanel extends React.Component {
                     className= "mr-4 mt-1"
                 >
                     Next
+                </Button>
+            );
+        } else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderSubmitButton(){
+        //const {monument} = this.props; //todo my changes
+
+        if (this.current) {
+            return (
+                <Button
+                    variant="primary"
+                    type="submit"
+                    className="mr-4 mt-1"
+                >
+                    Submit
                 </Button>
             );
         } else {
@@ -1559,7 +1587,7 @@ export default class QueuePanel extends React.Component {
             photoSphereImageReferenceUrlsForUpdate,
             photoSphereImageCaptionsForUpdate
         } = this.state;
-        const {monument, action} = this.props;
+        const {action} = this.props;
 
         const advancedInformationLink = (
             <div className="advanced-information-link more-link"
@@ -1741,7 +1769,7 @@ export default class QueuePanel extends React.Component {
                         isInvalid={!reference.isValid}
                         className={reference.deleted ? 'text-control deleted-reference' : 'text-control'}
                     />
-                    {monument ? this.renderReferenceDeleteButton(reference, index) : <div/>}
+                    {this.current ? this.renderReferenceDeleteButton(reference, index) : <div/>}
                     <Form.Control.Feedback type="invalid">{reference.message}</Form.Control.Feedback>
                 </div>
             );
@@ -1920,9 +1948,10 @@ export default class QueuePanel extends React.Component {
 
         return (
             <div className="create-form">
-                {monument
-                    ? <div className="h4 update">{action} an existing Monument or Memorial</div>
-                    : <div className="h4 create">{action} Edit a Monument or Memorial</div>} {/* TODO: should never be a create new */}
+                {this.current
+                    ? <div className="h4 update" id ="Monname">{action} editing an existing Monument </div> //todo should show name of monument
+                     //<script> document.getElementById("MonName").innerHTML ="Editing: " + this.current;</script>
+                    :<div className="h4 create">{action}  </div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
@@ -2078,7 +2107,7 @@ export default class QueuePanel extends React.Component {
 
                     {/* Images */}
                     <Form.Group controlId="create-form-image">
-                        <Form.Label>{monument ? 'Add More Images:' : 'Images:'}</Form.Label>
+                        <Form.Label>{this.current ? 'Add More Images:' : 'Images:'}</Form.Label>
                         <ImageUploader
                             withIcon={false}
                             imgExtension={['.jpg', '.png', 'JPG', 'PNG', 'jpeg', 'JPEG']}
@@ -2236,16 +2265,11 @@ export default class QueuePanel extends React.Component {
                         {!showingAdvancedInformation && advancedInformationLink}
                         {showingAdvancedInformation && hideAdvancedInformationLink}
 
-                        <ButtonToolbar className={monument ? 'btn-toolbar update' : null}>
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                className="mr-4 mt-1"
-                            >
-                                Submit
-                            </Button>
+                        <ButtonToolbar className={this.current ? 'btn-toolbar update' : null}>
 
                             {this.renderPreButton()}
+
+                            {this.renderSubmitButton()}
 
                             {this.renderNextButton()}
 
