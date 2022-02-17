@@ -30,7 +30,7 @@ const BulkEditPanel = (props) => {
     }
 
     const enqueue = (recordData) => {
-        setQueueList([...queueList, recordData])
+        setQueueList(queue => ([...queue, recordData]))
     }
 
     const dequeue = (recordId) => {
@@ -44,6 +44,10 @@ const BulkEditPanel = (props) => {
     useEffect(() => {
         handleSearch()
     }, []);
+
+    useEffect(() => {
+        console.log(queueList)
+    }, [queueList])
 
     return (
         <SearchResultContext.Provider value={removeSearchResult}>
