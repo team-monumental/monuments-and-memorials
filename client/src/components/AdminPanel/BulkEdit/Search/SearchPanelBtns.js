@@ -18,7 +18,6 @@ const SearchPanelBtns = (queue) => {
 
     const confirmDelete = () => {
         for(var i = 0; i < queue.queue.length; i++){
-            //console.log(queue.queue[i].id);
             dispatch(deleteMonument(queue.queue[i].id));
             del(queue.queue[i].id);
         }
@@ -48,7 +47,7 @@ const SearchPanelBtns = (queue) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div>
-                        Are you sure you want to <strong>permanently</strong> delete {queue.length} monuments or memorials?
+                        Are you sure you want to <strong>permanently</strong> delete {queue.queue.length} monuments or memorials?
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
