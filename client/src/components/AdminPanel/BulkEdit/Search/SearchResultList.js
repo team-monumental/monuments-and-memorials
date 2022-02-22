@@ -22,7 +22,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     </Row>
                 </Container>
             </ListGroup.Item>
-            {results.map(result => (
+            {results.map((result) => (
                 <SearchResult
                     data={result}
                     nq={enqueue}
