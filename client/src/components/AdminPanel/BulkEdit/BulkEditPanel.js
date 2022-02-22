@@ -34,7 +34,7 @@ const BulkEditPanel = (props) => {
     }
 
     const dequeue = (recordId) => {
-        setQueueList(queueList.filter(record => record.id !== recordId))
+        setQueueList(queue => ([...queue.filter(record => record.id !== recordId)]))
     }
 
     const removeSearchResult = (recordId) => {
