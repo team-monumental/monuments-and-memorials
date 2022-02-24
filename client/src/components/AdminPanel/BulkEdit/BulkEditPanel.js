@@ -38,12 +38,17 @@ const BulkEditPanel = (props) => {
     }
 
     const removeSearchResult = (recordId) => {
-        setSearchResults(searchResults.filter(record => record.id !== recordId))
+        setSearchResults(searchResults => ([...searchResults.filter(record => record.id !== recordId)]));
+        dequeue(recordId);
     }
 
     useEffect(() => {
         handleSearch()
     }, []);
+
+    useEffect(() => {
+        console.log(queueList)
+    }, [queueList])
 
     return (
         <SearchResultContext.Provider value={removeSearchResult}>
@@ -66,7 +71,7 @@ const BulkEditPanel = (props) => {
                                 />
                             </Card.Body>
                         </Card>
-                        <SearchPanelBtns/>
+                        <SearchPanelBtns queue={queueList}/>
                     </Col>
                     <Col lg={4}>
                         {/* Queue Panel card */}

@@ -33,6 +33,11 @@
   .list-group-item {
     padding: 15px 0;
 
+    span:first-child {
+      background: none;
+      border: none;
+    }
+
     &:first-child {
       position: sticky;
       z-index: 2;
@@ -51,11 +56,6 @@
         .result-opts {
           visibility: visible;
         }
-      }
-
-      span:first-child {
-        background: none;
-        border: none;
       }
     }
 
