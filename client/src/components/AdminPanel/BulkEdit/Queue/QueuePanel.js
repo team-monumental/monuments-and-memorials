@@ -138,11 +138,16 @@ export default class QueuePanel extends React.Component {
 
         this.materialsSelectRef = React.createRef();
         this.tagsSelectRef = React.createRef();
+        this.queue = props.queue;
+        this.queueSize = this.queue.length;
+        this.queueIndex = this.queueSize - 1;
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
-            this.setFormFieldValuesForUpdate();
+        //if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+        console.log(this.queue);
+        if(this.queueSize > 0){
+            this.setFormFieldValuesForUpdate(); //todo this should be this.queue[queueIndex] IF this.queue[Size] !=0
         }
     }
 
@@ -254,7 +259,8 @@ export default class QueuePanel extends React.Component {
      * Sets the values of Form fields to be the values of the Monument that is being updated
      */
     setFormFieldValuesForUpdate() {
-        const {monument} = this.props;
+
+        const {monument} = this.queue[this.queueIndex]; {/* TODO: should be this.queue[i] where i is what page you currently on /num in queueList */}
         const {
             title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType
@@ -268,6 +274,7 @@ export default class QueuePanel extends React.Component {
         } = this.state;
 
         let monumentYear, monumentMonth, monumentExactDate;
+
 
         if (monument.date) {
             const monumentDateArray = monument.date.split('-');
@@ -1249,10 +1256,31 @@ export default class QueuePanel extends React.Component {
         }
     }
 
-    handleCancelButtonClick() {
-        const {onCancelButtonClick} = this.props;
+    handleDequeueButtonClick() { //todo idk if this is completly right
 
-        onCancelButtonClick();
+        if(this.queueSize !=0){
+            const {onDequeueButtonClick} = this.props;
+            this.queueSize -= 1;
+            this.queueIndex = (this.queueIndex-1)%this.queueSize;
+
+            onDequeueButtonClick();
+        }
+    }
+
+    handlePreviousButtonClick() {
+        if (this.queueSize != 0){
+            this.queueIndex-=1;
+            this.queueIndex += this.queueIndex%this.queueSize;
+        }
+    }
+
+    handleNextButtonClick() {
+       console.log(this.queueIndex);
+        if (this.queueSize != 0){
+            this.queueIndex+=1;
+            this.queueIndex += this.queueIndex%this.queueSize;
+            console.log(this.queueIndex);
+        }
     }
 
     handleAddPhotoSphereImage(image) {
@@ -1408,7 +1436,7 @@ export default class QueuePanel extends React.Component {
     }
 
     renderResetButton() {
-        const {monument} = this.props;
+        const {monument} = this.props; //todo this might need to change to
 
         if (monument) {
             return (
@@ -1418,6 +1446,69 @@ export default class QueuePanel extends React.Component {
                     className="reset-button mr-4 mt-1"
                 >
                     Reset
+                </Button>
+            );
+        } else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderDequeueButton(){
+        const {monument} = this.props; //todo this might need to change to
+
+        if (monument) {
+            return (
+                <Button
+                    variant="danger"
+                    type="button"
+                    onClick={() => this.handleDequeueButtonClick()}
+                    className="mt-1"
+                >
+                    Dequeue
+                </Button>
+            );
+        } else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderPreButton(){
+        const {monument} = this.props; //todo this might need to change to
+
+        if (monument) {
+            return (
+                <Button
+                    variant = "primary"
+                    type = "button"
+                    onClick={() => this.handlePreviousButtonClick()}
+                    className= "mr-4 mt-1"
+                >
+                    Prev
+                </Button>
+            );
+        } else {
+            return (
+                <div/>
+            );
+        }
+    }
+
+    renderNextButton(){
+        const {monument} = this.props; //todo this might need to change to
+
+        if (monument) {
+            return (
+                <Button
+                    variant = "primary"
+                    type = "button"
+                    onClick={() => this.handleNextButtonClick()}
+                    className= "mr-4 mt-1"
+                >
+                    Next
                 </Button>
             );
         } else {
@@ -1831,7 +1922,7 @@ export default class QueuePanel extends React.Component {
             <div className="create-form">
                 {monument
                     ? <div className="h4 update">{action} an existing Monument or Memorial</div>
-                    : <div className="h4 create">{action} a new Monument or Memorial</div>}
+                    : <div className="h4 create">{action} Edit a Monument or Memorial</div>} {/* TODO: should never be a create new */}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}
@@ -2154,17 +2245,13 @@ export default class QueuePanel extends React.Component {
                                 Submit
                             </Button>
 
-                            {this.renderClearButton()}
+                            {this.renderPreButton()}
+
+                            {this.renderNextButton()}
+
                             {this.renderResetButton()}
 
-                            <Button
-                                variant="danger"
-                                type="button"
-                                onClick={() => this.handleCancelButtonClick()}
-                                className="mt-1"
-                            >
-                                Cancel
-                            </Button>
+                            {this.renderDequeueButton()}
                         </ButtonToolbar>
                     </div>
                 </Form>

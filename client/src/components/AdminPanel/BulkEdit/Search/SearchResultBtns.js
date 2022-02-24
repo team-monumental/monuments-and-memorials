@@ -12,6 +12,7 @@ const SearchResultBtns = ({monumentId}) => {
     const dispatch = useDispatch()
 
     const confirmDelete = () => {
+
         dispatch(deleteMonument(monumentId));
         del(monumentId);
 
