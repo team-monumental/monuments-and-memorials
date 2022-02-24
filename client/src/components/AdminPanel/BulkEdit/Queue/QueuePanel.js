@@ -138,7 +138,7 @@ export default class QueuePanel extends React.Component {
 
         this.materialsSelectRef = React.createRef();
         this.tagsSelectRef = React.createRef();
-        this.queue = null;
+        this.queue = [];
         this.queueSize = 0;
         this.queueIndex = -1; //this.queueSize - 1;
         this.current = null;
@@ -146,17 +146,49 @@ export default class QueuePanel extends React.Component {
 
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        //if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
-        if(this.queueSize != this.props.queue.length){
-            this.queue = this.props.queue;
-            this.current = null;
+        if(this.queueSize < this.props.queue.length){
+            let result = this.queue.map(monument =>monument.id);
+
+            if(!(result.includes(this.props.queue[this.props.queue.length-1].id))){
+                this.current = null;
+                this.queueSize = this.props.queue.length;
+                let holderMon = Object.assign({}, this.props.queue[this.queueSize-1]);
+                this.queue.push(holderMon);
+                this.queueIndex = this.queueSize - 1;
+            }
+        }else if (this.queueSize > this.props.queue.length){
+            let result = this.props.queue.map(monument =>monument.id);
             this.queueSize = this.props.queue.length;
-            this.queueIndex = this.queueSize - 1;
+
+            for(var item in this.queue){
+                if(!(result.includes(this.queue[item].id))){
+//                    console.log("item num: " + item)
+//                    console.log("currentID: " + this.queue[item].id)
+                    this.queue.splice(item, 1);
+
+                    if(item == this.queueIndex){
+                        this.queueIndex = (((this.queueIndex-1) % this.queueSize) + this.queueSize) % this.queueSize;
+                        this.current = null;
+                    }else if(item<this.queueIndex){
+                        this.queueIndex-=1;
+                    }
+                }
+            }
+            if(this.queueSize == 0){
+                this.current = null;
+                this.clearForm(true);
+            }
         }
+
+//        console.log("queueSize: " + this.queueSize);
+//        console.log("queueIndex: " + this.queueIndex)
+//        console.log("queuePannel queue: ", this.queue);
+//        console.log("props queue: ", this.props.queue);
+
 
         if(this.queueSize > 0 && this.current == null){
             console.log("---constructor---");
-            this.setFormFieldValuesForUpdate(); //todo my change
+            this.setFormFieldValuesForUpdate(false); //todo my change
         }
     }
 
@@ -267,8 +299,15 @@ export default class QueuePanel extends React.Component {
     /**
      * Sets the values of Form fields to be the values of the Monument that is being updated
      */
-    setFormFieldValuesForUpdate() {
+    setFormFieldValuesForUpdate(reset) {
+        if(reset){
+            let holderMon = Object.assign({}, this.props.queue[this.queueIndex]);
+            this.queue[this.queueIndex] = holderMon;
+        }
         this.current = this.queue[this.queueIndex]; //todo my changes
+
+        console.log("current monument:", this.current);
+
         const {
             title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType
@@ -412,6 +451,82 @@ export default class QueuePanel extends React.Component {
         });
     }
 
+    saveState(){ //todo saving state from navigation
+        const {
+            title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
+            deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
+            deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
+            imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImages,
+            photoSphereImageReferenceUrls, photoSphereImageCaptions, photoSphereImagesForUpdate,
+            photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate, materials, tags, isTemporary,
+            city, state
+        } = this.state;
+
+
+        this.current.title = title.value;
+        this.current.address = address.value === '' ? undefined : address.value;
+        this.current.artist = artist.value === '' ? undefined : artist.value;
+        this.current.description = description.value === '' ? undefined : description.value;
+        this.current.inscription = inscription.value === '' ? undefined : inscription.value;
+        this.current.latitude = (latitude.value === '' && longitude.value === '') ? undefined : latitude.value;
+        this.current.longitude = (latitude.value === '' && longitude.value === '') ? undefined : longitude.value;
+//        images,
+//        newImageReferenceUrlsJson: JSON.stringify(imageReferenceUrls.map(referenceUrl => referenceUrl.value)),
+//        newImageCaptionsJson: JSON.stringify(imageCaptions.map(caption => caption.value)),
+//        photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
+//        newPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls.map(referenceUrl => referenceUrl.value)),
+//        newPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions.map(caption => caption.value)),
+//        imagesForUpdate,
+//        updatedImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(imageReferenceUrlsForUpdate)),
+//        updatedImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(imageCaptionsForUpdate)),
+//        updatedPhotoSphereImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageReferenceUrlsForUpdate)),
+//        updatedPhotoSphereImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageCaptionsForUpdate)),
+        this.current.dateFormat = dateSelectValue
+        this.current.isTemporary = isTemporary.value;
+        this.current.deactivatedDateFormat = deactivatedDateSelectValue;
+        this.current.deactivatedComment = deactivatedComment.value === '' ? undefined : deactivatedComment.value;
+        this.current.city = city;
+        this.current.state = state;
+
+//        switch (dateSelectValue) {
+//                    case DateFormat.YEAR:
+//                        this.current.date = year.value === '' ? undefined : year.value + "-1-1";
+//                        console.log("saved date from state: ", this.current.date);
+//                        break;
+//                    case DateFormat.MONTH_YEAR:
+//                        this.current.date = year.value === '' ? undefined : year.value + "-" + month.value + "-1";
+//                        console.log("saved date from state: ", this.current.date);
+//                        break;
+//                    case DateFormat.EXACT_DATE:
+//                        this.current.date = datePickerCurrentDate;
+//                        console.log("saved date from state: ", this.current.date);
+//                        break;
+//                    default:
+//                        break;
+//        }
+//
+//                switch (deactivatedDateSelectValue) {
+//                    case DateFormat.YEAR:
+//                        this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value;
+//                        break;
+//                    case DateFormat.MONTH_YEAR:
+//                        this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + month.value;
+//                        //updateForm.newDeactivatedMonth = deactivatedMonth.value;
+//                        break;
+//                    case DateFormat.EXACT_DATE:
+//                        this.current.deactivatedDate = deactivatedDatePickerCurrentDate;
+//                        break;
+//                    default:
+//                        break;
+//                }
+
+        //still need
+        //isActive, cordinates
+        //harder: images, monTags, refrances, date (+date format which should be "EXCAT_DATE")
+        //Dont change: contributors, lastMod,
+
+    }
+
     convertCoordinate(coordinate) {
         const values = coordinate.value.split(/[°'"]/g);
         let decimal = 0;
@@ -434,7 +549,7 @@ export default class QueuePanel extends React.Component {
             || (degree < 0)) {
             decimal *= -1;
         }
-        console.log(decimal);
+
         return decimal.toFixed(6);
     }
 
@@ -930,6 +1045,7 @@ export default class QueuePanel extends React.Component {
         updateForm.newMaterialsJson = JSON.stringify(updateForm.newMaterials);
         updateForm.newTagsJson = JSON.stringify(updateForm.newTags);
 
+        console.log(updateForm); //todo console log
         return updateForm;
     }
 
@@ -1247,7 +1363,7 @@ export default class QueuePanel extends React.Component {
     }
 
     handleSubmit(event) {
-        const {monument, onSubmit} = this.props;
+        const {onSubmit} = this.props;
         const{current} =  this.current;
         const {images, photoSphereImages} = this.state;
 
@@ -1272,22 +1388,29 @@ export default class QueuePanel extends React.Component {
             this.queueIndex = (this.queueIndex-1)%this.queueSize;
 
             onDequeueButtonClick();
+//            this.props.deq
         }
     }
 
     handlePreviousButtonClick() {
         if (this.queueSize != 0){
+            this.saveState();
+            this.queue[this.queueIndex] = this.current;
+
             this.queueIndex -= 1;
             this.queueIndex = ((this.queueIndex % this.queueSize) + this.queueSize) % this.queueSize;
-            this.setFormFieldValuesForUpdate();
+            this.setFormFieldValuesForUpdate(false);
         }
     }
 
     handleNextButtonClick() {
         if (this.queueSize != 0){
+            this.saveState();
+            this.queue[this.queueIndex] = this.current;
+
             this.queueIndex+=1;
             this.queueIndex = ((this.queueIndex % this.queueSize) + this.queueSize) % this.queueSize;
-            this.setFormFieldValuesForUpdate();
+            this.setFormFieldValuesForUpdate(false);
         }
     }
 
@@ -1450,7 +1573,7 @@ export default class QueuePanel extends React.Component {
             return (
                 <Button
                     type="button"
-                    onClick={() => this.setFormFieldValuesForUpdate()}
+                    onClick={() => this.setFormFieldValuesForUpdate(true)}
                     className="reset-button mr-4 mt-1"
                 >
                     Reset
@@ -1949,7 +2072,7 @@ export default class QueuePanel extends React.Component {
         return (
             <div className="create-form">
                 {this.current
-                    ? <div className="h4 update" id ="Monname">{action} editing an existing Monument </div> //todo should show name of monument
+                    ? <div className="h4 update">{action} Editing {this.current.title} \n {this.queueIndex+1}/{this.queueSize} </div> //todo should show name of monument
                      //<script> document.getElementById("MonName").innerHTML ="Editing: " + this.current;</script>
                     :<div className="h4 create">{action}  </div>}
 
