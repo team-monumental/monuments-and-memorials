@@ -46,6 +46,10 @@ const BulkEditPanel = (props) => {
         handleSearch()
     }, []);
 
+    useEffect(() => {
+        console.log(queueList)
+    }, [queueList])
+
     return (
         <SearchResultContext.Provider value={removeSearchResult}>
             <Container className="bulk-edit" fluid>
