@@ -39,7 +39,7 @@ const BulkEditPanel = (props) => {
 
     const removeSearchResult = (recordId) => {
         setSearchResults(searchResults => ([...searchResults.filter(record => record.id !== recordId)]));
-        //dequeue(searchResults.filter(record => record.id !== recordId));
+        dequeue(recordId);
     }
 
     useEffect(() => {
