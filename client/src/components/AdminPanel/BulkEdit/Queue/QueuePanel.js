@@ -481,48 +481,47 @@ export default class QueuePanel extends React.Component {
 //        updatedImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(imageCaptionsForUpdate)),
 //        updatedPhotoSphereImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageReferenceUrlsForUpdate)),
 //        updatedPhotoSphereImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageCaptionsForUpdate)),
-        this.current.dateFormat = dateSelectValue
+        this.current.dateFormat = dateSelectValue;
         this.current.isTemporary = isTemporary.value;
         this.current.deactivatedDateFormat = deactivatedDateSelectValue;
         this.current.deactivatedComment = deactivatedComment.value === '' ? undefined : deactivatedComment.value;
         this.current.city = city;
         this.current.state = state;
+        this.current.coordinates.coordinates = [parseInt(this.current.longitude), parseInt(this.current.latitude), 0];
 
-//        switch (dateSelectValue) {
-//                    case DateFormat.YEAR:
-//                        this.current.date = year.value === '' ? undefined : year.value + "-1-1";
-//                        console.log("saved date from state: ", this.current.date);
-//                        break;
-//                    case DateFormat.MONTH_YEAR:
-//                        this.current.date = year.value === '' ? undefined : year.value + "-" + month.value + "-1";
-//                        console.log("saved date from state: ", this.current.date);
-//                        break;
-//                    case DateFormat.EXACT_DATE:
-//                        this.current.date = datePickerCurrentDate;
-//                        console.log("saved date from state: ", this.current.date);
-//                        break;
-//                    default:
-//                        break;
-//        }
-//
-//                switch (deactivatedDateSelectValue) {
-//                    case DateFormat.YEAR:
-//                        this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value;
-//                        break;
-//                    case DateFormat.MONTH_YEAR:
-//                        this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + month.value;
-//                        //updateForm.newDeactivatedMonth = deactivatedMonth.value;
-//                        break;
-//                    case DateFormat.EXACT_DATE:
-//                        this.current.deactivatedDate = deactivatedDatePickerCurrentDate;
-//                        break;
-//                    default:
-//                        break;
-//                }
+        switch (dateSelectValue) {
+            case DateFormat.YEAR:
+                this.current.date = year.value === '' ? undefined : year.value + "-1-1";
+                break;
+            case DateFormat.MONTH_YEAR:
+                this.current.date = year.value === '' ? undefined : year.value + "-" + month.value + "-1";
+                break;
+            case DateFormat.EXACT_DATE:
+                this.current.date = year.value === '' ? undefined : year.value + "-" + (datePickerCurrentDate.getMonth()+1) + "-" + datePickerCurrentDate.getDate();
+                break;
+            default:
+                break;
+        }
+
+        switch (deactivatedDateSelectValue) {
+            case DateFormat.YEAR:
+                this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-1-1";
+                break;
+            case DateFormat.MONTH_YEAR:
+                this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + deactivatedMonth.value + "-1";
+                break;
+            case DateFormat.EXACT_DATE:
+                this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + (deactivatedDatePickerCurrentDate.getMonth()+1) + "-" + deactivatedDatePickerCurrentDate.getDate();
+                break;
+            default:
+                break;
+        }
+
+        console.log("refrances: ", references); //to do working on refrances right now, then move to tags
 
         //still need
-        //isActive, cordinates
-        //harder: images, monTags, refrances, date (+date format which should be "EXCAT_DATE")
+        //isActive, monTags
+        //can't save: images, refrances (need to create new ids and such which cannot be handled in
         //Dont change: contributors, lastMod,
 
     }
