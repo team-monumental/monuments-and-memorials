@@ -6,6 +6,7 @@ import SearchResultBtns from "./SearchResultBtns";
 import Tag from "../../../Tags/Tag/Tag";
 
 import './Search.scss'
+import ExpandableTag from "../../../Tags/Tag/ExpandableTag";
 
 // TODO: Apply CSS classes to format
 const SearchResult = ({data, nq, dq, selected}) => {
@@ -48,10 +49,7 @@ const SearchResult = ({data, nq, dq, selected}) => {
                                  selectable={false}
                                  selectedIcon={null}
                                  isMaterial={false}/>
-                            <Tag name={`+${data.monumentTags.length}`}
-                                 selectable={false}
-                                 selectedIcon={null}
-                                 isMaterial={false}/>
+                            <ExpandableTag counter={data.monumentTags.length}/>
                         </div>
                     </Col>
                     <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
