@@ -1,44 +1,28 @@
-import * as React from 'react';
-import './Tag.scss';
+import React, {useEffect, useState} from 'react';
 import * as QueryString from 'query-string';
 
-export default class Tag extends React.Component {
+import './Tag.scss';
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            selected: props.selected || false
-        };
+const Tag = ({name, selectable, selectedIcon, isMaterial, onSelect}) => {
+    const [selected, setSelected] = useState(false)
+    const params = {}
+    const link = `/search/?${QueryString.stringify(params)}`;
+
+    const toggleSelected = () => {
+        setSelected(!selected)
+        onSelect(!selected)
     }
 
-    handleToggleSelect() {
-        const {onSelect} = this.props;
-        const value = !this.state.selected;
-        this.setState({selected: value});
-        onSelect(value);
-    }
+    useEffect(() => {
+        if (isMaterial) params.materials = name
+        else params.tags = name
+    }, [])
 
-    render() {
-        const {name, selectable, selectedIcon, isMaterial} = this.props;
-        const {selected} = this.state;
-        const params = {};
-        if (isMaterial) params.materials = name;
-        else params.tags = name;
-        const link = `/search/?${QueryString.stringify(params)}`;
-        if (selectable) {
-            return (
-                <div className="tag text-truncate" onClick={() => this.handleToggleSelect()}>
-                    {name}
-                    <i className="material-icons">
-                        {selected ? selectedIcon || 'check' : 'add'}
-                    </i>
-                </div>
-            );
-        }
-        return (
-            <a href={link} className="tag text-truncate">
-                {name}
-            </a>
-        );
-    }
+    return (
+        <a href={link} className="tag text-truncate">
+            {name}
+        </a>
+    )
 }
+
+export default Tag
