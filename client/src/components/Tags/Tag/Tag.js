@@ -19,9 +19,14 @@ const Tag = ({name, selectable, selectedIcon, isMaterial, onSelect}) => {
     }, [])
 
     return (
-        <a href={link} className="tag text-truncate">
-            {name}
-        </a>
+        selectable ? (
+            <div className="tag text-truncate" onClick={toggleSelected}>
+                {name}
+                <i className="material-icons">
+                    {selected ? selectedIcon || 'check' : 'add'}
+                </i>
+            </div>) : (
+            <a href={link} className="tag text-truncate">{name}</a>)
     )
 }
 
