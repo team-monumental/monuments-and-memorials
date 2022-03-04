@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Col, Container, InputGroup, ListGroup, Pagination, Row} from "react-bootstrap";
+
 import SearchResult from "./SearchResult";
 
 const SearchResultList = ({results, enqueue, dequeue}) => {
@@ -22,11 +23,6 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
 
     useEffect(() => {
         setItems(results.slice(active * step, step + (active * step)))
-    }, [active])
-
-    useEffect(() => {
-        console.log(`Active: ${active}`)
-        console.log(`Items: ${JSON.stringify(items)}`)
     }, [active])
 
     return (

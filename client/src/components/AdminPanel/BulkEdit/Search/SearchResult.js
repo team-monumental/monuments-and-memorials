@@ -4,9 +4,9 @@ import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
 import SearchResultBtns from "./SearchResultBtns";
 import Tag from "../../../Tags/Tag/Tag";
+import ExpandableTag from "../../../Tags/Tag/ExpandableTag";
 
 import './Search.scss'
-import ExpandableTag from "../../../Tags/Tag/ExpandableTag";
 
 // TODO: Apply CSS classes to format
 const SearchResult = ({data, nq, dq, selected}) => {
@@ -34,10 +34,6 @@ const SearchResult = ({data, nq, dq, selected}) => {
     useEffect(() => {
         setChecked(false)
     }, [data])
-
-    useEffect(() => {
-        console.log(`Search Result: ${JSON.stringify(data)}`)
-    }, [])
 
     // noinspection JSUnresolvedVariable
     return (
