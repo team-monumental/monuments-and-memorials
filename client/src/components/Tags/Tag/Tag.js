@@ -5,7 +5,7 @@ import './Tag.scss';
 
 const Tag = ({name, selectable, selectedIcon, isMaterial, onSelect}) => {
     const [selected, setSelected] = useState(false)
-    const params = {}
+    const params = {tags: name}
     const link = `/search/?${QueryString.stringify(params)}`;
 
     const toggleSelected = () => {

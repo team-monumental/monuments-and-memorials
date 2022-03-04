@@ -1,5 +1,5 @@
-import React, {useRef, useState} from "react";
-import {Button, OverlayTrigger, Popover} from "react-bootstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {OverlayTrigger, Popover} from "react-bootstrap";
 
 const ExpandableTag = ({counter, tags}) => {
     const [show, setShow] = useState(false)
@@ -7,17 +7,25 @@ const ExpandableTag = ({counter, tags}) => {
 
     const popover = (props) => (
         <Popover id="popover-basic" {...props}>
-            <Popover.Title as="h3">More Tags</Popover.Title>
+            <Popover.Title as="h3">Other Tags</Popover.Title>
             <Popover.Content>
-                {tags}
+                {tags.map(tag => <p>
+                    <a href={`/search/?${tag.tag.isMaterial ? 'materials' : 'tags'}=${tag.tag.name}`}>
+                        {tag.tag.name}
+                    </a>
+                </p>)}
             </Popover.Content>
         </Popover>
     )
 
+    useEffect(() => {
+        console.log(tags)
+    }, [])
+
     return (
         <>
             <OverlayTrigger trigger="click" key="right" placement="right" overlay={popover}>
-                <div className="tag text-truncate" ref={target} onClick={() => setShow(!show)}>
+                <div className="tag text-truncate expandable" ref={target} onClick={() => setShow(!show)}>
                     +{counter}
                 </div>
             </OverlayTrigger>
