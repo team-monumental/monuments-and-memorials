@@ -49,7 +49,7 @@ const SearchResult = ({data, nq, dq, selected}) => {
                                  selectable={false}
                                  selectedIcon={null}
                                  isMaterial={false}/>
-                            <ExpandableTag counter={data.monumentTags.length}/>
+                            <ExpandableTag counter={data.monumentTags.length} tags={data.monumentTags[1].tag.name}/>
                         </div>
                     </Col>
                     <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
