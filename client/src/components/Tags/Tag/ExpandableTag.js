@@ -18,10 +18,6 @@ const ExpandableTag = ({counter, tags}) => {
         </Popover>
     )
 
-    useEffect(() => {
-        console.log(tags)
-    }, [])
-
     return (
         <>
             <OverlayTrigger trigger="click" key="right" placement="right" overlay={popover}>

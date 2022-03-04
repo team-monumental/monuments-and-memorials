@@ -11,7 +11,7 @@
   }
 
   .list-group {
-    height: 85%;
+    height: auto;
     padding: 0 0 5% 0;
     overflow-y: auto;
 
@@ -85,6 +85,16 @@
 
     i {
       cursor: pointer;
+    }
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+
+    .pagination {
+      align-self: center;
+      justify-self: center;
     }
   }
 }

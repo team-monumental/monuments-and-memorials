@@ -35,6 +35,10 @@ const SearchResult = ({data, nq, dq, selected}) => {
         setChecked(false)
     }, [data])
 
+    useEffect(() => {
+        console.log(`Search Result: ${JSON.stringify(data)}`)
+    }, [])
+
     // noinspection JSUnresolvedVariable
     return (
         <ListGroup.Item as="li">
