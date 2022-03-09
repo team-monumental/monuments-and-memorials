@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
-
-import QueuePanel from "./Queue/QueuePanel";
 import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
 
 import SearchResultContext from "../../../contexts";
 
 import './BulkEdit.scss'
+import QueuePanel from "./Queue/QueuePanel";
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
@@ -81,8 +80,8 @@ const BulkEditPanel = (props) => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                {/* TODO: Will need to create a new component with less bloat */}
-                                <QueuePanel queue={queueList} dequeue={dequeue}/>
+                                <QueuePanel queue={queueList} dq={dequeue}/>
+                                {/*<QueuePanelOld queue={queueList} dequeue={dequeue}/>*/}
                             </Card.Body>
                         </Card>
                         {/* TODO: Queue panel buttons here */}
