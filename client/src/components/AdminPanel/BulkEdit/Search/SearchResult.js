@@ -4,11 +4,12 @@ import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
 import SearchResultBtns from "./SearchResultBtns";
 import Tag from "../../../Tags/Tag/Tag";
+import ExpandableTag from "../../../Tags/Tag/ExpandableTag";
 
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({data, nq, dq}) => {
+const SearchResult = ({data, nq, dq, selected}) => {
     const [checked, setChecked] = useState(false)
 
     const toggleChecked = () => {
@@ -16,9 +17,23 @@ const SearchResult = ({data, nq, dq}) => {
         checked ? nq(data) : dq(data.id)
     }
 
+    // Enqueues/dequeues result when checkbox is toggled
     useEffect(() => {
         checked ? nq(data) : dq(data.id)
     }, [checked])
+
+    // Enqueues/dequeues result when "select all" checkbox is toggled
+    useEffect(() => {
+        setChecked(selected)
+
+        if (selected) nq(data)
+        else dq(data.id)
+    }, [selected])
+
+    // Un-checks checkbox when a monument is deleted
+    useEffect(() => {
+        setChecked(false)
+    }, [data])
 
     // noinspection JSUnresolvedVariable
     return (
@@ -30,9 +45,11 @@ const SearchResult = ({data, nq, dq}) => {
                     <Col lg={2}><span>{data.artist}</span></Col>
                     <Col lg={2}>
                         <div className="tags-list">
-                            {data.monumentTags.slice(0, 2).map(monumentTag => monumentTag.tag.name).map(tag => (
-                                <Tag name={tag} selectable={false} selectedIcon={null} isMaterial={false}/>
-                            ))}
+                            <Tag name={data.monumentTags[0].tag.name}
+                                 selectable={false}
+                                 selectedIcon={null}
+                                 isMaterial={false}/>
+                            <ExpandableTag counter={data.monumentTags.length - 1} tags={data.monumentTags.slice(1)}/>
                         </div>
                     </Col>
                     <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
