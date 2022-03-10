@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 
 import './QueuePanel.scss'
 import "react-datepicker/dist/react-datepicker.css";
+import {states} from "../../../../utils/queue-util";
 
 const QueueItem = ({title, artist, city, address, coordinates, contributions, references, createdDate}) => {
     const [startDate, setStartDate] = useState(new Date())
@@ -43,8 +44,11 @@ const QueueItem = ({title, artist, city, address, coordinates, contributions, re
                     {/* State */}
                     {/* TODO: Convert to select */}
                     <Form.Group>
-                        <Form.Label>Placeholder</Form.Label>
-                        <Form.Control type="text" placeholder="placeholder text"/>
+                        <Form.Select>
+                            {Object.keys(state).map((state, idx) => (
+                                <option value={idx}>{state}</option>
+                            ))}
+                        </Form.Select>
                     </Form.Group>
 
                     {/* Address */}
