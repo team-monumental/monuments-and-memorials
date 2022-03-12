@@ -19,7 +19,9 @@ const QueuePanelBtns = () => {
         <div>
             <ButtonGroup className="panel-btns">
                 {controls.map(control => (
-                    <Button variant={control.variant}>{control.text}</Button>
+                    <Button key={`queue-panel-${control.text.toLowerCase()}-btn`} variant={control.variant}>
+                        {control.text}
+                    </Button>
                 ))}
             </ButtonGroup>
         </div>
