@@ -6,6 +6,22 @@ import {Container} from "react-bootstrap";
 const QueuePanel = ({queue, dq}) => {
     const [active, setActive] = useState(null)
 
+    const handleFirst = () => {
+        setActive(queue[0])
+    }
+
+    const handleNext = () => {
+        setActive(queue[queue.indexOf(active) + 1])
+    }
+
+    const handlePrev = () => {
+        setActive(queue[queue.indexOf(active) - 1])
+    }
+
+    const handleLast = () => {
+        setActive(queue[queue.length - 1])
+    }
+
     // Update "active" record to the most recently selected result
     useEffect(() => {
         if (queue.length > 0) setActive(queue[queue.length - 1])
@@ -26,7 +42,12 @@ const QueuePanel = ({queue, dq}) => {
                 <QueueItem data={active}/>
             )}
             {active !== null && (
-                <QueueNav current={queue.indexOf(active)} total={queue.length}/>
+                <QueueNav current={queue.indexOf(active)}
+                          total={queue.length}
+                          first={handleFirst}
+                          next={handleNext}
+                          prev={handlePrev}
+                          last={handleLast}/>
             )}
         </Container>
     )
