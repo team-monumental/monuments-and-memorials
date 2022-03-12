@@ -9,17 +9,12 @@ const exportOptions = [
 
 const SearchPanelBtns = (props) => {
     return (
-        <ButtonGroup>
+        <ButtonGroup className="panel-btns">
             <DropdownButton as={ButtonGroup} title="Export As" variant="info">
-                {/*<Button variant="info">Export Selected</Button>*/}
-                {/*<Dropdown.Toggle variant="outline-info" split/>*/}
-                {/*<Dropdown.Menu>*/}
-                {/*    {exportOptions.map((opt, idx) => (*/}
-                {/*        <Dropdown.Item eventKey={idx}>{opt}</Dropdown.Item>*/}
-                {/*    ))}*/}
-                {/*</Dropdown.Menu>*/}
                 {exportOptions.map((opt, idx) => (
-                    <Dropdown.Item eventKey={idx}>{opt}</Dropdown.Item>
+                    <Dropdown.Item key={`search-panel-btn-${idx}`} eventKey={idx}>
+                        {opt}
+                    </Dropdown.Item>
                 ))}
             </DropdownButton>
             <Button variant="danger">Delete Selected</Button>

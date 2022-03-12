@@ -1,0 +1,24 @@
+.queue-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  height: 100%;
+
+  div.empty {
+    text-align: center;
+
+    h5 {
+      margin: 0;
+    }
+  }
+
+  .queue-item {
+    box-shadow: none !important;
+  }
+
+  .pagination {
+    align-self: center;
+    justify-self: center;
+  }
+}

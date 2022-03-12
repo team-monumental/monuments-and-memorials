@@ -7,6 +7,7 @@ import SearchResultContext from "../../../contexts";
 
 import './BulkEdit.scss'
 import QueuePanel from "./Queue/QueuePanel";
+import QueuePanelBtns from "./Queue/QueuePanelBtns";
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
@@ -44,10 +45,6 @@ const BulkEditPanel = (props) => {
         handleSearch()
     }, []);
 
-    useEffect(() => {
-        console.log(queueList)
-    }, [queueList])
-
     return (
         <SearchResultContext.Provider value={removeSearchResult}>
             <Container className="bulk-edit" fluid>
@@ -81,10 +78,10 @@ const BulkEditPanel = (props) => {
                             </Card.Header>
                             <Card.Body>
                                 <QueuePanel queue={queueList} dq={dequeue}/>
-                                {/*<QueuePanelOld queue={queueList} dequeue={dequeue}/>*/}
                             </Card.Body>
                         </Card>
                         {/* TODO: Queue panel buttons here */}
+                        <QueuePanelBtns/>
                     </Col>
                 </Row>
             </Container>

@@ -1,11 +1,33 @@
-import React from 'react'
-import {Container} from "react-bootstrap";
+import React, {useEffect, useState} from 'react'
 import QueueItem from "./QueueItem";
+import QueueNav from "./QueueNav";
+import {Container} from "react-bootstrap";
 
-const QueuePanel = (props) => {
+const QueuePanel = ({queue, dq}) => {
+    const [active, setActive] = useState(null)
+
+    // Update "active" record to the most recently selected result
+    useEffect(() => {
+        if (queue.length > 0) setActive(queue[queue.length - 1])
+    }, [queue])
+
+    // Set the "active" record to "null" when there is no selected results
+    useEffect(() => {
+        if (queue.length === 0) setActive(null)
+    }, [queue])
+
     return (
         <Container className="queue-panel">
-            <QueueItem/>
+            {active === null ? (
+                <div className="empty">
+                    <h5>Nothing here...</h5>
+                </div>
+            ) : (
+                <QueueItem data={active}/>
+            )}
+            {active !== null && (
+                <QueueNav current={queue.indexOf(active)} total={queue.length}/>
+            )}
         </Container>
     )
 }

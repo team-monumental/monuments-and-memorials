@@ -1,29 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Col, Container, InputGroup, ListGroup, Pagination, Row} from "react-bootstrap";
+import React, {useState} from 'react';
+import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
 import SearchResult from "./SearchResult";
+import SearchResultNav from "./SearchResultNav";
 
 const SearchResultList = ({results, enqueue, dequeue}) => {
     const [checked, setChecked] = useState(false)
-    const [active, setActive] = useState(0)
-    const [step, setStep] = useState(5)
     const [items, setItems] = useState([])
 
     const toggleChecked = () => {
         setChecked(!checked)
     }
-
-    const handleActive = (idx) => {
-        setActive(idx)
-    }
-
-    useEffect(() => {
-        setItems(results.slice(active * step, step + (active * step)))
-    }, [results])
-
-    useEffect(() => {
-        setItems(results.slice(active * step, step + (active * step)))
-    }, [active])
 
     return (
         <>
@@ -39,8 +26,9 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                         </Row>
                     </Container>
                 </ListGroup.Item>
-                {items.map((item) => (
+                {items.map((item, idx) => (
                     <SearchResult
+                        key={`search-result-${idx}`}
                         data={item}
                         nq={enqueue}
                         dq={dequeue}
@@ -48,17 +36,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     />
                 ))}
             </ListGroup>
-            <Pagination>
-                <Pagination.First disabled={active === 0} onClick={() => handleActive(0)}/>
-                <Pagination.Prev disabled={active === 0} onClick={() => handleActive(active - 1)}/>
-                {Array.from({length: results.length / step}, (x, i) => i).map(idx =>
-                    <Pagination.Item active={active === idx} onClick={() => setActive(idx)}>{idx + 1}</Pagination.Item>
-                )}
-                <Pagination.Next disabled={active === (results.length / step) - 1}
-                                 onClick={() => handleActive(active + 1)}/>
-                <Pagination.Last disabled={active === (results.length / step) - 1}
-                                 onClick={() => handleActive((results.length / step) - 1)}/>
-            </Pagination>
+            <SearchResultNav results={results} setItems={setItems}/>
         </>
     )
 }

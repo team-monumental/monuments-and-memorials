@@ -1,5 +1,5 @@
 import React from 'react';
-import './QueuePanel.scss';
+import './Queue.scss';
 import {Button, ButtonGroup, ButtonToolbar, Collapse, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {
     latitudeDecRegex,
