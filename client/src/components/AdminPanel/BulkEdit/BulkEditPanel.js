@@ -15,6 +15,10 @@ const BulkEditPanel = (props) => {
     const [searchTerm, setSearchTerm] = useState([])
 
     const [queueList, setQueueList] = useState([])
+    const [active, setActive] = useState(null)
+
+    // TODO: Get list of refs for checked records on enqueue/dequeue
+    // TODO: Setup queue active record context (controlling data from buttons and QueueItem)
 
     const handleSearch = () => {
 
@@ -77,11 +81,11 @@ const BulkEditPanel = (props) => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <QueuePanel queue={queueList} dq={dequeue}/>
+                                <QueuePanel queue={queueList} active={active} setActive={setActive}/>
                             </Card.Body>
                         </Card>
                         {/* TODO: Queue panel buttons here */}
-                        <QueuePanelBtns/>
+                        <QueuePanelBtns dq={() => dequeue(active.id)}/>
                     </Col>
                 </Row>
             </Container>

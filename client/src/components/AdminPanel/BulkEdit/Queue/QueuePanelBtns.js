@@ -1,25 +1,29 @@
 import React from 'react'
 import {Button, ButtonGroup} from "react-bootstrap";
 
-const controls = [
-    {
-        text: 'Save',
-        variant: 'primary'
-    }, {
-        text: 'Clear',
-        variant: 'light'
-    }, {
-        text: 'Dequeue',
-        variant: 'danger'
-    }
-]
+const QueuePanelBtns = ({dq}) => {
+    const controls = [
+        {
+            text: 'Save',
+            variant: 'primary'
+        }, {
+            text: 'Reset',
+            variant: 'light'
+        }, {
+            text: 'Dequeue',
+            variant: 'danger',
+            click: dq
+        }
+    ]
 
-const QueuePanelBtns = () => {
     return (
         <div>
             <ButtonGroup className="panel-btns">
                 {controls.map(control => (
-                    <Button key={`queue-panel-${control.text.toLowerCase()}-btn`} variant={control.variant}>
+                    <Button
+                        key={`queue-panel-${control.text.toLowerCase()}-btn`}
+                        variant={control.variant}
+                        onClick={control.click}>
                         {control.text}
                     </Button>
                 ))}

@@ -3,9 +3,7 @@ import QueueItem from "./QueueItem";
 import QueueNav from "./QueueNav";
 import {Container} from "react-bootstrap";
 
-const QueuePanel = ({queue, dq}) => {
-    const [active, setActive] = useState(null)
-
+const QueuePanel = ({queue, active, setActive}) => {
     const handleFirst = () => {
         setActive(queue[0])
     }

@@ -4,7 +4,6 @@ import {Card, Col, Container, Form, Row} from "react-bootstrap";
 import './Queue.scss'
 
 import {states} from "../../../../utils/queue-util";
-import Tag from "../../../Tags/Tag/Tag";
 import QueueItemTags from "./QueueItemTags";
 
 const QueueItem = (props) => {
