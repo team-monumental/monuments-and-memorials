@@ -20,14 +20,11 @@ const SearchResult = ({data, nq, dq, selected}) => {
     // Enqueues/dequeues result when checkbox is toggled
     useEffect(() => {
         checked ? nq(data) : dq(data.id)
-    }, [checked])
+    }, [checked, selected])
 
     // Enqueues/dequeues result when "select all" checkbox is toggled
     useEffect(() => {
         setChecked(selected)
-
-        if (selected) nq(data)
-        else dq(data.id)
     }, [selected])
 
     // Un-checks checkbox when a monument is deleted

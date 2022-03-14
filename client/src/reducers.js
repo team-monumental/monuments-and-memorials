@@ -10,10 +10,10 @@ import {
     userSearchPage
 } from './reducers/search';
 import mapPage from './reducers/map';
-import {materialsLoad, materialsSearch, tagsLoad, tagsSearch} from './reducers/tagsSearch';
+import {materialsLoad, materialsSearch, tagsLoad, tagsSearch} from './reducers/tags-search';
 import {createCreateSuggestion, createMonument} from './reducers/create'
 import bulkCreatePage from './reducers/bulk';
-import tagDirectoryPage from './reducers/tagDirectory';
+import tagDirectoryPage from './reducers/tag-directory';
 import aboutPage from './reducers/about-page';
 import {
     beginPasswordReset,

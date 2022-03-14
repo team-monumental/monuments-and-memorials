@@ -4,10 +4,11 @@ import Tag from "../../../Tags/Tag/Tag";
 const QueueItemTags = ({tags, handleChange}) => {
     return (
         <div className="tags-grid">
-            {tags.map(tag => (
-                <Tag name={tag.tag.name}
+            {tags.map((tag, idx) => (
+                <Tag key={`active-record-tag-${idx}`}
+                     name={tag.tag.name}
                      selectable={true}
-                     defaultIcon={'remove_circle_outline'}
+                     defaultIcon={'cancel'}
                      selectedIcon={'undo'}
                      isMaterial={tag.tag.isMaterial}
                      onSelect={handleChange}/>

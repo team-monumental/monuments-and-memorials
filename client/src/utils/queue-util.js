@@ -1,3 +1,4 @@
+// List of states and their abbreviations
 export const states = {
     "AL": "Alabama",
     "AK": "Alaska",

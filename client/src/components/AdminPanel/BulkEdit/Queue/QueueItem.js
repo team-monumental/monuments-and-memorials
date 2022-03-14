@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Form, Row} from "react-bootstrap";
 
-import './Queue.scss'
+import QueueItemTags from "./QueueItemTags";
 
 import {states} from "../../../../utils/queue-util";
-import QueueItemTags from "./QueueItemTags";
+
+import './Queue.scss'
 
 const QueueItem = (props) => {
     const [data, setData] = useState(props.data)
@@ -35,13 +36,9 @@ const QueueItem = (props) => {
                                 {/* Title */}
                                 <Form.Group>
                                     <Form.Label>Title</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={data.title}
-                                        placeholder={"placeholder text"}
-                                        onChange={event => {
-                                            handleDataChange('title', event.target.value)
-                                        }}/>
+                                    <Form.Control type="text" value={data.title} onChange={event => {
+                                        handleDataChange('title', event.target.value)
+                                    }}/>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -50,25 +47,18 @@ const QueueItem = (props) => {
                                 {/* Artist */}
                                 <Form.Group>
                                     <Form.Label>Artist</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={data.artist}
-                                        placeholder={"placeholder text"}
-                                        onChange={event => {
-                                            handleDataChange('artist', event.target.value)
-                                        }}/>
+                                    <Form.Control type="text" value={data.artist} onChange={event => {
+                                        handleDataChange('artist', event.target.value)
+                                    }}/>
                                 </Form.Group>
                             </Col>
                             <Col lg={6}>
                                 {/* Created Date */}
                                 <Form.Group>
                                     <Form.Label>Date Created</Form.Label>
-                                    <Form.Control type="date"
-                                                  value={data.createdDate.slice(0, 10)}
-                                                  placeholder={"placeholder text"}
-                                                  onChange={event => {
-                                                      handleDataChange('createdDate', event.target.value)
-                                                  }}/>
+                                    <Form.Control type="date" value={data.createdDate.slice(0, 10)} onChange={event => {
+                                        handleDataChange('createdDate', event.target.value)
+                                    }}/>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -77,12 +67,9 @@ const QueueItem = (props) => {
                                 {/* City */}
                                 <Form.Group>
                                     <Form.Label>City</Form.Label>
-                                    <Form.Control type="text"
-                                                  value={data.city}
-                                                  placeholder={"placeholder text"}
-                                                  onChange={event => {
-                                                      handleDataChange('artist', event.target.value)
-                                                  }}/>
+                                    <Form.Control type="text" value={data.city} onChange={event => {
+                                        handleDataChange('artist', event.target.value)
+                                    }}/>
                                 </Form.Group>
                             </Col>
                             <Col lg={6}>
@@ -90,10 +77,15 @@ const QueueItem = (props) => {
                                 {/* TODO: Update data on change */}
                                 <Form.Group>
                                     <Form.Label>State</Form.Label>
-                                    <Form.Control as="select">
+                                    <Form.Control as="select" onChange={event => {
+                                        handleDataChange('state', event.target.value)
+                                    }}>
                                         {Object.keys(states).map((state, idx) => (
                                             <option key={`state-opt-${idx}`}
-                                                    value={idx}>{states[state]}</option>
+                                                    value={state}
+                                                    selected={data.state === state}>
+                                                {states[state]}
+                                            </option>
                                         ))}
                                     </Form.Control>
                                 </Form.Group>
@@ -104,12 +96,9 @@ const QueueItem = (props) => {
                                 {/* Address */}
                                 <Form.Group>
                                     <Form.Label>Address</Form.Label>
-                                    <Form.Control type="text"
-                                                  value={data.address}
-                                                  placeholder={"placeholder text"}
-                                                  onChange={event => {
-                                                      handleDataChange('address', event.target.value)
-                                                  }}/>
+                                    <Form.Control type="text" value={data.address} onChange={event => {
+                                        handleDataChange('address', event.target.value)
+                                    }}/>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -119,9 +108,7 @@ const QueueItem = (props) => {
                                 {/* TODO: Update data on change */}
                                 <Form.Group>
                                     <Form.Label>Coordinates</Form.Label>
-                                    <Form.Control type="text"
-                                                  value={data.coordinates}
-                                                  placeholder={"placeholder text"}/>
+                                    <Form.Control type="text" defaultValue={data.coordinates}/>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -131,9 +118,7 @@ const QueueItem = (props) => {
                                 {/* TODO: Update data on change */}
                                 <Form.Group>
                                     <Form.Label>Contributions</Form.Label>
-                                    <Form.Control type="text"
-                                                  value={data.contributions}
-                                                  placeholder={"placeholder text"}/>
+                                    <Form.Control type="text" defaultValue={data.contributions}/>
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -143,9 +128,7 @@ const QueueItem = (props) => {
                                 {/* TODO: Update data on change */}
                                 <Form.Group>
                                     <Form.Label>References</Form.Label>
-                                    <Form.Control type="text"
-                                                  value={data.references}
-                                                  placeholder={"placeholder text"}/>
+                                    <Form.Control type="text" defaultValue={data.references}/>
                                 </Form.Group>
                             </Col>
                         </Row>

@@ -4,6 +4,7 @@ import QueueNav from "./QueueNav";
 import {Container} from "react-bootstrap";
 
 const QueuePanel = ({queue, active, setActive}) => {
+
     const handleFirst = () => {
         setActive(queue[0])
     }
@@ -23,12 +24,12 @@ const QueuePanel = ({queue, active, setActive}) => {
     // Update "active" record to the most recently selected result
     useEffect(() => {
         if (queue.length > 0) setActive(queue[queue.length - 1])
-    }, [queue])
+    }, [queue, setActive])
 
     // Set the "active" record to "null" when there is no selected results
     useEffect(() => {
         if (queue.length === 0) setActive(null)
-    }, [queue])
+    }, [queue, setActive])
 
     return (
         <Container className="queue-panel">

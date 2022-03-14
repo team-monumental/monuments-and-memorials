@@ -10,7 +10,7 @@ const QueueNav = ({current, total, first, next, prev, last}) => {
                 {`${current + 1} of ${total}`}
             </Pagination.Item>
             <Pagination.Next disabled={current === total - 1} onClick={next}/>
-            <Pagination.Last disabled={current === total -1} onClick={last}/>
+            <Pagination.Last disabled={current === total - 1} onClick={last}/>
         </Pagination>
     )
 }

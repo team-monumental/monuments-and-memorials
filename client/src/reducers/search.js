@@ -18,7 +18,7 @@ import {
     SEARCH_USERS_PENDING,
     SEARCH_USERS_SUCCESS
 } from '../constants';
-import basicReducer from '../utils/basic-reducer';
+import basicReducer from './basic';
 
 const initialState = {
     pending: false,

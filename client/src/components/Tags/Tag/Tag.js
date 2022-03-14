@@ -17,7 +17,7 @@ const Tag = ({name, selectable, defaultIcon, selectedIcon, isMaterial, onSelect}
     useEffect(() => {
         if (isMaterial) params.materials = name
         else params.tags = name
-    }, [])
+    }, [isMaterial, name, params.materials, params.tags])
 
     return (
         selectable ? (

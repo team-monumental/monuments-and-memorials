@@ -1,7 +1,8 @@
 import React from 'react'
+import {Container} from "react-bootstrap";
+
 import Searchbar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
-import {Container} from "react-bootstrap";
 
 const SearchPanel = ({results, enqueue, dequeue, handleSearch, onChange}) => {
     return (

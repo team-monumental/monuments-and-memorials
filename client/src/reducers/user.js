@@ -13,7 +13,7 @@ import {
     UPDATE_USER_RESET,
     UPDATE_USER_SUCCESS
 } from '../constants';
-import basicReducer from '../utils/basic-reducer';
+import basicReducer from './basic';
 
 const initialState = {
     pending: false,

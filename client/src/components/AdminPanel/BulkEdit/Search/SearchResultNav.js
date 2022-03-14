@@ -3,7 +3,7 @@ import {Pagination} from "react-bootstrap";
 
 const SearchResultNav = ({results, setItems}) => {
     const [active, setActive] = useState(0)
-    const [step, setStep] = useState(5)
+    const [step, setStep] = useState(10)
 
     const handleActive = (idx) => {
         setActive(idx)
@@ -11,11 +11,11 @@ const SearchResultNav = ({results, setItems}) => {
 
     useEffect(() => {
         setItems(results.slice(active * step, step + (active * step)))
-    }, [results])
+    }, [active, step, results, setItems])
 
     useEffect(() => {
         setItems(results.slice(active * step, step + (active * step)))
-    }, [active])
+    }, [active, step, results, setItems])
 
     return (
         <Pagination>

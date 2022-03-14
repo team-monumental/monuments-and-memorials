@@ -16,7 +16,6 @@ import TagsSearch from '../../../Search/TagsSearch/TagsSearch';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import validator from 'validator';
-import {isEmptyObject} from '../../../../utils/object-util';
 import LocationSearch from '../../../Header/SearchBar/LocationSearch/LocationSearch';
 import PhotoSphereImages from '../../../CreateOrUpdateForm/PhotoSphereImages/PhotoSphereImages';
 
@@ -146,35 +145,35 @@ export default class QueuePanelOld extends React.Component {
 
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.queueSize < this.props.queue.length){
-            let result = this.queue.map(monument =>monument.id);
+        if (this.queueSize < this.props.queue.length) {
+            let result = this.queue.map(monument => monument.id);
 
-            if(!(result.includes(this.props.queue[this.props.queue.length-1].id))){
+            if (!(result.includes(this.props.queue[this.props.queue.length - 1].id))) {
                 this.current = null;
                 this.queueSize = this.props.queue.length;
-                let holderMon = Object.assign({}, this.props.queue[this.queueSize-1]);
+                let holderMon = Object.assign({}, this.props.queue[this.queueSize - 1]);
                 this.queue.push(holderMon);
                 this.queueIndex = this.queueSize - 1;
             }
-        }else if (this.queueSize > this.props.queue.length){
-            let result = this.props.queue.map(monument =>monument.id);
+        } else if (this.queueSize > this.props.queue.length) {
+            let result = this.props.queue.map(monument => monument.id);
             this.queueSize = this.props.queue.length;
 
-            for(var item in this.queue){
-                if(!(result.includes(this.queue[item].id))){
+            for (var item in this.queue) {
+                if (!(result.includes(this.queue[item].id))) {
 //                    console.log("item num: " + item)
 //                    console.log("currentID: " + this.queue[item].id)
                     this.queue.splice(item, 1);
 
-                    if(item == this.queueIndex){
-                        this.queueIndex = (((this.queueIndex-1) % this.queueSize) + this.queueSize) % this.queueSize;
+                    if (item == this.queueIndex) {
+                        this.queueIndex = (((this.queueIndex - 1) % this.queueSize) + this.queueSize) % this.queueSize;
                         this.current = null;
-                    }else if(item<this.queueIndex){
-                        this.queueIndex-=1;
+                    } else if (item < this.queueIndex) {
+                        this.queueIndex -= 1;
                     }
                 }
             }
-            if(this.queueSize == 0){
+            if (this.queueSize == 0) {
                 this.current = null;
                 this.clearForm(true);
             }
@@ -186,7 +185,7 @@ export default class QueuePanelOld extends React.Component {
 //        console.log("props queue: ", this.props.queue);
 
 
-        if(this.queueSize > 0 && this.current == null){
+        if (this.queueSize > 0 && this.current == null) {
             console.log("---constructor---");
             this.setFormFieldValuesForUpdate(false); //todo my change
         }
@@ -300,7 +299,7 @@ export default class QueuePanelOld extends React.Component {
      * Sets the values of Form fields to be the values of the Monument that is being updated
      */
     setFormFieldValuesForUpdate(reset) {
-        if(reset){
+        if (reset) {
             let holderMon = Object.assign({}, this.props.queue[this.queueIndex]);
             this.queue[this.queueIndex] = holderMon;
         }
@@ -451,7 +450,7 @@ export default class QueuePanelOld extends React.Component {
         });
     }
 
-    saveState(){ //todo saving state from navigation
+    saveState() { //todo saving state from navigation
         const {
             title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
             deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
@@ -497,7 +496,7 @@ export default class QueuePanelOld extends React.Component {
                 this.current.date = year.value === '' ? undefined : year.value + "-" + month.value + "-1";
                 break;
             case DateFormat.EXACT_DATE:
-                this.current.date = year.value === '' ? undefined : year.value + "-" + (datePickerCurrentDate.getMonth()+1) + "-" + datePickerCurrentDate.getDate();
+                this.current.date = year.value === '' ? undefined : year.value + "-" + (datePickerCurrentDate.getMonth() + 1) + "-" + datePickerCurrentDate.getDate();
                 break;
             default:
                 break;
@@ -511,7 +510,7 @@ export default class QueuePanelOld extends React.Component {
                 this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + deactivatedMonth.value + "-1";
                 break;
             case DateFormat.EXACT_DATE:
-                this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + (deactivatedDatePickerCurrentDate.getMonth()+1) + "-" + deactivatedDatePickerCurrentDate.getDate();
+                this.current.deactivatedDate = deactivatedYear.value === '' ? undefined : deactivatedYear.value + "-" + (deactivatedDatePickerCurrentDate.getMonth() + 1) + "-" + deactivatedDatePickerCurrentDate.getDate();
                 break;
             default:
                 break;
@@ -1363,7 +1362,7 @@ export default class QueuePanelOld extends React.Component {
 
     handleSubmit(event) {
         const {onSubmit} = this.props;
-        const{current} =  this.current;
+        const {current} = this.current;
         const {images, photoSphereImages} = this.state;
 
         event.preventDefault();
@@ -1381,10 +1380,10 @@ export default class QueuePanelOld extends React.Component {
     }
 
     handleDequeueButtonClick() { //todo call function
-        if(this.queueSize !=0){
+        if (this.queueSize != 0) {
             const {onDequeueButtonClick} = this.props;
             this.queueSize -= 1;
-            this.queueIndex = (this.queueIndex-1)%this.queueSize;
+            this.queueIndex = (this.queueIndex - 1) % this.queueSize;
 
             onDequeueButtonClick();
 //            this.props.deq
@@ -1392,7 +1391,7 @@ export default class QueuePanelOld extends React.Component {
     }
 
     handlePreviousButtonClick() {
-        if (this.queueSize != 0){
+        if (this.queueSize != 0) {
             this.saveState();
             this.queue[this.queueIndex] = this.current;
 
@@ -1403,11 +1402,11 @@ export default class QueuePanelOld extends React.Component {
     }
 
     handleNextButtonClick() {
-        if (this.queueSize != 0){
+        if (this.queueSize != 0) {
             this.saveState();
             this.queue[this.queueIndex] = this.current;
 
-            this.queueIndex+=1;
+            this.queueIndex += 1;
             this.queueIndex = ((this.queueIndex % this.queueSize) + this.queueSize) % this.queueSize;
             this.setFormFieldValuesForUpdate(false);
         }
@@ -1566,7 +1565,7 @@ export default class QueuePanelOld extends React.Component {
     }
 
     renderResetButton() {
-       // const {monument} = this.props; //todo my changes
+        // const {monument} = this.props; //todo my changes
 
         if (this.current) {
             return (
@@ -1585,7 +1584,7 @@ export default class QueuePanelOld extends React.Component {
         }
     }
 
-    renderDequeueButton(){
+    renderDequeueButton() {
         //const {monument} = this.props; //todo my changes
 
         if (this.current) {
@@ -1606,16 +1605,16 @@ export default class QueuePanelOld extends React.Component {
         }
     }
 
-    renderPreButton(){
+    renderPreButton() {
         //const {monument} = this.props; //todo my changes
 
         if (this.current) {
             return (
                 <Button
-                    variant = "primary"
-                    type = "button"
+                    variant="primary"
+                    type="button"
                     onClick={() => this.handlePreviousButtonClick()}
-                    className= "mr-4 mt-1"
+                    className="mr-4 mt-1"
                 >
                     Prev
                 </Button>
@@ -1627,16 +1626,16 @@ export default class QueuePanelOld extends React.Component {
         }
     }
 
-    renderNextButton(){
+    renderNextButton() {
         //const {monument} = this.props; //todo my changes
 
         if (this.current) {
             return (
                 <Button
-                    variant = "primary"
-                    type = "button"
+                    variant="primary"
+                    type="button"
                     onClick={() => this.handleNextButtonClick()}
-                    className= "mr-4 mt-1"
+                    className="mr-4 mt-1"
                 >
                     Next
                 </Button>
@@ -1648,7 +1647,7 @@ export default class QueuePanelOld extends React.Component {
         }
     }
 
-    renderSubmitButton(){
+    renderSubmitButton() {
         //const {monument} = this.props; //todo my changes
 
         if (this.current) {
@@ -2071,9 +2070,10 @@ export default class QueuePanelOld extends React.Component {
         return (
             <div className="create-form">
                 {this.current
-                    ? <div className="h4 update">{action} Editing {this.current.title} \n {this.queueIndex+1}/{this.queueSize} </div> //todo should show name of monument
-                     //<script> document.getElementById("MonName").innerHTML ="Editing: " + this.current;</script>
-                    :<div className="h4 create">{action}  </div>}
+                    ? <div
+                        className="h4 update">{action} Editing {this.current.title} \n {this.queueIndex + 1}/{this.queueSize} </div> //todo should show name of monument
+                    //<script> document.getElementById("MonName").innerHTML ="Editing: " + this.current;</script>
+                    : <div className="h4 create">{action}  </div>}
 
                 <Form onSubmit={(event) => this.handleSubmit(event)}>
                     {/* Title */}

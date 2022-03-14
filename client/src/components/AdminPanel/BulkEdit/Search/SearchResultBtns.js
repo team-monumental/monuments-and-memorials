@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {Button, Modal} from "react-bootstrap";
 
 import {deleteMonument} from "../../../../actions/update-monument";
-import SearchResultContext from "../../../../contexts";
+import SearchResultContext from "../../../../utils/search-util";
 
 const SearchResultBtns = ({monumentId}) => {
     const [show, setShow] = useState(false)
@@ -20,9 +20,12 @@ const SearchResultBtns = ({monumentId}) => {
 
     return (
         <div className="result-opts">
-            <span><i><Link to={`/panel/manage/monuments/monument/update/${monumentId}`} target="_blank" className="material-icons">edit</Link></i></span>
-            <span><i className="material-icons" style={{color: "#da6060"}} onClick={() => setShow(true)}>delete</i></span>
-            <span><i><Link to={`/monuments/${monumentId}`} style={{color: "#17a2b8"}} target="_blank" className="material-icons">open_in_new</Link></i></span>
+            <span><i><Link to={`/panel/manage/monuments/monument/update/${monumentId}`} target="_blank"
+                           className="material-icons">edit</Link></i></span>
+            <span><i className="material-icons" style={{color: "#da6060"}}
+                     onClick={() => setShow(true)}>delete</i></span>
+            <span><i><Link to={`/monuments/${monumentId}`} style={{color: "#17a2b8"}} target="_blank"
+                           className="material-icons">open_in_new</Link></i></span>
 
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
