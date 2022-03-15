@@ -15,10 +15,12 @@ const BulkEditPanel = (props) => {
     const [searchResults, setSearchResults] = useState([])
     const [searchTerm, setSearchTerm] = useState([])
 
-    const [queueList, setQueueList] = useState({
-        list: [],
-        refs: []
-    })
+    // const [queueList, setQueueList] = useState({
+    //     list: [],
+    //     refs: []
+    // })
+
+    const [queueList, setQueueList] = useState([])
     const [active, setActive] = useState(null)
 
     const handleSearch = useCallback(() => {
@@ -33,20 +35,20 @@ const BulkEditPanel = (props) => {
 
     const enqueue = (recordData) => {
         // TODO: Add search result ref to queueRefs
-        // setQueueList(queue => ([...queue, recordData]))
-        setQueueList(queue => ({
-            list: [...queue.list, recordData],
-            refs: [...queue.refs, null]
-        }))
+        setQueueList(queue => ([...queue, recordData]))
+        // setQueueList(queue => ({
+        //     list: [...queue.list, recordData],
+        //     refs: [...queue.refs, null]
+        // }))
     }
 
     const dequeue = (id) => {
         // TODO: Remove search result ref to queueRefs
-        // setQueueList(queue => ([...queue.filter(record => record.id !== recordId)]))
-        setQueueList(queue => ({
-            list: [queue.list.filter(record => record.id !== id)],
-            refs: [queue.refs.filter(ref => false)]
-        }))
+        setQueueList(queue => ([...queue.filter(record => record.id !== id)]))
+        // setQueueList(queue => ({
+        //     list: [queue.list.filter(record => record.id !== id)],
+        //     refs: [queue.refs.filter(ref => false)]
+        // }))
     }
 
     const deleteSearchResult = (recordId) => {
