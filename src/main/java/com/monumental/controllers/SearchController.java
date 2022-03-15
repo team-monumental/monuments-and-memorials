@@ -92,6 +92,7 @@ public class SearchController {
                                           @RequestParam(required = false) Integer activeStart,
                                           @RequestParam(required = false) Integer activeEnd,
                                           @RequestParam(required = false, defaultValue = "false") Boolean hideTemporary,
+                                          @RequestParam(required = false, defaultValue = "false") Boolean exactSearch,
                                           @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
@@ -102,7 +103,7 @@ public class SearchController {
         List<Monument> monuments = this.monumentService.search(
                 searchQuery, page, limit, 0.1, latitude, longitude, distance, state, tags, materials,
                 MonumentService.SortType.valueOf(sortType.toUpperCase()),
-                startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary
+                startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary, exactSearch
         );
 
         if (cascade) {
@@ -129,6 +130,7 @@ public class SearchController {
                                        @RequestParam(required = false, defaultValue = "true") Boolean onlyActive,
                                        @RequestParam(required = false) Integer activeStart,
                                        @RequestParam(required = false) Integer activeEnd,
+                                       @RequestParam(required = false, defaultValue = "false") Boolean exactSearch,
                                        @RequestParam(required = false, defaultValue = "false") Boolean hideTemporary)
             throws UnauthorizedException, AccessDeniedException {
         if (!onlyActive) {
@@ -138,8 +140,9 @@ public class SearchController {
         Date endDate = StringHelper.parseNullableDate(end);
 
         return this.monumentService.countSearchResults(
-                searchQuery, latitude, longitude, distance, state, tags, materials,
-                startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary
+
+            searchQuery, latitude, longitude, distance, state, tags, materials,
+            startDate, endDate, decade, onlyActive, activeStart, activeEnd, hideTemporary, exactSearch
         );
     }
 
