@@ -1,3 +1,5 @@
+import {createContext} from "react";
+
 // List of states and their abbreviations
 export const states = {
     "AL": "Alabama",
@@ -60,3 +62,5 @@ export const states = {
     "WI": "Wisconsin",
     "WY": "Wyoming"
 }
+
+export const QueueContext = createContext(undefined)

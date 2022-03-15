@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useReducer, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 
 import SearchPanel from "./Search/SearchPanel";
@@ -8,8 +8,6 @@ import QueuePanelBtns from "./Queue/QueuePanelBtns";
 
 import SearchResultContext from "../../../utils/search-util";
 
-import {queueListReducer} from "../../../reducers/bulk-edit";
-
 import './BulkEdit.scss'
 
 const BulkEditPanel = (props) => {
@@ -17,10 +15,11 @@ const BulkEditPanel = (props) => {
     const [searchResults, setSearchResults] = useState([])
     const [searchTerm, setSearchTerm] = useState([])
 
-    const [queueList, setQueueList] = useState([])
+    const [queueList, setQueueList] = useState({
+        list: [],
+        refs: []
+    })
     const [active, setActive] = useState(null)
-
-    // TODO: Add reducer to enqueue/dequeue
 
     const handleSearch = useCallback(() => {
         // TODO: Search with filters and update state
@@ -33,11 +32,21 @@ const BulkEditPanel = (props) => {
     }, [searchTerm])
 
     const enqueue = (recordData) => {
-        setQueueList(queue => ([...queue, recordData]))
+        // TODO: Add search result ref to queueRefs
+        // setQueueList(queue => ([...queue, recordData]))
+        setQueueList(queue => ({
+            list: [...queue.list, recordData],
+            refs: [...queue.refs, null]
+        }))
     }
 
-    const dequeue = (recordId) => {
-        setQueueList(queue => ([...queue.filter(record => record.id !== recordId)]))
+    const dequeue = (id) => {
+        // TODO: Remove search result ref to queueRefs
+        // setQueueList(queue => ([...queue.filter(record => record.id !== recordId)]))
+        setQueueList(queue => ({
+            list: [queue.list.filter(record => record.id !== id)],
+            refs: [queue.refs.filter(ref => false)]
+        }))
     }
 
     const deleteSearchResult = (recordId) => {
@@ -49,46 +58,46 @@ const BulkEditPanel = (props) => {
     }, [handleSearch]);
 
     return (
-        <SearchResultContext.Provider value={deleteSearchResult}>
-            <Container className="bulk-edit" fluid>
-                <Row>
-                    <Col lg={8}>
-                        {/* Search Panel card */}
-                        <Card>
-                            <Card.Header>
-                                <Card.Title>
-                                    Bulk Edit Monuments and Memorials
-                                </Card.Title>
-                            </Card.Header>
-                            <Card.Body>
+        <Container className="bulk-edit" fluid>
+            <Row>
+                <Col lg={8}>
+                    {/* Search Panel card */}
+                    <Card>
+                        <Card.Header>
+                            <Card.Title>
+                                Bulk Edit Monuments and Memorials
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <SearchResultContext.Provider value={deleteSearchResult}>
                                 <SearchPanel results={searchResults}
                                              enqueue={enqueue}
                                              dequeue={dequeue}
                                              handleSearch={handleSearch}
                                              onChange={e => setSearchTerm(e.target.value)}
                                 />
-                            </Card.Body>
-                        </Card>
-                        <SearchPanelBtns/>
-                    </Col>
-                    <Col lg={4}>
-                        {/* Queue Panel card */}
-                        <Card>
-                            <Card.Header>
-                                <Card.Title>
-                                    Editing Queue
-                                </Card.Title>
-                            </Card.Header>
-                            <Card.Body>
-                                <QueuePanel queue={queueList} active={active} setActive={setActive}/>
-                            </Card.Body>
-                        </Card>
-                        {/* FIXME: De-queuing doesn't uncheck search result */}
-                        <QueuePanelBtns dq={() => dequeue(active.id)}/>
-                    </Col>
-                </Row>
-            </Container>
-        </SearchResultContext.Provider>
+                            </SearchResultContext.Provider>
+                        </Card.Body>
+                    </Card>
+                    <SearchPanelBtns/>
+                </Col>
+                <Col lg={4}>
+                    {/* Queue Panel card */}
+                    <Card>
+                        <Card.Header>
+                            <Card.Title>
+                                Editing Queue
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <QueuePanel queue={queueList} active={active} setActive={setActive}/>
+                        </Card.Body>
+                    </Card>
+                    {/* FIXME: De-queuing doesn't uncheck search result */}
+                    <QueuePanelBtns dq={() => dequeue(active.id)}/>
+                </Col>
+            </Row>
+        </Container>
     )
 }
 
