@@ -20,7 +20,7 @@ const BulkEditPanel = (props) => {
 
         // TODO: Search with filters and update state
         async function fetchMonuments() {
-            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1&q=" + searchTerm);
+            const response = await fetch(window.location.origin + "/api/search/monuments/?cascade=true&d=25&limit=10&page=1&exactSearch=true&q=" + searchTerm);
             const json = await response.json();
             setSearchResults(json);
         }
