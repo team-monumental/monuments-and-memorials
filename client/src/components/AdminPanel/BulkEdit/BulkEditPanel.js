@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useReducer, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 
 import SearchPanel from "./Search/SearchPanel";
@@ -9,6 +9,15 @@ import QueuePanelBtns from "./Queue/QueuePanelBtns";
 import SearchResultContext from "../../../utils/search-util";
 
 import './BulkEdit.scss'
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case '':
+            break
+        default:
+            break
+    }
+}
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state

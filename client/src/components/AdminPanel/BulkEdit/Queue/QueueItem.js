@@ -24,7 +24,7 @@ const QueueItem = (props) => {
         setData(props.data)
     }, [props.data])
 
-    // TODO:
+    // TODO: Generate form fields
     return (
         <Card className="queue-item">
             {/* TODO: Implement multiple images (carousel?) */}
