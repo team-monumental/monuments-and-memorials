@@ -516,7 +516,7 @@ export default class QueuePanelOld extends React.Component {
                 break;
         }
 
-        console.log("refrances: ", references); //to do working on refrances right now, then move to tags
+        console.log("references: ", references); //to do working on refrances right now, then move to tags
 
         //still need
         //isActive, monTags

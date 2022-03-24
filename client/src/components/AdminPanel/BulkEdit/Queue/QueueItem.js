@@ -3,8 +3,6 @@ import {Card, Col, Container, Form, Row} from "react-bootstrap";
 
 import QueueItemTags from "./QueueItemTags";
 
-import {states} from "../../../../utils/queue-util";
-
 import './Queue.scss'
 
 const QueueItem = (props) => {
@@ -17,6 +15,26 @@ const QueueItem = (props) => {
     // TODO: Add/remove tag based on selection status
     const handleTagChange = () => {
 
+    }
+
+    // TODO: Add validation
+    const validateDataChange = (field, value) => {
+        switch (field) {
+            case 'title':
+                break
+            case 'artist':
+                break
+            case 'createdDate':
+                break
+            case 'address':
+                break
+            case 'coordinates':
+                break
+            case 'references':
+                break
+            case 'tags':
+                break
+        }
     }
 
     // Update the internal state when the "active" record changes (from props)
@@ -64,35 +82,6 @@ const QueueItem = (props) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col lg={6}>
-                                {/* City */}
-                                <Form.Group>
-                                    <Form.Label>City</Form.Label>
-                                    <Form.Control type="text" value={data.city} onChange={event => {
-                                        handleDataChange('artist', event.target.value)
-                                    }}/>
-                                </Form.Group>
-                            </Col>
-                            <Col lg={6}>
-                                {/* State */}
-                                {/* TODO: Update data on change */}
-                                <Form.Group>
-                                    <Form.Label>State</Form.Label>
-                                    <Form.Control as="select" onChange={event => {
-                                        handleDataChange('state', event.target.value)
-                                    }}>
-                                        {Object.keys(states).map((state, idx) => (
-                                            <option key={`state-opt-${idx}`}
-                                                    value={state}
-                                                    selected={data.state === state}>
-                                                {states[state]}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
                             <Col>
                                 {/* Address */}
                                 <Form.Group>
@@ -110,16 +99,6 @@ const QueueItem = (props) => {
                                 <Form.Group>
                                     <Form.Label>Coordinates</Form.Label>
                                     <Form.Control type="text" defaultValue={data.coordinates}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {/* Contributors */}
-                                {/* TODO: Update data on change */}
-                                <Form.Group>
-                                    <Form.Label>Contributions</Form.Label>
-                                    <Form.Control type="text" defaultValue={data.contributions}/>
                                 </Form.Group>
                             </Col>
                         </Row>
