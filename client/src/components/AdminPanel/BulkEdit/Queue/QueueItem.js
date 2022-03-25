@@ -1,15 +1,32 @@
 import React, {useEffect, useState} from 'react'
 import {Card, Col, Container, Form, Row} from "react-bootstrap";
+import validator from "validator/es";
 
 import QueueItemTags from "./QueueItemTags";
 
 import './Queue.scss'
+import {useFormik} from "formik";
 
 const QueueItem = (props) => {
     const [data, setData] = useState(props.data)
+    const [fields, setFields] = useState(null)
 
-    const handleDataChange = (field, value) => {
-        setData(data => ({...data, [field]: value}))
+    // TODO: Init Formik
+    const formik = useFormik({
+        initialValues: data,
+        handleChange: (event) => {
+            let field = event.target.name
+            let value = event.target.value
+
+            if (validateDataChange(field, value)) setData(data => ({...data, [field]: value}))
+        },
+        onSubmit: values => {
+            alert(JSON.stringify(values, null, 2))
+        }
+    })
+
+    const handleDataChange = (event, field, value) => {
+        if (validateDataChange(field, value)) setData(data => ({...data, [field]: value}))
     }
 
     // TODO: Add/remove tag based on selection status
@@ -17,23 +34,24 @@ const QueueItem = (props) => {
 
     }
 
-    // TODO: Add validation
     const validateDataChange = (field, value) => {
         switch (field) {
             case 'title':
-                break
+                return validator.isAlpha(value)
             case 'artist':
-                break
+                return validator.isAlpha(value)
             case 'createdDate':
-                break
+                return validator.isDate(value)
             case 'address':
-                break
+                return validator.isAlpha(value)
             case 'coordinates':
-                break
+                return validator.isLatLong(value, {checkDMS: true})
             case 'references':
-                break
+                return validator.isFQDN(value)
+            case 'images':
+                return validator.isFQDN(value)
             case 'tags':
-                break
+                return validator.isAlpha(value)
         }
     }
 
@@ -42,21 +60,21 @@ const QueueItem = (props) => {
         setData(props.data)
     }, [props.data])
 
-    // TODO: Generate form fields
+    // TODO: Generate form fields, extract to component (?), add Formik validation to fields
     return (
         <Card className="queue-item">
-            {/* TODO: Implement multiple images (carousel?) */}
+            {/* TODO: Implement multiple image carousel (?) */}
             <Card.Img alt="placeholder img"/>
             <Card.Body>
-                <Form>
+                <Form onSubmit={formik.handleSubmit}>
                     <Container fluid>
                         <Row>
                             <Col>
                                 {/* Title */}
                                 <Form.Group>
                                     <Form.Label>Title</Form.Label>
-                                    <Form.Control type="text" value={data.title} onChange={event => {
-                                        handleDataChange('title', event.target.value)
+                                    <Form.Control name="title" type="text" value={data.title} onChange={event => {
+                                        handleDataChange(event, 'title', event.target.value)
                                     }}/>
                                 </Form.Group>
                             </Col>
@@ -115,6 +133,7 @@ const QueueItem = (props) => {
                         <Row>
                             <Col>
                                 {/* Tags */}
+                                {/* TODO: Handle tag changes, add 'new tag' button */}
                                 <Form.Group>
                                     <Form.Label>Tags</Form.Label>
                                     <QueueItemTags tags={data.monumentTags} handleChange={handleTagChange}/>
