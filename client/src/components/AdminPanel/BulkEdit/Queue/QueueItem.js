@@ -6,10 +6,43 @@ import QueueItemTags from "./QueueItemTags";
 
 import './Queue.scss'
 import {useFormik} from "formik";
+import QueueItemField from "./QueueItemField";
+
+const FIELDS = [
+    {
+        name: 'title',
+        text: 'Title',
+        type: 'text'
+    },
+    {
+        name: 'artist',
+        text: 'Artist',
+        type: 'text'
+    },
+    {
+        name: 'createdDate',
+        text: 'Date Created',
+        type: 'date'
+    },
+    {
+        name: 'address',
+        text: 'Address',
+        type: 'text'
+    },
+    {
+        name: 'coordinates',
+        text: 'Coordinates',
+        type: 'text'
+    },
+    {
+        name: 'references',
+        text: 'References',
+        type: 'text'
+    }
+]
 
 const QueueItem = (props) => {
     const [data, setData] = useState(props.data)
-    const [fields, setFields] = useState(null)
 
     // TODO: Init Formik
     const formik = useFormik({
@@ -25,8 +58,10 @@ const QueueItem = (props) => {
         }
     })
 
-    const handleDataChange = (event, field, value) => {
-        if (validateDataChange(field, value)) setData(data => ({...data, [field]: value}))
+    const handleDataChange = (field, value) => {
+        // if (validateDataChange(field, value)) setData(data => ({...data, [field]: value}))
+
+        setData(data => ({...data, [field]: value}))
     }
 
     // TODO: Add/remove tag based on selection status
@@ -37,13 +72,13 @@ const QueueItem = (props) => {
     const validateDataChange = (field, value) => {
         switch (field) {
             case 'title':
-                return validator.isAlpha(value)
+                return !validator.isEmpty(value)
             case 'artist':
-                return validator.isAlpha(value)
+                return !validator.isEmpty(value)
             case 'createdDate':
                 return validator.isDate(value)
             case 'address':
-                return validator.isAlpha(value)
+                return !validator.isEmpty(value)
             case 'coordinates':
                 return validator.isLatLong(value, {checkDMS: true})
             case 'references':
@@ -51,7 +86,7 @@ const QueueItem = (props) => {
             case 'images':
                 return validator.isFQDN(value)
             case 'tags':
-                return validator.isAlpha(value)
+                return !validator.isEmpty(value)
         }
     }
 
@@ -66,70 +101,20 @@ const QueueItem = (props) => {
             {/* TODO: Implement multiple image carousel (?) */}
             <Card.Img alt="placeholder img"/>
             <Card.Body>
-                <Form onSubmit={formik.handleSubmit}>
+                <Form noValidate onSubmit={formik.handleSubmit}>
                     <Container fluid>
-                        <Row>
-                            <Col>
-                                {/* Title */}
-                                <Form.Group>
-                                    <Form.Label>Title</Form.Label>
-                                    <Form.Control name="title" type="text" value={data.title} onChange={event => {
-                                        handleDataChange(event, 'title', event.target.value)
-                                    }}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col lg={6}>
-                                {/* Artist */}
-                                <Form.Group>
-                                    <Form.Label>Artist</Form.Label>
-                                    <Form.Control type="text" value={data.artist} onChange={event => {
-                                        handleDataChange('artist', event.target.value)
-                                    }}/>
-                                </Form.Group>
-                            </Col>
-                            <Col lg={6}>
-                                {/* Created Date */}
-                                <Form.Group>
-                                    <Form.Label>Date Created</Form.Label>
-                                    <Form.Control type="date" value={data.createdDate.slice(0, 10)} onChange={event => {
-                                        handleDataChange('createdDate', event.target.value)
-                                    }}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {/* Address */}
-                                <Form.Group>
-                                    <Form.Label>Address</Form.Label>
-                                    <Form.Control type="text" value={data.address} onChange={event => {
-                                        handleDataChange('address', event.target.value)
-                                    }}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {/* Coordinates */}
-                                {/* TODO: Update data on change */}
-                                <Form.Group>
-                                    <Form.Label>Coordinates</Form.Label>
-                                    <Form.Control type="text" defaultValue={data.coordinates}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {/* References */}
-                                {/* TODO: Update data on change */}
-                                <Form.Group>
-                                    <Form.Label>References</Form.Label>
-                                    <Form.Control type="text" defaultValue={data.references}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                        {FIELDS.map(field => (
+                            <Row key={`${field.name}FieldRow`}>
+                                <Col>
+                                    <QueueItemField name={field.name}
+                                                    text={field.text}
+                                                    type={field.type}
+                                                    value={data[field.name]}
+                                                    onChange={handleDataChange}/>
+                                </Col>
+                            </Row>
+                        ))}
+                        {/* TODO: Create custom rows for coordinates, references */}
                         <Row>
                             <Col>
                                 {/* Tags */}
