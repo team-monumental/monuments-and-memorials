@@ -16,6 +16,10 @@
   .queue-item {
     box-shadow: none !important;
 
+    .form-group {
+      width: 100%;
+    }
+
     .tags-grid {
       display: flex;
       flex-wrap: wrap;

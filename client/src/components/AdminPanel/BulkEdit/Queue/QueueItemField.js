@@ -1,33 +1,46 @@
-import React from 'react'
-import {Form} from "react-bootstrap";
+import React, {useEffect} from 'react'
+import {Col, Form} from "react-bootstrap";
 
-const QueueItemField = ({name, text, type, value, onChange}) => {
-    const getField = () => {
-        switch (type) {
-            case 'date':
+const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
+    const getFormControl = () => {
+        switch (props.type) {
+            // case 'date':
+            //     return (
+            //         <Form.Control name={name} type={type} value={value.slice(0, 10)}/>
+            //     )
+            // case 'tags':
+            //     return (
+            //         <QueueItemTags tags={data['monumentTags']}/>
+            //     )
+            // case 'text':
+            //     return (
+            //         <Form.Control name={name} type={type} value={value}/>
+            //     )
+            default:
                 return (
-                    <Form.Group>
-                        <Form.Label>{text}</Form.Label>
-                        <Form.Control name={name}
-                                      type={type}
-                                      value={value.slice(0, 10)}
-                                      onChange={event => onChange(name, event.target.value)}/>
-                    </Form.Group>
-                )
-            case 'text':
-                return (
-                    <Form.Group>
-                        <Form.Label>{text}</Form.Label>
-                        <Form.Control name={name}
-                                      type={type}
-                                      value={value}
-                                      onChange={event => onChange(name, event.target.value)}/>
-                    </Form.Group>
+                    <>
+                        <Form.Control {...field} {...props}
+                                      value={props.type === 'date' ? field.value.slice(0, 10) : field.value}
+                                      isInvalid={!!errors[field.name]}
+                                      isValid={touched[field.name] && !errors[field.name]}/>
+                        <Form.Control.Feedback type="invalid">{errors[field.name]}</Form.Control.Feedback>
+                    </>
                 )
         }
     }
 
-    return getField()
+    useEffect(() => {
+        console.log(`${field.name} errors: ${JSON.stringify(errors)}`)
+    })
+
+    return (
+        <Form.Row>
+            <Form.Group as={Col} controlId={`${field.name}Validation`}>
+                <Form.Label>{props.text}</Form.Label>
+                {getFormControl()}
+            </Form.Group>
+        </Form.Row>
+    )
 }
 
 export default QueueItemField

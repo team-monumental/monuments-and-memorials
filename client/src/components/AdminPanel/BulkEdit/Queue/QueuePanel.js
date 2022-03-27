@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import QueueItem from "./QueueItem";
 import QueueNav from "./QueueNav";
 import {Container} from "react-bootstrap";
