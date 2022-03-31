@@ -312,12 +312,18 @@ public class CsvMonumentConverter {
             } catch (Exception e) {
                 result.getErrors().add("Unknown error. Please check that this row is formatted properly.");
             }
-
-            result.setMonumentSuggestion(suggestion);
-            result.validate();
-            results.add(result);
+            if(!isCSVRowNotEmpty(result)){
+                result.setMonumentSuggestion(suggestion);
+                result.validate();
+                results.add(result);
+            }
         }
         return results;
+    }
+
+    private static boolean isCSVRowNotEmpty(CsvMonumentConverterResult result) {
+        boolean allPropertiesAreNull = Arrays.stream(CsvMonumentConverterResult.class.getDeclaredFields()).allMatch(null);
+        return allPropertiesAreNull;
     }
 
     /**
