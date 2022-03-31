@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {Col, Form} from "react-bootstrap";
 
 const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
@@ -22,16 +22,13 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
                         <Form.Control {...field} {...props}
                                       value={props.type === 'date' ? field.value.slice(0, 10) : field.value}
                                       isInvalid={!!errors[field.name]}
-                                      isValid={touched[field.name] && !errors[field.name]}/>
+                                      // isValid={touched[field.name] && !errors[field.name]}
+                        />
                         <Form.Control.Feedback type="invalid">{errors[field.name]}</Form.Control.Feedback>
                     </>
                 )
         }
     }
-
-    useEffect(() => {
-        console.log(`${field.name} errors: ${JSON.stringify(errors)}`)
-    })
 
     return (
         <Form.Row>

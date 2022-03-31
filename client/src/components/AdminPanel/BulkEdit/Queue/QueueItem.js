@@ -54,31 +54,35 @@ const QueueItem = (props) => {
 
     }
 
+    // TODO: Parse respective values correctly (obj, arr, str)
     const handleValidate = (value, field) => {
+        let error
+
         switch (field) {
-            case 'title':
-                return !validator.isEmpty(value)
-            case 'artist':
-                return !validator.isEmpty(value)
             case 'createdDate':
-                return validator.isDate(value)
-            case 'address':
-                return !validator.isEmpty(value)
+                if (validator.isDate(value)) error = 'Required'
+                break
             case 'coordinates':
-                return validator.isLatLong(value, {checkDMS: true})
+                // if (!validator.isLatLong(value, {checkDMS: true})) error = 'Invalid format'
+                break
             case 'references':
-                return validator.isFQDN(value)
+                // if (!validator.isFQDN(value)) error = 'Invalid format'
+                break
             case 'images':
-                return validator.isFQDN(value)
-            case 'tags':
-                return !validator.isEmpty(value)
+                if (!validator.isFQDN(value)) error = 'Invalid format'
+                break
+            default:
+                if (!validator.isEmpty(value)) error = 'Required'
+                break
         }
 
-        return {title: 'Required'}
+        console.info(field, error)
+
+        return error
     }
 
-    const validate = (value) => {
-        return !value ? 'Required' : ''
+    const testValidate = (value) => {
+        return !value ? 'Required': ''
     }
 
     return (
@@ -91,7 +95,7 @@ const QueueItem = (props) => {
                     <Form>
                         {FIELDS.map(({name, text, type}) => (
                             <Field key={`${name}Field`} {...{name, text, type}}
-                                   validate={validate}
+                                   validate={testValidate}
                                    component={QueueItemField}/>
                         ))}
                     </Form>
