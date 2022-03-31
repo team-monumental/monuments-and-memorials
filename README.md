@@ -20,6 +20,8 @@ Ben Smith
 
 AJ Delposen
 
+#### 2020-2021 Software Engineering Students
+
 Ren Chauret
 
 William Schultheis
@@ -29,6 +31,17 @@ Dan Wang
 Samik Mitra
 
 Brendan Cail
+
+#### 2021-2022 Software Engineering Students
+
+Sean Coyne
+
+Asha Harris-Battles
+
+Henry Larson
+
+Tim Miner
+
 
 ## Contributing
 
