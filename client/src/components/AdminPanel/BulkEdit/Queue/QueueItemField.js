@@ -27,6 +27,7 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
 
                 // FIXME: Breaks when adding a new tag
                 if (field.value)
+                    console.info(field.value)
                     tags = field.value.map(tag => tag.tag.name)
 
                 return showTagField ? (
@@ -35,6 +36,7 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
                             <InputGroup.Prepend>
                                 <Button onClick={toggleTagField}><i className="material-icons">arrow_back</i></Button>
                             </InputGroup.Prepend>
+                            {/* TODO: Override `onChange` handler, set values with `setValues` from Formik bag */}
                             <Form.Control {...field} {...props}
                                           value={tags ? tags.join(', ') : ''}
                                           isInvalid={!!errors[field.name]}
