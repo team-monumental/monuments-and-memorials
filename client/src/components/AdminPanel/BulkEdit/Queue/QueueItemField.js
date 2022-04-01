@@ -23,6 +23,12 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
                     </>
                 )
             case 'tags':
+                let tags
+
+                // FIXME: Breaks when adding a new tag
+                if (field.value)
+                    tags = field.value.map(tag => tag.tag.name)
+
                 return showTagField ? (
                     <>
                         <InputGroup>
@@ -30,6 +36,7 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
                                 <Button onClick={toggleTagField}><i className="material-icons">arrow_back</i></Button>
                             </InputGroup.Prepend>
                             <Form.Control {...field} {...props}
+                                          value={tags ? tags.join(', ') : ''}
                                           isInvalid={!!errors[field.name]}
                             />
                             <Form.Control.Feedback type="invalid">{errors[field.name]}</Form.Control.Feedback>
