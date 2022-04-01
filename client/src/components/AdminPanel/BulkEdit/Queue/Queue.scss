@@ -15,6 +15,7 @@
 
   .queue-item {
     box-shadow: none !important;
+    overflow-y: scroll;
 
     .form-group {
       width: 100%;
@@ -29,6 +30,12 @@
 
         i {
           margin-left: 5px;
+        }
+      }
+
+      #add-tag {
+        i {
+          margin: 0;
         }
       }
     }

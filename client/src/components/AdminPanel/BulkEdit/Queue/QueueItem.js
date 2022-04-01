@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Field, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
@@ -37,11 +37,11 @@ const FIELDS = [
         text: 'References',
         type: 'text'
     },
-    // {
-    //     name: 'tags',
-    //     text: 'Tags',
-    //     type: 'tags'
-    // }
+    {
+        name: 'monumentTags',
+        text: 'Tags',
+        type: 'tags'
+    }
 ]
 
 const QueueItem = (props) => {
@@ -58,9 +58,11 @@ const QueueItem = (props) => {
     const handleValidate = (value, field) => {
         let error
 
+        console.info(`${field}: ${value}`)
+
         switch (field) {
             case 'createdDate':
-                if (validator.isDate(value)) error = 'Required'
+                if (!validator.isDate(value.slice(0, 10))) error = 'Required'
                 break
             case 'coordinates':
                 // if (!validator.isLatLong(value, {checkDMS: true})) error = 'Invalid format'
@@ -69,20 +71,16 @@ const QueueItem = (props) => {
                 // if (!validator.isFQDN(value)) error = 'Invalid format'
                 break
             case 'images':
-                if (!validator.isFQDN(value)) error = 'Invalid format'
+                // if (!validator.isFQDN(value)) error = 'Invalid format'
+                break
+            case 'monumentTags':
                 break
             default:
-                if (!validator.isEmpty(value)) error = 'Required'
+                if (validator.isEmpty(value)) error = 'Required'
                 break
         }
 
-        console.info(field, error)
-
         return error
-    }
-
-    const testValidate = (value) => {
-        return !value ? 'Required': ''
     }
 
     return (
@@ -94,8 +92,11 @@ const QueueItem = (props) => {
                         onSubmit={handleSubmit}>
                     <Form>
                         {FIELDS.map(({name, text, type}) => (
-                            <Field key={`${name}Field`} {...{name, text, type}}
-                                   validate={testValidate}
+                            <Field {...{name, text, type}}
+                                   key={`${name}Field`}
+                                   validate={value => {
+                                       return handleValidate(value, name)
+                                   }}
                                    component={QueueItemField}/>
                         ))}
                     </Form>

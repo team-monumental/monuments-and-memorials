@@ -1,7 +1,7 @@
 import React from 'react'
 import Tag from "../../../Tags/Tag/Tag";
 
-const QueueItemTags = ({tags, handleChange}) => {
+const QueueItemTags = ({tags, toggle, handleChange}) => {
     return (
         <div className="tags-grid">
             {tags.map((tag, idx) => (
@@ -13,6 +13,9 @@ const QueueItemTags = ({tags, handleChange}) => {
                      isMaterial={tag.tag.isMaterial}
                      onSelect={handleChange}/>
             ))}
+            <div id="add-tag" className="tag" onClick={toggle}>
+                <i className="material-icons">add</i>
+            </div>
         </div>
     )
 }
