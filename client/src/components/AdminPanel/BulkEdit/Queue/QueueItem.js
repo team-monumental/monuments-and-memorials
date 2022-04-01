@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Field, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
@@ -89,7 +89,7 @@ const QueueItem = (props) => {
             <Card.Img alt="placeholder img"/>
             <Card.Body>
                 <Formik initialValues={{...props.data}}
-                        onSubmit={handleSubmit}>
+                        onSubmit={handleSubmit} enableReinitialize>
                     <Form>
                         {FIELDS.map(({name, text, type}) => (
                             <Field {...{name, text, type}}
