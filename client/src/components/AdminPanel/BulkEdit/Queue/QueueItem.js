@@ -58,22 +58,29 @@ const QueueItem = (props) => {
     const handleValidate = (value, field) => {
         let error
 
-        console.info(`${field}: ${value}`)
-
         switch (field) {
             case 'createdDate':
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
                 break
             case 'coordinates':
-                // if (!validator.isLatLong(value, {checkDMS: true})) error = 'Invalid format'
+                let coordinates = [value.coordinates[1], value.coordinates[0]].join()
+
+                if (!validator.isLatLong(coordinates))
+                    error = 'Invalid Coordinates'
                 break
             case 'references':
-                // if (!validator.isFQDN(value)) error = 'Invalid format'
+                for (let {url} of value) {
+                    if (!validator.isURL(url, {allow_underscores: true}))
+                        error = 'Invalid URL'
+                }
                 break
             case 'images':
-                // if (!validator.isFQDN(value)) error = 'Invalid format'
+                for (let {url} of value) if (!validator.isURL(url, {allow_underscores: true}))
+                    error = 'Invalid URL'
                 break
             case 'monumentTags':
+                for (let {tag: {name}} of value)
+                    if (validator.isEmpty(name)) error = 'Required'
                 break
             default:
                 if (validator.isEmpty(value)) error = 'Required'
