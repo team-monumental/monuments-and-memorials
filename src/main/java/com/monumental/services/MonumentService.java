@@ -1787,6 +1787,22 @@ public class MonumentService extends ModelService<Monument> {
             job.setProgress(1.0);
             bulkCreateSuggestion.setCreatedBy(job.getUser());
         }
+        //for each valid result in the list with error or warning make rollbar with error/warning
+        for(CsvMonumentConverterResult result : validResults ) {
+            List<String> errors = result.getErrors();
+            List<String> warnings = result.getWarnings();
+            List<String> contributor = result.getContributorNames();
+            if (!errors.isEmpty()){
+                String errorList = String.join("; ", errors);
+                rollbar.info("Monument(s) by: " + contributor + "suggested with error(s): " + errorList);
+            }
+            if(!result.getWarnings().isEmpty()){
+                String warningList = String.join("; ", warnings);
+                rollbar.info("Monument(s) by: " + contributor + "suggested with warnings(s): " + warningList);
+
+            }
+        }
+
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
     }
