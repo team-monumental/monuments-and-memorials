@@ -1787,21 +1787,26 @@ public class MonumentService extends ModelService<Monument> {
             job.setProgress(1.0);
             bulkCreateSuggestion.setCreatedBy(job.getUser());
         }
-        //for each valid result in the list with error or warning make rollbar with error/warning
+        //for each valid result in the list with error or warning send to rollbar with error/warning
+        List<String> errors = new ArrayList<>();
+        List<String> warnings = new ArrayList<>();
+        Set<String> contributor = new HashSet<>();
+        List<String> monuments =  new ArrayList<>();
         for(CsvMonumentConverterResult result : validResults ) {
-            List<String> errors = result.getErrors();
-            List<String> warnings = result.getWarnings();
-            List<String> contributor = result.getContributorNames();
-            if (!errors.isEmpty()){
-                String errorList = String.join("; ", errors);
-                rollbar.info("Monument(s) by: " + contributor + "suggested with error(s): " + errorList);
-            }
-            if(!result.getWarnings().isEmpty()){
-                String warningList = String.join("; ", warnings);
-                rollbar.info("Monument(s) by: " + contributor + "suggested with warnings(s): " + warningList);
-
-            }
+            errors.addAll(result.getErrors());
+            warnings.addAll(result.getWarnings());
+            contributor.addAll(result.getContributorNames());
         }
+        for(CreateMonumentSuggestion suggestion : createSuggestions){
+                monuments.add(suggestion.getTitle());
+        }
+        if (!errors.isEmpty()){
+                rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with errors.");
+        }
+        if(!warnings.isEmpty()){
+                rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with warnings.");
+        }
+
 
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
