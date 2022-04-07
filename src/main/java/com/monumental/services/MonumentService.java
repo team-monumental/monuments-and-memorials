@@ -1775,10 +1775,10 @@ public class MonumentService extends ModelService<Monument> {
             monuments.add(suggestion.getTitle());
         }
         if (!errors.isEmpty()){
-            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with errors.");
+            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with" + errors.size() +" errors.");
         }
         if(!warnings.isEmpty()){
-            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with warnings.");
+            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with " + warnings.size() +" warnings.");
         }
 
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
