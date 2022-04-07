@@ -1,8 +1,9 @@
 import React from "react";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import {Button, Form, InputGroup, OverlayTrigger, Tooltip} from "react-bootstrap";
 
 
 const QueueItemCoords = ({field, form: {touched, errors}, ...props}) => {
+    // noinspection JSValidateTypes,RequiredAttributes
     return (
         <Form.Group>
             <Form.Label>{props.text}</Form.Label>
@@ -16,7 +17,13 @@ const QueueItemCoords = ({field, form: {touched, errors}, ...props}) => {
                 </InputGroup.Prepend>
                 <Form.Control required defaultValue={field.value.coordinates[0]}/>
                 <InputGroup.Append>
-                    <Button className="material-icons" onClick={props.toggle}>swap_vert</Button>
+                    <OverlayTrigger placement="bottom" overlay={(
+                        <Tooltip id="coords-toggle">
+                            Swap to Address
+                        </Tooltip>
+                    )}>
+                        <Button className="material-icons" onClick={props.toggle}>swap_vert</Button>
+                    </OverlayTrigger>
                 </InputGroup.Append>
             </InputGroup>
             <Form.Label>Address Placeholder</Form.Label>
