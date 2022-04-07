@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Field, Formik} from "formik";
+import {Field, FieldArray, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
 
@@ -119,6 +119,9 @@ const QueueItem = (props) => {
                         {/* TODO: Add validation */}
                         <Field {...{name: 'references', text: 'References', type: 'text'}}
                                component={QueueItemRefs}/>
+                        {/*<FieldArray name="references">*/}
+                        {/*    {(helpers) => <QueueItemRefs {...helpers}/>}*/}
+                        {/*</FieldArray>*/}
 
                         {/* Tags */}
                         {/* TODO: Add validation */}

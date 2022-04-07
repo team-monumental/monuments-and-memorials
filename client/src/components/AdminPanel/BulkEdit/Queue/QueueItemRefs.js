@@ -2,7 +2,7 @@ import React from "react";
 import {Form} from "react-bootstrap";
 
 
-const QueueItemRefs = ({field, form: {touched, errors}, ...props}) => {
+const QueueItemRefs = ({field, insert, remove, push, ...props}) => {
     // TODO: Integrate Formik FieldArray
     return (
         <Form.Group>
