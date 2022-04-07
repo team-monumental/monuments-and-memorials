@@ -10,11 +10,11 @@ const QueueItemCoords = ({field, form: {touched, errors}, ...props}) => {
                 <InputGroup.Prepend>
                     <InputGroup.Text>Latitude</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control required/>
+                <Form.Control required defaultValue={field.value.coordinates[1]}/>
                 <InputGroup.Prepend>
                     <InputGroup.Text>Longitude</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control required/>
+                <Form.Control required defaultValue={field.value.coordinates[0]}/>
                 <InputGroup.Append>
                     <Button className="material-icons" onClick={props.toggle}>swap_vert</Button>
                 </InputGroup.Append>
