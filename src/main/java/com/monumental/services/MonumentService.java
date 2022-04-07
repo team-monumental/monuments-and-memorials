@@ -984,7 +984,7 @@ public class MonumentService extends ModelService<Monument> {
         createdMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), true));
         createdMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), false));
 
-        rollbar.info("Created monument" + createdMonument.getId() + "!");
+        rollbar.info("Created monument" + createdMonument.getId() + "by: " + createdMonument.getContributions());
 
         return createdMonument;
     }
@@ -1150,7 +1150,7 @@ public class MonumentService extends ModelService<Monument> {
         // Update the Tags associated with the Monument
         this.updateMonumentTags(currentMonument, updateSuggestion.getNewTags(), false);
 
-        rollbar.info("Updated monument" + currentMonument.getId() + "!");
+        rollbar.info("Updated monument" + currentMonument.getId() + "by: "+currentMonument.getContributions().get(currentMonument.getContributions().size() - 1));
 
         return currentMonument;
     }
