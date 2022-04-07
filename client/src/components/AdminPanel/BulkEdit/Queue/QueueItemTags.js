@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import Tag from "../../../Tags/Tag/Tag";
 import {Button, Form, InputGroup} from "react-bootstrap";
 

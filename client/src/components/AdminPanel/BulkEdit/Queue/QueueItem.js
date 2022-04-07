@@ -1,14 +1,14 @@
 import React, {useState} from 'react'
-import {Field, Formik} from "formik";
+import {Field, FieldArray, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
 
 import './Queue.scss'
 import QueueItemField from "./QueueItemField";
-import QueueItemRefs from "./QueueItemRefs";
 import QueueItemTags from "./QueueItemTags";
 import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
+import QueueItemRefs from "./QueueItemRefs";
 
 const FIELDS = [
     {
@@ -37,11 +37,6 @@ const QueueItem = (props) => {
 
     const toggleCoords = () => {
         setShowCoords(!showCoords)
-    }
-
-    // TODO: Add/remove tag based on selection status
-    const handleTagChange = () => {
-
     }
 
     const handleValidate = (value, field) => {
@@ -117,11 +112,11 @@ const QueueItem = (props) => {
 
                         {/* References */}
                         {/* TODO: Add validation */}
-                        <Field {...{name: 'references', text: 'References', type: 'text'}}
-                               component={QueueItemRefs}/>
-                        {/*<FieldArray name="references">*/}
-                        {/*    {(helpers) => <QueueItemRefs {...helpers}/>}*/}
-                        {/*</FieldArray>*/}
+                        <FieldArray name="references">
+                            {(helpers) => (
+                                <QueueItemRefs {...helpers} refs={props.data.references} text={'References'}/>
+                            )}
+                        </FieldArray>
 
                         {/* Tags */}
                         {/* TODO: Add validation */}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Col, Form} from "react-bootstrap";
 
 const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
