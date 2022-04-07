@@ -36,6 +36,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                             <Col lg={2}><span>ARTIST</span></Col>
                             <Col lg={2}><span>TAGS</span></Col>
                             <Col lg={2}><span>DATE CREATED</span></Col>
+                            <Col>{(active * step) + 1} - {(active * step) + step} OF {results.length} RESULTS</Col>
                         </Row>
                     </Container>
                 </ListGroup.Item>
@@ -48,6 +49,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     />
                 ))}
             </ListGroup>
+            {/* TODO: Add ellipsis component for increased search results */}
             <Pagination>
                 <Pagination.First disabled={active === 0} onClick={() => handleActive(0)}/>
                 <Pagination.Prev disabled={active === 0} onClick={() => handleActive(active - 1)}/>
