@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import {Button, Col, Form, InputGroup} from "react-bootstrap";
+
+import QueueItemRefs from "./QueueItemRefs";
 import QueueItemTags from "./QueueItemTags";
 
 const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
@@ -22,14 +24,16 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
                         <Form.Control.Feedback type="invalid">{errors[field.name]}</Form.Control.Feedback>
                     </>
                 )
+            case 'refs':
+                return <QueueItemRefs refs={field.value}/>
             case 'tags':
                 let tags
 
                 // FIXME: Breaks when adding a new tag
                 if (field.value)
-                    console.info(field.value)
                     tags = field.value.map(tag => tag.tag.name)
 
+                // TODO: Move new tag InputGroup within QueueItemTags component
                 return showTagField ? (
                     <>
                         <InputGroup>

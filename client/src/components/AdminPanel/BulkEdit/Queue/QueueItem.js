@@ -35,7 +35,7 @@ const FIELDS = [
     {
         name: 'references',
         text: 'References',
-        type: 'text'
+        type: 'refs'
     },
     {
         name: 'monumentTags',
@@ -98,14 +98,18 @@ const QueueItem = (props) => {
                 <Formik initialValues={{...props.data}}
                         onSubmit={handleSubmit} enableReinitialize>
                     <Form>
-                        {FIELDS.map(({name, text, type}) => (
-                            <Field {...{name, text, type}}
-                                   key={`${name}Field`}
-                                   validate={value => {
-                                       return handleValidate(value, name)
-                                   }}
-                                   component={QueueItemField}/>
-                        ))}
+                        {FIELDS.map(({name, text, type}) => {
+                            console.info(type)
+
+                            return (
+                                <Field {...{name, text, type}}
+                                       key={`${name}Field`}
+                                       validate={value => {
+                                           return handleValidate(value, name)
+                                       }}
+                                       component={QueueItemField}/>
+                            )
+                        })}
                     </Form>
                 </Formik>
             </Card.Body>
