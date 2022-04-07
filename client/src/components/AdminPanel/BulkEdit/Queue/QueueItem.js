@@ -1,10 +1,14 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Field, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
 
 import './Queue.scss'
 import QueueItemField from "./QueueItemField";
+import QueueItemRefs from "./QueueItemRefs";
+import QueueItemTags from "./QueueItemTags";
+import QueueItemCoords from "./QueueItemCoords";
+import QueueItemAddress from "./QueueItemAddress";
 
 const FIELDS = [
     {
@@ -21,32 +25,18 @@ const FIELDS = [
         name: 'createdDate',
         text: 'Date Created',
         type: 'date'
-    },
-    {
-        name: 'address',
-        text: 'Address',
-        type: 'text'
-    },
-    {
-        name: 'coordinates',
-        text: 'Coordinates',
-        type: 'text'
-    },
-    {
-        name: 'references',
-        text: 'References',
-        type: 'refs'
-    },
-    {
-        name: 'monumentTags',
-        text: 'Tags',
-        type: 'tags'
     }
 ]
 
 const QueueItem = (props) => {
+    const [showCoords, setShowCoords] = useState(false)
+
     const handleSubmit = (values) => {
         console.log(values)
+    }
+
+    const toggleCoords = () => {
+        setShowCoords(!showCoords)
     }
 
     // TODO: Add/remove tag based on selection status
@@ -54,7 +44,6 @@ const QueueItem = (props) => {
 
     }
 
-    // TODO: Parse respective values correctly (obj, arr, str)
     const handleValidate = (value, field) => {
         let error
 
@@ -98,9 +87,8 @@ const QueueItem = (props) => {
                 <Formik initialValues={{...props.data}}
                         onSubmit={handleSubmit} enableReinitialize>
                     <Form>
+                        {/* Name, Artist, Date */}
                         {FIELDS.map(({name, text, type}) => {
-                            console.info(type)
-
                             return (
                                 <Field {...{name, text, type}}
                                        key={`${name}Field`}
@@ -110,6 +98,32 @@ const QueueItem = (props) => {
                                        component={QueueItemField}/>
                             )
                         })}
+
+                        {showCoords ? (
+                            // Coordinates
+                            // TODO: Add validation
+                            <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
+                                   toggle={toggleCoords}
+                                   component={QueueItemCoords}
+                            />
+                        ) : (
+                            // Address
+                            // TODO: Add validation
+                            <Field {...{name: 'address', text: 'Address', type: 'text'}}
+                                   toggle={toggleCoords}
+                                   component={QueueItemAddress}
+                            />
+                        )}
+
+                        {/* References */}
+                        {/* TODO: Add validation */}
+                        <Field {...{name: 'references', text: 'References', type: 'text'}}
+                               component={QueueItemRefs}/>
+
+                        {/* Tags */}
+                        {/* TODO: Add validation */}
+                        <Field {...{name: 'monumentTags', text: 'Tags', type: 'text'}}
+                               component={QueueItemTags}/>
                     </Form>
                 </Formik>
             </Card.Body>
