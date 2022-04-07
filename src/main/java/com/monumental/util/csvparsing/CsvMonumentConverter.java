@@ -315,9 +315,41 @@ public class CsvMonumentConverter {
 
             result.setMonumentSuggestion(suggestion);
             result.validate();
-            results.add(result);
+
+            if(isCSVRowNotEmpty(result)){
+                results.add(result);
+            }
         }
         return results;
+    }
+
+    /**
+     * Determines if the row in the CSV is empty or not by seeing if any of the fields have values or not
+     * @param result - CsvMonumentConverterResult class to check
+     * @return boolean - true if not empty, false if empty
+     */
+    private static boolean isCSVRowNotEmpty(CsvMonumentConverterResult result) {
+        return !result.getContributorNames().isEmpty() ||
+                result.getMonumentSuggestion().getArtist() != null ||
+                result.getMonumentSuggestion().getTitle() != null ||
+                !result.getMaterialNames().isEmpty() ||
+                result.getMonumentSuggestion().getLatitude() != null ||
+                result.getMonumentSuggestion().getLongitude() != null ||
+                result.getMonumentSuggestion().getCity() != null ||
+                result.getMonumentSuggestion().getState() != null ||
+                result.getMonumentSuggestion().getAddress() != null ||
+                result.getMonumentSuggestion().getInscription() != null ||
+                result.getMonumentSuggestion().getDescription() != null ||
+                !result.getTagNames().isEmpty() ||
+                !result.getImageFiles().isEmpty() ||
+                !result.getImageReferenceUrls().isEmpty() ||
+                !result.getImageCaptions().isEmpty() ||
+                !result.getReferenceUrls().isEmpty() ||
+                !result.getPhotoSphereImages().isEmpty() ||
+                !result.getPhotoSphereImageReferenceUrls().isEmpty() ||
+                !result.getPhotoSphereImageCaptions().isEmpty() ||
+                result.getMonumentSuggestion().getDeactivatedDate() != null ||
+                result.getMonumentSuggestion().getDeactivatedComment() != null;
     }
 
     /**
