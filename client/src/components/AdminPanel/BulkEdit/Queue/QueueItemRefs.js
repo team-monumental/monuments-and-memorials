@@ -1,25 +1,22 @@
 import React from "react";
-import {Button, Form, InputGroup} from "react-bootstrap";
 import {Field} from "formik";
+import QueueItemRef from "./QueueItemRef";
+import {Col, Form} from "react-bootstrap";
 
 
-const QueueItemRefs = ({insert, remove, push, form: {values: {references}}, ...props}) => {
-    const Ref = ({id, url, idx}) => (
-        <InputGroup>
-            <Form.Control key={`ref${id}`} type="text" defaultValue={url}/>
-            <InputGroup.Append>
-                <Button className="material-icons" variant="outline-danger" onClick={() => remove(idx)}>delete</Button>
-            </InputGroup.Append>
-        </InputGroup>
-    )
-
+const QueueItemRefs = ({form: {values}, remove, push, ...props}) => {
     return (
-        <Form.Group>
-            <Form.Label>{props.text}</Form.Label>
-            {references.map((ref, idx) => (
-                <Field key={`ref-${idx}`} id={ref.id} url={ref.url} idx={idx} component={Ref}/>
-            ))}
-        </Form.Group>
+        <Form.Row>
+            <Form.Group as={Col}>
+                <Form.Label>References</Form.Label>
+                {values.references.map((ref, idx) => (
+                    <Field {...{idx: idx, remove: remove}} key={`ref-${idx}`}
+                           name={`references.${idx}.url`}
+                           type="text"
+                           component={QueueItemRef}/>
+                ))}
+            </Form.Group>
+        </Form.Row>
     )
 }
 
