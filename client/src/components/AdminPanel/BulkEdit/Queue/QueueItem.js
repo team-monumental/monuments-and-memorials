@@ -9,9 +9,6 @@ import QueueItemTags from "./QueueItemTags";
 import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
-import {remove} from "leaflet/src/dom/DomUtil";
-import {push} from "connected-react-router";
-import QueueItemRef from "./QueueItemRef";
 
 const FIELDS = [
     {
@@ -115,17 +112,7 @@ const QueueItem = (props) => {
 
                         {/* References */}
                         {/* TODO: Add validation */}
-                        {/* FIXME: Unable to modify field value */}
-                        <FieldArray name="references">
-                            {({remove, push, form: {values}}) => (
-                                values.references.map((ref, idx) => (
-                                    <Field {...{idx: idx, remove: remove}} key={`ref-${idx}`}
-                                           name={`references.${idx}.url`}
-                                           type="text"
-                                           component={QueueItemRef}/>
-                                ))
-                            )}
-                        </FieldArray>
+                        <FieldArray name="references" component={QueueItemRefs}/>
 
                         {/* Tags */}
                         {/* TODO: Add validation */}
