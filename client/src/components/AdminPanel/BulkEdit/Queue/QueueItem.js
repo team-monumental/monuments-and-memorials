@@ -111,7 +111,6 @@ const QueueItem = (props) => {
                         )}
 
                         {/* References */}
-                        {/* TODO: Add validation */}
                         <FieldArray name="references" component={QueueItemRefs}/>
 
                         {/* Tags */}
