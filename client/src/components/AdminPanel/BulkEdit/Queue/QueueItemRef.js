@@ -5,17 +5,21 @@ const QueueItemRef = ({field, form: {touched, errors}, ...props}) => {
     const [error, setError] = useState('')
     const [touch, setTouch] = useState(false)
 
+    // Update touched
     useEffect(() => {
-        if (errors.references) {
-            setError(errors.references[props.idx].url)
-        } else {
-            setError('')
-        }
-
         if (touched.references)
             setTouch(true)
-    }, [errors, touched])
+    }, [touched])
 
+    // Update errors
+    useEffect(() => {
+        if (errors.references && typeof errors.references[props.idx] !== 'undefined') {
+            setError(errors.references[props.idx].url)
+        } else
+            setError('')
+    }, [errors])
+
+    // TODO: Add top margin for not first nth children
     return (
         <InputGroup>
             <Form.Control {...field} type="text" value={field.value} isValid={touch && !error} isInvalid={!!error}/>
