@@ -52,19 +52,9 @@ const QueueItem = (props) => {
                 if (!validator.isLatLong(coordinates))
                     error = 'Invalid Coordinates'
                 break
-            case 'references':
-                for (let {url} of value) {
-                    if (!validator.isURL(url, {allow_underscores: true}))
-                        error = 'Invalid URL'
-                }
-                break
             case 'images':
                 for (let {url} of value) if (!validator.isURL(url, {allow_underscores: true}))
                     error = 'Invalid URL'
-                break
-            case 'monumentTags':
-                for (let {tag: {name}} of value)
-                    if (validator.isEmpty(name)) error = 'Required'
                 break
             default:
                 if (validator.isEmpty(value)) error = 'Required'
@@ -115,8 +105,7 @@ const QueueItem = (props) => {
 
                         {/* Tags */}
                         {/* TODO: Add validation */}
-                        <Field {...{name: 'monumentTags', text: 'Tags', type: 'text'}}
-                               component={QueueItemTags}/>
+                        <FieldArray name="monumentTags" component={QueueItemTags}/>
                     </Form>
                 </Formik>
             </Card.Body>

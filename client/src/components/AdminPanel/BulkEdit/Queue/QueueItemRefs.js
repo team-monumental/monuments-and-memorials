@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Field} from "formik";
 import QueueItemRef from "./QueueItemRef";
-import {Col, Form} from "react-bootstrap";
+import {Button, Col, Form} from "react-bootstrap";
 import validator from "validator/es";
 
 
@@ -25,19 +25,21 @@ const QueueItemRefs = ({field, form: {values}, remove, push, ...props}) => {
     }
 
     return (
-        <Form.Row>
-            <Form.Group as={Col}>
-                <Form.Label>References</Form.Label>
+        <Form.Group>
+            <Form.Label>References</Form.Label>
+            <div className="refs-list">
                 {values.references.map((ref, idx) => (
-                    <Field {...{idx: idx, remove: remove}} key={`ref-${idx}`}
+                    <Field {...{idx, remove}} key={`ref-${idx}`}
                            name={`references.${idx}.url`}
                            type="text"
                            validate={validateRef}
                            component={QueueItemRef}/>
                 ))}
-                <Form.Text><a href="#" onClick={handlePush}>add reference</a></Form.Text>
-            </Form.Group>
-        </Form.Row>
+            </div>
+            {/*<Form.Text><a href="#" onClick={handlePush}>add reference</a></Form.Text>*/}
+            <Button block size="sm" variant="outline-primary" className="material-icons"
+                    onClick={handlePush}>add</Button>
+        </Form.Group>
     )
 }
 

@@ -1,48 +1,50 @@
 import React, {useState} from 'react'
-import Tag from "../../../Tags/Tag/Tag";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
+import {Field} from "formik";
+import QueueItemTag from "./QueueItemTag";
+import validator from "validator/es";
 
-const QueueItemTags = ({field, form: {touched, errors}, ...props}) => {
-    const [showTagField, setShowTagField] = useState(false)
+const QueueItemTags = ({field, form: {values}, remove, push, ...props}) => {
+    const [newTagId, setNewTagId] = useState(-1)
 
-    const toggleTagField = () => {
-        setShowTagField(!showTagField)
+    const handlePush = () => {
+        push({
+            id: newTagId,
+            createdDate: new Date(),
+            lastModifiedDate: null,
+            createdBy: null,
+            tag: {
+                id: newTagId,
+                createdDate: new Date(),
+                lastModifiedDate: null,
+                createdBy: null,
+                name: '',
+                isMaterial: false
+            }
+        })
+
+        setNewTagId(newTagId - 1)
     }
 
-    // TODO: Integrate within component
-    const tagInput = (
-        <InputGroup>
-            <InputGroup.Prepend>
-                <Button onClick={toggleTagField}><i className="material-icons">arrow_back</i></Button>
-            </InputGroup.Prepend>
-            {/* TODO: Override `onChange` handler, set values with `setValues` from Formik bag */}
-            <Form.Control {...field} {...props}
-                          value={field.value ? field.value.join(', ') : ''}
-                          isInvalid={!!errors[field.name]}
-            />
-            <Form.Control.Feedback type="invalid">{errors[field.name]}</Form.Control.Feedback>
-        </InputGroup>
-    )
+    const validateTag = (value) => {
+        return validator.isEmpty(value) ? 'Required' : ''
+    }
 
-    // TODO: Integrate Formik FieldArray
+    // noinspection JSUnresolvedVariable
     return (
         <Form.Group>
-            <Form.Label>{props.text}</Form.Label>
+            <Form.Label>Tags</Form.Label>
             <div className="tags-grid">
-                {field.value && field.value.map((tag, idx) => (
-                    <Tag key={`active-record-tag-${idx}`}
-                         name={tag.tag.name}
-                         selectable={true}
-                         defaultIcon={'cancel'}
-                         selectedIcon={'undo'}
-                         isMaterial={tag.tag.isMaterial}
-                        // onSelect={handleChange}
-                    />
+                {values.monumentTags.map((tag, idx) => (
+                    // TODO: Add validation, component
+                    <Field {...{idx, remove}} key={`tag-${idx}`}
+                           name={`monumentTags.${idx}.tag.name`}
+                           validate={validateTag}
+                           component={QueueItemTag}/>
                 ))}
-                {/* TODO: Add onClick func */}
-                <div id="add-tag" className="tag">
-                    <i className="material-icons">add</i>
-                </div>
+
+                <Button size="sm" variant="outline-primary" className="material-icons"
+                        onClick={handlePush}>add</Button>
             </div>
         </Form.Group>
     )

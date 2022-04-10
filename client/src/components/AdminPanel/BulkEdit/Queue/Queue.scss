@@ -21,9 +21,20 @@
       width: 100%;
     }
 
+    .refs-list {
+      .input-group {
+        margin-bottom: 7px;
+      }
+    }
+
     .tags-grid {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 3fr);
+      grid-gap: 7px;
+
+      button {
+        height: 2.25em;
+      }
 
       .tag {
         margin: 0 7px 7px 0;
