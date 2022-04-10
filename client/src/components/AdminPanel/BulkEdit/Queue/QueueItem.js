@@ -86,14 +86,14 @@ const QueueItem = (props) => {
 
                         {showCoords ? (
                             // Coordinates
-                            // TODO: Add validation
+                            // TODO: Add validation, conversion func
                             <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
                                    toggle={toggleCoords}
                                    component={QueueItemCoords}
                             />
                         ) : (
                             // Address
-                            // TODO: Add validation
+                            // TODO: Add validation, conversion func
                             <Field {...{name: 'address', text: 'Address', type: 'text'}}
                                    toggle={toggleCoords}
                                    component={QueueItemAddress}
