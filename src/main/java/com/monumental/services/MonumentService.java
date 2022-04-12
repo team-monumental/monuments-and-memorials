@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.*;
 import com.monumental.repositories.*;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
@@ -88,6 +89,8 @@ public class MonumentService extends ModelService<Monument> {
     @Autowired
     private Rollbar rollbar;
 
+    @Autowired
+    private UserService userService;
     /**
      * SRID for coordinates
      * Find more info here: https://spatialreference.org/ref/epsg/wgs-84/
@@ -637,7 +640,7 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Monument> monuments = new ArrayList<>();
         List<CreateMonumentSuggestion> createSuggestions = bulkCreateSuggestion.getCreateSuggestions();
-
+        Set<String> contributor = new HashSet<>();
         for (int i = 0; i < createSuggestions.size(); i++) {
             CreateMonumentSuggestion createSuggestion = createSuggestions.get(i);
 
@@ -651,22 +654,28 @@ public class MonumentService extends ModelService<Monument> {
                 // The row number is the index plus 1 for the header row and plus 1 to be 1-based instead of zero-based
                 job.setProgress((double) (i + 2) / createSuggestions.size());
             }
+
+
+            for (CreateMonumentSuggestion suggestion : createSuggestions){
+                contributor.addAll(suggestion.getContributions());
+            }
         }
 
         this.monumentRepository.saveAll(monuments);
         if (job != null) job.setProgress(1.0);
 
-        rollbar.info("Bulk created " + monuments.size() + " monuments!");
+        rollbar.info("Bulk created " + monuments.size() + " monuments by contributor(s): "+contributor);
 
         return monuments;
     }
 
-    public void deleteMonument(Integer id) {
+    public void deleteMonument(Integer id) throws UnauthorizedException {
         this.favoriteRepository.deleteAllByMonumentId(id);
         this.updateSuggestionRepository.deleteAllByMonumentId(id);
         this.monumentTagRepository.deleteAllByMonumentId(id);
         this.monumentRepository.deleteById(id);
-        rollbar.info("Deleted monument " + id + "!");
+
+        rollbar.info("Deleted monument " + id + " by user: " +this.userService.getCurrentUser());
     }
 
     @SuppressWarnings("unchecked")
