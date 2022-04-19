@@ -1,5 +1,5 @@
 import {FETCH_MAP_MONUMENTS_ERROR, FETCH_MAP_MONUMENTS_PENDING, FETCH_MAP_MONUMENTS_SUCCESS} from '../constants';
-import basicReducer from '../utils/basic-reducer';
+import basicReducer from './basic';
 
 const initialState = {
     pending: false,

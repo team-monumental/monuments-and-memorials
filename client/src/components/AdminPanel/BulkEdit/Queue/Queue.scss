@@ -1,0 +1,59 @@
+.queue-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  height: 100%;
+
+  div.empty {
+    text-align: center;
+
+    h5 {
+      margin: 0;
+    }
+  }
+
+  .queue-item {
+    box-shadow: none !important;
+    overflow-y: scroll;
+
+    .form-group {
+      width: 100%;
+    }
+
+    .refs-list {
+      .input-group {
+        margin-bottom: 7px;
+      }
+    }
+
+    .tags-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 3fr);
+      grid-gap: 7px;
+
+      button {
+        height: 2.25em;
+      }
+
+      .tag {
+        margin: 0 7px 7px 0;
+
+        i {
+          margin-left: 5px;
+        }
+      }
+
+      #add-tag {
+        i {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .pagination {
+    align-self: center;
+    justify-self: center;
+  }
+}

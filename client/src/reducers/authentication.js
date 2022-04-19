@@ -20,7 +20,7 @@ import {
     SIGNUP_PENDING,
     SIGNUP_SUCCESS
 } from '../constants';
-import basicReducer from '../utils/basic-reducer';
+import basicReducer from './basic';
 
 const signupInitialState = {
     pending: false,

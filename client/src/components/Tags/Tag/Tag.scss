@@ -36,3 +36,14 @@
 a.tag:hover {
   text-decoration: none;
 }
+
+.expandable {
+  margin: 0;
+}
+
+.popover-body {
+  p {
+    margin: 0;
+    padding: 3px;
+  }
+}

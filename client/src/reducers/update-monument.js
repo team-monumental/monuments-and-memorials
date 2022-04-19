@@ -16,7 +16,7 @@ import {
     UPDATE_MONUMENT_SUCCESS
 } from '../constants';
 import {LOCATION_CHANGE} from 'connected-react-router';
-import basicReducer from '../utils/basic-reducer';
+import basicReducer from './basic';
 
 const initialState = {
     fetchMonumentForUpdatePending: false,

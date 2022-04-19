@@ -9,7 +9,6 @@ import moment from 'moment';
 import {ExportToCsvButton} from '../Export/ExportToCsvButton/ExportToCsvButton';
 import {capitalize} from '../../utils/string-util';
 import {Link} from 'react-router-dom';
-import Tooltip from "react-leaflet/lib/Tooltip";
 
 /**
  * Presentational component for the Form to submit a CSV file for bulk creating/suggesting Monuments
@@ -536,19 +535,6 @@ export default class BulkCreateForm extends React.Component {
                 }
             }
 
-        /**
-         * Helper function for composing the tooltip
-         *
-         * @param props OverlayTrigger properties
-         * @returns {JSX.Element} the Tooltip
-         */
-            // eslint-disable-next-line
-        const renderTooltip = (props) => (
-                <Tooltip id={'error-tooltip'} {...props}>
-                    Test tooltip
-                </Tooltip>
-            )
-
         return (<>
             <Card.Body>
                 <div>
@@ -584,16 +570,9 @@ export default class BulkCreateForm extends React.Component {
                                              className="bulk-warning"/>
                                     ))}</td>
                                     <td>{result.errors.map((error, index) => (<>
-                                        {/* FIXME: Tooltip blows up the webpage */}
                                         <div key={index} className="bulk-warning">
                                             {error}
                                         </div>
-                                        {/*<OverlayTrigger*/}
-                                        {/*    placement="right"*/}
-                                        {/*    delay={{show: 150, hide: 400}}*/}
-                                        {/*    overlay={renderTooltip}>*/}
-                                        {/*    <i className="material-icons">help</i>*/}
-                                        {/*</OverlayTrigger>*/}
                                     </>))}</td>
                                 </tr>
                             )

@@ -143,6 +143,7 @@ export default class CreateOrUpdateForm extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (isEmptyObject(prevProps.monument) && !isEmptyObject(this.props.monument)) {
+            console.log(this.props.monument); //todo don't forget to remove
             this.setFormFieldValuesForUpdate();
         }
     }
@@ -421,7 +422,6 @@ export default class CreateOrUpdateForm extends React.Component {
             || (degree < 0)) {
             decimal *= -1;
         }
-        console.log(decimal);
         return decimal.toFixed(6);
     }
 

@@ -4,6 +4,7 @@ import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
 import SearchResultBtns from "./SearchResultBtns";
 import Tag from "../../../Tags/Tag/Tag";
+import ExpandableTag from "../../../Tags/Tag/ExpandableTag";
 
 import './Search.scss'
 
@@ -19,14 +20,11 @@ const SearchResult = ({data, nq, dq, selected}) => {
     // Enqueues/dequeues result when checkbox is toggled
     useEffect(() => {
         checked ? nq(data) : dq(data.id)
-    }, [checked])
+    }, [checked, selected])
 
     // Enqueues/dequeues result when "select all" checkbox is toggled
     useEffect(() => {
         setChecked(selected)
-
-        if (selected) nq(data)
-        else dq(data.id)
     }, [selected])
 
     // Un-checks checkbox when a monument is deleted
@@ -48,10 +46,7 @@ const SearchResult = ({data, nq, dq, selected}) => {
                                  selectable={false}
                                  selectedIcon={null}
                                  isMaterial={false}/>
-                            <Tag name={`+${data.monumentTags.length}`}
-                                 selectable={false}
-                                 selectedIcon={null}
-                                 isMaterial={false}/>
+                            <ExpandableTag counter={data.monumentTags.length - 1} tags={data.monumentTags.slice(1)}/>
                         </div>
                     </Col>
                     <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>

@@ -12,7 +12,7 @@ import {
     TAGS_SEARCH_PENDING,
     TAGS_SEARCH_SUCCESS
 } from '../constants';
-import basicReducer from '../utils/basic-reducer';
+import basicReducer from './basic';
 
 const searchInitialState = {
     pending: false,
