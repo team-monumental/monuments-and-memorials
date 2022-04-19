@@ -9,6 +9,7 @@ import QueueItemTags from "./QueueItemTags";
 import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
+import QueueItemGallery from "./QueueItemGallery";
 
 const FIELDS = [
     {
@@ -66,12 +67,13 @@ const QueueItem = (props) => {
 
     return (
         <Card className="queue-item">
-            {/* TODO: Image carousel (?) */}
-            <Card.Img alt="placeholder img"/>
             <Card.Body>
                 <Formik initialValues={{...props.data}}
                         onSubmit={handleSubmit} enableReinitialize>
                     <Form>
+                        {/* Images */}
+                        <FieldArray name="images" component={QueueItemGallery}/>
+
                         {/* Name, Artist, Date */}
                         {FIELDS.map(({name, text, type}) => {
                             return (
