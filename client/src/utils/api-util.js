@@ -204,7 +204,7 @@ export async function deleteImagesFromS3(imageUrls) {
  * @param encodedObjectUrl - The encoded Object URL to use to parse the Image Object Key
  */
 export function getS3ImageObjectKeyFromObjectUrl(encodedObjectUrl) {
-    const decodedObjectUrl = decodeURIComponent(encodedObjectUrl);
+    const decodedObjectUrl = decodeURIComponent(encodedObjectUrl.replace(/\+/g, ' '));
     const decodedObjectUrlArray = decodedObjectUrl.split('/');
     return s3ImageFolderName + decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
 }
@@ -214,7 +214,7 @@ export function getS3ImageObjectKeyFromObjectUrl(encodedObjectUrl) {
  * @param encodedObjectUrl - The encoded Object URL to use to parse the Image name
  */
 export function getS3ImageNameFromObjectUrl(encodedObjectUrl) {
-    const decodedObjectUrl = decodeURIComponent(encodedObjectUrl);
+    const decodedObjectUrl = decodeURIComponent(encodedObjectUrl.replace(/\+/g, ' '));
     const decodedObjectUrlArray = decodedObjectUrl.split('/');
     return decodedObjectUrlArray[decodedObjectUrlArray.length - 1];
 }
