@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.monumental.config.AppConfig;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.InvalidZipException;
+import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.*;
 import com.monumental.models.suggestions.BulkCreateMonumentSuggestion;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
@@ -86,6 +87,8 @@ public class MonumentService extends ModelService<Monument> {
     @Autowired
     private Rollbar rollbar;
 
+    @Autowired
+    private UserService userService;
     /**
      * Create a Point object for a Monument from the specified longitude and latitude
      *
@@ -632,7 +635,7 @@ public class MonumentService extends ModelService<Monument> {
 
         List<Monument> monuments = new ArrayList<>();
         List<CreateMonumentSuggestion> createSuggestions = bulkCreateSuggestion.getCreateSuggestions();
-
+        Set<String> contributor = new HashSet<>();
         for (int i = 0; i < createSuggestions.size(); i++) {
             CreateMonumentSuggestion createSuggestion = createSuggestions.get(i);
 
@@ -646,22 +649,28 @@ public class MonumentService extends ModelService<Monument> {
                 // The row number is the index plus 1 for the header row and plus 1 to be 1-based instead of zero-based
                 job.setProgress((double) (i + 2) / createSuggestions.size());
             }
+
+
+            for (CreateMonumentSuggestion suggestion : createSuggestions){
+                contributor.addAll(suggestion.getContributions());
+            }
         }
 
         this.monumentRepository.saveAll(monuments);
         if (job != null) job.setProgress(1.0);
 
-        rollbar.info("Bulk created " + monuments.size() + " monuments!");
+        rollbar.info("Bulk created " + monuments.size() + " monuments by contributor(s): "+contributor);
 
         return monuments;
     }
 
-    public void deleteMonument(Integer id) {
+    public void deleteMonument(Integer id) throws UnauthorizedException {
         this.favoriteRepository.deleteAllByMonumentId(id);
         this.updateSuggestionRepository.deleteAllByMonumentId(id);
         this.monumentTagRepository.deleteAllByMonumentId(id);
         this.monumentRepository.deleteById(id);
-        rollbar.info("Deleted monument " + id + "!");
+
+        rollbar.info("Deleted monument " + id + " by user: " +this.userService.getCurrentUser());
     }
 
     @SuppressWarnings("unchecked")
@@ -976,7 +985,7 @@ public class MonumentService extends ModelService<Monument> {
         createdMonument.setMaterials(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), true));
         createdMonument.setTags(this.tagRepository.getAllByMonumentIdAndIsMaterial(createdMonument.getId(), false));
 
-        rollbar.info("Created monument" + createdMonument.getId() + "!");
+        rollbar.info("Created monument" + createdMonument.getId() + "by: " + createdMonument.getContributions());
 
         return createdMonument;
     }
@@ -1141,7 +1150,7 @@ public class MonumentService extends ModelService<Monument> {
         // Update the Tags associated with the Monument
         this.updateMonumentTags(currentMonument, updateSuggestion.getNewTags(), false);
 
-        rollbar.info("Updated monument" + currentMonument.getId() + "!");
+        rollbar.info("Updated monument" + currentMonument.getId() + "by: "+currentMonument.getContributions().get(currentMonument.getContributions().size() - 1));
 
         return currentMonument;
     }
@@ -1784,10 +1793,10 @@ public class MonumentService extends ModelService<Monument> {
             monuments.add(suggestion.getTitle());
         }
         if (!errors.isEmpty()){
-            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with errors.");
+            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with" + errors.size() +" error(s).");
         }
         if(!warnings.isEmpty()){
-            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with warnings.");
+            rollbar.info("Monument(s) " + monuments + " by contributors: " + contributor +" suggested with " + warnings.size() +" warning(s).");
         }
 
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
