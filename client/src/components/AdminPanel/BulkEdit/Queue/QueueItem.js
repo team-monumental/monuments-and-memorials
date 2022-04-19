@@ -106,7 +106,6 @@ const QueueItem = (props) => {
                         <FieldArray name="references" component={QueueItemRefs}/>
 
                         {/* Tags */}
-                        {/* TODO: Add validation */}
                         <FieldArray name="monumentTags" component={QueueItemTags}/>
                     </Form>
                 </Formik>
