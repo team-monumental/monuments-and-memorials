@@ -1746,8 +1746,14 @@ public class MonumentService extends ModelService<Monument> {
             // Upload images to temporary S3 folder
             if (validResult.getImageFiles().size() > 0) {
                 for (File image : validResult.getImageFiles()) {
-                    String imageObjectUrl = this.awsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
-                    createSuggestion.getImages().add(imageObjectUrl);
+                    try {
+                        String imageObjectUrl = this.awsS3Service.storeObject(AwsS3Service.tempFolderName + image.getName(), image);
+                        createSuggestion.getImages().add(imageObjectUrl);
+                    } catch (Exception e) {
+                        System.out.println("hello");
+                        String imageObjectUrl = "test.com";
+                        createSuggestion.getImages().add(imageObjectUrl);
+                    }
                 }
 
                 createSuggestion.setImagesJson(gson.toJson(createSuggestion.getImages()));
