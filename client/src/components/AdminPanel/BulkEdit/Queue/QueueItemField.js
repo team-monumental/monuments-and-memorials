@@ -6,7 +6,7 @@ const QueueItemField = ({field, form: {touched, errors}, ...props}) => {
         <Form.Group>
             <Form.Label>{props.text}</Form.Label>
             <Form.Control {...field} {...props}
-                          value={props.type === 'date' ? field.value.slice(0, 10) : field.value}
+                          value={props.type === 'date' ? field.value.slice(0, 10) : (field?.value || '')}
                           isInvalid={!!errors[field.name]}
                           isValid={touched[field.name] && !errors[field.name]}
             />

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {Field, FieldArray, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
@@ -9,6 +9,8 @@ import QueueItemTags from "./QueueItemTags";
 import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
+import QueueItemGallery from "./QueueItemGallery";
+import {QueueResetContext} from "../../../../utils/queue-util";
 
 const FIELDS = [
     {
@@ -28,8 +30,10 @@ const FIELDS = [
     }
 ]
 
+// TODO: Add useFormikContext, pass reset func to QueueResetContext
 const QueueItem = (props) => {
     const [showCoords, setShowCoords] = useState(false)
+    // const resetContext = useContext(QueueResetContext)
 
     const handleSubmit = (values) => {
         console.log(values)
@@ -41,8 +45,8 @@ const QueueItem = (props) => {
 
     const handleValidate = (value, field) => {
         let error
-
         switch (field) {
+            //isISO8601 validates
             case 'createdDate':
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
                 break
@@ -66,12 +70,13 @@ const QueueItem = (props) => {
 
     return (
         <Card className="queue-item">
-            {/* TODO: Image carousel (?) */}
-            <Card.Img alt="placeholder img"/>
             <Card.Body>
                 <Formik initialValues={{...props.data}}
                         onSubmit={handleSubmit} enableReinitialize>
                     <Form>
+                        {/* Images */}
+                        <FieldArray name="images" component={QueueItemGallery}/>
+
                         {/* Name, Artist, Date */}
                         {FIELDS.map(({name, text, type}) => {
                             return (
@@ -86,14 +91,14 @@ const QueueItem = (props) => {
 
                         {showCoords ? (
                             // Coordinates
-                            // TODO: Add validation
+                            // TODO: Add validation, conversion func
                             <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
                                    toggle={toggleCoords}
                                    component={QueueItemCoords}
                             />
                         ) : (
                             // Address
-                            // TODO: Add validation
+                            // TODO: Add validation, conversion func
                             <Field {...{name: 'address', text: 'Address', type: 'text'}}
                                    toggle={toggleCoords}
                                    component={QueueItemAddress}
@@ -104,7 +109,6 @@ const QueueItem = (props) => {
                         <FieldArray name="references" component={QueueItemRefs}/>
 
                         {/* Tags */}
-                        {/* TODO: Add validation */}
                         <FieldArray name="monumentTags" component={QueueItemTags}/>
                     </Form>
                 </Formik>

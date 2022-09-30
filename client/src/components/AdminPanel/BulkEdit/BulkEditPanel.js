@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
 
 import SearchPanel from "./Search/SearchPanel";
@@ -9,6 +9,7 @@ import QueuePanelBtns from "./Queue/QueuePanelBtns";
 import SearchResultContext from "../../../utils/search-util";
 
 import './BulkEdit.scss'
+import {QueueResetContext} from "../../../utils/queue-util";
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
@@ -68,21 +69,23 @@ const BulkEditPanel = (props) => {
                     </Card>
                     <SearchPanelBtns/>
                 </Col>
-                <Col lg={4}>
-                    {/* Queue Panel card */}
-                    <Card>
-                        <Card.Header>
-                            <Card.Title>
-                                Editing Queue
-                            </Card.Title>
-                        </Card.Header>
-                        <Card.Body>
-                            <QueuePanel queue={queueList} active={active} setActive={setActive}/>
-                        </Card.Body>
-                    </Card>
-                    {/* FIXME: De-queuing doesn't uncheck search result */}
-                    <QueuePanelBtns dq={() => dequeue(active.id)}/>
-                </Col>
+                <QueueResetContext.Provider value={() => {}}>
+                    <Col lg={4}>
+                        {/* Queue Panel card */}
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>
+                                    Editing Queue
+                                </Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                <QueuePanel queue={queueList} active={active} setActive={setActive}/>
+                            </Card.Body>
+                        </Card>
+                        {/* FIXME: De-queuing doesn't uncheck search result */}
+                        <QueuePanelBtns dq={() => dequeue(active.id)}/>
+                    </Col>
+                </QueueResetContext.Provider>
             </Row>
         </Container>
     )

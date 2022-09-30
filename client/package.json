@@ -39,7 +39,7 @@
     "rollbar": "^2.20.0",
     "rxjs": "^6.5.5",
     "slugify": "^1.4.0",
-    "validator": "^12.2.0"
+    "validator": "^13.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
