@@ -13,6 +13,19 @@
       width: 50%;
       margin-right: 15px;
     }
+
+    button {
+      position: relative;
+      padding: 0;
+      width: 30px;
+
+      i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -25%);
+      }
+    }
   }
 
   .list-group {

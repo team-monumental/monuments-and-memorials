@@ -10,7 +10,6 @@ import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
 import QueueItemGallery from "./QueueItemGallery";
-
 import {QueueResetContext} from "../../../../utils/queue-util";
 
 const FIELDS = [

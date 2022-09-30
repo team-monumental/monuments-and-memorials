@@ -1,7 +1,6 @@
 import React from "react";
 import {Button, Form} from "react-bootstrap";
 
-// FIXME: Search button centering is a bit off
 const Searchbar = ({handleSearch, onChange}) => {
     const handleClick = () => {
         handleSearch()
