@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {Field, FieldArray, Formik} from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
@@ -10,6 +10,7 @@ import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
 import QueueItemGallery from "./QueueItemGallery";
+import {QueueResetContext} from "../../../../utils/queue-util";
 
 const FIELDS = [
     {
@@ -29,8 +30,10 @@ const FIELDS = [
     }
 ]
 
+// TODO: Add useFormikContext, pass reset func to QueueResetContext
 const QueueItem = (props) => {
     const [showCoords, setShowCoords] = useState(false)
+    // const resetContext = useContext(QueueResetContext)
 
     const handleSubmit = (values) => {
         console.log(values)
