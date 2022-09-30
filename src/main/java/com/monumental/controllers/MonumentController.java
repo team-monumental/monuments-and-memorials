@@ -146,7 +146,7 @@ public class MonumentController {
      */
     @DeleteMapping("/api/monument/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Map<String, Boolean> deleteMonument(@PathVariable("id") Integer id) {
+    public Map<String, Boolean> deleteMonument(@PathVariable("id") Integer id) throws UnauthorizedException {
         this.monumentService.deleteMonument(id);
         return Map.of("success", true);
     }

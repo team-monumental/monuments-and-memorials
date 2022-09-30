@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Button, Col, Form, InputGroup, OverlayTrigger, Tooltip} from "react-bootstrap";
 
 
-const QueueItemCoords = ({field, form: {touched, errors}, ...props}) => {
+const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => {
     // noinspection JSValidateTypes,RequiredAttributes
     return (
         <Form.Row>
@@ -27,7 +27,8 @@ const QueueItemCoords = ({field, form: {touched, errors}, ...props}) => {
                         </OverlayTrigger>
                     </InputGroup.Append>
                 </InputGroup>
-                <Form.Label>Address Placeholder</Form.Label>
+                {/* TODO: Convert coordinates to address */}
+                <Form.Text className="text-muted">Address: {values.address}</Form.Text>
             </Form.Group>
         </Form.Row>
     )

@@ -9,6 +9,7 @@ import QueueItemTags from "./QueueItemTags";
 import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
+import QueueItemGallery from "./QueueItemGallery";
 
 const FIELDS = [
     {
@@ -66,12 +67,13 @@ const QueueItem = (props) => {
 
     return (
         <Card className="queue-item">
-            {/* TODO: Image carousel (?) */}
-            <Card.Img alt="placeholder img"/>
             <Card.Body>
                 <Formik initialValues={{...props.data}}
                         onSubmit={handleSubmit} enableReinitialize>
                     <Form>
+                        {/* Images */}
+                        <FieldArray name="images" component={QueueItemGallery}/>
+
                         {/* Name, Artist, Date */}
                         {FIELDS.map(({name, text, type}) => {
                             return (
@@ -86,14 +88,14 @@ const QueueItem = (props) => {
 
                         {showCoords ? (
                             // Coordinates
-                            // TODO: Add validation
+                            // TODO: Add validation, conversion func
                             <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
                                    toggle={toggleCoords}
                                    component={QueueItemCoords}
                             />
                         ) : (
                             // Address
-                            // TODO: Add validation
+                            // TODO: Add validation, conversion func
                             <Field {...{name: 'address', text: 'Address', type: 'text'}}
                                    toggle={toggleCoords}
                                    component={QueueItemAddress}
@@ -104,7 +106,6 @@ const QueueItem = (props) => {
                         <FieldArray name="references" component={QueueItemRefs}/>
 
                         {/* Tags */}
-                        {/* TODO: Add validation */}
                         <FieldArray name="monumentTags" component={QueueItemTags}/>
                     </Form>
                 </Formik>

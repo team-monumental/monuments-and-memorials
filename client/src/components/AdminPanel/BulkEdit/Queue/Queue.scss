@@ -27,9 +27,10 @@
       }
     }
 
+    // TODO: Add mixin for three cols per row on larger screens
     .tags-grid {
       display: grid;
-      grid-template-columns: repeat(3, 3fr);
+      grid-template-columns: repeat(2, 2fr);
       grid-gap: 7px;
 
       button {
