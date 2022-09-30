@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import ManageUsers from '../../../components/AdminPanel/ManageUsers/ManageUsers';
-import { fetchUser, updateUser } from '../../../actions/user';
+import {fetchUser, updateUser} from '../../../actions/user';
 import Spinner from '../../../components/Spinner/Spinner';
-import { addToast } from '../../../actions/toasts';
-import { getUserFullName } from '../../../utils/string-util';
+import {addToast} from '../../../actions/toasts';
+import {getUserFullName} from '../../../utils/string-util';
 
 class ManageUsersPage extends React.Component {
 
@@ -28,7 +28,7 @@ class ManageUsersPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, fetchUser } = this.props;
+        const {dispatch, fetchUser} = this.props;
         if (this.props.updateUser.success && !this.props.updateUser.pending && prevProps.updateUser.pending) {
             const user = fetchUser.result.user;
             dispatch(addToast({
@@ -44,25 +44,26 @@ class ManageUsersPage extends React.Component {
     }
 
     fetchUserIfIdExists() {
-        const { dispatch, match: { params: { userId } } } = this.props;
+        const {dispatch, match: {params: {userId}}} = this.props;
         if (userId) {
             try {
                 if (!isNaN(parseInt(userId))) {
                     dispatch(fetchUser(userId, false));
                 }
-            } catch (err) {}
+            } catch (err) {
+            }
         }
     }
 
     handleChangeRole(role) {
-        const { dispatch, fetchUser: { result: { user } } } = this.props;
+        const {dispatch, fetchUser: {result: {user}}} = this.props;
         user.role = role;
         dispatch(updateUser(user));
     }
 
     render() {
-        const { mode, fetchUser, updateUser, session } = this.props;
-        const { changeRoleSuccess } = this.state;
+        const {mode, fetchUser, updateUser, session} = this.props;
+        const {changeRoleSuccess} = this.state;
 
         return (<>
             <Spinner show={fetchUser.pending || updateUser.pending}/>
