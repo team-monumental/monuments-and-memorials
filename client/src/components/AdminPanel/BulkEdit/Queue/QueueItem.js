@@ -46,7 +46,6 @@ const QueueItem = (props) => {
     const handleValidate = (value, field) => {
         let error
         switch (field) {
-            //isISO8601 validates
             case 'createdDate':
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
                 break
@@ -61,7 +60,7 @@ const QueueItem = (props) => {
                     error = 'Invalid URL'
                 break
             default:
-                if (validator.isEmpty(value)) error = 'Required'
+                if (value == null || validator.isEmpty(value)) error = 'Required'
                 break
         }
 

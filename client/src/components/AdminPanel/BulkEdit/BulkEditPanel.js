@@ -10,6 +10,7 @@ import SearchResultContext from "../../../utils/search-util";
 
 import './BulkEdit.scss'
 import {QueueResetContext} from "../../../utils/queue-util";
+import { post, put } from '../../../utils/api-util';
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
@@ -39,6 +40,15 @@ const BulkEditPanel = (props) => {
 
     const deleteSearchResult = (recordId) => {
         setSearchResults(searchResults.filter(record => record.id !== recordId))
+    }
+
+    const saveMemorial = async (recordId) => {
+        let memorial = queueList[0]
+        memorial.monument_id = memorial.id
+        memorial.newTitle = memorial.title
+        console.log("memorial", memorial)
+        put(`${window.location.origin}/api/monument/update/${recordId}`, memorial)
+        .catch(error => console.log(error))
     }
 
     useEffect(() => {
@@ -83,7 +93,7 @@ const BulkEditPanel = (props) => {
                             </Card.Body>
                         </Card>
                         {/* FIXME: De-queuing doesn't uncheck search result */}
-                        <QueuePanelBtns dq={() => dequeue(active.id)}/>
+                        <QueuePanelBtns save={() => saveMemorial(active.id)} dq={() => dequeue(active.id)}/>
                     </Col>
                 </QueueResetContext.Provider>
             </Row>

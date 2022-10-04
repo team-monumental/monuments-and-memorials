@@ -1,11 +1,12 @@
 import React from 'react'
 import {Button, ButtonGroup} from "react-bootstrap";
 
-const QueuePanelBtns = ({dq}) => {
+const QueuePanelBtns = ({dq, save}) => {
     const controls = [
         {
             text: 'Save',
-            variant: 'primary'
+            variant: 'primary',
+            click: save
         }, {
             text: 'Reset',
             variant: 'light'
