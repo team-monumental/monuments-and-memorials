@@ -41,12 +41,12 @@ class SearchBar extends React.Component {
         this.setState({textSearchQuery: textSearchQuery});
     }
 
-    async handleTextSearchClear() {
-        await this.setState({textSearchQuery: ''});
+    handleTextSearchClear() {
+        this.setState({textSearchQuery: ''});
     }
 
-    async handleLocationSearchSelect(lat, lon, address) {
-        await this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
+    handleLocationSearchSelect(lat, lon, address) {
+        this.setState({locationLat: lat, locationLon: lon, locationAddress: address});
         this.search();
     }
 
@@ -57,6 +57,13 @@ class SearchBar extends React.Component {
     search() {
         const { history, onCloseModal, uri } = this.props;
         let { textSearchQuery, locationLat, locationLon, locationAddress, distanceFilter } = this.state;
+        if (locationAddress) {
+            var addressArray = locationAddress.split(',');
+            if (addressArray.length === 2) {
+                // Default distance filter to state when only state address provided
+                distanceFilter = -1
+            }
+        }
         search({
             q: textSearchQuery,
             lat: locationLat,

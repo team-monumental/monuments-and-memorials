@@ -20,6 +20,7 @@ class Filters extends React.Component {
         const params = QueryString.parse(props.history.location.search);
         const qTags = (params.tags) ? params.tags.split(',') : [];
         const qMats = (params.materials) ? params.materials.split(',') : [];
+        this.locationSearchRef = React.createRef()
         this.state = {
             filterList: {
                 date: { filterMode: Mode.RANGE, params: {} },
@@ -39,6 +40,13 @@ class Filters extends React.Component {
             showFilters: false,
             
         };
+    }
+
+    componentDidMount(){
+        // When searching from the SearchBar, refresh the address state to match what FilterList component is expecting
+        if (this.locationSearchRef && this.state.filterList.location.params.address) {
+            this.locationSearchRef.current.handleSelect(this.state.filterList.location.params.address)
+        }
     }
 
     async clearFilter(type) {
@@ -248,7 +256,8 @@ class Filters extends React.Component {
                         badLocationState={filterList.location.badLocationState}
                         onSuggestionSelect={(lat, lon, address, state) => this.handleLocationSearchSelect(lat, lon, address, state)}
                         onClear={()=> this.clearLocation()}
-                        changeDistance={(distance) => this.handleChangeDistance(distance)}>
+                        changeDistance={(distance) => this.handleChangeDistance(distance)}
+                        ref={this.locationSearchRef}>
                     </LocationSearch>
                     <div className="clear-filters">
                         <button className="bg-danger" onClick={() => this.clearFilters()}>
