@@ -55,7 +55,7 @@ class MonumentBulkCreatePage extends React.Component {
 
     handleCreateSubmit(form) {
         const {dispatch, user} = this.props;
-
+        
         // Make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly bulk-create new Monuments
         if (user && Role.RESEARCHER_OR_ABOVE.includes(user.role.toUpperCase())) {

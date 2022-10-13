@@ -30,6 +30,13 @@ const BulkEditPanel = (props) => {
             .finally()
     }, [searchTerm])
 
+    const saveMemorial = async (recordId) => {
+        let memorial = queueList[0]
+        console.log("sent", memorial)
+        put(`${window.location.origin}/api/monument/bulkupdate/${recordId}`, memorial)
+        .catch(error => console.log(error))
+    }
+
     const enqueue = (recordData) => {
         setQueueList(queue => ([...queue, recordData]))
     }
@@ -40,15 +47,6 @@ const BulkEditPanel = (props) => {
 
     const deleteSearchResult = (recordId) => {
         setSearchResults(searchResults.filter(record => record.id !== recordId))
-    }
-
-    const saveMemorial = async (recordId) => {
-        let memorial = queueList[0]
-        memorial.monument_id = memorial.id
-        memorial.newTitle = memorial.title
-        console.log("memorial", memorial)
-        put(`${window.location.origin}/api/monument/update/${recordId}`, memorial)
-        .catch(error => console.log(error))
     }
 
     useEffect(() => {

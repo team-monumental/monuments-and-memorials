@@ -36,7 +36,7 @@ const QueueItem = (props) => {
     // const resetContext = useContext(QueueResetContext)
 
     const handleSubmit = (values) => {
-        console.log(values)
+        //console.log(values)
     }
 
     const toggleCoords = () => {
@@ -67,10 +67,16 @@ const QueueItem = (props) => {
         return error
     }
 
+    const getMonumentData = () => {
+        let { contributions, ...monument } = props.data;
+        console.log("MONUMENT", monument)
+        return monument;
+    }
+
     return (
         <Card className="queue-item">
             <Card.Body>
-                <Formik initialValues={{...props.data}}
+                <Formik initialValues={getMonumentData()}
                         onSubmit={handleSubmit} enableReinitialize>
                     <Form>
                         {/* Images */}
