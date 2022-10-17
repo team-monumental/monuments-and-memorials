@@ -1,8 +1,6 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,8 +23,7 @@ public class Reference extends Model implements Serializable {
     @NotNull(groups = {New.class, Existing.class}, message = "URL can not be null")
     private String url;
 
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty("monument_id")
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     @NotNull(groups = {New.class, Existing.class}, message = "Reference must have an associated Monument")

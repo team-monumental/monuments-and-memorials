@@ -1,6 +1,6 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,8 +37,7 @@ public class Image extends Model implements Serializable {
     @Column(name = "caption")
     private String caption = "";
 
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty("monument_id")
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)
     @NotNull(groups = {New.class, Existing.class}, message = "Image must have an associated Monument")

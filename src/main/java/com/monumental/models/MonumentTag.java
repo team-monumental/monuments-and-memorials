@@ -1,8 +1,6 @@
 package com.monumental.models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,9 +13,8 @@ import java.io.Serializable;
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "monument_id", "tag_id" })})
 public class MonumentTag extends Model implements Serializable {
 
+    @JsonIgnore
     @ManyToOne
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty("monument_id")
     @JoinColumn(name = "monument_id")
     private Monument monument;
 
