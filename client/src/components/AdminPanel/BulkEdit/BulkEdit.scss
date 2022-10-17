@@ -1,0 +1,35 @@
+.bulk-edit {
+  display: flex;
+  justify-content: space-between;
+
+  .row {
+    width: 100%;
+  }
+
+  .card {
+    justify-self: center;
+    height: 75vh;
+
+    border-bottom-left-radius: 0;
+
+    &:last-child {
+      overflow-y: auto;
+    }
+
+    .card-header {
+      align-self: center;
+    }
+  }
+
+  .material-icons:hover {
+    filter: brightness(85%);
+    text-decoration: none;
+  }
+
+  .panel-btns {
+    button {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}

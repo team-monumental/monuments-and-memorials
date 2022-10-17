@@ -1,7 +1,7 @@
 import * as React from 'react';
 import About from '../../../Monument/Details/About/About';
-import { Link } from 'react-router-dom';
-import { Alert, Button, Modal } from 'react-bootstrap';
+import {Link} from 'react-router-dom';
+import {Alert, Button, Modal} from 'react-bootstrap';
 import {getMonumentSlug} from "../../../../utils/regex-util";
 
 export default class ManageMonument extends React.Component {
@@ -15,19 +15,19 @@ export default class ManageMonument extends React.Component {
     }
 
     toggleActive(active) {
-        const { onToggleActive } = this.props;
+        const {onToggleActive} = this.props;
         onToggleActive(active);
         this.setState({toggleActiveModalOpen: false});
     }
 
     deleteMonument() {
-        const { onDeleteMonument } = this.props;
+        const {onDeleteMonument} = this.props;
         onDeleteMonument();
         this.setState({deleteModalOpen: false});
     }
 
     render() {
-        const { monument, deleted } = this.props;
+        const {monument, deleted} = this.props;
         if (deleted) return (
             <div className="manage-monument">
                 <div>
@@ -43,7 +43,7 @@ export default class ManageMonument extends React.Component {
     }
 
     renderManageMonument() {
-        const { monument } = this.props;
+        const {monument} = this.props;
 
         const slug = getMonumentSlug(monument)
 
@@ -59,17 +59,20 @@ export default class ManageMonument extends React.Component {
                     </div> : null
                 }
                 {!monument.isActive &&
-                <Alert variant="info">
-                    This Monument or Memorial is marked as inactive, which means the public cannot view it. Press the
-                    activate button if you'd like to make it publicly visible.
-                </Alert>
+                    <Alert variant="info">
+                        This Monument or Memorial is marked as inactive, which means the public cannot view it. Press
+                        the
+                        activate button if you'd like to make it publicly visible.
+                    </Alert>
                 }
                 <div className="buttons">
                     {monument.isActive &&
-                    <Link to={`/monuments/${monument.id}/${slug}`} className="btn btn-light">View Public Page</Link>
+                        <Link to={`/monuments/${monument.id}/${slug}`} className="btn btn-light">View Public Page</Link>
                     }
-                    <Link to={`/panel/manage/monuments/monument/update/${monument.id}`} className="btn btn-light">Edit</Link>
-                    <Button variant="light" onClick={() => this.setState({toggleActiveModalOpen: true})}>{monument.isActive ? 'De-activate' : 'Activate'}</Button>
+                    <Link to={`/panel/manage/monuments/monument/update/${monument.id}`}
+                          className="btn btn-light">Edit</Link>
+                    <Button variant="light"
+                            onClick={() => this.setState({toggleActiveModalOpen: true})}>{monument.isActive ? 'De-activate' : 'Activate'}</Button>
                     <Button variant="danger" onClick={() => this.setState({deleteModalOpen: true})}>Delete</Button>
                 </div>
             </div>
@@ -77,8 +80,8 @@ export default class ManageMonument extends React.Component {
     }
 
     renderConfirmToggleActiveModal() {
-        const { toggleActiveModalOpen } = this.state;
-        const { monument } = this.props;
+        const {toggleActiveModalOpen} = this.state;
+        const {monument} = this.props;
 
         return (
             <div onClick={e => e.stopPropagation()}>
@@ -106,8 +109,8 @@ export default class ManageMonument extends React.Component {
     }
 
     renderConfirmDeleteModal() {
-        const { deleteModalOpen } = this.state;
-        const { monument } = this.props;
+        const {deleteModalOpen} = this.state;
+        const {monument} = this.props;
 
         return (
             <div onClick={e => e.stopPropagation()}>
@@ -117,7 +120,8 @@ export default class ManageMonument extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            Are you sure you want to <strong>permanently</strong> delete this monument or memorial? If you would like to hide it from the public, you may de-activate it instead.
+                            Are you sure you want to <strong>permanently</strong> delete this monument or memorial? If
+                            you would like to hide it from the public, you may de-activate it instead.
                         </div>
                     </Modal.Body>
                     <Modal.Footer>

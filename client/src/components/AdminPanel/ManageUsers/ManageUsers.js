@@ -1,14 +1,14 @@
 import * as React from 'react';
 import './ManageUsers.scss';
-import { withRouter } from 'react-router-dom';
-import { Button, Card } from 'react-bootstrap';
+import {withRouter} from 'react-router-dom';
+import {Button, Card} from 'react-bootstrap';
 import ManageUser from './ManageUser/ManageUser';
 import UserSearchPage from '../../../pages/AdminPage/ManageUsersPage/UserSearchPage/UserSearchPage';
 
 class ManageUsers extends React.Component {
 
     render() {
-        const { mode, history, user, contributions, onChangeRole, changeRoleSuccess, session } = this.props;
+        const {mode, history, user, contributions, onChangeRole, changeRoleSuccess, session} = this.props;
         return (
             <div className="manage-users">
                 <Card>
