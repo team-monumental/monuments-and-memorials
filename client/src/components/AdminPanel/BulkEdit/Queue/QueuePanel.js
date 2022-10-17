@@ -3,7 +3,7 @@ import QueueItem from "./QueueItem";
 import QueueNav from "./QueueNav";
 import {Container} from "react-bootstrap";
 
-const QueuePanel = ({queue, active, setActive}) => {
+const QueuePanel = ({queue, active, setActive, ...props}) => {
 
     const handleFirst = () => {
         setActive(queue[0])
@@ -38,7 +38,7 @@ const QueuePanel = ({queue, active, setActive}) => {
                     <h5>Nothing here...</h5>
                 </div>
             ) : (
-                <QueueItem data={active}/>
+                <QueueItem {...props} data={active}/>
             )}
             {active !== null && (
                 <QueueNav current={queue.indexOf(active)}

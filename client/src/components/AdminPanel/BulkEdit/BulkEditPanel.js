@@ -4,7 +4,6 @@ import {Card, Col, Container, Row} from "react-bootstrap";
 import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
 import QueuePanel from "./Queue/QueuePanel";
-import QueuePanelBtns from "./Queue/QueuePanelBtns";
 
 import SearchResultContext from "../../../utils/search-util";
 
@@ -30,10 +29,8 @@ const BulkEditPanel = (props) => {
             .finally()
     }, [searchTerm])
 
-    const saveMemorial = async (recordId) => {
-        let memorial = queueList[0]
-        console.log("sent", memorial)
-        put(`${window.location.origin}/api/monument/bulkupdate/${recordId}`, memorial)
+    const saveMonument = async (monument) => {
+        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}`, monument)
         .catch(error => console.log(error))
     }
 
@@ -87,11 +84,11 @@ const BulkEditPanel = (props) => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <QueuePanel queue={queueList} active={active} setActive={setActive}/>
+                                <QueuePanel queue={queueList} active={active} setActive={setActive} saveMonument={saveMonument}/>
                             </Card.Body>
                         </Card>
                         {/* FIXME: De-queuing doesn't uncheck search result */}
-                        <QueuePanelBtns save={() => saveMemorial(active.id)} dq={() => dequeue(active.id)}/>
+                        
                     </Col>
                 </QueueResetContext.Provider>
             </Row>

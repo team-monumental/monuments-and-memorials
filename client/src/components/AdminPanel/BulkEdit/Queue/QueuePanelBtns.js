@@ -6,6 +6,7 @@ const QueuePanelBtns = ({dq, save}) => {
         {
             text: 'Save',
             variant: 'primary',
+            type: 'submit',
             click: save
         }, {
             text: 'Reset',
@@ -24,7 +25,9 @@ const QueuePanelBtns = ({dq, save}) => {
                     <Button
                         key={`queue-panel-${control.text.toLowerCase()}-btn`}
                         variant={control.variant}
-                        onClick={control.click}>
+                        onClick={control.click}
+                        type={control.type}
+                    >
                         {control.text}
                     </Button>
                 ))}

@@ -1,9 +1,10 @@
 import React, {useContext, useState} from 'react'
-import {Field, FieldArray, Formik} from "formik";
+import { Field, FieldArray, Formik, useFormikContext } from "formik";
 import {Card, Form} from "react-bootstrap";
 import validator from "validator/es";
 
 import './Queue.scss'
+import QueuePanelBtns from "./QueuePanelBtns";
 import QueueItemField from "./QueueItemField";
 import QueueItemTags from "./QueueItemTags";
 import QueueItemCoords from "./QueueItemCoords";
@@ -32,11 +33,13 @@ const FIELDS = [
 
 // TODO: Add useFormikContext, pass reset func to QueueResetContext
 const QueueItem = (props) => {
+    const { dequeue, saveMonument } = props
+    console.log(saveMonument)
     const [showCoords, setShowCoords] = useState(false)
     // const resetContext = useContext(QueueResetContext)
 
-    const handleSubmit = (values) => {
-        //console.log(values)
+    const handleSubmit = async (values) => {
+        saveMonument(values);
     }
 
     const toggleCoords = () => {
@@ -69,53 +72,64 @@ const QueueItem = (props) => {
 
     const getMonumentData = () => {
         let { contributions, ...monument } = props.data;
-        console.log("MONUMENT", monument)
         return monument;
+    }
+
+    function afterSubmission(event) {
+        event.preventDefault();
     }
 
     return (
         <Card className="queue-item">
             <Card.Body>
-                <Formik initialValues={getMonumentData()}
-                        onSubmit={handleSubmit} enableReinitialize>
-                    <Form>
-                        {/* Images */}
-                        <FieldArray name="images" component={QueueItemGallery}/>
+                <Formik 
+                    initialValues={getMonumentData()}
+                    onSubmit={handleSubmit}
+                    enableReinitialize
+                >
+                    { (form) => 
+                        <Form
+                            onSubmit={form.handleSubmit}
+                        >
+                            {/* Images */}
+                            <FieldArray name="images" component={QueueItemGallery}/>
 
-                        {/* Name, Artist, Date */}
-                        {FIELDS.map(({name, text, type}) => {
-                            return (
-                                <Field {...{name, text, type}}
-                                       key={`${name}Field`}
-                                       validate={value => {
-                                           return handleValidate(value, name)
-                                       }}
-                                       component={QueueItemField}/>
-                            )
-                        })}
+                            {/* Name, Artist, Date */}
+                            {FIELDS.map(({name, text, type}) => {
+                                return (
+                                    <Field {...{name, text, type}}
+                                        key={`${name}Field`}
+                                        validate={value => {
+                                            return handleValidate(value, name)
+                                        }}
+                                        component={QueueItemField}/>
+                                )
+                            })}
 
-                        {showCoords ? (
-                            // Coordinates
-                            // TODO: Add validation, conversion func
-                            <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
-                                   toggle={toggleCoords}
-                                   component={QueueItemCoords}
-                            />
-                        ) : (
-                            // Address
-                            // TODO: Add validation, conversion func
-                            <Field {...{name: 'address', text: 'Address', type: 'text'}}
-                                   toggle={toggleCoords}
-                                   component={QueueItemAddress}
-                            />
-                        )}
+                            {showCoords ? (
+                                // Coordinates
+                                // TODO: Add validation, conversion func
+                                <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
+                                    toggle={toggleCoords}
+                                    component={QueueItemCoords}
+                                />
+                            ) : (
+                                // Address
+                                // TODO: Add validation, conversion func
+                                <Field {...{name: 'address', text: 'Address', type: 'text'}}
+                                    toggle={toggleCoords}
+                                    component={QueueItemAddress}
+                                />
+                            )}
 
-                        {/* References */}
-                        <FieldArray name="references" component={QueueItemRefs}/>
+                            {/* References */}
+                            <FieldArray name="references" component={QueueItemRefs}/>
 
-                        {/* Tags */}
-                        <FieldArray name="monumentTags" component={QueueItemTags}/>
-                    </Form>
+                            {/* Tags */}
+                            <FieldArray name="monumentTags" component={QueueItemTags}/>
+                            <QueuePanelBtns dq={() => dequeue(props.data.id)}/>
+                        </Form>
+                    }
                 </Formik>
             </Card.Body>
         </Card>
