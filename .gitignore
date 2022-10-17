@@ -1,3 +1,5 @@
+.DS_Store
+/client/.vscode/* 
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar

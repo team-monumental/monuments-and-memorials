@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
+import {connect} from 'react-redux';
+import {Helmet} from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
 import AdminPanel from '../../components/AdminPanel/AdminPanel';
-import { capitalize } from '../../utils/string-util';
-import { countPendingSuggestions } from '../../actions/search';
+import {capitalize} from '../../utils/string-util';
+import {countPendingSuggestions} from '../../actions/search';
 
 class AdminPage extends React.Component {
 
@@ -16,12 +16,12 @@ class AdminPage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         dispatch(countPendingSuggestions());
     }
 
     render() {
-        const { session, pendingSuggestions } = this.props;
+        const {session, pendingSuggestions} = this.props;
 
         return (
             <div className="admin h-100">

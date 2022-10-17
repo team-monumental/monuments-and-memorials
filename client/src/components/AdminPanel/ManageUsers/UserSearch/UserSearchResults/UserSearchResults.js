@@ -4,7 +4,7 @@ import UserSearchResult from './UserSearchResult/UserSearchResult';
 export default class UserSearchResults extends React.Component {
 
     render() {
-        const { limit, page, users } = this.props;
+        const {limit, page, users} = this.props;
         if (users && users.length > 0) {
             return (
                 <div className="user-search-results">

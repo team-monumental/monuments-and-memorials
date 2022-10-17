@@ -3,6 +3,7 @@ package com.monumental.controllers;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
+import com.monumental.models.Contribution;
 import com.monumental.models.Monument;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
@@ -209,5 +210,26 @@ public class MonumentController {
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
         return this.monumentService.updateMonument(updateSuggestion);
+    }
+
+    /**
+     * Update the Monument with the specified monumentId to have the new attributes defined by the specified
+     * updateSuggestion
+     * @param monumentId - Integer ID of the Monument to update
+     * @return Monument - The updated Monument with the specified monumentId based on the attributes defined in the
+     * specified updateSuggestion
+     * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
+     */
+    @PutMapping("/api/monument/bulkupdate/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId,
+                                   @RequestBody Monument monument)
+            throws ResourceNotFoundException {
+        Optional<Monument> optional = this.monumentRepository.findById(monumentId);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+
+        return this.monumentRepository.save(monument);
     }
 }
