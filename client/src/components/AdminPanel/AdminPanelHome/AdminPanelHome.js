@@ -1,12 +1,12 @@
 import * as React from 'react';
 import './AdminPanelHome.scss';
-import { Card } from 'react-bootstrap';
-import { Role } from '../../../utils/authentication-util';
+import {Card} from 'react-bootstrap';
+import {Role} from '../../../utils/authentication-util';
 
 export default class AdminPanelHome extends React.Component {
 
     render() {
-        const { role } = this.props;
+        const {role} = this.props;
 
         const commonTextDisplay = (<>
             &nbsp;If you encounter any problems, please cancel your action and contact the site administrator,&nbsp;

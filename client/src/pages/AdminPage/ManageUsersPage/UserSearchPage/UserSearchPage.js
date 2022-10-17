@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import * as QueryString from 'query-string';
 import UserSearch from '../../../../components/AdminPanel/ManageUsers/UserSearch/UserSearch';
-import { Helmet } from 'react-helmet';
+import {Helmet} from 'react-helmet';
 import Spinner from '../../../../components/Spinner/Spinner';
-import { searchUsers } from '../../../../actions/search';
+import {searchUsers} from '../../../../actions/search';
 import search from '../../../../utils/search';
 
 class UserSearchPage extends React.Component {
@@ -21,19 +21,19 @@ class UserSearchPage extends React.Component {
 
     static mapStateToProps(state) {
         if (state.userSearchPage) {
-            const { users, count } = state.userSearchPage;
+            const {users, count} = state.userSearchPage;
             if (users.error || count.error || users.errors || count.errors) return {};
         }
         return state.userSearchPage;
     }
 
     componentDidMount() {
-        const { showSearchResults, dispatch, location: { search } } = this.props;
+        const {showSearchResults, dispatch, location: {search}} = this.props;
         if (showSearchResults) dispatch(searchUsers(QueryString.parse(search)));
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { dispatch, location: { search } } = this.props;
+        const {dispatch, location: {search}} = this.props;
         if (prevProps.location.search !== search) {
             dispatch(searchUsers(QueryString.parse(search)));
         }
@@ -60,7 +60,7 @@ class UserSearchPage extends React.Component {
     }
 
     render() {
-        const { showSearchResults, users, pending, count } = this.props;
+        const {showSearchResults, users, pending, count} = this.props;
         return (
             <div className="users-search">
                 <Helmet title="Search Users | Monuments and Memorials"/>
