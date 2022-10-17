@@ -1,13 +1,10 @@
 import * as React from 'react';
 import './ManageSuggestion.scss';
-import {Helmet} from 'react-helmet';
-import CreateMonumentSuggestion
-    from '../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestion/CreateMonumentSuggestion';
-import UpdateMonumentSuggestion
-    from '../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestion/UpdateMonumentSuggestion';
-import {Alert} from 'react-bootstrap';
-import BulkCreateMonumentSuggestion
-    from '../../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestion/BulkCreateMonumentSuggestion';
+import { Helmet } from 'react-helmet';
+import CreateMonumentSuggestion from '../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestion/CreateMonumentSuggestion';
+import UpdateMonumentSuggestion from '../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestion/UpdateMonumentSuggestion';
+import { Alert } from 'react-bootstrap';
+import BulkCreateMonumentSuggestion from '../../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestion/BulkCreateMonumentSuggestion';
 import SuggestionStatus from './SuggestionStatus/SuggestionStatus';
 
 export default class ManageSuggestion extends React.Component {
@@ -21,8 +18,8 @@ export default class ManageSuggestion extends React.Component {
     }
 
     renderUpdateNotice() {
-        let {suggestion} = this.props;
-        const {alertDismissed} = this.state;
+        let { suggestion } = this.props;
+        const { alertDismissed } = this.state;
 
         if (suggestion.suggestion) {
             suggestion = suggestion.suggestion;
@@ -33,7 +30,7 @@ export default class ManageSuggestion extends React.Component {
         return (
             <>
                 {suggestion && isPending && suggestion.monument && suggestion.monument.lastModifiedDate > suggestion.createdDate &&
-                    !alertDismissed &&
+                !alertDismissed &&
                     <Alert variant="danger" onClose={() => this.setState({alertDismissed: true})} dismissible>
                         <i className="material-icons mr-2">warning</i>
                         <span>
@@ -47,7 +44,7 @@ export default class ManageSuggestion extends React.Component {
     }
 
     renderManageCreateSuggestion() {
-        const {suggestion, onApproveClick, onRejectClick} = this.props;
+        const { suggestion, onApproveClick, onRejectClick } = this.props;
 
         return (
             <div className="manage-suggestion">
@@ -62,7 +59,7 @@ export default class ManageSuggestion extends React.Component {
     }
 
     renderManageUpdateSuggestion() {
-        let {suggestion, onApproveClick, onRejectClick} = this.props;
+        let { suggestion, onApproveClick, onRejectClick } = this.props;
 
         if (suggestion.suggestion) {
             suggestion = suggestion.suggestion;
@@ -87,7 +84,7 @@ export default class ManageSuggestion extends React.Component {
     }
 
     renderManageBulkSuggestion() {
-        const {suggestion, onApproveClick, onRejectClick} = this.props;
+        const { suggestion, onApproveClick, onRejectClick } = this.props;
 
         return (
             <div className="manage-suggestion">
@@ -103,7 +100,7 @@ export default class ManageSuggestion extends React.Component {
     }
 
     render() {
-        const {type} = this.props;
+        const { type } = this.props;
 
         switch (type) {
             case 'create':

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import * as QueryString from 'query-string';
-import {searchSuggestions} from '../../../../actions/search';
+import { searchSuggestions } from '../../../../actions/search';
 import search from '../../../../utils/search';
-import {Helmet} from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import Spinner from '../../../../components/Spinner/Spinner';
 import SuggestionSearch from '../../../../components/AdminPanel/ManageSuggestions/SuggestionSearch/SuggestionSearch';
 
@@ -25,7 +25,7 @@ class SuggestionSearchPage extends React.Component {
         const result = {};
 
         if (state.createSuggestionSearchPage) {
-            const {createSuggestions, count, pending, error} = state.createSuggestionSearchPage;
+            const { createSuggestions, count, pending, error } = state.createSuggestionSearchPage;
             if (!error) {
                 result['createSuggestions'] = {
                     results: createSuggestions,
@@ -36,7 +36,7 @@ class SuggestionSearchPage extends React.Component {
         }
 
         if (state.updateSuggestionSearchPage) {
-            const {updateSuggestions, count, pending, error} = state.updateSuggestionSearchPage;
+            const { updateSuggestions, count, pending, error } = state.updateSuggestionSearchPage;
             if (!error) {
                 result['updateSuggestions'] = {
                     results: updateSuggestions,
@@ -47,7 +47,7 @@ class SuggestionSearchPage extends React.Component {
         }
 
         if (state.bulkCreateSuggestionSearchPage) {
-            const {bulkCreateSuggestions, count, pending, error} = state.bulkCreateSuggestionSearchPage;
+            const { bulkCreateSuggestions, count, pending, error } = state.bulkCreateSuggestionSearchPage;
             if (!error) {
                 result['bulkCreateSuggestions'] = {
                     results: bulkCreateSuggestions,
@@ -61,12 +61,12 @@ class SuggestionSearchPage extends React.Component {
     }
 
     componentDidMount() {
-        const {showSearchResults, dispatch, location: {search}} = this.props;
+        const { showSearchResults, dispatch, location: { search } } = this.props;
         if (showSearchResults) dispatch(searchSuggestions(QueryString.parse(search)));
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const {dispatch, location: {search}} = this.props;
+        const { dispatch, location: { search } } = this.props;
         const params = QueryString.parse(search);
 
         if (params.type !== this.state.type) {
@@ -100,8 +100,8 @@ class SuggestionSearchPage extends React.Component {
     }
 
     render() {
-        const {showSearchResults, createSuggestions, updateSuggestions, bulkCreateSuggestions} = this.props;
-        const {type} = this.state;
+        const { showSearchResults, createSuggestions, updateSuggestions, bulkCreateSuggestions } = this.props;
+        const { type } = this.state;
 
         const pending = createSuggestions.pending || updateSuggestions.pending || bulkCreateSuggestions.pending;
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {capitalize, getUserFullName, prettyPrintDate} from '../../../../utils/string-util';
-import {Link} from 'react-router-dom';
-import {Alert, Button, Form, Modal} from 'react-bootstrap';
-import {Role} from '../../../../utils/authentication-util';
-import {Helmet} from 'react-helmet';
+import { capitalize, getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
+import { Link } from 'react-router-dom';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
+import { Role } from '../../../../utils/authentication-util';
+import { Helmet } from 'react-helmet';
 import {getMonumentSlug} from "../../../../utils/regex-util";
 
 export default class ManageUser extends React.Component {
@@ -24,9 +24,9 @@ export default class ManageUser extends React.Component {
         }
     }
 
-    handleChangeRole(confirm = false) {
-        const {onChangeRole} = this.props;
-        const {role} = this.state;
+    handleChangeRole(confirm=false) {
+        const { onChangeRole } = this.props;
+        const { role } = this.state;
 
         if (role === Role.ADMIN && !confirm) {
             this.setState({confirmAdminModalOpen: true});
@@ -46,8 +46,8 @@ export default class ManageUser extends React.Component {
     }
 
     renderManageUser() {
-        const {user, contributions, session} = this.props;
-        const {editingRole, role, dismissAlert} = this.state;
+        const { user, contributions, session } = this.props;
+        const { editingRole, role, dismissAlert } = this.state;
 
         const isEditingSelf = user.id === session.user.id;
 
@@ -56,9 +56,9 @@ export default class ManageUser extends React.Component {
                 <Helmet title={`Manage ${getUserFullName(user)} | Monuments and Memorials`}/>
                 {isEditingSelf && !dismissAlert &&
                     <Alert variant="info"
-                           onClose={() => this.setState({dismissAlert: true})}
-                           dismissible
-                           className="d-flex align-items-center">
+                        onClose={() => this.setState({dismissAlert: true})}
+                        dismissible
+                        className="d-flex align-items-center">
                         <i className="material-icons mr-3">info</i>
                         <span>You are viewing your own User record. For security purposes, you are not able to change your own role.</span>
                     </Alert>
@@ -101,14 +101,14 @@ export default class ManageUser extends React.Component {
                     : null}
                 <div>
                     {!editingRole && !isEditingSelf &&
-                        <Button variant="light" onClick={() => this.setState({editingRole: true})}>
-                            Change Role
-                        </Button>
+                    <Button variant="light" onClick={() => this.setState({editingRole: true})}>
+                        Change Role
+                    </Button>
                     }
                     {editingRole &&
-                        <Button variant="primary" onClick={() => this.handleChangeRole()} disabled={role === user.role}>
-                            Save
-                        </Button>
+                    <Button variant="primary" onClick={() => this.handleChangeRole()} disabled={role === user.role}>
+                        Save
+                    </Button>
                     }
                 </div>
             </div>
@@ -116,8 +116,8 @@ export default class ManageUser extends React.Component {
     }
 
     renderConfirmAdminModal() {
-        const {user} = this.props;
-        const {confirmAdminModalOpen} = this.state;
+        const { user } = this.props;
+        const { confirmAdminModalOpen } = this.state;
 
         return (
             <div onClick={e => e.stopPropagation()}>
@@ -127,8 +127,7 @@ export default class ManageUser extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <p>
-                            Are you sure you want to change {getUserFullName(user)}'s role
-                            from <strong>{capitalize(user.role)}</strong> to <strong>Admin</strong>?
+                            Are you sure you want to change {getUserFullName(user)}'s role from <strong>{capitalize(user.role)}</strong> to <strong>Admin</strong>?
                         </p>
                         <p>
                             If you make this change, they will be able to <strong>change your role</strong>.

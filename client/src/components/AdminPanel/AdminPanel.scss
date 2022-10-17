@@ -3,25 +3,37 @@
 @import "../../../node_modules/bootstrap/scss/mixins";
 
 .admin .panel {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  height: max-content;
-  min-height: 100%;
-  background-color: #F6F5FA;
-  box-shadow: rgba(0, 0, 0, 0.1) 2px 2px 10px inset;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: max-content;
+    min-height: 100%;
+    background-color: #F6F5FA;
+    box-shadow: rgba(0,0,0,0.1) 2px 2px 10px inset;
 
-  .viewport {
-    flex-grow: 2;
-    padding: 3rem 2rem;
+    .viewport {
+        flex-grow: 2;
+        padding: 3rem 2rem;
 
-    .card {
-      background-color: white;
-      box-shadow: rgba(0, 0, 0, 0.1) 2px 2px 10px;
+        .card.card {
+            background-color: white;
+            box-shadow: rgba(0,0,0,0.1) 2px 2px 10px;
+            min-width: 40%;
+            max-width: 75%;
+            //max-width: 700px;
+        }
     }
-  }
 
-  .left {
-    flex-basis: 250px;
-  }
+    // The right section is used to properly center the viewport contents on large screens
+    .left, .right {
+        flex-basis: 250px;
+    }
+
+    // When under 1400px, the viewport card will start to shrink (if width is 600px) so it starts to look weird
+    // By hiding the right section under this width it looks better
+    @media only screen and (max-width: calc(1400px)) {
+        .right {
+            display: none;
+        }
+    }
 }

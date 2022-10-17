@@ -10,7 +10,6 @@
     "connected-react-router": "^6.8.0",
     "csvtojson": "^2.0.10",
     "file-saver": "^2.0.5",
-    "formik": "^2.2.9",
     "history": "^4.10.1",
     "i": "^0.3.7",
     "json2csv": "^4.5.4",
@@ -39,7 +38,7 @@
     "rollbar": "^2.20.0",
     "rxjs": "^6.5.5",
     "slugify": "^1.4.0",
-    "validator": "^13.7.0"
+    "validator": "^12.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

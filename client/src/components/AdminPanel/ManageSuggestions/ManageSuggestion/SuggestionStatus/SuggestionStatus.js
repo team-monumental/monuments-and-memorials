@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './SuggestionStatus.scss';
-import {Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 /**
  * Presentational component that displays the current status of a Suggestion
@@ -8,7 +8,7 @@ import {Button} from 'react-bootstrap';
 export default class SuggestionStatus extends React.Component {
 
     renderStatusButtons() {
-        const {onApproveClick, onRejectClick, isBulk} = this.props;
+        const { onApproveClick, onRejectClick, isBulk } = this.props;
 
         return (
             <div className="buttons mt-3">
@@ -23,7 +23,7 @@ export default class SuggestionStatus extends React.Component {
     }
 
     render() {
-        const {isApproved, isRejected, isFromBulk} = this.props;
+        const { isApproved, isRejected, isFromBulk } = this.props;
 
         const isPending = !isApproved && !isRejected;
 
@@ -34,9 +34,11 @@ export default class SuggestionStatus extends React.Component {
         let statusDisplay;
         if (isPending && isFromBulk) {
             statusDisplay = <span className="status pending">Pending</span>
-        } else if (isApproved) {
+        }
+        else if (isApproved) {
             statusDisplay = <span className="status approved">Approved</span>
-        } else if (isRejected) {
+        }
+        else if (isRejected) {
             statusDisplay = <span className="status rejected">Rejected</span>
         }
 

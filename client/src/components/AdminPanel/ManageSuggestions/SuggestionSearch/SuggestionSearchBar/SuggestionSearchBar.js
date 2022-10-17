@@ -2,9 +2,9 @@ import * as React from 'react';
 import './SuggestionSearchBar.scss';
 import * as QueryString from 'query-string';
 import search from '../../../../../utils/search';
-import {Button, Form} from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import TextSearch from '../../../../Header/SearchBar/TextSearch/TextSearch';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 class SuggestionSearchBar extends React.Component {
 
@@ -16,9 +16,11 @@ class SuggestionSearchBar extends React.Component {
         let statusFilter;
         if (params.isApproved) {
             statusFilter = 'approved';
-        } else if (params.isRejected) {
+        }
+        else if (params.isRejected) {
             statusFilter = 'rejected';
-        } else if (params.isPending) {
+        }
+        else if (params.isPending) {
             statusFilter = 'pending';
         }
 
@@ -30,8 +32,8 @@ class SuggestionSearchBar extends React.Component {
     }
 
     search() {
-        const {history, page, limit} = this.props;
-        const {searchQuery, statusFilter, typeFilter} = this.state;
+        const { history, page, limit } = this.props;
+        const { searchQuery, statusFilter, typeFilter } = this.state;
 
         search({
             q: searchQuery,
@@ -70,7 +72,7 @@ class SuggestionSearchBar extends React.Component {
     }
 
     render() {
-        const {searchQuery, statusFilter, typeFilter} = this.state;
+        const { searchQuery, statusFilter, typeFilter } = this.state;
 
         return (
             <div className="suggestion-search-bar">

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import './UserSearchResult.scss';
-import {Card} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
-import {capitalize, getUserFullName} from '../../../../../../utils/string-util';
+import { Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { capitalize, getUserFullName } from '../../../../../../utils/string-util';
 
 export default class UserSearchResult extends React.Component {
 
     render() {
-        const {user, index} = this.props;
+        const { user, index } = this.props;
 
         return (
             <div className="user-search-result">

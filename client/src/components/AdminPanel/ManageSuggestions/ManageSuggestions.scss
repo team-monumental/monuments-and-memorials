@@ -1,60 +1,60 @@
 .admin .panel .manage-suggestions {
-  display: flex;
-  justify-content: center;
-  min-width: 555px;
-
-  .sticky-top {
-    background-color: white;
-    z-index: 1;
-  }
-
-  .suggestion-search {
-    max-height: calc(100vh - 250px);
-    overflow-y: auto;
-  }
-
-  .suggestion-search-results {
-    margin-top: 1.5rem;
-
-    h5 {
-      text-decoration: underline !important;
-    }
-  }
-
-  .pagination-container {
-    position: sticky;
-    bottom: 1rem;
     display: flex;
     justify-content: center;
-    z-index: 1;
-    margin-top: 2.5rem;
+    min-width: 555px;
 
-    .pagination {
-      background-color: white;
-      margin-bottom: 0;
-
-      .page-link {
-        border: 0 !important;
-      }
+    .sticky-top {
+        background-color: white;
+        z-index: 1;
     }
-  }
+
+    .suggestion-search {
+        max-height: calc(100vh - 250px);
+        overflow-y: auto;
+    }
+
+    .suggestion-search-results {
+        margin-top: 1.5rem;
+
+        h5 {
+            text-decoration: underline !important;
+        }
+    }
+
+    .pagination-container {
+        position: sticky;
+        bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        z-index: 1;
+        margin-top: 2.5rem;
+
+        .pagination {
+            background-color: white;
+            margin-bottom: 0;
+
+            .page-link {
+                border: 0 !important;
+            }
+        }
+    }
 }
 
 .manage-suggestions-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  .other-pending-update-suggestions-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 3rem;
-    max-height: 635px;
-    overflow-y: auto;
+    flex-direction: row;
+    justify-content: center;
 
-    h5 {
-      text-decoration: underline !important;
+    .other-pending-update-suggestions-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 3rem;
+        max-height: 635px;
+        overflow-y: auto;
+
+        h5 {
+            text-decoration: underline !important;
+        }
     }
-  }
 }
