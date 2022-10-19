@@ -5,6 +5,7 @@ import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
 import QueuePanel from "./Queue/QueuePanel";
 
+
 import SearchResultContext from "../../../utils/search-util";
 
 import './BulkEdit.scss'
@@ -36,8 +37,13 @@ const BulkEditPanel = (props) => {
             let updatedSearchResult = searchResults
             updatedSearchResult[searchResults.indexOf(searchResults.find(mon => mon.id == monument.id))] = monument
             setSearchResults(updatedSearchResult)
+            props.showSuccessToast();
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+            console.log(error)
+            props.showErrorToast();
+        })
+            
     }
 
 
@@ -52,8 +58,6 @@ const BulkEditPanel = (props) => {
     const deleteSearchResult = (recordId) => {
         setSearchResults(searchResults.filter(record => record.id !== recordId))
     }
-
-    
 
     useEffect(() => {
         handleSearch()
