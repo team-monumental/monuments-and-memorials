@@ -12,6 +12,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
         setChecked(!checked)
     }
 
+    //populate new results after an update from the queue
     useEffect(() => {
         setItems(results)
     }, [results])

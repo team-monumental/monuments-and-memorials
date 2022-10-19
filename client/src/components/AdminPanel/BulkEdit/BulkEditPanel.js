@@ -35,6 +35,7 @@ const BulkEditPanel = (props) => {
         .then(() => {
             dequeue(monument.id)
             let updatedSearchResult = searchResults
+            //find the old monument in the list and replace it with the updated one
             updatedSearchResult[searchResults.indexOf(searchResults.find(mon => mon.id == monument.id))] = monument
             setSearchResults(updatedSearchResult)
             props.showSuccessToast();
@@ -45,7 +46,6 @@ const BulkEditPanel = (props) => {
         })
             
     }
-
 
     const enqueue = (recordData) => {
         setQueueList(queue => ([...queue, recordData]))
