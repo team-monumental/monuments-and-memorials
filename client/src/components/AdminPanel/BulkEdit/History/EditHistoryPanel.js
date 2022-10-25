@@ -1,19 +1,28 @@
-import React, {useEffect} from 'react'
-import {Container} from "react-bootstrap";
+import React, { useEffect } from 'react'
+import { Card, Container, Row, Col } from "react-bootstrap";
 
 const EditHistoryPanel = (props) => {
 
-    const {editHistoryList} = props
+    const { editHistoryList } = props
 
     return (
-        <Container className="queue-panel">
-            <p>EditHistoryPanel</p>
-            {editHistoryList.map(monument => {
-                return (
-                    <p>{monument.title}</p>
-                )
-
-            })}
+        <Container>
+            <Card>
+                <Card.Header>
+                    <Card.Title>
+                        Edit History
+                    </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                    {editHistoryList.map(monument => {
+                        return (
+                            <Row>
+                                <Col lg={3}><span>{monument.title}</span></Col>
+                            </Row>
+                        )
+                    })}
+                </Card.Body>
+            </Card>
         </Container>
     )
 }
