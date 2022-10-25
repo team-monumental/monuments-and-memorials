@@ -2,9 +2,9 @@ import * as moment from 'moment';
 
 /**
  * valid date formats.  exact date (yyyy-mm-dd), month-year, year
- * @type {Readonly<{MONTH_YEAR: string, YEAR: string, EXACT_DATE: string}>}
+ * @type {Readonly<{MONTH_YEAR: string, YEAR: string, EXACT_DATE: string, UNKNOWN: string}>}
  */
-export const DateFormat = Object.freeze({YEAR: 'YEAR', MONTH_YEAR: 'MONTH_YEAR', EXACT_DATE: 'EXACT_DATE'})
+export const DateFormat = Object.freeze({YEAR: 'YEAR', MONTH_YEAR: 'MONTH_YEAR', EXACT_DATE: 'EXACT_DATE', UNKNOWN: 'UNKNOWN'})
 
 /**
  * Format the specified date into a user-friendly string
