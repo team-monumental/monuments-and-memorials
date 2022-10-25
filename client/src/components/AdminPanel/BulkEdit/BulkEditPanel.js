@@ -5,6 +5,7 @@ import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
 import QueuePanel from "./Queue/QueuePanel";
 
+
 import SearchResultContext from "../../../utils/search-util";
 
 import './BulkEdit.scss'
@@ -33,10 +34,19 @@ const BulkEditPanel = (props) => {
 
     const saveMonument = async (monument) => {
         put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}`, monument)
-            .then(() => {
-                setEditHistoryList(history => ([...history, monument]))
-            })
-            .catch(error => console.log(error))
+        .then(() => {
+            dequeue(monument.id)
+            setEditHistoryList(history => ([...history, monument]))
+            let updatedSearchResult = searchResults
+            //find the old monument in the list and replace it with the updated one
+            updatedSearchResult[searchResults.indexOf(searchResults.find(mon => mon.id == monument.id))] = monument
+            setSearchResults(updatedSearchResult)
+            props.showSuccessToast();
+        })
+        .catch(error => {
+            console.log(error)
+            props.showErrorToast();
+        })
     }
 
     const enqueue = (recordData) => {
