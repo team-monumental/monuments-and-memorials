@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react'
 import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
 import SearchResult from "./SearchResult";
@@ -11,6 +11,11 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
     const toggleChecked = () => {
         setChecked(!checked)
     }
+
+    //populate new results after an update from the queue
+    useEffect(() => {
+        setItems(results)
+    }, [results])
 
     return (
         <>
