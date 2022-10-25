@@ -1951,6 +1951,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <option value={DateFormat.YEAR}>Year</option>
                                         <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
                                         <option value={DateFormat.EXACT_DATE}>Exact Date</option>
+                                        <option value={DateFormat.UNKNOWN}>Unknown</option>
                                     </Form.Control>
                                 </Form.Group>
 
@@ -1971,6 +1972,7 @@ export default class CreateOrUpdateForm extends React.Component {
                                         <option value={DateFormat.YEAR}>Year</option>
                                         <option value={DateFormat.MONTH_YEAR}>Month/Year</option>
                                         <option value={DateFormat.EXACT_DATE}>Exact Date</option>
+                                        <option value={DateFormat.UNKNOWN}>Unknown</option>
                                     </Form.Control>
                                 </Form.Group>
 
