@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import { getUserFullName, prettyPrintDate } from '../../../../utils/string-util';
+import {DateFormat, getUserFullName, prettyPrintDate} from '../../../../utils/string-util';
 import ExportButtons from '../../../Export/ExportButtons/ExportButtons';
 
 /**
@@ -40,7 +40,15 @@ export default class About extends React.Component {
         }
 
         let date;
-        if (monument.date == null) {
+        if (monument.dateFormat === DateFormat.UNKNOWN){
+            date = (
+                <div>
+                    <span className="detail-label">Date:&nbsp;</span>
+                    {String("Date of creation is Unknown")}
+                </div>
+            );
+        }
+        else if (monument.date == null) {
             date = (
                 <div>
                     <span className="detail-label">Date:&nbsp;</span>
