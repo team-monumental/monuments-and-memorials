@@ -6,7 +6,7 @@ const EditHistoryPanel = (props) => {
     const { editHistoryList } = props
 
     return (
-        <Container>
+        <Container style={{ 'padding-left': '0%', 'padding-right': '0%', 'padding-top': '15px'  }}>
             <Card style={{ width: '100%' }}>
                 <Card.Header>
                     <Card.Title>
