@@ -7,7 +7,7 @@ const EditHistoryPanel = (props) => {
 
     return (
         <Container>
-            <Card>
+            <Card style={{ width: '100%' }}>
                 <Card.Header>
                     <Card.Title>
                         Edit History
@@ -16,8 +16,8 @@ const EditHistoryPanel = (props) => {
                 <Card.Body>
                     {editHistoryList.map(monument => {
                         return (
-                            <Row>
-                                <Col lg={3}><span>{monument.title}</span></Col>
+                            <Row style={{ padding: '15px' }}>
+                                {monument.title}
                             </Row>
                         )
                     })}
