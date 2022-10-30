@@ -12,8 +12,8 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
     const [active, setActive] = useState(0)
     const [step, setStep] = useState(10)
 
-    const pageEnd = Math.min((step * (active - 1)) + step, results.length)
-    const pageStart = Math.min((step * (active - 1)) + 1, pageEnd)
+    const pageEnd = Math.min((step * (active)) + step, results.length)
+    const pageStart = Math.min((step * (active)) + 1, pageEnd)
 
     const toggleChecked = () => {
         setChecked(!checked)
