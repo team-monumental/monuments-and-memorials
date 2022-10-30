@@ -9,11 +9,11 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
     const [checked, setChecked] = useState(false)
     const [items, setItems] = useState([])
 
-    const limit = 10
-    const page = 1
+    const [active, setActive] = useState(0)
+    const [step, setStep] = useState(10)
 
-    const pageEnd = Math.min((limit * (page - 1)) + limit, results.length)
-    const pageStart = Math.min((limit * (page - 1)) + 1, pageEnd)
+    const pageEnd = Math.min((step * (active - 1)) + step, results.length)
+    const pageStart = Math.min((step * (active - 1)) + 1, pageEnd)
 
     const toggleChecked = () => {
         setChecked(!checked)
@@ -49,7 +49,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     />
                 ))}
             </ListGroup>
-            <SearchResultNav results={results} setItems={setItems}/>
+            <SearchResultNav results={results} setItems={setItems} setActive={setActive} active={active} setStep={setStep} step={step}/>
         </>
     )
 }
