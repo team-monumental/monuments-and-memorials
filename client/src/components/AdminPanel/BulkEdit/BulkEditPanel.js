@@ -15,7 +15,7 @@ import { post, put } from '../../../utils/api-util';
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])
-    const [searchTerm, setSearchTerm] = useState([])
+    const [searchTerm, setSearchTerm] = useState("")
 
     const [queueList, setQueueList] = useState([])
     const [active, setActive] = useState(null)
@@ -59,6 +59,14 @@ const BulkEditPanel = (props) => {
         setSearchResults(searchResults.filter(record => record.id !== recordId))
     }
 
+    useEffect(() => {
+        if(searchTerm.length !== 0) {
+            handleSearch()
+        } else {
+            setSearchResults([])
+        }
+    }, []);
+
     return (
         <Container className="bulk-edit" fluid>
             <Row>
@@ -76,10 +84,7 @@ const BulkEditPanel = (props) => {
                                              enqueue={enqueue}
                                              dequeue={dequeue}
                                              handleSearch={handleSearch}
-                                             onChange={e => {
-                                                 setSearchTerm(e.target.value);
-                                                 handleSearch();
-                                             }}
+                                             onChange={e => setSearchTerm(e.target.value)}
                                 />
                             </SearchResultContext.Provider>
                         </Card.Body>
