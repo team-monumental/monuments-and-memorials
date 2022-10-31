@@ -59,11 +59,6 @@ const BulkEditPanel = (props) => {
         setSearchResults(searchResults.filter(record => record.id !== recordId))
     }
 
-    //My understanding is that the "useEffect" function runs on page render. Similar to componentDidMount
-    // useEffect(() => {
-    //     handleSearch()
-    // }, [handleSearch]);
-
     return (
         <Container className="bulk-edit" fluid>
             <Row>
@@ -81,7 +76,10 @@ const BulkEditPanel = (props) => {
                                              enqueue={enqueue}
                                              dequeue={dequeue}
                                              handleSearch={handleSearch}
-                                             onChange={e => setSearchTerm(e.target.value)}
+                                             onChange={e => {
+                                                 setSearchTerm(e.target.value);
+                                                 handleSearch();
+                                             }}
                                 />
                             </SearchResultContext.Provider>
                         </Card.Body>
