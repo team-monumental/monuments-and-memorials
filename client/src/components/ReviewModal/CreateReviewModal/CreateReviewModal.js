@@ -33,6 +33,9 @@ export default class CreateReviewModal extends React.Component {
             case DateFormat.EXACT_DATE:
                 date = prettyPrintDate(form.date, form.dateSelectValue);
                 break;
+            case DateFormat.UNKNOWN:
+                date = 'UNKNOWN';
+                break;
             default:
                 break;
         }
@@ -53,6 +56,9 @@ export default class CreateReviewModal extends React.Component {
                 break;
             case DateFormat.EXACT_DATE:
                 deactivatedDate = prettyPrintDate(form.deactivatedDate, form.deactivatedDateSelectValue);
+                break;
+            case DateFormat.UNKNOWN:
+                deactivatedDate = 'UNKNOWN';
                 break;
             default:
                 break;
