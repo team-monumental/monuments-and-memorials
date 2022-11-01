@@ -1,6 +1,6 @@
 ## Compile Monuments & Memorials Backend Test
 
-name: Monuments Build
+name: Spring Server
 
 on:
   push:
