@@ -6,8 +6,6 @@ name: Production Deploy
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master", "dev" ]
 
 jobs:
   deploy:
@@ -21,4 +19,4 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_KEY }}
-          script: sh deploy.sh
+          script: echo test
