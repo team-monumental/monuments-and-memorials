@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Pagination} from "react-bootstrap";
 
-const SearchResultNav = ({results, setItems}) => {
-    const [active, setActive] = useState(0)
-    const [step] = useState(10)
+const SearchResultNav = ({results, setItems, setActive, active, setStep, step}) => {
 
     const handleActive = (idx) => {
         setActive(idx)
