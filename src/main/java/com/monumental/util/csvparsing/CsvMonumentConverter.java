@@ -102,7 +102,7 @@ public class CsvMonumentConverter {
                                 suggestion.setDate(convertDateFormat(value, dateFormatString));
                                 suggestion.setDateFormat(dateFormat);
                             } else {
-                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, YYYY, or Unknown.");
                                 break;
                             }
                             break;
@@ -111,29 +111,31 @@ public class CsvMonumentConverter {
                             if (deactivatedDateFormatString != null) {
                                 Date parsedDate = null;
                                 deactivatedDateFormat = stringToDateFormat(deactivatedDateFormatString);
-                                try {
-                                    parsedDate = parseDate(value, deactivatedDateFormatString);
-                                } catch (ParseException e) {
-                                    result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
-                                    break;
-                                }
-                                deactivatedDateForValidate = parsedDate;
-                                if (isDateInFuture(parsedDate)) {
-                                    result.getWarnings().add("Un-installed date should not be in the future.");
-                                    break;
-                                }
-                                if (dateForValidate != null && dateForValidate.after(parsedDate)) {
-                                    if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
-                                            (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
-                                            (dateForValidate.getYear() < parsedDate.getYear())) {
-                                        result.getWarnings().add("Created date should not be after un-installed date.");
+                                if (deactivatedDateFormat != DateFormat.UNKNOWN) {
+                                    try {
+                                        parsedDate = parseDate(value, deactivatedDateFormatString);
+                                    } catch (ParseException e) {
+                                        result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                                         break;
+                                    }
+                                    deactivatedDateForValidate = parsedDate;
+                                    if (isDateInFuture(parsedDate)) {
+                                        result.getWarnings().add("Un-installed date should not be in the future.");
+                                        break;
+                                    }
+                                    if (dateForValidate != null && dateForValidate.after(parsedDate)) {
+                                        if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                                (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
+                                                (dateForValidate.getYear() < parsedDate.getYear())) {
+                                            result.getWarnings().add("Created date should not be after un-installed date.");
+                                            break;
+                                        }
                                     }
                                 }
                                 suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
                                 suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
                             } else {
-                                result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, YYYY, or Unknown");
                                 break;
                             }
                             break;
