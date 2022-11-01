@@ -1,3 +1,4 @@
+import { StepFunctions } from 'aws-sdk';
 import React, {useEffect, useState} from 'react'
 import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 
@@ -7,6 +8,12 @@ import SearchResultNav from "./SearchResultNav";
 const SearchResultList = ({results, enqueue, dequeue}) => {
     const [checked, setChecked] = useState(false)
     const [items, setItems] = useState([])
+
+    const [active, setActive] = useState(0)
+    const [step, setStep] = useState(10)
+
+    const pageEnd = Math.min((step * (active)) + step, results.length)
+    const pageStart = Math.min((step * (active)) + 1, pageEnd)
 
     const toggleChecked = () => {
         setChecked(!checked)
@@ -20,6 +27,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
     return (
         <>
             <ListGroup as="ol" variant="flush">
+                <p>Showing {pageStart} - {pageEnd} of {results.length} results</p>
                 <ListGroup.Item as="li">
                     <Container fluid>
                         <Row>
@@ -41,7 +49,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     />
                 ))}
             </ListGroup>
-            <SearchResultNav results={results} setItems={setItems}/>
+            <SearchResultNav results={results} setItems={setItems} setActive={setActive} active={active} setStep={setStep} step={step}/>
         </>
     )
 }
