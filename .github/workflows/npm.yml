@@ -26,4 +26,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          path: "~/.client"
       - run: cd client then npm ci then npm run build
