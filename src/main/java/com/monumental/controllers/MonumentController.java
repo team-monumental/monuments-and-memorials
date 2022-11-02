@@ -210,4 +210,32 @@ public class MonumentController {
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
         return this.monumentService.updateMonument(updateSuggestion);
     }
+
+    /**
+     * Overwrites the Monument with the specified monumentId with the provided Monument. Provides functionality
+     * for BulkEdit to bypass processing updates as update suggestions
+     *
+     * @param monumentId - Integer ID of the Monument to replace
+     * @return Monument - The updated Monument with the specified monumentId based on the attributes defined in the
+     * specified Monument
+     * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
+     */
+    @PutMapping("/api/monument/bulkupdate/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId,
+                                       @RequestBody Monument monument)
+            throws ResourceNotFoundException {
+        //since we are updating a monument, we need to verify that the monument first exists
+        Optional<Monument> optionalMonument = this.monumentRepository.findById(monumentId);
+        ////Note for discussion: do we need to look at if the monument is active or inactive?
+        //Optional<Monument> optionalMonument = this.monumentRepository.findByIdAndIsActive(monumentId,true);
+        if (optionalMonument.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+        ////Note for discussion: Can we use this to save a list of edits all at once (later improvement)
+        ////and save on DB writes/API calls? Useful for future processing of CSV updates
+        //this.monumentRepository.saveAll(monuments)
+        //Adapt this endpoint in the future, mod the front-end to send a list
+        return this.monumentRepository.save(monument);
+    }
 }
