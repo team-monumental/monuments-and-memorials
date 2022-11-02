@@ -18,6 +18,11 @@ const EditHistoryPanel = (props) => {
                         return (
                             <Row style={{ padding: '15px' }}>
                                 {monument.title}
+                                {monument.changedFields.map(field => {
+                                    return (
+                                        <Col>{field}</Col>
+                                    )
+                                })}
                             </Row>
                         )
                     })}

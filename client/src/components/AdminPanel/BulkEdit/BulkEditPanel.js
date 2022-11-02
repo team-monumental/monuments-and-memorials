@@ -36,6 +36,16 @@ const BulkEditPanel = (props) => {
         put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}`, monument)
         .then(() => {
             dequeue(monument.id)
+            const oldMonument = searchResults.find(mon => mon.id == monument.id)
+            var diffArray = [];
+            for(let key in monument){
+                // console.log(key);
+                if(monument[key]  !== oldMonument[key] ){
+                  diffArray.push(key);
+                }
+            }
+            console.log(diffArray)
+            monument.changedFields = diffArray
             setEditHistoryList(history => ([...history, monument]))
             let updatedSearchResult = searchResults
             //find the old monument in the list and replace it with the updated one
