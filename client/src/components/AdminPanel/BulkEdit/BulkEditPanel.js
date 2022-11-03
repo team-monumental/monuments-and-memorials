@@ -16,7 +16,7 @@ import EditHistoryPanel from './History/EditHistoryPanel';
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
     const [searchResults, setSearchResults] = useState([])
-    const [searchTerm, setSearchTerm] = useState([])
+    const [searchTerm, setSearchTerm] = useState("")
 
     const [queueList, setQueueList] = useState([])
     const [editHistoryList, setEditHistoryList] = useState([])
@@ -72,8 +72,12 @@ const BulkEditPanel = (props) => {
     }
 
     useEffect(() => {
-        handleSearch()
-    }, [handleSearch]);
+        if(searchTerm.length !== 0) {
+            handleSearch()
+        } else {
+            setSearchResults([])
+        }
+    }, []);
 
     return (
         <Container className="bulk-edit" fluid>

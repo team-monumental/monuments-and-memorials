@@ -30,3 +30,5 @@ run_db.cmd
 
 # Travis
 .travis/id_rsa
+
+**/.DS_Store
