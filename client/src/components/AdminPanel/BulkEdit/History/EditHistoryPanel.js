@@ -6,7 +6,7 @@ const EditHistoryPanel = (props) => {
     const { editHistoryList } = props
 
     return (
-        <Container>
+        <Container style={{ paddingLeft: '0%', PaddingRight: '0%', PaddingTop: '15px'}}>
             <Card>
                 <Card.Header>
                     <Card.Title>
@@ -14,10 +14,15 @@ const EditHistoryPanel = (props) => {
                     </Card.Title>
                 </Card.Header>
                 <Card.Body>
+                    <Row style={{ padding: '15px', borderBottom: "3px solid rgb(212, 212, 212)"}}>
+                        <Col>Title</Col>
+                        <Col>Changed Fields</Col>
+                    </Row>
                     {editHistoryList.map(monument => {
                         return (
-                            <Row>
-                                <Col lg={3}><span>{monument.title}</span></Col>
+                            <Row style={{ padding: '15px', borderBottom: "3px solid rgb(212, 212, 212)"}}>
+                                <Col>{monument.title}</Col>
+                                <Col>{monument.changedFields.join(", ")}</Col>
                             </Row>
                         )
                     })}
