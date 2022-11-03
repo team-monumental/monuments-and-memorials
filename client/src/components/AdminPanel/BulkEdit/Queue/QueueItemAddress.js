@@ -21,7 +21,7 @@ const QueueItemAddress = ({field, form: {touched, errors, values}, ...props}) =>
             </InputGroup>
             {/* TODO: Convert address to coordinates */}
             <Form.Text className="text-muted">
-                Coordinates: {values.coordinates.coordinates[1]}, {values.coordinates.coordinates[0]}
+                Coordinates: {values.coordinates? values.coordinates.coordinates[1] : 'N/A'}, {values.coordinates? values.coordinates.coordinates[0] : 'N/A'}
             </Form.Text>
         </Form.Group>
     )
