@@ -39,12 +39,10 @@ const BulkEditPanel = (props) => {
             const oldMonument = searchResults.find(mon => mon.id == monument.id)
             var diffArray = [];
             for(let key in monument){
-                // console.log(key);
                 if(monument[key]  !== oldMonument[key] ){
                   diffArray.push(key);
                 }
             }
-            console.log(diffArray)
             monument.changedFields = diffArray
             setEditHistoryList(history => ([...history, monument]))
             let updatedSearchResult = searchResults
