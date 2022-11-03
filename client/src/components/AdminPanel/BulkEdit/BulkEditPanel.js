@@ -75,7 +75,7 @@ const BulkEditPanel = (props) => {
         } else {
             setSearchResults([])
         }
-    }, []);
+    }, [handleSearch]);
 
     return (
         <Container className="bulk-edit" fluid>
