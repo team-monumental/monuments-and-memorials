@@ -115,7 +115,7 @@ const BulkEditPanel = (props) => {
                         {/* FIXME: De-queuing doesn't uncheck search result */}
                         
                     </Col>
-                    <Col lg={4} style={{ width: '100%', 'max-width': '100%', flex: 1}}>
+                    <Col lg={5}>
                         <EditHistoryPanel editHistoryList={editHistoryList}/>
                     </Col>
                 </QueueResetContext.Provider>
