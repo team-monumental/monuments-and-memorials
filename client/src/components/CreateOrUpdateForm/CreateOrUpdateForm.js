@@ -714,6 +714,9 @@ export default class CreateOrUpdateForm extends React.Component {
             case DateFormat.EXACT_DATE:
                 createForm.date = datePickerCurrentDate;
                 break;
+            case DateFormat.UNKNOWN:
+                createForm.date = null;
+                break;
             default:
                 break;
         }
@@ -728,6 +731,9 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
             case DateFormat.EXACT_DATE:
                 createForm.deactivatedDate = deactivatedDatePickerCurrentDate;
+                break;
+            case DateFormat.UNKNOWN:
+                createForm.deactivatedDate = null;
                 break;
             default:
                 break;
