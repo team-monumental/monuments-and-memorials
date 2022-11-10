@@ -64,8 +64,6 @@ export default class Search extends React.Component {
             return 'relevance'
         }
 
-        computeDefaultSort()
-
         return (
             <div className="search-results-page">
                 {!hideMap &&
