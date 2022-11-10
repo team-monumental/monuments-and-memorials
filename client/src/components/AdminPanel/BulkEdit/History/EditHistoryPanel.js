@@ -15,12 +15,14 @@ const EditHistoryPanel = (props) => {
                 </Card.Header>
                 <Card.Body>
                     <Row style={{ padding: '15px', borderBottom: "3px solid rgb(212, 212, 212)"}}>
-                        <Col>Title</Col>
-                        <Col>Changed Fields</Col>
+                        <Col>ID</Col>
+                        <Col>TITLE</Col>
+                        <Col>CHANGED FIELDS</Col>
                     </Row>
                     {editHistoryList.map(monument => {
                         return (
                             <Row style={{ padding: '15px', borderBottom: "3px solid rgb(212, 212, 212)"}}>
+                                <Col>{monument.id}</Col>
                                 <Col>{monument.title}</Col>
                                 <Col>{monument.changedFields.join(", ")}</Col>
                             </Row>
