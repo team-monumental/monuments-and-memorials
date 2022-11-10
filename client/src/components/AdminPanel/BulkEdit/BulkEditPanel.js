@@ -26,6 +26,7 @@ const BulkEditPanel = (props) => {
         // TODO: Search with filters and update state
         let endpoint = `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}`
 
+        
         fetch(endpoint)
             .then(res => res.json())
             .then(json => setSearchResults(json))
@@ -75,7 +76,7 @@ const BulkEditPanel = (props) => {
         } else {
             setSearchResults([])
         }
-    }, [handleSearch]);
+    }, [searchTerm]);
 
     return (
         <Container className="bulk-edit" fluid>
@@ -90,11 +91,13 @@ const BulkEditPanel = (props) => {
                         </Card.Header>
                         <Card.Body>
                             <SearchResultContext.Provider value={deleteSearchResult}>
-                                <SearchPanel results={searchResults}
-                                             enqueue={enqueue}
-                                             dequeue={dequeue}
-                                             handleSearch={handleSearch}
-                                             onChange={e => setSearchTerm(e.target.value)}
+                                <SearchPanel 
+                                    results={searchResults}
+                                    enqueue={enqueue}
+                                    dequeue={dequeue}
+                                    handleSearch={handleSearch}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    queueList={queueList}
                                 />
                             </SearchResultContext.Provider>
                         </Card.Body>
@@ -111,7 +114,7 @@ const BulkEditPanel = (props) => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <QueuePanel queue={queueList} active={active} setActive={setActive} saveMonument={saveMonument}/>
+                                <QueuePanel queue={queueList} dequeue={dequeue} active={active} setActive={setActive} saveMonument={saveMonument}/>
                             </Card.Body>
                         </Card>
                         {/* FIXME: De-queuing doesn't uncheck search result */}
