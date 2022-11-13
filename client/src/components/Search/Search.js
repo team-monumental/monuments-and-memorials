@@ -42,7 +42,7 @@ export default class Search extends React.Component {
     render() {
         const {
             monuments, onLimitChange, onSortChange, lat, lon, sort, d: distance, decade,
-            onFilterChange, tags, materials, start, end, hideMap, hideImages, searchUri, monumentUri
+            onFilterChange, tags, materials, start, end, hideMap, hideImages, searchUri, monumentUri, q, address
         } = this.props;
         const [ count, page, limit ] = [ this.props.count, this.props.page, this.props.limit ]
             .map(value => parseInt(value) || 0);
@@ -55,6 +55,14 @@ export default class Search extends React.Component {
             // Turn the year into its decade
             return Math.floor(date.year() / 10) * 10;
         }).sort())];
+
+        const computeDefaultSort = () => {
+            // If no search query provided and an address is provided, default sort to distance
+            if (address && !q) {
+                return 'distance'
+            }
+            return 'relevance'
+        }
 
         return (
             <div className="search-results-page">
@@ -69,7 +77,7 @@ export default class Search extends React.Component {
                                      showDistance={lat && lon} distance={distance}
                                      tags={tags} materials={materials} decades={decades} decade={decade}
                                      start={start} end={end} uri={searchUri}/>
-                        <SearchInfo count={count} page={page} limit={limit} sort={sort}
+                        <SearchInfo count={count} page={page} limit={limit} sort={computeDefaultSort()}
                                     onLimitChange={onLimitChange}
                                     onSortChange={onSortChange}
                                     showDistanceSort={lat && lon}/>

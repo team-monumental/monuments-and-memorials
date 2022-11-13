@@ -36,9 +36,10 @@ const SearchResultList = ({results, queueList, enqueue, dequeue}) => {
                     <Container fluid>
                         <Row>
                             <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
+                            <Col lg={1}><span>ID</span></Col>
                             <Col lg={3}><span>NAME</span></Col>
                             <Col lg={2}><span>ARTIST</span></Col>
-                            <Col lg={2}><span>TAGS</span></Col>
+                            <Col lg={2}><span>STATE</span></Col>
                             <Col lg={2}><span>DATE CREATED</span></Col>
                         </Row>
                     </Container>
