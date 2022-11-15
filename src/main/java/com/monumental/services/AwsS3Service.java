@@ -69,7 +69,7 @@ public class AwsS3Service {
     public static String getObjectUrl(String objectKey) {
         try {
             objectKey = objectKey.replaceAll(" ", "+");
-            return new AmazonS3URI(httpsProtocol + bucketName + s3Domain + objectKey, false).toString();
+            return new AmazonS3URI(httpsProtocol + bucketName + s3Domain + objectKey, true).toString();
         } catch (Exception e) {
             e.printStackTrace();
             return httpsProtocol + bucketName + s3Domain + objectKey;
