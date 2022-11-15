@@ -559,17 +559,11 @@ export default class CreateOrUpdateForm extends React.Component {
             const yearInt = parseInt(year.value);
             const monthInt = parseInt(month.value);
 
-            if (yearInt <= 0) {
+            if ((yearInt <= 0) || (yearInt > currentDate.getFullYear())) {
                 year.isValid = false;
                 year.message = 'Year must be valid';
                 formIsValid = false;
-            }
-            else if (yearInt > currentDate.getFullYear()) {
-                year.isValid = false;
-                year.message = 'Year must be valid';
-                formIsValid = false;
-            }
-            else {
+            } else {
                 if (yearInt === currentDate.getFullYear()) {
                     if (monthInt > currentDate.getMonth()) {
                         month.isValid = false;
@@ -586,17 +580,11 @@ export default class CreateOrUpdateForm extends React.Component {
             const deactivatedYearInt = parseInt(deactivatedYear.value);
             const deactivatedMonthInt = parseInt(deactivatedMonth.value);
 
-            if (deactivatedYearInt <= 0) {
+            if ((deactivatedYearInt <= 0) || (deactivatedYearInt > currentDate.getFullYear())) {
                 deactivatedYear.isValid = false;
                 deactivatedYear.message = 'Un-installed year must be valid';
                 formIsValid = false;
-            }
-            else if (deactivatedYearInt > currentDate.getFullYear()) {
-                deactivatedYear.isValid = false;
-                deactivatedYear.message = 'Un-installed year must be valid';
-                formIsValid = false;
-            }
-            else {
+            } else {
                 if (deactivatedYearInt === currentDate.getFullYear()) {
                     if (deactivatedMonthInt > currentDate.getMonth()) {
                         deactivatedMonth.isValid = false;
@@ -635,14 +623,15 @@ export default class CreateOrUpdateForm extends React.Component {
             }
         }
 
+        //This is where the truth table needs to be implemented
         /* Checks that a un-installed date exists if a un-installed comment exists */
-        if (!validator.isEmpty(deactivatedComment.value)
-            && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== DateFormat.EXACT_DATE)
-            && validator.isEmpty(deactivatedYear.value)) {
-            deactivatedComment.isValid = false;
-            deactivatedComment.message = 'Un-installed date is required in order to provide a un-installed reason';
-            formIsValid = false;
-        }
+        // if (!validator.isEmpty(deactivatedComment.value)
+        //     && (!deactivatedDatePickerCurrentDate || deactivatedDateSelectValue !== DateFormat.EXACT_DATE)
+        //     && validator.isEmpty(deactivatedYear.value)) {
+        //     deactivatedComment.isValid = false;
+        //     deactivatedComment.message = 'Un-installed date is required in order to provide a un-installed reason';
+        //     formIsValid = false;
+        // }
 
         /* References Validation */
         /* Check that the References are valid URLs */
@@ -654,6 +643,39 @@ export default class CreateOrUpdateForm extends React.Component {
                     formIsValid = false;
                 }
             }
+        }
+
+        /*
+        The following form validation is based off of a conversation with Dr. Decker where the following truth table was
+        defined for various form states of known vs unknown dates:
+        _______________________________________________________________________________
+        DateOfCreation     |DateOfUninstall    |UninstallReasonGiven   |FormStateLegal?|
+        ___________________|___________________|_______________________|_______________|
+        Unknown            |Unknown            |NotGiven               |FALSE          |
+        Unknown            |Unknown            |Given                  |FALSE          |
+        Unknown            |Known/NotGiven     |NotGiven               |FALSE          |
+        Unknown            |Known/NotGiven     |Given                  |TRUE           |
+        Known/NotGiven     |Unknown            |NotGiven               |TRUE*          |    *Allow iff supporting references are provided
+        Known/NotGiven     |Unknown            |Given                  |TRUE           |
+        Known/NotGiven     |Known/NotGiven     |NotGiven               |TRUE           |
+        Known/NotGiven     |Known/NotGiven     |Given                  |TRUE           |
+         */
+        if (dateSelectValue === DateFormat.UNKNOWN && deactivatedDateSelectValue === DateFormat.UNKNOWN){//covers rows 1 and 2
+            dateSelectValue.isValid = false;
+            dateSelectValue.message = 'Must provide either a date of creation or date of un-install (or leave them blank for another contributor to add)';
+            deactivatedDateSelectValue.isValid = false;
+            deactivatedDateSelectValue.message = 'Must provide either a date of creation or date of un-install (or leave them blank for another contributor to add)';
+            formIsValid = false;
+        } else if (dateSelectValue === DateFormat.UNKNOWN && validator.isEmpty(deactivatedComment.value)){//covers row 3
+            deactivatedComment.isValid = false;
+            deactivatedComment.message = 'Un-installed reason is required if date of removal is known';
+            formIsValid = false;
+        } else if (dateSelectValue !== DateFormat.UNKNOWN && deactivatedDateSelectValue === DateFormat.UNKNOWN && validator.isEmpty(deactivatedComment.value)) {//covers row 5
+            deactivatedDateSelectValue.isValid = false;
+            deactivatedDateSelectValue.message = 'Must provide date of un-install (or be left blank for another contributor to add) if deactivation reason is given without supporting references'
+            deactivatedComment.isValid = false;
+            deactivatedComment.message = 'Un-installed reason is required if date of removal is known';
+            formIsValid = false;
         }
 
         if (!formIsValid) {
@@ -814,6 +836,9 @@ export default class CreateOrUpdateForm extends React.Component {
             case DateFormat.EXACT_DATE:
                 updateForm.newDate = datePickerCurrentDate;
                 break;
+            case DateFormat.UNKNOWN:
+                updateForm.newDate = null;
+                break;
             default:
                 break;
         }
@@ -828,6 +853,9 @@ export default class CreateOrUpdateForm extends React.Component {
                 break;
             case DateFormat.EXACT_DATE:
                 updateForm.newDeactivatedDate = deactivatedDatePickerCurrentDate;
+                break;
+            case DateFormat.UNKNOWN:
+                updateForm.newDeactivatedDate = null;
                 break;
             default:
                 break;
@@ -1475,7 +1503,6 @@ export default class CreateOrUpdateForm extends React.Component {
                 const minimumDate = new Date(1, 0);
                 minimumDate.setFullYear(1);
                 const currentDate = new Date();
-
                 dateInput = (
                     <Form.Group controlId="create-form-datepicker">
                         <Form.Label>Choose a Date:</Form.Label>
@@ -1487,6 +1514,20 @@ export default class CreateOrUpdateForm extends React.Component {
                             defaultValue={null}
                         />
                         <div style={{color: "red"}}>{datePickerError}</div>
+                    </Form.Group>
+                );
+                break;
+            case DateFormat.UNKNOWN:
+                dateInput = (
+                    <Form.Group controlId="create-form-UnknownDate">
+                        <Form.Label>Creation Date:</Form.Label>
+                        <Form.Control
+                            type="string"
+                            value="Unknown"
+                            isInvalid={!dateSelectValue.isValid}
+                            className="text-control-small"
+                        />
+                        <Form.Control.Feedback type="invalid">{dateSelectValue.message}</Form.Control.Feedback>
                     </Form.Group>
                 );
                 break;
@@ -1553,7 +1594,6 @@ export default class CreateOrUpdateForm extends React.Component {
                 const minimumDate = new Date(1, 0);
                 minimumDate.setFullYear(1);
                 const currentDate = new Date();
-
                 deactivatedDateInput = (
                     <Form.Group controlId="create-form-deactivated-datepicker">
                         <Form.Label>Choose a Un-installed Date:</Form.Label>
@@ -1564,6 +1604,20 @@ export default class CreateOrUpdateForm extends React.Component {
                             maxDate={currentDate}
                         />
                         <div style={{color: "red"}}>{deactivatedDatePickerError}</div>
+                    </Form.Group>
+                );
+                break;
+            case DateFormat.UNKNOWN:
+                dateInput = (
+                    <Form.Group controlId="create-form-deactivated-UnknownDate">
+                        <Form.Label>Un-installed Date:</Form.Label>
+                        <Form.Control
+                            type="string"
+                            value="Unknown"
+                            isInvalid={!deactivatedDateSelectValue.isValid}
+                            className="text-control-small"
+                        />
+                        <Form.Control.Feedback type="invalid">{deactivatedDateSelectValue.message}</Form.Control.Feedback>
                     </Form.Group>
                 );
                 break;
