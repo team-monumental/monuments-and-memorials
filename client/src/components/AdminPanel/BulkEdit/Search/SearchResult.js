@@ -32,7 +32,7 @@ const SearchResult = ({data, nq, dq, selected, inQueue}) => {
     return (
         <ListGroup.Item as="li">
             <Container fluid>
-                <Row>
+                <Row checked={checked} onClick={toggleChecked}>
                     <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
                     <Col lg={1}><span>{data.id}</span></Col>
                     <Col lg={3}><span>{data.title}</span></Col>
