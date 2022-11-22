@@ -97,15 +97,17 @@ public class Tag extends Model implements Serializable {
      * The association still needs to be persisted to the database
      * @param monument - Monument to associate with this Tag
      */
-    public void addMonument(Monument monument) {
+    public MonumentTag addMonument(Monument monument) {
         if (this.monumentTags == null) {
             this.monumentTags = new HashSet<>();
         }
 
         if (monument == null) {
-            return;
+            return null;
         }
+        MonumentTag t = new MonumentTag(monument, this);
 
-        this.monumentTags.add(new MonumentTag(monument, this));
+        this.monumentTags.add(t);
+        return t;
     }
 }

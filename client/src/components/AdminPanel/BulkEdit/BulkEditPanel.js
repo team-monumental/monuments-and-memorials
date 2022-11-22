@@ -1,5 +1,6 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
+import * as QueryString from 'query-string';
 
 import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
@@ -12,6 +13,7 @@ import './BulkEdit.scss'
 import {QueueResetContext} from "../../../utils/queue-util";
 import { post, put } from '../../../utils/api-util';
 import EditHistoryPanel from './History/EditHistoryPanel';
+import { pick } from 'query-string';
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
@@ -34,10 +36,12 @@ const BulkEditPanel = (props) => {
     }, [searchTerm])
 
     const saveMonument = async (monument) => {
-        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}`, monument)
+        const oldMonument = searchResults.find(mon => mon.id == monument.id)
+        const newTags = monument.monumentTags.map(elem => elem.tag.name);
+        monument.monumentTags = oldMonument.monumentTags
+        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}?newTagString=${encodeURIComponent(JSON.stringify(newTags))}`, monument)
         .then(() => {
             dequeue(monument.id)
-            const oldMonument = searchResults.find(mon => mon.id == monument.id)
             var diffArray = [];
             for(let key in monument){
                 if(monument[key]  !== oldMonument[key] ){
