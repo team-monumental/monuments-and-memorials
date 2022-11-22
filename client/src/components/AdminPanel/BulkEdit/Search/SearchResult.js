@@ -45,6 +45,7 @@ const SearchResult = ({data, nq, dq, selected, inQueue}) => {
                 </Row>
             </Container>
         </ListGroup.Item>
+        
     )
 }
 
