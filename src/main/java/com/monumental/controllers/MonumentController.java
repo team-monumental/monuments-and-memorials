@@ -240,7 +240,6 @@ public class MonumentController {
         List<String> strings = mapper.readValue(result, List.class);
 
         this.monumentRepository.saveAndFlush(monument);
-        System.out.println(strings);
         this.monumentService.updateMonumentTags(monument, strings, false);
         return monument;
     }

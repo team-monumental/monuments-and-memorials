@@ -25,9 +25,6 @@ public class TagController {
     private TagRepository tagRepository;
 
 
-    @Autowired
-    public MonumentService monumentService;
-
     /**
      * Endpoint for getting Tags in the database
      * If a monumentId is specified, gets all of the Tags associated with that Monument
@@ -59,25 +56,4 @@ public class TagController {
         return tags;
     }
 
-    /**
-     * Endpoint for getting Tags in the database
-     * If a monumentId is specified, gets all of the Tags associated with that Monument
-     * If a name is specified, gets all of the Tags with that name
-     * If names are specified, gets all of the Tags with any of those names
-     * If none of the request parameters are specified, gets all of the Tags
-     * @return List<Tag> - The appropriate Tags based on the request
-     */
-    @PutMapping("/api/tags/update")
-    public List<String> updateTags(@RequestParam(required = false) String newTagString, @RequestBody Monument monument) {
-        try {
-            String result = java.net.URLDecoder.decode(newTagString, StandardCharsets.UTF_8);
-            ObjectMapper mapper = new ObjectMapper();
-            List<String> strings = mapper.readValue(result, List.class);
-            this.monumentService.updateMonumentTags(monument, strings, false);
-            return strings;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
 }
