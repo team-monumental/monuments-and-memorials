@@ -1,5 +1,6 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {Card, Col, Container, Row} from "react-bootstrap";
+import * as QueryString from 'query-string';
 
 import SearchPanel from "./Search/SearchPanel";
 import SearchPanelBtns from "./Search/SearchPanelBtns";
@@ -12,6 +13,7 @@ import './BulkEdit.scss'
 import {QueueResetContext} from "../../../utils/queue-util";
 import { post, put } from '../../../utils/api-util';
 import EditHistoryPanel from './History/EditHistoryPanel';
+import { pick } from 'query-string';
 
 const BulkEditPanel = (props) => {
     // Hook for maintaining search results state
@@ -26,6 +28,7 @@ const BulkEditPanel = (props) => {
         // TODO: Search with filters and update state
         let endpoint = `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}`
 
+        
         fetch(endpoint)
             .then(res => res.json())
             .then(json => setSearchResults(json))
@@ -33,10 +36,12 @@ const BulkEditPanel = (props) => {
     }, [searchTerm])
 
     const saveMonument = async (monument) => {
-        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}`, monument)
+        const oldMonument = searchResults.find(mon => mon.id == monument.id)
+        const newTags = monument.monumentTags.map(elem => elem.tag.name);
+        monument.monumentTags = oldMonument.monumentTags
+        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}?newTagString=${encodeURIComponent(JSON.stringify(newTags))}`, monument)
         .then(() => {
             dequeue(monument.id)
-            const oldMonument = searchResults.find(mon => mon.id == monument.id)
             var diffArray = [];
             for(let key in monument){
                 if(monument[key]  !== oldMonument[key] ){
@@ -75,7 +80,13 @@ const BulkEditPanel = (props) => {
         } else {
             setSearchResults([])
         }
-    }, [handleSearch]);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        if(searchResults.length > 0 && searchTerm.length === 0) {
+            setSearchResults([])
+        }
+    }, [searchResults]);
 
     return (
         <Container className="bulk-edit" fluid>
@@ -90,11 +101,13 @@ const BulkEditPanel = (props) => {
                         </Card.Header>
                         <Card.Body>
                             <SearchResultContext.Provider value={deleteSearchResult}>
-                                <SearchPanel results={searchResults}
-                                             enqueue={enqueue}
-                                             dequeue={dequeue}
-                                             handleSearch={handleSearch}
-                                             onChange={e => setSearchTerm(e.target.value)}
+                                <SearchPanel 
+                                    results={searchResults}
+                                    enqueue={enqueue}
+                                    dequeue={dequeue}
+                                    handleSearch={handleSearch}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    queueList={queueList}
                                 />
                             </SearchResultContext.Provider>
                         </Card.Body>
@@ -111,7 +124,7 @@ const BulkEditPanel = (props) => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <QueuePanel queue={queueList} active={active} setActive={setActive} saveMonument={saveMonument}/>
+                                <QueuePanel queue={queueList} dequeue={dequeue} active={active} setActive={setActive} saveMonument={saveMonument}/>
                             </Card.Body>
                         </Card>
                         {/* FIXME: De-queuing doesn't uncheck search result */}

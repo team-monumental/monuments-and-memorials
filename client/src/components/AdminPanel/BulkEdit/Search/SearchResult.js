@@ -9,46 +9,39 @@ import ExpandableTag from "../../../Tags/Tag/ExpandableTag";
 import './Search.scss'
 
 // TODO: Apply CSS classes to format
-const SearchResult = ({data, nq, dq, selected}) => {
-    const [checked, setChecked] = useState(false)
+const SearchResult = ({data, nq, dq, selected, inQueue}) => {
+    const [checked, setChecked] = useState(inQueue)
 
     const toggleChecked = () => {
         setChecked(!checked)
-        checked ? nq(data) : dq(data.id)
+        checked ? dq(data.id) : nq(data)
     }
-
-    // Enqueues/dequeues result when checkbox is toggled
-    useEffect(() => {
-        checked ? nq(data) : dq(data.id)
-    }, [checked, selected])
 
     // Enqueues/dequeues result when "select all" checkbox is toggled
     useEffect(() => {
         setChecked(selected)
     }, [selected])
 
+
     // Un-checks checkbox when a monument is deleted
     useEffect(() => {
-        setChecked(false)
-    }, [data])
+        setChecked(inQueue)
+    }, [inQueue])
+
+    const getClassName = () => {
+        return inQueue ? 'checked' : ''
+    }
 
     // noinspection JSUnresolvedVariable
     return (
-        <ListGroup.Item as="li">
+        <ListGroup.Item as="li" className={getClassName()}>
             <Container fluid>
                 <Row>
                     <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
+                    <Col className="id-column" lg={1}><span>{data.id}</span></Col>
                     <Col lg={3}><span>{data.title}</span></Col>
                     <Col lg={2}><span>{data.artist}</span></Col>
-                    <Col lg={2}>
-                        <div className="tags-list">
-                            <Tag name={data.monumentTags[0].tag.name}
-                                 selectable={false}
-                                 selectedIcon={null}
-                                 isMaterial={false}/>
-                            <ExpandableTag counter={data.monumentTags.length - 1} tags={data.monumentTags.slice(1)}/>
-                        </div>
-                    </Col>
+                    <Col lg={2}><span>{data.state ? data.state : 'Not Provided'}</span></Col>
                     <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
                     <Col lg={2}>
                         <SearchResultBtns monumentId={data.id}/>
@@ -56,6 +49,7 @@ const SearchResult = ({data, nq, dq, selected}) => {
                 </Row>
             </Container>
         </ListGroup.Item>
+        
     )
 }
 

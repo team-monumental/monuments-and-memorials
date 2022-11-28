@@ -11,6 +11,10 @@ import TextFilter from './FilterTypes/TextFilter/TextFilter';
 import * as QueryString from 'query-string';
 import { Link } from 'react-router-dom';
 import { Mode } from './FilterTypes/DateFilter/DateEnum';
+import PlacesAutocomplete, {
+    geocodeByAddress,
+    getLatLng
+} from 'react-places-autocomplete';
 
 class Filters extends React.Component {
 
@@ -150,13 +154,31 @@ class Filters extends React.Component {
         if (!updatedState.badLocationState) this.handleSearch()
     }
 
+    async retrieveStateFromAddress(address) {
+        if (address) {
+            const results = await geocodeByAddress(address);
+            const addressComponents = results[0].address_components;
+            var state = '';
+            for (const val of addressComponents) {
+                if (val.types.includes("administrative_area_level_1")) {
+                    state = val.short_name
+                }
+            }
+            return state
+        }
+        return undefined
+    }
+
     async handleChangeDistance(value) {
         var updatedState = this.state.filterList.location
         updatedState.params.d = value
-        if( value < 0 &&  updatedState.params.state === ''){
+        const geoState = await this.retrieveStateFromAddress(updatedState.params.address)
+        if( value < 0 && !geoState){
             updatedState.badLocationState = true;
+        } else {
+            updatedState.badLocationState = false;
+            updatedState.params.state = geoState
         }
-        else updatedState.badLocationState = false;
         this.setState({
             ...this.state,
             ...updatedState
@@ -248,7 +270,8 @@ class Filters extends React.Component {
                         badLocationState={filterList.location.badLocationState}
                         onSuggestionSelect={(lat, lon, address, state) => this.handleLocationSearchSelect(lat, lon, address, state)}
                         onClear={()=> this.clearLocation()}
-                        changeDistance={(distance) => this.handleChangeDistance(distance)}>
+                        changeDistance={(distance) => this.handleChangeDistance(distance)}
+                        retrieveStateFromAddress={()=> this.retrieveStateFromAddress()}>
                     </LocationSearch>
                     <div className="clear-filters">
                         <button className="bg-danger" onClick={() => this.clearFilters()}>

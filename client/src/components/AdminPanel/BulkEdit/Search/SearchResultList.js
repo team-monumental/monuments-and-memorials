@@ -5,7 +5,7 @@ import {Col, Container, InputGroup, ListGroup, Row} from "react-bootstrap";
 import SearchResult from "./SearchResult";
 import SearchResultNav from "./SearchResultNav";
 
-const SearchResultList = ({results, enqueue, dequeue}) => {
+const SearchResultList = ({results, queueList, enqueue, dequeue}) => {
     const [checked, setChecked] = useState(false)
     const [items, setItems] = useState([])
 
@@ -17,6 +17,10 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
 
     const toggleChecked = () => {
         setChecked(!checked)
+    }
+
+    const isInQueue = (id) => {
+        return !!queueList.find(row => row.id == id)
     }
 
     //populate new results after an update from the queue
@@ -32,9 +36,10 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                     <Container fluid>
                         <Row>
                             <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
+                            <Col lg={1} className="id-column"><span>ID</span></Col>
                             <Col lg={3}><span>NAME</span></Col>
                             <Col lg={2}><span>ARTIST</span></Col>
-                            <Col lg={2}><span>TAGS</span></Col>
+                            <Col lg={2}><span>STATE</span></Col>
                             <Col lg={2}><span>DATE CREATED</span></Col>
                         </Row>
                     </Container>
@@ -45,6 +50,7 @@ const SearchResultList = ({results, enqueue, dequeue}) => {
                         data={item}
                         nq={enqueue}
                         dq={dequeue}
+                        inQueue={isInQueue(item.id)}
                         selected={checked}
                     />
                 ))}

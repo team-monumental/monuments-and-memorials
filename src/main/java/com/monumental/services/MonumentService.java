@@ -36,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -1491,9 +1492,11 @@ public class MonumentService extends ModelService<Monument> {
             List<Monument> monuments = new ArrayList<>();
             monuments.add(monument);
 
+
             // Get the names of the current Tags/Materials associated with the Monument
             List<String> currentTagNames = new ArrayList<>();
-            List<Tag> currentTags = areMaterials ? monument.getMaterials() : monument.getTags();
+            List<Tag> currentTags = new ArrayList<>(monument.getMaterials());
+            currentTags.addAll(monument.getTags());
 
             for (Tag currentTag : currentTags) {
                 currentTagNames.add(currentTag.getName());
@@ -1510,7 +1513,11 @@ public class MonumentService extends ModelService<Monument> {
             // Un-associate any Tags/Materials from the Monument that were associated previously and no longer are
             for (Tag currentTag : currentTags) {
                 if (!newTagNames.contains(currentTag.getName())) {
-                    this.tagService.removeTagFromMonument(currentTag, monument);
+                    List<MonumentTag> monumentTags = monument.getMonumentTags().stream().filter(mt -> mt.getTag() == currentTag).collect(Collectors.toList());
+                    if (monumentTags.size() > 0) {
+                        this.tagService.removeTagFromMonument(monumentTags.get(0), monument);
+                    }
+
                 }
                 else {
                     newTags.add(currentTag);

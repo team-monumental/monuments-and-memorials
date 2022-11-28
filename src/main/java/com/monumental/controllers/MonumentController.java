@@ -1,5 +1,6 @@
 package com.monumental.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -21,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -222,20 +225,22 @@ public class MonumentController {
      */
     @PutMapping("/api/monument/bulkupdate/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
-    public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId,
+    public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId, @RequestParam(required = false) String newTagString,
                                        @RequestBody Monument monument)
-            throws ResourceNotFoundException {
-        //since we are updating a monument, we need to verify that the monument first exists
+            throws ResourceNotFoundException, IOException {
+
         Optional<Monument> optionalMonument = this.monumentRepository.findById(monumentId);
-        ////Note for discussion: do we need to look at if the monument is active or inactive?
-        //Optional<Monument> optionalMonument = this.monumentRepository.findByIdAndIsActive(monumentId,true);
+
         if (optionalMonument.isEmpty()) {
             throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         }
-        ////Note for discussion: Can we use this to save a list of edits all at once (later improvement)
-        ////and save on DB writes/API calls? Useful for future processing of CSV updates
-        //this.monumentRepository.saveAll(monuments)
-        //Adapt this endpoint in the future, mod the front-end to send a list
-        return this.monumentRepository.save(monument);
+
+        String result = java.net.URLDecoder.decode(newTagString, StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        List<String> strings = mapper.readValue(result, List.class);
+
+        this.monumentRepository.saveAndFlush(monument);
+        this.monumentService.updateMonumentTags(monument, strings, false);
+        return monument;
     }
 }
