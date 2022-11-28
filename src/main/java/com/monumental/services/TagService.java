@@ -93,30 +93,11 @@ public class TagService extends ModelService<Tag> {
      * @param monument - Monument to remove the specified Tag from
      * @return Tag - The updated Tag with the specified Monument removed
      */
-    public Tag removeTagFromMonument(Tag tag, Monument monument) {
+    public Tag removeTagFromMonument(MonumentTag tag, Monument monument) {
         if (tag == null || monument == null) {
             return null;
         }
-
-        this.initializeAllLazyLoadedCollections(tag);
-
-        if (tag.getMonumentTags() != null && tag.getMonumentTags().size() > 0) {
-            List<MonumentTag> newMonumentTags = new ArrayList<>();
-            for (MonumentTag monumentTag : tag.getMonumentTags()) {
-                if (monumentTag.getMonument().getId() != null) {
-                    if (monumentTag.getMonument().getId().equals(monument.getId())) {
-                        this.monumentTagRepository.delete(monumentTag);
-                    }
-                    else {
-                        newMonumentTags.add(monumentTag);
-                    }
-                }
-            }
-
-            tag.setMonumentTags(new HashSet<>(newMonumentTags));
-            tag = this.tagRepository.saveAndFlush(tag);
-            return tag;
-        }
+        this.monumentTagRepository.delete(tag);
 
         return null;
     }

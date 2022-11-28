@@ -1,12 +1,20 @@
 package com.monumental.controllers;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.monumental.models.Monument;
 import com.monumental.models.Tag;
 import com.monumental.repositories.TagRepository;
+import com.monumental.services.MonumentService;
+import com.monumental.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,6 +23,7 @@ public class TagController {
 
     @Autowired
     private TagRepository tagRepository;
+
 
     /**
      * Endpoint for getting Tags in the database
@@ -46,4 +55,5 @@ public class TagController {
         tags.sort(Comparator.comparing(Tag::getName));
         return tags;
     }
+
 }
