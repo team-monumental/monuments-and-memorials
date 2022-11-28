@@ -82,6 +82,12 @@ const BulkEditPanel = (props) => {
         }
     }, [searchTerm]);
 
+    useEffect(() => {
+        if(searchResults.length > 0 && searchTerm.length === 0) {
+            setSearchResults([])
+        }
+    }, [searchResults]);
+
     return (
         <Container className="bulk-edit" fluid>
             <Row>
