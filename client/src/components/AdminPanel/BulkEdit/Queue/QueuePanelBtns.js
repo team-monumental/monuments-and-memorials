@@ -1,7 +1,8 @@
 import React from 'react'
 import {Button, ButtonGroup} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
-const QueuePanelBtns = ({dq, save}) => {
+const QueuePanelBtns = ({dq, save, active}) => {
     const controls = [
         {
             text: 'Save',
@@ -31,6 +32,8 @@ const QueuePanelBtns = ({dq, save}) => {
                         {control.text}
                     </Button>
                 ))}
+                <span><i><Link to={`/monuments/${active.id}`} style={{color: "#17a2b8", marginLeft: "50%", height: '100%', display: 'flex', alignItems: "center"}} target="_blank"
+                className="material-icons">open_in_new</Link></i></span>
             </ButtonGroup>
         </div>
     )

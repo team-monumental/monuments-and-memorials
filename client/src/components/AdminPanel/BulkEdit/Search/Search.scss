@@ -1,3 +1,15 @@
+.id-column { 
+  flex: 0 0 10%;
+  max-width: 10%;
+}
+
+.checked {
+  background-color: #42b883;
+  min-height: fit-content;
+  transition: background-color ease-in-out .1s;
+  color: white;
+}
+
 .search-panel {
   display: flex;
   flex-direction: column;
@@ -49,7 +61,7 @@
 
   .list-group-item {
     padding: 0px 0;
-    max-height: 44px;
+    min-height: 44px;
 
     span:first-child {
       background: none;
@@ -65,14 +77,16 @@
     &:not(:first-child) {
       border: none;
       border-radius: 3px;
+      padding: 5px 0px;
+      margin: 5px 0px;
 
       &:hover {
         background-color: lightgrey;
-
+        min-height: fit-content;
         transition: background-color ease-in-out .1s;
 
         .result-opts {
-          visibility: visible;
+          display: block;
         }
       }
     }
@@ -99,7 +113,7 @@
   .result-opts {
     display: flex;
     flex-direction: row;
-    visibility: hidden;
+    display: none;
 
     i {
       cursor: pointer;

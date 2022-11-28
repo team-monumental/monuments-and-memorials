@@ -28,13 +28,17 @@ const SearchResult = ({data, nq, dq, selected, inQueue}) => {
         setChecked(inQueue)
     }, [inQueue])
 
+    const getClassName = () => {
+        return inQueue ? 'checked' : ''
+    }
+
     // noinspection JSUnresolvedVariable
     return (
-        <ListGroup.Item as="li">
+        <ListGroup.Item as="li" className={getClassName()}>
             <Container fluid>
                 <Row>
                     <Col lg={1}><InputGroup.Checkbox checked={checked} onChange={toggleChecked}/></Col>
-                    <Col lg={1}><span>{data.id}</span></Col>
+                    <Col className="id-column" lg={1}><span>{data.id}</span></Col>
                     <Col lg={3}><span>{data.title}</span></Col>
                     <Col lg={2}><span>{data.artist}</span></Col>
                     <Col lg={2}><span>{data.state ? data.state : 'Not Provided'}</span></Col>
