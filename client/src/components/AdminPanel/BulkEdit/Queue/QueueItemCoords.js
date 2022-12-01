@@ -12,11 +12,11 @@ const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => 
                     <InputGroup.Prepend>
                         <InputGroup.Text>Latitude</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control required defaultValue={field.value.coordinates[1]}/>
+                    <Form.Control required defaultValue={values.coordinates ? field.value.coordinates[1]: ''}/>
                     <InputGroup.Prepend>
                         <InputGroup.Text>Longitude</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control required defaultValue={field.value.coordinates[0]}/>
+                    <Form.Control required defaultValue={values.coordinates ? field.value.coordinates[0]: ''}/>
                     <InputGroup.Append>
                         <OverlayTrigger placement="bottom" overlay={(
                             <Tooltip id="coords-toggle">
@@ -28,7 +28,7 @@ const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => 
                     </InputGroup.Append>
                 </InputGroup>
                 {/* TODO: Convert coordinates to address */}
-                <Form.Text className="text-muted">Address: {values.address}</Form.Text>
+                <Form.Text className="text-muted">Address: {values.address ? values.address: ''}</Form.Text>
             </Form.Group>
         </Form.Row>
     )
