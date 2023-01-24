@@ -26,10 +26,6 @@ const SearchResultList = ({results, queueList, enqueue, dequeue}) => {
         return !!queueList.find(row => row.id == id)
     }
 
-    const isInQueue = (id) => {
-        return !!queueList.find(row => row.id == id)
-    }
-
     //populate new results after an update from the queue
     useEffect(() => {
         setItems(results)
