@@ -17,6 +17,13 @@ const SearchResultList = ({results, queueList, enqueue, dequeue}) => {
 
     const toggleChecked = () => {
         setChecked(!checked)
+        items.map(item => {
+            checked ? dequeue(item.id) : enqueue(item) 
+        })
+    }
+
+    const isInQueue = (id) => {
+        return !!queueList.find(row => row.id == id)
     }
 
     const isInQueue = (id) => {
