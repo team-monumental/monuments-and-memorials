@@ -1,6 +1,8 @@
 package com.monumental.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,6 +30,8 @@ public class Contribution extends Model implements Serializable {
     @Column(name = "date")
     private Date date;
 
+    @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty("monument_id")
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "monument_id", nullable = false)

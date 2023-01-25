@@ -1,12 +1,12 @@
 import * as React from 'react';
 import './BulkExport.scss';
-import { withRouter } from 'react-router-dom';
-import { Button, Card } from "react-bootstrap";
+import {withRouter} from 'react-router-dom';
+import {Button, Card} from "react-bootstrap";
 import ExportButtons from '../../Export/ExportButtons/ExportButtons';
 
 class BulkExport extends React.Component {
     render() {
-        const { mode, history, monuments } = this.props;
+        const {mode, history, monuments} = this.props;
 
         return (
             <div className="bulk-export">

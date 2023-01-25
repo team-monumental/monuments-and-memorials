@@ -1,5 +1,6 @@
 package com.monumental.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
@@ -21,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -209,5 +212,35 @@ public class MonumentController {
         updateSuggestion.setIsApproved(true);
         updateSuggestion = this.updateSuggestionRepository.save(updateSuggestion);
         return this.monumentService.updateMonument(updateSuggestion);
+    }
+
+    /**
+     * Overwrites the Monument with the specified monumentId with the provided Monument. Provides functionality
+     * for BulkEdit to bypass processing updates as update suggestions
+     *
+     * @param monumentId - Integer ID of the Monument to replace
+     * @return Monument - The updated Monument with the specified monumentId based on the attributes defined in the
+     * specified Monument
+     * @throws ResourceNotFoundException - If a Monument with the specified monumentId does not exist
+     */
+    @PutMapping("/api/monument/bulkupdate/{id}")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId, @RequestParam(required = false) String newTagString,
+                                       @RequestBody Monument monument)
+            throws ResourceNotFoundException, IOException {
+
+        Optional<Monument> optionalMonument = this.monumentRepository.findById(monumentId);
+
+        if (optionalMonument.isEmpty()) {
+            throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
+        }
+
+        String result = java.net.URLDecoder.decode(newTagString, StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        List<String> strings = mapper.readValue(result, List.class);
+
+        this.monumentRepository.saveAndFlush(monument);
+        this.monumentService.updateMonumentTags(monument, strings, false);
+        return monument;
     }
 }

@@ -1,16 +1,16 @@
 import * as React from 'react';
 import './ManageMonuments.scss';
-import { withRouter } from 'react-router-dom';
-import { Button, Card } from 'react-bootstrap';
+import {withRouter} from 'react-router-dom';
+import {Button, Card} from 'react-bootstrap';
 import SearchPage from '../../../pages/SearchPage/SearchPage';
 import ManageMonument from './ManageMonument/ManageMonument';
 import UpdateMonumentPage from '../../../pages/UpdateMonumentPage/UpdateMonumentPage';
-import { Helmet } from 'react-helmet';
+import {Helmet} from 'react-helmet';
 
 class ManageMonuments extends React.Component {
 
     render() {
-        const { mode, monument, history, match, onToggleActive, onDeleteMonument, deleted } = this.props;
+        const {mode, monument, history, match, onToggleActive, onDeleteMonument, deleted} = this.props;
         return (
             <div className="manage-monuments">
                 <Card style={{maxWidth: mode === 'search' ? '800px' : ''}}>
@@ -24,12 +24,14 @@ class ManageMonuments extends React.Component {
                     </Card.Header>
                     <Card.Body>
                         {(!mode || mode === 'search') && <>
-                            <SearchPage searchUri="/panel/manage/monuments/search" monumentUri="/panel/manage/monuments/monument"
+                            <SearchPage searchUri="/panel/manage/monuments/search"
+                                        monumentUri="/panel/manage/monuments/monument"
                                         hideMap/>
                         </>}
                         {mode === 'monument' && <>
                             <Helmet title={`Manage ${monument.title} | Monuments and Memorials`}/>
-                            <ManageMonument monument={monument} onToggleActive={onToggleActive} onDeleteMonument={onDeleteMonument}
+                            <ManageMonument monument={monument} onToggleActive={onToggleActive}
+                                            onDeleteMonument={onDeleteMonument}
                                             deleted={deleted}/>
                         </>}
                         {mode === 'update' && <>

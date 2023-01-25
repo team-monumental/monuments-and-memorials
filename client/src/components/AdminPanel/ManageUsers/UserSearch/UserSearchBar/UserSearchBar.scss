@@ -1,11 +1,12 @@
 .user-search-bar {
-    .search-bars-container {
-        display: flex;
-        flex-grow: 1;
-        flex-wrap: nowrap;
-    }
-    .text-search {
-        width: 50%;
-        margin-right: 0.5rem;
-    }
+  .search-bars-container {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: nowrap;
+  }
+
+  .text-search {
+    width: 50%;
+    margin-right: 0.5rem;
+  }
 }

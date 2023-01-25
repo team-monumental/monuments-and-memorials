@@ -2,12 +2,13 @@ import * as React from 'react';
 import './SuggestionSearchResults.scss';
 import CreateMonumentSuggestions from '../../../../Suggestions/CreateMonumentSuggestions/CreateMonumentSuggestions';
 import UpdateMonumentSuggestions from '../../../../Suggestions/UpdateMonumentSuggestions/UpdateMonumentSuggestions';
-import BulkCreateMonumentSuggestions from '../../../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
+import BulkCreateMonumentSuggestions
+    from '../../../../Suggestions/BulkCreateMonumentSuggestions/BulkCreateMonumentSuggestions';
 
 export default class SuggestionSearchResults extends React.Component {
 
     render() {
-        const { suggestions } = this.props;
+        const {suggestions} = this.props;
 
         if (suggestions) {
             return (
@@ -30,8 +31,7 @@ export default class SuggestionSearchResults extends React.Component {
                     </>}
                 </div>
             );
-        }
-        else {
+        } else {
             return (
                 <div className="mt-4 text-center">No search results were found. Try broadening your search.</div>
             );
