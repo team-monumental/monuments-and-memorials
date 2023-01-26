@@ -27,7 +27,7 @@ const SearchResultNav = ({results, setItems, setActive, active, setStep, step}) 
             <Pagination.Next disabled={active >= (results.length / step) - 1}
                              onClick={() => handleActive(active + 1)}/>
             <Pagination.Last disabled={active >= (results.length / step) - 1}
-                             onClick={() => handleActive((results.length / step) - 1)}/>
+                             onClick={() => handleActive(Math.ceil(results.length / step) - 1)}/>
         </Pagination>
     )
 }
