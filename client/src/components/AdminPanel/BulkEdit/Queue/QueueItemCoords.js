@@ -3,6 +3,7 @@ import {Button, Col, Form, InputGroup, OverlayTrigger, Tooltip} from "react-boot
 
 
 const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => {
+    console.log('values', values)
     // noinspection JSValidateTypes,RequiredAttributes
     return (
         <Form.Row>
@@ -12,11 +13,11 @@ const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => 
                     <InputGroup.Prepend>
                         <InputGroup.Text>Latitude</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control required defaultValue={values.coordinates ? field.value.coordinates[1]: ''}/>
+                    <Form.Control {...field} value={values.lat}/>
                     <InputGroup.Prepend>
                         <InputGroup.Text>Longitude</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control required defaultValue={values.coordinates ? field.value.coordinates[0]: ''}/>
+                    <Form.Control {...field} value={values.lon}/>
                     <InputGroup.Append>
                         <OverlayTrigger placement="bottom" overlay={(
                             <Tooltip id="coords-toggle">
