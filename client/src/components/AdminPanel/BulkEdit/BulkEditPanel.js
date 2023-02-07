@@ -31,7 +31,6 @@ const BulkEditPanel = (props) => {
         fetch(endpoint)
             .then(res => res.json())
             .then(json => {
-                console.log(json)
                 setSearchResults(json)
             })
             .finally()
@@ -42,7 +41,6 @@ const BulkEditPanel = (props) => {
         const newTags = monument.monumentTags.map(elem => elem.tag.name);
         monument.monumentTags = oldMonument.monumentTags
 
-        console.log('here', monument)
         put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}
         ?newTagString=${encodeURIComponent(JSON.stringify(newTags))}
         ${(monument.lat && monument.lon) && `&lat=${monument.lat}&lon=${monument.lon}`}
