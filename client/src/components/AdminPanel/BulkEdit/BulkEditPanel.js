@@ -21,7 +21,7 @@ const BulkEditPanel = (props) => {
     const [searchTerm, setSearchTerm] = useState("")
 
     const [queueList, setQueueList] = useState([])
-    const [searchMode, setSearchMode] = useState(true)
+    const [searchMode, setSearchMode] = useState("monument")
     const [editHistoryList, setEditHistoryList] = useState([])
     const [active, setActive] = useState(null)
 
@@ -29,7 +29,8 @@ const BulkEditPanel = (props) => {
         // TODO: Search with filters and update state
 
         // IF SearchMode is true, it is the Monument search
-        let endpoint = searchMode ? 
+        console.log(searchMode)
+        let endpoint = searchMode == "monument" ? 
             `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}` : 
             `${window.location.origin}/api/search/user/monument/?name=${searchTerm}`
 
@@ -40,8 +41,8 @@ const BulkEditPanel = (props) => {
             .finally()
     }, [searchTerm])
 
-    const handleSearchMode = () => {
-        setSearchMode(!searchMode)
+    const handleSearchMode = (event) => {
+        setSearchMode(event)
     }
 
     const saveMonument = async (monument) => {
