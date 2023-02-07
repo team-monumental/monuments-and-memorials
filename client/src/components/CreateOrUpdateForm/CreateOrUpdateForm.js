@@ -410,7 +410,6 @@ export default class CreateOrUpdateForm extends React.Component {
             ||(degree<0)) {
             decimal *= -1;
         }
-        console.log(decimal);
         return decimal.toFixed(6);
     }
 

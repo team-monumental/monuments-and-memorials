@@ -14,6 +14,8 @@ import QueueItemLat from "./QueueItemLat";
 import QueueItemLong from "./QueueItemLong"
 import {QueueResetContext} from "../../../../utils/queue-util";
 
+let latLngRegex = /^[-]?(([0-8]?[0-9])(\.[0-9]{1,20})?|90(\.0{1,20})?)$/;
+
 const FIELDS = [
     {
         name: 'title',
@@ -48,18 +50,17 @@ const QueueItem = (props) => {
     }
 
     const handleValidate = (value, field) => {
-        console.log('test', field)
         let error
         switch (field) {
             case 'createdDate':
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
                 break
-            case 'coordinates':
-                let coordinates = [value.lat, value.lon].join()
-
-                if (!validator.isLatLong(coordinates))
-                    error = 'Invalid Coordinates'
+            case 'lat':
+                if (!latLngRegex.test(value)) error = 'Incorrect formatted latitude'
                 break
+            case 'lon' : 
+                if (!latLngRegex.test(value)) error = 'Incorrect formatted longitude'
+                break 
             case 'images':
                 for (let {url} of value) if (!validator.isURL(url, {allow_underscores: true}))
                     error = 'Invalid URL'
@@ -113,19 +114,17 @@ const QueueItem = (props) => {
                                     <Form.Group as={Col}>
                                         <Form.Label>{props.text}</Form.Label>
                                         <InputGroup hasValidation>
-                                            <Field {...{ name: 'lat', text: 'Latitude', type: 'text' }}
+                                            <Field {...{ name: 'lat', text: 'Latitude', type: 'number' }}
                                                 key={`latField`}
-                                                toggle={toggleCoords}
                                                 validate={value => {
-                                                    return handleValidate(value, 'coordinates');
+                                                    return handleValidate(value, 'lat');
                                                 } }
                                                 component={QueueItemLat} 
                                             />
-                                            <Field {...{ name: 'lon', text: 'Longitude', type: 'text' }}
+                                            <Field {...{ name: 'lon', text: 'Longitude', type: 'number' }}
                                                 key={`lonField`}
-                                                toggle={toggleCoords}
                                                 validate={value => {
-                                                    return handleValidate(value, 'coordinates');
+                                                    return handleValidate(value, 'lon');
                                                 } }
                                                 component={QueueItemLong} 
                                             />
@@ -135,7 +134,7 @@ const QueueItem = (props) => {
                                                         Swap to Address
                                                     </Tooltip>
                                                 )}>
-                                                    <Button className="material-icons" onClick={props.toggle}>swap_vert</Button>
+                                                    <Button className="material-icons" onClick={toggleCoords}>swap_vert</Button>
                                                 </OverlayTrigger>
                                             </InputGroup.Append>
                                         </InputGroup>

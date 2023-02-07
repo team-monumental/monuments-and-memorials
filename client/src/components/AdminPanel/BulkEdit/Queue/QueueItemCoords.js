@@ -3,11 +3,10 @@ import {Button, Col, Form, InputGroup, OverlayTrigger, Tooltip} from "react-boot
 
 
 const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => {
-    console.log('values', values)
     // noinspection JSValidateTypes,RequiredAttributes
     return (
         <Form.Row>
-            <Form.Group as={Col}>
+            <Form.Group as={Row}>
                 <Form.Label>{props.text}</Form.Label>
                 <InputGroup hasValidation>
                     <InputGroup.Prepend>

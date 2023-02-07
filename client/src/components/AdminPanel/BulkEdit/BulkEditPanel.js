@@ -27,19 +27,11 @@ const BulkEditPanel = (props) => {
     const handleSearch = useCallback(() => {
         // TODO: Search with filters and update state
         let endpoint = `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}`
-
         
         fetch(endpoint)
             .then(res => res.json())
             .then(json => {
-                // json.forEach(item => {
-                //     if (item.coordinates) { 
-                //         console.log(item)
-                //         item.lat = item.coordinates.coordinates[0]
-                //         item.long = item.coordinates.coordinates[1]
-                //     }
-                // })
-                // console.log(json)
+                console.log(json)
                 setSearchResults(json)
             })
             .finally()
@@ -49,8 +41,12 @@ const BulkEditPanel = (props) => {
         const oldMonument = searchResults.find(mon => mon.id == monument.id)
         const newTags = monument.monumentTags.map(elem => elem.tag.name);
         monument.monumentTags = oldMonument.monumentTags
-        console.log(monument)
-        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}?newTagString=${encodeURIComponent(JSON.stringify(newTags))}`, monument)
+
+        console.log('here', monument)
+        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}
+        ?newTagString=${encodeURIComponent(JSON.stringify(newTags))}
+        ${(monument.lat && monument.lon) && `&lat=${monument.lat}&lon=${monument.lon}`}
+        `, monument)
         .then(() => {
             dequeue(monument.id)
             var diffArray = [];
