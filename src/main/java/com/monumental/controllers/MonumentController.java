@@ -16,6 +16,7 @@ import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import com.rollbar.notifier.Rollbar;
 import org.hibernate.Hibernate;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -226,11 +227,12 @@ public class MonumentController {
     @PutMapping("/api/monument/bulkupdate/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId, @RequestParam(required = false) String newTagString,
+                                       @RequestParam(required = false) Double lat,
+                                       @RequestParam(required = false) Double lon,
                                        @RequestBody Monument monument)
             throws ResourceNotFoundException, IOException {
 
         Optional<Monument> optionalMonument = this.monumentRepository.findById(monumentId);
-
         if (optionalMonument.isEmpty()) {
             throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         }
@@ -238,7 +240,8 @@ public class MonumentController {
         String result = java.net.URLDecoder.decode(newTagString, StandardCharsets.UTF_8);
         ObjectMapper mapper = new ObjectMapper();
         List<String> strings = mapper.readValue(result, List.class);
-
+        Point point = MonumentService.createMonumentPoint(lon, lat);
+        monument.setCoordinates(point);
         this.monumentRepository.saveAndFlush(monument);
         this.monumentService.updateMonumentTags(monument, strings, false);
         return monument;
