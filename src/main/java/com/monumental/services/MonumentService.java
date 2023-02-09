@@ -124,6 +124,11 @@ public class MonumentService extends ModelService<Monument> {
      */
     private Predicate buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                       Double threshold, Boolean orderByResults) {
+
+         /*The formula from the source is count / (len1 + len2 - count), where count is the number of common trigrams
+         * and len1 and len2 are the number of trigrams for the strings (How a similarity between 2 strings is computed)
+         */
+
         //This if statement will run if we want to order the results. The CriteriaQuery object that is passed in is NOT
         //used later in this method. However, the call to query.orderBy(...) will changed the order that the resulting
         //monuments are displayed.
