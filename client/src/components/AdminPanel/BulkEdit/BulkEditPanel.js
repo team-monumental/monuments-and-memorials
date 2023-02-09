@@ -21,19 +21,29 @@ const BulkEditPanel = (props) => {
     const [searchTerm, setSearchTerm] = useState("")
 
     const [queueList, setQueueList] = useState([])
+    const [searchMode, setSearchMode] = useState("monument")
     const [editHistoryList, setEditHistoryList] = useState([])
     const [active, setActive] = useState(null)
 
     const handleSearch = useCallback(() => {
         // TODO: Search with filters and update state
-        let endpoint = `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}`
 
-        
+        // IF SearchMode is true, it is the Monument search
+        console.log(searchMode)
+        let endpoint = searchMode == "monument" ? 
+            `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}` : 
+            `${window.location.origin}/api/search/user/monument/?name=${searchTerm}`
+
+
         fetch(endpoint)
             .then(res => res.json())
             .then(json => setSearchResults(json))
             .finally()
     }, [searchTerm])
+
+    const handleSearchMode = (event) => {
+        setSearchMode(event)
+    }
 
     const saveMonument = async (monument) => {
         const oldMonument = searchResults.find(mon => mon.id == monument.id)
@@ -108,6 +118,8 @@ const BulkEditPanel = (props) => {
                                     handleSearch={handleSearch}
                                     onChange={e => setSearchTerm(e.target.value)}
                                     queueList={queueList}
+                                    handleSearchMode={handleSearchMode}
+                                    currentSearchMode={searchMode}
                                 />
                             </SearchResultContext.Provider>
                         </Card.Body>
