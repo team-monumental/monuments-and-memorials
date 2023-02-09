@@ -124,20 +124,32 @@ public class MonumentService extends ModelService<Monument> {
      */
     private Predicate buildSimilarityQuery(CriteriaBuilder builder, CriteriaQuery query, Root root, String searchQuery,
                                       Double threshold, Boolean orderByResults) {
+        //This if statement will run if we want to order the results. The CriteriaQuery object that is passed in is NOT
+        //used later in this method. However, the call to query.orderBy(...) will changed the order that the resulting
+        //monuments are displayed.
+
+        //This ordering can be tweaked by adjusting the following weights. Higher weights will place matches originating
+        //from that field higher on the final list
+        final int TITLE_MATCH_WEIGHT = 100;
+        final int ARTIST_MATCH_WEIGHT = 20;
+        final int DESCRIPTION_MATCH_WEIGHT = 1;
+
         if (orderByResults) {
             query.orderBy(
                 builder.desc(
                     builder.sum(
                         builder.sum(
-                            builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), 3),
-                            SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist")
+                            builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), TITLE_MATCH_WEIGHT),
+                            builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist"), ARTIST_MATCH_WEIGHT)
                         ),
-                        SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description")
+                        builder.prod(SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "description"), DESCRIPTION_MATCH_WEIGHT)
                     )
                 )
             );
         }
 
+        //During investigation for CMM-60, it was found that while the threshold value is properly passed, it appeared
+        //to have no visible effect on the results received until it was set to 1.0. Should be investigated further at a later date
         return builder.or(
             SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "title"), threshold),
             SearchHelper.buildSimilarityPredicate(builder, SearchHelper.buildSimilarityExpression(builder, root, searchQuery, "artist"), threshold),
