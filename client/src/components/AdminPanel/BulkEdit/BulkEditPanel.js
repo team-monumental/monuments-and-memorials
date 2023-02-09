@@ -39,10 +39,27 @@ const BulkEditPanel = (props) => {
     const saveMonument = async (monument) => {
         const oldMonument = searchResults.find(mon => mon.id == monument.id)
         const newTags = monument.monumentTags.map(elem => elem.tag.name);
+        let newReferences = {}
+
+        monument.references.forEach(elem => {
+            newReferences[elem.id] = elem.url
+        })
+
+        let deletedReferences = []
+        
+        oldMonument.references.forEach(elem => {
+            if ((!monument.references[elem.id])) { 
+                deletedReferences.push(elem.id)
+            }
+        })
+
         monument.monumentTags = oldMonument.monumentTags
+        monument.references = oldMonument.references
 
         put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}
         ?newTagString=${encodeURIComponent(JSON.stringify(newTags))}
+        &newReferencesString=${encodeURIComponent(JSON.stringify(newReferences))}
+        &deletedReferenceString=${encodeURIComponent(JSON.stringify(deletedReferences))}
         ${(monument.lat && monument.lon) && `&lat=${monument.lat}&lon=${monument.lon}`}
         `, monument)
         .then(() => {
