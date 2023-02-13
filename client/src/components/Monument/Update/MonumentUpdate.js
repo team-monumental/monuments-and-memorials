@@ -68,6 +68,8 @@ export default class MonumentUpdate extends React.Component {
                 return undefined;
             case DateFormat.EXACT_DATE:
                 return prettyPrintDate(update.date.newDate, update.date.type);
+            case DateFormat.UNKNOWN:
+                return "UNKNOWN"
             default:
                 return undefined;
         }
@@ -90,6 +92,8 @@ export default class MonumentUpdate extends React.Component {
                 return undefined;
             case DateFormat.EXACT_DATE:
                 return prettyPrintDate(update.deactivatedDate.newDeactivatedDate, update.deactivatedDate.type);
+            case DateFormat.UNKNOWN:
+                return "UNKNOWN"
             default:
                 return undefined;
         }
