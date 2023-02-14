@@ -69,7 +69,7 @@ export default class About extends React.Component {
         if (monument.deactivatedDateFormat === DateFormat.UNKNOWN) {
             deactivatedDate = (
                 <div>
-                    <span className="detail-label">Date:&nbsp;</span>
+                    <span className="detail-label">Un-installed Date:&nbsp;</span>
                     {String("Date of deactivation is Unknown")}
                 </div>
             )
