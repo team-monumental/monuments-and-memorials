@@ -1195,6 +1195,15 @@ public class MonumentService extends ModelService<Monument> {
         return contributions;
     }
 
+    public List<Reference> createMonumentReferences(String referenceUrl, Monument monument) {
+        if (referenceUrl == null || monument == null) {
+            return null;
+        }
+        ArrayList<String> referenceUrls = new ArrayList<String>();
+        referenceUrls.add(referenceUrl);
+        return createMonumentReferences(referenceUrls, monument);
+    }
+
     /**
      * Create References using the specified referenceUrls and associate them with the specified Monument
      * @param referenceUrls - List of Strings for the URLs to use for the References
