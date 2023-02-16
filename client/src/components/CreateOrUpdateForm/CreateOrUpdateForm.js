@@ -811,7 +811,7 @@ export default class CreateOrUpdateForm extends React.Component {
             newIsTemporary: isTemporary.value,
             dateSelectValue: dateSelectValue,
             deactivatedDateSelectValue: deactivatedDateSelectValue,
-            newDateFormat: dateSelectValue,
+            newDateFormat: dateSelectValue.value,
             newDeactivatedDateFormat: deactivatedDateSelectValue.value,
             newDeactivatedComment: deactivatedComment.value === '' ? undefined : deactivatedComment.value,
             imagesForUpdate,
