@@ -78,29 +78,31 @@ public class CsvMonumentConverter {
                             if (dateFormatString != null) {
                                 Date parsedDate = null;
                                 dateFormat = stringToDateFormat(dateFormatString);
-                                try {
-                                    parsedDate = parseDate(value, dateFormatString);
-                                } catch (ParseException e) {
-                                    result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
-                                    break;
-                                }
-                                dateForValidate = parsedDate;
-                                if (isDateInFuture(parsedDate)) {
-                                    result.getWarnings().add("Date should not be in the future.");
-                                    break;
-                                }
-                                if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
-                                    if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
-                                            (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
-                                            (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
-                                        result.getWarnings().add("Created date should not be after un-installed date.");
+                                if (dateFormat != DateFormat.UNKNOWN) {//if the date is unknown, then we do not need to make checks for errors
+                                    try {
+                                        parsedDate = parseDate(value, dateFormatString);
+                                    } catch (ParseException e) {
+                                        result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                                         break;
+                                    }
+                                    dateForValidate = parsedDate;
+                                    if (isDateInFuture(parsedDate)) {
+                                        result.getWarnings().add("Date should not be in the future.");
+                                        break;
+                                    }
+                                    if (deactivatedDateForValidate != null && deactivatedDateForValidate.before(parsedDate)) {
+                                        if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                                (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && (deactivatedDateForValidate.getMonth() < parsedDate.getMonth())) ||
+                                                (deactivatedDateForValidate.getYear() < parsedDate.getYear())) {
+                                            result.getWarnings().add("Created date should not be after un-installed date.");
+                                            break;
+                                        }
                                     }
                                 }
                                 suggestion.setDate(convertDateFormat(value, dateFormatString));
                                 suggestion.setDateFormat(dateFormat);
                             } else {
-                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                result.getWarnings().add("Date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, YYYY, or Unknown.");
                                 break;
                             }
                             break;
@@ -109,29 +111,31 @@ public class CsvMonumentConverter {
                             if (deactivatedDateFormatString != null) {
                                 Date parsedDate = null;
                                 deactivatedDateFormat = stringToDateFormat(deactivatedDateFormatString);
-                                try {
-                                    parsedDate = parseDate(value, deactivatedDateFormatString);
-                                } catch (ParseException e) {
-                                    result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
-                                    break;
-                                }
-                                deactivatedDateForValidate = parsedDate;
-                                if (isDateInFuture(parsedDate)) {
-                                    result.getWarnings().add("Un-installed date should not be in the future.");
-                                    break;
-                                }
-                                if (dateForValidate != null && dateForValidate.after(parsedDate)) {
-                                    if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
-                                            (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
-                                            (dateForValidate.getYear() < parsedDate.getYear())) {
-                                        result.getWarnings().add("Created date should not be after un-installed date.");
+                                if (deactivatedDateFormat != DateFormat.UNKNOWN) {
+                                    try {
+                                        parsedDate = parseDate(value, deactivatedDateFormatString);
+                                    } catch (ParseException e) {
+                                        result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
                                         break;
+                                    }
+                                    deactivatedDateForValidate = parsedDate;
+                                    if (isDateInFuture(parsedDate)) {
+                                        result.getWarnings().add("Un-installed date should not be in the future.");
+                                        break;
+                                    }
+                                    if (dateForValidate != null && dateForValidate.after(parsedDate)) {
+                                        if ((dateFormat == DateFormat.EXACT_DATE && deactivatedDateFormat == DateFormat.EXACT_DATE) ||
+                                                (dateFormat != DateFormat.YEAR && deactivatedDateFormat != DateFormat.YEAR && dateForValidate.getMonth() > parsedDate.getMonth()) ||
+                                                (dateForValidate.getYear() < parsedDate.getYear())) {
+                                            result.getWarnings().add("Created date should not be after un-installed date.");
+                                            break;
+                                        }
                                     }
                                 }
                                 suggestion.setDeactivatedDate(convertDateFormat(value, deactivatedDateFormatString));
                                 suggestion.setDeactivatedDateFormat(deactivatedDateFormat);
                             } else {
-                                result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, or YYYY.");
+                                result.getWarnings().add("Un-installed date should be a valid date in the format MM/DD/YYYY, DD-MM-YYYY, MM/YYYY, MM-YYYY, YYYY, or Unknown");
                                 break;
                             }
                             break;
@@ -372,6 +376,8 @@ public class CsvMonumentConverter {
             return "MM-yyyy";
         } else if (value.toLowerCase().matches("^\\d{4}$")) {
             return "yyyy";
+        } else if (value.toLowerCase().matches("unknown")) {
+            return "unknown";
         } else {
             return null;
         }
@@ -421,8 +427,12 @@ public class CsvMonumentConverter {
             case "MM/yyyy":
             case "MM-yyyy":
                 return DateFormat.MONTH_YEAR;
-            case "yyyy": return DateFormat.YEAR;
-            default: return null;
+            case "yyyy":
+                return DateFormat.YEAR;
+            case "unknown":
+                return DateFormat.UNKNOWN;
+            default:
+                return null;
         }
     }
 
