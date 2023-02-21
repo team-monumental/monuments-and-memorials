@@ -17,6 +17,9 @@ class UpdateMonumentSuggestion extends React.Component {
 
     determineDateTypeForUpdate() {
         const { suggestion } = this.props;
+        if (suggestion.newDateFormat == 'UNKNOWN'){
+            return DateFormat.UNKNOWN
+        }
 
         if (suggestion.newDate) {
             return DateFormat.EXACT_DATE;
@@ -31,6 +34,10 @@ class UpdateMonumentSuggestion extends React.Component {
 
     determineDeactivatedDateTypeForUpdate() {
         const { suggestion } = this.props;
+
+        if (suggestion.newDeactivatedDateFormat == 'UNKNOWN'){
+            return DateFormat.UNKNOWN
+        }
 
         if (suggestion.newDeactivatedDate) {
             return DateFormat.EXACT_DATE;
