@@ -33,7 +33,7 @@ const FIELDS = [
 
 // TODO: Add useFormikContext, pass reset func to QueueResetContext
 const QueueItem = (props) => {
-    const { dequeue, saveMonument, data } = props
+    const { dequeue, saveMonument, reset, data } = props
 
     const [showCoords, setShowCoords] = useState(false)
     // const resetContext = useContext(QueueResetContext)
@@ -127,7 +127,7 @@ const QueueItem = (props) => {
 
                             {/* Tags */}
                             <FieldArray name="monumentTags" component={QueueItemTags}/>
-                            <QueuePanelBtns dq={() => dequeue(props.data.id)} active={data}/>
+                            <QueuePanelBtns dq={() => dequeue(props.data.id)} reset={form.resetForm} active={data}/>
                         </Form>
                     }
                 </Formik>
