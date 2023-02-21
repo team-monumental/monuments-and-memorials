@@ -46,11 +46,21 @@ const QueueItem = (props) => {
         setShowCoords(!showCoords)
     }
 
+    const checkForFutureDate = (value) => {
+        const now = Date.now()
+        const valueDate = Date.parse(value)
+        if (valueDate < now) {
+            return false
+        }
+        return true
+    }
+
     const handleValidate = (value, field) => {
         let error
         switch (field) {
             case 'createdDate':
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
+                if (checkForFutureDate(value)) error = 'Future date is invalid'
                 break
             case 'coordinates':
                 let coordinates = [value.coordinates[1], value.coordinates[0]].join()
