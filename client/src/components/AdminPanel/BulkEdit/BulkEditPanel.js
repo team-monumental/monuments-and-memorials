@@ -65,6 +65,7 @@ const BulkEditPanel = (props) => {
             updatedSearchResult[searchResults.indexOf(searchResults.find(mon => mon.id == monument.id))] = monument
             setSearchResults(updatedSearchResult)
             props.showSuccessToast();
+            handleSearch();
         })
         .catch(error => {
             console.log(error)
