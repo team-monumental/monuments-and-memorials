@@ -333,6 +333,9 @@ public class SearchController {
         for (User user: foundUsers) {
             foundMonuments.addAll(this.monumentRepository.findAllByCreatedById(user.getId()));
         }
+        if (foundMonuments.size() > 25) {
+            return foundMonuments.subList(0, 24);
+        }
         return foundMonuments;
     }
 }
