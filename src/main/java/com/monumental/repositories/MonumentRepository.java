@@ -45,4 +45,7 @@ public interface MonumentRepository extends JpaRepository<Monument, Integer> {
      * @return The found monuments
      */
     List<Monument> findAllByIsActive(Boolean isActive);
+
+    @Query("select m from Monument m where m.createdBy.id = :id")
+    List<Monument> findAllByCreatedById(Integer id);
 }

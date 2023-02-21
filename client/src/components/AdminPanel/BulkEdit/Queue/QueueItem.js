@@ -33,7 +33,7 @@ const FIELDS = [
 
 // TODO: Add useFormikContext, pass reset func to QueueResetContext
 const QueueItem = (props) => {
-    const { dequeue, saveMonument, data } = props
+    const { dequeue, saveMonument, reset, data } = props
 
     const [showCoords, setShowCoords] = useState(false)
     // const resetContext = useContext(QueueResetContext)
@@ -46,11 +46,21 @@ const QueueItem = (props) => {
         setShowCoords(!showCoords)
     }
 
+    const checkForFutureDate = (value) => {
+        const now = Date.now()
+        const valueDate = Date.parse(value)
+        if (valueDate < now) {
+            return false
+        }
+        return true
+    }
+
     const handleValidate = (value, field) => {
         let error
         switch (field) {
             case 'createdDate':
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
+                if (checkForFutureDate(value)) error = 'Future date is invalid'
                 break
             case 'coordinates':
                 let coordinates = [value.coordinates[1], value.coordinates[0]].join()
@@ -127,7 +137,7 @@ const QueueItem = (props) => {
 
                             {/* Tags */}
                             <FieldArray name="monumentTags" component={QueueItemTags}/>
-                            <QueuePanelBtns dq={() => dequeue(props.data.id)} active={data}/>
+                            <QueuePanelBtns dq={() => dequeue(props.data.id)} reset={form.resetForm} active={data}/>
                         </Form>
                     }
                 </Formik>

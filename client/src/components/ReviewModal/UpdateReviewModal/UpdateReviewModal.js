@@ -8,7 +8,7 @@ import MonumentUpdate from '../../Monument/Update/MonumentUpdate';
  */
 export default class UpdateReviewModal extends React.Component {
 
-    buildUpdate() {
+    buildUpdate = () => {
         const { newMonument } = this.props;
 
         if (!newMonument) {
@@ -18,13 +18,13 @@ export default class UpdateReviewModal extends React.Component {
         return {
             ...newMonument,
             date: {
-                type: newMonument.dateSelectValue,
+                type: newMonument.dateSelectValue.value,
                 newYear: newMonument.newYear,
                 newMonth: newMonument.newMonth,
                 newDate: newMonument.newDate
             },
             deactivatedDate: {
-                type: newMonument.deactivatedDateSelectValue,
+                type: newMonument.deactivatedDateSelectValue.value,
                 newDeactivatedYear: newMonument.newDeactivatedYear,
                 newDeactivatedMonth: newMonument.newDeactivatedMonth,
                 newDeactivatedDate: newMonument.newDeactivatedDate
