@@ -2,7 +2,7 @@ import React from 'react'
 import {Button, ButtonGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
-const QueuePanelBtns = ({dq, save, active}) => {
+const QueuePanelBtns = ({dq, save, reset, active}) => {
     const controls = [
         {
             text: 'Save',
@@ -11,7 +11,9 @@ const QueuePanelBtns = ({dq, save, active}) => {
             click: save
         }, {
             text: 'Reset',
-            variant: 'light'
+            variant: 'light',
+            type: 'reset',
+            click: reset
         }, {
             text: 'Dequeue',
             variant: 'danger',
