@@ -86,7 +86,6 @@ class CreateMonumentSuggestion extends React.Component {
         const deactivatedComment = parse(suggestion.deactivatedComment, true)
 
         let date = 'None';
-        console.log(suggestion)
         if (suggestion.date && suggestion.date.length) {
             date = prettyPrintDate(new Date(suggestion.date));
         }
