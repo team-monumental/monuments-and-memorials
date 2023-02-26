@@ -319,13 +319,13 @@ public class SearchController {
 
     /**
      * Get all of the Monuments created by a user id
-     * @param id - a user's id
+     * @param name - a user's id
      * @return List<Monument> - List of all of the Monuments
      * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
     @GetMapping("/api/search/user/monument")
     @PreAuthorize(Authorization.isAdmin)
-    public List<Monument> getAllMonumentsByCreatedById(@RequestParam(required = false) String name,
+    public List<Monument> getAllMonumentsByCreatedByName(@RequestParam(required = false) String name,
                                                        @RequestParam(required = false, defaultValue = "1") String page,
                                                        @RequestParam(required = false, defaultValue = "25") String limit) {
         List<Monument> foundMonuments = new ArrayList<Monument>();
@@ -333,8 +333,8 @@ public class SearchController {
         for (User user: foundUsers) {
             foundMonuments.addAll(this.monumentRepository.findAllByCreatedById(user.getId()));
         }
-        if (foundMonuments.size() > 25) {
-            return foundMonuments.subList(0, 24);
+        if (foundMonuments.size() > Integer.parseInt(limit)) {
+            return foundMonuments.subList(0, Integer.parseInt(limit));
         }
         return foundMonuments;
     }
