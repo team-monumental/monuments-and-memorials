@@ -44,6 +44,16 @@ Tim Miner
 
 #### 2022-2023 Software Engineering Students
 
+Daniel Nelson 
+
+Liam Obrochta
+
+Nicholas Kelly
+
+Danny Murray
+
+Atharva Shivankar
+
 
 ## Contributing
 
