@@ -5,6 +5,9 @@ import {Alert, Button, Form, Modal} from 'react-bootstrap';
 import {Role} from '../../../../utils/authentication-util';
 import {Helmet} from 'react-helmet';
 import {getMonumentSlug} from "../../../../utils/regex-util";
+import {ExportToCsvButton} from '../../../Export/ExportToCsvButton/ExportToCsvButton';
+import {csvExportFields} from "../../../../utils/export-util";
+import ExportButtons from "../../../Export/ExportButtons/ExportButtons";
 
 export default class ManageUser extends React.Component {
 
@@ -36,6 +39,16 @@ export default class ManageUser extends React.Component {
             }
             onChangeRole(role);
         }
+    }
+
+    async fetchUsersMonuments() {
+        //TODO: This function NEEDS a way to only be called when the buttons are clicked to prevent unneeded data fetching
+        let endpoint = `${window.location.origin}/api/search/user/monumentTEMP/?id=${this.props.user.id}`
+        console.log(this.props.user.id)
+        const response = await fetch(endpoint)
+        const myJson = await response.json()
+        console.log(myJson)
+
     }
 
     render() {
@@ -101,9 +114,21 @@ export default class ManageUser extends React.Component {
                     : null}
                 <div>
                     {!editingRole && !isEditingSelf &&
-                        <Button variant="light" onClick={() => this.setState({editingRole: true})}>
-                            Change Role
-                        </Button>
+                        <div>
+                            <Button variant="light" onClick={() => this.setState({editingRole: true})}>
+                                Change Role
+                            </Button>
+                            <ExportToCsvButton className="mr-2"
+                                               fields={this.csvExportFields}
+                                               data={this.fetchUsersMonuments()}
+                                               exportTitle={`Monuments created by: ${this.props.user.name}`}
+                            />
+                            {/*<div>*/}
+                            {/*    <ExportButtons className="mt-2"*/}
+                            {/*        monuments={this.fetchUsersMonuments()}*/}
+                            {/*        title={`Monuments created by: ${this.props.user.name}`}/>*/}
+                            {/*</div>*/}
+                        </div>
                     }
                     {editingRole &&
                         <Button variant="primary" onClick={() => this.handleChangeRole()} disabled={role === user.role}>
