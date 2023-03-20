@@ -37,6 +37,10 @@ public class Image extends Model implements Serializable {
     @Column(name = "caption")
     private String caption = "";
 
+    //TODO: uncomment this once I have backed up the current local DB
+//    @Column(name = "alt_text", length = 2048)
+    private  String altText = "";
+
     @JsonIdentityReference(alwaysAsId = true)
     @JsonProperty("monument_id")
     @ManyToOne
@@ -114,4 +118,13 @@ public class Image extends Model implements Serializable {
     public void setCaption(String caption) {
         this.caption = caption;
     }
+
+    public String getAltText() {
+        return altText;
+    }
+
+    public void setAltText(String altText) {
+        this.altText = altText;
+    }
+
 }
