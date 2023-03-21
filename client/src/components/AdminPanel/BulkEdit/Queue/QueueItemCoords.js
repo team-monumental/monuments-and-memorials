@@ -6,17 +6,17 @@ const QueueItemCoords = ({field, form: {touched, errors, values}, ...props}) => 
     // noinspection JSValidateTypes,RequiredAttributes
     return (
         <Form.Row>
-            <Form.Group as={Col}>
+            <Form.Group as={Row}>
                 <Form.Label>{props.text}</Form.Label>
                 <InputGroup hasValidation>
                     <InputGroup.Prepend>
                         <InputGroup.Text>Latitude</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control required defaultValue={values.coordinates ? field.value.coordinates[1]: ''}/>
+                    <Form.Control {...field} value={values.lat}/>
                     <InputGroup.Prepend>
                         <InputGroup.Text>Longitude</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control required defaultValue={values.coordinates ? field.value.coordinates[0]: ''}/>
+                    <Form.Control {...field} value={values.lon}/>
                     <InputGroup.Append>
                         <OverlayTrigger placement="bottom" overlay={(
                             <Tooltip id="coords-toggle">

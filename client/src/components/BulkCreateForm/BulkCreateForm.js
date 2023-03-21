@@ -523,7 +523,6 @@ export default class BulkCreateForm extends React.Component {
          */
             // eslint-disable-next-line
         const getTooltip = (msg) => {
-                // console.log(msg)
                 switch (msg) {
                     case 'Address OR Coordinates are required':
                         return 'Valid coordinate formats are:\n' +
