@@ -47,7 +47,6 @@ export default class MapResults extends React.Component {
             if (bounds.west === null || bounds.west > monument.lon) bounds.west = monument.lon;
 
             // regular monuments color = blue, temporary monuments color = green selected color = red
-            // const color = monument.isTemporary ? "green" : "blue"
             let color = "blue"
             if (monument.isTemporary) {
                 color = "green"
