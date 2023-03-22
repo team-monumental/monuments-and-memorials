@@ -50,7 +50,7 @@ export default class ManageUser extends React.Component {
 
     async fetchUsersMonuments() {
         //TODO: This function NEEDS a way to only be called when the buttons are clicked to prevent unneeded data fetching
-        let endpoint = `${window.location.origin}/api/search/user/monumentTEMP/?id=${this.props.user.id}`
+        let endpoint = `${window.location.origin}/api/search/user/monumentsById/?id=${this.props.user.id}`
         const response = await fetch(endpoint)
         return response.json()
 
@@ -124,7 +124,7 @@ export default class ManageUser extends React.Component {
                                 Change Role
                             </Button>
                             <ExportToCsvButton className="mr-2"
-                                               fields={this.csvExportFields}
+                                               fields={csvExportFields}
                                                data={userMonumentExportData}
                                                exportTitle={`Monuments created by: ${getUserFullName(user)} ${moment().format('YYYY-MM-DD hh:mm')}`}
                             />

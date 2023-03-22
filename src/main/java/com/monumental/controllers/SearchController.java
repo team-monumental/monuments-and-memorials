@@ -346,9 +346,9 @@ public class SearchController {
      * @return List<Monument> - List of all monuments created by that user id
      * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
-    @GetMapping("api/search/user/monumentTEMP")
+    @GetMapping("api/search/user/monumentsById")
     @PreAuthorize(Authorization.isAdmin)
-    public List<Monument> getAllMonumentsByCreatedByIdTEMP(@RequestParam(required = false) int id){
+    public List<Monument> getAllMonumentsByCreatedById(@RequestParam(required = false) int id){
         List<Monument> foundMonuments = new ArrayList<Monument>();
         foundMonuments.addAll(this.monumentRepository.findAllByCreatedById(id));
         return foundMonuments;
