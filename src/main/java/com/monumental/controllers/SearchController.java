@@ -338,8 +338,7 @@ public class SearchController {
         }
         return foundMonuments;
     }
-
-    //TODO: Once CMM-86 is merged in, this endpoint need to change its name/mapping to take over it's place
+    
     /**
      * Get all the monuments created by a particular user id
      * @param id - the target user's ID
