@@ -34,6 +34,8 @@ public class CsvMonumentConverterResult {
 
     private List<String> imageCaptions = new ArrayList<>();
 
+    private List<String> imageAltText = new ArrayList<>();
+
     private List<String> photoSphereImages = new ArrayList<>();
 
     private List<String> photoSphereImageReferenceUrls = new ArrayList<>();
@@ -106,6 +108,10 @@ public class CsvMonumentConverterResult {
 
     public void setImageCaptions(List<String> imageCaptions) {
         this.imageCaptions = imageCaptions;
+    }
+
+    public List<String> getImageAltText() {
+        return imageAltText;
     }
 
     public List<String> getPhotoSphereImages() {
