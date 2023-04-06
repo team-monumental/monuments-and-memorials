@@ -150,8 +150,7 @@ export async function uploadImagesToS3(images, temporaryFolder) {
             params: {
                 Bucket: s3ImageBucketName,
                 Key: key,
-                Body: image,
-                ACL: 'public-read'
+                Body: image
             }
         });
 
