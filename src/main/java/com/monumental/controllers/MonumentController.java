@@ -22,8 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -264,4 +266,23 @@ public class MonumentController {
         this.monumentService.deleteMonumentReferences(monument, deletedRefs);
         return monument;
     }
+
+    /**
+     * Update the Monument with the specified monumentId to have the new attributes defined by the specified
+     * updateSuggestion
+     * @param key - key to upload s3 image
+     * @param image - Imgage File
+     * @return String - Url to File
+     */
+    @PostMapping("/api/monument/monumentImageUpload")
+    @PreAuthorize(Authorization.isCollaboratorOrAbove)
+    public String uploadMonumentImageToS3(@RequestParam(required = true) String key,
+                                          @RequestBody MultipartFile file)
+            throws ResourceNotFoundException {
+        // Process multipart file
+        
+        return this.monumentService.uploadMonumentImageToS3(key, file);
+    }
+
+
 }

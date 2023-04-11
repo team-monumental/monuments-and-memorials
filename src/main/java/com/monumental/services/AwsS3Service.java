@@ -53,6 +53,7 @@ public class AwsS3Service {
         objectKey = generateUniqueKey(objectKey);
         try {
             s3Client.putObject(bucketName, objectKey, file);
+            s3Client.completeMultipartUpload()
             return getObjectUrl(objectKey);
         } catch (SdkClientException e) {
             System.out.println("Error attempting to access S3 Bucket: " + bucketName + " and Object: " + objectKey);
