@@ -165,9 +165,10 @@ export default class AboutInformation extends React.Component {
                             <p>
                                 <span className="font-weight-bold">Software Engineering Students:</span> AJ Delposen,
                                 Nick Deyette, Ben Smith, Ben Vogler, Ren Chauret, William Schultheis, Dan Wang,
-                                Samik Mitra, Brendan Cail, Sean Coyne, Asha Harris-Battles, Henry Larson, Tim Miner<br/>
+                                Samik Mitra, Brendan Cail, Sean Coyne, Asha Harris-Battles, Henry Larson, Tim Miner,
+                                Daniel Nelson, Liam Obrochta, Nicholas Kelly, Danny Murray, Atharva Shivankar<br/>
                                 <span className="font-weight-bold">Advisors:</span> Eric Mansfield, Samuel Malachowsky,
-                                Jim Vallino, Tom Reichlmayr, and Al Arujunan<br/>
+                                Jim Vallino, Tom Reichlmayr, and Al Arujunan, Larry Kiser<br/>
                                 <span className="font-weight-bold">Research Assistants: </span>Lizzy Carr and Landyn Hatch<br/>
                                 <span className="font-weight-bold">Graphic Design: </span>Connie Froass<br/>
                                 Students in HIS 322 course, <span className="font-italic">Monuments & Memory</span>, spring 2019 and
