@@ -145,24 +145,29 @@ export async function uploadImagesToS3(images, temporaryFolder) {
     for (const image of images) {
         let key = generateUniqueKey(folderName + image.name)
 
-        // Create an S3 upload
-        let s3Upload = new AWS.S3.ManagedUpload({
-            params: {
-                Bucket: s3ImageBucketName,
-                Key: key,
-                Body: image,
-                ACL: 'public-read'
-            }
-        });
+        // // Create an S3 upload
+        // let s3Upload = new AWS.S3.ManagedUpload({
+        //     params: {
+        //         Bucket: s3ImageBucketName,
+        //         Key: key,
+        //         Body: image
+        //     }
+        // });
 
-        try {
-            // Execute the upload
-            let data = await s3Upload.promise();
-            imageUrls.push(data.Location);
-        } catch (err) {
-            console.log("ERROR UPLOADING IMAGE TO S3: " + image.name);
-            console.log("ERROR: " + err.message);
-        }
+        // try {
+        //     // Execute the upload
+        //     let data = await s3Upload.promise();
+        //     imageUrls.push(data.Location);
+        // } catch (err) {
+        //     console.log("ERROR UPLOADING IMAGE TO S3: " + image.name);
+        //     console.log("ERROR: " + err.message);
+        // }
+        let endpoint = `${window.location.origin}/api/monument/monumentImageUpload/?key=${key}`
+
+        await fetch(endpoint, {
+            method: 'POST',
+            body: image
+          });
     }
 
     return imageUrls;

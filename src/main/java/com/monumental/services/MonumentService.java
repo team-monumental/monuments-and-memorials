@@ -1295,7 +1295,14 @@ public class MonumentService extends ModelService<Monument> {
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
                     String objectKey = AwsS3Service.getObjectKey(imageUrl, false);
+                    System.out.println(objectKey);
+                    System.out.println("!!!!!!!!!!!!");
                     String newKey = this.awsS3Service.moveObject(AwsS3Service.getObjectKey(imageUrl, true), objectKey);
+                    System.out.println("image url");
+                    System.out.println(imageUrl);
+                    System.out.println("------------");
+                    System.out.println(newKey);
+                    System.out.println("------------");
                     String permanentImageUrl = AwsS3Service.getObjectUrl(newKey);
 
                     imagesCount++;
@@ -1825,5 +1832,9 @@ public class MonumentService extends ModelService<Monument> {
 
         rollbar.info("New bulk suggestion:  create " + bulkCreateSuggestion.getCreateSuggestions().size() + " monuments.");
         return this.bulkCreateSuggestionRepository.saveAndFlush(bulkCreateSuggestion);
+    }
+
+    public String uploadMonumentImageToS3(String key, MultipartFile file) {
+        // use storeobject func
     }
 }
