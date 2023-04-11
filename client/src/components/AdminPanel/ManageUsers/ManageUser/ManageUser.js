@@ -5,6 +5,9 @@ import {Alert, Button, Form, Modal} from 'react-bootstrap';
 import {Role} from '../../../../utils/authentication-util';
 import {Helmet} from 'react-helmet';
 import {getMonumentSlug} from "../../../../utils/regex-util";
+import {ExportToCsvButton} from '../../../Export/ExportToCsvButton/ExportToCsvButton';
+import {buildBulkExportData, csvExportFields} from "../../../../utils/export-util";
+import moment from "moment";
 
 export default class ManageUser extends React.Component {
 
@@ -14,7 +17,8 @@ export default class ManageUser extends React.Component {
             editingRole: false,
             role: props.user.role,
             confirmAdminModalOpen: false,
-            dismissAlert: false
+            dismissAlert: false,
+            userMonumentExportData: []
         };
     }
 
@@ -22,6 +26,12 @@ export default class ManageUser extends React.Component {
         if (this.props.changeRoleSuccess && this.props.changeRoleSuccess !== prevProps.changeRoleSuccess) {
             this.setState({editingRole: false});
         }
+    }
+
+    componentDidMount() {
+        this.fetchUsersMonuments().then(result => this.setState({
+            userMonumentExportData: buildBulkExportData(result, csvExportFields, true)
+        }))
     }
 
     handleChangeRole(confirm = false) {
@@ -38,6 +48,14 @@ export default class ManageUser extends React.Component {
         }
     }
 
+    async fetchUsersMonuments() {
+        //TODO: This function NEEDS a way to only be called when the buttons are clicked to prevent unneeded data fetching
+        let endpoint = `${window.location.origin}/api/search/user/monumentsById/?id=${this.props.user.id}`
+        const response = await fetch(endpoint)
+        return response.json()
+
+    }
+
     render() {
         return (<>
             {this.renderManageUser()}
@@ -47,7 +65,7 @@ export default class ManageUser extends React.Component {
 
     renderManageUser() {
         const {user, contributions, session} = this.props;
-        const {editingRole, role, dismissAlert} = this.state;
+        const {editingRole, role, dismissAlert, userMonumentExportData} = this.state;
 
         const isEditingSelf = user.id === session.user.id;
 
@@ -101,9 +119,16 @@ export default class ManageUser extends React.Component {
                     : null}
                 <div>
                     {!editingRole && !isEditingSelf &&
-                        <Button variant="light" onClick={() => this.setState({editingRole: true})}>
-                            Change Role
-                        </Button>
+                        <div>
+                            <Button variant="light" onClick={() => this.setState({editingRole: true})}>
+                                Change Role
+                            </Button>
+                            <ExportToCsvButton className="mr-2"
+                                               fields={csvExportFields}
+                                               data={userMonumentExportData}
+                                               exportTitle={`Monuments created by: ${getUserFullName(user)} ${moment().format('YYYY-MM-DD hh:mm')}`}
+                            />
+                        </div>
                     }
                     {editingRole &&
                         <Button variant="primary" onClick={() => this.handleChangeRole()} disabled={role === user.role}>
