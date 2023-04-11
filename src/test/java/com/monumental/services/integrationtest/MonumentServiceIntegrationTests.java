@@ -2674,18 +2674,18 @@ public class MonumentServiceIntegrationTests {
     @Test
     public void testMonumentService_createMonumentImages_NullImagesUrls_NonNullMonument() {
         Monument monument = new Monument();
-        assertNull(this.monumentService.createMonumentImages(null, null, null, monument, false));
+        assertNull(this.monumentService.createMonumentImages(null, null, null, new ArrayList<>(), monument, false));
     }
 
     @Test
     public void testMonumentService_createMonumentImages_NonNullImagesUrls_NullMonument() {
         List<String> imageUrls = new ArrayList<>();
-        assertNull(this.monumentService.createMonumentImages(imageUrls, new ArrayList<>(), new ArrayList<>(), null, false));
+        assertNull(this.monumentService.createMonumentImages(imageUrls, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), null, false));
     }
 
     @Test
     public void testMonumentService_createMonumentImages_NullImageUrls_NullMonument() {
-        assertNull(this.monumentService.createMonumentImages(null, null, null, null, false));
+        assertNull(this.monumentService.createMonumentImages(null, null, null, null, null, false));
     }
 
     @Test
@@ -2694,7 +2694,7 @@ public class MonumentServiceIntegrationTests {
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, new ArrayList<>(), new ArrayList<>(), monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2707,11 +2707,13 @@ public class MonumentServiceIntegrationTests {
         imageReferenceUrls.add(null);
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add(null);
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add(null);
 
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2724,11 +2726,13 @@ public class MonumentServiceIntegrationTests {
         imageReferenceUrls.add("");
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2744,11 +2748,14 @@ public class MonumentServiceIntegrationTests {
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add("");
         imageReferenceUrls.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(0, result.size());
     }
@@ -2761,12 +2768,14 @@ public class MonumentServiceIntegrationTests {
         imageReferenceUrls.add("");
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2787,6 +2796,8 @@ public class MonumentServiceIntegrationTests {
         imageReferenceUrls.add("");
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2797,7 +2808,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2818,6 +2829,8 @@ public class MonumentServiceIntegrationTests {
         imageReferenceUrls.add("");
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2828,7 +2841,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(1, result.size());
 
@@ -2861,12 +2874,18 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2915,6 +2934,12 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2925,7 +2950,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -2974,6 +2999,12 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
@@ -2984,7 +3015,7 @@ public class MonumentServiceIntegrationTests {
 
         monument.setImages(monumentImages);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -3033,12 +3064,18 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, true);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, true);
 
         assertEquals(3, result.size());
 
@@ -3087,12 +3124,18 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -3141,12 +3184,18 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("caption 3");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -3192,12 +3241,18 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -3243,12 +3298,18 @@ public class MonumentServiceIntegrationTests {
         List<String> imageCaptions = new ArrayList<>();
         imageCaptions.add("");
         imageCaptions.add("caption 2");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -3291,12 +3352,18 @@ public class MonumentServiceIntegrationTests {
         imageCaptions.add("");
         imageCaptions.add("");
         imageCaptions.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, null, imageCaptions, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, null, imageCaptions, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
@@ -3339,12 +3406,18 @@ public class MonumentServiceIntegrationTests {
         imageReferenceUrls.add("");
         imageReferenceUrls.add("");
         imageReferenceUrls.add("");
+        List<String> altTexts = new ArrayList<>();
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
+        altTexts.add("");
 
         Monument monument = new Monument();
         monument.setTitle("Monument");
         monument = this.monumentRepository.save(monument);
 
-        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, null, monument, false);
+        List<Image> result = this.monumentService.createMonumentImages(imageUrls, imageReferenceUrls, null, altTexts, monument, false);
 
         assertEquals(3, result.size());
 
