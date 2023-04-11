@@ -318,8 +318,8 @@ public class SearchController {
     }
 
     /**
-     * Get all of the Monuments created by a user id
-     * @param name - a user's id
+     * Get all of the Monuments created by name
+     * @param name - a user's name
      * @return List<Monument> - List of all of the Monuments
      * @throws UnauthorizedException - If trying to get inactive monuments and not logged in
      */
