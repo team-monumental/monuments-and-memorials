@@ -122,6 +122,20 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> newImageCaptions;
 
+    @Column(name = "new_image_alt_texts_json", length = 2048)
+    private String newImageAltTextsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> newImageAltTexts;
+
+    @Column(name = "updated_image_alt_texts_json", length = 2048)
+    private String updatedImageAltTextsJson;
+
+    @Transient
+    @JsonIgnore
+    private Map<Integer, String> updatedImageAltTextsById;
+
     @Column(name = "updated_image_reference_urls_json", length = 2048)
     private String updatedImageReferenceUrlsJson;
 
@@ -487,6 +501,42 @@ public class UpdateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.newImageCaptions;
+    }
+
+    public String getNewImageAltTextsJson() {
+        return newImageAltTextsJson;
+    }
+
+    public void setNewImageAltTextsJson(String newImageAltTextsJson) {
+        this.newImageAltTextsJson = newImageAltTextsJson;
+    }
+
+    public List<String> getNewImageAltTexts() {
+        if (this.newImageAltTexts == null || (this.newImageAltTextsJson != null && this.newImageAltTexts.isEmpty() && !this.newImageAltTextsJson.isEmpty())) {
+            this.newImageAltTexts = this.deserializeStringList(this.newImageAltTextsJson);
+        }
+
+        if (this.newImageAltTexts != null && this.getNewImageUrls().size() != this.newImageAltTexts.size()) {
+            throw new IndexOutOfBoundsException("Number of new image alt-texts must match number of new images");
+        }
+
+        return newImageAltTexts;
+    }
+
+    public String getUpdatedImageAltTextsJson() {
+        return updatedImageAltTextsJson;
+    }
+
+    public void setUpdatedImageAltTextsJson(String updatedImageAltTextsJson) {
+        this.updatedImageAltTextsJson = updatedImageAltTextsJson;
+    }
+
+    public Map<Integer, String> getUpdatedImageAltTextsById() {
+        if (this.updatedImageAltTextsById == null) {
+            this.updatedImageAltTextsById = this.deserializeMap(this.updatedImageAltTextsJson);
+        }
+
+        return updatedImageAltTextsById;
     }
 
     public String getUpdatedImageReferenceUrlsJson() {
