@@ -135,6 +135,13 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
     @JsonIgnore
     private List<String> imageCaptions;
 
+    @Column(name = "image_alt_texts_json", length = 2048)
+    private String imageAltTextsJson;
+
+    @Transient
+    @JsonIgnore
+    private List<String> imageAltTexts;
+
     @Column(name = "photosphere_images_json", length = 2048)
     private String photoSphereImagesJson;
 
@@ -467,6 +474,26 @@ public class CreateMonumentSuggestion extends MonumentSuggestion {
         }
 
         return this.imageCaptions;
+    }
+
+    public String getImageAltTextsJson() {
+        return imageAltTextsJson;
+    }
+
+    public void setImageAltTextsJson(String imageAltTextJson) {
+        this.imageAltTextsJson = imageAltTextJson;
+    }
+
+    public List<String> getImageAltTexts() {
+        if (this.imageAltTexts == null || (this.imageAltTextsJson != null && this.imageAltTexts.isEmpty() && !this.imageAltTextsJson.isEmpty())) {
+            this.imageAltTexts = this.deserializeStringList(this.imageAltTextsJson);
+        }
+
+        if (this.imageAltTexts != null && this.getImages().size() != this.imageAltTexts.size()) {
+            throw new IndexOutOfBoundsException("Number of image alt-texts must match number of images");
+        }
+
+        return imageAltTexts;
     }
 
     public String getPhotoSphereImagesJson() {
