@@ -1155,9 +1155,10 @@ public class MonumentService extends ModelService<Monument> {
             currentMonument.getImages().addAll(newImages);
         }
 
-        // Update image reference URLs and captions
+        // Update image reference URLs, captions, and alt-texts
         this.updateImageReferenceUrl(currentMonument, updateSuggestion.getUpdatedImageReferenceUrlsById());
         this.updateImageCaption(currentMonument, updateSuggestion.getUpdatedImageCaptionsById());
+        this.updateImageAltText(currentMonument, updateSuggestion.getUpdatedImageAltTextsById());
         this.updateImageReferenceUrl(currentMonument, updateSuggestion.getUpdatedPhotoSphereImageReferenceUrlsById());
         this.updateImageCaption(currentMonument, updateSuggestion.getUpdatedPhotoSphereImageCaptionsById());
 
@@ -1400,6 +1401,18 @@ public class MonumentService extends ModelService<Monument> {
             for (Image currentImage : monument.getImages()) {
                 if (updatedImageCaptionsById.containsKey(currentImage.getId())) {
                     currentImage.setCaption(updatedImageCaptionsById.get(currentImage.getId()));
+                    this.imageRepository.save(currentImage);
+                }
+            }
+        }
+    }
+
+    public void updateImageAltText(Monument monument, Map<Integer, String> updatedImageAltTextsById) {
+        if (monument != null && monument.getImages() != null && updatedImageAltTextsById != null &&
+                monument.getImages().size() > 0 && updatedImageAltTextsById.size() > 0) {
+            for (Image currentImage : monument.getImages()) {
+                if (updatedImageAltTextsById.containsKey(currentImage.getId())) {
+                    currentImage.setAltText(updatedImageAltTextsById.get(currentImage.getId()));
                     this.imageRepository.save(currentImage);
                 }
             }
