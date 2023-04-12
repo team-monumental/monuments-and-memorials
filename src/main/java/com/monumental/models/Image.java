@@ -70,6 +70,18 @@ public class Image extends Model implements Serializable {
         this.caption = caption;
     }
 
+    public Image(String url, boolean isPrimary, String referenceUrl, String caption, String altText) {
+        if (isNullOrEmpty(url)) {
+            throw new IllegalArgumentException("URL must not be null or empty");
+        }
+
+        this.url = url;
+        this.isPrimary = isPrimary;
+        this.referenceUrl = referenceUrl;
+        this.caption = caption;
+        this.altText = altText;
+    }
+
     public String getUrl() {
         return this.url;
     }
