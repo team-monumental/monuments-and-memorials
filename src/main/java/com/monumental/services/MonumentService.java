@@ -959,11 +959,20 @@ public class MonumentService extends ModelService<Monument> {
         List<Image> images = new ArrayList<>();
         if (monumentSuggestion.getImages() != null && monumentSuggestion.getImages().size() > 0) {
             images.addAll(this.createMonumentImages(monumentSuggestion.getImages(),
-                    monumentSuggestion.getImageReferenceUrls(), monumentSuggestion.getImageCaptions(), createdMonument, false));
+                                                    monumentSuggestion.getImageReferenceUrls(),
+                                                    monumentSuggestion.getImageCaptions(),
+                                                    monumentSuggestion.getImageAltTexts(),
+                                                    createdMonument,
+                                                    false));
         }
         if (monumentSuggestion.getPhotoSphereImages() != null && monumentSuggestion.getPhotoSphereImages().size() > 0) {
             images.addAll(this.createMonumentImages(monumentSuggestion.getPhotoSphereImages(),
-                    monumentSuggestion.getPhotoSphereImageReferenceUrls(), monumentSuggestion.getPhotoSphereImageCaptions(), createdMonument, true));
+                                                    monumentSuggestion.getPhotoSphereImageReferenceUrls(),
+                                                    monumentSuggestion.getPhotoSphereImageCaptions(),
+                                                    monumentSuggestion.getImageAltTexts(),
+                                                    createdMonument,
+                                                    true)
+            );
         }
         createdMonument.setImages(images);
 
@@ -1121,12 +1130,20 @@ public class MonumentService extends ModelService<Monument> {
         List<Image> newImages = new ArrayList<>();
         if (updateSuggestion.getNewImageUrls() != null && updateSuggestion.getNewImageUrls().size() > 0) {
             newImages.addAll(this.createMonumentImages(updateSuggestion.getNewImageUrls(),
-                    updateSuggestion.getNewImageReferenceUrls(), updateSuggestion.getNewImageCaptions(), currentMonument, false));
+                                                       updateSuggestion.getNewImageReferenceUrls(),
+                                                       updateSuggestion.getNewImageCaptions(),
+                                                       updateSuggestion.getNewImageAltTexts(),
+                                                       currentMonument,
+                                                       false)
+            );
         }
-        if (updateSuggestion.getNewPhotoSphereImageUrls() != null &&
-                updateSuggestion.getNewPhotoSphereImageUrls().size() > 0) {
+        if (updateSuggestion.getNewPhotoSphereImageUrls() != null && updateSuggestion.getNewPhotoSphereImageUrls().size() > 0) {
             newImages.addAll(this.createMonumentImages(updateSuggestion.getNewPhotoSphereImageUrls(),
-                    updateSuggestion.getNewPhotoSphereImageReferenceUrls(), updateSuggestion.getNewPhotoSphereImageCaptions(), currentMonument, true));
+                                                       updateSuggestion.getNewPhotoSphereImageReferenceUrls(),
+                                                       updateSuggestion.getNewPhotoSphereImageCaptions(),
+                                                       updateSuggestion.getNewImageAltTexts(),
+                                                       currentMonument,
+                                                       true));
         }
 
         // If the Monument does not have any Images, we can just set them
@@ -1247,11 +1264,12 @@ public class MonumentService extends ModelService<Monument> {
      * @param imageUrls - List of Strings for the URLs to use for the Images
      * @param imageReferenceUrls - List of strings of reference URLs for images
      * @param imageCaptions - List of strings of captions for images
+     * @param imageAltTexts - List of string of alt-text for images
      * @param monument - Monument to associate the new Images with
      * @param arePhotoSphereImages - True if the specified imageUrls are for PhotoSphere images, False otherwise
      * @return List<Image> - List of new Images with the specified imageUrls and associated with the specified Monument
      */
-    public List<Image> createMonumentImages(List<String> imageUrls, List<String> imageReferenceUrls, List<String> imageCaptions, Monument monument, boolean arePhotoSphereImages) {
+    public List<Image> createMonumentImages(List<String> imageUrls, List<String> imageReferenceUrls, List<String> imageCaptions, List<String> imageAltTexts,Monument monument, boolean arePhotoSphereImages) {
         if (imageUrls == null || monument == null) {
             return null;
         }
@@ -1282,6 +1300,10 @@ public class MonumentService extends ModelService<Monument> {
                 if (imageCaptions != null && imageCaptions.size() > i) {
                     imageCaption = imageCaptions.get(i);
                 }
+                String imageAltText = "";
+                if (imageAltTexts != null && imageAltTexts.size() > i) {
+                    imageAltText = imageAltTexts.get(i);
+                }
 
                 if (!arePhotoSphereImages) {
                     // Move image to permanent folder
@@ -1291,7 +1313,7 @@ public class MonumentService extends ModelService<Monument> {
 
                     imagesCount++;
                     boolean isPrimary = imagesCount == 1;
-                    image = new Image(permanentImageUrl, isPrimary, imageReferenceUrl, imageCaption);
+                    image = new Image(permanentImageUrl, isPrimary, imageReferenceUrl, imageCaption, imageAltText);
                 }
                 else {
                     image = new Image(imageUrl, false, imageReferenceUrl, imageCaption);
