@@ -127,6 +127,7 @@ export default class CreateOrUpdateForm extends React.Component {
             imagesForUpdate:[],
             imageReferenceUrlsForUpdate: {},
             imageCaptionsForUpdate: {},
+            imageAltTextsForUpdate: [],
             photoSphereImagesForUpdate: [],
             photoSphereImageReferenceUrlsForUpdate: {},
             photoSphereImageCaptionsForUpdate: {},
@@ -263,7 +264,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { title, address, latitude, longitude, year, month, deactivatedYear, deactivatedMonth, deactivatedComment,
             artist, description, inscription, materials, locationType } = this.state;
         let { datePickerCurrentDate, deactivatedDatePickerCurrentDate, dateSelectValue, deactivatedDateSelectValue,
-            references, tags, imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, imageAltTextForUpdate,
+            references, tags, imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, imageAltTextsForUpdate,
             photoSphereImagesForUpdate, photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate,
             images, imageReferenceUrls, imageCaptions, imageAltText, photoSphereImages, photoSphereImageReferenceUrls,
             photoSphereImageCaptions, imageUploaderKey, city, state, isTemporary } = this.state;
@@ -363,7 +364,7 @@ export default class CreateOrUpdateForm extends React.Component {
             imagesForUpdate = [];
             imageReferenceUrlsForUpdate = {};
             imageCaptionsForUpdate = {};
-            imageAltTextForUpdate = {};
+            imageAltTextsForUpdate = [];
             photoSphereImagesForUpdate = [];
             photoSphereImageReferenceUrlsForUpdate = {};
             photoSphereImageCaptionsForUpdate = {};
@@ -378,7 +379,7 @@ export default class CreateOrUpdateForm extends React.Component {
                     imagesForUpdate.push(image);
                     imageReferenceUrlsForUpdate[image.id] = { value: image.referenceUrl, isValid: true };
                     imageCaptionsForUpdate[image.id] = { value: image.caption, isValid: true };
-                    imageAltTextForUpdate[image.id] = {value: image.isPhotoSphere}
+                    imageAltTextsForUpdate[image.id] = image.altText;
                 }
             }
         }
@@ -696,7 +697,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { title, address, latitude, longitude, dateSelectValue, deactivatedDateSelectValue, year, month,
             deactivatedYear, deactivatedMonth, artist, description, inscription, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
-            photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions, materials, newMaterials, tags,
+            imageAltText, photoSphereImages, photoSphereImageReferenceUrls, photoSphereImageCaptions, materials, newMaterials, tags,
             newTags, isTemporary, city, state } = this.state;
 
         let createForm = {
@@ -711,6 +712,7 @@ export default class CreateOrUpdateForm extends React.Component {
             images,
             imageReferenceUrlsJson: JSON.stringify(imageReferenceUrls.map(referenceUrl => referenceUrl.value)),
             imageCaptionsJson: JSON.stringify(imageCaptions.map(caption => caption.value)),
+            imageAltTextJson: JSON.stringify(imageAltText.map(altText => altText.value)),
             photoSphereImages,
             photoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls.map(referenceUrl => referenceUrl.value)),
             photoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions.map(caption => caption.value)),
@@ -793,7 +795,7 @@ export default class CreateOrUpdateForm extends React.Component {
         const { title, address, artist, description, inscription, latitude, longitude, dateSelectValue,
             deactivatedDateSelectValue, year, month, deactivatedYear, deactivatedMonth, datePickerCurrentDate,
             deactivatedDatePickerCurrentDate, deactivatedComment, references, images, imageReferenceUrls, imageCaptions,
-            imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, photoSphereImages,
+            imageAltText, imagesForUpdate, imageReferenceUrlsForUpdate, imageCaptionsForUpdate, imageAltTextsForUpdate, photoSphereImages,
             photoSphereImageReferenceUrls, photoSphereImageCaptions, photoSphereImagesForUpdate,
             photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate, materials, tags, isTemporary,
             city, state } = this.state;
@@ -810,6 +812,7 @@ export default class CreateOrUpdateForm extends React.Component {
             images,
             newImageReferenceUrlsJson: JSON.stringify(imageReferenceUrls.map(referenceUrl => referenceUrl.value)),
             newImageCaptionsJson: JSON.stringify(imageCaptions.map(caption => caption.value)),
+            newImageAltTextJson: JSON.stringify(imageAltText.map(altText => altText.value)),
             photoSphereImages: photoSphereImages.map(photoSphereImage => photoSphereImage.url),
             newPhotoSphereImageReferenceUrlsJson: JSON.stringify(photoSphereImageReferenceUrls.map(referenceUrl => referenceUrl.value)),
             newPhotoSphereImageCaptionsJson: JSON.stringify(photoSphereImageCaptions.map(caption => caption.value)),
@@ -822,6 +825,7 @@ export default class CreateOrUpdateForm extends React.Component {
             imagesForUpdate,
             updatedImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(imageReferenceUrlsForUpdate)),
             updatedImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(imageCaptionsForUpdate)),
+            updatedImageAltTextsJson: JSON.stringify(imageAltTextsForUpdate.map(altText => altText.value)),
             updatedPhotoSphereImageReferenceUrlsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageReferenceUrlsForUpdate)),
             updatedPhotoSphereImageCaptionsJson: JSON.stringify(this.remapObjectToValuesOnly(photoSphereImageCaptionsForUpdate)),
             newCity: city,
@@ -1167,12 +1171,11 @@ export default class CreateOrUpdateForm extends React.Component {
         while (newImageReferenceUrls.length < files.length) {
             newImageReferenceUrls.push({ value: null, isValid: true })
         }
-        //TODO
         while (newImageAltText.length < files.length) {
-            newImageAltText.push({ value: null })
+            newImageAltText.push(null)
         }
 
-        await this.setState({ images: files, imageReferenceUrls: newImageReferenceUrls, imageCaptions: newImageCaptions });
+        await this.setState({ images: files, imageReferenceUrls: newImageReferenceUrls, imageCaptions: newImageCaptions, imageAltText: newImageAltText });
     }
 
     handleImageIsPrimaryCheckboxClick(event, image) {
@@ -1449,8 +1452,8 @@ export default class CreateOrUpdateForm extends React.Component {
             deactivatedMonth, deactivatedComment, artist, description, inscription, references, imageUploaderKey,
             materials, imagesForUpdate, isTemporary, locationType, photoSphereImagesForUpdate, photoSphereImages,
             city, state, datePickerError, deactivatedDatePickerError, images, imageReferenceUrls, imageAltText, imageCaptions,
-            photoSphereImageReferenceUrls, photoSphereImageCaptions, imageReferenceUrlsForUpdate, imageCaptionsForUpdate,
-            photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate } = this.state;
+            photoSphereImageReferenceUrls, photoSphereImageCaptions, imageReferenceUrlsForUpdate, imageAltTextsForUpdate,
+            imageCaptionsForUpdate, photoSphereImageReferenceUrlsForUpdate, photoSphereImageCaptionsForUpdate } = this.state;
         const { monument, action } = this.props;
 
         const advancedInformationLink = (
@@ -1683,6 +1686,16 @@ export default class CreateOrUpdateForm extends React.Component {
                                 style={{backgroundImage: `url("${image.url}")`}}
                             />
                             <div className="image-fields-container">
+                                <Form.Label className="image-field-label">Alternate Text:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name={`imageAltTextsForUpdate-${image.id}`}
+                                    placeholder=""
+                                    value={imageAltTextsForUpdate[image.id]?.value}
+                                    onChange={(event) => this.handleArrayImageInfoChange(event)}
+                                    className="text-control-medium"
+                                    maxLength="2048"
+                                />
                                 <Form.Label className="image-field-label">Reference URL:</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -1737,7 +1750,6 @@ export default class CreateOrUpdateForm extends React.Component {
                             placeholder=""
                             value={imageAltText[i]?.value}
                             onChange={(event) => this.handleArrayImageInfoChange(event)}
-                            isInvalid={imageReferenceUrls[i]?.value && !imageReferenceUrls[i]?.isValid}
                             className="text-control-medium"
                             maxLength="2048"
                         />
