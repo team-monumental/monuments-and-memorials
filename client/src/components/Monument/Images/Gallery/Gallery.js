@@ -209,6 +209,9 @@ export default class Gallery extends React.Component {
     }
 
     getAltText(image) {
+        if (image.imageAltText) {
+            return image.imageAltText
+        }
         if (image.caption) {
             return image.caption
         }
