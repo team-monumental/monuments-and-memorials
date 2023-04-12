@@ -34,7 +34,7 @@ public class CsvMonumentConverterResult {
 
     private List<String> imageCaptions = new ArrayList<>();
 
-    private List<String> imageAltText = new ArrayList<>();
+    private final List<String> imageAltTexts = new ArrayList<>();
 
     private List<String> photoSphereImages = new ArrayList<>();
 
@@ -110,8 +110,8 @@ public class CsvMonumentConverterResult {
         this.imageCaptions = imageCaptions;
     }
 
-    public List<String> getImageAltText() {
-        return imageAltText;
+    public List<String> getImageAltTexts() {
+        return imageAltTexts;
     }
 
     public List<String> getPhotoSphereImages() {
@@ -260,6 +260,12 @@ public class CsvMonumentConverterResult {
         if (this.imageCaptions != null) {
             if (this.imageCaptions.size() > this.imageFiles.size()) {
                 this.getErrors().add("Cannot have more image captions than images");
+            }
+        }
+
+        if (this.imageAltTexts != null) {
+            if (this.imageAltTexts.size() > this.imageFiles.size()) {
+                this.getErrors().add("Cannot have more image alt-texts than images");
             }
         }
 

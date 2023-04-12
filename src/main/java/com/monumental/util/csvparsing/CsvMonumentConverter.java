@@ -275,10 +275,9 @@ public class CsvMonumentConverter {
                                 result.getWarnings().add("Cannot add image captions without images.");
                             }
                             break;
-                        //TODO: Add case here(?) for image alt-text
                         case "imageAltText":
                             if (zipFile != null) {
-                                result.getImageAltText().addAll(parseCsvArray(value));
+                                result.getImageAltTexts().addAll(parseCsvArray(value));
                             } else {
                                 result.getWarnings().add("Cannot add image alternate text without images.");
                             }
@@ -532,8 +531,8 @@ public class CsvMonumentConverter {
         if (result.getImageCaptions() != null && result.getImageCaptions().size() > 0) {
             suggestion.setImageCaptionsJson(gson.toJson(result.getImageCaptions()));
         }
-        if (result.getImageAltText() != null && result.getImageAltText().size() > 0) {
-
+        if (result.getImageAltTexts() != null && result.getImageAltTexts().size() > 0) {
+            suggestion.setImageAltTextsJson(gson.toJson(result.getImageAltTexts()));
         }
         if (result.getPhotoSphereImages() != null && result.getPhotoSphereImages().size() > 0) {
             suggestion.setPhotoSphereImagesJson(gson.toJson(result.getPhotoSphereImages()));
