@@ -133,11 +133,6 @@ async function sendRequest(url, {methodType='GET', data=undefined, file=undefine
  */
 export async function uploadImagesToS3(images, temporaryFolder) {
     // Setup the global AWS config
-    AWS.config.update({
-        region: 'us-east-2',
-        accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-        secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
-    });
 
     let imageUrls = [];
     const folderName = temporaryFolder ? s3TemporaryImageFolderName : s3ImageFolderName;
@@ -170,11 +165,6 @@ export async function uploadImagesToS3(images, temporaryFolder) {
 
 export async function deleteImagesFromS3(imageUrls) {
     // Setup the global AWS config
-    AWS.config.update({
-        region: 'us-east-2',
-        accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-        secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
-    });
 
     // Create a new AWS S3 Client
     const s3Client = new AWS.S3();

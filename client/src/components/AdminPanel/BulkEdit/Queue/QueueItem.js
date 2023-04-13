@@ -1,17 +1,20 @@
 import React, {useContext, useState} from 'react'
 import { Field, FieldArray, Formik, useFormikContext } from "formik";
-import {Card, Form} from "react-bootstrap";
+import {Card, Button, Col, Form, InputGroup, OverlayTrigger, Tooltip} from "react-bootstrap";
 import validator from "validator/es";
 
 import './Queue.scss'
 import QueuePanelBtns from "./QueuePanelBtns";
 import QueueItemField from "./QueueItemField";
 import QueueItemTags from "./QueueItemTags";
-import QueueItemCoords from "./QueueItemCoords";
 import QueueItemAddress from "./QueueItemAddress";
 import QueueItemRefs from "./QueueItemRefs";
 import QueueItemGallery from "./QueueItemGallery";
+import QueueItemLat from "./QueueItemLat";
+import QueueItemLong from "./QueueItemLong"
 import {QueueResetContext} from "../../../../utils/queue-util";
+
+let latLngRegex = /^[-]?(([0-8]?[0-9])(\.[0-9]{1,20})?|90(\.0{1,20})?)$/;
 
 const FIELDS = [
     {
@@ -62,12 +65,12 @@ const QueueItem = (props) => {
                 if (!validator.isDate(value.slice(0, 10))) error = 'Required'
                 if (checkForFutureDate(value)) error = 'Future date is invalid'
                 break
-            case 'coordinates':
-                let coordinates = [value.coordinates[1], value.coordinates[0]].join()
-
-                if (!validator.isLatLong(coordinates))
-                    error = 'Invalid Coordinates'
+            case 'lat':
+                if (!latLngRegex.test(value)) error = 'Incorrect formatted latitude'
                 break
+            case 'lon' : 
+                if (!latLngRegex.test(value)) error = 'Incorrect formatted longitude'
+                break 
             case 'images':
                 for (let {url} of value) if (!validator.isURL(url, {allow_underscores: true}))
                     error = 'Invalid URL'
@@ -117,12 +120,38 @@ const QueueItem = (props) => {
                             })}
 
                             {showCoords ? (
-                                // Coordinates
-                                // TODO: Add validation, conversion func
-                                <Field {...{name: 'coordinates', text: 'Coordinates', type: 'text'}}
-                                    toggle={toggleCoords}
-                                    component={QueueItemCoords}
-                                />
+                                <><Form.Row>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>{props.text}</Form.Label>
+                                        <InputGroup hasValidation>
+                                            <Field {...{ name: 'lat', text: 'Latitude', type: 'number' }}
+                                                key={`latField`}
+                                                validate={value => {
+                                                    return handleValidate(value, 'lat');
+                                                } }
+                                                component={QueueItemLat} 
+                                            />
+                                            <Field {...{ name: 'lon', text: 'Longitude', type: 'number' }}
+                                                key={`lonField`}
+                                                validate={value => {
+                                                    return handleValidate(value, 'lon');
+                                                } }
+                                                component={QueueItemLong} 
+                                            />
+                                            <InputGroup.Append>
+                                                <OverlayTrigger placement="bottom" overlay={(
+                                                    <Tooltip id="coords-toggle">
+                                                        Swap to Address
+                                                    </Tooltip>
+                                                )}>
+                                                    <Button className="material-icons" onClick={toggleCoords}>swap_vert</Button>
+                                                </OverlayTrigger>
+                                            </InputGroup.Append>
+                                        </InputGroup>
+                                        {/* TODO: Convert coordinates to address */}
+                                        <Form.Text className="text-muted">Address: {data.address ? data.address : ''}</Form.Text>
+                                    </Form.Group>
+                                </Form.Row></>
                             ) : (
                                 // Address
                                 // TODO: Add validation, conversion func

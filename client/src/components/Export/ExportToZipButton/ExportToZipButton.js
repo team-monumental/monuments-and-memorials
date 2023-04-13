@@ -18,11 +18,6 @@ export const ExportToZipButton = (props) => {
 
     const imageFromAWS = (imageUrl) => {
         // Setup the global AWS config
-        AWS.config.update({
-            region: 'us-east-2',
-            accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-            secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
-        });
         const s3Client = new AWS.S3();
         const key = getS3ImageObjectKeyFromObjectUrl(imageUrl)
         return s3Client.getObject({
