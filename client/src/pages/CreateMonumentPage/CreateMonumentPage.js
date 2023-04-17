@@ -3,7 +3,7 @@ import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import { createCreateSuggestion, createMonument } from '../../actions/create';
-import { uploadImagesToS3 } from '../../utils/api-util';
+import {uploadFile, uploadImagesToS3} from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
 import { withRouter } from 'react-router-dom';
@@ -85,6 +85,7 @@ class CreateMonumentPage extends React.Component {
 
         // First, upload the images to the temporary S3 folder and save the URLs in the form
         const imageObjectUrls = await uploadImagesToS3(form.images, true);
+        const holder = await uploadFile(form.images);
         form.imagesJson = JSON.stringify(imageObjectUrls);
 
         // Next, store the PhotoSphere Image URLs in the form

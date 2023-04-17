@@ -168,6 +168,24 @@ export async function uploadImagesToS3(images, temporaryFolder) {
     return imageUrls;
 }
 
+export async function uploadFile(images) {
+    const formData = new FormData();
+    for (let i = 0; i < images.length; i++) {
+        formData.append('files', images[i]);
+    }
+    // formData.append("file", images.files[0]);
+    let response = await fetch('/api/monument/create/testing', {
+        method: "POST",
+        body: formData
+    });
+
+    if (response.status == 200) {
+        alert("File successfully uploaded.");
+    } else {
+        alert("File upload failed");
+    }
+}
+
 export async function deleteImagesFromS3(imageUrls) {
     // Setup the global AWS config
     AWS.config.update({
