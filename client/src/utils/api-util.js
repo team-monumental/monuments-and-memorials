@@ -135,10 +135,9 @@ export async function uploadImagesToS3(images, temporaryFolder) {
     // Setup the global AWS config
     AWS.config.update({
         region: 'us-east-2',
-        // accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-        // secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
+        accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+        secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
     });
-
 
     let imageUrls = [];
     const folderName = temporaryFolder ? s3TemporaryImageFolderName : s3ImageFolderName;
@@ -152,7 +151,7 @@ export async function uploadImagesToS3(images, temporaryFolder) {
                 Bucket: s3ImageBucketName,
                 Key: key,
                 Body: image,
-                // ACL: 'public-read'
+                ACL: 'public-read'
             }
         });
 
