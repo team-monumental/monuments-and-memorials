@@ -85,7 +85,6 @@ class CreateMonumentPage extends React.Component {
 
         // First, upload the images to the temporary S3 folder and save the URLs in the form
         const imageObjectUrls = await uploadImagesToS3(form.images, true);
-        const holder = await uploadFile(form.images);
         form.imagesJson = JSON.stringify(imageObjectUrls);
 
         // Next, store the PhotoSphere Image URLs in the form
