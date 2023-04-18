@@ -125,7 +125,7 @@ const BulkEditPanel = (props) => {
                             </SearchResultContext.Provider>
                         </Card.Body>
                     </Card>
-                    <SearchPanelBtns/>
+                    <SearchPanelBtns queueList={queueList} dequeue={dequeue} handleSearch={handleSearch}/>
                 </Col>
                 <QueueResetContext.Provider value={() => {}}>
                     <Col lg={4}>
