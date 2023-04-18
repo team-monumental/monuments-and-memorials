@@ -5,7 +5,6 @@ import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
-import com.monumental.models.Reference;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
@@ -22,14 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class MonumentController {
@@ -189,15 +188,6 @@ public class MonumentController {
         createSuggestion.setIsApproved(true);
         createSuggestion = this.createSuggestionRepository.save(createSuggestion);
         return this.monumentService.createMonument(createSuggestion);
-    }
-
-    @PostMapping("/api/monument/create/testing")
-    public boolean uploadImages(@RequestParam("files") MultipartFile[] multipartFiles) {
-        for (MultipartFile multipartFile : multipartFiles) {
-//            Buff
-        }
-
-        return true;
     }
 
     /**
