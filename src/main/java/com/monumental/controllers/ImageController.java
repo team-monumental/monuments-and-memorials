@@ -26,4 +26,21 @@ public class ImageController {
         }
         return objectUrls;
     }
+
+    /**
+     * deleted urls from AWS S3 bucket
+     * @param imageUrls List of image urls to be deleted to the S3 bucket
+     * @return
+     */
+    @PostMapping("/api/images/delete")
+    @PreAuthorize(Authorization.isResearcherOrAbove)
+    public String[] deleteUploadedImages(@RequestParam("imageUrls") String[] imageUrls) {
+        String[] deletedKeys = new String[imageUrls.length];
+        for (int i = 0; i < imageUrls.length; i++) {
+            String key = AwsS3Service.getObjectKey(imageUrls[i], false);
+            AwsS3Service.deleteObject(key);
+            deletedKeys[i] = key;
+        }
+        return deletedKeys;
+    }
 }

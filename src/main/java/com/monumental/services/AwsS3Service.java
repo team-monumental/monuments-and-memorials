@@ -156,7 +156,7 @@ public class AwsS3Service {
      * Delete an S3 Object with the specified Object Key
      * @param objectKey - S3 Object Key to delete
      */
-    public void deleteObject(String objectKey) {
+    public static void deleteObject(String objectKey) {
         try {
             s3Client.deleteObject(bucketName, objectKey);
         } catch (AmazonServiceException e) {
