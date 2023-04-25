@@ -17,12 +17,18 @@ export const ExportToZipButton = (props) => {
     const rollbar = useContext(RollbarContext)
 
     const imageFromAWS = (imageUrl) => {
+
+        // To be removed
+
+
         // Setup the global AWS config
-        AWS.config.update({
-            region: 'us-east-2',
-            accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-            secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
-        });
+        // AWS.config.update({
+        //     region: 'us-east-2',
+        //     accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+        //     secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
+        // });
+
+        
         const s3Client = new AWS.S3();
         const key = getS3ImageObjectKeyFromObjectUrl(imageUrl)
         return s3Client.getObject({
@@ -99,7 +105,7 @@ export const ExportToZipButton = (props) => {
     const text = data && data.length > 1 ? "Export all to Zip" : "Export to Zip";
 
     return (
-        <Button variant="light" className={className} onClick={() => handleClick()}>
+        <Button variant="light" disabled className={className} onClick={() => handleClick()}>
             {text}
         </Button>
     );
