@@ -6,8 +6,14 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.AmazonS3URI;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +65,34 @@ public class AwsS3Service {
             System.out.println(e.getMessage());
             throw e;
         }
+    }
+
+    /**
+     * Upload a multipartfile to the S3 bucket
+     * Will not store the Object inside the Bucket if an Object already exists with the specified objectKey
+     * Will still return a valid Object URL if the Object already exists with the specified objectKey
+     * @param multipartFile The multipart file to be stored in the bucket
+     * @param isTemp Flag to indicate if the Object is to be stored in the temp/ directory if true, or the in the
+     *               images/ directory
+     * @return String - The full Object URL for the stored/already existing Object, Empty if unsuccessful
+     */
+    public static String storeObject(MultipartFile multipartFile, Boolean isTemp) {
+        String objectKey = generateUniqueKey((isTemp ? tempFolderName : imageFolderName) + multipartFile.getOriginalFilename());
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(multipartFile.getSize());
+        try {
+            PutObjectRequest request = new PutObjectRequest(bucketName, objectKey, multipartFile.getInputStream(), objectMetadata);
+            PutObjectResult putObjectResult = s3Client.putObject(request);
+            return getObjectUrl(objectKey);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }  catch (SdkClientException e) {
+            System.out.println("Error attempting to access S3 Bucket: " + bucketName + " and Object: " + objectKey);
+            System.out.println(e.getMessage());
+            throw e;
+        }
+
     }
 
     /**
@@ -122,7 +156,7 @@ public class AwsS3Service {
      * Delete an S3 Object with the specified Object Key
      * @param objectKey - S3 Object Key to delete
      */
-    public void deleteObject(String objectKey) {
+    public static void deleteObject(String objectKey) {
         try {
             s3Client.deleteObject(bucketName, objectKey);
         } catch (AmazonServiceException e) {

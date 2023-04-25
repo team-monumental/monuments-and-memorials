@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { fetchMonumentForUpdate, createUpdateSuggestion, updateMonument } from '../../actions/update-monument';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import Spinner from '../../components/Spinner/Spinner';
-import { uploadImagesToS3 } from '../../utils/api-util';
+import { uploadImagesToS3, deleteImagesFromS3 } from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import UpdateReviewModal from '../../components/ReviewModal/UpdateReviewModal/UpdateReviewModal';
 import NoImageModal from '../../components/NoImageModal/NoImageModal';
@@ -84,7 +84,9 @@ class UpdateMonumentPage extends React.Component {
 
         // Then, delete the deleted images from S3
         // TODO:  currently, preprod uses the same S3 as prod.  Once that is fixed, uncomment this line.
-        // await deleteImagesFromS3(form.deletedImageUrls);
+        if (form.deletedImageUrls) {
+            let resp = await deleteImagesFromS3(form.deletedImageUrls);
+        }
 
         // Finally, make the appropriate API call
         // Researchers and Admins bypass Suggestions and can directly update Monuments
