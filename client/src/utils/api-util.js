@@ -132,70 +132,34 @@ async function sendRequest(url, {methodType='GET', data=undefined, file=undefine
  * @returns {Promise<[]>} - Promise that when awaited, returns a List of S3 Object keys for the uploaded images
  */
 export async function uploadImagesToS3(images, temporaryFolder) {
-    // Setup the global AWS config
-    AWS.config.update({
-        region: 'us-east-2',
-        // accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-        // secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
+    const formData = new FormData();
+    let imageUrls = [];
+    for (let i = 0; i < images.length; i++) {
+        formData.append('images', images[i]);
+    }
+    let response = await fetch(`/api/images/upload/?isTemp=${temporaryFolder}`, {
+        method: "POST",
+        body: formData
     });
 
-
-    let imageUrls = [];
-    const folderName = temporaryFolder ? s3TemporaryImageFolderName : s3ImageFolderName;
-
-    for (const image of images) {
-        let key = generateUniqueKey(folderName + image.name)
-
-        // Create an S3 upload
-        let s3Upload = new AWS.S3.ManagedUpload({
-            params: {
-                Bucket: s3ImageBucketName,
-                Key: key,
-                Body: image,
-                // ACL: 'public-read'
-            }
-        });
-
-        try {
-            // Execute the upload
-            let data = await s3Upload.promise();
-            imageUrls.push(data.Location);
-        } catch (err) {
-            console.log("ERROR UPLOADING IMAGE TO S3: " + image.name);
-            console.log("ERROR: " + err.message);
-        }
-    }
-
+    imageUrls = response.json();
     return imageUrls;
 }
 
+
 export async function deleteImagesFromS3(imageUrls) {
-    // Setup the global AWS config
-    AWS.config.update({
-        region: 'us-east-2',
-        accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
-        secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`
+    const formData = new FormData();
+    let deletedImageUrls = [];
+    for (let i = 0; i < imageUrls.length; i++) {
+        formData.append('imageUrls', imageUrls[i]);
+    }
+    let response = await fetch(`/api/images/delete`, {
+        method: "POST",
+        body: formData
     });
 
-    // Create a new AWS S3 Client
-    const s3Client = new AWS.S3();
-
-    // Setup parameters
-    const params = {
-        Bucket: s3ImageBucketName
-    };
-
-    for (const imageUrl of imageUrls) {
-        params['Key'] = getS3ImageObjectKeyFromObjectUrl(imageUrl);
-
-        try {
-            // Execute the delete operation
-            await s3Client.deleteObject(params).promise();
-        } catch (err) {
-            console.log("ERROR DELETING IMAGE FROM S3: " + imageUrl);
-            console.log("ERROR: " + err.message);
-        }
-    }
+    deletedImageUrls = response.json();
+    return deletedImageUrls;
 }
 
 /**

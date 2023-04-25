@@ -3,7 +3,7 @@ import './CreateMonumentPage.scss';
 import { connect } from 'react-redux';
 import CreateOrUpdateForm from '../../components/CreateOrUpdateForm/CreateOrUpdateForm';
 import { createCreateSuggestion, createMonument } from '../../actions/create';
-import { uploadImagesToS3 } from '../../utils/api-util';
+import {uploadFile, uploadImagesToS3} from '../../utils/api-util';
 import { Helmet } from 'react-helmet';
 import Spinner from '../../components/Spinner/Spinner';
 import { withRouter } from 'react-router-dom';

@@ -5,7 +5,6 @@ import com.monumental.controllers.helpers.MonumentAboutPageStatistics;
 import com.monumental.exceptions.ResourceNotFoundException;
 import com.monumental.exceptions.UnauthorizedException;
 import com.monumental.models.Monument;
-import com.monumental.models.Reference;
 import com.monumental.models.suggestions.CreateMonumentSuggestion;
 import com.monumental.models.suggestions.UpdateMonumentSuggestion;
 import com.monumental.repositories.MonumentRepository;
@@ -26,7 +25,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class MonumentController {
