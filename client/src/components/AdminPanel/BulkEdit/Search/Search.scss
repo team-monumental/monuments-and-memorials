@@ -4,7 +4,7 @@
 }
 
 .checked {
-  background-color: #42b883;
+  background-color: #42b883 !important;
   min-height: fit-content;
   transition: background-color ease-in-out .1s;
   color: white;
