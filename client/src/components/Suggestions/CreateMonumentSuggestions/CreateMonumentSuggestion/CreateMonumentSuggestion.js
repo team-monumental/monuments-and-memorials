@@ -94,6 +94,9 @@ class CreateMonumentSuggestion extends React.Component {
         }
         else if (suggestion.year && suggestion.year.length) {
             date = suggestion.year;
+        } 
+        else if (suggestion.dateFormat = 'UNKNOWN') {
+            date = 'Unknown'
         }
 
         let deactivatedDate = 'None';
@@ -105,6 +108,9 @@ class CreateMonumentSuggestion extends React.Component {
         }
         else if (suggestion.deactivatedYear && suggestion.deactivatedYear.length) {
             deactivatedDate = suggestion.deactivatedYear;
+        }
+        else if (suggestion.deactivatedDateFormat = 'UNKNOWN') {
+            date = 'Unknown'
         }
 
         let imageUrls = [];

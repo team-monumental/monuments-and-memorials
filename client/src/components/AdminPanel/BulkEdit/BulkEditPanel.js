@@ -29,7 +29,7 @@ const BulkEditPanel = (props) => {
         // TODO: Search with filters and update state
 
         // IF SearchMode is true, it is the Monument search
-        console.log(searchMode)
+        
         let endpoint = searchMode == "monument" ? 
             `${window.location.origin}/api/search/monuments/?cascade=true&d=25&limit=25&page=1&q=${searchTerm}` : 
             `${window.location.origin}/api/search/user/monument/?name=${searchTerm}`
@@ -37,7 +37,9 @@ const BulkEditPanel = (props) => {
 
         fetch(endpoint)
             .then(res => res.json())
-            .then(json => setSearchResults(json))
+            .then(json => {
+                setSearchResults(json)
+            })
             .finally()
     }, [searchTerm])
 
@@ -48,8 +50,29 @@ const BulkEditPanel = (props) => {
     const saveMonument = async (monument) => {
         const oldMonument = searchResults.find(mon => mon.id == monument.id)
         const newTags = monument.monumentTags.map(elem => elem.tag.name);
+        let newReferences = {}
+
+        monument.references.forEach(elem => {
+            newReferences[elem.id] = elem.url
+        })
+
+        let deletedReferences = []
+        
+        oldMonument.references.forEach(elem => {
+            if ((!monument.references[elem.id])) { 
+                deletedReferences.push(elem.id)
+            }
+        })
+
         monument.monumentTags = oldMonument.monumentTags
-        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}?newTagString=${encodeURIComponent(JSON.stringify(newTags))}`, monument)
+        monument.references = oldMonument.references
+
+        put(`${window.location.origin}/api/monument/bulkupdate/${monument.id}
+        ?newTagString=${encodeURIComponent(JSON.stringify(newTags))}
+        &newReferencesString=${encodeURIComponent(JSON.stringify(newReferences))}
+        &deletedReferenceString=${encodeURIComponent(JSON.stringify(deletedReferences))}
+        ${(monument.lat && monument.lon) && `&lat=${monument.lat}&lon=${monument.lon}`}
+        `, monument)
         .then(() => {
             dequeue(monument.id)
             var diffArray = [];

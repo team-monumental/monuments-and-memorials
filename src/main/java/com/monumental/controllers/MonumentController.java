@@ -16,6 +16,7 @@ import com.monumental.services.MonumentService;
 import com.monumental.services.UserService;
 import com.rollbar.notifier.Rollbar;
 import org.hibernate.Hibernate;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -227,21 +228,42 @@ public class MonumentController {
     @PutMapping("/api/monument/bulkupdate/{id}")
     @PreAuthorize(Authorization.isResearcherOrAbove)
     public Monument bulkUpdateMonument(@PathVariable("id") Integer monumentId, @RequestParam(required = false) String newTagString,
+                                       @RequestParam(required = false) String newReferencesString,
+                                       @RequestParam(required = false) String deletedReferenceString,
+                                       @RequestParam(required = false) Double lat,
+                                       @RequestParam(required = false) Double lon,
                                        @RequestBody Monument monument)
             throws ResourceNotFoundException, IOException {
 
         Optional<Monument> optionalMonument = this.monumentRepository.findById(monumentId);
-
         if (optionalMonument.isEmpty()) {
             throw new ResourceNotFoundException("The requested Monument or Memorial does not exist");
         }
 
         String result = java.net.URLDecoder.decode(newTagString, StandardCharsets.UTF_8);
+        String references = java.net.URLDecoder.decode(newReferencesString, StandardCharsets.UTF_8);
+        String deletedReferences = java.net.URLDecoder.decode(deletedReferenceString, StandardCharsets.UTF_8);
         ObjectMapper mapper = new ObjectMapper();
         List<String> strings = mapper.readValue(result, List.class);
 
+        List<Integer> deletedRefs = mapper.readValue(deletedReferences, List.class);
+        Map<String, String> referenceList = mapper.readValue(references, Map.class);
+        Point point = MonumentService.createMonumentPoint(lon, lat);
+        monument.setCoordinates(point);
         this.monumentRepository.saveAndFlush(monument);
         this.monumentService.updateMonumentTags(monument, strings, false);
+
+        Map<Integer, String> newRefs = new HashMap<>();
+        for (String i : referenceList.keySet()) {
+            if (Integer.parseInt(i) < 0) {
+                this.monumentService.createMonumentReferences(referenceList.get(i), monument);
+                referenceList.remove(i);
+                continue;
+            }
+            newRefs.put(Integer.parseInt(i), referenceList.get(i));
+        }
+        this.monumentService.updateMonumentReferences(monument, newRefs);
+        this.monumentService.deleteMonumentReferences(monument, deletedRefs);
         return monument;
     }
 }

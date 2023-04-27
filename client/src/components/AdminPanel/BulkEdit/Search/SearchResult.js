@@ -42,7 +42,8 @@ const SearchResult = ({data, nq, dq, selected, inQueue}) => {
                     <Col lg={3}><span>{data.title}</span></Col>
                     <Col lg={2}><span>{data.artist}</span></Col>
                     <Col lg={2}><span>{data.state ? data.state : 'Not Provided'}</span></Col>
-                    <Col lg={2}><span>{moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
+                    <Col lg={2}><span>{!data.date && data.dateFormat == 'UNKNOWN' ? 
+                        'Unknown' : moment(data.date, "YYYY-MM-DD").format("DD MMM YYYY")}</span></Col>
                     <Col lg={2}>
                         <SearchResultBtns monumentId={data.id}/>
                     </Col>
